@@ -90,3 +90,24 @@ jobs:
           touch /tmp/pal/scripts/__init__.py
       - name: Validate each node
         run: python3 scripts/check_palomar_metadata.py /tmp/pal
+
+  impact:
+    name: Network impact
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Full history: the base state is recovered with `git show`, not by checking it out.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      # Fails only on the one class that must not be silent: editing a conclusion that other
+      # nodes depend on, or removing one that is still imported. Everything else is reported to
+      # the job summary for the reviewer and does not block.
+      - name: What this branch degrades
+        run: python3 scripts/ieantn.py diff --base "${{ github.event.pull_request.base.sha }}"

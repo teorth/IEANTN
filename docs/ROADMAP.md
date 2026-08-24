@@ -28,13 +28,17 @@ orange / BROKEN. `check-graph` refuses a `lean-comparator` justification with no
 `receipts/` to the verification workflow's identity. Until that is set, the protection is review
 convention rather than enforcement.
 
-**3. The breaking-change detector.** Compute the graph at the PR base and at `HEAD`, then diff.
-Hard-fails when a conclusion with downstream importers or a recorded receipt is edited in place,
-with `new-version` as the suggested fix.
+**3. The breaking-change detector.** *Done* -- `ieantn.py diff --base <ref>`, run on every pull
+request. Fails when a conclusion with downstream importers or a recorded receipt is edited in
+place, or when one that is still imported is removed, with `new-version` as the suggested fix and
+`changes/*.yaml` as the override.
 
-**4. The reviewer report.** Same machinery as (3): posts a PR comment naming the receipts that went
-stale, new unjustified leaves, blast radius, and a recommended modification. Advisory, never
-blocking.
+Recovering the base state needs no Lean: `fingerprints.json` is committed, so the statements as
+they were are readable with `git show`. That is most of why this is cheap enough to run per PR.
+
+**4. The reviewer report.** *Partly done* -- `diff` writes its findings to the job summary, which
+needs no token and no permissions. Still to do: posting it as a PR comment so it appears inline,
+and adding the recommended-modification text for cases beyond the in-place edit.
 
 **5. The `/verify` bot.** A maintainer-approved `workflow_dispatch` that runs Comparator on one
 node's solution and, on success, commits the receipt and flips the justification.

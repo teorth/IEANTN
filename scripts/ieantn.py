@@ -12,6 +12,7 @@ routine node-management tasks.
     python scripts/ieantn.py fingerprint             recompute the statement fingerprints
     python scripts/ieantn.py fingerprint --check     fail if any has moved
     python scripts/ieantn.py status                  the traffic light for every conclusion
+    python scripts/ieantn.py diff --base origin/main what this branch degrades, and for whom
     python scripts/ieantn.py housekeeping            the derived task queue
     python scripts/ieantn.py check                   every check, in --check mode
 
@@ -31,6 +32,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import pathlib
 import subprocess
 import re
@@ -47,6 +49,7 @@ NODES_DIR = ROOT / "IEANTN" / "Nodes"
 VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
 FINGERPRINTS = ROOT / "fingerprints.json"
 RECEIPTS = ROOT / "receipts"
+CHANGES = ROOT / "changes"
 
 #: Toolchain minor releases behind current, past which a refresh is assumed to fall outside the
 #: Mathlib cache window and cost many times the per-node budget. A heuristic, not a measurement.
@@ -852,6 +855,184 @@ def housekeeping() -> bool:
 
 
 # ---------------------------------------------------------------------------
+# diff: what this branch degrades
+# ---------------------------------------------------------------------------
+
+
+def git_show(ref: str, path: str) -> str | None:
+    """The contents of `path` at `ref`, or None if it did not exist there."""
+    finished = subprocess.run(
+        ["git", "show", f"{ref}:{path}"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    return finished.stdout if finished.returncode == 0 else None
+
+
+def state_at(ref: str | None) -> dict:
+    """The graph as it stands at `ref`, or in the working tree when `ref` is None.
+
+    Reading the base state needs no Lean at all: `fingerprints.json` is committed, so the
+    statements as they were are recoverable with `git show`. That is most of why this check is
+    cheap enough to run on every pull request.
+    """
+    if ref is None:
+        nodes = load_nodes()
+        fingerprints = (
+            json.loads(FINGERPRINTS.read_text(encoding="utf-8")) if FINGERPRINTS.is_file() else {}
+        )
+        receipts = {
+            path.stem: json.loads(path.read_text(encoding="utf-8"))
+            for path in (RECEIPTS.glob("*.json") if RECEIPTS.is_dir() else [])
+        }
+    else:
+        listing = subprocess.run(
+            ["git", "ls-tree", "-r", "--name-only", ref],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        ).stdout.splitlines()
+        nodes = {}
+        for path in listing:
+            if path.startswith("IEANTN/Nodes/") and path.endswith("formalization.yaml"):
+                raw = git_show(ref, path)
+                if raw is None:
+                    continue
+                data = yaml.safe_load(raw) or {}
+                directory = ROOT / pathlib.PurePosixPath(path).parent
+                data["_dir"] = directory
+                nodes[node_id_of(directory)] = data
+        raw = git_show(ref, "fingerprints.json")
+        fingerprints = json.loads(raw) if raw else {}
+        receipts = {}
+        for path in listing:
+            if path.startswith("receipts/") and path.endswith(".json"):
+                raw = git_show(ref, path)
+                if raw:
+                    receipts[pathlib.PurePosixPath(path).stem] = json.loads(raw)
+
+    conclusions = {}
+    for node_id, node in nodes.items():
+        for conclusion in conclusions_of(node):
+            conclusions[f"{node_id}.{conclusion.get('id')}"] = {
+                "imports": [
+                    f"{d.get('node')}.{d.get('conclusion')}"
+                    for d in (conclusion.get("imports") or [])
+                ],
+                "kind": designated_kind(conclusion),
+            }
+    return {"conclusions": conclusions, "fingerprints": fingerprints, "receipts": receipts}
+
+
+def acknowledged() -> dict[str, str]:
+    """Conclusions this branch explicitly acknowledges breaking, and why.
+
+    An override, not a routine step -- see CONTRIBUTING.md. It exists for the case where a change
+    is genuinely breaking and has to land anyway, and its value comes from being rare enough that a
+    reviewer notices one in the diff.
+    """
+    result: dict[str, str] = {}
+    for path in sorted(CHANGES.glob("*.yaml")) if CHANGES.is_dir() else []:
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        for entry in data.get("acknowledge") or []:
+            if entry.get("conclusion"):
+                result[entry["conclusion"]] = entry.get("reason", "(no reason given)")
+    return result
+
+
+def diff(base: str) -> bool:
+    """Report what this branch degrades, and fail on the one class that must not be silent."""
+    before, after = state_at(base), state_at(None)
+    excused = acknowledged()
+    errors: list[str] = []
+    warnings: list[str] = []
+    notes: list[str] = []
+
+    importers_before: dict[str, list[str]] = {}
+    for key, entry in before["conclusions"].items():
+        for target in entry["imports"]:
+            importers_before.setdefault(target, []).append(key)
+
+    for key, entry in sorted(before["conclusions"].items()):
+        old = before["fingerprints"].get(key)
+        new = after["fingerprints"].get(key)
+
+        if key not in after["conclusions"]:
+            users = importers_before.get(key, [])
+            if users:
+                errors.append(
+                    f"**`{key}` was removed** but {len(users)} conclusion(s) still import it at "
+                    f"the base: {', '.join(f'`{u}`' for u in users)}."
+                )
+            else:
+                notes.append(f"`{key}` removed; nothing imported it.")
+            continue
+
+        if old is None or new is None or old == new:
+            continue
+
+        users = importers_before.get(key, [])
+        had_receipt = key in before["receipts"]
+        detail = []
+        if users:
+            detail.append(f"{len(users)} importer(s): " + ", ".join(f"`{u}`" for u in users))
+        if had_receipt:
+            detail.append("a recorded receipt")
+
+        if not detail:
+            notes.append(f"`{key}` restated; nothing depended on it.")
+        elif key in excused:
+            warnings.append(
+                f"**`{key}` edited in place** ({'; '.join(detail)}) -- acknowledged: "
+                f"{excused[key]}"
+            )
+        else:
+            errors.append(
+                f"**`{key}` was edited in place**, and it has {'; '.join(detail)}.\n\n"
+                f"  Editing a conclusion others depend on changes what *they* claim. Make a new "
+                f"version instead:\n\n  ```bash\n  python scripts/ieantn.py new-version "
+                f"{key.split('.')[0]}\n  ```\n\n  If this must land anyway, add a `changes/*.yaml` "
+                f"acknowledgement (see CONTRIBUTING.md)."
+            )
+
+    for key, receipt in sorted(after["receipts"].items()):
+        for name, digest in (receipt.get("statement") or {}).items():
+            if after["fingerprints"].get(name) != digest:
+                warnings.append(
+                    f"Receipt for `{key}` is now **BROKEN**: `{name}` no longer matches what was "
+                    "verified."
+                )
+                break
+
+    for key, entry in sorted(after["conclusions"].items()):
+        if key not in before["conclusions"]:
+            notes.append(f"new conclusion `{key}` (`{entry['kind']}`).")
+
+    lines = ["## Network impact", ""]
+    if not (errors or warnings or notes):
+        lines.append("No change to any statement, dependency, or receipt.")
+    for heading, items in (
+        ("### Breaking", errors),
+        ("### Degraded", warnings),
+        ("### Informational", notes),
+    ):
+        if items:
+            lines += [heading, ""] + [f"- {item}" for item in items] + [""]
+    report = "\n".join(lines)
+    print(report)
+
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a", encoding="utf-8") as handle:
+            handle.write(report + "\n")
+
+    return not errors
+
+
+# ---------------------------------------------------------------------------
 # new-version / deprecate
 # ---------------------------------------------------------------------------
 
@@ -1096,6 +1277,8 @@ def main() -> int:
     )
     version = sub.add_parser("new-version")
     version.add_argument("family", help="e.g. Lcm")
+    changed = sub.add_parser("diff")
+    changed.add_argument("--base", default="origin/main")
     written = sub.add_parser("record-receipt", help="verification workflow only")
     written.add_argument("conclusion")
     written.add_argument("--solution", required=True)
@@ -1118,6 +1301,8 @@ def main() -> int:
         return 0 if report() else 1
     if args.command == "status":
         return 0 if status() else 1
+    if args.command == "diff":
+        return 0 if diff(args.base) else 1
     if args.command == "record-receipt":
         return 0 if record_receipt(args.conclusion, args.solution, args.run_url, args.stamp) else 1
     if args.command == "housekeeping":

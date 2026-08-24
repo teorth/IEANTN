@@ -8,8 +8,8 @@ one.
 Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) once before your first contribution.
 [docs/NODES.md](docs/NODES.md) is the reference for node file formats.
 
-> **Status.** Marked *(planned)* below: the breaking-change detector, the `/verify` bot, and the
-> reviewer report. Everything else works today.
+> **Status.** Marked *(planned)* below: the `/verify` bot, and posting the reviewer report as a PR
+> comment rather than to the job summary. Everything else works today.
 
 ## Two principles
 
@@ -107,8 +107,8 @@ is least work:
 | Port the solution | The proof survives the restatement with small edits. |
 | Bridge from the old version | The old conclusion implies the new one. Usually the cheapest. |
 
-**CI:** editing a depended-on conclusion in place is a hard failure *(planned)*; making a new
-version is always green. **Downstream nodes need no action** — they still import the old version.
+**CI:** editing a depended-on conclusion in place is a hard failure; making a new version is
+always green. **Downstream nodes need no action** — they still import the old version.
 
 Deprecate the old version when you want it retired:
 
@@ -245,8 +245,7 @@ that touch enough nodes for the consequences to be hard to hold in your head.
 
 ## The acknowledgement escape hatch
 
-If CI reports that your change breaks something and you need it to land anyway, add
-`changes/<slug>.yaml`:
+If `Network impact` fails and you need the change to land anyway, add `changes/<slug>.yaml`:
 
 ```yaml
 acknowledge:
