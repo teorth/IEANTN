@@ -149,21 +149,35 @@ several papers, every one of them benefits at once.
 Do the extraction with a new version of the stuck node (its imports are changing, so its challenge
 changes) and CI stays green throughout.
 
-## 7. Housekeeping
+## 7. Add a new node
 
-Simplifying the graph: collapsing versions, migrating dependants off deprecated nodes, refreshing
-stale verifications, deleting what nothing imports.
+A paper the network does not cover yet, a pipeline abstracted from several, a piece of folklore, or
+a large computation.
+
+**Do:**
 
 ```bash
-python scripts/ieantn.py housekeeping
+python scripts/ieantn.py new-node FKS2 --kind paper
 ```
 
-Usually done by maintainers or experienced contributors, often in large PRs touching many nodes.
-Anything goes provided CI passes and a human reviewer confirms that the surviving nodes'
-`Conclusions.lean` files still say the right things — that last check is not mechanisable today.
+That scaffolds `IEANTN/Nodes/FKS2/v1/` with a placeholder conclusion, a `formalization.yaml`
+skeleton, a generated challenge, and the umbrella import. Then:
 
-Housekeeping PRs are where the reviewer degradation report matters most, since they are the ones
-that touch enough nodes for the consequences to be hard to hold in your head.
+1. Write the real conclusions in `Conclusions.lean`, replacing `replace_me`.
+2. Fill in `formalization.yaml` — sources, classification, justification — and change
+   `node.status` away from `template`.
+3. `python scripts/ieantn.py gen-challenges`
+4. `python scripts/ieantn.py check`
+
+**CI:** a node still marked `status: template` is a **hard failure**. The scaffold is deliberately
+built so that `lake build` stays green — you can iterate locally — while `check-graph` refuses it,
+so a half-finished node cannot be merged by accident.
+
+`--kind` is one of `paper` (default), `pipeline`, `folklore`, `computation`.
+
+Most new nodes start with `justification: none-yet` or `literature` and no solution at all. That is
+the normal, expected state: a node that merely *records* a result and its dependencies is already
+useful to the network, and workflows 1–3 exist to justify it later.
 
 ## 8. Bump Mathlib
 
@@ -205,6 +219,22 @@ the *claim that the result holds under current Mathlib*, not the proof.
 **Do not chase bumps.** Let staleness accumulate, and run refresh sweeps ordered by fan-in when
 compute is available (`python scripts/ieantn.py housekeeping`). The one thing worth avoiding is
 letting a node slide from yellow to orange, because that is where the cost jumps discontinuously.
+
+## 9. Housekeeping
+
+Simplifying the graph: collapsing versions, migrating dependants off deprecated nodes, refreshing
+stale verifications, deleting what nothing imports.
+
+```bash
+python scripts/ieantn.py housekeeping
+```
+
+Usually done by maintainers or experienced contributors, often in large PRs touching many nodes.
+Anything goes provided CI passes and a human reviewer confirms that the surviving nodes'
+`Conclusions.lean` files still say the right things — that last check is not mechanisable today.
+
+Housekeeping PRs are where the reviewer degradation report matters most, since they are the ones
+that touch enough nodes for the consequences to be hard to hold in your head.
 
 ---
 

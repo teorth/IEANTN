@@ -40,7 +40,7 @@ defeat the purpose of the split.
 
 ## Reading order
 
-1. [CONTRIBUTING.md](CONTRIBUTING.md) — the eight things people actually do, and how.
+1. [CONTRIBUTING.md](CONTRIBUTING.md) — the nine things people actually do, and how.
 2. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the design and why it is what it is.
 3. [docs/NODES.md](docs/NODES.md) — node file formats, in detail.
 4. [CLAUDE.md](CLAUDE.md) — the short version, for coding agents.

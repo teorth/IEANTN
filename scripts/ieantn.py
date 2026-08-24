@@ -12,6 +12,7 @@ routine node-management tasks.
     python scripts/ieantn.py housekeeping            the derived task queue
     python scripts/ieantn.py check                   every check, in --check mode
 
+    python scripts/ieantn.py new-node FKS2           scaffold a brand-new node at v1
     python scripts/ieantn.py new-version Lcm         scaffold Lcm.v2 from the latest version
     python scripts/ieantn.py deprecate Lcm.v1 --for Lcm.v2
 
@@ -49,7 +50,7 @@ JUSTIFICATION_KINDS = PRIMITIVE_KINDS | DERIVED_KINDS
 #: graph: something the network takes on faith, however reasonably.
 VERIFIED_KINDS = {"lean-comparator"}
 
-NODE_STATUSES = {"stub", "awaiting-solution", "active", "deprecated"}
+NODE_STATUSES = {"template", "stub", "awaiting-solution", "active", "deprecated"}
 
 IMPORT_RE = re.compile(r"^import\s+([A-Za-z0-9_.]+)\s*$", re.MULTILINE)
 VERSION_RE = re.compile(r"^v(\d+)$")
@@ -228,6 +229,14 @@ def check_graph() -> bool:
         status = meta.get("status")
         if status is not None and status not in NODE_STATUSES:
             problems.add(where, f"node.status `{status}` is not one of {sorted(NODE_STATUSES)}")
+        if status == "template":
+            problems.add(
+                where,
+                "this node is still the scaffolded template. Fill in the conclusions, the "
+                "sources and the project fields, then change `node.status`. (The template is "
+                "designed to build locally but fail here, so an unfinished node cannot be "
+                "merged by accident.)",
+            )
         if status == "deprecated":
             replacement = meta.get("superseded_by")
             if not replacement:
@@ -497,6 +506,152 @@ def housekeeping() -> bool:
 # ---------------------------------------------------------------------------
 
 
+CONCLUSIONS_TEMPLATE = """\
+/-
+Copyright (c) 2026 IEANTN contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: TODO
+-/
+import IEANTN.Vocabulary
+
+/-!
+# Node `{family}`
+
+TODO: one paragraph saying what this node is about, and citing its source.
+
+Then replace `replace_me` below with the node's real conclusions, and fill in
+`formalization.yaml`.  Until `node.status` is changed away from `template`,
+`python scripts/ieantn.py check-graph` will refuse this node -- deliberately, so that an
+unfinished scaffold cannot be merged by accident.
+-/
+
+namespace {family}.v1
+
+/-- TODO: replace this placeholder with a real conclusion.
+
+Every conclusion is a `def _ : Prop`, never a `structure`, and its docstring is where the
+informal statement lives -- there is no blueprint.  State the source's own numbering, its
+hypotheses, and anything a transcriber could get wrong. -/
+def replace_me : Prop := True
+
+end {family}.v1
+"""
+
+YAML_TEMPLATE = """\
+# Node metadata for `{family}.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: {family}.v1
+  family: {family}
+  version: v1
+  kind: {kind}
+  status: template          # change this once the node is filled in
+
+project:
+  name: "TODO"
+  description: >-
+    TODO: a concise public account of the mathematical content and principal results.
+  authors: ["TODO"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["TODO"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05"]
+
+conclusions:
+  - id: replace_me
+    declaration: {family}.v1.replace_me
+    challenge: {family}.v1.challenge_replace_me
+    imports: []
+    justification:
+      kind: none-yet
+      note: >-
+        TODO
+    receipt: null
+
+sources:
+  - title: "TODO"
+    authors: ["TODO"]
+    type: "paper"            # paper | book | web discussion | folklore | original-proof | other
+    id: "TODO"
+    relationship: formalizes # formalizes | adapts | independently-proves | background | other
+    note: >-
+      TODO
+
+automation:
+  methods:
+    - method: manual
+      role: >-
+        TODO
+
+review:
+  status: self-assessed
+  reviewers: ["TODO"]
+
+limitations:
+  - >-
+    TODO
+"""
+
+
+def register_in_umbrella(node_id: str, after: str | None = None) -> None:
+    """Add a node's challenge to `IEANTN/Nodes.lean`, keeping the import list sorted."""
+    umbrella = ROOT / "IEANTN" / "Nodes.lean"
+    text = umbrella.read_text(encoding="utf-8")
+    line = f"import IEANTN.Nodes.{node_id}.Challenge"
+    if line in text:
+        return
+    lines = text.splitlines()
+    imports = [i for i, entry in enumerate(lines) if entry.startswith("import ")]
+    if not imports:
+        return
+    block = sorted(set(lines[imports[0]:imports[-1] + 1] + [line]))
+    umbrella.write_text(
+        "\n".join(lines[:imports[0]] + block + lines[imports[-1] + 1:]) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+
+def new_node(family: str, kind: str) -> bool:
+    """Scaffold a brand-new node at v1."""
+    if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", family):
+        print(f"error: `{family}` is not a usable Lean namespace component")
+        return False
+    target = NODES_DIR / family / "v1"
+    if target.exists():
+        print(f"error: {rel(target)} already exists (use `new-version {family}` instead)")
+        return False
+
+    target.mkdir(parents=True)
+    (target / "Conclusions.lean").write_text(
+        CONCLUSIONS_TEMPLATE.format(family=family), encoding="utf-8", newline="\n"
+    )
+    (target / "formalization.yaml").write_text(
+        YAML_TEMPLATE.format(family=family, kind=kind), encoding="utf-8", newline="\n"
+    )
+    register_in_umbrella(f"{family}.v1")
+
+    node = load_nodes()[f"{family}.v1"]
+    (target / "Challenge.lean").write_text(
+        render_challenge(f"{family}.v1", node), encoding="utf-8", newline="\n"
+    )
+
+    print(f"created {rel(target)}")
+    print("\nnext:")
+    print(f"  1. write the real conclusions in {rel(target / 'Conclusions.lean')}")
+    print(f"  2. fill in {rel(target / 'formalization.yaml')} and change `node.status`")
+    print("  3. python scripts/ieantn.py gen-challenges")
+    print("  4. python scripts/ieantn.py check")
+    print("\n`check-graph` will refuse this node until step 2 is done. That is deliberate.")
+    return True
+
+
 def new_version(family: str) -> bool:
     existing = versions_of(family)
     if not existing:
@@ -533,15 +688,7 @@ def new_version(family: str) -> bool:
         yaml.safe_dump(data, allow_unicode=True, sort_keys=False), encoding="utf-8", newline="\n"
     )
 
-    umbrella = ROOT / "IEANTN" / "Nodes.lean"
-    text = umbrella.read_text(encoding="utf-8")
-    line = f"import IEANTN.Nodes.{new_id}.Challenge\n"
-    if line not in text:
-        text = text.replace(
-            f"import IEANTN.Nodes.{old_id}.Challenge\n",
-            f"import IEANTN.Nodes.{old_id}.Challenge\n{line}",
-        )
-        umbrella.write_text(text, encoding="utf-8", newline="\n")
+    register_in_umbrella(new_id)
 
     print(f"created {rel(target)} from {rel(latest)}")
     print("\nnext:")
@@ -585,6 +732,11 @@ def main() -> int:
         sub.add_parser(name)
     generate = sub.add_parser("gen-challenges")
     generate.add_argument("--check", action="store_true", help="fail instead of rewriting")
+    fresh = sub.add_parser("new-node")
+    fresh.add_argument("family", help="e.g. FKS2")
+    fresh.add_argument(
+        "--kind", default="paper", choices=["paper", "pipeline", "folklore", "computation"]
+    )
     version = sub.add_parser("new-version")
     version.add_argument("family", help="e.g. Lcm")
     retire = sub.add_parser("deprecate")
@@ -602,6 +754,8 @@ def main() -> int:
         return 0 if report() else 1
     if args.command == "housekeeping":
         return 0 if housekeeping() else 1
+    if args.command == "new-node":
+        return 0 if new_node(args.family, args.kind) else 1
     if args.command == "new-version":
         return 0 if new_version(args.family) else 1
     if args.command == "deprecate":
