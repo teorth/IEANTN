@@ -178,6 +178,14 @@ secrets, so the exposure is compute rather than credentials, but it has not been
 **Denial of service by triggering CI.** The verification workflow is hour-scale and should sit
 behind the environment gate above. Core CI runs per push and is cheap, but nothing rate-limits it.
 
+**Alignment checking stays maintainer-side, deliberately.** The obvious answer to the gap below is
+an LLM that reads a conclusions file against its informal description and its cited source. That is
+**not** going into CI: it needs API keys, and it would put a paid, non-deterministic, prompt-
+injectable step on the path of every pull request. Instead it belongs in **agent skills that
+individual maintainers run**, against the bounded surface the architecture already guarantees — the
+conclusions files and the metadata, not the solutions. So the design requirement on this repository
+is only that the surface stay small and the metadata stay machine-readable, which it is.
+
 **Degradation of the informal layer -- the one that most deserves attention.** Statement
 fingerprints cover the *Lean* statement and nothing else. A pull request can rewrite a conclusion's
 docstring so it appears to say something it does not, change a `locator` from "Proposition 5.4" to
