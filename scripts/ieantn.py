@@ -14,6 +14,7 @@ routine node-management tasks.
     python scripts/ieantn.py status                  the traffic light for every conclusion
     python scripts/ieantn.py diff --base origin/main what this branch degrades, and for whom
     python scripts/ieantn.py housekeeping            the derived task queue
+    python scripts/ieantn.py state                   refresh the committed STATE.md snapshot
     python scripts/ieantn.py check                   every check, in --check mode
 
     python scripts/ieantn.py new-node FKS2           scaffold a brand-new node at v1
@@ -48,6 +49,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 NODES_DIR = ROOT / "IEANTN" / "Nodes"
 VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
 FINGERPRINTS = ROOT / "fingerprints.json"
+STATE = ROOT / "STATE.md"
+VERIFY_SCRIPT = ROOT / "scripts" / "verify-comparator.sh"
 RECEIPTS = ROOT / "receipts"
 CHANGES = ROOT / "changes"
 SOLUTIONS = ROOT / "Solutions"
@@ -66,7 +69,14 @@ JUSTIFICATION_KINDS = PRIMITIVE_KINDS | DERIVED_KINDS
 #: graph: something the network takes on faith, however reasonably.
 VERIFIED_KINDS = {"lean-comparator"}
 
-NODE_STATUSES = {"template", "stub", "awaiting-solution", "active", "deprecated"}
+NODE_STATUSES = {
+    "template",              # scaffolded, not yet filled in; refused by check-graph
+    "stub",                  # conclusions stated, no solution intended yet
+    "awaiting-solution",     # someone should write a solution
+    "awaiting-verification",  # a complete solution exists, but no receipt yet
+    "active",
+    "deprecated",
+}
 
 IMPORT_RE = re.compile(r"^import\s+([A-Za-z0-9_.]+)\s*$", re.MULTILINE)
 
@@ -78,11 +88,14 @@ def _set_root(path: pathlib.Path) -> None:
     this one. Nothing else should call it: the paths are derived from `__file__` precisely so that
     the tooling cannot be pointed somewhere unexpected by accident.
     """
-    global ROOT, NODES_DIR, VOCAB_DIR, FINGERPRINTS, RECEIPTS, CHANGES, SOLUTIONS
+    global ROOT, NODES_DIR, VOCAB_DIR, FINGERPRINTS, STATE, VERIFY_SCRIPT
+    global RECEIPTS, CHANGES, SOLUTIONS
     ROOT = path
     NODES_DIR = ROOT / "IEANTN" / "Nodes"
     VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
     FINGERPRINTS = ROOT / "fingerprints.json"
+    STATE = ROOT / "STATE.md"
+    VERIFY_SCRIPT = ROOT / "scripts" / "verify-comparator.sh"
     RECEIPTS = ROOT / "receipts"
     CHANGES = ROOT / "changes"
     SOLUTIONS = ROOT / "Solutions"
@@ -125,6 +138,33 @@ def rel(path: pathlib.Path) -> str:
 
 def imports_of(path: pathlib.Path) -> list[str]:
     return IMPORT_RE.findall(path.read_text(encoding="utf-8"))
+
+
+def strip_lean_comments(text: str) -> str:
+    """Lean source with `--` line comments and nested `/- -/` blocks removed.
+
+    Needed because a plain search for `sorry` also matches the word in prose. The docstring of an
+    Examples file explaining *why* it may not contain `sorry` is not a `sorry`, and a check that
+    cannot tell the difference is worse than none: it trains people to work around it.
+    """
+    out: list[str] = []
+    index, depth, length = 0, 0, len(text)
+    while index < length:
+        if text.startswith("/-", index):
+            depth += 1
+            index += 2
+        elif depth and text.startswith("-/", index):
+            depth -= 1
+            index += 2
+        elif depth:
+            index += 1
+        elif text.startswith("--", index):
+            newline = text.find("\n", index)
+            index = length if newline < 0 else newline
+        else:
+            out.append(text[index])
+            index += 1
+    return "".join(out)
 
 
 def node_id_of(directory: pathlib.Path) -> str:
@@ -177,6 +217,23 @@ def designated_of(conclusion: dict) -> dict | None:
     return None
 
 
+def bridge_sources(justification: dict) -> list[str]:
+    """The conclusions a `bridged` justification borrows from.
+
+    `from` may name one conclusion or several. Several is the case where a node was temporarily
+    split so that separate groups could work on its parts in parallel, and is later sewn back
+    together: `Dusart_part_1.v1.main` and `Dusart_part_2.v1.main` together imply `Dusart.v3.main`.
+    So a bridge is not only a relation between versions of one family -- it is many-to-one, and may
+    cross families.
+    """
+    source = justification.get("from")
+    if source is None:
+        return []
+    if isinstance(source, str):
+        return [source]
+    return [str(entry) for entry in source]
+
+
 def designated_kind(conclusion: dict) -> str | None:
     justification = designated_of(conclusion)
     return justification.get("kind") if justification else None
@@ -222,6 +279,39 @@ def versions_of(family: str) -> list[tuple[int, pathlib.Path]]:
 # ---------------------------------------------------------------------------
 
 
+def check_pins() -> bool:
+    """The verification toolchain's pins must match this repository's Lean toolchain.
+
+    `lean4export` has to be built with the same Lean as the code it exports, so bumping
+    `lean-toolchain` silently invalidates the pin in `verify-comparator.sh`. That script catches it
+    — but only when someone next runs a verification, which may be weeks later, and which will look
+    like the verification is broken rather than like the bump was incomplete. Checking here makes
+    the *bump* red, which is when the fix is obvious and cheap.
+    """
+    problems = Problems()
+    if not VERIFY_SCRIPT.is_file():
+        return problems.report("verification pins")
+    declared = re.search(
+        r"^lean4export_toolchain=(\S+)", VERIFY_SCRIPT.read_text(encoding="utf-8"), re.MULTILINE
+    )
+    if declared is None:
+        problems.add(
+            rel(VERIFY_SCRIPT),
+            "declares no `lean4export_toolchain=`, so nothing can check its pin against this "
+            "repository's toolchain",
+        )
+    else:
+        current = (ROOT / "lean-toolchain").read_text(encoding="utf-8").strip()
+        if declared.group(1) != current:
+            problems.add(
+                rel(VERIFY_SCRIPT),
+                f"pins lean4export for `{declared.group(1)}` but this repository is on "
+                f"`{current}`. Update `lean4export_commit` to the tag matching the new toolchain, "
+                "and re-check that Comparator and NanoDa still understand the export format.",
+            )
+    return problems.report("verification pins")
+
+
 def check_closure() -> bool:
     """Vocabulary and Conclusions may not reach outside Mathlib.
 
@@ -251,6 +341,38 @@ def check_closure() -> bool:
                         "a Conclusions file may import only Mathlib, Vocabulary and other "
                         f"Conclusions; found `{module}`",
                     )
+        # A node may carry `Examples.lean`: consequences drawn from its conclusions, to show what
+        # the node actually buys. They make no claims of record, so they are not fingerprinted --
+        # but they must not import the node's *Challenge*, which is sorried. An example built on a
+        # `sorry` demonstrates nothing, and would look exactly like one that demonstrates
+        # something.
+        examples = directory / "Examples.lean"
+        if examples.is_file():
+            for module in imports_of(examples):
+                ok = (
+                    module.startswith("Mathlib")
+                    or module.startswith("IEANTN.Vocabulary")
+                    or (module.startswith("IEANTN.Nodes.") and module.endswith(".Conclusions"))
+                )
+                if not ok:
+                    problems.add(
+                        rel(examples),
+                        f"an Examples file may import only Mathlib, Vocabulary and Conclusions; "
+                        f"found `{module}`"
+                        + (
+                            " -- importing a Challenge would let an example rest on its `sorry`"
+                            if module.endswith(".Challenge")
+                            else ""
+                        ),
+                    )
+            code = strip_lean_comments(examples.read_text(encoding="utf-8"))
+            if re.search(r"\bsorry\b", code):
+                problems.add(
+                    rel(examples),
+                    "an Examples file may not contain `sorry`: an example with a hole in it "
+                    "demonstrates nothing, while looking exactly like one that does.",
+                )
+
         challenge = directory / "Challenge.lean"
         if challenge.is_file():
             for module in imports_of(challenge):
@@ -316,6 +438,12 @@ def check_graph() -> bool:
     if not nodes:
         print("ok  node graph (no nodes yet)")
         return True
+
+    every_conclusion = {
+        f"{other_id}.{c.get('id')}"
+        for other_id, other in nodes.items()
+        for c in conclusions_of(other)
+    }
 
     for node_id, node in nodes.items():
         where = rel(node["_dir"] / "formalization.yaml")
@@ -399,12 +527,20 @@ def check_graph() -> bool:
                             f"`{receipt.get('conclusion')}`",
                         )
                 if kind == "bridged":
-                    if not justification.get("from"):
+                    sources = bridge_sources(justification)
+                    if not sources:
                         problems.add(
                             where,
                             f"conclusion `{cid}`, justification `{jid}`: `bridged` must name "
-                            "`from`",
+                            "`from` (one conclusion, or several)",
                         )
+                    for source in sources:
+                        if source not in every_conclusion:
+                            problems.add(
+                                where,
+                                f"conclusion `{cid}`, justification `{jid}`: bridges from "
+                                f"`{source}`, which does not exist",
+                            )
                     if not justification.get("bridge"):
                         problems.add(
                             where,
@@ -424,7 +560,17 @@ def check_graph() -> bool:
                     f"conclusion `{cid}`: `designated` is `{conclusion.get('designated')}`, which "
                     f"is not one of its justification ids ({sorted(seen_ids)})",
                 )
-            elif designated_kind(conclusion) == "none-yet" and len(available) > 1:
+            issue = conclusion.get("issue")
+            if issue is not None and not isinstance(issue, int):
+                problems.add(where, f"conclusion `{cid}`: `issue` must be a number, not `{issue}`")
+            elif designated_kind(conclusion) == "none-yet" and issue is None:
+                problems.warn(
+                    where,
+                    f"conclusion `{cid}` is unjustified and names no `issue`: nobody can claim "
+                    "work nobody can find. Open an issue and record its number.",
+                )
+
+            if designated_kind(conclusion) == "none-yet" and len(available) > 1:
                 problems.warn(
                     where,
                     f"conclusion `{cid}` designates a `none-yet` justification while others are "
@@ -465,8 +611,7 @@ def check_graph() -> bool:
             # one and plain acyclicity is exactly the condition needed.
             justification = designated_of(conclusion) or {}
             transport_edges[key] = (
-                [justification["from"]] if justification.get("kind") == "bridged"
-                and justification.get("from") else []
+                bridge_sources(justification) if justification.get("kind") == "bridged" else []
             )
 
     _check_acyclic(import_edges, problems, "import")
@@ -534,11 +679,44 @@ def render_challenge(node_id: str, node: dict) -> str:
     return "\n".join(lines).rstrip("\n") + "\n"
 
 
+def render_umbrella(nodes: dict[str, dict]) -> str:
+    """`IEANTN/Nodes.lean`, importing every node's challenge and examples.
+
+    Generated rather than hand-maintained: it drifted three times during development, each time
+    silently, because a missing import only shows up as a module that quietly is not built.
+    """
+    modules = []
+    for node_id, node in sorted(nodes.items()):
+        modules.append(f"IEANTN.Nodes.{node_id}.Challenge")
+        if (node["_dir"] / "Examples.lean").is_file():
+            modules.append(f"IEANTN.Nodes.{node_id}.Examples")
+    return (
+        "/-\n"
+        "Copyright (c) 2026 IEANTN contributors. All rights reserved.\n"
+        "Released under Apache 2.0 license as described in the file LICENSE.\n"
+        "Authors: Terence Tao\n"
+        "-/\n"
+        + "".join(f"import {module}\n" for module in modules)
+        + """
+/-!
+# The node network
+
+**Generated file - do not edit.**  Regenerated by `python scripts/ieantn.py gen-challenges`.
+
+Every node version's conclusions, generated challenge, and examples where present. Nodes are
+versioned: a node lives at `IEANTN/Nodes/<Family>/<version>/` and its id is `<Family>.<version>`.
+-/
+"""
+    )
+
+
 def gen_challenges(check_only: bool) -> bool:
     problems = Problems()
-    for node_id, node in load_nodes().items():
-        path = node["_dir"] / "Challenge.lean"
-        rendered = render_challenge(node_id, node)
+    nodes = load_nodes()
+    outputs = [(node["_dir"] / "Challenge.lean", render_challenge(node_id, node))
+               for node_id, node in nodes.items()]
+    outputs.append((ROOT / "IEANTN" / "Nodes.lean", render_umbrella(nodes)))
+    for path, rendered in outputs:
         if check_only:
             if (path.read_text(encoding="utf-8") if path.is_file() else "") != rendered:
                 problems.add(rel(path), "out of date; run `python scripts/ieantn.py gen-challenges`")
@@ -938,7 +1116,8 @@ def report() -> bool:
         spares = len(justifications_of(conclusion)) - 1
         result: set[str] = set()
         if kind == "bridged":
-            result |= leaves(justification.get("from", ""), seen)
+            for source in bridge_sources(justification):
+                result |= leaves(source, seen)
         elif kind not in VERIFIED_KINDS:
             note = f"  [{kind}]" + (f", {spares} other justification(s) available" if spares else "")
             result.add(f"{key}{note}")
@@ -984,15 +1163,102 @@ def housekeeping() -> bool:
                 tasks.append(f"delete   {node_id}  (deprecated, nothing imports it)")
         for conclusion in conclusions_of(node):
             kind = designated_kind(conclusion)
+            issue = conclusion.get("issue")
+            claim = f"#{issue}" if issue else "UNCLAIMED, no issue"
             if kind == "none-yet":
-                tasks.append(f"justify  {node_id}.{conclusion.get('id')}  (none-yet)")
+                tasks.append(f"justify   {node_id}.{conclusion.get('id')}  [{claim}]")
             elif kind in {"literature", "asserted"}:
-                tasks.append(f"formalize {node_id}.{conclusion.get('id')}  ({kind})")
+                tasks.append(f"formalize {node_id}.{conclusion.get('id')}  ({kind}) [{claim}]")
 
     print("Housekeeping queue")
     print("=" * 62)
     for task in tasks or ["  nothing outstanding"]:
         print(f"  {task}" if tasks else task)
+    return True
+
+
+# ---------------------------------------------------------------------------
+# state: a committed snapshot of the network
+# ---------------------------------------------------------------------------
+
+
+def render_state(nodes: dict[str, dict]) -> str:
+    """A committed snapshot of the network's shape, for people who do not run the tooling.
+
+    Deliberately covers only what is derivable from the metadata, with no Lean, so that it stays
+    cheap enough to regenerate in any pull request. Receipt freshness needs fingerprints and lives
+    in `ieantn.py status` instead.
+
+    Committing it buys two things. A maintainer can read the project's state from the repository
+    rather than from a clone and a Python run — and, more usefully, **the diff of this file in a
+    pull request says what the change did to the network**: a conclusion moving from `none-yet` to
+    `lean-comparator` is one line.
+    """
+    index = index_conclusions(nodes)
+    importers = importers_of(nodes)
+    kinds: dict[str, int] = {}
+    for _, conclusion in index.values():
+        kind = designated_kind(conclusion) or "unset"
+        kinds[kind] = kinds.get(kind, 0) + 1
+
+    lines = [
+        "# Network state",
+        "",
+        "**Generated file - do not edit.**  Regenerated by `python scripts/ieantn.py state`.",
+        "",
+        "Derived from node metadata alone. Receipt freshness needs Lean, and lives in",
+        "`python scripts/ieantn.py status`.",
+        "",
+        f"{len(nodes)} node version(s), {len(index)} conclusion(s).",
+        "",
+        "## Evidence",
+        "",
+        "| Designated justification | Conclusions |",
+        "|---|---:|",
+    ]
+    lines += [f"| `{kind}` | {count} |" for kind, count in sorted(kinds.items())]
+    lines += [
+        "",
+        "## Nodes",
+        "",
+        "| Node | Status | Conclusion | Evidence | Imports | Issue |",
+        "|---|---|---|---|---:|---|",
+    ]
+    for node_id, node in sorted(nodes.items()):
+        status = (node.get("node") or {}).get("status", "?")
+        for conclusion in conclusions_of(node):
+            issue = conclusion.get("issue")
+            lines.append(
+                f"| `{node_id}` | {status} | `{conclusion.get('id')}` | "
+                f"{designated_kind(conclusion)} | {len(conclusion.get('imports') or [])} | "
+                + (f"#{issue} |" if issue else "- |")
+            )
+
+    ranked = sorted(((len(v), k) for k, v in importers.items()), reverse=True)
+    if ranked:
+        lines += [
+            "",
+            "## Leverage",
+            "",
+            "Conclusions the most others depend on. Refreshing these clears the most staleness",
+            "downstream.",
+            "",
+            "| Conclusion | Dependants |",
+            "|---|---:|",
+        ]
+        lines += [f"| `{key}` | {count} |" for count, key in ranked]
+    return "\n".join(lines) + "\n"
+
+
+def state(check_only: bool) -> bool:
+    rendered = render_state(load_nodes())
+    if check_only:
+        problems = Problems()
+        if (STATE.read_text(encoding="utf-8") if STATE.is_file() else "") != rendered:
+            problems.add(rel(STATE), "out of date; run `python scripts/ieantn.py state`")
+        return problems.report("network state")
+    STATE.write_text(rendered, encoding="utf-8", newline="\n")
+    print(f"wrote {rel(STATE)}")
     return True
 
 
@@ -1153,6 +1419,39 @@ def diff(base: str) -> bool:
         if key not in before["conclusions"]:
             notes.append(f"new conclusion `{key}` (`{entry['kind']}`).")
 
+    # Vocabulary is this repository's core: shared by every node, and so the one place a single
+    # edit can change what many conclusions claim. Mathlib gives its core files the same extra
+    # scrutiny, for the same reason. The fingerprints already carry the blast radius, so report it
+    # rather than leaving a reviewer to work out what a Vocabulary diff touched.
+    touched = subprocess.run(
+        ["git", "diff", "--name-only", base],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    ).stdout.splitlines()
+    if any(line.startswith("IEANTN/Vocabulary/") for line in touched):
+        moved = [
+            key
+            for key in sorted(before["conclusions"])
+            if key in after["conclusions"]
+            and before["fingerprints"].get(key) != after["fingerprints"].get(key)
+        ]
+        if moved:
+            shown = ", ".join(f"`{key}`" for key in moved[:10])
+            warnings.append(
+                f"**Vocabulary changed**, moving {len(moved)} conclusion fingerprint(s): {shown}"
+                + (" and others" if len(moved) > 10 else "")
+                + ". Vocabulary is shared by every node, so this warrants the scrutiny a change to "
+                "a Mathlib core file would get. In particular, check that nothing added here "
+                "duplicates a definition that already exists."
+            )
+        else:
+            notes.append(
+                "Vocabulary changed, but no conclusion fingerprint moved, so the change is "
+                "additive or cosmetic."
+            )
+
     lines = ["## Network impact", ""]
     if not (errors or warnings or notes):
         lines.append("No change to any statement, dependency, or receipt.")
@@ -1274,25 +1573,6 @@ limitations:
 """
 
 
-def register_in_umbrella(node_id: str, after: str | None = None) -> None:
-    """Add a node's challenge to `IEANTN/Nodes.lean`, keeping the import list sorted."""
-    umbrella = ROOT / "IEANTN" / "Nodes.lean"
-    text = umbrella.read_text(encoding="utf-8")
-    line = f"import IEANTN.Nodes.{node_id}.Challenge"
-    if line in text:
-        return
-    lines = text.splitlines()
-    imports = [i for i, entry in enumerate(lines) if entry.startswith("import ")]
-    if not imports:
-        return
-    block = sorted(set(lines[imports[0]:imports[-1] + 1] + [line]))
-    umbrella.write_text(
-        "\n".join(lines[:imports[0]] + block + lines[imports[-1] + 1:]) + "\n",
-        encoding="utf-8",
-        newline="\n",
-    )
-
-
 def new_node(family: str, kind: str) -> bool:
     """Scaffold a brand-new node at v1."""
     if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", family):
@@ -1310,12 +1590,9 @@ def new_node(family: str, kind: str) -> bool:
     (target / "formalization.yaml").write_text(
         YAML_TEMPLATE.format(family=family, kind=kind), encoding="utf-8", newline="\n"
     )
-    register_in_umbrella(f"{family}.v1")
-
-    node = load_nodes()[f"{family}.v1"]
-    (target / "Challenge.lean").write_text(
-        render_challenge(f"{family}.v1", node), encoding="utf-8", newline="\n"
-    )
+    # Regenerate everything rather than writing this node's challenge alone: the umbrella is
+    # generated too, and a scaffold that leaves it stale produces a node that quietly is not built.
+    gen_challenges(check_only=False)
 
     print(f"created {rel(target)}")
     print("\nnext:")
@@ -1367,7 +1644,8 @@ def new_version(family: str) -> bool:
     with metadata.open("w", encoding="utf-8", newline="\n") as handle:
         writer.dump(data, handle)
 
-    register_in_umbrella(new_id)
+
+    gen_challenges(check_only=False)
 
     print(f"created {rel(target)} from {rel(latest)}")
     print("\nnext:")
@@ -1406,12 +1684,16 @@ def deprecate(node_id: str, replacement: str) -> bool:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
-    for name in ("check-closure", "check-graph", "report", "housekeeping", "status", "check"):
+    for name in (
+        "check-closure", "check-graph", "check-pins", "report", "housekeeping", "status", "check"
+    ):
         sub.add_parser(name)
     generate = sub.add_parser("gen-challenges")
     generate.add_argument("--check", action="store_true", help="fail instead of rewriting")
     prints = sub.add_parser("fingerprint")
     prints.add_argument("--check", action="store_true", help="fail instead of rewriting")
+    snapshot = sub.add_parser("state")
+    snapshot.add_argument("--check", action="store_true", help="fail instead of rewriting")
     fresh = sub.add_parser("new-node")
     fresh.add_argument("family", help="e.g. FKS2")
     fresh.add_argument(
@@ -1437,8 +1719,12 @@ def main() -> int:
         return 0 if check_closure() else 1
     if args.command == "check-graph":
         return 0 if check_graph() else 1
+    if args.command == "check-pins":
+        return 0 if check_pins() else 1
     if args.command == "gen-challenges":
         return 0 if gen_challenges(args.check) else 1
+    if args.command == "state":
+        return 0 if state(args.check) else 1
     if args.command == "fingerprint":
         return 0 if fingerprint(args.check) else 1
     if args.command == "report":
@@ -1460,7 +1746,9 @@ def main() -> int:
     if args.command == "deprecate":
         return 0 if deprecate(args.node, args.replacement) else 1
     if args.command == "check":
-        return 0 if all([check_closure(), check_graph(), gen_challenges(True)]) else 1
+        return 0 if all(
+            [check_closure(), check_graph(), check_pins(), gen_challenges(True), state(True)]
+        ) else 1
     return 2
 
 

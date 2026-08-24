@@ -4,7 +4,7 @@ This repository is a **graph of claims about explicit analytic number theory, to
 record of how well each one is justified.** It is not a single formalization project with one
 build.
 
-**Read [CONTRIBUTING.md](CONTRIBUTING.md) first — it covers the nine common kinds of change and
+**Read [CONTRIBUTING.md](CONTRIBUTING.md) first — it covers the ten common kinds of change and
 which one you are making. Then [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) before changing
 anything structural, and [docs/NODES.md](docs/NODES.md) for node file formats.** They are short. Most mistakes in
 this repository come from treating it as an ordinary Lean project.

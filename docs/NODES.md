@@ -187,11 +187,12 @@ One theorem per conclusion; hypotheses are exactly that conclusion's imports. Ne
 result — CI regenerates and diffs it.
 
 ```lean
-import IEANTN.Nodes.Lcm.Conclusions
-import IEANTN.Nodes.Dusart2018.Conclusions
+import IEANTN.Nodes.Dusart2018.v1.Conclusions
+import IEANTN.Nodes.Lcm.v1.Conclusions
 
-theorem Lcm.challenge_not_highly_abundant
-    (h : Dusart2018.proposition_5_4) : Lcm.lcm_not_highly_abundant := by
+theorem Lcm.v1.challenge_lcmUpto_not_highlyAbundant
+    (dusart2018_v1_proposition_5_4 : Dusart2018.v1.proposition_5_4) :
+    Lcm.v1.lcmUpto_not_highlyAbundant := by
   sorry
 ```
 
@@ -223,14 +224,27 @@ Lake builds over `/mnt/c` are pathologically slow.
 
 Before requesting verification, check the two guarantees locally:
 
+Comparator checks that the challenge and solution declare the *same type* and that the solution
+uses only the three permitted axioms. Both are checkable locally, from inside the solution project,
+without Comparator itself. Substitute your own node and theorem names:
+
 ```bash
-printf 'import Challenge\nset_option pp.all true\n#check @Lcm.challenge_not_highly_abundant\n' > /tmp/ch.lean
-printf 'import Solution\nset_option pp.all true\n#check @Lcm.challenge_not_highly_abundant\n#print axioms Lcm.challenge_not_highly_abundant\n' > /tmp/so.lean
-lake env lean /tmp/ch.lean > /tmp/ch.out; lake env lean /tmp/so.lean > /tmp/so.out
+cd Solutions/Lcm.v1
+NAME=Lcm.v1.challenge_lcmUpto_not_highlyAbundant
+
+printf 'import IEANTN.Nodes.Lcm.v1.Challenge\nset_option pp.all true\n#check @%s\n' "$NAME" > /tmp/ch.lean
+printf 'import Solution\nset_option pp.all true\n#check @%s\n#print axioms %s\n' "$NAME" "$NAME" > /tmp/so.lean
+
+lake env lean /tmp/ch.lean > /tmp/ch.out
+lake env lean /tmp/so.lean > /tmp/so.out
 grep -v "depends on axioms" /tmp/so.out | diff /tmp/ch.out -    # must be identical
+grep "depends on axioms" /tmp/so.out                            # must list only the three
 ```
 
-The axiom line must show only `propext`, `Classical.choice`, `Quot.sound`.
+`pp.all` matters: it prints implicit arguments, universes and instances, so a mismatch that default
+printing hides will show up in the diff. The axiom line must name only `propext`,
+`Classical.choice` and `Quot.sound` — anything else, `sorryAx` above all, means the solution is
+incomplete.
 
 ## Invariants CI enforces
 

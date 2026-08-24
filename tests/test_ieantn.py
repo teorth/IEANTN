@@ -122,6 +122,23 @@ def bridged(source: str) -> str:
     )
 
 
+def bridged_from(sources: list[str]) -> str:
+    listed = "".join(f"        - {source}\n" for source in sources)
+    return (
+        "\n- id: main\n"
+        "  declaration: {node}.main\n"
+        "  challenge: {node}.challenge_main\n"
+        "  imports: []\n"
+        "  justifications:\n"
+        "    - id: bridge\n"
+        "      kind: bridged\n"
+        "      from:\n"
+        f"{listed}"
+        "      bridge: Bridges/a.lean\n"
+        "  designated: bridge\n"
+    )
+
+
 def importing(source_node: str) -> str:
     return (
         "\n- id: main\n"
@@ -500,6 +517,205 @@ class TestScaffolding(FixtureRepo):
     def test_deprecate_requires_the_replacement_to_exist(self) -> None:
         self.write_node("A.v1", LITERATURE)
         self.assertFalse(ieantn.deprecate("A.v1", "A.v2"))
+
+
+class TestNaryBridges(FixtureRepo):
+    """A bridge may take several conclusions to one.
+
+    That is the shape of splitting a node so separate groups can work on its parts in parallel and
+    sewing it back together afterwards: `Part1.v1.main` and `Part2.v1.main` together imply
+    `Whole.v1.main`. So a bridge is not only a relation between versions of one family.
+    """
+
+    def test_a_bridge_from_several_sources_passes(self) -> None:
+        self.write_bridge()
+        self.write_node("Part1.v1", LITERATURE)
+        self.write_node("Part2.v1", LITERATURE)
+        self.write_node("Whole.v1", bridged_from(["Part1.v1.main", "Part2.v1.main"]))
+        self.assertTrue(ieantn.check_graph())
+
+    def test_every_source_must_exist(self) -> None:
+        self.write_bridge()
+        self.write_node("Part1.v1", LITERATURE)
+        self.write_node("Whole.v1", bridged_from(["Part1.v1.main", "Part2.v1.main"]))
+        self.assertFalse(ieantn.check_graph())
+
+    def test_a_cycle_through_one_source_of_many_is_caught(self) -> None:
+        """The dangerous case: most sources are grounded, so the justification looks healthy, and
+        one of them closes a loop back to the conclusion being justified."""
+        self.write_bridge()
+        self.write_node("Part1.v1", LITERATURE)
+        self.write_node("Whole.v1", bridged_from(["Part1.v1.main", "Other.v1.main"]))
+        self.write_node("Other.v1", bridged_from(["Whole.v1.main"]))
+        self.assertFalse(ieantn.check_graph())
+
+    def test_bridge_sources_accepts_one_or_many(self) -> None:
+        self.assertEqual(ieantn.bridge_sources({"from": "A.v1.main"}), ["A.v1.main"])
+        self.assertEqual(
+            ieantn.bridge_sources({"from": ["A.v1.main", "B.v1.main"]}),
+            ["A.v1.main", "B.v1.main"],
+        )
+        self.assertEqual(ieantn.bridge_sources({}), [])
+
+
+class TestIssueLinking(FixtureRepo):
+    def test_a_non_numeric_issue_fails(self) -> None:
+        self.write_node(
+            "A.v1",
+            LITERATURE.replace("  designated: paper", "  issue: not-a-number\n  designated: paper"),
+        )
+        self.assertFalse(ieantn.check_graph())
+
+    def test_a_numeric_issue_is_accepted(self) -> None:
+        self.write_node(
+            "A.v1", LITERATURE.replace("  designated: paper", "  issue: 42\n  designated: paper")
+        )
+        self.assertTrue(ieantn.check_graph())
+
+    def test_unjustified_without_an_issue_warns_but_does_not_fail(self) -> None:
+        """Work nobody can find is a problem for the project board, not for the graph."""
+        self.write_node("A.v1", LITERATURE.replace("kind: literature", "kind: none-yet"))
+        self.assertTrue(ieantn.check_graph())
+
+
+class TestExamples(FixtureRepo):
+    """A node may carry `Examples.lean`: consequences drawn from its own conclusions."""
+
+    def _examples(self, node_id: str, text: str) -> None:
+        family, version = node_id.rsplit(".", 1)
+        (self.root / "IEANTN" / "Nodes" / family / version / "Examples.lean").write_text(
+            text, encoding="utf-8"
+        )
+
+    def test_a_valid_examples_file_passes(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self._examples("A.v1", "import IEANTN.Nodes.A.v1.Conclusions\n\nexample : True := trivial\n")
+        self.assertTrue(ieantn.check_closure())
+
+    def test_examples_may_not_import_the_challenge(self) -> None:
+        """The challenge is sorried, so an example resting on it proves anything, while looking
+        exactly like one that proves something."""
+        self.write_node("A.v1", LITERATURE)
+        self._examples("A.v1", "import IEANTN.Nodes.A.v1.Challenge\n")
+        self.assertFalse(ieantn.check_closure())
+
+    def test_examples_may_not_contain_sorry(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self._examples("A.v1", "import IEANTN.Nodes.A.v1.Conclusions\n\nexample : True := by sorry\n")
+        self.assertFalse(ieantn.check_closure())
+
+    def test_the_word_sorry_in_a_comment_is_not_a_sorry(self) -> None:
+        """Regression: the first version of this check matched the word in prose, and rejected the
+        docstring that explains the rule."""
+        self.write_node("A.v1", LITERATURE)
+        self._examples(
+            "A.v1",
+            "import IEANTN.Nodes.A.v1.Conclusions\n\n"
+            "/-! This file may not contain `sorry`. -/\n"
+            "-- not even a sorry in a line comment\n"
+            "example : True := trivial\n",
+        )
+        self.assertTrue(ieantn.check_closure())
+
+    def test_examples_may_not_import_a_solution(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self._examples("A.v1", "import Solution\n")
+        self.assertFalse(ieantn.check_closure())
+
+
+class TestUmbrella(FixtureRepo):
+    """`IEANTN/Nodes.lean` is generated, because while hand-maintained it drifted three times --
+    each time silently, since a missing import only shows up as a module quietly not built."""
+
+    def test_the_umbrella_is_generated_and_diffed(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.generate()
+        self.assertTrue(ieantn.gen_challenges(check_only=True))
+        umbrella = self.root / "IEANTN" / "Nodes.lean"
+        umbrella.write_text(
+            umbrella.read_text(encoding="utf-8") + "-- meddling\n", encoding="utf-8"
+        )
+        self.assertFalse(ieantn.gen_challenges(check_only=True))
+
+    def test_every_node_appears(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_node("B.v1", LITERATURE)
+        self.generate()
+        text = (self.root / "IEANTN" / "Nodes.lean").read_text(encoding="utf-8")
+        self.assertIn("import IEANTN.Nodes.A.v1.Challenge", text)
+        self.assertIn("import IEANTN.Nodes.B.v1.Challenge", text)
+
+    def test_examples_are_imported_when_present_and_not_otherwise(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_node("B.v1", LITERATURE)
+        (self.root / "IEANTN" / "Nodes" / "A" / "v1" / "Examples.lean").write_text(
+            "import IEANTN.Nodes.A.v1.Conclusions\n", encoding="utf-8"
+        )
+        self.generate()
+        imports = (self.root / "IEANTN" / "Nodes.lean").read_text(encoding="utf-8").split("/-!")[0]
+        self.assertIn("import IEANTN.Nodes.A.v1.Examples", imports)
+        self.assertNotIn("B.v1.Examples", imports)
+
+    def test_a_scaffolded_node_leaves_the_umbrella_current(self) -> None:
+        """Regression: `new-node` wrote its own challenge but not the umbrella, so a fresh node
+        was quietly not built."""
+        self.assertTrue(ieantn.new_node("Fresh", "paper"))
+        self.assertTrue(ieantn.gen_challenges(check_only=True))
+
+
+class TestPins(FixtureRepo):
+    """A Mathlib bump must not silently leave the verification toolchain behind."""
+
+    def _script(self, toolchain: str | None) -> None:
+        (self.root / "scripts").mkdir(exist_ok=True)
+        declared = f"lean4export_toolchain={toolchain}\n" if toolchain else ""
+        (self.root / "scripts" / "verify-comparator.sh").write_text(
+            "#!/usr/bin/env bash\nlean4export_commit=abc\n" + declared, encoding="utf-8"
+        )
+
+    def test_a_matching_pin_passes(self) -> None:
+        self._script("leanprover/lean4:v4.34.0-rc2")
+        self.assertTrue(ieantn.check_pins())
+
+    def test_a_stale_pin_fails(self) -> None:
+        self._script("leanprover/lean4:v4.30.0")
+        self.assertFalse(ieantn.check_pins())
+
+    def test_an_undeclared_pin_fails(self) -> None:
+        """Silence is not a pass: with nothing declared, nothing can be checked."""
+        self._script(None)
+        self.assertFalse(ieantn.check_pins())
+
+    def test_no_script_is_not_a_failure(self) -> None:
+        self.assertTrue(ieantn.check_pins())
+
+
+class TestState(FixtureRepo):
+    def test_state_is_generated_and_diffed(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.assertTrue(ieantn.state(check_only=False))
+        self.assertTrue(ieantn.state(check_only=True))
+        (self.root / "STATE.md").write_text("stale\n", encoding="utf-8")
+        self.assertFalse(ieantn.state(check_only=True))
+
+    def test_state_counts_evidence_by_kind(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_node("B.v1", LITERATURE.replace("kind: literature", "kind: none-yet"))
+        ieantn.state(check_only=False)
+        text = (self.root / "STATE.md").read_text(encoding="utf-8")
+        self.assertIn("| `literature` | 1 |", text)
+        self.assertIn("| `none-yet` | 1 |", text)
+
+    def test_state_records_the_issue_and_the_leverage(self) -> None:
+        self.write_node(
+            "Upstream.v1",
+            LITERATURE.replace("  designated: paper", "  issue: 42\n  designated: paper"),
+        )
+        self.write_node("Downstream.v1", IMPORTING)
+        ieantn.state(check_only=False)
+        text = (self.root / "STATE.md").read_text(encoding="utf-8")
+        self.assertIn("#42", text)
+        self.assertIn("| `Upstream.v1.main` | 1 |", text)
 
 
 if __name__ == "__main__":

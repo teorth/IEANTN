@@ -23,6 +23,80 @@ the normal course of work; there is no box to tick. It exists only for the case 
 genuinely breaking and has to land anyway. Because it is rare, it shows up in the diff and a
 reviewer notices — which is exactly what a routine, always-required acknowledgement would destroy.
 
+## Where to start, by how much of the network you can see
+
+The three layers carry very different blast radii, and that is the natural order to work through
+them in.
+
+| | Blast radius | Start here if |
+|---|---|---|
+| **Solutions** | one node | You are new. A solution is contained: get it wrong and the verification fails, and nothing else in the network notices. |
+| **Conclusions** | the node and its dependants | You know the source literature. A wrong statement is not caught by any check — see below. |
+| **Vocabulary** | every node | You have the whole project in your head. Mathlib treats changes to its core files the same way, for the same reason. |
+
+**Nothing checks that a conclusion says what its docstring claims.** Every mechanism here checks
+that statements are *stable*, never that they are *right* — and a node justified by a citation has
+no proof to fail, so a mis-transcribed threshold or a flipped inequality can sit in the network
+indefinitely. That is why conclusions want someone who knows the paper, and why review of a
+conclusions file is a different activity from review of code.
+
+The compensating strength: **the surface a human must read is bounded.** Nobody has to read a
+solution. For a pull request adding two hundred thousand lines of machine-generated proof, the
+mandatory review is the `Conclusions.lean` files and the `formalization.yaml` — tens of lines. If
+you are reviewing, read those against the source and let the rest be.
+
+## Large tasks
+
+Tasks are now the size of *"formalize FKS2"* or *"extract BKLNW's table computations into their own
+node"*, not *"fill in the sorry in Lemma 5.2"*. Four things follow.
+
+**Land conclusions early, justify later.** Do not hold one enormous pull request open for a month.
+A node whose conclusions are stated and whose justification is `none-yet` is *immediately useful*:
+it makes the claim citable, gives downstream nodes something to import, and turns the remaining
+work into a well-posed task. Land the conclusions in the first week; the solution can follow.
+
+**One person per node solution** — or a group in constant contact. A solution is a single Lean
+development and does not merge well across independent efforts.
+
+**To parallelise, split the node.** If two groups genuinely need to work on separate parts of one
+node, split it into smaller nodes, open an issue for each, and sew them back together afterwards
+with a bridge:
+
+```yaml
+justifications:
+  - id: reassembled
+    kind: bridged
+    from:
+      - Dusart_part1.v1.main
+      - Dusart_part2.v1.main
+    bridge: Bridges/Dusart/parts_to_v3.lean
+```
+
+A bridge takes *several* conclusions to one, so this is expressible directly. Merging the parts
+back into a single node afterwards is housekeeping, and can wait.
+
+**Claim per node, not per conclusion.** Two people working on different conclusions of the same
+node collide on its `formalization.yaml` and its generated challenge. Record the issue number on
+the conclusion, so `python scripts/ieantn.py housekeeping` shows what is claimed and what is not.
+
+## Generated files
+
+`Challenge.lean`, `IEANTN/Nodes.lean`, `fingerprints.json` and `STATE.md` are generated *and*
+committed, and CI checks they are current.
+
+**If you hit a merge conflict in any of them, do not resolve it by hand.** Take either side, then
+regenerate:
+
+```bash
+python scripts/ieantn.py gen-challenges
+python scripts/ieantn.py fingerprint
+python scripts/ieantn.py state
+```
+
+They are committed rather than gitignored on purpose: a change of *meaning* then shows up as a diff
+line even when the Lean edit looks cosmetic, and the `STATE.md` diff says what your change did to
+the network.
+
 ---
 
 ## 1. Start a solution for a node that has none
@@ -162,7 +236,32 @@ several papers, every one of them benefits at once.
 Do the extraction with a new version of the stuck node (its imports are changing, so its challenge
 changes) and CI stays green throughout.
 
-## 7. Add a new node
+## 7. Add examples to a node
+
+Optional, cheap, and the best defence available against a conclusion that typechecks but claims
+less than its docstring says.
+
+**Do:** add `Examples.lean` to the node directory, deriving consequences *from* its conclusions:
+
+```lean
+example (h : Lcm.v1.lcmUpto_not_highlyAbundant) : ¬ HighlyAbundant (Nat.lcmUpto (10 ^ 10)) :=
+  h (10 ^ 10) (by norm_num)
+```
+
+Take the conclusion as a **hypothesis**. That exhibits the statement's force without assuming it is
+true, and it is exactly where a transcription error shows up: if the threshold had been stated over
+`ℝ`, or the inequality the wrong way round, this would not elaborate.
+
+**Two rules, both checked by `check-closure`:**
+
+- an examples file may not import the node's `Challenge`, which is sorried — an example resting on
+  that `sorry` proves anything while looking exactly like one that proves something;
+- it may not contain `sorry` itself.
+
+**CI:** examples are built by the core build, and the umbrella imports them automatically. They
+make no claims of record, so they are not fingerprinted and never affect a receipt.
+
+## 8. Add a new node
 
 A paper the network does not cover yet, a pipeline abstracted from several, a piece of folklore, or
 a large computation.
@@ -192,7 +291,7 @@ Most new nodes start with `justification: none-yet` or `literature` and no solut
 the normal, expected state: a node that merely *records* a result and its dependencies is already
 useful to the network, and workflows 1–3 exist to justify it later.
 
-## 8. Bump Mathlib
+## 9. Bump Mathlib
 
 This gently degrades everything at once, and it is the case the two-axis trust model
 (ARCHITECTURE §4) exists for: a bump changes the **environment**, not the **statements**. Every
@@ -239,7 +338,7 @@ the *claim that the result holds under current Mathlib*, not the proof.
 compute is available (`python scripts/ieantn.py housekeeping`). The one thing worth avoiding is
 letting a node slide from yellow to orange, because that is where the cost jumps discontinuously.
 
-## 9. Housekeeping
+## 10. Housekeeping
 
 Simplifying the graph: collapsing versions, migrating dependants off deprecated nodes, refreshing
 stale verifications, deleting what nothing imports.
