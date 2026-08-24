@@ -128,14 +128,18 @@ classification:
 
 conclusions:
   - id: proposition_5_4
-    declaration: Dusart2018.proposition_5_4
+    declaration: Dusart2018.v1.proposition_5_4
+    challenge: Dusart2018.v1.challenge_proposition_5_4
     imports: []
-    justification:
-      kind: literature
-      source: Dusart2018
-      note: >-
-        ...
-    receipt: null
+    # Several justifications may be listed; exactly one is designated.
+    justifications:
+      - id: dusart-paper
+        kind: literature
+        source: Dusart2018
+        locator: "Proposition 5.4"
+        note: >-
+          ...
+    designated: dusart-paper
 
 sources:
   - title: "..."
@@ -148,11 +152,19 @@ sources:
 Notes:
 
 - `imports` is **per conclusion**, each entry naming another node's conclusion.
-- `justification.kind` is one of `lean-comparator`, `numerical`, `literature`, `asserted`,
-  `bridged`, `none-yet`. Use `literature` when the source proves the claim, `asserted` when it
-  merely states it — the distinction is the point of recording it. `bridged` borrows another
-  version's evidence and must name `from` and the `bridge` file; chains of `bridged` must
+- `justifications` is a **list**, and `designated` names the id of the one that counts. A
+  conclusion may legitimately have several — a paper, a Lean solution, a bridge — and recording
+  the spares is useful, but only the designated one carries trust or appears in the dependency
+  report. Re-designating is a one-line change and is often the cheapest fix when the designated
+  justification goes stale.
+- `kind` is one of `lean-comparator`, `numerical`, `literature`, `asserted`, `bridged`,
+  `none-yet`. Use `literature` when the source proves the claim, `asserted` when it merely states
+  it — the distinction is the point of recording it. `bridged` borrows another version's evidence
+  and must name `from` and the `bridge` file; chains of *designated* `bridged` justifications must
   terminate at a primitive kind, which CI checks.
+- Editing a node's metadata with `new-version` or `deprecate` requires `ruamel.yaml`
+  (`pip install ruamel.yaml`), which preserves comments. The read-only checks need only PyYAML,
+  so CI does not install it.
 - `receipt` is `null` until a verification runs.
 - Palomar's required-field list is a **moving target**. CI re-fetches the validator; do not vendor
   a copy and do not work from the list above as if it were closed.

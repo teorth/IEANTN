@@ -119,6 +119,58 @@ def conclusions_of(node: dict) -> list[dict]:
     return node.get("conclusions") or []
 
 
+def justifications_of(conclusion: dict) -> list[dict]:
+    """Every justification available for a conclusion, designated or not."""
+    return conclusion.get("justifications") or []
+
+
+def designated_of(conclusion: dict) -> dict | None:
+    """The one justification of record.
+
+    A conclusion may have several independent grounds -- a paper, a Lean solution, a bridge from
+    another version -- and recording them all is worth doing: they are evidence diversity, and a
+    spare when the designated one goes stale. But exactly one is *designated*, and only designated
+    justifications carry trust.
+
+    That is what keeps the transport check simple and the dependency report meaningful. Designation
+    is a function, so the designated-transport graph has out-degree one and plain acyclicity is
+    exactly the right condition; and the report can answer "what does this rest on" with one chain
+    instead of a disjunction over every chain that happens to exist.
+    """
+    wanted = conclusion.get("designated")
+    for justification in justifications_of(conclusion):
+        if justification.get("id") == wanted:
+            return justification
+    return None
+
+
+def designated_kind(conclusion: dict) -> str | None:
+    justification = designated_of(conclusion)
+    return justification.get("kind") if justification else None
+
+
+def edit_yaml(path: pathlib.Path):
+    """Load a node yaml for *modification*, preserving comments.
+
+    Reading uses PyYAML, which is enough for the checks and is all CI needs. Writing must not:
+    `yaml.safe_dump` silently discards every comment, and in these files the comments carry the
+    mathematical provenance -- which source proves what, what was verified and what was assumed,
+    what a later reader must double-check. Losing them is a real loss, so the mutating commands
+    require ruamel and round-trip instead.
+    """
+    try:
+        from ruamel.yaml import YAML
+    except ImportError:  # pragma: no cover
+        sys.exit(
+            "error: the node-editing commands need ruamel.yaml, which preserves comments\n"
+            "       (pip install ruamel.yaml).  The read-only checks do not."
+        )
+    writer = YAML()
+    writer.preserve_quotes = True
+    writer.width = 100
+    return writer, writer.load(path.read_text(encoding="utf-8"))
+
+
 def versions_of(family: str) -> list[tuple[int, pathlib.Path]]:
     """Every version directory of a family, ordered by version number."""
     family_dir = NODES_DIR / family
@@ -265,30 +317,64 @@ def check_graph() -> bool:
                     where, f"conclusion `{cid}`: challenge should be `{node_id}.challenge_{cid}`"
                 )
 
-            justification = conclusion.get("justification") or {}
-            kind = justification.get("kind")
-            if kind not in JUSTIFICATION_KINDS:
-                problems.add(
-                    where,
-                    f"conclusion `{cid}`: justification.kind `{kind}` is not one of "
-                    + ", ".join(sorted(JUSTIFICATION_KINDS)),
-                )
-            if kind == "lean-comparator" and conclusion.get("receipt") is None:
-                problems.add(
-                    where, f"conclusion `{cid}`: `lean-comparator` but no receipt is recorded"
-                )
-            if kind == "bridged":
-                if not justification.get("from"):
-                    problems.add(where, f"conclusion `{cid}`: `bridged` must name `from`")
-                if not justification.get("bridge"):
-                    problems.add(
-                        where, f"conclusion `{cid}`: `bridged` must name the `bridge` file"
-                    )
-                elif not (ROOT / justification["bridge"]).is_file():
+            available = justifications_of(conclusion)
+            if not available:
+                problems.add(where, f"conclusion `{cid}`: needs at least one justification")
+            seen_ids: set[str] = set()
+            for justification in available:
+                jid = justification.get("id")
+                if not jid:
+                    problems.add(where, f"conclusion `{cid}`: a justification has no `id`")
+                    continue
+                if jid in seen_ids:
+                    problems.add(where, f"conclusion `{cid}`: duplicate justification id `{jid}`")
+                seen_ids.add(jid)
+
+                kind = justification.get("kind")
+                if kind not in JUSTIFICATION_KINDS:
                     problems.add(
                         where,
-                        f"conclusion `{cid}`: bridge file `{justification['bridge']}` is missing",
+                        f"conclusion `{cid}`, justification `{jid}`: kind `{kind}` is not one of "
+                        + ", ".join(sorted(JUSTIFICATION_KINDS)),
                     )
+                if kind == "lean-comparator" and justification.get("receipt") is None:
+                    problems.add(
+                        where,
+                        f"conclusion `{cid}`, justification `{jid}`: `lean-comparator` but no "
+                        "receipt is recorded",
+                    )
+                if kind == "bridged":
+                    if not justification.get("from"):
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`, justification `{jid}`: `bridged` must name "
+                            "`from`",
+                        )
+                    if not justification.get("bridge"):
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`, justification `{jid}`: `bridged` must name the "
+                            "`bridge` file",
+                        )
+                    elif not (ROOT / justification["bridge"]).is_file():
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`, justification `{jid}`: bridge file "
+                            f"`{justification['bridge']}` is missing",
+                        )
+
+            if available and designated_of(conclusion) is None:
+                problems.add(
+                    where,
+                    f"conclusion `{cid}`: `designated` is `{conclusion.get('designated')}`, which "
+                    f"is not one of its justification ids ({sorted(seen_ids)})",
+                )
+            elif designated_kind(conclusion) == "none-yet" and len(available) > 1:
+                problems.warn(
+                    where,
+                    f"conclusion `{cid}` designates a `none-yet` justification while others are "
+                    "available; designate one of those instead",
+                )
 
             for dependency in conclusion.get("imports") or []:
                 target_node = dependency.get("node")
@@ -319,7 +405,10 @@ def check_graph() -> bool:
                 f"{d.get('node')}.{d.get('conclusion')}"
                 for d in (conclusion.get("imports") or [])
             ]
-            justification = conclusion.get("justification") or {}
+            # Only the *designated* justification carries trust, so only it can create a
+            # transport edge. Designation is a function, so this graph has out-degree at most
+            # one and plain acyclicity is exactly the condition needed.
+            justification = designated_of(conclusion) or {}
             transport_edges[key] = (
                 [justification["from"]] if justification.get("kind") == "bridged"
                 and justification.get("from") else []
@@ -440,13 +529,15 @@ def report() -> bool:
             return set()
         seen.add(key)
         _, conclusion = index[key]
-        justification = conclusion.get("justification") or {}
+        justification = designated_of(conclusion) or {}
         kind = justification.get("kind")
+        spares = len(justifications_of(conclusion)) - 1
         result: set[str] = set()
         if kind == "bridged":
             result |= leaves(justification.get("from", ""), seen)
         elif kind not in VERIFIED_KINDS:
-            result.add(f"{key}  [{kind}]")
+            note = f"  [{kind}]" + (f", {spares} other justification(s) available" if spares else "")
+            result.add(f"{key}{note}")
         for dependency in conclusion.get("imports") or []:
             result |= leaves(f"{dependency.get('node')}.{dependency.get('conclusion')}", seen)
         return result
@@ -488,7 +579,7 @@ def housekeeping() -> bool:
             else:
                 tasks.append(f"delete   {node_id}  (deprecated, nothing imports it)")
         for conclusion in conclusions_of(node):
-            kind = (conclusion.get("justification") or {}).get("kind")
+            kind = designated_kind(conclusion)
             if kind == "none-yet":
                 tasks.append(f"justify  {node_id}.{conclusion.get('id')}  (none-yet)")
             elif kind in {"literature", "asserted"}:
@@ -568,11 +659,13 @@ conclusions:
     declaration: {family}.v1.replace_me
     challenge: {family}.v1.challenge_replace_me
     imports: []
-    justification:
-      kind: none-yet
-      note: >-
-        TODO
-    receipt: null
+    # A conclusion may carry several justifications; exactly one is designated.
+    justifications:
+      - id: unjustified
+        kind: none-yet
+        note: >-
+          TODO
+    designated: unjustified
 
 sources:
   - title: "TODO"
@@ -674,19 +767,23 @@ def new_version(family: str) -> bool:
         text = text.replace(old_id, new_id)
         (target / name).write_text(text, encoding="utf-8", newline="\n")
 
-    data = yaml.safe_load((target / "formalization.yaml").read_text(encoding="utf-8")) or {}
-    data.setdefault("node", {})["version"] = f"v{new_n}"
-    data["node"].pop("superseded_by", None)
+    metadata = target / "formalization.yaml"
+    writer, data = edit_yaml(metadata)
+    data["node"]["version"] = f"v{new_n}"
     data["node"]["status"] = "awaiting-solution"
+    data["node"].pop("superseded_by", None)
+    # The new version inherits none of the old one's evidence -- that is the point of branching.
     for conclusion in data.get("conclusions") or []:
-        conclusion["justification"] = {
-            "kind": "none-yet",
-            "note": f"Newly branched from {old_id}. Either bridge from it or justify directly.",
-        }
-        conclusion["receipt"] = None
-    (target / "formalization.yaml").write_text(
-        yaml.safe_dump(data, allow_unicode=True, sort_keys=False), encoding="utf-8", newline="\n"
-    )
+        conclusion["justifications"] = [
+            {
+                "id": "unjustified",
+                "kind": "none-yet",
+                "note": f"Newly branched from {old_id}. Either bridge from it or justify directly.",
+            }
+        ]
+        conclusion["designated"] = "unjustified"
+    with metadata.open("w", encoding="utf-8", newline="\n") as handle:
+        writer.dump(data, handle)
 
     register_in_umbrella(new_id)
 
@@ -710,12 +807,11 @@ def deprecate(node_id: str, replacement: str) -> bool:
         return False
 
     path = nodes[node_id]["_dir"] / "formalization.yaml"
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    data.setdefault("node", {})["status"] = "deprecated"
+    writer, data = edit_yaml(path)
+    data["node"]["status"] = "deprecated"
     data["node"]["superseded_by"] = replacement
-    path.write_text(
-        yaml.safe_dump(data, allow_unicode=True, sort_keys=False), encoding="utf-8", newline="\n"
-    )
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        writer.dump(data, handle)
     print(f"marked {node_id} deprecated in favour of {replacement}")
     print("this changes nothing mechanically; it queues the migration and eventual deletion.")
     print("see: python scripts/ieantn.py housekeeping")

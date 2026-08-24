@@ -105,7 +105,22 @@ stay fast.
 
 ## 3. Justification
 
-Every conclusion records how its implication is justified:
+Every conclusion records how its implication is justified. A conclusion may carry **several
+independent justifications** — a paper, a Lean solution, a bridge from another version — but
+exactly one is **designated**, and only the designated one carries trust.
+
+Recording the spares is worth doing: they are evidence diversity, and a fallback for when the
+designated one goes stale. Designating exactly one is what keeps two things working:
+
+- **The dependency report answers with one chain.** "What does this rest on" must have a single
+  answer, not a disjunction over every chain that happens to exist. That report is the repository's
+  whole output.
+- **The transport check stays a plain acyclicity check.** Designation is a function, so the
+  designated-transport graph has out-degree at most one; ordinary acyclicity is then exactly the
+  right condition. Without designation the question becomes "is there *some* acyclic selection",
+  a least-fixed-point computation whose answer nobody chose and nobody reviewed.
+
+The kinds are:
 
 | Kind | Meaning |
 |---|---|
@@ -250,7 +265,11 @@ So there are three relations with three different rules:
 The third condition is not optional. Without it `Lcm.v1` could borrow its justification from
 `Lcm.v2` while `Lcm.v2` borrows from `Lcm.v1`: both bridges check, the import graph stays acyclic,
 and neither conclusion is justified by anything at all. `check-graph` therefore requires every
-chain of `bridged` justifications to terminate at a primitive one.
+chain of *designated* `bridged` justifications to terminate at a primitive one.
+
+Non-designated bridges are exempt, and safely so: they carry no trust, so they cannot participate
+in a circular justification. A node may list a bridge in both directions between two versions —
+which is exactly what migration needs — provided each version designates something grounded.
 
 #### The two directions are different, and CI can decide the classification
 
