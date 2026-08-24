@@ -21,4 +21,4 @@ name = "IEANTN"
 # statement fingerprints.
 [[lean_exe]]
 name = "ieantn_hash"
-root = "Scripts.Hash"
+root = "Tools.Hash"

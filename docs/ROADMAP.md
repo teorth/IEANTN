@@ -15,7 +15,7 @@ appears here.
 
 In rough dependency order.
 
-**1. Statement fingerprints.** *Done* — `Scripts/Hash.lean` plus `ieantn.py fingerprint`, with the
+**1. Statement fingerprints.** *Done* — `Tools/Hash.lean` plus `ieantn.py fingerprint`, with the
 results committed to `fingerprints.json`. Structural, not pretty-printed, and Merkle-chained over
 IEANTN's own definitions so a Vocabulary edit propagates. See the module docstring for the one
 kind of change it deliberately cannot see.

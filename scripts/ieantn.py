@@ -508,7 +508,7 @@ def compute_fingerprints() -> dict[str, str]:
     """Ask Lean for each conclusion's canonical statement text, and digest it.
 
     The digest is kept here rather than in Lean so the algorithm is easy to change and Lean needs
-    no cryptographic primitive. See `Scripts/Hash.lean` for what is actually fingerprinted, and in
+    no cryptographic primitive. See `Tools/Hash.lean` for what is actually fingerprinted, and in
     particular for the one kind of change it deliberately cannot see.
     """
     declarations = sorted(
