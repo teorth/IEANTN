@@ -16,3 +16,9 @@ scope = "leanprover-community"
 
 [[lean_lib]]
 name = "IEANTN"
+
+# Not in defaultTargets: the core build must stay fast, and this is only needed when computing
+# statement fingerprints.
+[[lean_exe]]
+name = "ieantn_hash"
+root = "Tools.Hash"

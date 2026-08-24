@@ -244,8 +244,16 @@ conclusion needs no archiving step, no content-hash naming, and no special statu
 3. Justify `Lcm.v2`, either directly or by a **bridge** from `Lcm.v1`.
 4. **Downstream nodes do nothing.** They still import `Lcm.v1`, which still exists and is still
    verified. No large solution is re-run.
-5. Later, `python scripts/ieantn.py deprecate Lcm.v1 --for Lcm.v2` signals that dependants should
-   migrate; once nothing imports it, the housekeeping queue proposes deleting it.
+5. *Optionally*, `python scripts/ieantn.py deprecate Lcm.v1 --for Lcm.v2` signals that dependants
+   should migrate; once nothing imports it, the housekeeping queue proposes deleting it.
+
+**Versions are variants, not a succession.** Step 5 is a separate and often unwanted decision: a
+newer version does not make an older one obsolete. Two versions of a family routinely serve
+different purposes and both stay indefinitely — one recording a result *as the source states it*,
+faithful for citation and audit, and another recording a more general form usable elsewhere. Those
+are different `kind`s (`paper` and `pipeline`) living in the same family. Nothing proposes deleting
+either, because nothing was deprecated. Deprecation is an explicit act reserved for a version that
+genuinely should go away.
 
 #### Bridges are not imports
 
