@@ -20,7 +20,7 @@ be highly abundant infinitely often, but gave no proof. That assertion is weaker
 proved here, and this node does not depend on it.
 -/
 
-namespace Lcm
+namespace Lcm.v1
 
 open ArithmeticFunction
 
@@ -42,4 +42,4 @@ result is a smaller integer with a larger sum of divisors, contradicting high ab
 def lcmUpto_not_highlyAbundant : Prop :=
   ∀ n : ℕ, 89693 ^ 2 ≤ n → ¬ HighlyAbundant (Nat.lcmUpto n)
 
-end Lcm
+end Lcm.v1

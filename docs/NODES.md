@@ -26,15 +26,26 @@ A node usually corresponds to a paper, but need not. Four kinds occur:
 ## Layout
 
 ```
-IEANTN/Nodes/<NodeId>/
+IEANTN/Nodes/<Family>/<version>/
   Conclusions.lean       hand-written — the human-readable face of the node
   Challenge.lean         generated — conditional theorems, sorried
   formalization.yaml     metadata: imports, justification, sources, receipts
   README.md              optional prose
-Solutions/<NodeId>/      optional; separate Lake project, own toolchain pin
+Solutions/<Family>.<version>/    optional; separate Lake project, own toolchain pin
+Bridges/<Family>/                short proofs that one version implies another
 ```
 
-`<NodeId>` is stable forever. It survives refactoring — see ARCHITECTURE §5.
+Nodes are **versioned**: `IEANTN/Nodes/Lcm/v1/` has id `Lcm.v1`, and a version id is stable
+forever. Rather than editing a conclusion that anything depends on, make a new version:
+
+```bash
+python scripts/ieantn.py new-version Lcm            # scaffolds Lcm.v2 from the latest
+python scripts/ieantn.py deprecate Lcm.v1 --for Lcm.v2
+```
+
+`deprecate` does nothing mechanically. It signals the housekeeping tracker to migrate dependants
+onto the newer version and then delete the old one; `python scripts/ieantn.py housekeeping` lists
+what that implies.
 
 ## Step 1: write `Conclusions.lean`
 
@@ -117,14 +128,18 @@ classification:
 
 conclusions:
   - id: proposition_5_4
-    declaration: Dusart2018.proposition_5_4
+    declaration: Dusart2018.v1.proposition_5_4
+    challenge: Dusart2018.v1.challenge_proposition_5_4
     imports: []
-    justification:
-      kind: literature
-      source: Dusart2018
-      note: >-
-        ...
-    receipt: null
+    # Several justifications may be listed; exactly one is designated.
+    justifications:
+      - id: dusart-paper
+        kind: literature
+        source: Dusart2018
+        locator: "Proposition 5.4"
+        note: >-
+          ...
+    designated: dusart-paper
 
 sources:
   - title: "..."
@@ -137,9 +152,19 @@ sources:
 Notes:
 
 - `imports` is **per conclusion**, each entry naming another node's conclusion.
-- `justification.kind` is one of `lean-comparator`, `numerical`, `literature`, `asserted`,
+- `justifications` is a **list**, and `designated` names the id of the one that counts. A
+  conclusion may legitimately have several — a paper, a Lean solution, a bridge — and recording
+  the spares is useful, but only the designated one carries trust or appears in the dependency
+  report. Re-designating is a one-line change and is often the cheapest fix when the designated
+  justification goes stale.
+- `kind` is one of `lean-comparator`, `numerical`, `literature`, `asserted`, `bridged`,
   `none-yet`. Use `literature` when the source proves the claim, `asserted` when it merely states
-  it — the distinction is the point of recording it.
+  it — the distinction is the point of recording it. `bridged` borrows another version's evidence
+  and must name `from` and the `bridge` file; chains of *designated* `bridged` justifications must
+  terminate at a primitive kind, which CI checks.
+- Editing a node's metadata with `new-version` or `deprecate` requires `ruamel.yaml`
+  (`pip install ruamel.yaml`), which preserves comments. The read-only checks need only PyYAML,
+  so CI does not install it.
 - `receipt` is `null` until a verification runs.
 - Palomar's required-field list is a **moving target**. CI re-fetches the validator; do not vendor
   a copy and do not work from the list above as if it were closed.
@@ -210,47 +235,60 @@ would defeat the purpose of the split.
 
 ## Changing an existing conclusion
 
-Read ARCHITECTURE §5 first. A pull request that changes any conclusion's statement must carry a
-**change note**, one entry per changed conclusion:
+Read ARCHITECTURE §5 first. The short version: **you usually should not.**
 
-```yaml
-change:
-  - conclusion: Lcm.lcm_not_highly_abundant
-    classification: restatement        # restatement | amendment | unclassified
-    rationale: >-
-      Quantifier moved outside the definition; the bound and threshold are unchanged.
-    equivalence: Migrations/Lcm/2026-08-24.lean    # required iff restatement
+CI will hard-fail if you edit a conclusion that has downstream importers or a recorded receipt
+*(not yet implemented -- it needs a diff against the base commit)*. There
+is no acknowledgement to write and no classification to declare — an author's declaration cannot be
+trusted to say whether a change altered the mathematics, and a required one just becomes a box to
+tick. The failure carries its own fix:
+
+```bash
+python scripts/ieantn.py new-version Lcm
 ```
 
-- **`restatement`** — `equivalence` names a Lean file bridging old and new. CI attempts both
-  directions and reports which hold; see below.
-- **`amendment`** — no proof needed, but downstream receipts are void and every downstream node is
-  flagged for human re-examination.
-- **`unclassified`** — the default if the note is missing or fails to check. Treated as an
-  amendment.
+Editing a conclusion that nothing imports and that has no receipt is silently fine.
 
-You may let an agent draft the classification. It does not need to be right: CI *derives* the true
-answer by attempting the bridges, so a wrong guess costs a red check, not a corrupted graph.
+### Making a new version
 
-### What actually happens on a restatement
+`new-version` copies the latest version, bumps the id, resets every justification to `none-yet`,
+and adds the new version to the build. Then:
 
-You do not patch downstream nodes. The previous version of the node is archived automatically as
-`<NodeId>@<hash>`, frozen with `status: superseded` and **its existing receipt intact**; your new
-solution becomes a small *bridge* deriving the new conclusions from the archived ones. Downstream
-nodes keep importing the archived node and need no action at all — no large solution is re-run.
-Migrating them to the new node, and deleting the archive once nothing imports it, is later
-housekeeping.
+1. Edit `Conclusions.lean` in the new version — that is the point of it.
+2. `python scripts/ieantn.py gen-challenges`
+3. Justify it: write a solution, or a **bridge** from the old version.
+4. When the old version should retire:
+   `python scripts/ieantn.py deprecate Lcm.v1 --for Lcm.v2`
 
-Two implications are in play, and they are needed by different parties:
+**Downstream nodes need no action at any point.** They still import the old version, which still
+exists and is still verified. Migrating them, and deleting the old version once nothing imports it,
+appears in `python scripts/ieantn.py housekeeping` and can wait for whenever there is compute.
+
+### Bridges
+
+A bridge is a short Lean file showing that one version's conclusions imply another's. It is *not* a
+solution and *not* an import edge — registering it as an import would make a bidirectional pair of
+bridges into an import cycle, and bidirectional is exactly what migration needs.
+
+Two implications are in play, needed by different parties:
 
 | Implication | Needed by | For |
 |---|---|---|
-| `C_old → C_new` | this node | the bridge |
-| `C_new → C_old` | a downstream node | migrating off the archived node |
+| `C_old → C_new` | the new version | borrowing the old version's evidence (`justification: bridged`) |
+| `C_new → C_old` | a downstream node | migrating its import onto the new version |
 
-Both hold ⇒ genuine restatement, and the archived node can eventually be retired. Only the first ⇒
-the new conclusion is weaker; fine for this node, but downstream cannot migrate and the archived
-node stays. Neither ⇒ it is an amendment, whatever the note said.
+Both hold ⇒ genuine restatement; the old version can eventually be deleted. Only the first ⇒ the
+new conclusion is weaker, so downstream cannot migrate and the old version legitimately stays.
+Neither ⇒ the change is an amendment, and downstream nodes need human re-examination.
 
-If you are only reformatting, renaming binders, or refactoring Vocabulary in a way that unfolds
-identically, the elaborated-statement hash will not change and no note is required.
+A `bridged` justification names `from` and `bridge`:
+
+```yaml
+justification:
+  kind: bridged
+  from: Lcm.v1.lcmUpto_not_highlyAbundant
+  bridge: Bridges/Lcm/v1_to_v2.lean
+```
+
+Chains of `bridged` must terminate at a primitive justification. CI enforces this: without it two
+versions could each borrow their evidence from the other while neither is justified by anything.

@@ -1,0 +1,123 @@
+# Node metadata for `Lcm.v1`.
+#
+# See IEANTN/Nodes/Dusart2018/v1/formalization.yaml for the shape of this file and its
+# relationship to Palomar's contract.
+#
+# A conclusion may carry several independent justifications; exactly one is `designated`, and
+# only the designated one carries trust or contributes a justification-transport edge.
+version: "v0.4"
+
+node:
+  id: Lcm.v1
+  family: Lcm
+  version: v1
+  kind: paper
+  status: awaiting-solution
+project:
+  name: "The least common multiple sequence is not highly abundant for large n"
+  description: >-
+    A refutation of the conjecture that every term of L_n = lcm(1, 2, ..., n) is a highly abundant
+    number. The conjecture fails for every n >= 89693^2, not merely infinitely often. The argument
+    adjoins three primes slightly above sqrt(n) to L_n and removes three primes slightly below n,
+    chosen so that the product removed slightly exceeds the product adjoined, producing a smaller
+    integer with a larger sum of divisors. The primes are located using Dusart's Proposition 5.4,
+    which is where the threshold 89693^2 comes from.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N56", "11A25", "11N05"]
+
+conclusions:
+- id: lcmUpto_not_highlyAbundant
+  declaration: Lcm.v1.lcmUpto_not_highlyAbundant
+  challenge: Lcm.v1.challenge_lcmUpto_not_highlyAbundant
+  imports:
+  - node: Dusart2018.v1
+    conclusion: proposition_5_4
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      A complete, sorry-free Lean proof of this statement exists in the PNT+ repository at
+      PrimeNumberTheoremAnd/IEANTN/Lcm.lean, commit
+      ae881f2e2b3acefc9b92f8d4dda7c2b8f6e8f5fe (declaration Lcm.L_not_HA_of_ge). Porting it
+      into Solutions/Lcm.v1/ and verifying it with Comparator is a well-posed task; until
+      that is done this node carries no justification. Note that the PNT+ proof consumes
+      Dusart.proposition_5_4, which is itself sorried there, so the port yields exactly the
+      conditional implication this node claims.
+  designated: unjustified
+
+sources:
+- title: "Is the least common multiple sequence lcm(1, 2, ..., n) a subset of the highly abundant numbers?"
+  authors: ["Jose Damian Espinosa"]
+  type: "web discussion"
+  id: "https://mathoverflow.net/questions/501066"
+  location: "MathOverflow, asked 1 October 2025"
+  relationship: formalizes
+  contributors:
+  - name: "Terence Tao"
+    role: >-
+      Author of the refutation argument formalized here, given in comments on the question
+      dated 2 October 2025.
+  note: >-
+    The question posed the conjecture {L_n} subset HA; the answer is that it is false for all
+    large n. VERIFY BEFORE SUBMISSION: the attribution above is taken from the comment thread,
+    where the argument is Tao's. The authorship of the accepted answer post itself has not been
+    checked, and should be confirmed against the page before this node is used as the basis for
+    any external submission.
+
+- title: "On highly composite and similar numbers"
+  authors: ["Leonidas Alaoglu", "Paul Erdos"]
+  type: "paper"
+  id: "https://doi.org/10.1090/S0002-9947-1944-0011087-2"
+  location: "Trans. Amer. Math. Soc. 56 (1944), 448-469, at pp. 466-467"
+  relationship: background
+  note: >-
+    States that neither n! nor lcm(1, ..., n) can be highly abundant infinitely often, but gives
+    no proof -- an `asserted` claim in this network's vocabulary, not a `literature` one. That
+    assertion is strictly weaker than the conclusion recorded here, which holds for every
+    n >= 89693^2. This node does not depend on it. Recorded because it establishes that the
+    result was expected in the literature long before the MathOverflow question, so no novelty
+    should be claimed for the statement itself.
+
+related_formalizations:
+- id: "https://github.com/AlexKontorovich/PrimeNumberTheoremAnd"
+  relationship: supersedes
+  note: >-
+    PrimeNumberTheoremAnd/IEANTN/Lcm.lean is the existing formalization, from which this node's
+    conclusion is transcribed and from which its solution will be ported. This node restates the
+    same mathematics in the network's vocabulary and makes the dependency on Dusart explicit in
+    the statement rather than implicit in the imports.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Transcribed the conclusion into the network's vocabulary and wrote this metadata, under
+      the direction and review of the maintainer. The Lean proof being referenced was written
+      separately in the PNT+ repository and is not yet ported here.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    Statement transcribed from the PNT+ formalization. Source attribution taken from the
+    MathOverflow comment thread and flagged for confirmation above.
+
+limitations:
+- >-
+  This node has no justification yet: the implication from Dusart's Proposition 5.4 to the
+  conclusion is claimed but not checked here.
+- >-
+  No novelty is claimed, and no literature search was performed beyond reading the cited
+  MathOverflow thread. See the Alaoglu-Erdos entry.
+- >-
+  The threshold 89693^2 is an artefact of the imported prime-gap result, not of the method.

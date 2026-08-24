@@ -105,7 +105,22 @@ stay fast.
 
 ## 3. Justification
 
-Every conclusion records how its implication is justified:
+Every conclusion records how its implication is justified. A conclusion may carry **several
+independent justifications** — a paper, a Lean solution, a bridge from another version — but
+exactly one is **designated**, and only the designated one carries trust.
+
+Recording the spares is worth doing: they are evidence diversity, and a fallback for when the
+designated one goes stale. Designating exactly one is what keeps two things working:
+
+- **The dependency report answers with one chain.** "What does this rest on" must have a single
+  answer, not a disjunction over every chain that happens to exist. That report is the repository's
+  whole output.
+- **The transport check stays a plain acyclicity check.** Designation is a function, so the
+  designated-transport graph has out-degree at most one; ordinary acyclicity is then exactly the
+  right condition. Without designation the question becomes "is there *some* acyclic selection",
+  a least-fixed-point computation whose answer nobody chose and nobody reviewed.
+
+The kinds are:
 
 | Kind | Meaning |
 |---|---|
@@ -113,6 +128,7 @@ Every conclusion records how its implication is justified:
 | `numerical` | A computation not currently expressible in Lean (large interval-arithmetic runs, exhaustive searches). |
 | `literature` | Proved in a cited source, and accepted on that source's authority. |
 | `asserted` | **Claimed in a cited source without proof.** Folklore. |
+| `bridged` | Borrowed from another version of the same node, via a bridge proved in Lean. |
 | `none-yet` | Claimed here, not yet justified anywhere. A task, not a defect. |
 
 The distinction between `literature` and `asserted` is worth insisting on. `literature` means a
@@ -151,7 +167,19 @@ backed by a pinned workflow with public logs is much stronger evidence than one 
   verified implication no longer connects to what the upstream node now claims. Binary, fatal. A
   one-character `≤` → `<` scores as trivial on any recency measure and is fatal.
 - **Environment drift.** Statements identical, toolchain moved. Graduated, measured in Mathlib
-  releases, ages gracefully.
+  releases, ages gracefully. **Yellow, never red** — a Mathlib bump is expected to degrade many
+  nodes at once and must not block anything. Three levels, the third defined by a real cost rather
+  than a chosen number:
+
+  | | Meaning |
+  |---|---|
+  | **green** | Verified against the current Mathlib. |
+  | **yellow** | Stale, but within the Mathlib cache window: a refresh costs about one node-sized run. |
+  | **orange** | Past the cache window: dependencies build from source, so a refresh costs many times the per-node budget. |
+
+  Staleness is **derived, not stored** — computed by comparing each receipt's recorded environment
+  against the current one. A bump that degrades two hundred nodes therefore edits no node metadata
+  at all.
 
 Justification *kind* is a third, orthogonal axis. All three are recorded and displayed separately.
 **No single trust score is computed** — a number would hide exactly the distinctions the network
@@ -179,45 +207,69 @@ project.
 ## 5. Refactoring
 
 The network is expected to be refactored continuously: papers get abstracted into reusable
-pipelines, folklore gets surfaced, statements get improved. Four rules keep that cheap.
+pipelines, folklore gets surfaced, statements get improved. These rules keep that cheap.
 
-### Migration lemmas and change notes
+### Editing a conclusion, and who gets told
 
 When a conclusion's `Prop` changes, the hash detects it but cannot say whether the *meaning*
-changed. So a pull request touching a conclusions file must carry a **change note** classifying
-each changed conclusion:
+changed. An author's declaration cannot settle it either: a declaration is free to write, nobody is
+penalised for writing the convenient one, and a required acknowledgement decays into a box to tick.
+So the network does not ask for one. The dangerous case is made mechanically impossible instead:
 
-- **Restatement** — provably equivalent to the old form. **Requires a machine-checked proof of
-  `old ↔ new`**: keep the old definition, deprecated, exactly long enough to state and prove it.
-- **Amendment** — a genuinely different claim. Every downstream node must be re-examined by a
-  human, and their receipts are void, not stale.
-- **Unclassified** — the default when no note is supplied, or when the note cannot be verified.
-  Treated exactly as an amendment until adjudicated.
+- Editing a conclusion that has **downstream importers or a recorded receipt** is a **hard CI
+  failure**, carrying its own fix: `python scripts/ieantn.py new-version <Family>`. *(planned:
+  this needs a diff against the base commit, which `check-graph` does not yet do.)*
+- Editing a conclusion with neither is silently fine — nothing depends on it, and nothing has been
+  verified against it.
 
-**The classification is never trusted.** The cheap outcome is precisely the one that carries a
-proof obligation: claiming `restatement` without a checking equivalence proof fails CI, and every
-other outcome is conservative. So an author — or an agent — may propose a classification freely; a
-wrong guess costs a failed check, not a corrupted graph. Defaulting to `unclassified` means a
-missing note can never be silently read as "nothing to see here".
+This makes versioning the path of least resistance *by construction* rather than by exhortation:
+the alternative is a red check, not a form to fill in.
 
-#### Restatement by forking, not by patching
+Everything else — new nodes, new versions, bridges — is always allowed, and CI reports the
+consequences to the **reviewer** rather than gating the author. That report names the receipts that
+went stale, any new unjustified leaves, the blast radius, and the recommended command; it may
+suggest a modification, typically *"do not touch `X.v1`; create `X.v2` with a bridge."* It is
+advisory precisely because it describes degradation to the author's *own* node's verification
+status. Degradation to *other people's* nodes is the hard-failure case above and never reaches the
+report. *(the PR comment itself is planned)*
 
-A restatement is handled entirely with machinery the network already has — no receipt composition,
-no special case. When node `X`'s conclusions are restated:
+#### Versions, not forks
 
-1. The previous version of `X` is **archived automatically** as a new node `X@<hash>`, where the
-   hash is of its elaborated conclusion statements. It is frozen, marked `status: superseded`, and
-   **keeps its existing receipt untouched** — nothing about it changed, so nothing about its
-   verification is stale.
-2. `X`'s new solution becomes a **bridge**: a small node importing `X@<hash>`'s conclusions and
-   deriving `X`'s new ones. It is verified by an ordinary Comparator run, and because it is a few
-   lines that run is cheap.
-3. **Downstream nodes do nothing.** They keep importing `X@<hash>`, which still exists and is still
+Nodes are **versioned**: a node lives at `IEANTN/Nodes/<Family>/<version>/` and its id is
+`<Family>.<version>` -- `Lcm.v1`, `Lcm.v2`. Versions coexist as ordinary nodes, so restating a
+conclusion needs no archiving step, no content-hash naming, and no special status:
+
+1. `python scripts/ieantn.py new-version Lcm` scaffolds `Lcm.v2` from the latest version.
+2. Edit `Lcm.v2`'s conclusions -- that is the point of the new version.
+3. Justify `Lcm.v2`, either directly or by a **bridge** from `Lcm.v1`.
+4. **Downstream nodes do nothing.** They still import `Lcm.v1`, which still exists and is still
    verified. No large solution is re-run.
-4. Later, housekeeping migrates downstream nodes from `X@<hash>` to `X` at leisure and deletes the
-   archived node once nothing imports it. CI lists archived nodes with no remaining importers.
+5. Later, `python scripts/ieantn.py deprecate Lcm.v1 --for Lcm.v2` signals that dependants should
+   migrate; once nothing imports it, the housekeeping queue proposes deleting it.
 
-So a restatement can be inserted quickly, and the Comparator-intensive part is deferred and batched.
+#### Bridges are not imports
+
+A **bridge** is a short Lean file showing that one version's conclusions imply another's. It is
+*not* a solution and *not* an import edge, and that distinction is load-bearing: if a bridge
+registered as an import, a bidirectional pair of bridges would be an import cycle -- and
+bidirectional bridges are exactly what version migration needs.
+
+So there are three relations with three different rules:
+
+| Relation | Acyclic? | What it is |
+|---|---|---|
+| **imports** | required | trust flows along these |
+| **bridges** | not required | lemmas *about* statements; bidirectional is the point |
+| **justification transport** (`bridged`) | **required** | whose evidence stands in for whose |
+
+The third condition is not optional. Without it `Lcm.v1` could borrow its justification from
+`Lcm.v2` while `Lcm.v2` borrows from `Lcm.v1`: both bridges check, the import graph stays acyclic,
+and neither conclusion is justified by anything at all. `check-graph` therefore requires every
+chain of *designated* `bridged` justifications to terminate at a primitive one.
+
+Non-designated bridges are exempt, and safely so: they carry no trust, so they cannot participate
+in a circular justification. A node may list a bridge in both directions between two versions —
+which is exactly what migration needs — provided each version designates something grounded.
 
 #### The two directions are different, and CI can decide the classification
 
@@ -225,12 +277,12 @@ Restating `C_old` as `C_new` involves two implications, needed by different part
 
 | Implication | Who needs it | For what |
 |---|---|---|
-| `C_old → C_new` | node `X` | the bridge, so `X`'s new conclusion follows from the archived one |
-| `C_new → C_old` | a downstream node `D` | to migrate from `X@<hash>` to `X`, since `D` assumed `C_old` |
+| `C_old → C_new` | node `X.v2` | the bridge, so the new conclusion follows from the old |
+| `C_new → C_old` | a downstream node `D` | to migrate from `X.v1` to `X.v2` |
 
 Both hold exactly when the two are equivalent — the true **restatement** case, after which the
-archived node can be retired entirely. If only `C_old → C_new` holds, the new conclusion is
-*weaker*: `X` is fine, but downstream nodes cannot migrate, so the archived node persists
+old version can be deprecated and eventually deleted. If only `C_old → C_new` holds, the new
+conclusion is *weaker*: `X.v2` is fine, but downstream nodes cannot migrate, so `X.v1` persists
 legitimately and the graph should say so. If neither holds, the change is an **amendment**.
 
 This makes the classification **derivable rather than trusted**: CI attempts both bridges and
@@ -268,9 +320,9 @@ and AI assistance happens to be available.
 
 | Task | Trigger | Rough cost |
 |---|---|---|
-| Delete an archived node | `X@<hash>` with no remaining importers | free |
+| Delete a deprecated version | `X.v1` deprecated, nothing imports it | free |
 | Promote a definition to Vocabulary | a second node needs a node-local definition | free |
-| Migrate a node off an archive | `C_new → C_old` verified for its import | one node-sized run |
+| Migrate off a deprecated version | `C_new → C_old` verified for its import | one node-sized run |
 | Refresh a stale verification | environment drift | one node-sized run |
 | Split an over-budget node | its solution exceeds the ~1h budget | moderate |
 | Discharge a `none-yet` | — | unbounded |
@@ -309,10 +361,11 @@ registering. *(planned)*
 ## 8. What exists today
 
 - `IEANTN/Vocabulary/` — the shared language. Builds clean; Mathlib-only closure verified.
-- `IEANTN/Nodes/Dusart2018/`, `IEANTN/Nodes/Lcm/` — two proof-of-concept nodes and the edge
-  between them.
-- `scripts/ieantn.py` — the challenge generator and the network checks: import closure, graph
-  well-formedness and acyclicity, generated-challenge diffing, and the dependency report.
+- `IEANTN/Nodes/Dusart2018/v1/`, `IEANTN/Nodes/Lcm/v1/` — two proof-of-concept nodes and the
+  edge between them.
+- `scripts/ieantn.py` — the challenge generator, the network checks (import closure, both
+  acyclicity conditions, generated-challenge diffing), the dependency report, the housekeeping
+  queue, and the `new-version` / `deprecate` commands.
 - `scripts/check_palomar_metadata.py` — validates every node against Palomar's *current*
   contract, fetched fresh rather than vendored.
 - `.github/workflows/ci.yml` — core build plus the checks above. Does not run Comparator.
