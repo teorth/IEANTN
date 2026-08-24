@@ -104,8 +104,7 @@ lake build
 # `comparator_commit` is ever moved backwards, the wrapper has to come back with it.
 COMPARATOR_LEAN4EXPORT="$lean4export_dir/.lake/build/bin/lean4export" \
 COMPARATOR_NANODA="$nanoda_dir/target/release/nanoda_bin" \
-PALOMAR_LANDRUN_BIN="$bin_dir/landrun" \
-COMPARATOR_LANDRUN="$repository_root/scripts/landrun-wrapper.sh" \
+COMPARATOR_LANDRUN="$bin_dir/landrun" \
   lake env "$comparator_dir/.lake/build/bin/comparator" comparator.json
 
 echo "comparator accepted Solutions/$node"
