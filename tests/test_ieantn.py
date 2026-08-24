@@ -249,6 +249,34 @@ class TestGraphChecks(FixtureRepo):
         )
         self.assertTrue(ieantn.check_graph())
 
+    def _receipt_for(self, key: str) -> None:
+        (self.root / "receipts").mkdir(exist_ok=True)
+        (self.root / "receipts" / f"{key}.json").write_text(
+            json.dumps({"conclusion": key}), encoding="utf-8"
+        )
+
+    def test_a_receipt_nothing_designates_warns(self) -> None:
+        """Regression: the first real verification landed exactly this way. The workflow wrote the
+        receipt, the metadata still said `none-yet`, and `status` reported the node unverified --
+        a verification had happened and the graph did not know."""
+        self.write_node("A.v1", LITERATURE.replace("kind: literature", "kind: none-yet"))
+        self._receipt_for("A.v1.main")
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            passed = ieantn.check_graph()
+        self.assertTrue(passed, "an undesignated receipt is a warning, not an error")
+        self.assertIn("has a receipt but designates", printed.getvalue())
+
+    def test_a_designated_receipt_does_not_warn(self) -> None:
+        self.write_node(
+            "A.v1", LITERATURE.replace("kind: literature", "kind: lean-comparator")
+        )
+        self._receipt_for("A.v1.main")
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            self.assertTrue(ieantn.check_graph())
+        self.assertNotIn("has a receipt but designates", printed.getvalue())
+
     def test_template_status_is_refused(self) -> None:
         self.write_node("Upstream.v1", LITERATURE, status="template")
         self.assertFalse(ieantn.check_graph())

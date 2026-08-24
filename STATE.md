@@ -11,15 +11,15 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 
 | Designated justification | Conclusions |
 |---|---:|
+| `lean-comparator` | 1 |
 | `literature` | 1 |
-| `none-yet` | 1 |
 
 ## Nodes
 
 | Node | Status | Conclusion | Evidence | Imports | Issue |
 |---|---|---|---|---:|---|
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
-| `Lcm.v1` | awaiting-verification | `lcmUpto_not_highlyAbundant` | none-yet | 1 | - |
+| `Lcm.v1` | active | `lcmUpto_not_highlyAbundant` | lean-comparator | 1 | - |
 
 ## Leverage
 

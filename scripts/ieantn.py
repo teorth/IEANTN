@@ -578,6 +578,19 @@ def check_graph() -> bool:
                     f"conclusion `{cid}`: `designated` is `{conclusion.get('designated')}`, which "
                     f"is not one of its justification ids ({sorted(seen_ids)})",
                 )
+            # A receipt with nothing designating it means a verification happened and the graph
+            # does not know. That is how the first real verification landed: the workflow wrote
+            # the receipt, the metadata still said `none-yet`, and `status` reported the node as
+            # unverified. A warning rather than an error, because the window between the workflow's
+            # commit and the pull request that designates it is legitimate.
+            if load_receipt(f"{node_id}.{cid}") is not None and kind != "lean-comparator":
+                problems.warn(
+                    where,
+                    f"conclusion `{cid}` has a receipt but designates `{kind}`. A verification "
+                    "was recorded and nothing points at it; add a `lean-comparator` justification "
+                    "and designate it.",
+                )
+
             issue = conclusion.get("issue")
             if issue is not None and not isinstance(issue, int):
                 problems.add(where, f"conclusion `{cid}`: `issue` must be a number, not `{issue}`")
