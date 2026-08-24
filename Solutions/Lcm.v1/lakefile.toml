@@ -1,5 +1,5 @@
 name = "solution_Lcm_v1"
-defaultTargets = ["Solution"]
+defaultTargets = ["Solution", "LcmDev"]
 
 # The core library, for the node's `Conclusions`. Add whatever else the proof needs --
 # PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
@@ -10,3 +10,8 @@ path = "../.."
 [[lean_lib]]
 name = "Solution"
 roots = ["Solution"]
+
+# The ported development. Kept a separate root so it can be built on its own while iterating.
+[[lean_lib]]
+name = "LcmDev"
+roots = ["LcmDev"]

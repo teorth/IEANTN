@@ -12,7 +12,7 @@ node:
   family: Lcm
   version: v1
   kind: paper
-  status: awaiting-solution
+  status: awaiting-verification
 project:
   name: "The least common multiple sequence is not highly abundant for large n"
   description: >-
@@ -53,6 +53,14 @@ conclusions:
       conditional implication this node claims.
   designated: unjustified
 
+  progress:
+    solution: Solutions/Lcm.v1/
+    state: complete
+    remaining_holes: 0
+    note: 'Ported from PrimeNumberTheoremAnd/IEANTN/Lcm.lean at commit ae881f2e2b3acefc9b92f8d4dda7c2b8f6e8f5fe.
+      Locally: challenge and solution have identical types under pp.all, and the solution depends on propext,
+      Classical.choice and Quot.sound alone. Awaiting a Comparator run; the justification stays none-yet
+      until the verification workflow records a receipt.'
 sources:
 - title: "Is the least common multiple sequence lcm(1, 2, ..., n) a subset of the highly abundant numbers?"
   authors: ["Jose Damian Espinosa"]

@@ -69,7 +69,14 @@ JUSTIFICATION_KINDS = PRIMITIVE_KINDS | DERIVED_KINDS
 #: graph: something the network takes on faith, however reasonably.
 VERIFIED_KINDS = {"lean-comparator"}
 
-NODE_STATUSES = {"template", "stub", "awaiting-solution", "active", "deprecated"}
+NODE_STATUSES = {
+    "template",              # scaffolded, not yet filled in; refused by check-graph
+    "stub",                  # conclusions stated, no solution intended yet
+    "awaiting-solution",     # someone should write a solution
+    "awaiting-verification",  # a complete solution exists, but no receipt yet
+    "active",
+    "deprecated",
+}
 
 IMPORT_RE = re.compile(r"^import\s+([A-Za-z0-9_.]+)\s*$", re.MULTILINE)
 
