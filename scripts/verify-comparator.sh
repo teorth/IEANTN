@@ -98,7 +98,10 @@ lake build
 
 # Landrun's CLI needs an explicit outer `--` before the sandboxed command, and Comparator does not
 # add one; without the wrapper, Landrun swallows lean4export's own `--` separator.
-chmod +x "$repository_root/scripts/landrun-wrapper.sh"
+# Landrun is invoked directly. PalomarTemplate wraps it to insert an outer `--` before the
+# sandboxed command, because the Comparator revision it pins does not supply one. The revision
+# pinned here does, and the wrapper then rejects that `--` as an unrecognised option. If
+# `comparator_commit` is ever moved backwards, the wrapper has to come back with it.
 COMPARATOR_LEAN4EXPORT="$lean4export_dir/.lake/build/bin/lean4export" \
 COMPARATOR_NANODA="$nanoda_dir/target/release/nanoda_bin" \
 PALOMAR_LANDRUN_BIN="$bin_dir/landrun" \
