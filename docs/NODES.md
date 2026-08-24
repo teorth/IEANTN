@@ -203,8 +203,15 @@ diffed in CI.
 
 Only when a conclusion is to carry `justification: lean-comparator`.
 
-`Solutions/<NodeId>/` is a **separate Lake project with its own `lean-toolchain`**. It may import
-anything. It declares the same theorem names as the challenge, and proves them.
+```bash
+python scripts/ieantn.py new-solution Lcm.v1
+```
+
+`Solutions/<NodeId>/` is a **separate Lake project**, so its dependencies stay its own. It takes
+the core as a path dependency to see the node's `Conclusions`, and must *not* import the
+`Challenge`: Comparator compares two modules declaring the same names, so importing it collides.
+
+Its environment is pinned by the receipt's commit, not by a separate `lean-toolchain`.
 
 Namespace collision is the usual trap: if the development's own theorems live in `Lcm`, the
 compared declarations cannot also be `Lcm.*`. Bridge in two lines.
@@ -233,6 +240,10 @@ The axiom line must show only `propext`, `Classical.choice`, `Quot.sound`.
 4. Every `formalization.yaml` passes Palomar's current validator.
 5. The import graph is acyclic, and so is justification transport along *designated* bridges.
 6. Every conclusion's statement fingerprint matches `fingerprints.json`.
+7. No conclusion that other nodes depend on has been edited in place, and none still imported has
+   been removed (`ieantn.py diff`).
+8. Every `lean-comparator` justification has a matching file in `receipts/`.
+9. The tooling type-checks (`pyright`, at `basic`).
 
 On (6): after any deliberate change to a conclusion's meaning, run
 `python scripts/ieantn.py fingerprint` and commit the result. Committing the fingerprints is what

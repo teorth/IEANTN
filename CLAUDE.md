@@ -25,7 +25,7 @@ Nodes import each other's *statements*, never each other's *proofs*.
 | `IEANTN/Vocabulary/` | Mathlib only. **Definitions only — no theorems, no `sorry`.** |
 | `IEANTN/Nodes/<Family>/<version>/Conclusions.lean` | Mathlib, Vocabulary, other nodes' `Conclusions.lean` |
 | `IEANTN/Nodes/<Family>/<version>/Challenge.lean` | its own and imported `Conclusions.lean` — **generated, do not hand-edit** |
-| `Solutions/<Family>.<version>/` | anything. Separate Lake project, own toolchain pin. **Not in the core build.** |
+| `Solutions/<Family>.<version>/` | anything. Separate Lake project; takes the core as a path dependency, must not import the node's `Challenge`. **Not in the core build.** |
 
 The Mathlib-only closure of Vocabulary and Conclusions is load-bearing, not stylistic: it is what
 lets any node be spun off as a standalone Palomar submission. An import that reaches outside it
@@ -43,7 +43,13 @@ breaks the architecture silently and CI will reject it.
   rather than false. Vocabulary docstrings flag the specific traps — read them.
 - **Do not add a theorem to Vocabulary.** Every claim belongs to a node.
 - **Never edit a conclusion that anything depends on.** Make a new version instead:
-  `python scripts/ieantn.py new-version <Family>`. See NODES.md.
+  `python scripts/ieantn.py new-version <Family>`. CI enforces this. See NODES.md.
+- **Never write a receipt, and never set `justification: lean-comparator` by hand.** Receipts are
+  written by the verification workflow; one you can write attests nothing.
+- **Never hand-edit a generated file.** `Challenge.lean` and `fingerprints.json` are regenerated
+  and diffed in CI.
+- **After changing a conclusion, run `python scripts/ieantn.py fingerprint`** and commit the
+  result. Cosmetic edits will not change it; a change of meaning will, which is the point.
 
 ## Build
 

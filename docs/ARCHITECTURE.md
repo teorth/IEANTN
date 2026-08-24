@@ -96,12 +96,23 @@ the real one: CI regenerates and diffs, so a hand-edited challenge or a stale ya
 ### Solution
 
 May import anything — PNT+, LeanCert, PrimeCert, whatever is convenient. **Each solution is its own
-Lake project with its own pinned `lean-toolchain`**, not a library of the core. That is what lets a
-solution be verified once and then left alone: without its own pin, the next Mathlib bump would
-break every frozen solution in the repository.
+Lake project**, not a library of the core, with its own lakefile and its own manifest. That is what
+keeps a proof's dependencies its own: a solution needing PNT+ must not force PNT+ on the core, which
+has to stay Mathlib-only and fast.
 
-Solutions are **not built by core CI**. Core CI builds Vocabulary and Conclusions only, and must
-stay fast.
+It takes the core as a path dependency, in order to see its node's `Conclusions`. It deliberately
+does *not* import the node's `Challenge`: Comparator compares two modules declaring the same names,
+so importing it would collide.
+
+**A solution's environment is pinned by its receipt's commit, not by a separate `lean-toolchain`.**
+An earlier draft of this document gave each solution its own toolchain file, to protect frozen
+solutions from Mathlib bumps. That does not work alongside a path dependency on the core, and it is
+unnecessary: the receipt records the commit it was verified at, so *re-running at the recorded pin*
+means checking out that commit, where core and solution agree by construction. What a bump costs is
+staleness, not breakage — see §4.
+
+Solutions are **not built by core CI**. Core CI builds Vocabulary, Conclusions and Challenges only,
+and must stay fast.
 
 ## 3. Justification
 
@@ -377,19 +388,42 @@ registering. *(planned)*
 
 ## 8. What exists today
 
-- `IEANTN/Vocabulary/` — the shared language. Builds clean; Mathlib-only closure verified.
-- `IEANTN/Nodes/Dusart2018/v1/`, `IEANTN/Nodes/Lcm/v1/` — two proof-of-concept nodes and the
-  edge between them.
-- `scripts/ieantn.py` — the challenge generator, the network checks (import closure, both
-  acyclicity conditions, generated-challenge diffing), the dependency report, the housekeeping
-  queue, and the `new-version` / `deprecate` commands.
-- `scripts/check_palomar_metadata.py` — validates every node against Palomar's *current*
-  contract, fetched fresh rather than vendored.
-- `.github/workflows/ci.yml` — core build plus the checks above. Does not run Comparator.
-- `docs/` — this document and [NODES.md](NODES.md).
+Built and running in CI:
 
-Still to build: verification receipts and staleness (§4), the housekeeping queue (§6), the
-Palomar spin-off generator (§7), and any solution at all — no node currently carries a
-`lean-comparator` justification.
+| | |
+|---|---|
+| `IEANTN/Vocabulary/` | The shared language. Definitions only, Mathlib-only closure enforced. |
+| `IEANTN/Nodes/*/v1/` | Two proof-of-concept nodes and the edge between them. |
+| `Tools/Hash.lean` | Statement fingerprints (§4), Merkle-chained over IEANTN's own definitions. |
+| `receipts/` | Verification receipts, written by the workflow and never by hand. |
+| `scripts/ieantn.py` | Everything below. |
+| `scripts/verify-comparator.sh` | Comparator with the four trusted tools pinned. |
+| `scripts/check_palomar_metadata.py` | Validates each node against Palomar's *current* contract. |
+| `.github/workflows/ci.yml` | Core build, network checks, fingerprint check, impact report. |
+| `.github/workflows/verify.yml` | Verification, split on privilege (§4). |
 
-See [NODES.md](NODES.md) for the authoring recipe.
+The tooling commands:
+
+```bash
+python scripts/ieantn.py check            # closure, graph, acyclicity, generated challenges
+python scripts/ieantn.py fingerprint      # recompute statement fingerprints
+python scripts/ieantn.py status           # green / yellow / orange / BROKEN per conclusion
+python scripts/ieantn.py diff             # what a branch degrades, and for whom
+python scripts/ieantn.py report           # what each conclusion rests on
+python scripts/ieantn.py housekeeping     # the derived task queue
+python scripts/ieantn.py new-node         # scaffold a node
+python scripts/ieantn.py new-version      # scaffold the next version of one
+python scripts/ieantn.py new-solution     # scaffold a solution project
+python scripts/ieantn.py deprecate        # mark a version for retirement
+```
+
+**Not yet built**, and tracked in [ROADMAP.md](ROADMAP.md): the reviewer report as a PR comment
+rather than a job summary; the `verification` environment gate; the ruleset rule restricting
+`receipts/`; the Palomar spin-off generator; visualisation; unit tests for the tooling; and the
+code and security audits.
+
+**No node carries a Lean-verified justification yet**, so the Comparator path is untested end to
+end. That waits on porting a first solution.
+
+See [NODES.md](NODES.md) for the authoring recipe and [../CONTRIBUTING.md](../CONTRIBUTING.md) for
+the nine kinds of change.
