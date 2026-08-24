@@ -60,6 +60,42 @@ the Mathlib cache window (CONTRIBUTING §8).
 **7. Visualisation.** A rendered graph over the receipts and metadata, computed rather than
 re-running any verification.
 
+## Code audit, still to do
+
+The tooling has accumulated a real defect rate during the proof-of-concept phase, and the classes
+below are the ones actually observed rather than a generic wish for review. They are recorded
+because each predicts where the next one will be.
+
+**Silent no-ops.** The worst class, because the tool reports success. A blanket `v1` to `v2`
+rewrite in `new-version` silently repointed a node's *imports* at a version that did not exist. A
+`re.sub` written for four-space indentation matched nothing after ruamel had normalised a file to
+two, and the edit "succeeded". **Rule to enforce: every string or regex substitution in the tooling
+must assert that it changed something.** The throwaway patch scripts used during development do
+exactly this, and it is what caught most of these; the shipped tooling does not.
+
+**Tests that do not test.** An `exit=$?` after a pipe reports the exit code of `head`. A `sed` that
+matched nothing left a test asserting a property it had not established. This is the project's own
+failure mode one level up: a check that passes vacuously is the junk-value problem applied to CI,
+and it deserves the same suspicion the Vocabulary docstrings give to `tsum`.
+**There are currently no unit tests for `scripts/ieantn.py` at all.**
+
+**Destructive round-trips.** `yaml.safe_dump` silently discarded every comment in a node's
+metadata, where the comments carry the provenance. Fixed by moving the mutating commands to
+ruamel, but the general rule stands: a tool that rewrites a file it did not fully parse will lose
+whatever it did not model.
+
+**Heuristics where exact data was available.** The fingerprinter first decided "is this constant
+ours?" by guessing at name prefixes; the environment records the defining module exactly.
+
+**Cross-platform hazards, all from authoring on Windows and running on Linux.** A file committed as
+`scripts/Hash.lean` while the lakefile said `Scripts.Hash` built locally and would have failed CI.
+An em dash in a report rendered as a replacement character on the Windows console, and would have
+done so in the CI summary. Line endings are converted on every commit.
+
+**Dead code and obfuscated expressions.** Two dead-code findings and one function written as an
+index into a throwaway tuple, which also ignored the major version, so `v4.34` to `v5.2` came out
+as thirty-two releases apart. Now caught by `pyrightconfig.json` in CI.
+
 ## Security audit, still to do
 
 Worth being proactive about, given that contributors are increasingly agents and that some pull

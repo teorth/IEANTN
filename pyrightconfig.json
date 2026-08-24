@@ -1,0 +1,7 @@
+{
+  "include": ["scripts"],
+  "typeCheckingMode": "basic",
+  "reportUnusedImport": "error",
+  "reportUnusedVariable": "error",
+  "pythonVersion": "3.12"
+}

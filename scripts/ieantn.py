@@ -35,9 +35,8 @@ import hashlib
 import json
 import os
 import pathlib
-import subprocess
 import re
-import shutil
+import subprocess
 import sys
 
 try:
@@ -635,14 +634,22 @@ def load_receipt(conclusion_key: str) -> dict | None:
 
 
 def release_distance(recorded: str, current: str) -> int | None:
-    """How many Lean minor releases apart two toolchain strings are, if it can be told."""
-    pattern = re.compile(r"v(\d+)\.(\d+)\.")
+    """How many Lean minor releases apart two toolchain strings are, if it can be told.
+
+    Compares `(major, minor)` pairs, not minor alone: `v4.34` to `v5.2` is not thirty-two releases
+    apart. A differing major version is reported as beyond the cache window, since it certainly is.
+    Returns None when either string is unrecognisable, so the caller falls back to the
+    undifferentiated "stale" verdict rather than inventing a number.
+    """
+    pattern = re.compile(r"v(\d+)\.(\d+)")
     left, right = pattern.search(recorded or ""), pattern.search(current or "")
     if not left or not right:
         return None
-    return abs(
-        (int(right.group(1)), int(right.group(2)))[1] - (int(left.group(1)), int(left.group(2)))[1]
-    )
+    old_major, old_minor = int(left.group(1)), int(left.group(2))
+    new_major, new_minor = int(right.group(1)), int(right.group(2))
+    if old_major != new_major:
+        return CACHE_WINDOW_RELEASES + 1
+    return abs(new_minor - old_minor)
 
 
 def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str]) -> tuple[str, str]:
@@ -753,7 +760,6 @@ def new_solution(node_id: str) -> bool:
         newline="\n",
     )
 
-    binders = []
     body = []
     for conclusion in conclusions:
         cid = conclusion.get("id")

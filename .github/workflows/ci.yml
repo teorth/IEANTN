@@ -55,6 +55,13 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install pyyaml
+      # Cheap automated review of the tooling itself. Most of this code is written by agents
+      # and read closely by nobody, which is exactly where a type checker earns its keep.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Type-check the tooling
+        run: npx --yes pyright@1.1.413
       - name: Import closure, graph well-formedness, generated challenges
         run: python3 scripts/ieantn.py check
       - name: Report what each conclusion rests on
