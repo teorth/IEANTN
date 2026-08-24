@@ -22,9 +22,9 @@ Nodes import each other's *statements*, never each other's *proofs*.
 | Layer | May import |
 |---|---|
 | `IEANTN/Vocabulary/` | Mathlib only. **Definitions only — no theorems, no `sorry`.** |
-| `IEANTN/Nodes/<Id>/Conclusions.lean` | Mathlib, Vocabulary, other nodes' `Conclusions.lean` |
-| `IEANTN/Nodes/<Id>/Challenge.lean` | its own and imported `Conclusions.lean` — **generated, do not hand-edit** |
-| `Solutions/<Id>/` | anything. Separate Lake project, own toolchain pin. **Not in the core build.** |
+| `IEANTN/Nodes/<Family>/<version>/Conclusions.lean` | Mathlib, Vocabulary, other nodes' `Conclusions.lean` |
+| `IEANTN/Nodes/<Family>/<version>/Challenge.lean` | its own and imported `Conclusions.lean` — **generated, do not hand-edit** |
+| `Solutions/<Family>.<version>/` | anything. Separate Lake project, own toolchain pin. **Not in the core build.** |
 
 The Mathlib-only closure of Vocabulary and Conclusions is load-bearing, not stylistic: it is what
 lets any node be spun off as a standalone Palomar submission. An import that reaches outside it
@@ -41,15 +41,21 @@ breaks the architecture silently and CI will reject it.
   junk; `li` outside its domain is `Classical.choice`. A statement can typecheck and be *vacuous*
   rather than false. Vocabulary docstrings flag the specific traps — read them.
 - **Do not add a theorem to Vocabulary.** Every claim belongs to a node.
-- **Changing a conclusion's statement requires a change note.** See NODES.md. Absent or unverified,
-  it defaults to `unclassified`, which voids downstream receipts.
+- **Never edit a conclusion that anything depends on.** Make a new version instead:
+  `python scripts/ieantn.py new-version <Family>`. See NODES.md.
 
 ## Build
 
 ```bash
-lake build                                   # Vocabulary + Conclusions + Challenges. Fast. Keep it that way.
-lake build IEANTN.Vocabulary.PrimeGaps       # a single module while iterating
+lake build                              # Vocabulary + Conclusions + Challenges. Fast. Keep it so.
+lake build IEANTN.Vocabulary.PrimeGaps  # a single module while iterating
+python scripts/ieantn.py check          # every network invariant
+python scripts/ieantn.py report         # what each conclusion rests on
+python scripts/ieantn.py housekeeping   # the derived task queue
 ```
+
+`Challenge.lean` files are generated: after editing a `Conclusions.lean` or a
+`formalization.yaml`, run `python scripts/ieantn.py gen-challenges`.
 
 Core CI does **not** run Comparator — that is deliberate. Solution verification is a separate
 dispatchable workflow. Comparator does not run on Windows or macOS; WSL2 works (Landlock ABI 3 and

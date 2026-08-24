@@ -1,16 +1,25 @@
 #!/usr/bin/env python3
 """IEANTN network tooling.
 
-One entry point for the checks that keep the node graph honest, plus the challenge generator.
+One entry point for the checks that keep the node graph honest, the challenge generator, and the
+routine node-management tasks.
 
-    python scripts/ieantn.py check-closure       import discipline
-    python scripts/ieantn.py check-graph         metadata and graph well-formedness
-    python scripts/ieantn.py gen-challenges      (re)write every Challenge.lean
-    python scripts/ieantn.py gen-challenges --check   fail if any is out of date
-    python scripts/ieantn.py report              what each conclusion actually rests on
-    python scripts/ieantn.py check               all of the above, in --check mode
+    python scripts/ieantn.py check-closure           import discipline
+    python scripts/ieantn.py check-graph             metadata and graph well-formedness
+    python scripts/ieantn.py gen-challenges          (re)write every Challenge.lean
+    python scripts/ieantn.py gen-challenges --check  fail if any is out of date
+    python scripts/ieantn.py report                  what each conclusion actually rests on
+    python scripts/ieantn.py housekeeping            the derived task queue
+    python scripts/ieantn.py check                   every check, in --check mode
 
-None of this runs Comparator; see docs/ARCHITECTURE.md section 4.
+    python scripts/ieantn.py new-version Lcm         scaffold Lcm.v2 from the latest version
+    python scripts/ieantn.py deprecate Lcm.v1 --for Lcm.v2
+
+Nodes are versioned: a node lives at `IEANTN/Nodes/<Family>/<version>/` and its id is
+`<Family>.<version>`, e.g. `Lcm.v1`. Editing a conclusion's statement in place is only safe while
+nothing depends on it; otherwise make a new version. See docs/ARCHITECTURE.md.
+
+None of this runs Comparator.
 """
 
 from __future__ import annotations
@@ -18,6 +27,7 @@ from __future__ import annotations
 import argparse
 import pathlib
 import re
+import shutil
 import sys
 
 try:
@@ -29,36 +39,43 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 NODES_DIR = ROOT / "IEANTN" / "Nodes"
 VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
 
-JUSTIFICATION_KINDS = {
-    "lean-comparator",
-    "numerical",
-    "literature",
-    "asserted",
-    "none-yet",
-}
+#: A justification that stands on its own evidence.
+PRIMITIVE_KINDS = {"lean-comparator", "numerical", "literature", "asserted", "none-yet"}
+#: A justification borrowed from another version via a proved bridge.
+DERIVED_KINDS = {"bridged"}
+JUSTIFICATION_KINDS = PRIMITIVE_KINDS | DERIVED_KINDS
 
-#: Justifications that mean "checked by Lean in this repository". Everything else is a leaf of
-#: the trust graph: something the network takes on faith, however reasonably.
+#: Kinds meaning "checked by Lean in this repository". Everything else is a leaf of the trust
+#: graph: something the network takes on faith, however reasonably.
 VERIFIED_KINDS = {"lean-comparator"}
 
+NODE_STATUSES = {"stub", "awaiting-solution", "active", "deprecated"}
+
 IMPORT_RE = re.compile(r"^import\s+([A-Za-z0-9_.]+)\s*$", re.MULTILINE)
+VERSION_RE = re.compile(r"^v(\d+)$")
 
 
 class Problems:
     """Accumulates failures so one run reports everything, not just the first."""
 
     def __init__(self) -> None:
-        self.items: list[str] = []
+        self.errors: list[str] = []
+        self.warnings: list[str] = []
 
     def add(self, where: str, message: str) -> None:
-        self.items.append(f"{where}: {message}")
+        self.errors.append(f"{where}: {message}")
+
+    def warn(self, where: str, message: str) -> None:
+        self.warnings.append(f"{where}: {message}")
 
     def report(self, heading: str) -> bool:
-        if not self.items:
+        for item in self.warnings:
+            print(f"warn {heading}: {item}")
+        if not self.errors:
             print(f"ok  {heading}")
             return True
         print(f"FAIL {heading}")
-        for item in self.items:
+        for item in self.errors:
             print(f"  - {item}")
         return False
 
@@ -76,25 +93,42 @@ def imports_of(path: pathlib.Path) -> list[str]:
     return IMPORT_RE.findall(path.read_text(encoding="utf-8"))
 
 
+def node_id_of(directory: pathlib.Path) -> str:
+    """`IEANTN/Nodes/Lcm/v1` -> `Lcm.v1`."""
+    return directory.relative_to(NODES_DIR).as_posix().replace("/", ".")
+
+
 def node_dirs() -> list[pathlib.Path]:
     if not NODES_DIR.is_dir():
         return []
-    return sorted(d for d in NODES_DIR.iterdir() if (d / "formalization.yaml").is_file())
+    return sorted(p.parent for p in NODES_DIR.rglob("formalization.yaml"))
 
 
 def load_nodes() -> dict[str, dict]:
     """node id -> parsed formalization.yaml, with the directory recorded under '_dir'."""
     nodes: dict[str, dict] = {}
     for directory in node_dirs():
-        data = yaml.safe_load((directory / "formalization.yaml").read_text(encoding="utf-8"))
-        data = data or {}
+        data = yaml.safe_load((directory / "formalization.yaml").read_text(encoding="utf-8")) or {}
         data["_dir"] = directory
-        nodes[data.get("node", {}).get("id", directory.name)] = data
+        nodes[node_id_of(directory)] = data
     return nodes
 
 
 def conclusions_of(node: dict) -> list[dict]:
     return node.get("conclusions") or []
+
+
+def versions_of(family: str) -> list[tuple[int, pathlib.Path]]:
+    """Every version directory of a family, ordered by version number."""
+    family_dir = NODES_DIR / family
+    if not family_dir.is_dir():
+        return []
+    found = []
+    for child in family_dir.iterdir():
+        match = VERSION_RE.match(child.name)
+        if match and (child / "formalization.yaml").is_file():
+            found.append((int(match.group(1)), child))
+    return sorted(found)
 
 
 # ---------------------------------------------------------------------------
@@ -105,9 +139,9 @@ def conclusions_of(node: dict) -> list[dict]:
 def check_closure() -> bool:
     """Vocabulary and Conclusions may not reach outside Mathlib.
 
-    This is the invariant the whole architecture rests on: a challenge transitively imports
-    Vocabulary, so if Vocabulary reached outside Mathlib no node could ever be spun off as a
-    standalone Palomar submission. See docs/ARCHITECTURE.md section 2.
+    This is the invariant the architecture rests on: a challenge transitively imports Vocabulary,
+    so if Vocabulary reached outside Mathlib no node could be spun off as a standalone Palomar
+    submission. See docs/ARCHITECTURE.md section 2.
     """
     problems = Problems()
 
@@ -120,15 +154,15 @@ def check_closure() -> bool:
         conclusions = directory / "Conclusions.lean"
         if conclusions.is_file():
             for module in imports_of(conclusions):
-                allowed = (
+                ok = (
                     module.startswith("Mathlib")
                     or module.startswith("IEANTN.Vocabulary")
                     or (module.startswith("IEANTN.Nodes.") and module.endswith(".Conclusions"))
                 )
-                if not allowed:
+                if not ok:
                     problems.add(
                         rel(conclusions),
-                        f"a Conclusions file may import only Mathlib, Vocabulary and other "
+                        "a Conclusions file may import only Mathlib, Vocabulary and other "
                         f"Conclusions; found `{module}`",
                     )
         challenge = directory / "Challenge.lean"
@@ -148,8 +182,36 @@ def check_closure() -> bool:
 # ---------------------------------------------------------------------------
 
 
+def _check_acyclic(edges: dict[str, list[str]], problems: Problems, label: str) -> None:
+    WHITE, GREY, BLACK = 0, 1, 2
+    colour = {key: WHITE for key in edges}
+
+    def visit(key: str, trail: list[str]) -> None:
+        colour[key] = GREY
+        for target in edges.get(key, []):
+            if target not in colour:
+                continue
+            if colour[target] == GREY:
+                problems.add("graph", f"{label} cycle: {' -> '.join(trail + [key, target])}")
+            elif colour[target] == WHITE:
+                visit(target, trail + [key])
+        colour[key] = BLACK
+
+    for key in sorted(edges):
+        if colour[key] == WHITE:
+            visit(key, [])
+
+
 def check_graph() -> bool:
-    """Metadata well-formedness, referential integrity, and acyclicity."""
+    """Metadata well-formedness, referential integrity, and the two acyclicity conditions.
+
+    Three relations, three different rules:
+
+    * **imports** must be acyclic -- trust flows along them;
+    * **bridges** need not be, and are deliberately bidirectional;
+    * **justification transport** (`bridged`) must be acyclic, or two versions can each borrow
+      their justification from the other and neither is justified by anything.
+    """
     problems = Problems()
     nodes = load_nodes()
 
@@ -161,8 +223,17 @@ def check_graph() -> bool:
         where = rel(node["_dir"] / "formalization.yaml")
         meta = node.get("node") or {}
 
-        if meta.get("id") != node["_dir"].name:
-            problems.add(where, f"node.id `{meta.get('id')}` != directory `{node['_dir'].name}`")
+        if meta.get("id") != node_id:
+            problems.add(where, f"node.id `{meta.get('id')}` != path-derived id `{node_id}`")
+        status = meta.get("status")
+        if status is not None and status not in NODE_STATUSES:
+            problems.add(where, f"node.status `{status}` is not one of {sorted(NODE_STATUSES)}")
+        if status == "deprecated":
+            replacement = meta.get("superseded_by")
+            if not replacement:
+                problems.add(where, "a deprecated node must name `node.superseded_by`")
+            elif replacement not in nodes:
+                problems.add(where, f"node.superseded_by `{replacement}` does not exist")
 
         seen: set[str] = set()
         for conclusion in conclusions_of(node):
@@ -174,22 +245,19 @@ def check_graph() -> bool:
                 problems.add(where, f"duplicate conclusion id `{cid}`")
             seen.add(cid)
 
-            declaration = conclusion.get("declaration", "")
-            if declaration != f"{node_id}.{cid}":
+            if conclusion.get("declaration") != f"{node_id}.{cid}":
                 problems.add(
                     where,
                     f"conclusion `{cid}`: declaration should be `{node_id}.{cid}`, "
-                    f"found `{declaration}`",
+                    f"found `{conclusion.get('declaration')}`",
                 )
-
-            expected_challenge = f"{node_id}.challenge_{cid}"
-            if conclusion.get("challenge") != expected_challenge:
+            if conclusion.get("challenge") != f"{node_id}.challenge_{cid}":
                 problems.add(
-                    where,
-                    f"conclusion `{cid}`: challenge should be `{expected_challenge}`",
+                    where, f"conclusion `{cid}`: challenge should be `{node_id}.challenge_{cid}`"
                 )
 
-            kind = (conclusion.get("justification") or {}).get("kind")
+            justification = conclusion.get("justification") or {}
+            kind = justification.get("kind")
             if kind not in JUSTIFICATION_KINDS:
                 problems.add(
                     where,
@@ -198,18 +266,26 @@ def check_graph() -> bool:
                 )
             if kind == "lean-comparator" and conclusion.get("receipt") is None:
                 problems.add(
-                    where,
-                    f"conclusion `{cid}`: justification is `lean-comparator` but no receipt is "
-                    "recorded",
+                    where, f"conclusion `{cid}`: `lean-comparator` but no receipt is recorded"
                 )
+            if kind == "bridged":
+                if not justification.get("from"):
+                    problems.add(where, f"conclusion `{cid}`: `bridged` must name `from`")
+                if not justification.get("bridge"):
+                    problems.add(
+                        where, f"conclusion `{cid}`: `bridged` must name the `bridge` file"
+                    )
+                elif not (ROOT / justification["bridge"]).is_file():
+                    problems.add(
+                        where,
+                        f"conclusion `{cid}`: bridge file `{justification['bridge']}` is missing",
+                    )
 
             for dependency in conclusion.get("imports") or []:
                 target_node = dependency.get("node")
                 target_conclusion = dependency.get("conclusion")
                 if target_node not in nodes:
-                    problems.add(
-                        where, f"conclusion `{cid}` imports unknown node `{target_node}`"
-                    )
+                    problems.add(where, f"conclusion `{cid}` imports unknown node `{target_node}`")
                     continue
                 known = {c.get("id") for c in conclusions_of(nodes[target_node])}
                 if target_conclusion not in known:
@@ -218,35 +294,30 @@ def check_graph() -> bool:
                         f"conclusion `{cid}` imports `{target_node}.{target_conclusion}`, "
                         "which that node does not export",
                     )
+                elif (nodes[target_node].get("node") or {}).get("status") == "deprecated":
+                    problems.warn(
+                        where,
+                        f"conclusion `{cid}` imports deprecated `{target_node}`; prefer "
+                        f"`{(nodes[target_node].get('node') or {}).get('superseded_by')}`",
+                    )
 
-    # Acyclicity, at conclusion granularity.
-    edges: dict[str, list[str]] = {}
+    import_edges: dict[str, list[str]] = {}
+    transport_edges: dict[str, list[str]] = {}
     for node_id, node in nodes.items():
         for conclusion in conclusions_of(node):
             key = f"{node_id}.{conclusion.get('id')}"
-            edges[key] = [
+            import_edges[key] = [
                 f"{d.get('node')}.{d.get('conclusion')}"
                 for d in (conclusion.get("imports") or [])
             ]
+            justification = conclusion.get("justification") or {}
+            transport_edges[key] = (
+                [justification["from"]] if justification.get("kind") == "bridged"
+                and justification.get("from") else []
+            )
 
-    WHITE, GREY, BLACK = 0, 1, 2
-    colour = {key: WHITE for key in edges}
-
-    def visit(key: str, trail: list[str]) -> None:
-        colour[key] = GREY
-        for target in edges.get(key, []):
-            if target not in colour:
-                continue
-            if colour[target] == GREY:
-                cycle = " -> ".join(trail + [key, target])
-                problems.add("graph", f"import cycle: {cycle}")
-            elif colour[target] == WHITE:
-                visit(target, trail + [key])
-        colour[key] = BLACK
-
-    for key in sorted(edges):
-        if colour[key] == WHITE:
-            visit(key, [])
+    _check_acyclic(import_edges, problems, "import")
+    _check_acyclic(transport_edges, problems, "justification-transport")
 
     return problems.report("node graph")
 
@@ -256,17 +327,20 @@ def check_graph() -> bool:
 # ---------------------------------------------------------------------------
 
 
+def module_of(node_id: str) -> str:
+    return f"IEANTN.Nodes.{node_id}.Conclusions"
+
+
 def hypothesis_name(dependency: dict) -> str:
-    return f"{dependency.get('node')}_{dependency.get('conclusion')}".lower()
+    return f"{dependency.get('node')}_{dependency.get('conclusion')}".replace(".", "_").lower()
 
 
 def render_challenge(node_id: str, node: dict) -> str:
     authors = ", ".join((node.get("project") or {}).get("authors") or ["IEANTN contributors"])
-
-    needed = {f"IEANTN.Nodes.{node_id}.Conclusions"}
+    needed = {module_of(node_id)}
     for conclusion in conclusions_of(node):
         for dependency in conclusion.get("imports") or []:
-            needed.add(f"IEANTN.Nodes.{dependency.get('node')}.Conclusions")
+            needed.add(module_of(str(dependency.get("node"))))
 
     lines = [
         "/-",
@@ -302,85 +376,202 @@ def render_challenge(node_id: str, node: dict) -> str:
             lines.append(f"    {node_id}.{cid} := by")
         else:
             lines.append(f"theorem {node_id}.challenge_{cid} : {node_id}.{cid} := by")
-        lines.append("  sorry")
-        lines.append("")
+        lines += ["  sorry", ""]
 
     return "\n".join(lines).rstrip("\n") + "\n"
 
 
 def gen_challenges(check_only: bool) -> bool:
     problems = Problems()
-    nodes = load_nodes()
-    for node_id, node in nodes.items():
+    for node_id, node in load_nodes().items():
         path = node["_dir"] / "Challenge.lean"
         rendered = render_challenge(node_id, node)
         if check_only:
-            current = path.read_text(encoding="utf-8") if path.is_file() else ""
-            if current != rendered:
-                problems.add(
-                    rel(path),
-                    "out of date; run `python scripts/ieantn.py gen-challenges`",
-                )
+            if (path.read_text(encoding="utf-8") if path.is_file() else "") != rendered:
+                problems.add(rel(path), "out of date; run `python scripts/ieantn.py gen-challenges`")
         else:
             path.write_text(rendered, encoding="utf-8", newline="\n")
             print(f"wrote {rel(path)}")
-    if check_only:
-        return problems.report("generated challenges")
-    return True
+    return problems.report("generated challenges") if check_only else True
 
 
 # ---------------------------------------------------------------------------
-# report
+# report / housekeeping
 # ---------------------------------------------------------------------------
 
 
-def report() -> bool:
-    """For every conclusion, what it actually rests on.
-
-    This is the headline output of the repository: the transitive set of claims a result depends
-    on that are *not* proved in Lean here.
-    """
-    nodes = load_nodes()
+def index_conclusions(nodes: dict[str, dict]) -> dict[str, tuple[str, dict]]:
     index: dict[str, tuple[str, dict]] = {}
     for node_id, node in nodes.items():
         for conclusion in conclusions_of(node):
             index[f"{node_id}.{conclusion.get('id')}"] = (node_id, conclusion)
+    return index
 
-    fan_in: dict[str, int] = {key: 0 for key in index}
+
+def importers_of(nodes: dict[str, dict]) -> dict[str, list[str]]:
+    """conclusion key -> the conclusion keys that import it."""
+    result: dict[str, list[str]] = {}
+    for node_id, node in nodes.items():
+        for conclusion in conclusions_of(node):
+            key = f"{node_id}.{conclusion.get('id')}"
+            for dependency in conclusion.get("imports") or []:
+                target = f"{dependency.get('node')}.{dependency.get('conclusion')}"
+                result.setdefault(target, []).append(key)
+    return result
+
+
+def report() -> bool:
+    """For every conclusion, the transitive set of claims it rests on that Lean has not checked."""
+    nodes = load_nodes()
+    index = index_conclusions(nodes)
+    importers = importers_of(nodes)
 
     def leaves(key: str, seen: set[str]) -> set[str]:
         if key in seen or key not in index:
             return set()
         seen.add(key)
         _, conclusion = index[key]
-        kind = (conclusion.get("justification") or {}).get("kind")
-        dependencies = [
-            f"{d.get('node')}.{d.get('conclusion')}" for d in (conclusion.get("imports") or [])
-        ]
+        justification = conclusion.get("justification") or {}
+        kind = justification.get("kind")
         result: set[str] = set()
-        if kind not in VERIFIED_KINDS:
+        if kind == "bridged":
+            result |= leaves(justification.get("from", ""), seen)
+        elif kind not in VERIFIED_KINDS:
             result.add(f"{key}  [{kind}]")
-        for dependency in dependencies:
-            fan_in[dependency] = fan_in.get(dependency, 0) + 1
-            result |= leaves(dependency, seen)
+        for dependency in conclusion.get("imports") or []:
+            result |= leaves(f"{dependency.get('node')}.{dependency.get('conclusion')}", seen)
         return result
 
     print("Unproved-in-Lean dependencies, per conclusion")
-    print("=" * 60)
+    print("=" * 62)
     for key in sorted(index):
         rests_on = sorted(leaves(key, set()))
         print(f"\n{key}")
-        if not rests_on:
-            print("  fully verified in Lean")
-        for item in rests_on:
-            print(f"  - {item}")
+        for item in rests_on or ["  fully verified in Lean"]:
+            print(f"  - {item}" if rests_on else item)
 
-    ranked = sorted(((count, key) for key, count in fan_in.items() if count), reverse=True)
+    ranked = sorted(((len(v), k) for k, v in importers.items()), reverse=True)
     if ranked:
         print("\n\nLeverage (fan-in): refresh these first")
-        print("=" * 60)
+        print("=" * 62)
         for count, key in ranked:
             print(f"  {count:3d}  {key}")
+    return True
+
+
+def housekeeping() -> bool:
+    """The task queue, derived from graph state rather than maintained by hand."""
+    nodes = load_nodes()
+    importers = importers_of(nodes)
+    tasks: list[str] = []
+
+    for node_id, node in sorted(nodes.items()):
+        meta = node.get("node") or {}
+        if meta.get("status") == "deprecated":
+            users = sorted(
+                {u for c in conclusions_of(node)
+                 for u in importers.get(f"{node_id}.{c.get('id')}", [])}
+            )
+            replacement = meta.get("superseded_by")
+            if users:
+                for user in users:
+                    tasks.append(f"migrate  {user}  off deprecated {node_id} -> {replacement}")
+            else:
+                tasks.append(f"delete   {node_id}  (deprecated, nothing imports it)")
+        for conclusion in conclusions_of(node):
+            kind = (conclusion.get("justification") or {}).get("kind")
+            if kind == "none-yet":
+                tasks.append(f"justify  {node_id}.{conclusion.get('id')}  (none-yet)")
+            elif kind in {"literature", "asserted"}:
+                tasks.append(f"formalize {node_id}.{conclusion.get('id')}  ({kind})")
+
+    print("Housekeeping queue")
+    print("=" * 62)
+    for task in tasks or ["  nothing outstanding"]:
+        print(f"  {task}" if tasks else task)
+    return True
+
+
+# ---------------------------------------------------------------------------
+# new-version / deprecate
+# ---------------------------------------------------------------------------
+
+
+def new_version(family: str) -> bool:
+    existing = versions_of(family)
+    if not existing:
+        print(f"error: no versions of `{family}` under {rel(NODES_DIR)}")
+        return False
+    latest_n, latest = existing[-1]
+    new_n = latest_n + 1
+    target = NODES_DIR / family / f"v{new_n}"
+    if target.exists():
+        print(f"error: {rel(target)} already exists")
+        return False
+
+    old_id, new_id = f"{family}.v{latest_n}", f"{family}.v{new_n}"
+    target.mkdir(parents=True)
+    for name in ("Conclusions.lean", "formalization.yaml"):
+        text = (latest / name).read_text(encoding="utf-8")
+        # Only this family's own version references may be bumped. A blanket `v1` -> `v2`
+        # would also rewrite the *imported* nodes' versions, silently repointing the new node
+        # at versions of its dependencies that may not exist.
+        text = text.replace(old_id, new_id)
+        (target / name).write_text(text, encoding="utf-8", newline="\n")
+
+    data = yaml.safe_load((target / "formalization.yaml").read_text(encoding="utf-8")) or {}
+    data.setdefault("node", {})["version"] = f"v{new_n}"
+    data["node"].pop("superseded_by", None)
+    data["node"]["status"] = "awaiting-solution"
+    for conclusion in data.get("conclusions") or []:
+        conclusion["justification"] = {
+            "kind": "none-yet",
+            "note": f"Newly branched from {old_id}. Either bridge from it or justify directly.",
+        }
+        conclusion["receipt"] = None
+    (target / "formalization.yaml").write_text(
+        yaml.safe_dump(data, allow_unicode=True, sort_keys=False), encoding="utf-8", newline="\n"
+    )
+
+    umbrella = ROOT / "IEANTN" / "Nodes.lean"
+    text = umbrella.read_text(encoding="utf-8")
+    line = f"import IEANTN.Nodes.{new_id}.Challenge\n"
+    if line not in text:
+        text = text.replace(
+            f"import IEANTN.Nodes.{old_id}.Challenge\n",
+            f"import IEANTN.Nodes.{old_id}.Challenge\n{line}",
+        )
+        umbrella.write_text(text, encoding="utf-8", newline="\n")
+
+    print(f"created {rel(target)} from {rel(latest)}")
+    print("\nnext:")
+    print(f"  1. edit {rel(target / 'Conclusions.lean')} -- this is the point of the new version")
+    print("  2. python scripts/ieantn.py gen-challenges")
+    print(f"  3. justify it: write a bridge from {old_id}, or a solution")
+    print(f"  4. when {old_id} should retire: "
+          f"python scripts/ieantn.py deprecate {old_id} --for {new_id}")
+    return True
+
+
+def deprecate(node_id: str, replacement: str) -> bool:
+    nodes = load_nodes()
+    if node_id not in nodes:
+        print(f"error: unknown node `{node_id}`")
+        return False
+    if replacement not in nodes:
+        print(f"error: unknown replacement node `{replacement}`")
+        return False
+
+    path = nodes[node_id]["_dir"] / "formalization.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    data.setdefault("node", {})["status"] = "deprecated"
+    data["node"]["superseded_by"] = replacement
+    path.write_text(
+        yaml.safe_dump(data, allow_unicode=True, sort_keys=False), encoding="utf-8", newline="\n"
+    )
+    print(f"marked {node_id} deprecated in favour of {replacement}")
+    print("this changes nothing mechanically; it queues the migration and eventual deletion.")
+    print("see: python scripts/ieantn.py housekeeping")
     return True
 
 
@@ -390,12 +581,15 @@ def report() -> bool:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("check-closure")
-    sub.add_parser("check-graph")
+    for name in ("check-closure", "check-graph", "report", "housekeeping", "check"):
+        sub.add_parser(name)
     generate = sub.add_parser("gen-challenges")
     generate.add_argument("--check", action="store_true", help="fail instead of rewriting")
-    sub.add_parser("report")
-    sub.add_parser("check", help="every check, in --check mode")
+    version = sub.add_parser("new-version")
+    version.add_argument("family", help="e.g. Lcm")
+    retire = sub.add_parser("deprecate")
+    retire.add_argument("node", help="e.g. Lcm.v1")
+    retire.add_argument("--for", dest="replacement", required=True, help="e.g. Lcm.v2")
 
     args = parser.parse_args()
     if args.command == "check-closure":
@@ -406,9 +600,14 @@ def main() -> int:
         return 0 if gen_challenges(args.check) else 1
     if args.command == "report":
         return 0 if report() else 1
+    if args.command == "housekeeping":
+        return 0 if housekeeping() else 1
+    if args.command == "new-version":
+        return 0 if new_version(args.family) else 1
+    if args.command == "deprecate":
+        return 0 if deprecate(args.node, args.replacement) else 1
     if args.command == "check":
-        results = [check_closure(), check_graph(), gen_challenges(True)]
-        return 0 if all(results) else 1
+        return 0 if all([check_closure(), check_graph(), gen_challenges(True)]) else 1
     return 2
 
 

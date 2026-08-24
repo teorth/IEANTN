@@ -9,7 +9,9 @@
 version: "v0.4"
 
 node:
-  id: Dusart2018
+  id: Dusart2018.v1
+  family: Dusart2018
+  version: v1
   kind: paper
   status: stub
 
@@ -34,8 +36,8 @@ classification:
 
 conclusions:
   - id: proposition_5_4
-    declaration: Dusart2018.proposition_5_4
-    challenge: Dusart2018.challenge_proposition_5_4
+    declaration: Dusart2018.v1.proposition_5_4
+    challenge: Dusart2018.v1.challenge_proposition_5_4
     imports: []
     justification:
       kind: literature

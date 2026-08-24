@@ -22,7 +22,7 @@ results — Theorem 4.2, the Corollary 5.2 and 5.3 families, Proposition 5.11, a
 added here as further conclusions when a node needs them.
 -/
 
-namespace Dusart2018
+namespace Dusart2018.v1
 
 /-- **Proposition 5.4.** For every real `x ≥ 89693` there is a prime `p` with
 `x < p ≤ x + x / (log x)³`.
@@ -35,4 +35,4 @@ The interval is open on the left and closed on the right — `x < p ≤ x + h`. 
 `x ≤ p < x + h` are making a different claim at the endpoints. -/
 def proposition_5_4 : Prop := IEANTN.HasPrimeInInterval.logPower 89693 3
 
-end Dusart2018
+end Dusart2018.v1
