@@ -127,6 +127,33 @@ def imports_of(path: pathlib.Path) -> list[str]:
     return IMPORT_RE.findall(path.read_text(encoding="utf-8"))
 
 
+def strip_lean_comments(text: str) -> str:
+    """Lean source with `--` line comments and nested `/- -/` blocks removed.
+
+    Needed because a plain search for `sorry` also matches the word in prose. The docstring of an
+    Examples file explaining *why* it may not contain `sorry` is not a `sorry`, and a check that
+    cannot tell the difference is worse than none: it trains people to work around it.
+    """
+    out: list[str] = []
+    index, depth, length = 0, 0, len(text)
+    while index < length:
+        if text.startswith("/-", index):
+            depth += 1
+            index += 2
+        elif depth and text.startswith("-/", index):
+            depth -= 1
+            index += 2
+        elif depth:
+            index += 1
+        elif text.startswith("--", index):
+            newline = text.find("\n", index)
+            index = length if newline < 0 else newline
+        else:
+            out.append(text[index])
+            index += 1
+    return "".join(out)
+
+
 def node_id_of(directory: pathlib.Path) -> str:
     """`IEANTN/Nodes/Lcm/v1` -> `Lcm.v1`."""
     return directory.relative_to(NODES_DIR).as_posix().replace("/", ".")
@@ -175,6 +202,23 @@ def designated_of(conclusion: dict) -> dict | None:
         if justification.get("id") == wanted:
             return justification
     return None
+
+
+def bridge_sources(justification: dict) -> list[str]:
+    """The conclusions a `bridged` justification borrows from.
+
+    `from` may name one conclusion or several. Several is the case where a node was temporarily
+    split so that separate groups could work on its parts in parallel, and is later sewn back
+    together: `Dusart_part_1.v1.main` and `Dusart_part_2.v1.main` together imply `Dusart.v3.main`.
+    So a bridge is not only a relation between versions of one family -- it is many-to-one, and may
+    cross families.
+    """
+    source = justification.get("from")
+    if source is None:
+        return []
+    if isinstance(source, str):
+        return [source]
+    return [str(entry) for entry in source]
 
 
 def designated_kind(conclusion: dict) -> str | None:
@@ -251,6 +295,38 @@ def check_closure() -> bool:
                         "a Conclusions file may import only Mathlib, Vocabulary and other "
                         f"Conclusions; found `{module}`",
                     )
+        # A node may carry `Examples.lean`: consequences drawn from its conclusions, to show what
+        # the node actually buys. They make no claims of record, so they are not fingerprinted --
+        # but they must not import the node's *Challenge*, which is sorried. An example built on a
+        # `sorry` demonstrates nothing, and would look exactly like one that demonstrates
+        # something.
+        examples = directory / "Examples.lean"
+        if examples.is_file():
+            for module in imports_of(examples):
+                ok = (
+                    module.startswith("Mathlib")
+                    or module.startswith("IEANTN.Vocabulary")
+                    or (module.startswith("IEANTN.Nodes.") and module.endswith(".Conclusions"))
+                )
+                if not ok:
+                    problems.add(
+                        rel(examples),
+                        f"an Examples file may import only Mathlib, Vocabulary and Conclusions; "
+                        f"found `{module}`"
+                        + (
+                            " -- importing a Challenge would let an example rest on its `sorry`"
+                            if module.endswith(".Challenge")
+                            else ""
+                        ),
+                    )
+            code = strip_lean_comments(examples.read_text(encoding="utf-8"))
+            if re.search(r"\bsorry\b", code):
+                problems.add(
+                    rel(examples),
+                    "an Examples file may not contain `sorry`: an example with a hole in it "
+                    "demonstrates nothing, while looking exactly like one that does.",
+                )
+
         challenge = directory / "Challenge.lean"
         if challenge.is_file():
             for module in imports_of(challenge):
@@ -316,6 +392,12 @@ def check_graph() -> bool:
     if not nodes:
         print("ok  node graph (no nodes yet)")
         return True
+
+    every_conclusion = {
+        f"{other_id}.{c.get('id')}"
+        for other_id, other in nodes.items()
+        for c in conclusions_of(other)
+    }
 
     for node_id, node in nodes.items():
         where = rel(node["_dir"] / "formalization.yaml")
@@ -399,12 +481,20 @@ def check_graph() -> bool:
                             f"`{receipt.get('conclusion')}`",
                         )
                 if kind == "bridged":
-                    if not justification.get("from"):
+                    sources = bridge_sources(justification)
+                    if not sources:
                         problems.add(
                             where,
                             f"conclusion `{cid}`, justification `{jid}`: `bridged` must name "
-                            "`from`",
+                            "`from` (one conclusion, or several)",
                         )
+                    for source in sources:
+                        if source not in every_conclusion:
+                            problems.add(
+                                where,
+                                f"conclusion `{cid}`, justification `{jid}`: bridges from "
+                                f"`{source}`, which does not exist",
+                            )
                     if not justification.get("bridge"):
                         problems.add(
                             where,
@@ -424,7 +514,17 @@ def check_graph() -> bool:
                     f"conclusion `{cid}`: `designated` is `{conclusion.get('designated')}`, which "
                     f"is not one of its justification ids ({sorted(seen_ids)})",
                 )
-            elif designated_kind(conclusion) == "none-yet" and len(available) > 1:
+            issue = conclusion.get("issue")
+            if issue is not None and not isinstance(issue, int):
+                problems.add(where, f"conclusion `{cid}`: `issue` must be a number, not `{issue}`")
+            elif designated_kind(conclusion) == "none-yet" and issue is None:
+                problems.warn(
+                    where,
+                    f"conclusion `{cid}` is unjustified and names no `issue`: nobody can claim "
+                    "work nobody can find. Open an issue and record its number.",
+                )
+
+            if designated_kind(conclusion) == "none-yet" and len(available) > 1:
                 problems.warn(
                     where,
                     f"conclusion `{cid}` designates a `none-yet` justification while others are "
@@ -465,8 +565,7 @@ def check_graph() -> bool:
             # one and plain acyclicity is exactly the condition needed.
             justification = designated_of(conclusion) or {}
             transport_edges[key] = (
-                [justification["from"]] if justification.get("kind") == "bridged"
-                and justification.get("from") else []
+                bridge_sources(justification) if justification.get("kind") == "bridged" else []
             )
 
     _check_acyclic(import_edges, problems, "import")
@@ -534,11 +633,44 @@ def render_challenge(node_id: str, node: dict) -> str:
     return "\n".join(lines).rstrip("\n") + "\n"
 
 
+def render_umbrella(nodes: dict[str, dict]) -> str:
+    """`IEANTN/Nodes.lean`, importing every node's challenge and examples.
+
+    Generated rather than hand-maintained: it drifted three times during development, each time
+    silently, because a missing import only shows up as a module that quietly is not built.
+    """
+    modules = []
+    for node_id, node in sorted(nodes.items()):
+        modules.append(f"IEANTN.Nodes.{node_id}.Challenge")
+        if (node["_dir"] / "Examples.lean").is_file():
+            modules.append(f"IEANTN.Nodes.{node_id}.Examples")
+    return (
+        "/-\n"
+        "Copyright (c) 2026 IEANTN contributors. All rights reserved.\n"
+        "Released under Apache 2.0 license as described in the file LICENSE.\n"
+        "Authors: Terence Tao\n"
+        "-/\n"
+        + "".join(f"import {module}\n" for module in modules)
+        + """
+/-!
+# The node network
+
+**Generated file - do not edit.**  Regenerated by `python scripts/ieantn.py gen-challenges`.
+
+Every node version's conclusions, generated challenge, and examples where present. Nodes are
+versioned: a node lives at `IEANTN/Nodes/<Family>/<version>/` and its id is `<Family>.<version>`.
+-/
+"""
+    )
+
+
 def gen_challenges(check_only: bool) -> bool:
     problems = Problems()
-    for node_id, node in load_nodes().items():
-        path = node["_dir"] / "Challenge.lean"
-        rendered = render_challenge(node_id, node)
+    nodes = load_nodes()
+    outputs = [(node["_dir"] / "Challenge.lean", render_challenge(node_id, node))
+               for node_id, node in nodes.items()]
+    outputs.append((ROOT / "IEANTN" / "Nodes.lean", render_umbrella(nodes)))
+    for path, rendered in outputs:
         if check_only:
             if (path.read_text(encoding="utf-8") if path.is_file() else "") != rendered:
                 problems.add(rel(path), "out of date; run `python scripts/ieantn.py gen-challenges`")
@@ -938,7 +1070,8 @@ def report() -> bool:
         spares = len(justifications_of(conclusion)) - 1
         result: set[str] = set()
         if kind == "bridged":
-            result |= leaves(justification.get("from", ""), seen)
+            for source in bridge_sources(justification):
+                result |= leaves(source, seen)
         elif kind not in VERIFIED_KINDS:
             note = f"  [{kind}]" + (f", {spares} other justification(s) available" if spares else "")
             result.add(f"{key}{note}")
@@ -984,10 +1117,12 @@ def housekeeping() -> bool:
                 tasks.append(f"delete   {node_id}  (deprecated, nothing imports it)")
         for conclusion in conclusions_of(node):
             kind = designated_kind(conclusion)
+            issue = conclusion.get("issue")
+            claim = f"#{issue}" if issue else "UNCLAIMED, no issue"
             if kind == "none-yet":
-                tasks.append(f"justify  {node_id}.{conclusion.get('id')}  (none-yet)")
+                tasks.append(f"justify   {node_id}.{conclusion.get('id')}  [{claim}]")
             elif kind in {"literature", "asserted"}:
-                tasks.append(f"formalize {node_id}.{conclusion.get('id')}  ({kind})")
+                tasks.append(f"formalize {node_id}.{conclusion.get('id')}  ({kind}) [{claim}]")
 
     print("Housekeeping queue")
     print("=" * 62)
@@ -1274,25 +1409,6 @@ limitations:
 """
 
 
-def register_in_umbrella(node_id: str, after: str | None = None) -> None:
-    """Add a node's challenge to `IEANTN/Nodes.lean`, keeping the import list sorted."""
-    umbrella = ROOT / "IEANTN" / "Nodes.lean"
-    text = umbrella.read_text(encoding="utf-8")
-    line = f"import IEANTN.Nodes.{node_id}.Challenge"
-    if line in text:
-        return
-    lines = text.splitlines()
-    imports = [i for i, entry in enumerate(lines) if entry.startswith("import ")]
-    if not imports:
-        return
-    block = sorted(set(lines[imports[0]:imports[-1] + 1] + [line]))
-    umbrella.write_text(
-        "\n".join(lines[:imports[0]] + block + lines[imports[-1] + 1:]) + "\n",
-        encoding="utf-8",
-        newline="\n",
-    )
-
-
 def new_node(family: str, kind: str) -> bool:
     """Scaffold a brand-new node at v1."""
     if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", family):
@@ -1310,12 +1426,9 @@ def new_node(family: str, kind: str) -> bool:
     (target / "formalization.yaml").write_text(
         YAML_TEMPLATE.format(family=family, kind=kind), encoding="utf-8", newline="\n"
     )
-    register_in_umbrella(f"{family}.v1")
-
-    node = load_nodes()[f"{family}.v1"]
-    (target / "Challenge.lean").write_text(
-        render_challenge(f"{family}.v1", node), encoding="utf-8", newline="\n"
-    )
+    # Regenerate everything rather than writing this node's challenge alone: the umbrella is
+    # generated too, and a scaffold that leaves it stale produces a node that quietly is not built.
+    gen_challenges(check_only=False)
 
     print(f"created {rel(target)}")
     print("\nnext:")
@@ -1367,7 +1480,8 @@ def new_version(family: str) -> bool:
     with metadata.open("w", encoding="utf-8", newline="\n") as handle:
         writer.dump(data, handle)
 
-    register_in_umbrella(new_id)
+
+    gen_challenges(check_only=False)
 
     print(f"created {rel(target)} from {rel(latest)}")
     print("\nnext:")
