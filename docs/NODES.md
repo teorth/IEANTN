@@ -212,7 +212,8 @@ python scripts/ieantn.py new-solution Lcm.v1
 the core as a path dependency to see the node's `Conclusions`, and must *not* import the
 `Challenge`: Comparator compares two modules declaring the same names, so importing it collides.
 
-Its environment is pinned by the receipt's commit, not by a separate `lean-toolchain`.
+It carries a `lean-toolchain` identical to the repository's; CI enforces the match. What pins a
+verification is the commit its receipt records, not that file.
 
 Namespace collision is the usual trap: if the development's own theorems live in `Lcm`, the
 compared declarations cannot also be `Lcm.*`. Bridge in two lines.

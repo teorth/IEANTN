@@ -115,12 +115,20 @@ It takes the core as a path dependency, in order to see its node's `Conclusions`
 does *not* import the node's `Challenge`: Comparator compares two modules declaring the same names,
 so importing it would collide.
 
-**A solution's environment is pinned by its receipt's commit, not by a separate `lean-toolchain`.**
-An earlier draft of this document gave each solution its own toolchain file, to protect frozen
-solutions from Mathlib bumps. That does not work alongside a path dependency on the core, and it is
-unnecessary: the receipt records the commit it was verified at, so *re-running at the recorded pin*
-means checking out that commit, where core and solution agree by construction. What a bump costs is
-staleness, not breakage — see §4.
+**A solution carries a `lean-toolchain` identical to the repository's**, and CI enforces the match.
+The file must be *present*, because Mathlib's `cache` tool reads it from the project directory and
+a solution without one compiles Mathlib from source rather than fetching it. It must be *identical*,
+because Lake builds a path dependency with the root project's toolchain, so a divergent pin either
+gets ignored or tries to build the core under the wrong compiler.
+
+This document previously said the opposite in both directions — first that each solution should pin
+its own toolchain freely, then that it should carry none at all. Both were reasoned from the
+divergence argument alone, and the right conclusion was equality. It took running Comparator to
+find out.
+
+So what pins a *verification* is the commit its receipt records, not that file: re-running at the
+recorded pin means checking out that commit, where core and solution agree by construction. What a
+Mathlib bump costs is staleness, not breakage — see §4.
 
 Solutions are **not built by core CI**. Core CI builds Vocabulary, Conclusions and Challenges only,
 and must stay fast.

@@ -383,16 +383,34 @@ def check_closure() -> bool:
                     )
 
     # A solution takes the core as a path dependency, and Lake builds a path dependency with the
-    # *root* project's toolchain. A solution pinning its own would therefore either be ignored or
-    # try to build the core under the wrong Lean -- so a divergent pin cannot work, and an
-    # identical one is noise that will silently drift. Solutions inherit the repository toolchain;
-    # what pins a verification is the commit its receipt records.
-    for toolchain in sorted(SOLUTIONS.glob("*/lean-toolchain")) if SOLUTIONS.is_dir() else []:
-        problems.add(
-            rel(toolchain),
-            "a solution must not carry its own `lean-toolchain`; it inherits the repository's, and "
-            "its verification is pinned by the commit recorded in its receipt. Delete this file.",
-        )
+    # *root* project's toolchain, so a solution pinning a *different* Lean than the repository
+    # either gets ignored or tries to build the core under the wrong compiler.
+    #
+    # The first version of this check concluded that solutions should therefore carry no
+    # `lean-toolchain` at all. That was wrong, and local iteration caught it: Mathlib's `cache`
+    # executable reads `lean-toolchain` from the project it runs in, so a solution without one
+    # cannot fetch its Mathlib from cache -- which is the difference between a one-minute step and
+    # an hour of compiling. The right rule is equality, not absence.
+    root_toolchain = (ROOT / "lean-toolchain").read_text(encoding="utf-8").strip()
+    for directory in sorted(SOLUTIONS.iterdir()) if SOLUTIONS.is_dir() else []:
+        if not (directory / "lakefile.toml").is_file():
+            continue
+        toolchain = directory / "lean-toolchain"
+        if not toolchain.is_file():
+            problems.add(
+                rel(directory),
+                "a solution needs its own `lean-toolchain`, matching the repository's: Mathlib's "
+                "`cache` tool reads it from the project directory, and without it the solution "
+                "compiles Mathlib from source instead of fetching it.",
+            )
+        elif toolchain.read_text(encoding="utf-8").strip() != root_toolchain:
+            problems.add(
+                rel(toolchain),
+                f"pins `{toolchain.read_text(encoding='utf-8').strip()}` but the repository is on "
+                f"`{root_toolchain}`. A solution takes the core as a path dependency, so a "
+                "divergent pin cannot work; what pins a verification is the commit its receipt "
+                "records.",
+            )
 
     return problems.report("import closure")
 

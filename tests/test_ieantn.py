@@ -314,11 +314,30 @@ class TestClosure(FixtureRepo):
         )
         self.assertTrue(ieantn.check_closure())
 
-    def test_a_solution_may_not_pin_its_own_toolchain(self) -> None:
-        (self.root / "Solutions" / "A.v1").mkdir(parents=True)
-        (self.root / "Solutions" / "A.v1" / "lean-toolchain").write_text(
-            "leanprover/lean4:v4.30.0\n", encoding="utf-8"
-        )
+    def _solution(self, toolchain: str | None) -> None:
+        directory = self.root / "Solutions" / "A.v1"
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / "lakefile.toml").write_text('name = "a"\n', encoding="utf-8")
+        if toolchain is not None:
+            (directory / "lean-toolchain").write_text(toolchain, encoding="utf-8")
+
+    def test_a_solution_toolchain_matching_the_repository_passes(self) -> None:
+        self._solution("leanprover/lean4:v4.34.0-rc2\n")
+        self.assertTrue(ieantn.check_closure())
+
+    def test_a_solution_pinning_a_different_toolchain_fails(self) -> None:
+        """A path dependency is built with the root project's toolchain, so a divergent pin cannot
+        work."""
+        self._solution("leanprover/lean4:v4.30.0\n")
+        self.assertFalse(ieantn.check_closure())
+
+    def test_a_solution_with_no_toolchain_fails(self) -> None:
+        """Regression: the first version of this rule *forbade* the file, reasoning that since a
+        divergent pin cannot work there should be no pin. Mathlib's `cache` tool reads
+        `lean-toolchain` from the project directory, so a solution without one compiles Mathlib
+        from source rather than fetching it -- an hour instead of a minute. The rule is equality,
+        not absence."""
+        self._solution(None)
         self.assertFalse(ieantn.check_closure())
 
 
