@@ -78,10 +78,15 @@ bot commits the receipt and flips the justification to `lean-comparator`.
 
 > **Receipts must be written by the verifier, never by the author** — otherwise anyone can claim
 > verification by typing it, and every downstream trust computation is decorative. Receipts
-> therefore live under `receipts/`, not in `formalization.yaml`, and that path is writable only by
-> the verification workflow's identity (a ruleset path restriction). `check-graph` requires a
-> `lean-comparator` justification to have a corresponding receipt file. *(planned: `receipts/`
-> currently does not exist and receipts are a `null` field in the yaml.)*
+> therefore live under `receipts/`, not in `formalization.yaml`, and that path is to be restricted
+> to the verification workflow's identity by a ruleset path rule. `check-graph` already refuses a
+> `lean-comparator` justification with no matching receipt file. *(planned: the `/verify` bot that
+> triggers the run, and the ruleset rule itself.)*
+
+Check the result with `python scripts/ieantn.py status`, which grades each receipt `green`,
+`yellow`, `orange` or `BROKEN`. `BROKEN` means a statement moved — the conclusion's own, or one it
+imports — so the verified implication no longer connects to what is now claimed. That is not
+staleness and it does not age gracefully; re-verify, or make a new version.
 
 ## 4. Modify a conclusion
 

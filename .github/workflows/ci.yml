@@ -39,6 +39,9 @@ jobs:
         run: |
           lake build ieantn_hash
           python3 scripts/ieantn.py fingerprint --check
+      # Informational: shows which receipts are green, stale, or broken.
+      - name: Receipt status
+        run: python3 scripts/ieantn.py status
 
   network:
     name: Check the node network

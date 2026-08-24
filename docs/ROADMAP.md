@@ -20,10 +20,13 @@ results committed to `fingerprints.json`. Structural, not pretty-printed, and Me
 IEANTN's own definitions so a Vocabulary edit propagates. See the module docstring for the one
 kind of change it deliberately cannot see.
 
-**2. Verification receipts.** `receipts/<node>.<conclusion>.json`, content-addressed
-(ARCHITECTURE §4). **Writable only by the verification workflow's identity**, via a ruleset path
-restriction: an author-written receipt is worthless. `check-graph` should then require every
-`lean-comparator` justification to have a matching receipt file.
+**2. Verification receipts.** *Done* — `receipts/<conclusion>.json`, content-addressed, with
+`ieantn.py record-receipt` (workflow-only) and `ieantn.py status` grading them green / yellow /
+orange / BROKEN. `check-graph` refuses a `lean-comparator` justification with no matching receipt.
+
+**Still to configure, once a receipt actually exists:** the ruleset path rule restricting
+`receipts/` to the verification workflow's identity. Until that is set, the protection is review
+convention rather than enforcement.
 
 **3. The breaking-change detector.** Compute the graph at the PR base and at `HEAD`, then diff.
 Hard-fails when a conclusion with downstream importers or a recorded receipt is edited in place,

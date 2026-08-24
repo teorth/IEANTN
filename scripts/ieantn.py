@@ -11,6 +11,7 @@ routine node-management tasks.
     python scripts/ieantn.py report                  what each conclusion actually rests on
     python scripts/ieantn.py fingerprint             recompute the statement fingerprints
     python scripts/ieantn.py fingerprint --check     fail if any has moved
+    python scripts/ieantn.py status                  the traffic light for every conclusion
     python scripts/ieantn.py housekeeping            the derived task queue
     python scripts/ieantn.py check                   every check, in --check mode
 
@@ -45,6 +46,11 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 NODES_DIR = ROOT / "IEANTN" / "Nodes"
 VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
 FINGERPRINTS = ROOT / "fingerprints.json"
+RECEIPTS = ROOT / "receipts"
+
+#: Toolchain minor releases behind current, past which a refresh is assumed to fall outside the
+#: Mathlib cache window and cost many times the per-node budget. A heuristic, not a measurement.
+CACHE_WINDOW_RELEASES = 2
 
 #: A justification that stands on its own evidence.
 PRIMITIVE_KINDS = {"lean-comparator", "numerical", "literature", "asserted", "none-yet"}
@@ -343,12 +349,22 @@ def check_graph() -> bool:
                         f"conclusion `{cid}`, justification `{jid}`: kind `{kind}` is not one of "
                         + ", ".join(sorted(JUSTIFICATION_KINDS)),
                     )
-                if kind == "lean-comparator" and justification.get("receipt") is None:
-                    problems.add(
-                        where,
-                        f"conclusion `{cid}`, justification `{jid}`: `lean-comparator` but no "
-                        "receipt is recorded",
-                    )
+                if kind == "lean-comparator":
+                    key = f"{node_id}.{cid}"
+                    receipt = load_receipt(key)
+                    if receipt is None:
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`, justification `{jid}`: `lean-comparator` but "
+                            f"{rel(receipt_path(key))} does not exist. Receipts are written by "
+                            "the verification workflow, not by hand.",
+                        )
+                    elif receipt.get("conclusion") != key:
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`: {rel(receipt_path(key))} records "
+                            f"`{receipt.get('conclusion')}`",
+                        )
                 if kind == "bridged":
                     if not justification.get("from"):
                         problems.add(
@@ -575,6 +591,165 @@ def fingerprint(check_only: bool) -> bool:
     for name in sorted(set(recorded) - set(current)):
         problems.warn(name, "recorded fingerprint has no matching conclusion any more")
     return problems.report("statement fingerprints")
+
+
+# ---------------------------------------------------------------------------
+# receipts and status
+# ---------------------------------------------------------------------------
+
+
+def current_environment() -> dict:
+    """The environment a verification run today would happen in."""
+    manifest = json.loads((ROOT / "lake-manifest.json").read_text(encoding="utf-8"))
+    mathlib = next(
+        (
+            package.get("rev")
+            for package in manifest.get("packages", [])
+            if package.get("name") == "mathlib"
+        ),
+        None,
+    )
+    return {
+        "lean_toolchain": (ROOT / "lean-toolchain").read_text(encoding="utf-8").strip(),
+        "mathlib_rev": mathlib,
+    }
+
+
+def receipt_path(conclusion_key: str) -> pathlib.Path:
+    return RECEIPTS / f"{conclusion_key}.json"
+
+
+def load_receipt(conclusion_key: str) -> dict | None:
+    path = receipt_path(conclusion_key)
+    if not path.is_file():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def release_distance(recorded: str, current: str) -> int | None:
+    """How many Lean minor releases apart two toolchain strings are, if it can be told."""
+    pattern = re.compile(r"v(\d+)\.(\d+)\.")
+    left, right = pattern.search(recorded or ""), pattern.search(current or "")
+    if not left or not right:
+        return None
+    return abs(
+        (int(right.group(1)), int(right.group(2)))[1] - (int(left.group(1)), int(left.group(2)))[1]
+    )
+
+
+def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str]) -> tuple[str, str]:
+    """Grade one receipt against the world as it is now.
+
+    Two axes, deliberately not collapsed (ARCHITECTURE section 4):
+
+    * a **statement** that has moved is a *broken edge* -- the verified implication no longer
+      connects to what is now claimed. Binary and fatal, however small the edit;
+    * an **environment** that has moved is ordinary staleness. Graduated, and expected.
+    """
+    recorded = receipt.get("statement") or {}
+    for name, digest in sorted(recorded.items()):
+        now = fingerprints.get(name)
+        if now is None:
+            return "BROKEN", f"`{name}` no longer exists"
+        if now != digest:
+            which = "its own statement" if name == conclusion_key else f"`{name}`"
+            return "BROKEN", f"{which} changed since verification"
+
+    environment = receipt.get("environment") or {}
+    current = current_environment()
+    if environment.get("mathlib_rev") == current["mathlib_rev"]:
+        return "green", "verified against the current environment"
+
+    recorded_toolchain = environment.get("lean_toolchain", "?")
+    distance = release_distance(recorded_toolchain, current["lean_toolchain"])
+    detail = f"verified under {recorded_toolchain}, now {current['lean_toolchain']}"
+    if distance is not None and distance > CACHE_WINDOW_RELEASES:
+        return "orange", f"{detail} ({distance} releases; likely outside the cache window)"
+    return "yellow", detail
+
+
+def status() -> bool:
+    """The traffic light for every conclusion."""
+    nodes = load_nodes()
+    fingerprints = compute_fingerprints()
+    lights = {"green": 0, "yellow": 0, "orange": 0, "BROKEN": 0, "-": 0}
+
+    print("Conclusion status")
+    print("=" * 78)
+    for node_id, node in sorted(nodes.items()):
+        for conclusion in conclusions_of(node):
+            key = f"{node_id}.{conclusion.get('id')}"
+            kind = designated_kind(conclusion)
+            if kind != "lean-comparator":
+                lights["-"] += 1
+                print(f"  -       {key}")
+                print(f"          not Lean-verified here; designated `{kind}`")
+                continue
+            receipt = load_receipt(key)
+            if receipt is None:
+                lights["BROKEN"] += 1
+                print(f"  BROKEN  {key}")
+                print("          designated `lean-comparator` but no receipt file")
+                continue
+            light, detail = assess(key, receipt, fingerprints)
+            lights[light] += 1
+            print(f"  {light:<7} {key}")
+            print(f"          {detail}")
+
+    print("\n" + "=" * 78)
+    print(
+        "  ".join(f"{name}: {count}" for name, count in lights.items() if count)
+        or "  nothing recorded"
+    )
+    if lights["BROKEN"]:
+        print("\nA BROKEN receipt is not staleness: the verified implication no longer connects")
+        print("to what the node now claims. Re-verify, or make a new version.")
+    return True
+
+
+def record_receipt(conclusion_key: str, solution: str, run_url: str, stamp: str) -> bool:
+    """Write a receipt. **Run by the verification workflow, never by an author.**
+
+    An author-written receipt is worth nothing -- it is a claim of verification typed by the
+    person making the claim. The protection is not this function refusing to run; it is that
+    `receipts/` is writable only by the verification workflow's identity, enforced by a ruleset
+    path restriction, and that a receipt arriving in a PR from anyone else is a review failure.
+    """
+    nodes = load_nodes()
+    index = index_conclusions(nodes)
+    if conclusion_key not in index:
+        print(f"error: unknown conclusion `{conclusion_key}`")
+        return False
+    _, conclusion = index[conclusion_key]
+
+    wanted = [conclusion_key] + [
+        f"{d.get('node')}.{d.get('conclusion')}" for d in (conclusion.get("imports") or [])
+    ]
+    fingerprints = compute_fingerprints()
+    missing = [name for name in wanted if name not in fingerprints]
+    if missing:
+        print(f"error: no fingerprint for {missing}")
+        return False
+
+    RECEIPTS.mkdir(exist_ok=True)
+    receipt = {
+        "schema": 1,
+        "conclusion": conclusion_key,
+        "challenge": conclusion.get("challenge"),
+        "statement": {name: fingerprints[name] for name in wanted},
+        "environment": current_environment(),
+        "solution": {"project": solution},
+        "run": {"workflow_run": run_url, "recorded_at": stamp},
+    }
+    path = receipt_path(conclusion_key)
+    path.write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
+    )
+    print(f"wrote {rel(path)}")
+    return True
 
 
 # ---------------------------------------------------------------------------
@@ -908,7 +1083,7 @@ def deprecate(node_id: str, replacement: str) -> bool:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
-    for name in ("check-closure", "check-graph", "report", "housekeeping", "check"):
+    for name in ("check-closure", "check-graph", "report", "housekeeping", "status", "check"):
         sub.add_parser(name)
     generate = sub.add_parser("gen-challenges")
     generate.add_argument("--check", action="store_true", help="fail instead of rewriting")
@@ -921,6 +1096,11 @@ def main() -> int:
     )
     version = sub.add_parser("new-version")
     version.add_argument("family", help="e.g. Lcm")
+    written = sub.add_parser("record-receipt", help="verification workflow only")
+    written.add_argument("conclusion")
+    written.add_argument("--solution", required=True)
+    written.add_argument("--run-url", default="")
+    written.add_argument("--stamp", default="", help="timestamp; display only")
     retire = sub.add_parser("deprecate")
     retire.add_argument("node", help="e.g. Lcm.v1")
     retire.add_argument("--for", dest="replacement", required=True, help="e.g. Lcm.v2")
@@ -936,6 +1116,10 @@ def main() -> int:
         return 0 if fingerprint(args.check) else 1
     if args.command == "report":
         return 0 if report() else 1
+    if args.command == "status":
+        return 0 if status() else 1
+    if args.command == "record-receipt":
+        return 0 if record_receipt(args.conclusion, args.solution, args.run_url, args.stamp) else 1
     if args.command == "housekeeping":
         return 0 if housekeeping() else 1
     if args.command == "new-node":
