@@ -65,6 +65,8 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - name: Type-check the tooling
         run: npx --yes pyright@1.1.413
+      - name: Tooling unit tests
+        run: python3 -m unittest discover -s tests
       - name: Import closure, graph well-formedness, generated challenges
         run: python3 scripts/ieantn.py check
       - name: Report what each conclusion rests on

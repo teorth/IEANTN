@@ -69,6 +69,23 @@ VERIFIED_KINDS = {"lean-comparator"}
 NODE_STATUSES = {"template", "stub", "awaiting-solution", "active", "deprecated"}
 
 IMPORT_RE = re.compile(r"^import\s+([A-Za-z0-9_.]+)\s*$", re.MULTILINE)
+
+
+def _set_root(path: pathlib.Path) -> None:
+    """Repoint every path global at `path`.
+
+    For the tests, which run the real functions against a fixture repository rather than against
+    this one. Nothing else should call it: the paths are derived from `__file__` precisely so that
+    the tooling cannot be pointed somewhere unexpected by accident.
+    """
+    global ROOT, NODES_DIR, VOCAB_DIR, FINGERPRINTS, RECEIPTS, CHANGES, SOLUTIONS
+    ROOT = path
+    NODES_DIR = ROOT / "IEANTN" / "Nodes"
+    VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
+    FINGERPRINTS = ROOT / "fingerprints.json"
+    RECEIPTS = ROOT / "receipts"
+    CHANGES = ROOT / "changes"
+    SOLUTIONS = ROOT / "Solutions"
 VERSION_RE = re.compile(r"^v(\d+)$")
 
 
@@ -242,6 +259,18 @@ def check_closure() -> bool:
                         rel(challenge),
                         f"a Challenge file may import only Conclusions files; found `{module}`",
                     )
+
+    # A solution takes the core as a path dependency, and Lake builds a path dependency with the
+    # *root* project's toolchain. A solution pinning its own would therefore either be ignored or
+    # try to build the core under the wrong Lean -- so a divergent pin cannot work, and an
+    # identical one is noise that will silently drift. Solutions inherit the repository toolchain;
+    # what pins a verification is the commit its receipt records.
+    for toolchain in sorted(SOLUTIONS.glob("*/lean-toolchain")) if SOLUTIONS.is_dir() else []:
+        problems.add(
+            rel(toolchain),
+            "a solution must not carry its own `lean-toolchain`; it inherits the repository's, and "
+            "its verification is pinned by the commit recorded in its receipt. Delete this file.",
+        )
 
     return problems.report("import closure")
 
