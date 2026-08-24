@@ -57,7 +57,22 @@ access, which is an accident rather than a policy.
 **6. Staleness and the housekeeping queue's time-sensitive half.** Green / yellow / orange against
 the Mathlib cache window (CONTRIBUTING §8).
 
-**7. Visualisation.** A rendered graph over the receipts and metadata, computed rather than
+**7. Unit tests for the tooling.** There are none. `scripts/ieantn.py` is now around a thousand
+lines carrying every invariant the network relies on, and it is exercised only by being run on a
+two-node repository where most branches never execute. The tests that matter most are the ones a
+manual check cannot give:
+
+* a fixture repository with several nodes, versions, bridges and receipts, so `check-graph`,
+  `diff`, `status` and `housekeeping` run against a graph with actual shape;
+* **assertions that each substitution changed something** -- the silent-no-op class in the code
+  audit below is the one unit tests would have caught outright;
+* round-trip tests for `gen-challenges`, `new-version` and `deprecate`, including that comments
+  survive;
+* the fingerprint invariants, which were checked by hand once and should not have to be again:
+  a binder rename does not move a fingerprint, an edited numeral does, and a Vocabulary edit
+  propagates.
+
+**8. Visualisation.** A rendered graph over the receipts and metadata, computed rather than
 re-running any verification.
 
 ## Code audit, still to do
@@ -86,6 +101,10 @@ whatever it did not model.
 
 **Heuristics where exact data was available.** The fingerprinter first decided "is this constant
 ours?" by guessing at name prefixes; the environment records the defining module exactly.
+
+**Environment-dependent checks.** The pyright step passed locally and failed in CI, because
+`ruamel.yaml` is installed on the author's machine and CI installs only `pyyaml`. Any check whose
+result depends on what happens to be installed is not really a check.
 
 **Cross-platform hazards, all from authoring on Windows and running on Linux.** A file committed as
 `scripts/Hash.lean` while the lakefile said `Scripts.Hash` built locally and would have failed CI.
