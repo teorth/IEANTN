@@ -11,10 +11,13 @@ routine node-management tasks.
     python scripts/ieantn.py report                  what each conclusion actually rests on
     python scripts/ieantn.py fingerprint             recompute the statement fingerprints
     python scripts/ieantn.py fingerprint --check     fail if any has moved
+    python scripts/ieantn.py status                  the traffic light for every conclusion
+    python scripts/ieantn.py diff --base origin/main what this branch degrades, and for whom
     python scripts/ieantn.py housekeeping            the derived task queue
     python scripts/ieantn.py check                   every check, in --check mode
 
     python scripts/ieantn.py new-node FKS2           scaffold a brand-new node at v1
+    python scripts/ieantn.py new-solution Lcm.v1     scaffold a solution project
     python scripts/ieantn.py new-version Lcm         scaffold Lcm.v2 from the latest version
     python scripts/ieantn.py deprecate Lcm.v1 --for Lcm.v2
 
@@ -30,10 +33,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import pathlib
-import subprocess
 import re
-import shutil
+import subprocess
 import sys
 
 try:
@@ -45,6 +48,13 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 NODES_DIR = ROOT / "IEANTN" / "Nodes"
 VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
 FINGERPRINTS = ROOT / "fingerprints.json"
+RECEIPTS = ROOT / "receipts"
+CHANGES = ROOT / "changes"
+SOLUTIONS = ROOT / "Solutions"
+
+#: Toolchain minor releases behind current, past which a refresh is assumed to fall outside the
+#: Mathlib cache window and cost many times the per-node budget. A heuristic, not a measurement.
+CACHE_WINDOW_RELEASES = 2
 
 #: A justification that stands on its own evidence.
 PRIMITIVE_KINDS = {"lean-comparator", "numerical", "literature", "asserted", "none-yet"}
@@ -343,12 +353,22 @@ def check_graph() -> bool:
                         f"conclusion `{cid}`, justification `{jid}`: kind `{kind}` is not one of "
                         + ", ".join(sorted(JUSTIFICATION_KINDS)),
                     )
-                if kind == "lean-comparator" and justification.get("receipt") is None:
-                    problems.add(
-                        where,
-                        f"conclusion `{cid}`, justification `{jid}`: `lean-comparator` but no "
-                        "receipt is recorded",
-                    )
+                if kind == "lean-comparator":
+                    key = f"{node_id}.{cid}"
+                    receipt = load_receipt(key)
+                    if receipt is None:
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`, justification `{jid}`: `lean-comparator` but "
+                            f"{rel(receipt_path(key))} does not exist. Receipts are written by "
+                            "the verification workflow, not by hand.",
+                        )
+                    elif receipt.get("conclusion") != key:
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`: {rel(receipt_path(key))} records "
+                            f"`{receipt.get('conclusion')}`",
+                        )
                 if kind == "bridged":
                     if not justification.get("from"):
                         problems.add(
@@ -578,6 +598,277 @@ def fingerprint(check_only: bool) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# receipts and status
+# ---------------------------------------------------------------------------
+
+
+def current_environment() -> dict:
+    """The environment a verification run today would happen in."""
+    manifest = json.loads((ROOT / "lake-manifest.json").read_text(encoding="utf-8"))
+    mathlib = next(
+        (
+            package.get("rev")
+            for package in manifest.get("packages", [])
+            if package.get("name") == "mathlib"
+        ),
+        None,
+    )
+    return {
+        "lean_toolchain": (ROOT / "lean-toolchain").read_text(encoding="utf-8").strip(),
+        "mathlib_rev": mathlib,
+    }
+
+
+def receipt_path(conclusion_key: str) -> pathlib.Path:
+    return RECEIPTS / f"{conclusion_key}.json"
+
+
+def load_receipt(conclusion_key: str) -> dict | None:
+    path = receipt_path(conclusion_key)
+    if not path.is_file():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def release_distance(recorded: str, current: str) -> int | None:
+    """How many Lean minor releases apart two toolchain strings are, if it can be told.
+
+    Compares `(major, minor)` pairs, not minor alone: `v4.34` to `v5.2` is not thirty-two releases
+    apart. A differing major version is reported as beyond the cache window, since it certainly is.
+    Returns None when either string is unrecognisable, so the caller falls back to the
+    undifferentiated "stale" verdict rather than inventing a number.
+    """
+    pattern = re.compile(r"v(\d+)\.(\d+)")
+    left, right = pattern.search(recorded or ""), pattern.search(current or "")
+    if not left or not right:
+        return None
+    old_major, old_minor = int(left.group(1)), int(left.group(2))
+    new_major, new_minor = int(right.group(1)), int(right.group(2))
+    if old_major != new_major:
+        return CACHE_WINDOW_RELEASES + 1
+    return abs(new_minor - old_minor)
+
+
+def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str]) -> tuple[str, str]:
+    """Grade one receipt against the world as it is now.
+
+    Two axes, deliberately not collapsed (ARCHITECTURE section 4):
+
+    * a **statement** that has moved is a *broken edge* -- the verified implication no longer
+      connects to what is now claimed. Binary and fatal, however small the edit;
+    * an **environment** that has moved is ordinary staleness. Graduated, and expected.
+    """
+    recorded = receipt.get("statement") or {}
+    for name, digest in sorted(recorded.items()):
+        now = fingerprints.get(name)
+        if now is None:
+            return "BROKEN", f"`{name}` no longer exists"
+        if now != digest:
+            which = "its own statement" if name == conclusion_key else f"`{name}`"
+            return "BROKEN", f"{which} changed since verification"
+
+    environment = receipt.get("environment") or {}
+    current = current_environment()
+    if environment.get("mathlib_rev") == current["mathlib_rev"]:
+        return "green", "verified against the current environment"
+
+    recorded_toolchain = environment.get("lean_toolchain", "?")
+    distance = release_distance(recorded_toolchain, current["lean_toolchain"])
+    detail = f"verified under {recorded_toolchain}, now {current['lean_toolchain']}"
+    if distance is not None and distance > CACHE_WINDOW_RELEASES:
+        return "orange", f"{detail} ({distance} releases; likely outside the cache window)"
+    return "yellow", detail
+
+
+def status() -> bool:
+    """The traffic light for every conclusion."""
+    nodes = load_nodes()
+    fingerprints = compute_fingerprints()
+    lights = {"green": 0, "yellow": 0, "orange": 0, "BROKEN": 0, "-": 0}
+
+    print("Conclusion status")
+    print("=" * 78)
+    for node_id, node in sorted(nodes.items()):
+        for conclusion in conclusions_of(node):
+            key = f"{node_id}.{conclusion.get('id')}"
+            kind = designated_kind(conclusion)
+            if kind != "lean-comparator":
+                lights["-"] += 1
+                print(f"  -       {key}")
+                print(f"          not Lean-verified here; designated `{kind}`")
+                continue
+            receipt = load_receipt(key)
+            if receipt is None:
+                lights["BROKEN"] += 1
+                print(f"  BROKEN  {key}")
+                print("          designated `lean-comparator` but no receipt file")
+                continue
+            light, detail = assess(key, receipt, fingerprints)
+            lights[light] += 1
+            print(f"  {light:<7} {key}")
+            print(f"          {detail}")
+
+    print("\n" + "=" * 78)
+    print(
+        "  ".join(f"{name}: {count}" for name, count in lights.items() if count)
+        or "  nothing recorded"
+    )
+    if lights["BROKEN"]:
+        print("\nA BROKEN receipt is not staleness: the verified implication no longer connects")
+        print("to what the node now claims. Re-verify, or make a new version.")
+    return True
+
+
+def new_solution(node_id: str) -> bool:
+    """Scaffold `Solutions/<node>/` as its own Lake project.
+
+    A solution is a separate Lake project so its dependencies stay its own: a proof needing PNT+ or
+    LeanCert must not force those on the core, which has to stay Mathlib-only and fast. It takes
+    the core as a path dependency in order to see the node's `Conclusions`.
+
+    It deliberately does *not* import the node's `Challenge`: Comparator compares two modules
+    declaring the same names, so importing it would collide.
+    """
+    nodes = load_nodes()
+    if node_id not in nodes:
+        print(f"error: unknown node `{node_id}`")
+        return False
+    target = SOLUTIONS / node_id
+    if target.exists():
+        print(f"error: {rel(target)} already exists")
+        return False
+
+    conclusions = conclusions_of(nodes[node_id])
+    theorems = [f"{node_id}.challenge_{c.get('id')}" for c in conclusions]
+    target.mkdir(parents=True)
+
+    (target / "lakefile.toml").write_text(
+        f'name = "solution_{node_id.replace(".", "_")}"\n'
+        'defaultTargets = ["Solution"]\n\n'
+        "# The core library, for the node's `Conclusions`. Add whatever else the proof needs --\n"
+        "# PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.\n"
+        "[[require]]\n"
+        'name = "IEANTN"\n'
+        'path = "../.."\n\n'
+        "[[lean_lib]]\n"
+        'name = "Solution"\n'
+        'roots = ["Solution"]\n',
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    body = []
+    for conclusion in conclusions:
+        cid = conclusion.get("id")
+        imports = conclusion.get("imports") or []
+        binder = "".join(
+            f"\n    ({hypothesis_name(d)} : {d.get('node')}.{d.get('conclusion')})" for d in imports
+        )
+        if binder:
+            body.append(f"theorem {node_id}.challenge_{cid}{binder} :\n    {node_id}.{cid} := by")
+        else:
+            body.append(f"theorem {node_id}.challenge_{cid} : {node_id}.{cid} := by")
+        body.append("  sorry\n")
+
+    needed = sorted(
+        {module_of(node_id)}
+        | {module_of(str(d.get("node"))) for c in conclusions for d in (c.get("imports") or [])}
+    )
+    (target / "Solution.lean").write_text(
+        "/-\nCopyright (c) 2026 IEANTN contributors. All rights reserved.\n"
+        "Released under Apache 2.0 license as described in the file LICENSE.\nAuthors: TODO\n-/\n"
+        + "".join(f"import {module}\n" for module in needed)
+        + f"""
+/-!
+# Solution: `{node_id}`
+
+Proves the same declarations `Challenge.lean` states. Do **not** import the challenge module --
+Comparator compares two modules declaring the same names, so importing it would collide.
+
+This file may import anything. It is not part of the core build, and it is verified once and then
+left alone; readability is not a goal here.
+
+Replace each `sorry` below. While any remain, record progress in the node's `formalization.yaml`
+under `progress`, and leave the justification alone -- an incomplete solution justifies nothing.
+-/
+
+"""
+        + "\n".join(body),
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    (target / "comparator.json").write_text(
+        json.dumps(
+            {
+                "challenge_module": f"IEANTN.Nodes.{node_id}.Challenge",
+                "solution_module": "Solution",
+                "theorem_names": theorems,
+                "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+                "enable_nanoda": True,
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    print(f"created {rel(target)}")
+    print("\nnext:")
+    print(f"  1. prove the {len(theorems)} declaration(s) in {rel(target / 'Solution.lean')}")
+    print(f"  2. cd {rel(target)} && lake build")
+    print("  3. ask a maintainer to run the `Verify a solution` workflow for this node")
+    print("\nDo not edit the justification or write a receipt yourself: receipts are written by")
+    print("the verification workflow, and one you can write attests nothing.")
+    return True
+
+
+def record_receipt(node_id: str, solution: str, run_url: str, stamp: str) -> bool:
+    """Write a receipt. **Run by the verification workflow, never by an author.**
+
+    An author-written receipt is worth nothing -- it is a claim of verification typed by the
+    person making the claim. The protection is not this function refusing to run; it is that
+    `receipts/` is writable only by the verification workflow's identity, enforced by a ruleset
+    path restriction, and that a receipt arriving in a PR from anyone else is a review failure.
+    """
+    nodes = load_nodes()
+    if node_id not in nodes:
+        print(f"error: unknown node `{node_id}`")
+        return False
+
+    fingerprints = compute_fingerprints()
+    RECEIPTS.mkdir(exist_ok=True)
+    for conclusion in conclusions_of(nodes[node_id]):
+        key = f"{node_id}.{conclusion.get('id')}"
+        wanted = [key] + [
+            f"{d.get('node')}.{d.get('conclusion')}" for d in (conclusion.get("imports") or [])
+        ]
+        missing = [name for name in wanted if name not in fingerprints]
+        if missing:
+            print(f"error: no fingerprint for {missing}")
+            return False
+        receipt = {
+            "schema": 1,
+            "conclusion": key,
+            "challenge": conclusion.get("challenge"),
+            "statement": {name: fingerprints[name] for name in wanted},
+            "environment": current_environment(),
+            "solution": {"project": solution},
+            "run": {"workflow_run": run_url, "recorded_at": stamp},
+        }
+        path = receipt_path(key)
+        path.write_text(
+            json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
+        )
+        print(f"wrote {rel(path)}")
+    return True
+
+
+# ---------------------------------------------------------------------------
 # report / housekeeping
 # ---------------------------------------------------------------------------
 
@@ -674,6 +965,184 @@ def housekeeping() -> bool:
     for task in tasks or ["  nothing outstanding"]:
         print(f"  {task}" if tasks else task)
     return True
+
+
+# ---------------------------------------------------------------------------
+# diff: what this branch degrades
+# ---------------------------------------------------------------------------
+
+
+def git_show(ref: str, path: str) -> str | None:
+    """The contents of `path` at `ref`, or None if it did not exist there."""
+    finished = subprocess.run(
+        ["git", "show", f"{ref}:{path}"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    return finished.stdout if finished.returncode == 0 else None
+
+
+def state_at(ref: str | None) -> dict:
+    """The graph as it stands at `ref`, or in the working tree when `ref` is None.
+
+    Reading the base state needs no Lean at all: `fingerprints.json` is committed, so the
+    statements as they were are recoverable with `git show`. That is most of why this check is
+    cheap enough to run on every pull request.
+    """
+    if ref is None:
+        nodes = load_nodes()
+        fingerprints = (
+            json.loads(FINGERPRINTS.read_text(encoding="utf-8")) if FINGERPRINTS.is_file() else {}
+        )
+        receipts = {
+            path.stem: json.loads(path.read_text(encoding="utf-8"))
+            for path in (RECEIPTS.glob("*.json") if RECEIPTS.is_dir() else [])
+        }
+    else:
+        listing = subprocess.run(
+            ["git", "ls-tree", "-r", "--name-only", ref],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        ).stdout.splitlines()
+        nodes = {}
+        for path in listing:
+            if path.startswith("IEANTN/Nodes/") and path.endswith("formalization.yaml"):
+                raw = git_show(ref, path)
+                if raw is None:
+                    continue
+                data = yaml.safe_load(raw) or {}
+                directory = ROOT / pathlib.PurePosixPath(path).parent
+                data["_dir"] = directory
+                nodes[node_id_of(directory)] = data
+        raw = git_show(ref, "fingerprints.json")
+        fingerprints = json.loads(raw) if raw else {}
+        receipts = {}
+        for path in listing:
+            if path.startswith("receipts/") and path.endswith(".json"):
+                raw = git_show(ref, path)
+                if raw:
+                    receipts[pathlib.PurePosixPath(path).stem] = json.loads(raw)
+
+    conclusions = {}
+    for node_id, node in nodes.items():
+        for conclusion in conclusions_of(node):
+            conclusions[f"{node_id}.{conclusion.get('id')}"] = {
+                "imports": [
+                    f"{d.get('node')}.{d.get('conclusion')}"
+                    for d in (conclusion.get("imports") or [])
+                ],
+                "kind": designated_kind(conclusion),
+            }
+    return {"conclusions": conclusions, "fingerprints": fingerprints, "receipts": receipts}
+
+
+def acknowledged() -> dict[str, str]:
+    """Conclusions this branch explicitly acknowledges breaking, and why.
+
+    An override, not a routine step -- see CONTRIBUTING.md. It exists for the case where a change
+    is genuinely breaking and has to land anyway, and its value comes from being rare enough that a
+    reviewer notices one in the diff.
+    """
+    result: dict[str, str] = {}
+    for path in sorted(CHANGES.glob("*.yaml")) if CHANGES.is_dir() else []:
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        for entry in data.get("acknowledge") or []:
+            if entry.get("conclusion"):
+                result[entry["conclusion"]] = entry.get("reason", "(no reason given)")
+    return result
+
+
+def diff(base: str) -> bool:
+    """Report what this branch degrades, and fail on the one class that must not be silent."""
+    before, after = state_at(base), state_at(None)
+    excused = acknowledged()
+    errors: list[str] = []
+    warnings: list[str] = []
+    notes: list[str] = []
+
+    importers_before: dict[str, list[str]] = {}
+    for key, entry in before["conclusions"].items():
+        for target in entry["imports"]:
+            importers_before.setdefault(target, []).append(key)
+
+    for key, entry in sorted(before["conclusions"].items()):
+        old = before["fingerprints"].get(key)
+        new = after["fingerprints"].get(key)
+
+        if key not in after["conclusions"]:
+            users = importers_before.get(key, [])
+            if users:
+                errors.append(
+                    f"**`{key}` was removed** but {len(users)} conclusion(s) still import it at "
+                    f"the base: {', '.join(f'`{u}`' for u in users)}."
+                )
+            else:
+                notes.append(f"`{key}` removed; nothing imported it.")
+            continue
+
+        if old is None or new is None or old == new:
+            continue
+
+        users = importers_before.get(key, [])
+        had_receipt = key in before["receipts"]
+        detail = []
+        if users:
+            detail.append(f"{len(users)} importer(s): " + ", ".join(f"`{u}`" for u in users))
+        if had_receipt:
+            detail.append("a recorded receipt")
+
+        if not detail:
+            notes.append(f"`{key}` restated; nothing depended on it.")
+        elif key in excused:
+            warnings.append(
+                f"**`{key}` edited in place** ({'; '.join(detail)}) -- acknowledged: "
+                f"{excused[key]}"
+            )
+        else:
+            errors.append(
+                f"**`{key}` was edited in place**, and it has {'; '.join(detail)}.\n\n"
+                f"  Editing a conclusion others depend on changes what *they* claim. Make a new "
+                f"version instead:\n\n  ```bash\n  python scripts/ieantn.py new-version "
+                f"{key.split('.')[0]}\n  ```\n\n  If this must land anyway, add a `changes/*.yaml` "
+                f"acknowledgement (see CONTRIBUTING.md)."
+            )
+
+    for key, receipt in sorted(after["receipts"].items()):
+        for name, digest in (receipt.get("statement") or {}).items():
+            if after["fingerprints"].get(name) != digest:
+                warnings.append(
+                    f"Receipt for `{key}` is now **BROKEN**: `{name}` no longer matches what was "
+                    "verified."
+                )
+                break
+
+    for key, entry in sorted(after["conclusions"].items()):
+        if key not in before["conclusions"]:
+            notes.append(f"new conclusion `{key}` (`{entry['kind']}`).")
+
+    lines = ["## Network impact", ""]
+    if not (errors or warnings or notes):
+        lines.append("No change to any statement, dependency, or receipt.")
+    for heading, items in (
+        ("### Breaking", errors),
+        ("### Degraded", warnings),
+        ("### Informational", notes),
+    ):
+        if items:
+            lines += [heading, ""] + [f"- {item}" for item in items] + [""]
+    report = "\n".join(lines)
+    print(report)
+
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a", encoding="utf-8") as handle:
+            handle.write(report + "\n")
+
+    return not errors
 
 
 # ---------------------------------------------------------------------------
@@ -908,7 +1377,7 @@ def deprecate(node_id: str, replacement: str) -> bool:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
-    for name in ("check-closure", "check-graph", "report", "housekeeping", "check"):
+    for name in ("check-closure", "check-graph", "report", "housekeeping", "status", "check"):
         sub.add_parser(name)
     generate = sub.add_parser("gen-challenges")
     generate.add_argument("--check", action="store_true", help="fail instead of rewriting")
@@ -921,6 +1390,15 @@ def main() -> int:
     )
     version = sub.add_parser("new-version")
     version.add_argument("family", help="e.g. Lcm")
+    changed = sub.add_parser("diff")
+    changed.add_argument("--base", default="origin/main")
+    solution = sub.add_parser("new-solution")
+    solution.add_argument("node", help="e.g. Lcm.v1")
+    written = sub.add_parser("record-receipt", help="verification workflow only")
+    written.add_argument("node", help="e.g. Lcm.v1")
+    written.add_argument("--solution", required=True)
+    written.add_argument("--run-url", default="")
+    written.add_argument("--stamp", default="", help="timestamp; display only")
     retire = sub.add_parser("deprecate")
     retire.add_argument("node", help="e.g. Lcm.v1")
     retire.add_argument("--for", dest="replacement", required=True, help="e.g. Lcm.v2")
@@ -936,6 +1414,14 @@ def main() -> int:
         return 0 if fingerprint(args.check) else 1
     if args.command == "report":
         return 0 if report() else 1
+    if args.command == "status":
+        return 0 if status() else 1
+    if args.command == "diff":
+        return 0 if diff(args.base) else 1
+    if args.command == "new-solution":
+        return 0 if new_solution(args.node) else 1
+    if args.command == "record-receipt":
+        return 0 if record_receipt(args.node, args.solution, args.run_url, args.stamp) else 1
     if args.command == "housekeeping":
         return 0 if housekeeping() else 1
     if args.command == "new-node":

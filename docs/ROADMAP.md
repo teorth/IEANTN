@@ -20,27 +20,127 @@ results committed to `fingerprints.json`. Structural, not pretty-printed, and Me
 IEANTN's own definitions so a Vocabulary edit propagates. See the module docstring for the one
 kind of change it deliberately cannot see.
 
-**2. Verification receipts.** `receipts/<node>.<conclusion>.json`, content-addressed
-(ARCHITECTURE §4). **Writable only by the verification workflow's identity**, via a ruleset path
-restriction: an author-written receipt is worthless. `check-graph` should then require every
-`lean-comparator` justification to have a matching receipt file.
+**2. Verification receipts.** *Done* — `receipts/<conclusion>.json`, content-addressed, with
+`ieantn.py record-receipt` (workflow-only) and `ieantn.py status` grading them green / yellow /
+orange / BROKEN. `check-graph` refuses a `lean-comparator` justification with no matching receipt.
 
-**3. The breaking-change detector.** Compute the graph at the PR base and at `HEAD`, then diff.
-Hard-fails when a conclusion with downstream importers or a recorded receipt is edited in place,
-with `new-version` as the suggested fix.
+**Still to configure, once a receipt actually exists:** the ruleset path rule restricting
+`receipts/` to the verification workflow's identity. Until that is set, the protection is review
+convention rather than enforcement.
 
-**4. The reviewer report.** Same machinery as (3): posts a PR comment naming the receipts that went
-stale, new unjustified leaves, blast radius, and a recommended modification. Advisory, never
-blocking.
+**3. The breaking-change detector.** *Done* -- `ieantn.py diff --base <ref>`, run on every pull
+request. Fails when a conclusion with downstream importers or a recorded receipt is edited in
+place, or when one that is still imported is removed, with `new-version` as the suggested fix and
+`changes/*.yaml` as the override.
 
-**5. The `/verify` bot.** A maintainer-approved `workflow_dispatch` that runs Comparator on one
-node's solution and, on success, commits the receipt and flips the justification.
+Recovering the base state needs no Lean: `fingerprints.json` is committed, so the statements as
+they were are readable with `git show`. That is most of why this is cheap enough to run per PR.
+
+**4. The reviewer report.** *Partly done* -- `diff` writes its findings to the job summary, which
+needs no token and no permissions. Still to do: posting it as a PR comment so it appears inline,
+and adding the recommended-modification text for cases beyond the in-place edit.
+
+**5. Verification.** *Mostly done* -- `scripts/verify-comparator.sh` with the four trusted tools
+pinned, and `.github/workflows/verify.yml` splitting the run in two: `comparator` executes
+contributor code with **no write access and no secrets**, and `receipt` holds write access but runs
+no contributor code and recomputes the fingerprints itself from the core library.
+
+**Untested end to end**, because no solution exists yet to verify. The pieces that could be tested
+were: the scaffolder produces a project that builds, and `record-receipt` produces correct
+receipts.
+
+**Still to configure:** a `verification` GitHub Environment with required reviewers, so that
+*requesting* a verification is open to any contributor while *approving* the run stays with
+maintainers. Without it, `workflow_dispatch` silently restricts requests to people with write
+access, which is an accident rather than a policy.
 
 **6. Staleness and the housekeeping queue's time-sensitive half.** Green / yellow / orange against
 the Mathlib cache window (CONTRIBUTING §8).
 
-**7. Visualisation.** A rendered graph over the receipts and metadata, computed rather than
+**7. Unit tests for the tooling.** There are none. `scripts/ieantn.py` is now around a thousand
+lines carrying every invariant the network relies on, and it is exercised only by being run on a
+two-node repository where most branches never execute. The tests that matter most are the ones a
+manual check cannot give:
+
+* a fixture repository with several nodes, versions, bridges and receipts, so `check-graph`,
+  `diff`, `status` and `housekeeping` run against a graph with actual shape;
+* **assertions that each substitution changed something** -- the silent-no-op class in the code
+  audit below is the one unit tests would have caught outright;
+* round-trip tests for `gen-challenges`, `new-version` and `deprecate`, including that comments
+  survive;
+* the fingerprint invariants, which were checked by hand once and should not have to be again:
+  a binder rename does not move a fingerprint, an edited numeral does, and a Vocabulary edit
+  propagates.
+
+**8. Visualisation.** A rendered graph over the receipts and metadata, computed rather than
 re-running any verification.
+
+## Code audit, still to do
+
+The tooling has accumulated a real defect rate during the proof-of-concept phase, and the classes
+below are the ones actually observed rather than a generic wish for review. They are recorded
+because each predicts where the next one will be.
+
+**Silent no-ops.** The worst class, because the tool reports success. A blanket `v1` to `v2`
+rewrite in `new-version` silently repointed a node's *imports* at a version that did not exist. A
+`re.sub` written for four-space indentation matched nothing after ruamel had normalised a file to
+two, and the edit "succeeded". **Rule to enforce: every string or regex substitution in the tooling
+must assert that it changed something.** The throwaway patch scripts used during development do
+exactly this, and it is what caught most of these; the shipped tooling does not.
+
+**Tests that do not test.** An `exit=$?` after a pipe reports the exit code of `head`. A `sed` that
+matched nothing left a test asserting a property it had not established. This is the project's own
+failure mode one level up: a check that passes vacuously is the junk-value problem applied to CI,
+and it deserves the same suspicion the Vocabulary docstrings give to `tsum`.
+**There are currently no unit tests for `scripts/ieantn.py` at all.**
+
+**Destructive round-trips.** `yaml.safe_dump` silently discarded every comment in a node's
+metadata, where the comments carry the provenance. Fixed by moving the mutating commands to
+ruamel, but the general rule stands: a tool that rewrites a file it did not fully parse will lose
+whatever it did not model.
+
+**Heuristics where exact data was available.** The fingerprinter first decided "is this constant
+ours?" by guessing at name prefixes; the environment records the defining module exactly.
+
+**Environment-dependent checks.** The pyright step passed locally and failed in CI, because
+`ruamel.yaml` is installed on the author's machine and CI installs only `pyyaml`. Any check whose
+result depends on what happens to be installed is not really a check.
+
+**Cross-platform hazards, all from authoring on Windows and running on Linux.** A file committed as
+`scripts/Hash.lean` while the lakefile said `Scripts.Hash` built locally and would have failed CI.
+An em dash in a report rendered as a replacement character on the Windows console, and would have
+done so in the CI summary. Line endings are converted on every commit.
+
+**Dead code and obfuscated expressions.** Two dead-code findings and one function written as an
+index into a throwaway tuple, which also ignored the major version, so `v4.34` to `v5.2` came out
+as thirty-two releases apart. Now caught by `pyrightconfig.json` in CI.
+
+## Security audit, still to do
+
+Worth being proactive about, given that contributors are increasingly agents and that some pull
+requests will be too large for a human to review. Four vectors, with what exists today:
+
+**Executable code in submitted Lean.** Elaboration can run arbitrary code, so any job that
+compiles contributor Lean is running their program. Mitigated for verification by the privilege
+split in `verify.yml` and by Comparator's Landlock sandbox. **Not** separately mitigated for the
+*core* CI build, which compiles a PR's `Conclusions.lean`; it holds only `contents: read` and no
+secrets, so the exposure is compute rather than credentials, but it has not been audited.
+
+**Denial of service by triggering CI.** The verification workflow is hour-scale and should sit
+behind the environment gate above. Core CI runs per push and is cheap, but nothing rate-limits it.
+
+**Degradation of the informal layer -- the one that most deserves attention.** Statement
+fingerprints cover the *Lean* statement and nothing else. A pull request can rewrite a conclusion's
+docstring so it appears to say something it does not, change a `locator` from "Proposition 5.4" to
+"Proposition 5.7", swap a `source` for a different paper, or flip a justification from `none-yet`
+to `literature` with a fabricated citation -- **and no fingerprint moves, so nothing in CI
+notices.** For `literature`, `asserted` and `numerical` nodes, which will be most of the network,
+that informal layer *is* the evidence. The cheap first step is to fingerprint each conclusion's
+justification and sources alongside its statement, so that such a change at least appears in the
+impact report rather than passing silently.
+
+**Trust in the tool pins.** Four revisions in `scripts/verify-comparator.sh` are the trusted base
+of every receipt. Bumping them is a security change, not a chore.
 
 ## A bridge must be trust-neutral
 

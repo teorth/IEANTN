@@ -1,0 +1,12 @@
+name = "solution_Lcm_v1"
+defaultTargets = ["Solution"]
+
+# The core library, for the node's `Conclusions`. Add whatever else the proof needs --
+# PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]

@@ -1,0 +1,8 @@
+# Tooling dependencies.
+#
+# `pyyaml` is all the read-only checks need, and all CI needs at runtime.
+# `ruamel.yaml` is required only by the mutating commands (`new-version`, `deprecate`), because it
+# round-trips comments and `yaml.safe_dump` destroys them. It is installed for type-checking so
+# that pyright actually checks that code path rather than being told to ignore it.
+pyyaml>=6.0
+ruamel.yaml>=0.18

@@ -8,8 +8,8 @@ one.
 Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) once before your first contribution.
 [docs/NODES.md](docs/NODES.md) is the reference for node file formats.
 
-> **Status.** Marked *(planned)* below: the breaking-change detector, the `/verify` bot, and the
-> reviewer report. Everything else works today.
+> **Status.** Marked *(planned)* below: the `/verify` bot, and posting the reviewer report as a PR
+> comment rather than to the job summary. Everything else works today.
 
 ## Two principles
 
@@ -78,10 +78,15 @@ bot commits the receipt and flips the justification to `lean-comparator`.
 
 > **Receipts must be written by the verifier, never by the author** — otherwise anyone can claim
 > verification by typing it, and every downstream trust computation is decorative. Receipts
-> therefore live under `receipts/`, not in `formalization.yaml`, and that path is writable only by
-> the verification workflow's identity (a ruleset path restriction). `check-graph` requires a
-> `lean-comparator` justification to have a corresponding receipt file. *(planned: `receipts/`
-> currently does not exist and receipts are a `null` field in the yaml.)*
+> therefore live under `receipts/`, not in `formalization.yaml`, and that path is to be restricted
+> to the verification workflow's identity by a ruleset path rule. `check-graph` already refuses a
+> `lean-comparator` justification with no matching receipt file. *(planned: the `/verify` bot that
+> triggers the run, and the ruleset rule itself.)*
+
+Check the result with `python scripts/ieantn.py status`, which grades each receipt `green`,
+`yellow`, `orange` or `BROKEN`. `BROKEN` means a statement moved — the conclusion's own, or one it
+imports — so the verified implication no longer connects to what is now claimed. That is not
+staleness and it does not age gracefully; re-verify, or make a new version.
 
 ## 4. Modify a conclusion
 
@@ -102,8 +107,8 @@ is least work:
 | Port the solution | The proof survives the restatement with small edits. |
 | Bridge from the old version | The old conclusion implies the new one. Usually the cheapest. |
 
-**CI:** editing a depended-on conclusion in place is a hard failure *(planned)*; making a new
-version is always green. **Downstream nodes need no action** — they still import the old version.
+**CI:** editing a depended-on conclusion in place is a hard failure; making a new version is
+always green. **Downstream nodes need no action** — they still import the old version.
 
 Deprecate the old version when you want it retired:
 
@@ -240,8 +245,7 @@ that touch enough nodes for the consequences to be hard to hold in your head.
 
 ## The acknowledgement escape hatch
 
-If CI reports that your change breaks something and you need it to land anyway, add
-`changes/<slug>.yaml`:
+If `Network impact` fails and you need the change to land anyway, add `changes/<slug>.yaml`:
 
 ```yaml
 acknowledge:

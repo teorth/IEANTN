@@ -143,7 +143,7 @@ paper uses an unproved folklore fact should **surface that fact as its own node*
 That converts a blocked formalization into a well-posed task — and if the folklore fact serves
 several papers, the whole network benefits at once.
 
-## 4. Verification receipts *(planned)*
+## 4. Verification receipts
 
 A verification records a **receipt**, content-addressed rather than timestamped:
 
@@ -158,8 +158,17 @@ the *elaborated* statement, cosmetic edits to an upstream conclusions file — r
 reformatting, a Vocabulary refactor that unfolds the same way — leave the hash unchanged, and
 nothing goes stale.
 
-Receipts are produced by a dispatchable CI workflow, not on a maintainer's machine: a receipt
-backed by a pinned workflow with public logs is much stronger evidence than one produced locally.
+Receipts live in `receipts/`, one JSON file per verified conclusion, and are produced by a
+dispatchable CI workflow rather than on a maintainer's machine: a receipt backed by a pinned
+workflow with public logs is much stronger evidence than one produced locally.
+
+**They are written by the verifier, never by the author.** A receipt an author can write is a claim
+of verification typed by the person making the claim. `receipts/` is restricted to the verification
+workflow's identity by a ruleset path rule; `check-graph` refuses a `lean-comparator` justification
+with no matching receipt file; and a receipt arriving in a pull request from anyone else is a
+review failure rather than a formatting nit.
+
+`python scripts/ieantn.py status` grades every receipt against the world as it is now.
 
 ### Two axes, deliberately not collapsed
 

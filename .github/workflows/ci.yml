@@ -39,6 +39,9 @@ jobs:
         run: |
           lake build ieantn_hash
           python3 scripts/ieantn.py fingerprint --check
+      # Informational: shows which receipts are green, stale, or broken.
+      - name: Receipt status
+        run: python3 scripts/ieantn.py status
 
   network:
     name: Check the node network
@@ -52,6 +55,16 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install pyyaml
+      # Cheap automated review of the tooling itself. Most of this code is written by agents
+      # and read closely by nobody, which is exactly where a type checker earns its keep.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # Installs ruamel too: it is optional at runtime but the type checker should still see
+      # the code path that uses it, rather than being told to ignore the import.
+      - run: pip install -r requirements-dev.txt
+      - name: Type-check the tooling
+        run: npx --yes pyright@1.1.413
       - name: Import closure, graph well-formedness, generated challenges
         run: python3 scripts/ieantn.py check
       - name: Report what each conclusion rests on
@@ -87,3 +100,24 @@ jobs:
           touch /tmp/pal/scripts/__init__.py
       - name: Validate each node
         run: python3 scripts/check_palomar_metadata.py /tmp/pal
+
+  impact:
+    name: Network impact
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Full history: the base state is recovered with `git show`, not by checking it out.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      # Fails only on the one class that must not be silent: editing a conclusion that other
+      # nodes depend on, or removing one that is still imported. Everything else is reported to
+      # the job summary for the reviewer and does not block.
+      - name: What this branch degrades
+        run: python3 scripts/ieantn.py diff --base "${{ github.event.pull_request.base.sha }}"
