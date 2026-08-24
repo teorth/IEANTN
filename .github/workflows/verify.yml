@@ -1,0 +1,128 @@
+name: Verify a solution
+
+# Runs Comparator against one node's solution and, if it passes, records the receipt.
+#
+# The two jobs are split on privilege, and the split is the security design:
+#
+#   * `comparator` runs UNTRUSTED code -- elaborating a contributor's Lean solution can execute
+#     arbitrary code -- and therefore holds no write access and no secrets.
+#   * `receipt` holds write access but runs no contributor code. It recomputes the statement
+#     fingerprints itself from the core library, which is trusted repository content, so it never
+#     has to believe anything the first job says about them.
+#
+# The residual trust is the same as Palomar's: that Comparator's Landlock sandbox contains the
+# export step, and that this workflow file is itself reviewed. A job running untrusted code can
+# always lie about its own verdict; what it cannot do here is obtain a token or forge a
+# fingerprint.
+
+on:
+  workflow_dispatch:
+    inputs:
+      node:
+        description: "Node to verify, e.g. Lcm.v1"
+        required: true
+      branch:
+        description: "Branch to record the receipt on"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ inputs.node }}
+  cancel-in-progress: false
+
+jobs:
+  comparator:
+    name: Run Comparator
+    runs-on: ubuntu-latest
+    # Gate the *run*, not the request. Configure `verification` with required reviewers so any
+    # contributor can ask for a verification and a maintainer approves it -- verification is
+    # hour-scale compute, so it should not be self-serve, but neither should it need write access
+    # to request.
+    environment: verification
+    permissions:
+      contents: read
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          persist-credentials: false
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.0"
+      - name: Comparator
+        run: |
+          chmod +x scripts/verify-comparator.sh
+          scripts/verify-comparator.sh "${{ inputs.node }}"
+      - name: Record the verdict
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib
+          pathlib.Path("verdict.json").write_text(json.dumps({
+              "node": os.environ["NODE"],
+              "accepted": True,
+              "run": os.environ["RUN_URL"],
+          }, indent=2) + "\n", encoding="utf-8")
+          PY
+        env:
+          NODE: ${{ inputs.node }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verdict
+          path: verdict.json
+          if-no-files-found: error
+
+  receipt:
+    name: Record the receipt
+    needs: comparator
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      - uses: leanprover/lean-action@v1
+        with:
+          build: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - uses: actions/download-artifact@v4
+        with:
+          name: verdict
+      - name: Check the verdict is what it claims
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, sys, os
+          verdict = json.loads(pathlib.Path("verdict.json").read_text(encoding="utf-8"))
+          if verdict.get("node") != os.environ["NODE"] or verdict.get("accepted") is not True:
+              sys.exit(f"refusing to record: unexpected verdict {verdict}")
+          PY
+        env:
+          NODE: ${{ inputs.node }}
+      # Fingerprints are recomputed here from the core library -- trusted repository content, not
+      # the contributor's solution -- so this job never trusts the untrusted one about them.
+      - name: Write the receipt
+        run: |
+          lake build ieantn_hash
+          python3 scripts/ieantn.py record-receipt "${{ inputs.node }}" \
+            --solution "Solutions/${{ inputs.node }}" \
+            --run-url "$(python3 -c 'import json;print(json.load(open("verdict.json"))["run"])')" \
+            --stamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+      - name: Commit
+        run: |
+          git config user.name "ieantn-verifier[bot]"
+          git config user.email "ieantn-verifier@users.noreply.github.com"
+          git add receipts/
+          git diff --cached --quiet && { echo "no receipt change"; exit 0; }
+          git commit -m "Record verification receipt for ${{ inputs.node }}"
+          git push origin HEAD:"${{ inputs.branch }}"

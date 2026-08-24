@@ -1,3 +1,6 @@
 /.lake
 /.cache
 __pycache__/
+
+# Solution projects are separate Lake projects; their build output is not tracked.
+/Solutions/*/.lake

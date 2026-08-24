@@ -17,6 +17,7 @@ routine node-management tasks.
     python scripts/ieantn.py check                   every check, in --check mode
 
     python scripts/ieantn.py new-node FKS2           scaffold a brand-new node at v1
+    python scripts/ieantn.py new-solution Lcm.v1     scaffold a solution project
     python scripts/ieantn.py new-version Lcm         scaffold Lcm.v2 from the latest version
     python scripts/ieantn.py deprecate Lcm.v1 --for Lcm.v2
 
@@ -50,6 +51,7 @@ VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
 FINGERPRINTS = ROOT / "fingerprints.json"
 RECEIPTS = ROOT / "receipts"
 CHANGES = ROOT / "changes"
+SOLUTIONS = ROOT / "Solutions"
 
 #: Toolchain minor releases behind current, past which a refresh is assumed to fall outside the
 #: Mathlib cache window and cost many times the per-node budget. A heuristic, not a measurement.
@@ -713,7 +715,113 @@ def status() -> bool:
     return True
 
 
-def record_receipt(conclusion_key: str, solution: str, run_url: str, stamp: str) -> bool:
+def new_solution(node_id: str) -> bool:
+    """Scaffold `Solutions/<node>/` as its own Lake project.
+
+    A solution is a separate Lake project so its dependencies stay its own: a proof needing PNT+ or
+    LeanCert must not force those on the core, which has to stay Mathlib-only and fast. It takes
+    the core as a path dependency in order to see the node's `Conclusions`.
+
+    It deliberately does *not* import the node's `Challenge`: Comparator compares two modules
+    declaring the same names, so importing it would collide.
+    """
+    nodes = load_nodes()
+    if node_id not in nodes:
+        print(f"error: unknown node `{node_id}`")
+        return False
+    target = SOLUTIONS / node_id
+    if target.exists():
+        print(f"error: {rel(target)} already exists")
+        return False
+
+    conclusions = conclusions_of(nodes[node_id])
+    theorems = [f"{node_id}.challenge_{c.get('id')}" for c in conclusions]
+    target.mkdir(parents=True)
+
+    (target / "lakefile.toml").write_text(
+        f'name = "solution_{node_id.replace(".", "_")}"\n'
+        'defaultTargets = ["Solution"]\n\n'
+        "# The core library, for the node's `Conclusions`. Add whatever else the proof needs --\n"
+        "# PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.\n"
+        "[[require]]\n"
+        'name = "IEANTN"\n'
+        'path = "../.."\n\n'
+        "[[lean_lib]]\n"
+        'name = "Solution"\n'
+        'roots = ["Solution"]\n',
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    binders = []
+    body = []
+    for conclusion in conclusions:
+        cid = conclusion.get("id")
+        imports = conclusion.get("imports") or []
+        binder = "".join(
+            f"\n    ({hypothesis_name(d)} : {d.get('node')}.{d.get('conclusion')})" for d in imports
+        )
+        if binder:
+            body.append(f"theorem {node_id}.challenge_{cid}{binder} :\n    {node_id}.{cid} := by")
+        else:
+            body.append(f"theorem {node_id}.challenge_{cid} : {node_id}.{cid} := by")
+        body.append("  sorry\n")
+
+    needed = sorted(
+        {module_of(node_id)}
+        | {module_of(str(d.get("node"))) for c in conclusions for d in (c.get("imports") or [])}
+    )
+    (target / "Solution.lean").write_text(
+        "/-\nCopyright (c) 2026 IEANTN contributors. All rights reserved.\n"
+        "Released under Apache 2.0 license as described in the file LICENSE.\nAuthors: TODO\n-/\n"
+        + "".join(f"import {module}\n" for module in needed)
+        + f"""
+/-!
+# Solution: `{node_id}`
+
+Proves the same declarations `Challenge.lean` states. Do **not** import the challenge module --
+Comparator compares two modules declaring the same names, so importing it would collide.
+
+This file may import anything. It is not part of the core build, and it is verified once and then
+left alone; readability is not a goal here.
+
+Replace each `sorry` below. While any remain, record progress in the node's `formalization.yaml`
+under `progress`, and leave the justification alone -- an incomplete solution justifies nothing.
+-/
+
+"""
+        + "\n".join(body),
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    (target / "comparator.json").write_text(
+        json.dumps(
+            {
+                "challenge_module": f"IEANTN.Nodes.{node_id}.Challenge",
+                "solution_module": "Solution",
+                "theorem_names": theorems,
+                "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+                "enable_nanoda": True,
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    print(f"created {rel(target)}")
+    print("\nnext:")
+    print(f"  1. prove the {len(theorems)} declaration(s) in {rel(target / 'Solution.lean')}")
+    print(f"  2. cd {rel(target)} && lake build")
+    print("  3. ask a maintainer to run the `Verify a solution` workflow for this node")
+    print("\nDo not edit the justification or write a receipt yourself: receipts are written by")
+    print("the verification workflow, and one you can write attests nothing.")
+    return True
+
+
+def record_receipt(node_id: str, solution: str, run_url: str, stamp: str) -> bool:
     """Write a receipt. **Run by the verification workflow, never by an author.**
 
     An author-written receipt is worth nothing -- it is a claim of verification typed by the
@@ -722,36 +830,35 @@ def record_receipt(conclusion_key: str, solution: str, run_url: str, stamp: str)
     path restriction, and that a receipt arriving in a PR from anyone else is a review failure.
     """
     nodes = load_nodes()
-    index = index_conclusions(nodes)
-    if conclusion_key not in index:
-        print(f"error: unknown conclusion `{conclusion_key}`")
+    if node_id not in nodes:
+        print(f"error: unknown node `{node_id}`")
         return False
-    _, conclusion = index[conclusion_key]
 
-    wanted = [conclusion_key] + [
-        f"{d.get('node')}.{d.get('conclusion')}" for d in (conclusion.get("imports") or [])
-    ]
     fingerprints = compute_fingerprints()
-    missing = [name for name in wanted if name not in fingerprints]
-    if missing:
-        print(f"error: no fingerprint for {missing}")
-        return False
-
     RECEIPTS.mkdir(exist_ok=True)
-    receipt = {
-        "schema": 1,
-        "conclusion": conclusion_key,
-        "challenge": conclusion.get("challenge"),
-        "statement": {name: fingerprints[name] for name in wanted},
-        "environment": current_environment(),
-        "solution": {"project": solution},
-        "run": {"workflow_run": run_url, "recorded_at": stamp},
-    }
-    path = receipt_path(conclusion_key)
-    path.write_text(
-        json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
-    )
-    print(f"wrote {rel(path)}")
+    for conclusion in conclusions_of(nodes[node_id]):
+        key = f"{node_id}.{conclusion.get('id')}"
+        wanted = [key] + [
+            f"{d.get('node')}.{d.get('conclusion')}" for d in (conclusion.get("imports") or [])
+        ]
+        missing = [name for name in wanted if name not in fingerprints]
+        if missing:
+            print(f"error: no fingerprint for {missing}")
+            return False
+        receipt = {
+            "schema": 1,
+            "conclusion": key,
+            "challenge": conclusion.get("challenge"),
+            "statement": {name: fingerprints[name] for name in wanted},
+            "environment": current_environment(),
+            "solution": {"project": solution},
+            "run": {"workflow_run": run_url, "recorded_at": stamp},
+        }
+        path = receipt_path(key)
+        path.write_text(
+            json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
+        )
+        print(f"wrote {rel(path)}")
     return True
 
 
@@ -1279,8 +1386,10 @@ def main() -> int:
     version.add_argument("family", help="e.g. Lcm")
     changed = sub.add_parser("diff")
     changed.add_argument("--base", default="origin/main")
+    solution = sub.add_parser("new-solution")
+    solution.add_argument("node", help="e.g. Lcm.v1")
     written = sub.add_parser("record-receipt", help="verification workflow only")
-    written.add_argument("conclusion")
+    written.add_argument("node", help="e.g. Lcm.v1")
     written.add_argument("--solution", required=True)
     written.add_argument("--run-url", default="")
     written.add_argument("--stamp", default="", help="timestamp; display only")
@@ -1303,8 +1412,10 @@ def main() -> int:
         return 0 if status() else 1
     if args.command == "diff":
         return 0 if diff(args.base) else 1
+    if args.command == "new-solution":
+        return 0 if new_solution(args.node) else 1
     if args.command == "record-receipt":
-        return 0 if record_receipt(args.conclusion, args.solution, args.run_url, args.stamp) else 1
+        return 0 if record_receipt(args.node, args.solution, args.run_url, args.stamp) else 1
     if args.command == "housekeeping":
         return 0 if housekeeping() else 1
     if args.command == "new-node":

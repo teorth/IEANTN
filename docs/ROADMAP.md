@@ -40,14 +40,52 @@ they were are readable with `git show`. That is most of why this is cheap enough
 needs no token and no permissions. Still to do: posting it as a PR comment so it appears inline,
 and adding the recommended-modification text for cases beyond the in-place edit.
 
-**5. The `/verify` bot.** A maintainer-approved `workflow_dispatch` that runs Comparator on one
-node's solution and, on success, commits the receipt and flips the justification.
+**5. Verification.** *Mostly done* -- `scripts/verify-comparator.sh` with the four trusted tools
+pinned, and `.github/workflows/verify.yml` splitting the run in two: `comparator` executes
+contributor code with **no write access and no secrets**, and `receipt` holds write access but runs
+no contributor code and recomputes the fingerprints itself from the core library.
+
+**Untested end to end**, because no solution exists yet to verify. The pieces that could be tested
+were: the scaffolder produces a project that builds, and `record-receipt` produces correct
+receipts.
+
+**Still to configure:** a `verification` GitHub Environment with required reviewers, so that
+*requesting* a verification is open to any contributor while *approving* the run stays with
+maintainers. Without it, `workflow_dispatch` silently restricts requests to people with write
+access, which is an accident rather than a policy.
 
 **6. Staleness and the housekeeping queue's time-sensitive half.** Green / yellow / orange against
 the Mathlib cache window (CONTRIBUTING §8).
 
 **7. Visualisation.** A rendered graph over the receipts and metadata, computed rather than
 re-running any verification.
+
+## Security audit, still to do
+
+Worth being proactive about, given that contributors are increasingly agents and that some pull
+requests will be too large for a human to review. Four vectors, with what exists today:
+
+**Executable code in submitted Lean.** Elaboration can run arbitrary code, so any job that
+compiles contributor Lean is running their program. Mitigated for verification by the privilege
+split in `verify.yml` and by Comparator's Landlock sandbox. **Not** separately mitigated for the
+*core* CI build, which compiles a PR's `Conclusions.lean`; it holds only `contents: read` and no
+secrets, so the exposure is compute rather than credentials, but it has not been audited.
+
+**Denial of service by triggering CI.** The verification workflow is hour-scale and should sit
+behind the environment gate above. Core CI runs per push and is cheap, but nothing rate-limits it.
+
+**Degradation of the informal layer -- the one that most deserves attention.** Statement
+fingerprints cover the *Lean* statement and nothing else. A pull request can rewrite a conclusion's
+docstring so it appears to say something it does not, change a `locator` from "Proposition 5.4" to
+"Proposition 5.7", swap a `source` for a different paper, or flip a justification from `none-yet`
+to `literature` with a fabricated citation -- **and no fingerprint moves, so nothing in CI
+notices.** For `literature`, `asserted` and `numerical` nodes, which will be most of the network,
+that informal layer *is* the evidence. The cheap first step is to fingerprint each conclusion's
+justification and sources alongside its statement, so that such a change at least appears in the
+impact report rather than passing silently.
+
+**Trust in the tool pins.** Four revisions in `scripts/verify-comparator.sh` are the trusted base
+of every receipt. Bumping them is a security change, not a chore.
 
 ## A bridge must be trust-neutral
 
