@@ -30,6 +30,15 @@ jobs:
       - uses: leanprover/lean-action@v1
         with:
           build: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      # Runs here rather than in the `network` job because it needs a built Lean environment.
+      - name: Check statement fingerprints
+        run: |
+          lake build ieantn_hash
+          python3 scripts/ieantn.py fingerprint --check
 
   network:
     name: Check the node network

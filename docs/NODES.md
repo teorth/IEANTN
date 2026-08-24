@@ -43,9 +43,14 @@ python scripts/ieantn.py new-version Lcm            # scaffolds Lcm.v2 from the 
 python scripts/ieantn.py deprecate Lcm.v1 --for Lcm.v2
 ```
 
-`deprecate` does nothing mechanically. It signals the housekeeping tracker to migrate dependants
-onto the newer version and then delete the old one; `python scripts/ieantn.py housekeeping` lists
-what that implies.
+`deprecate` is **optional**, and does nothing mechanically. It signals the housekeeping tracker to
+migrate dependants onto the newer version and then delete the old one;
+`python scripts/ieantn.py housekeeping` lists what that implies.
+
+Most families will never use it. Versions are *variants*, not a succession: a `paper` version
+faithful to how a source states its result and a `pipeline` version stating a more general form
+both earn their place permanently, and neither obsoletes the other. Deprecate only a version that
+should genuinely disappear.
 
 ## Step 1: write `Conclusions.lean`
 
@@ -226,9 +231,14 @@ The axiom line must show only `propext`, `Classical.choice`, `Quot.sound`.
 2. No `Conclusions.lean` imports anything outside Mathlib, Vocabulary, and other Conclusions.
 3. Every `Challenge.lean` matches what the generator would emit from Conclusions + yaml.
 4. Every `formalization.yaml` passes Palomar's current validator.
-5. The import graph is acyclic.
-6. Every conclusion's elaborated-statement hash matches its recorded receipts, or the affected
-   nodes are marked stale.
+5. The import graph is acyclic, and so is justification transport along *designated* bridges.
+6. Every conclusion's statement fingerprint matches `fingerprints.json`.
+
+On (6): after any deliberate change to a conclusion's meaning, run
+`python scripts/ieantn.py fingerprint` and commit the result. Committing the fingerprints is what
+makes a change of *meaning* visible as a diff line even when the Lean edit looks cosmetic — a
+reviewer can see that a statement moved without elaborating anything. Purely cosmetic edits, such
+as renaming a binder, leave the fingerprint alone and need no update.
 
 Core CI does **not** run Comparator. That is deliberate: it would take hours per pull request and
 would defeat the purpose of the split.

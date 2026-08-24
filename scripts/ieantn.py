@@ -9,6 +9,8 @@ routine node-management tasks.
     python scripts/ieantn.py gen-challenges          (re)write every Challenge.lean
     python scripts/ieantn.py gen-challenges --check  fail if any is out of date
     python scripts/ieantn.py report                  what each conclusion actually rests on
+    python scripts/ieantn.py fingerprint             recompute the statement fingerprints
+    python scripts/ieantn.py fingerprint --check     fail if any has moved
     python scripts/ieantn.py housekeeping            the derived task queue
     python scripts/ieantn.py check                   every check, in --check mode
 
@@ -26,7 +28,10 @@ None of this runs Comparator.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import pathlib
+import subprocess
 import re
 import shutil
 import sys
@@ -39,6 +44,7 @@ except ImportError:  # pragma: no cover
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 NODES_DIR = ROOT / "IEANTN" / "Nodes"
 VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
+FINGERPRINTS = ROOT / "fingerprints.json"
 
 #: A justification that stands on its own evidence.
 PRIMITIVE_KINDS = {"lean-comparator", "numerical", "literature", "asserted", "none-yet"}
@@ -494,6 +500,84 @@ def gen_challenges(check_only: bool) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# fingerprint
+# ---------------------------------------------------------------------------
+
+
+def compute_fingerprints() -> dict[str, str]:
+    """Ask Lean for each conclusion's canonical statement text, and digest it.
+
+    The digest is kept here rather than in Lean so the algorithm is easy to change and Lean needs
+    no cryptographic primitive. See `Scripts/Hash.lean` for what is actually fingerprinted, and in
+    particular for the one kind of change it deliberately cannot see.
+    """
+    declarations = sorted(
+        f"{node_id}.{conclusion.get('id')}"
+        for node_id, node in load_nodes().items()
+        for conclusion in conclusions_of(node)
+    )
+    if not declarations:
+        return {}
+    finished = subprocess.run(
+        ["lake", "exe", "ieantn_hash", *declarations],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    if finished.returncode != 0:
+        sys.exit(
+            "error: could not compute fingerprints. Is the project built?\n"
+            "       try `lake build ieantn_hash`\n" + (finished.stderr or "").strip()
+        )
+    payload = next(
+        (line for line in reversed(finished.stdout.splitlines()) if line.startswith("{")), None
+    )
+    if payload is None:
+        sys.exit("error: ieantn_hash produced no output")
+    return {
+        name: hashlib.sha256(text.encode("utf-8")).hexdigest()
+        for name, text in json.loads(payload).items()
+    }
+
+
+def fingerprint(check_only: bool) -> bool:
+    """Maintain `fingerprints.json`.
+
+    Committing the fingerprints has a purpose beyond bookkeeping: it makes **every change of
+    mathematical meaning show up as a diff line**, including ones whose Lean edit looks cosmetic.
+    A reviewer can see that a statement moved without having to elaborate anything.
+    """
+    current = compute_fingerprints()
+    recorded = json.loads(FINGERPRINTS.read_text(encoding="utf-8")) if FINGERPRINTS.is_file() else {}
+
+    if not check_only:
+        FINGERPRINTS.write_text(
+            json.dumps(current, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
+        )
+        for name, digest in sorted(current.items()):
+            marker = " " if recorded.get(name) == digest else "*"
+            print(f"{marker} {digest[:16]}  {name}")
+        print(f"\nwrote {rel(FINGERPRINTS)}")
+        return True
+
+    problems = Problems()
+    for name, digest in sorted(current.items()):
+        if name not in recorded:
+            problems.add(name, "no recorded fingerprint; run `ieantn.py fingerprint`")
+        elif recorded[name] != digest:
+            problems.add(
+                name,
+                f"statement changed: recorded {recorded[name][:16]}, now {digest[:16]}. "
+                "If this was intended, run `ieantn.py fingerprint`; if the conclusion has "
+                "dependants, make a new version instead.",
+            )
+    for name in sorted(set(recorded) - set(current)):
+        problems.warn(name, "recorded fingerprint has no matching conclusion any more")
+    return problems.report("statement fingerprints")
+
+
+# ---------------------------------------------------------------------------
 # report / housekeeping
 # ---------------------------------------------------------------------------
 
@@ -828,6 +912,8 @@ def main() -> int:
         sub.add_parser(name)
     generate = sub.add_parser("gen-challenges")
     generate.add_argument("--check", action="store_true", help="fail instead of rewriting")
+    prints = sub.add_parser("fingerprint")
+    prints.add_argument("--check", action="store_true", help="fail instead of rewriting")
     fresh = sub.add_parser("new-node")
     fresh.add_argument("family", help="e.g. FKS2")
     fresh.add_argument(
@@ -846,6 +932,8 @@ def main() -> int:
         return 0 if check_graph() else 1
     if args.command == "gen-challenges":
         return 0 if gen_challenges(args.check) else 1
+    if args.command == "fingerprint":
+        return 0 if fingerprint(args.check) else 1
     if args.command == "report":
         return 0 if report() else 1
     if args.command == "housekeeping":
