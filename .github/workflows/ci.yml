@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The core build: Vocabulary, node Conclusions, and generated Challenges.
+  #
+  # This must stay fast. Comparator is deliberately NOT run here — verifying every solution on
+  # every pull request would take hours and defeat the purpose of separating the layers. Solution
+  # verification is a separate, dispatchable workflow. See docs/ARCHITECTURE.md.
+  build:
+    name: Build Vocabulary and Nodes
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@v1
+        with:
+          build: true
+
+  network:
+    name: Check the node network
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - name: Import closure, graph well-formedness, generated challenges
+        run: python3 scripts/ieantn.py check
+      - name: Report what each conclusion rests on
+        run: python3 scripts/ieantn.py report
+
+  # Validates every node's formalization.yaml against Palomar's *current* contract, so that a
+  # node stays spin-off-ready. The validator is fetched fresh on every run and never vendored:
+  # its required-field list moves, and a cached copy would accept files the live contract now
+  # rejects. Non-blocking until the metadata settles.
+  palomar-metadata:
+    name: Validate node metadata against Palomar
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - name: Fetch the current validator
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p /tmp/pal/scripts /tmp/pal/taxonomies
+          for f in scripts/submission_contract.py scripts/verification_errors.py \
+                   taxonomies/arxiv-categories.json taxonomies/msc2020-codes.json; do
+            gh api "repos/PalomarRegistry/PalomarSubmission/contents/$f" --jq '.content' \
+              | base64 -d > "/tmp/pal/$f"
+          done
+          touch /tmp/pal/scripts/__init__.py
+      - name: Validate each node
+        run: python3 scripts/check_palomar_metadata.py /tmp/pal
