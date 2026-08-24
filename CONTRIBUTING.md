@@ -8,8 +8,9 @@ one.
 Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) once before your first contribution.
 [docs/NODES.md](docs/NODES.md) is the reference for node file formats.
 
-> **Status.** Marked *(planned)* below: the `/verify` bot, and posting the reviewer report as a PR
-> comment rather than to the job summary. Everything else works today.
+> **Status.** Everything below works today except where marked *(planned)*: posting the reviewer
+> report as a PR comment rather than to the job summary, and the `verification` environment gate
+> that would let any contributor *request* a verification. See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Two principles
 
@@ -28,8 +29,15 @@ reviewer notices — which is exactly what a routine, always-required acknowledg
 
 You want to begin proving an existing challenge.
 
-**Do:** create `Solutions/<Family>.<version>/` as its own Lake project with its own
-`lean-toolchain`. Declare the same theorem names as `Challenge.lean` and prove what you can.
+**Do:**
+
+```bash
+python scripts/ieantn.py new-solution Lcm.v1
+```
+
+That scaffolds `Solutions/Lcm.v1/` as its own Lake project, with a `Solution.lean` declaring
+exactly what the challenge states and a `comparator.json` naming those theorems. Prove what you
+can.
 
 **Metadata:** the justification does **not** change. Add a progress marker instead:
 
@@ -199,10 +207,16 @@ two hundred nodes still touches exactly two files.
 **CI:** two things must hold, and one is red if it fails:
 
 - The core must build — Vocabulary, Conclusions and Challenges all compile under the new Mathlib.
-- **Every conclusion's elaborated-statement hash must be unchanged.** Normally it is. If a hash
-  *did* move, Mathlib has silently changed what one of your statements means, and that is a genuine
-  semantic change to be handled as workflow 5 — red, not yellow. This is the case that earns the
-  hash mechanism its keep: it is otherwise invisible.
+- **Every statement fingerprint must be unchanged**, and normally it is — by construction, in
+  fact. Fingerprints treat Mathlib constants as opaque names (see `Tools/Hash.lean`), so a bump
+  that reorganises proofs or restates a lemma equivalently cannot move one. What *can* move one is
+  a Mathlib rename that changes which constant a statement refers to; a rename that removes the old
+  name is a build error instead.
+
+  So this check is less a detector of Mathlib misbehaviour than a guard against the bump PR
+  quietly carrying an unrelated edit. The case it cannot see is Mathlib changing what a definition
+  *means* while keeping its name — that is stated plainly in `Tools/Hash.lean` and is not
+  detectable at this price.
 
 If both hold, every affected node simply moves one release further from its verification, and the
 PR is green with warnings.

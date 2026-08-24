@@ -48,11 +48,14 @@ defeat the purpose of the split.
 
 ## Status
 
-Early. Vocabulary, two proof-of-concept nodes, challenge generation, the network checks and the
-housekeeping queue exist and run in CI. Verification receipts, the breaking-change detector, the
-`/verify` bot, the reviewer report and the visualisation are not built yet — and no node yet
-carries a Lean-verified justification. Sections marked *(planned)* in the documentation are not
-implemented.
+Early, but the machinery is in place. Vocabulary, two proof-of-concept nodes, challenge
+generation, statement fingerprints, verification receipts, the breaking-change detector, the
+network checks and the housekeeping queue all exist and run in CI.
+
+**No node carries a Lean-verified justification yet**, so the Comparator path is untested end to
+end; that waits on porting a first solution. Visualisation, unit tests for the tooling, and the
+code and security audits are outstanding. [docs/ROADMAP.md](docs/ROADMAP.md) tracks what is
+deliberately not built and why.
 
 This work grows out of the IEANTN subproject of
 [PNT+](https://github.com/AlexKontorovich/PrimeNumberTheoremAnd), whose blueprint-based structure
