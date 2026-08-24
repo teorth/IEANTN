@@ -75,6 +75,55 @@ manual check cannot give:
 **8. Visualisation.** A rendered graph over the receipts and metadata, computed rather than
 re-running any verification.
 
+## Longer term: verification backends other than Comparator
+
+Not a priority, and deliberately so. Recorded because the reasoning is worth having written down
+before anyone attempts it.
+
+Today `justification: numerical` means *asserted on the authority of a computation someone ran
+elsewhere* — it is a citation, not a check. The natural expansion is a backend that actually runs
+the computation: a sandboxed SymPy or interval-arithmetic job, verified the way a Comparator run is,
+so that a numerical justification becomes evidence rather than an assurance.
+
+Most of the machinery generalises. The statement of record is still the Lean conclusion, so
+statement fingerprints are unchanged; a receipt would gain a `method` field, and its `environment`
+would record a Python version and pinned wheel hashes instead of a Lean toolchain and Mathlib
+revision. The privilege split in `verify.yml` already has the right shape.
+
+### Two tiers, and only one of them is dangerous
+
+**Tier A — the backend produces a certificate that Lean re-checks.** This is the LeanCert and
+PrimeCert pattern, and the one to build first. Generate outside, verify inside: the external run
+emits a Bernstein certificate, an interval enclosure, a factorisation witness, and a *Lean* solution
+checks it. **The backend then leaves the trusted base entirely** — a bug in it causes a failed
+build, not an unsound theorem — and the receipt stays a `lean-comparator` receipt, because that is
+genuinely what it is. Almost no new trust, almost no new attack surface, and the justification kind
+does not even need to change.
+
+**Tier B — the computation's result is trusted directly.** An exhaustive search with no compact
+witness; a floating-point computation whose certificate would be as expensive as the computation.
+This is where the real cost sits, and it is two costs, not one:
+
+*The trust semantics genuinely differ, and must not be flattened.* Comparator establishes
+`imports → conclusion` under a bounded axiom set, checked by two kernels. A SymPy run establishes
+"this numeric claim held, at this precision, in this arithmetic, on this machine." Those are not the
+same thing, and a network whose whole promise is *read off how good the evidence is* must not render
+them with the same green light. A tier-B receipt needs its own label and its own colour, or the
+promise is quietly broken by making a floating-point run look like a kernel-checked proof.
+
+*The attack surface is much worse than Comparator's.* Comparator at least runs a fixed export
+format under Landlock. Arbitrary Python has no sandbox story of its own: it wants network access,
+arbitrary imports, and unbounded resources. Minimum bar would be a container with no network, wheel
+hashes pinned, a declared CPU and memory budget, and — as with Comparator today — a **small
+structured artifact that the privileged job validates**, never a boolean the untrusted job asserts.
+
+### The rule that follows
+
+Build tier A, and treat every tier-B request as a question about whether a certificate is really
+impossible or merely inconvenient. Most numerical claims in explicit analytic number theory are
+certifiable: the interval-arithmetic and table-driven results in PNT+ are already of that shape.
+Tier B should stay rare enough to be conspicuous.
+
 ## Code audit, still to do
 
 The tooling has accumulated a real defect rate during the proof-of-concept phase, and the classes
