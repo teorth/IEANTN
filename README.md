@@ -44,6 +44,7 @@ defeat the purpose of the split.
 2. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the design and why it is what it is.
 3. [docs/NODES.md](docs/NODES.md) — node file formats, in detail.
 4. [CLAUDE.md](CLAUDE.md) — the short version, for coding agents.
+5. [docs/ROADMAP.md](docs/ROADMAP.md) — what is deliberately not built yet, and why.
 
 ## Status
 
