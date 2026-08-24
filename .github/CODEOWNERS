@@ -1,0 +1,19 @@
+# Files whose review should not be routine.
+#
+# For these to bite, the `main` ruleset must also require review from code owners. Without that,
+# this file is documentation rather than enforcement.
+
+# Vocabulary is the repository's core: shared by every node, and the one place a single edit can
+# change what many conclusions claim. Mathlib gives its core files the same treatment, and for the
+# same reason -- the cost of a duplicated or subtly-redefined shared notion is paid by everyone
+# downstream, long after the change.
+/IEANTN/Vocabulary/ @teorth
+
+# The trusted base of every receipt: the tool pins, the privilege split, and the checks themselves.
+/scripts/verify-comparator.sh @teorth
+/.github/workflows/ @teorth
+/.github/CODEOWNERS @teorth
+
+# Receipts are written by the verification workflow. A receipt in a pull request from anyone else
+# is a review failure, not a formatting nit.
+/receipts/ @teorth

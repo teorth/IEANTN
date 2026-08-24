@@ -30,7 +30,11 @@ nanoda_dir="$cache_root/nanoda"
 # the others are the revisions the Palomar registry uses. Bump deliberately, never automatically:
 # these four are the trusted base of every receipt.
 comparator_commit=10dd2b33dc43751af3257f4d684535375306f162
-lean4export_commit=cacf989bd75f608700820f6afc595f32e7a99a4d   # tag v4.34.0-rc2
+lean4export_commit=cacf989bd75f608700820f6afc595f32e7a99a4d
+# The toolchain the pin above is for. `ieantn.py check-pins` compares this against `lean-toolchain`,
+# so a Mathlib bump that leaves the pin behind fails at the bump -- when the fix is obvious -- rather
+# than weeks later at the next verification, where it would look like verification is broken.
+lean4export_toolchain=leanprover/lean4:v4.34.0-rc2
 landrun_commit=811cfff51ceaf3d9843708aa6d22e9b84ccac8b4
 nanoda_commit=68d5ca9db226849b41a6fff59d796ff19d0a8840
 

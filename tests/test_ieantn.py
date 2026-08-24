@@ -663,5 +663,60 @@ class TestUmbrella(FixtureRepo):
         self.assertTrue(ieantn.gen_challenges(check_only=True))
 
 
+class TestPins(FixtureRepo):
+    """A Mathlib bump must not silently leave the verification toolchain behind."""
+
+    def _script(self, toolchain: str | None) -> None:
+        (self.root / "scripts").mkdir(exist_ok=True)
+        declared = f"lean4export_toolchain={toolchain}\n" if toolchain else ""
+        (self.root / "scripts" / "verify-comparator.sh").write_text(
+            "#!/usr/bin/env bash\nlean4export_commit=abc\n" + declared, encoding="utf-8"
+        )
+
+    def test_a_matching_pin_passes(self) -> None:
+        self._script("leanprover/lean4:v4.34.0-rc2")
+        self.assertTrue(ieantn.check_pins())
+
+    def test_a_stale_pin_fails(self) -> None:
+        self._script("leanprover/lean4:v4.30.0")
+        self.assertFalse(ieantn.check_pins())
+
+    def test_an_undeclared_pin_fails(self) -> None:
+        """Silence is not a pass: with nothing declared, nothing can be checked."""
+        self._script(None)
+        self.assertFalse(ieantn.check_pins())
+
+    def test_no_script_is_not_a_failure(self) -> None:
+        self.assertTrue(ieantn.check_pins())
+
+
+class TestState(FixtureRepo):
+    def test_state_is_generated_and_diffed(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.assertTrue(ieantn.state(check_only=False))
+        self.assertTrue(ieantn.state(check_only=True))
+        (self.root / "STATE.md").write_text("stale\n", encoding="utf-8")
+        self.assertFalse(ieantn.state(check_only=True))
+
+    def test_state_counts_evidence_by_kind(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_node("B.v1", LITERATURE.replace("kind: literature", "kind: none-yet"))
+        ieantn.state(check_only=False)
+        text = (self.root / "STATE.md").read_text(encoding="utf-8")
+        self.assertIn("| `literature` | 1 |", text)
+        self.assertIn("| `none-yet` | 1 |", text)
+
+    def test_state_records_the_issue_and_the_leverage(self) -> None:
+        self.write_node(
+            "Upstream.v1",
+            LITERATURE.replace("  designated: paper", "  issue: 42\n  designated: paper"),
+        )
+        self.write_node("Downstream.v1", IMPORTING)
+        ieantn.state(check_only=False)
+        text = (self.root / "STATE.md").read_text(encoding="utf-8")
+        self.assertIn("#42", text)
+        self.assertIn("| `Upstream.v1.main` | 1 |", text)
+
+
 if __name__ == "__main__":
     unittest.main()
