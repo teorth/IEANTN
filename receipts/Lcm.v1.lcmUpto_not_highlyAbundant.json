@@ -1,0 +1,20 @@
+{
+  "challenge": "Lcm.v1.challenge_lcmUpto_not_highlyAbundant",
+  "conclusion": "Lcm.v1.lcmUpto_not_highlyAbundant",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "5b1c3618759375e0ef0033d39000b1338e99f133"
+  },
+  "run": {
+    "recorded_at": "2026-08-24T23:27:13Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/32788200025"
+  },
+  "schema": 1,
+  "solution": {
+    "project": "Solutions/Lcm.v1"
+  },
+  "statement": {
+    "Dusart2018.v1.proposition_5_4": "a2a27b8382fc7657f765de82fb89561e797db20370d0375e1114b2a5b943b134",
+    "Lcm.v1.lcmUpto_not_highlyAbundant": "7dd7914d659103ca6fef5fa518d4db55a8372b9161fd3e2966f1772976cdf4f0"
+  }
+}
