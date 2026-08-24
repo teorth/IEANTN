@@ -152,7 +152,19 @@ backed by a pinned workflow with public logs is much stronger evidence than one 
   verified implication no longer connects to what the upstream node now claims. Binary, fatal. A
   one-character `≤` → `<` scores as trivial on any recency measure and is fatal.
 - **Environment drift.** Statements identical, toolchain moved. Graduated, measured in Mathlib
-  releases, ages gracefully.
+  releases, ages gracefully. **Yellow, never red** — a Mathlib bump is expected to degrade many
+  nodes at once and must not block anything. Three levels, the third defined by a real cost rather
+  than a chosen number:
+
+  | | Meaning |
+  |---|---|
+  | **green** | Verified against the current Mathlib. |
+  | **yellow** | Stale, but within the Mathlib cache window: a refresh costs about one node-sized run. |
+  | **orange** | Past the cache window: dependencies build from source, so a refresh costs many times the per-node budget. |
+
+  Staleness is **derived, not stored** — computed by comparing each receipt's recorded environment
+  against the current one. A bump that degrades two hundred nodes therefore edits no node metadata
+  at all.
 
 Justification *kind* is a third, orthogonal axis. All three are recorded and displayed separately.
 **No single trust score is computed** — a number would hide exactly the distinctions the network

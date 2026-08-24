@@ -40,15 +40,18 @@ defeat the purpose of the split.
 
 ## Reading order
 
-1. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the design and why it is what it is.
-2. [docs/NODES.md](docs/NODES.md) — how to author a node.
-3. [CLAUDE.md](CLAUDE.md) — the short version, for coding agents.
+1. [CONTRIBUTING.md](CONTRIBUTING.md) — the eight things people actually do, and how.
+2. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the design and why it is what it is.
+3. [docs/NODES.md](docs/NODES.md) — node file formats, in detail.
+4. [CLAUDE.md](CLAUDE.md) — the short version, for coding agents.
 
 ## Status
 
-Early. Vocabulary and two proof-of-concept nodes exist; challenge generation, verification
-receipts, the graph tooling and the visualisation are not built yet. Sections marked *(planned)* in
-the documentation are not implemented.
+Early. Vocabulary, two proof-of-concept nodes, challenge generation, the network checks and the
+housekeeping queue exist and run in CI. Verification receipts, the breaking-change detector, the
+`/verify` bot, the reviewer report and the visualisation are not built yet — and no node yet
+carries a Lean-verified justification. Sections marked *(planned)* in the documentation are not
+implemented.
 
 This work grows out of the IEANTN subproject of
 [PNT+](https://github.com/AlexKontorovich/PrimeNumberTheoremAnd), whose blueprint-based structure
