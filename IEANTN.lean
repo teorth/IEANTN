@@ -5,3 +5,4 @@ Authors: Terence Tao
 -/
 import IEANTN.Vocabulary
 import IEANTN.Nodes
+import IEANTN.Bridges

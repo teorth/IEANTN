@@ -6,6 +6,7 @@ Authors: Terence Tao
 import IEANTN.Nodes.Dusart2018.v1.Challenge
 import IEANTN.Nodes.Lcm.v1.Challenge
 import IEANTN.Nodes.Lcm.v1.Examples
+import IEANTN.Nodes.Lcm.v2.Challenge
 
 /-!
 # The node network

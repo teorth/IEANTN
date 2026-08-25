@@ -69,11 +69,14 @@ justifications:
     from:
       - Dusart_part1.v1.main
       - Dusart_part2.v1.main
-    bridge: Bridges/Dusart/parts_to_v3.lean
+    bridge: IEANTN/Bridges/Dusart/PartsToV3.lean
 ```
 
 A bridge takes *several* conclusions to one, so this is expressible directly. Merging the parts
 back into a single node afterwards is housekeeping, and can wait.
+
+Bridges live under `IEANTN/Bridges/`, inside the library, so the core build compiles them. They
+may not contain `sorry` and may not import a `Challenge`. See [docs/NODES.md](docs/NODES.md).
 
 **Claim per node, not per conclusion.** Two people working on different conclusions of the same
 node collide on its `formalization.yaml` and its generated challenge. Record the issue number on

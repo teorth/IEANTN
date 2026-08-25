@@ -117,7 +117,7 @@ def bridged(source: str) -> str:
         "    - id: bridge\n"
         "      kind: bridged\n"
         f"      from: {source}\n"
-        "      bridge: Bridges/a.lean\n"
+        "      bridge: IEANTN/Bridges/a.lean\n"
         "  designated: bridge\n"
     )
 
@@ -134,7 +134,7 @@ def bridged_from(sources: list[str]) -> str:
         "      kind: bridged\n"
         "      from:\n"
         f"{listed}"
-        "      bridge: Bridges/a.lean\n"
+        "      bridge: IEANTN/Bridges/a.lean\n"
         "  designated: bridge\n"
     )
 
@@ -195,9 +195,12 @@ class FixtureRepo(unittest.TestCase):
         )
         return directory
 
-    def write_bridge(self) -> None:
-        (self.root / "Bridges").mkdir(exist_ok=True)
-        (self.root / "Bridges" / "a.lean").write_text("-- bridge\n", encoding="utf-8")
+    def write_bridge(self, body: str = "-- bridge\n") -> pathlib.Path:
+        directory = self.root / "IEANTN" / "Bridges"
+        directory.mkdir(parents=True, exist_ok=True)
+        written = directory / "a.lean"
+        written.write_text(body, encoding="utf-8")
+        return written
 
     def generate(self) -> None:
         self.assertTrue(ieantn.gen_challenges(check_only=False))
@@ -277,6 +280,33 @@ class TestGraphChecks(FixtureRepo):
             self.assertTrue(ieantn.check_graph())
         self.assertNotIn("has a receipt but designates", printed.getvalue())
 
+    def test_a_receipt_is_read_past_a_later_justification(self) -> None:
+        """Regression: the warning must read the *designated* kind, not the last one listed.
+
+        A conclusion may record further grounds after the one it designates -- a bridge from a
+        sibling version, say. The check read the `kind` left over from the loop that validated the
+        justifications, so recording any second ground made a properly verified node report as
+        having a receipt nothing designates.
+        """
+        self.write_bridge()
+        self.write_node("A.v1", LITERATURE)
+        self.write_node(
+            "A.v2",
+            LITERATURE.replace("kind: literature", "kind: lean-comparator").replace(
+                "  designated: paper\n",
+                "    - id: bridge\n"
+                "      kind: bridged\n"
+                "      from: A.v1.main\n"
+                "      bridge: IEANTN/Bridges/a.lean\n"
+                "  designated: paper\n",
+            ),
+        )
+        self._receipt_for("A.v2.main")
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            self.assertTrue(ieantn.check_graph())
+        self.assertNotIn("has a receipt but designates", printed.getvalue())
+
     def test_template_status_is_refused(self) -> None:
         self.write_node("Upstream.v1", LITERATURE, status="template")
         self.assertFalse(ieantn.check_graph())
@@ -318,6 +348,75 @@ class TestGraphChecks(FixtureRepo):
         self.write_node("A.v1", LITERATURE)
         self.write_node("A.v2", bridged("A.v1.main"))
         self.assertFalse(ieantn.check_graph())
+
+    def test_a_bridge_outside_the_library_fails(self) -> None:
+        """A bridge nothing compiles attests nothing.
+
+        The file merely existing at the recorded path is not evidence: it would go on satisfying
+        this check after either statement it relates had moved out from under it. Requiring
+        `IEANTN/Bridges/` puts it in the core build, where `lake build` notices.
+        """
+        (self.root / "Bridges").mkdir(exist_ok=True)
+        (self.root / "Bridges" / "a.lean").write_text("-- bridge\n", encoding="utf-8")
+        self.write_node("A.v1", LITERATURE)
+        self.write_node(
+            "A.v2", bridged("A.v1.main").replace("IEANTN/Bridges/a.lean", "Bridges/a.lean")
+        )
+        self.assertFalse(ieantn.check_graph())
+
+
+class TestBridgeClosure(FixtureRepo):
+    """A bridge is held to the closure rule a Conclusions file is held to, and then some.
+
+    It is the file that transports trust from one node's conclusion to another's, and unlike a
+    solution it is not sandboxed and not Comparator-checked -- it is trusted because the core build
+    compiles it. So it must reach nothing outside the Mathlib-only closure, and must be a proof.
+    """
+
+    def test_a_bridge_may_import_conclusions_and_mathlib(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_bridge(
+            "import Mathlib.Data.Nat.Defs\nimport IEANTN.Nodes.A.v1.Conclusions\nimport IEANTN.Vocabulary\n"
+        )
+        self.assertTrue(ieantn.check_closure())
+
+    def test_a_bridge_may_not_import_a_challenge(self) -> None:
+        """The failure worth designing out: a bridge resting on the `sorry` it exists to discharge.
+
+        It would elaborate, it would be recorded as a justification, and it would prove nothing.
+        """
+        self.write_node("A.v1", LITERATURE)
+        self.write_bridge("import IEANTN.Nodes.A.v1.Challenge\n")
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            passed = ieantn.check_closure()
+        self.assertFalse(passed)
+        self.assertIn("rest on the `sorry`", printed.getvalue())
+
+    def test_a_bridge_may_not_import_a_solution(self) -> None:
+        self.write_bridge("import Solutions.A.v1.Solution\n")
+        self.assertFalse(ieantn.check_closure())
+
+    def test_a_bridge_may_not_contain_sorry(self) -> None:
+        self.write_bridge("theorem a : True := by sorry\n")
+        self.assertFalse(ieantn.check_closure())
+
+    def test_the_word_sorry_in_a_bridge_comment_is_not_a_sorry(self) -> None:
+        """Same trap as for Examples: the docstring explaining the rule must not trip it."""
+        self.write_bridge("/-- This bridge may not contain sorry. -/\ntheorem a : True := trivial\n")
+        self.assertTrue(ieantn.check_closure())
+
+    def test_the_bridges_umbrella_imports_every_bridge(self) -> None:
+        """Generated, because a missing import is invisible: the module simply is not built."""
+        self.write_bridge("theorem a : True := trivial\n")
+        (self.root / "IEANTN" / "Bridges" / "Nested").mkdir()
+        (self.root / "IEANTN" / "Bridges" / "Nested" / "b.lean").write_text(
+            "theorem b : True := trivial\n", encoding="utf-8"
+        )
+        self.generate()
+        umbrella = (self.root / "IEANTN" / "Bridges.lean").read_text(encoding="utf-8")
+        self.assertIn("import IEANTN.Bridges.a\n", umbrella)
+        self.assertIn("import IEANTN.Bridges.Nested.b\n", umbrella)
 
 
 class TestClosure(FixtureRepo):

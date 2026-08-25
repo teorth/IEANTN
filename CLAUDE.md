@@ -25,6 +25,7 @@ Nodes import each other's *statements*, never each other's *proofs*.
 | `IEANTN/Vocabulary/` | Mathlib only. **Definitions only — no theorems, no `sorry`.** |
 | `IEANTN/Nodes/<Family>/<version>/Conclusions.lean` | Mathlib, Vocabulary, other nodes' `Conclusions.lean` |
 | `IEANTN/Nodes/<Family>/<version>/Challenge.lean` | its own and imported `Conclusions.lean` — **generated, do not hand-edit** |
+| `IEANTN/Bridges/<Family>/` | Mathlib, Vocabulary, `Conclusions.lean`, other bridges. **No `sorry`.** In the core build, so it is checked on every push. |
 | `Solutions/<Family>.<version>/` | anything. Separate Lake project; takes the core as a path dependency, must not import the node's `Challenge`. **Not in the core build.** |
 
 The Mathlib-only closure of Vocabulary and Conclusions is load-bearing, not stylistic: it is what

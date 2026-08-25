@@ -49,6 +49,8 @@ except ImportError:  # pragma: no cover
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 NODES_DIR = ROOT / "IEANTN" / "Nodes"
 VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
+#: Bridges live inside the library so the core build compiles them; see `check_bridges`.
+BRIDGES_DIR = ROOT / "IEANTN" / "Bridges"
 FINGERPRINTS = ROOT / "fingerprints.json"
 STATE = ROOT / "STATE.md"
 VERIFY_SCRIPT = ROOT / "scripts" / "verify-comparator.sh"
@@ -89,11 +91,12 @@ def _set_root(path: pathlib.Path) -> None:
     this one. Nothing else should call it: the paths are derived from `__file__` precisely so that
     the tooling cannot be pointed somewhere unexpected by accident.
     """
-    global ROOT, NODES_DIR, VOCAB_DIR, FINGERPRINTS, STATE, VERIFY_SCRIPT
+    global ROOT, NODES_DIR, VOCAB_DIR, BRIDGES_DIR, FINGERPRINTS, STATE, VERIFY_SCRIPT
     global RECEIPTS, CHANGES, SOLUTIONS
     ROOT = path
     NODES_DIR = ROOT / "IEANTN" / "Nodes"
     VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
+    BRIDGES_DIR = ROOT / "IEANTN" / "Bridges"
     FINGERPRINTS = ROOT / "fingerprints.json"
     STATE = ROOT / "STATE.md"
     VERIFY_SCRIPT = ROOT / "scripts" / "verify-comparator.sh"
@@ -433,6 +436,39 @@ def check_closure() -> bool:
                     "demonstrates nothing, while looking exactly like one that does.",
                 )
 
+    # A bridge proves that one node's conclusion follows from others'. It carries trust, so it is
+    # held to the same closure rule as a Conclusions file and, unlike a solution, it is compiled by
+    # the ordinary core build -- an uncompiled bridge would attest nothing while looking like it
+    # attested something. Hence no `sorry`, and no import of a Challenge: a bridge resting on the
+    # very `sorry` it is supposed to discharge is the one failure mode worth designing out.
+    for path in sorted(BRIDGES_DIR.rglob("*.lean")):
+        for module in imports_of(path):
+            ok = (
+                module.startswith("Mathlib")
+                or module.startswith("IEANTN.Vocabulary")
+                or (module.startswith("IEANTN.Nodes.") and module.endswith(".Conclusions"))
+                or module.startswith("IEANTN.Bridges.")
+            )
+            if not ok:
+                problems.add(
+                    rel(path),
+                    "a bridge may import only Mathlib, Vocabulary, Conclusions and other bridges; "
+                    f"found `{module}`"
+                    + (
+                        " -- a bridge that imports a Challenge would rest on the `sorry` it exists "
+                        "to discharge"
+                        if module.endswith(".Challenge")
+                        else ""
+                    ),
+                )
+        if re.search(r"\bsorry\b", strip_lean_comments(path.read_text(encoding="utf-8"))):
+            problems.add(
+                rel(path),
+                "a bridge may not contain `sorry`: it is the proof that transports trust between "
+                "versions, so a hole in it silently launders an unproved claim into a justified one.",
+            )
+
+    for directory in node_dirs():
         challenge = directory / "Challenge.lean"
         if challenge.is_file():
             for module in imports_of(challenge):
@@ -631,6 +667,16 @@ def check_graph() -> bool:
                             f"conclusion `{cid}`, justification `{jid}`: bridge file "
                             f"`{justification['bridge']}` is missing",
                         )
+                    elif not justification["bridge"].startswith("IEANTN/Bridges/"):
+                        # A bridge outside the library is never compiled, so it would keep
+                        # justifying its target after either statement moved out from under it.
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`, justification `{jid}`: bridge file "
+                            f"`{justification['bridge']}` must live under `IEANTN/Bridges/` so "
+                            "that the core build compiles it; a bridge nothing builds attests "
+                            "nothing",
+                        )
 
             if available and designated_of(conclusion) is None:
                 problems.add(
@@ -643,10 +689,14 @@ def check_graph() -> bool:
             # the receipt, the metadata still said `none-yet`, and `status` reported the node as
             # unverified. A warning rather than an error, because the window between the workflow's
             # commit and the pull request that designates it is legitimate.
-            if load_receipt(f"{node_id}.{cid}") is not None and kind != "lean-comparator":
+            # `designated_kind`, not the `kind` left over from the loop above: a conclusion may
+            # carry justifications after the designated one, and reading the last one iterated
+            # reported the wrong kind the moment a second ground was recorded.
+            settled = designated_kind(conclusion)
+            if load_receipt(f"{node_id}.{cid}") is not None and settled != "lean-comparator":
                 problems.warn(
                     where,
-                    f"conclusion `{cid}` has a receipt but designates `{kind}`. A verification "
+                    f"conclusion `{cid}` has a receipt but designates `{settled}`. A verification "
                     "was recorded and nothing points at it; add a `lean-comparator` justification "
                     "and designate it.",
                 )
@@ -770,6 +820,38 @@ def render_challenge(node_id: str, node: dict) -> str:
     return "\n".join(lines).rstrip("\n") + "\n"
 
 
+def render_bridges_umbrella() -> str:
+    """`IEANTN/Bridges.lean`, importing every bridge.
+
+    Bridges are compiled by the core build for the reason given in `check_closure`: one that is
+    merely present at a recorded path has never been checked against the statements it claims to
+    relate, and would keep passing after either of them moved.
+    """
+    modules = sorted(
+        "IEANTN.Bridges." + ".".join(path.relative_to(BRIDGES_DIR).with_suffix("").parts)
+        for path in BRIDGES_DIR.rglob("*.lean")
+    )
+    return (
+        "/-\n"
+        "Copyright (c) 2026 IEANTN contributors. All rights reserved.\n"
+        "Released under Apache 2.0 license as described in the file LICENSE.\n"
+        "Authors: Terence Tao\n"
+        "-/\n"
+        + "".join(f"import {module}\n" for module in modules)
+        + """
+/-!
+# Bridges
+
+**Generated file - do not edit.**  Regenerated by `python scripts/ieantn.py gen-challenges`.
+
+Each bridge proves that one node's conclusion follows from others', and is recorded as a `bridged`
+justification in the target node's `formalization.yaml`. Bridges sit outside the import graph on
+purpose -- see docs/ARCHITECTURE.md section 4.
+-/
+"""
+    )
+
+
 def render_umbrella(nodes: dict[str, dict]) -> str:
     """`IEANTN/Nodes.lean`, importing every node's challenge and examples.
 
@@ -807,6 +889,8 @@ def gen_challenges(check_only: bool) -> bool:
     outputs = [(node["_dir"] / "Challenge.lean", render_challenge(node_id, node))
                for node_id, node in nodes.items()]
     outputs.append((ROOT / "IEANTN" / "Nodes.lean", render_umbrella(nodes)))
+    if BRIDGES_DIR.is_dir():
+        outputs.append((ROOT / "IEANTN" / "Bridges.lean", render_bridges_umbrella()))
     for path, rendered in outputs:
         if check_only:
             if (path.read_text(encoding="utf-8") if path.is_file() else "") != rendered:
@@ -1778,7 +1862,7 @@ def new_version(family: str) -> bool:
     print("\nnext:")
     print(f"  1. edit {rel(target / 'Conclusions.lean')} -- this is the point of the new version")
     print("  2. python scripts/ieantn.py gen-challenges")
-    print(f"  3. justify it: write a bridge from {old_id}, or a solution")
+    print(f"  3. justify it: a solution, or a bridge from {old_id} under IEANTN/Bridges/")
     print(f"  4. when {old_id} should retire: "
           f"python scripts/ieantn.py deprecate {old_id} --for {new_id}")
     return True
