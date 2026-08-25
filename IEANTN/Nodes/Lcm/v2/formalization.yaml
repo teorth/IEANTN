@@ -12,7 +12,7 @@ node:
   family: Lcm
   version: v2
   kind: pipeline
-  status: awaiting-verification
+  status: active
 project:
   name: "The lcm sequence is not highly abundant, with the threshold abstracted"
   description: >-
@@ -45,13 +45,12 @@ conclusions:
       receipt, because a justification an author can set is not evidence. Locally the two guarantees Comparator
       checks both hold -- the challenge and the solution declare identical types under pp.all, and the
       solution depends on propext, Classical.choice and Quot.sound alone.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/32817004647'
+  designated: comparator
 
   issue: 10
-  progress:
-    solution: Solutions/Lcm.v2/
-    state: complete
-    remaining_holes: 0
 sources:
 - title: "Is the least common multiple sequence lcm(1, 2, ..., n) a subset of the highly abundant numbers?"
   authors: ["Jose Damian Espinosa"]
