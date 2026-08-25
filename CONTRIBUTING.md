@@ -239,7 +239,8 @@ theorem bridge_v2_to_v1
     (general : Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap)
     (dusart : Dusart2018.v1.proposition_5_4) :
     Lcm.v1.lcmUpto_not_highlyAbundant :=
-  fun n hn => general 89693 lt_log_89693 dusart n (by exact_mod_cast hn)
+  fun n hn =>
+    general 11.4 89693 (by norm_num) lt_log_89693.le dusart n (by exact_mod_cast hn)
 ```
 
 Its hypotheses are the conclusions you name in `from`, plus whatever the *target* node already
