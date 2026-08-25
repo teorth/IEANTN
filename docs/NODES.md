@@ -3,9 +3,6 @@
 Practical recipe. For *why* the structure is what it is, read [ARCHITECTURE.md](ARCHITECTURE.md)
 first — especially §1, which explains why a node is a conditional theorem.
 
-> **Status.** Challenge generation and the graph checks exist — see `scripts/ieantn.py`. Receipts
-> and staleness tracking do not yet, so `receipt:` is always `null` for now.
-
 ## What a node is
 
 A node is one folder recording:
@@ -32,7 +29,7 @@ IEANTN/Nodes/<Family>/<version>/
   formalization.yaml     metadata: imports, justification, sources, receipts
   README.md              optional prose
   Examples.lean          optional — consequences, to show what the node buys
-Solutions/<Family>.<version>/    optional; separate Lake project, own toolchain pin
+Solutions/<Family>.<version>/    optional; separate Lake project, toolchain pinned equal
 IEANTN/Bridges/<Family>/         short proofs that one version implies another
 ```
 
@@ -117,8 +114,12 @@ as a submission without restructuring, and validated in CI against Palomar's own
 version: "v0.4"
 
 node:
-  id: Dusart2018
+  id: Dusart2018.v1     # must equal the path-derived id; check-graph compares them
+  family: Dusart2018
+  version: v1
   kind: paper
+  status: stub          # template | stub | awaiting-solution | awaiting-verification |
+                        # active | deprecated.  `template` is a hard CI failure.
 
 project:
   name: "..."
@@ -174,7 +175,8 @@ Notes:
 - Editing a node's metadata with `new-version` or `deprecate` requires `ruamel.yaml`
   (`pip install ruamel.yaml`), which preserves comments. The read-only checks need only PyYAML,
   so CI does not install it.
-- `receipt` is `null` until a verification runs.
+- There is no `receipt` field. Receipts live in `receipts/`, one JSON file per verified
+  conclusion, written by the verification workflow. See [../receipts/README.md](../receipts/README.md).
 - Palomar's required-field list is a **moving target**. CI re-fetches the validator; do not vendor
   a copy and do not work from the list above as if it were closed.
 - **Never claim novelty without a documented search.** "Unknown" is acceptable and safe; an
@@ -206,7 +208,7 @@ diffed in CI.
 
 ## Step 4 (optional, last): a solution
 
-Only when a conclusion is to carry `justification: lean-comparator`.
+Only when a conclusion is to carry a `lean-comparator` justification.
 
 ```bash
 python scripts/ieantn.py new-solution Lcm.v1
@@ -254,15 +256,24 @@ incomplete.
 ## Invariants CI enforces
 
 1. Vocabulary and every `Conclusions.lean` build clean.
-2. No `Conclusions.lean` imports anything outside Mathlib, Vocabulary, and other Conclusions.
-3. Every `Challenge.lean` matches what the generator would emit from Conclusions + yaml.
+2. No `Conclusions.lean` imports anything outside Mathlib, Vocabulary, and other Conclusions; no
+   `Examples.lean` or bridge does either, and neither contains `sorry`. Vocabulary holds no
+   theorems.
+3. Every `Challenge.lean` matches what the generator would emit from Conclusions + yaml, and so do
+   `IEANTN/Nodes.lean` and `IEANTN/Bridges.lean`.
 4. Every `formalization.yaml` passes Palomar's current validator.
 5. The import graph is acyclic, and so is justification transport along *designated* bridges.
-6. Every conclusion's statement fingerprint matches `fingerprints.json`.
+6. Every conclusion's statement fingerprint matches `fingerprints.json`, and `STATE.md` is current.
 7. No conclusion that other nodes depend on has been edited in place, and none still imported has
-   been removed (`ieantn.py diff`).
-8. Every `lean-comparator` justification has a matching file in `receipts/`.
-9. The tooling type-checks (`pyright`, at `basic`).
+   been removed (`ieantn.py diff`, in the `Network impact` job).
+8. Every `lean-comparator` justification has a matching file in `receipts/`, every receipt names a
+   successful run of `verify.yml` **for that node**, and no receipt covers a conclusion absent from
+   its solution's `comparator.json`.
+9. Every conclusion `id`, and both halves of every import reference, is a Lean identifier — they are
+   written verbatim into the generated challenge.
+10. Every solution's `lean-toolchain` equals the repository's, and `verify-comparator.sh` pins
+    `lean4export` for that same toolchain.
+11. The tooling type-checks (`pyright`, at `basic`) and its unit tests pass.
 
 On (6): after any deliberate change to a conclusion's meaning, run
 `python scripts/ieantn.py fingerprint` and commit the result. Committing the fingerprints is what
@@ -277,9 +288,9 @@ would defeat the purpose of the split.
 
 Read ARCHITECTURE §5 first. The short version: **you usually should not.**
 
-CI will hard-fail if you edit a conclusion that has downstream importers or a recorded receipt
-*(not yet implemented -- it needs a diff against the base commit)*. There
-is no acknowledgement to write and no classification to declare — an author's declaration cannot be
+CI will hard-fail if you edit a conclusion that has downstream importers or a recorded receipt.
+This is the `Network impact` job, which runs `ieantn.py diff` against the pull request's base
+commit. There is no acknowledgement to write and no classification to declare — an author's declaration cannot be
 trusted to say whether a change altered the mathematics, and a required one just becomes a box to
 tick. The failure carries its own fix:
 

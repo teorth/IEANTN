@@ -264,6 +264,53 @@ done so in the CI summary. Line endings are converted on every commit.
 index into a throwaway tuple, which also ignored the major version, so `v4.34` to `v5.2` came out
 as thirty-two releases apart. Now caught by `pyrightconfig.json` in CI.
 
+## Docs audit
+
+**First pass done**, alongside the code audit. The docs had drifted in one direction throughout:
+they described the design as it was *intended*, and the design moved. Nothing was wrong in a way a
+reader would notice as wrong — every error read as confident and current.
+
+Twelve corrections, in three classes.
+
+**Claims the code contradicted.** Six. `NODES.md` opened with a banner saying receipts and
+staleness tracking did not exist yet; both had existed for weeks. `ARCHITECTURE.md` said the
+statement hash was of `pp.all` output, which `Tools/Hash.lean` explicitly rejects and explains at
+length why. Two documents said the breaking-change detector was unimplemented while a third listed
+it as an enforced invariant and CI ran it on every pull request. The housekeeping section was
+headed *(planned)*. And `ARCHITECTURE.md` claimed CI attempts both bridges of a restatement and
+reports which succeed — an appealing idea that nothing implements, stated as fact.
+
+**Instructions that would have failed.** Three, and these are the ones that matter, because an
+agent follows them literally. `NODES.md`'s `formalization.yaml` example omitted `node.family`,
+`node.version` and `node.status` and gave the id as `Dusart2018` rather than `Dusart2018.v1` — as
+written it fails `check-graph`. Three workflows in `CONTRIBUTING.md` showed a singular
+`justification:` key; the schema has been a `justifications:` list with `designated:` since the
+multiple-grounds design landed. And the Mathlib bump procedure said "update `lean-toolchain` and
+`lake-manifest.json` — that is the whole PR", which fails `check-closure`: every solution's
+toolchain must equal the repository's, so a bump sweeps them all, and a Lean release bump also
+moves the `lean4export` pin.
+
+That last one is the toolchain rule getting stated wrongly for the *third* time, in a document
+whose neighbouring section explains at length that it was got wrong twice before. Which is the
+lesson: a correction written in one place does not propagate, and this class is only findable by
+re-deriving each claim from the code rather than reading for sense.
+
+**Documentation ahead of the code.** One, fixed in the code instead. `ARCHITECTURE.md` said a
+receipt records the repository commit and the four pinned tool revisions, and §2 leans on that —
+"what pins a verification is the commit its receipt records". Receipts recorded neither. Rather
+than weaken the doc, `record-receipt` now records both, at `"schema": 2`; without them a receipt
+says a verification happened but not what tree it ran against or what checked it, so "re-run at the
+recorded pin" had no referent.
+
+Also swept: every relative link resolves, and every `ieantn.py` subcommand named in prose exists
+while every subcommand that exists is documented. Both are now cheap to re-check and worth doing
+after any tooling change.
+
+A **local maintainer skill** now carries what is deliberately *not* in the repository: the
+verification approval procedure and what to actually look at before approving, the alignment-
+checking recipe that needs an LLM and so cannot be CI, cross-repository paths, PNT+ migration
+state, and the accumulated traps in operational form.
+
 ## Security audit, still to do
 
 Worth being proactive about, given that contributors are increasingly agents and that some pull
@@ -317,12 +364,12 @@ computation of that kind. Introducing one would have made the bridged `Lcm.v1` d
 more than the original did. The abstraction has to be chosen so that it introduces **no new import
 requirements, computational or otherwise.**
 
-## Deferred test case: `Lcm.v2` as a pipeline
+## Done: `Lcm.v2` as a pipeline
 
-The first real refactoring exercise, to run once the metaarchitecture above is in place. It
-exercises pipeline abstraction, bridging, and parameter instantiation together.
+The first real refactoring exercise, kept here for what the sequencing taught. `Lcm.v2` and
+`IEANTN/Bridges/Lcm/V2ToV1.lean` now exist; the solution for `Lcm.v2` is issue #10.
 
-**Sequencing.** Do not design `Lcm.v2` first. The right order is:
+**Sequencing.** Do not design `Lcm.v2` first. The order used was:
 
 1. **Port `Lcm.v1`'s solution from PNT+** (`PrimeNumberTheoremAnd/IEANTN/Lcm.lean`, commit
    `ae881f2e2b3acefc9b92f8d4dda7c2b8f6e8f5fe`, declaration `Lcm.L_not_HA_of_ge`) and verify it.
@@ -333,23 +380,27 @@ exercises pipeline abstraction, bridging, and parameter instantiation together.
 Designing the abstraction before reading the proof is how you end up with side conditions that are
 either wrong or that smuggle in new dependencies.
 
-**The idea.** `Lcm.v1` hardcodes Dusart's threshold. `Lcm.v2` should instead internalise the
-Dusart-type hypothesis and its numerical side conditions, taking `X₀` as a variable — so `Lcm.v2`
-has **no imports at all**, roughly:
+**The idea.** `Lcm.v1` hardcodes Dusart's threshold. `Lcm.v2` internalises the Dusart-type
+hypothesis and its numerical side condition, taking `X₀` as a variable — so `Lcm.v2` has **no
+imports at all**:
 
 ```lean
-def lcmUpto_not_highlyAbundant : Prop :=
-  ∀ X₀ : ℝ, <numerical side conditions on X₀> →
-    IEANTN.HasPrimeInInterval.logPower X₀ 3 →
-      ∀ n : ℕ, X₀ ^ 2 ≤ (n : ℝ) → ¬ HighlyAbundant (Nat.lcmUpto n)
+def lcmUpto_not_highlyAbundant_of_primeGap : Prop :=
+  ∀ X₀ : ℝ, 11.4 < Real.log X₀ → IEANTN.HasPrimeInInterval.logPower X₀ 3 →
+    ∀ n : ℕ, X₀ ^ 2 ≤ (n : ℝ) → ¬ HighlyAbundant (Nat.lcmUpto n)
 ```
 
-The side conditions are deliberately left blank: step 2 above determines them.
+Step 2 determined the side condition: `log X₀ > 11.4`, and nothing else.
 
-**The bridge** then discharges `Lcm.v1`'s challenge from `Lcm.v2`'s conclusion by instantiating
-`X₀ := 89693`, verifying the side conditions, and handling the ℕ→ℝ cast. Note this is a bridge,
-not an import edge: `Lcm.v1` keeps `Dusart2018.v1` as its declared import and gains a `bridged`
-justification.
+**The bridge** discharges `Lcm.v1`'s conclusion from `Lcm.v2`'s by instantiating `X₀ := 89693`,
+verifying the side condition, and handling the ℕ→ℝ cast — three lines. It is a bridge, not an
+import edge: `Lcm.v1` keeps `Dusart2018.v1` as its declared import and gains a **non-designated**
+`bridged` justification, non-designated because `Lcm.v2` is itself unjustified and the direct
+Comparator receipt depends on no other node.
+
+Building it also forced the rule that bridges live inside the library and are compiled by the core
+build. A bridge recorded only as a path would keep satisfying "the file named exists" after either
+statement moved — and versions exist precisely so that statements can move.
 
 **The numerical obstacle was imaginary.** Scouting this before the port suggested the bridge's
 side condition `11.4 < Real.log 89693` would be hard: true by a margin of only `0.0041`, and
