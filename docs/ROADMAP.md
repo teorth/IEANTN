@@ -24,9 +24,22 @@ kind of change it deliberately cannot see.
 `ieantn.py record-receipt` (workflow-only) and `ieantn.py status` grading them green / yellow /
 orange / BROKEN. `check-graph` refuses a `lean-comparator` justification with no matching receipt.
 
-**Still to configure, once a receipt actually exists:** the ruleset path rule restricting
-`receipts/` to the verification workflow's identity. Until that is set, the protection is review
-convention rather than enforcement.
+**The intended `receipts/` path ruleset is impossible here, and provenance replaced it.** GitHub
+refuses push rulesets on a public repository *and* on any repository not owned by an organisation,
+and separately refuses to make the Actions app a bypass actor outside an organisation -- so a rule
+restricting who may write `receipts/` cannot be created, and would block the verification workflow's
+own push if it could.
+
+`ieantn.py check-receipts` enforces the same intent more directly: every receipt must name a run
+that really is a **successful run of `verify.yml` in this repository**. A path rule says who wrote
+the file; this says the verification happened, which is what a forger would have to fake. A commit
+author is trivially forged locally; a successful `verify.yml` run is not, because it needs a
+maintainer to approve the `verification` environment. Verified to reject a receipt pointing at
+another repository, at a real run of the *wrong* workflow, and at a real verification run that
+*failed*.
+
+If the repository ever moves to an organisation, the path rule becomes available and is worth
+adding as defence in depth -- not as a replacement.
 
 **3. The breaking-change detector.** *Done* -- `ieantn.py diff --base <ref>`, run on every pull
 request. Fails when a conclusion with downstream importers or a recorded receipt is edited in
@@ -59,7 +72,7 @@ its own dispatch; there, the controls are cost visibility and keeping dispatch a
 **6. Staleness and the housekeeping queue's time-sensitive half.** Green / yellow / orange against
 the Mathlib cache window (CONTRIBUTING §8).
 
-**7. Unit tests for the tooling.** *Done* -- 65 tests in `tests/`, run against a fixture
+**7. Unit tests for the tooling.** *Done* -- 73 tests in `tests/`, run against a fixture
 repository the real functions are pointed at, and mutation-checked rather than merely passing.
 Several are regression tests for defects that shipped.
 

@@ -69,6 +69,14 @@ jobs:
         run: python3 -m unittest discover -s tests
       - name: Import closure, graph well-formedness, generated challenges
         run: python3 scripts/ieantn.py check
+      # Online: fetches each receipt's recorded run and checks it really is a successful run of
+      # the verification workflow in this repository. The `receipts/` path ruleset that was meant
+      # to enforce this is impossible here -- GitHub refuses push rules on public repositories and
+      # on repositories not owned by an organisation -- so provenance is the enforcement.
+      - name: Receipt provenance
+        run: python3 scripts/ieantn.py check-receipts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Report what each conclusion rests on
         run: python3 scripts/ieantn.py report
 

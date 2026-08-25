@@ -8,9 +8,9 @@ one.
 Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) once before your first contribution.
 [docs/NODES.md](docs/NODES.md) is the reference for node file formats.
 
-> **Status.** Everything below works today except where marked *(planned)*: posting the reviewer
-> report as a PR comment rather than to the job summary, and the `verification` environment gate
-> that would let any contributor *request* a verification. See [docs/ROADMAP.md](docs/ROADMAP.md).
+> **Status.** Everything below works today except where marked *(planned)*: the `/verify` comment
+> trigger, and posting the reviewer report as a PR comment rather than to the job summary. See
+> [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Two principles
 
@@ -160,10 +160,15 @@ bot commits the receipt and flips the justification to `lean-comparator`.
 
 > **Receipts must be written by the verifier, never by the author** — otherwise anyone can claim
 > verification by typing it, and every downstream trust computation is decorative. Receipts
-> therefore live under `receipts/`, not in `formalization.yaml`, and that path is to be restricted
-> to the verification workflow's identity by a ruleset path rule. `check-graph` already refuses a
-> `lean-comparator` justification with no matching receipt file. *(planned: the `/verify` bot that
-> triggers the run, and the ruleset rule itself.)*
+> therefore live under `receipts/`, not in `formalization.yaml`. `check-graph` refuses a
+> `lean-comparator` justification with no matching receipt, warns when a receipt exists that nothing
+> designates, and `check-receipts` requires every receipt to name a **successful run of the
+> verification workflow in this repository** -- which is what anyone forging one would have to fake.
+> *(planned: the `/verify` comment trigger.)*
+
+On success the workflow also designates the verification, because a Lean-verified justification
+rests on no citation, no external computation and no other version, and so is almost always what a
+conclusion should point at. You can re-designate afterwards; that is an ordinary reviewed edit.
 
 Check the result with `python scripts/ieantn.py status`, which grades each receipt `green`,
 `yellow`, `orange` or `BROKEN`. `BROKEN` means a statement moved — the conclusion's own, or one it

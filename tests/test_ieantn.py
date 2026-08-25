@@ -737,6 +737,88 @@ class TestPins(FixtureRepo):
         self.assertTrue(ieantn.check_pins())
 
 
+class TestRecordReceipt(FixtureRepo):
+    """`record-receipt` writes the receipt *and* designates it.
+
+    A Lean-verified justification rests on no citation, no external computation and no other
+    version, so once one exists it is almost always what a conclusion should point at. Leaving the
+    designation to a later pull request is how the first real verification landed with the graph
+    reporting an unverified node moments after verifying it.
+    """
+
+    def setUp(self) -> None:
+        super().setUp()
+        # `record_receipt` asks Lean for fingerprints; the fixture has no Lean.
+        self._real = ieantn.compute_fingerprints
+        ieantn.compute_fingerprints = lambda: {  # type: ignore[assignment]
+            "A.v1.main": "aa", "Upstream.v1.main": "bb"
+        }
+        self.addCleanup(lambda: setattr(ieantn, "compute_fingerprints", self._real))
+
+    def test_it_writes_a_receipt_and_designates_it(self) -> None:
+        try:
+            import ruamel.yaml  # noqa: F401
+        except ImportError:
+            self.skipTest("ruamel.yaml not installed")
+        self.write_node("A.v1", LITERATURE.replace("kind: literature", "kind: none-yet"))
+        self.assertTrue(ieantn.record_receipt("A.v1", "Solutions/A.v1", "http://run", "now"))
+        self.assertTrue((self.root / "receipts" / "A.v1.main.json").is_file())
+        conclusion = ieantn.conclusions_of(ieantn.load_nodes()["A.v1"])[0]
+        self.assertEqual(ieantn.designated_kind(conclusion), "lean-comparator")
+        self.assertTrue(ieantn.check_graph(), "a designated receipt must not warn")
+
+    def test_the_receipt_records_imported_fingerprints_too(self) -> None:
+        """The graph-level property: a receipt pins what its imports said at verification time."""
+        try:
+            import ruamel.yaml  # noqa: F401
+        except ImportError:
+            self.skipTest("ruamel.yaml not installed")
+        self.write_node("Upstream.v1", LITERATURE)
+        self.write_node("A.v1", importing("Upstream.v1"))
+        self.assertTrue(ieantn.record_receipt("A.v1", "Solutions/A.v1", "http://run", "now"))
+        receipt = json.loads(
+            (self.root / "receipts" / "A.v1.main.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            sorted(receipt["statement"]), ["A.v1.main", "Upstream.v1.main"]
+        )
+
+
+class TestReceiptProvenance(FixtureRepo):
+    """A receipt must name a real, successful run of the verification workflow.
+
+    This is the enforcement that replaced the intended `receipts/` path ruleset, which GitHub
+    refuses on a public repository and on any repository not owned by an organisation. It is the
+    better control anyway: a path rule says who wrote the file, while this says the verification
+    happened -- and a commit author is trivially forged where a successful `verify.yml` run,
+    gated on a maintainer approving an environment, is not.
+
+    Only the offline half is tested here; the online half needs the network.
+    """
+
+    def _receipt(self, url: str) -> None:
+        (self.root / "receipts").mkdir(exist_ok=True)
+        (self.root / "receipts" / "A.v1.main.json").write_text(
+            json.dumps({"conclusion": "A.v1.main", "run": {"workflow_run": url}}),
+            encoding="utf-8",
+        )
+
+    def test_a_receipt_with_no_run_url_fails(self) -> None:
+        self._receipt("")
+        self.assertFalse(ieantn.check_receipts(online=False))
+
+    def test_a_receipt_with_a_non_run_url_fails(self) -> None:
+        self._receipt("https://example.invalid/trust-me")
+        self.assertFalse(ieantn.check_receipts(online=False))
+
+    def test_a_well_formed_run_url_passes_offline(self) -> None:
+        self._receipt("https://github.com/teorth/IEANTN/actions/runs/123")
+        self.assertTrue(ieantn.check_receipts(online=False))
+
+    def test_no_receipts_is_not_a_failure(self) -> None:
+        self.assertTrue(ieantn.check_receipts(online=False))
+
+
 class TestState(FixtureRepo):
     def test_state_is_generated_and_diffed(self) -> None:
         self.write_node("A.v1", LITERATURE)
