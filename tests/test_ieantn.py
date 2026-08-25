@@ -1078,6 +1078,38 @@ class TestReceiptCoverage(FixtureRepo):
         self.assertTrue((self.root / "receipts" / "A.v1.second.json").is_file())
 
 
+class TestProvenanceCannotBeBypassed(FixtureRepo):
+    """The whole check rests on the run being in *this* repository.
+
+    Anyone can stand up a repository with a `verify.yml` whose jobs succeed, so "the run exists and
+    succeeded" is worth nothing on its own. The repository is identified from `git remote get-url
+    origin` -- and when that could not be determined, the check used to go and ask the repository
+    the receipt named, which made it bypassable by deleting a remote.
+    """
+
+    def _receipt(self, key: str, url: str) -> None:
+        (self.root / "receipts").mkdir(exist_ok=True)
+        (self.root / "receipts" / f"{key}.json").write_text(
+            json.dumps({"conclusion": key, "run": {"workflow_run": url}}), encoding="utf-8"
+        )
+
+    def test_an_unknown_repository_is_refused_online(self) -> None:
+        self._receipt("A.v1.main", "https://github.com/attacker/lookalike/actions/runs/1")
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            passed = ieantn.check_receipts(online=True)
+        self.assertFalse(passed, "with no origin remote, provenance must refuse, not go and ask")
+        self.assertIn("cannot determine this repository", printed.getvalue())
+
+    def test_offline_still_checks_only_shape(self) -> None:
+        """Offline the check stays useful without a network, so it does not need the remote."""
+        self._receipt("A.v1.main", "https://github.com/attacker/lookalike/actions/runs/1")
+        self.assertTrue(ieantn.check_receipts(online=False))
+
+    def test_no_receipts_means_nothing_to_refuse(self) -> None:
+        self.assertTrue(ieantn.check_receipts(online=True))
+
+
 class TestReceiptProvenance(FixtureRepo):
     """A receipt must name a real, successful run of the verification workflow.
 

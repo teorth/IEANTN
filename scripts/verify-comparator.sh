@@ -13,6 +13,15 @@
 set -euo pipefail
 
 node=${1:?usage: verify-comparator.sh <Family>.<version>}
+# The node id is a workflow_dispatch input and lands in a path below. It cannot inject shell -- the
+# workflow passes it through the environment, not through `${{ }}` interpolation -- but an id such
+# as `x/../../elsewhere` would still point `solution_dir` outside `Solutions/`. Constrain it to the
+# shape an id actually has.
+case "$node" in
+  *[!A-Za-z0-9_.]* | *..* | .* | *. )
+    echo "error: '$node' is not a node id (expected <Family>.<version>, e.g. Lcm.v1)" >&2
+    exit 1 ;;
+esac
 repository_root=$(cd "$(dirname "$0")/.." && pwd)
 solution_dir="$repository_root/Solutions/$node"
 config="$solution_dir/comparator.json"
