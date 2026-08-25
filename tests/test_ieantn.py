@@ -382,6 +382,33 @@ class TestGraphChecks(FixtureRepo):
         self.assertFalse(ieantn.check_graph())
 
 
+class TestSolutionDrift(FixtureRepo):
+    """A receipt attests to the solution as it was, not as it is.
+
+    `assess` catches a *statement* moving out from under a receipt. Nothing caught the *solution*
+    moving, and after an edit the receipt has accepted something other than what is on disk. What
+    makes it detectable is `repository.commit`, which schema 2 records.
+    """
+
+    def test_a_schema_one_receipt_is_skipped(self) -> None:
+        """Receipts written before the commit was recorded cannot be checked, and are not guessed
+        at -- reporting drift that may not exist would train people to ignore the note."""
+        self.assertIsNone(ieantn.solution_drift(
+            {"schema": 1, "solution": {"project": "Solutions/A.v1"}}))
+
+    def test_a_receipt_with_no_solution_project_is_skipped(self) -> None:
+        self.assertIsNone(ieantn.solution_drift(
+            {"schema": 2, "repository": {"commit": "a" * 40}}))
+
+    def test_an_unknown_commit_is_skipped(self) -> None:
+        """A shallow clone, or a branch since deleted, leaves nothing to diff against."""
+        self.assertIsNone(ieantn.solution_drift({
+            "schema": 2,
+            "repository": {"commit": "0" * 40},
+            "solution": {"project": "Solutions/A.v1"},
+        }))
+
+
 class TestSpinoffSlicing(unittest.TestCase):
     """Turning a declaration's source range back into text that still resolves.
 

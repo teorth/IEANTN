@@ -1204,6 +1204,40 @@ def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str]) -> 
     return "yellow", detail
 
 
+def solution_drift(receipt: dict) -> str | None:
+    """Whether the solution has been edited since the verification that attested to it.
+
+    `assess` compares statement fingerprints, so it catches a *statement* moving out from under a
+    receipt. Nothing caught the *solution* moving. The receipt says Comparator accepted that
+    solution, and after an edit it has accepted something else -- possibly a comment, possibly not,
+    and the receipt cannot tell you which.
+
+    Reported rather than fatal, because the common case really is a comment. What makes it
+    detectable at all is `repository.commit`, which schema 2 records and schema 1 does not; older
+    receipts are skipped rather than guessed at. A commit that is not present locally -- a shallow
+    clone, or one written on a branch since deleted -- is also skipped.
+    """
+    commit = (receipt.get("repository") or {}).get("commit")
+    project = (receipt.get("solution") or {}).get("project")
+    if not commit or not project:
+        return None
+    known = subprocess.run(
+        ["git", "cat-file", "-e", f"{commit}^{{commit}}"],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+    if known.returncode != 0:
+        return None
+    changed = subprocess.run(
+        ["git", "diff", "--name-only", commit, "--", project],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+    if changed.returncode != 0:
+        return None
+    files = [line for line in changed.stdout.splitlines() if line.strip()]
+    if not files:
+        return None
+    return (f"{project} has changed in {len(files)} file(s) since the verification at "
+            f"{commit[:12]}; the receipt attests to that commit, not to what is there now")
+
+
 def status() -> bool:
     """The traffic light for every conclusion."""
     nodes = load_nodes()
@@ -1231,6 +1265,9 @@ def status() -> bool:
             lights[light] += 1
             print(f"  {light:<7} {key}")
             print(f"          {detail}")
+            drift = solution_drift(receipt)
+            if drift is not None:
+                print(f"          note: {drift}")
 
     print("\n" + "=" * 78)
     print(

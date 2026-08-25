@@ -2,6 +2,23 @@
 Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
+
+This file is a modified copy of `Solutions/Lcm.v1/LcmDev.lean` in this repository, which is in turn
+a modified copy of `PrimeNumberTheoremAnd/IEANTN/Lcm.lean` from
+https://github.com/AlexKontorovich/PrimeNumberTheoremAnd at commit
+ae881f2e2b3acefc9b92f8d4dda7c2b8f6e8f5fe, licensed under Apache 2.0. See that file's header for
+the changes made there.
+
+Changes from `Solutions/Lcm.v1/LcmDev.lean`:
+
+* the threshold is a parameter. `abbrev X₀ := 89693` and the literal `11.4` are replaced by
+  variables `X₀ c : ℝ` with `5 ≤ c` and `c ≤ Real.log X₀`, and the section that produces the two
+  triples of primes is rewritten accordingly -- roughly 430 lines. The `Criterion` machinery above
+  it is unchanged, having never mentioned the threshold;
+* the numerical endgame runs at the worst cases those hypotheses allow, `1/125` and `148`, in place
+  of `v1`'s `0.000675` and `89693`;
+* `0 < X₀` is derived from the prime-gap hypothesis rather than from `c ≤ Real.log X₀`, which does
+  not imply it -- `Real.log` of a negative number is `log |x|`.
 -/
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.Analysis.Complex.ExponentialBounds

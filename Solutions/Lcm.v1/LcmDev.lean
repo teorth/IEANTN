@@ -2,6 +2,20 @@
 Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
+
+This file is a modified copy of `PrimeNumberTheoremAnd/IEANTN/Lcm.lean` from
+https://github.com/AlexKontorovich/PrimeNumberTheoremAnd at commit
+ae881f2e2b3acefc9b92f8d4dda7c2b8f6e8f5fe, which is licensed under Apache 2.0.
+
+Changes from that original:
+
+* the LeanArchitect blueprint metadata is removed -- 35 `@[blueprint]` attributes and 18
+  `blueprint_comment` blocks -- since this repository records the informal statement in the node's
+  `Conclusions.lean` docstrings instead;
+* Dusart's Proposition 5.4 is taken as an explicit hypothesis `hd` rather than called as
+  `Dusart.proposition_5_4`. In PNT+ that declaration is itself unproved, so the original
+  `L_not_HA_of_ge` depends on `sorryAx` and could not pass Comparator; threading it as a hypothesis
+  is what makes this a genuine conditional proof of exactly what the node claims.
 -/
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.Analysis.Complex.ExponentialBounds
