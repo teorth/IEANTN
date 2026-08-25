@@ -298,19 +298,30 @@ The side conditions are deliberately left blank: step 2 above determines them.
 not an import edge: `Lcm.v1` keeps `Dusart2018.v1` as its declared import and gains a `bridged`
 justification.
 
-**The numerical obstacle, already scouted.** If the side condition is the expected
-`11.4 < Real.log X₀`, the bridge must discharge `11.4 < Real.log 89693` — true, but tight: the real
-value is `11.404148`, a margin of `0.0041`. Findings:
+**The numerical obstacle was imaginary.** Scouting this before the port suggested the bridge's
+side condition `11.4 < Real.log 89693` would be hard: true by a margin of only `0.0041`, and
+Mathlib carries `log 2`, `log 3` and `log 5` to nine digits but no `log 7`, with no 5-smooth
+integer in `(e^11.4, 89693]` to route around it.
 
-- Mathlib's `Analysis/Complex/ExponentialBounds.lean` has `log_two_gt_d9`, `log_three_gt_d9` and
-  `log_five_gt_d9`, but **no `log 7`**.
-- The natural witness is `89600 = 2⁹ · 5² · 7`, giving `9 log 2 + 2 log 5 + log 7 = 11.403111`,
-  margin `0.0031` — but it needs `log 7`.
-- **There is no 5-smooth integer in `(e^11.4, 89693] = (89321.7, 89693]`**, so no witness avoids it.
+All of that was the wrong approach. The ported development already proves it, in five lines, by
+raising to a power instead of factorising:
 
-**Decision: prove it locally**, from `Real.abs_log_sub_add_sum_range_le` (the log Taylor remainder
-bound). Making it a `computation` node was considered and rejected: `Lcm.v1` requires no
-computation of that kind, so a computation node would violate trust-neutrality above.
+```lean
+lemma log_X₀_gt : Real.log X₀ > 11.4 := by
+  rw [gt_iff_lt, show (11.4 : ℝ) = 57 / (5 : ℕ) by norm_num, div_lt_iff₀ (by norm_num),
+    mul_comm, ← Real.log_pow, Real.lt_log_iff_exp_lt (by norm_num), ← Real.exp_one_rpow]
+  grw [Real.exp_one_lt_d9]
+  norm_num
+```
+
+`11.4 = 57/5`, so the claim is `X₀⁵ > exp 57 = (exp 1)⁵⁷`, bounded by `exp_one_lt_d9` and closed by
+`norm_num` on the resulting rational. The scouting had dismissed exactly this route as too heavy;
+`norm_num` does it without complaint.
+
+The lesson is the same one the toolchain rule taught: **reasoning about whether something will
+work, in advance and in the abstract, was worse than trying it.** The bridge's numerical step is
+therefore already a proved lemma in `Solutions/Lcm.v1/LcmDev.lean`, and `Lcm.v2` is cheaper than
+this section previously suggested.
 
 Longer term the right home is a **log-tables node**, which already exists de facto as
 `PrimeNumberTheoremAnd/IEANTN/LogTables.lean` in PNT+ and which many nodes will want. Contributing
