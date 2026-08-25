@@ -24,6 +24,13 @@ kind of change it deliberately cannot see.
 `ieantn.py record-receipt` (workflow-only) and `ieantn.py status` grading them green / yellow /
 orange / BROKEN. `check-graph` refuses a `lean-comparator` justification with no matching receipt.
 
+`status` also notes when a *solution* has been edited since the verification that attested to it.
+The fingerprints catch a statement moving out from under a receipt; nothing caught the solution
+moving, and after an edit the receipt has accepted something other than what is on disk. It is a
+note rather than a failure because the common case really is a comment — but the receipt cannot
+tell you which case you are in, so it says so and leaves the judgement where it belongs. Only
+`"schema": 2` receipts record the commit this needs; older ones are skipped rather than guessed at.
+
 **The intended `receipts/` path ruleset is impossible here, and provenance replaced it.** GitHub
 refuses push rulesets on a public repository *and* on any repository not owned by an organisation,
 and separately refuses to make the Actions app a bypass actor outside an organisation -- so a rule
