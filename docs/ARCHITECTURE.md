@@ -177,11 +177,22 @@ several papers, the whole network benefits at once.
 
 A verification records a **receipt**, content-addressed rather than timestamped:
 
-- the `pp.all`-elaborated statement hash of each conclusion proved;
+- the statement fingerprint of the conclusion proved;
 - the same for each imported conclusion;
 - the Lean toolchain and Mathlib revision;
 - the pinned Comparator, `lean4export`, NanoDa and Landrun revisions;
 - the repository commit, and a timestamp **for display only**.
+
+The fingerprint is a *structural* serialisation of the elaborated statement, not its `pp.all` text.
+Pretty-printed output is a presentation and Lean is free to change it between versions, so
+fingerprinting it would turn every toolchain bump red for reasons having nothing to do with the
+mathematics. `Tools/Hash.lean` documents what is erased and the one change this deliberately cannot
+see.
+
+The last two entries were claimed here before they were recorded, and the docs audit caught it.
+They matter for the same reason: without them a receipt says a verification happened but not what
+tree it ran against or what checked it, and "re-run at the recorded pin" below has no referent.
+Receipts written before that fix carry `"schema": 1` and lack both.
 
 Staleness is computed by re-hashing, never by comparing dates. The payoff: because the hash is of
 the *elaborated* statement, cosmetic edits to an upstream conclusions file — renamed binders,
@@ -264,8 +275,10 @@ penalised for writing the convenient one, and a required acknowledgement decays 
 So the network does not ask for one. The dangerous case is made mechanically impossible instead:
 
 - Editing a conclusion that has **downstream importers or a recorded receipt** is a **hard CI
-  failure**, carrying its own fix: `python scripts/ieantn.py new-version <Family>`. *(planned:
-  this needs a diff against the base commit, which `check-graph` does not yet do.)*
+  failure**, carrying its own fix: `python scripts/ieantn.py new-version <Family>`. This is
+  `ieantn.py diff`, run by the `Network impact` job against the pull request's base commit; it
+  reads the base state with `git show` rather than checking it out, which is what makes it cheap
+  enough for every pull request.
 - Editing a conclusion with neither is silently fine — nothing depends on it, and nothing has been
   verified against it.
 
@@ -350,9 +363,15 @@ old version can be deprecated and eventually deleted. If only `C_old → C_new` 
 conclusion is *weaker*: `X.v2` is fine, but downstream nodes cannot migrate, so `X.v1` persists
 legitimately and the graph should say so. If neither holds, the change is an **amendment**.
 
-This makes the classification **derivable rather than trusted**: CI attempts both bridges and
-reports which succeed. The author's declared classification is a hypothesis that gets checked, not
-an assertion that gets believed — which is what makes it safe to let an agent propose it.
+The classification is therefore **derivable rather than trusted**, and that is the point: an
+author's declaration that a restatement is equivalent is exactly the kind of claim nobody is
+penalised for getting wrong. Writing the two bridges settles it, because a bridge that does not
+hold does not compile.
+
+*(planned)* CI does not yet attempt them for you. Today an author writes whichever bridges hold and
+CI checks those; nothing detects that a bridge which *could* be written has not been. Attempting
+both automatically would turn the classification into an output rather than an input — which is
+what would make it safe to let an agent propose one.
 
 ### Prefer many small conclusions to few large ones
 
@@ -377,11 +396,15 @@ Because solutions sit outside the core build, a stale or broken solution is a **
 recorded in the graph, not a build failure. Conclusions may be improved ahead of their solutions,
 and the network stays honest about the gap in the meantime.
 
-## 6. The housekeeping queue *(planned)*
+## 6. The housekeeping queue
 
 The graph **is** the task queue. Because every task below is a derivable property of graph state,
 nobody maintains a list: the tooling computes it, and work is scheduled against whatever compute
 and AI assistance happens to be available.
+
+`python scripts/ieantn.py housekeeping` derives it. The table is the full set of task types; the
+command implements the rows whose trigger is a plain property of the metadata, and marks a task
+whose issue has been closed while the work remains outstanding.
 
 | Task | Trigger | Rough cost |
 |---|---|---|
@@ -430,10 +453,11 @@ Built and running in CI:
 | | |
 |---|---|
 | `IEANTN/Vocabulary/` | The shared language. Definitions only, Mathlib-only closure enforced. |
-| `IEANTN/Nodes/*/v1/` | Two proof-of-concept nodes and the edge between them. |
+| `IEANTN/Nodes/<Family>/<version>/` | Three proof-of-concept node versions, the import edge between two and the bridge between two others. |
 | `Tools/Hash.lean` | Statement fingerprints (§4), Merkle-chained over IEANTN's own definitions. |
 | `receipts/` | Verification receipts, written by the workflow and never by hand. |
 | `scripts/ieantn.py` | Everything below. |
+| `tests/test_ieantn.py` | Unit tests for it, run in CI. |
 | `scripts/verify-comparator.sh` | Comparator with the four trusted tools pinned. |
 | `scripts/check_palomar_metadata.py` | Validates each node against Palomar's *current* contract. |
 | `.github/workflows/ci.yml` | Core build, network checks, fingerprint check, impact report. |
@@ -443,17 +467,33 @@ Built and running in CI:
 The tooling commands:
 
 ```bash
-python scripts/ieantn.py check            # closure, graph, acyclicity, generated challenges
-python scripts/ieantn.py fingerprint      # recompute statement fingerprints
+# checks -- `check` runs all of these in --check mode except the fingerprints, which need Lean
+python scripts/ieantn.py check            # everything below, non-destructively
+python scripts/ieantn.py check-closure    # import discipline, and the no-`sorry` rules
+python scripts/ieantn.py check-graph      # metadata, referential integrity, both acyclicities
+python scripts/ieantn.py check-pins       # the verification toolchain against `lean-toolchain`
+python scripts/ieantn.py check-receipts   # every receipt names a real run of `verify.yml`
+
+# generated and committed; CI diffs each against what the generator emits
+python scripts/ieantn.py gen-challenges   # Challenge.lean, Nodes.lean, Bridges.lean
+python scripts/ieantn.py fingerprint      # fingerprints.json  (needs a built `ieantn_hash`)
+python scripts/ieantn.py state            # STATE.md
+
+# reports
 python scripts/ieantn.py status           # green / yellow / orange / BROKEN per conclusion
-python scripts/ieantn.py diff             # what a branch degrades, and for whom
 python scripts/ieantn.py report           # what each conclusion rests on
+python scripts/ieantn.py diff             # what a branch degrades, and for whom
 python scripts/ieantn.py housekeeping     # the derived task queue
+
+# scaffolding
 python scripts/ieantn.py new-node         # scaffold a node
 python scripts/ieantn.py new-version      # scaffold the next version of one
 python scripts/ieantn.py new-solution     # scaffold a solution project
 python scripts/ieantn.py deprecate        # mark a version for retirement
 ```
+
+`record-receipt` also exists and is deliberately not listed as something to run: it is called by
+the verification workflow, and a receipt you can write attests nothing.
 
 **Not yet built**, and tracked in [ROADMAP.md](ROADMAP.md): the reviewer report as a pull request
 comment rather than a job summary; a `/verify` comment trigger; the Palomar spin-off generator;

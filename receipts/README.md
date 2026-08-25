@@ -4,8 +4,13 @@ One JSON file per Lean-verified conclusion, named `<Family>.<version>.<conclusio
 
 A receipt records what a verification actually depended on: the statement fingerprint of the
 conclusion **and of every conclusion it imports**, the Lean toolchain and Mathlib revision, the
+repository commit, the pinned revisions of Comparator, `lean4export`, Landrun and NanoDa, the
 solution project, and the workflow run that produced it. Staleness is then *computed* by
 re-fingerprinting and comparing — never by looking at a date. The timestamp is for display only.
+
+The commit and the tool pins are what make *re-running at the recorded pin* a defined operation:
+check out that commit, where core and solution agree by construction, and run those four tools.
+`"schema": 1` receipts predate that and carry neither.
 
 ## These files are written by the verification workflow, not by hand
 

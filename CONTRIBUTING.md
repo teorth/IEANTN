@@ -9,7 +9,8 @@ Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) once before your first contrib
 [docs/NODES.md](docs/NODES.md) is the reference for node file formats.
 
 > **Status.** Everything below works today except where marked *(planned)*: the `/verify` comment
-> trigger, and posting the reviewer report as a PR comment rather than to the job summary. See
+> trigger (workflow 3 gives what to do meanwhile), the `build-solution` label (workflow 2), and
+> posting the reviewer report as a pull request comment rather than to the job summary. See
 > [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Two principles
@@ -119,13 +120,18 @@ can.
 **Metadata:** the justification does **not** change. Add a progress marker instead:
 
 ```yaml
-    justification:
-      kind: none-yet
+    justifications:
+      - id: unjustified
+        kind: none-yet
+    designated: unjustified
     progress:
       solution: Solutions/Lcm.v1/
       state: in-progress
       remaining_holes: 7
 ```
+
+(`justifications` is a list and `designated` names the one that counts — see
+[docs/NODES.md](docs/NODES.md). A conclusion may carry several grounds; exactly one carries trust.)
 
 **CI:** nothing runs. Solutions are outside the core build.
 
@@ -154,10 +160,25 @@ builds just that project *(planned)*. It is not in core CI because a solution ca
 
 All holes closed and you believe Comparator will accept it.
 
-**Do:** push, then comment `/verify <Family>.<version>` on the PR *(planned)*.
+**Do:** push, then ask a maintainer to dispatch the verification workflow for your branch. Until
+the `/verify` comment trigger exists *(planned)*, that is a `workflow_dispatch`, which needs write
+access — so requesting one means saying so on the pull request. A maintainer runs:
 
-A maintainer approves the run; Comparator executes against the generated challenge; on success the
-bot commits the receipt and flips the justification to `lean-comparator`.
+```bash
+gh workflow run verify.yml -f node=Lcm.v1 -f branch=<your-branch>
+```
+
+Then approves the `verification` environment when GitHub asks. The gate is on the *run*, not the
+request: verification is hour-scale compute, so it is not self-serve, but neither should asking for
+one require write access.
+
+Comparator executes against the generated challenge; on success the workflow commits the receipt to
+your branch and designates the `lean-comparator` justification.
+
+**Before requesting one**, check locally what Comparator will check — that the challenge and
+solution declare the same type and that only the three permitted axioms are used. Both are
+checkable from inside the solution project without Comparator itself; [docs/NODES.md](docs/NODES.md)
+step 4 gives the commands. A rejected run costs a maintainer's approval and an hour of compute.
 
 **Do not write the receipt yourself, and do not set `kind: lean-comparator` by hand.**
 
@@ -206,6 +227,35 @@ Deprecate the old version when you want it retired:
 python scripts/ieantn.py deprecate Lcm.v1 --for Lcm.v2
 ```
 
+### Writing the bridge
+
+Usually the cheapest of the three, and often only a few lines. Put it at
+`IEANTN/Bridges/<Family>/<Name>.lean` — inside the library, so the core build compiles it — and
+prove the target's conclusion from the source's:
+
+```lean
+theorem bridge_v2_to_v1
+    (general : Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap)
+    (dusart : Dusart2018.v1.proposition_5_4) :
+    Lcm.v1.lcmUpto_not_highlyAbundant :=
+  fun n hn => general 89693 lt_log_89693 dusart n (by exact_mod_cast hn)
+```
+
+Its hypotheses are the conclusions you name in `from`, plus whatever the *target* node already
+imports. Then record it, run `gen-challenges` so the generated `IEANTN/Bridges.lean` picks it up,
+and `lake build` — a bridge is checked by the ordinary build, not by Comparator, because there is
+no untrusted development in it.
+
+```yaml
+  - id: bridge-from-v2
+    kind: bridged
+    from: Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap
+    bridge: IEANTN/Bridges/Lcm/V2ToV1.lean
+```
+
+`IEANTN/Bridges/Lcm/V2ToV1.lean` is the worked example. Rules: no `sorry`, no importing a
+`Challenge`, and the same import closure as a Conclusions file — all checked by `check-closure`.
+
 ## 5. Modify Vocabulary
 
 The riskiest change in the repository: Vocabulary is shared, so a semantic change can alter what
@@ -233,9 +283,9 @@ and delete the old definition when nothing uses it.
 A solution is stuck because the paper leans on a result it does not prove, or a numerical
 computation, or a piece of folklore.
 
-**Do:** promote each remaining hole to its own node — `kind: folklore` or `computation`, with
-`justification: asserted` or `none-yet` — add it to the stuck node's imports, and the solution
-becomes complete relative to those new imports.
+**Do:** promote each remaining hole to its own node — `node.kind: folklore` or `computation`, with
+a designated justification of kind `asserted` or `none-yet` — add it to the stuck node's imports,
+and the solution becomes complete relative to those new imports.
 
 This is the main way the network grows, and it is why workflow 1 tracks `remaining_holes`: **the
 holes in a stuck solution are a ready-made list of candidate nodes.** If the extracted fact serves
@@ -295,7 +345,8 @@ so a half-finished node cannot be merged by accident.
 
 `--kind` is one of `paper` (default), `pipeline`, `folklore`, `computation`.
 
-Most new nodes start with `justification: none-yet` or `literature` and no solution at all. That is
+Most new nodes start with a designated justification of kind `none-yet` or `literature`, and no
+solution at all. That is
 the normal, expected state: a node that merely *records* a result and its dependencies is already
 useful to the network, and workflows 1–3 exist to justify it later.
 
@@ -305,7 +356,14 @@ This gently degrades everything at once, and it is the case the two-axis trust m
 (ARCHITECTURE §4) exists for: a bump changes the **environment**, not the **statements**. Every
 receipt was made under an older Mathlib; no edge has broken. That is a yellow light, not a red one.
 
-**Do:** update `lean-toolchain` and `lake-manifest.json`. That is the whole PR.
+**Do:** update `lean-toolchain` and `lake-manifest.json` — and the same two files in **every**
+`Solutions/<node>/`, because a solution's toolchain must equal the repository's and `check-closure`
+fails otherwise. If the Lean *release* changed, also move `lean4export_commit` and
+`lean4export_toolchain` in `scripts/verify-comparator.sh` to the matching tag; `check-pins` fails
+the bump otherwise, deliberately, so that the pin is fixed while the reason is obvious rather than
+weeks later when a verification breaks for no visible cause.
+
+No node metadata changes.
 
 **Metadata:** *nothing changes, in any node.* Staleness is **derived**, not stored — it is computed
 by comparing each receipt's recorded environment against the current one. So a bump that degrades
@@ -338,9 +396,15 @@ Three levels, with the third defined by something real rather than a made-up num
 | **yellow** | Stale, but within the Mathlib cache window — a refresh costs about one node-sized run. |
 | **orange** | Past the cache window. Dependencies must now build from source, so a refresh costs many times the per-node budget. |
 
-Solutions keep their own toolchain pins, so a core bump does not break them: they still build at
-the Mathlib they were verified against, and re-running at that pin stays cheap. What has aged is
-the *claim that the result holds under current Mathlib*, not the proof.
+A solution's toolchain pin must **equal** the repository's, so a bump moves the solutions with it
+— that is why the bump PR touches their `lean-toolchain` and `lake-manifest.json` too. What stays
+cheap is re-running a verification *at the commit its receipt records*, where the core and the
+solution agree by construction. What has aged is the *claim that the result holds under current
+Mathlib*, not the proof.
+
+(An earlier version of this file said solutions pin independently and so are unaffected. They do
+not, and this is the rule the project has got wrong twice; the reasoning is in
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) §2.)
 
 **Do not chase bumps.** Let staleness accumulate, and run refresh sweeps ordered by fan-in when
 compute is available (`python scripts/ieantn.py housekeeping`). The one thing worth avoiding is
