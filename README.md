@@ -60,9 +60,9 @@ all exist and run in CI.
 **The Comparator path works end to end**: `Lcm.v1` carries a receipt written by the verification
 workflow, and `ieantn.py status` grades it against the current environment.
 
-Outstanding: visualisation, the `/verify` comment trigger, and the Palomar spin-off generator.
-[docs/ROADMAP.md](docs/ROADMAP.md) tracks what is deliberately not built and why; [SECURITY.md](SECURITY.md)
-states the trust model.
+Outstanding: visualisation, the `/verify` comment trigger, and the composing half of the
+Palomar spin-off generator. [docs/ROADMAP.md](docs/ROADMAP.md) tracks what is deliberately not built
+and why; [SECURITY.md](SECURITY.md) states the trust model.
 
 This work grows out of the IEANTN subproject of
 [PNT+](https://github.com/AlexKontorovich/PrimeNumberTheoremAnd), whose blueprint-based structure

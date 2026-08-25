@@ -62,11 +62,12 @@ conclusions:
     bridge: IEANTN/Bridges/Lcm/V2ToV1.lean
     note: >-
       A second, independent ground: this conclusion is the instance of Lcm.v2 at X0 = 89693. The bridge
-      discharges the side condition log X0 > 11.4 and instantiates. It is compiled by the core build,
-      so it cannot silently stop being a proof. Recorded but NOT designated: Lcm.v2 is itself unjustified,
-      so this ground currently transports nothing, and the direct Comparator receipt is the better designation
-      anyway -- it depends on no other node. The value of recording it now is that the moment Lcm.v2 acquires
-      a solution, this node has a second path to trust, and `report` can see it.
+      discharges the side condition and instantiates, and is compiled by the core build, so it cannot
+      silently stop being a proof. Lcm.v2 now carries its own Comparator receipt, so this ground is live
+      rather than pending. It is still NOT designated, and should stay that way: the direct receipt below
+      rests on no other node, while this one would route trust through Lcm.v2. Its value is redundancy
+      -- if the direct receipt ever goes BROKEN, re-designating here is a one-line change rather than
+      a re-verification.
   designated: comparator-2026-08
 
 sources:

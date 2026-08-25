@@ -444,7 +444,25 @@ Because imports are per-conclusion and the graph is deterministic, the generator
 single conclusion, a challenge whose hypotheses are the **transitive unjustified leaves**, with a
 solution composing the per-node solutions along the way — *"the main results of paper X hold given
 this RH verification, this table computation, and this folklore lemma."* That is the artifact worth
-registering. *(planned)*
+registering.
+
+`python scripts/ieantn.py spinoff <conclusion> --out <dir>` builds it, for the **one-level** case:
+a conclusion whose unjustified leaves are all among its own direct imports. Deeper graphs need the
+per-node solutions composed, which is not implemented; the command refuses rather than emitting
+something that looks complete. *(planned: the composing case.)*
+
+What it does is inline. A Palomar Challenge's import closure must be Lean core and Mathlib only, so
+the emitted Challenge cannot `import IEANTN.Vocabulary`; instead `Tools/Spinoff.lean` walks the
+conclusion's local constants, and the generator slices each one's source — docstring and all —
+straight out of the file it was written in, re-emitting it inside its own `namespace` with its
+module's `open` directives so that every short name resolves as it did. That is the operation this
+section calls "substitution", and it is the reason Vocabulary is held to a Mathlib-only closure.
+
+The inlined definitions keep their original names. The Solution obtains the identical constants by
+depending on this repository, and Comparator compares the two exported environments — so a
+divergence between an inlined copy and the real definition is precisely what it is built to catch,
+not a gap it would miss. `--compile` elaborates the assembled Challenge against Mathlib before you
+trust any of it.
 
 ## 8. What exists today
 
