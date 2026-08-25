@@ -58,6 +58,16 @@ RECEIPTS = ROOT / "receipts"
 CHANGES = ROOT / "changes"
 SOLUTIONS = ROOT / "Solutions"
 
+#: Where a spun-off Challenge says it came from.
+REPOSITORY_URL = "https://github.com/teorth/IEANTN"
+
+#: The four-line header every Lean file in this repository carries.
+LICENCE_HEADER = (
+    "/-\nCopyright (c) 2026 IEANTN contributors. All rights reserved.\n"
+    "Released under Apache 2.0 license as described in the file LICENSE.\n"
+    "Authors: IEANTN contributors\n-/\n"
+)
+
 #: Toolchain minor releases behind current, past which a refresh is assumed to fall outside the
 #: Mathlib cache window and cost many times the per-node budget. A heuristic, not a measurement.
 CACHE_WINDOW_RELEASES = 2
@@ -1194,6 +1204,40 @@ def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str]) -> 
     return "yellow", detail
 
 
+def solution_drift(receipt: dict) -> str | None:
+    """Whether the solution has been edited since the verification that attested to it.
+
+    `assess` compares statement fingerprints, so it catches a *statement* moving out from under a
+    receipt. Nothing caught the *solution* moving. The receipt says Comparator accepted that
+    solution, and after an edit it has accepted something else -- possibly a comment, possibly not,
+    and the receipt cannot tell you which.
+
+    Reported rather than fatal, because the common case really is a comment. What makes it
+    detectable at all is `repository.commit`, which schema 2 records and schema 1 does not; older
+    receipts are skipped rather than guessed at. A commit that is not present locally -- a shallow
+    clone, or one written on a branch since deleted -- is also skipped.
+    """
+    commit = (receipt.get("repository") or {}).get("commit")
+    project = (receipt.get("solution") or {}).get("project")
+    if not commit or not project:
+        return None
+    known = subprocess.run(
+        ["git", "cat-file", "-e", f"{commit}^{{commit}}"],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+    if known.returncode != 0:
+        return None
+    changed = subprocess.run(
+        ["git", "diff", "--name-only", commit, "--", project],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+    if changed.returncode != 0:
+        return None
+    files = [line for line in changed.stdout.splitlines() if line.strip()]
+    if not files:
+        return None
+    return (f"{project} has changed in {len(files)} file(s) since the verification at "
+            f"{commit[:12]}; the receipt attests to that commit, not to what is there now")
+
+
 def status() -> bool:
     """The traffic light for every conclusion."""
     nodes = load_nodes()
@@ -1221,6 +1265,9 @@ def status() -> bool:
             lights[light] += 1
             print(f"  {light:<7} {key}")
             print(f"          {detail}")
+            drift = solution_drift(receipt)
+            if drift is not None:
+                print(f"          note: {drift}")
 
     print("\n" + "=" * 78)
     print(
@@ -1908,6 +1955,281 @@ def diff(base: str) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# spinoff: emit one conclusion as a standalone Palomar submission
+# ---------------------------------------------------------------------------
+
+#: The namespace the emitted Challenge declares its compared theorem in. Anything but the node's
+#: own, which the library already uses for the generated challenge.
+SPINOFF_NAMESPACE = "Spinoff"
+
+
+def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None) -> list[str]:
+    """The conclusion keys `key` transitively rests on that Lean has not checked here.
+
+    The same walk `report` prints, returning keys rather than prose. These become the emitted
+    Challenge's hypotheses: a Palomar submission cannot assert what this network is content to
+    take on a citation's authority, so it must say what it is assuming.
+    """
+    seen = set() if seen is None else seen
+    if key in seen or key not in index:
+        return []
+    seen.add(key)
+    _, conclusion = index[key]
+    justification = designated_of(conclusion) or {}
+    found: list[str] = []
+    if justification.get("kind") == "bridged":
+        for source in bridge_sources(justification):
+            found += unjustified_leaves(index, source, seen)
+    elif justification.get("kind") not in VERIFIED_KINDS:
+        found.append(key)
+    for dependency in conclusion.get("imports") or []:
+        found += unjustified_leaves(
+            index, f"{dependency.get('node')}.{dependency.get('conclusion')}", seen)
+    return found
+
+
+def opens_of(path: pathlib.Path) -> list[str]:
+    """The module-level `open` directives of a Lean file.
+
+    `open ... in` is excluded: it scopes to the single declaration that follows, so it is
+    already inside whatever text gets sliced.
+    """
+    code = strip_lean_comments(path.read_text(encoding="utf-8"))
+    return [line.rstrip() for line in code.splitlines()
+            if re.match(r"^open\s", line) and not line.rstrip().endswith(" in")]
+
+
+def module_path(module: str) -> pathlib.Path:
+    return ROOT / pathlib.PurePosixPath(module.replace(".", "/") + ".lean")
+
+
+def slice_source(text: str, decl: dict, prefix: str) -> tuple[str, str]:
+    """The source of one declaration, and the namespace it must be re-emitted inside.
+
+    Lean reports 1-based lines and 0-based columns. The `range` spans the whole declaration
+    including its docstring; the `selectionRange` spans just the declared name as written, and the
+    namespace is the full name with that suffix removed -- see Tools/Spinoff.lean.
+    """
+    lines = text.splitlines()
+
+    def cut(sl: int, sc: int, el: int, ec: int) -> str:
+        if sl == el:
+            return lines[sl - 1][sc:ec]
+        out = [lines[sl - 1][sc:]] + lines[sl:el - 1] + [lines[el - 1][:ec]]
+        return "\n".join(out)
+
+    body = cut(decl["startLine"], decl["startCol"], decl["endLine"], decl["endCol"])
+    written = cut(decl["nameStartLine"], decl["nameStartCol"],
+                  decl["nameEndLine"], decl["nameEndCol"])
+    full = decl["name"]
+    if not full.endswith(written):
+        raise SystemExit(
+            f"error: {full} is written as `{written}`, which is not a suffix of its full name. "
+            "The namespace cannot be recovered; refusing to guess.")
+    namespace = full[: len(full) - len(written)].rstrip(".")
+    del prefix
+    return body, namespace
+
+
+def spinoff(key: str, out: str, compile_check: bool) -> bool:
+    """Emit one conclusion as a self-contained Palomar submission.
+
+    See docs/ARCHITECTURE.md section 7. The Challenge inlines every IEANTN definition the statement
+    needs, so its import closure is Mathlib-only as Palomar requires; the Solution reaches the real
+    proof by depending on this repository.
+    """
+    nodes = load_nodes()
+    index = index_conclusions(nodes)
+    if key not in index:
+        print(f"error: unknown conclusion `{key}`; try `python scripts/ieantn.py report`")
+        return False
+    node_id, conclusion = index[key]
+    cid = conclusion.get("id")
+
+    designated = designated_of(conclusion) or {}
+    if designated.get("kind") not in VERIFIED_KINDS:
+        print(f"error: `{key}` designates `{designated.get('kind')}`, so there is no Lean proof to "
+              "submit. Palomar records a verified formalization, not a claim.")
+        return False
+
+    # Multi-level composition -- chaining several nodes' solutions into one -- is the part of
+    # ARCHITECTURE section 7 that is not built. Refuse rather than emit something that looks
+    # complete and is not.
+    leaves = sorted(set(unjustified_leaves(index, key)))
+    direct = {f"{d.get('node')}.{d.get('conclusion')}" for d in (conclusion.get("imports") or [])}
+    deeper = [leaf for leaf in leaves if leaf not in direct]
+    if deeper:
+        print(f"error: `{key}` rests on {', '.join(deeper)}, which are not among its direct "
+              "imports. Emitting that needs the per-node solutions composed along the way, which "
+              "is not implemented; only a one-level spin-off is supported today.")
+        return False
+
+    solution_dir = SOLUTIONS / node_id
+    if not (solution_dir / "Solution.lean").is_file():
+        print(f"error: no solution at {rel(solution_dir)}")
+        return False
+
+    wanted = [conclusion.get("declaration")] + [index[leaf][1].get("declaration") for leaf in leaves]
+    finished = subprocess.run(
+        ["lake", "exe", "ieantn_spinoff", *[w for w in wanted if w]],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+    if finished.returncode != 0:
+        sys.exit("error: could not locate the definitions to inline. Is `ieantn_spinoff` built?\n"
+                 "       try `lake build ieantn_spinoff`\n" + (finished.stderr or "").strip())
+    payload = next(
+        (line for line in reversed(finished.stdout.splitlines()) if line.startswith("{")), None)
+    if payload is None:
+        sys.exit("error: ieantn_spinoff produced no output")
+    declarations = json.loads(payload)["declarations"]
+
+    target = ROOT / out
+    target.mkdir(parents=True, exist_ok=True)
+
+    # --- Challenge: the inlined definitions, then the compared theorem -----------------------
+    sources = {d["module"]: module_path(d["module"]).read_text(encoding="utf-8")
+               for d in declarations}
+    mathlib_imports = sorted({
+        module for path in {module_path(m) for m in sources}
+        for module in imports_of(path) if under(module, "Mathlib")})
+
+    blocks: list[str] = []
+    current: tuple[str, str] | None = None
+    for decl in declarations:
+        body, namespace = slice_source(sources[decl["module"]], decl, decl["name"])
+        here = (decl["module"], namespace)
+        if here != current:
+            if current is not None:
+                blocks.append(f"end {current[1]}\n\n")
+            blocks.append(f"namespace {namespace}\n" if namespace else "")
+            # A definition body uses whatever its own file had `open`. `log x` and
+            # `sigma 1 m` below mean `Real.log` and `ArithmeticFunction.sigma` only because
+            # their source files open those namespaces; without this the inlined text does
+            # not resolve. Scoped inside the namespace rather than unioned at the top, so two
+            # modules cannot make each other's names ambiguous.
+            for directive in opens_of(module_path(decl["module"])):
+                blocks.append(directive + "\n")
+            current = here
+        blocks.append("\n" + body + "\n")
+    if current:
+        blocks.append(f"end {current[1]}\n")
+
+    binders = "".join(
+        f"\n    ({hypothesis_name({'node': leaf.rsplit('.', 1)[0], 'conclusion': leaf.rsplit('.', 1)[1]})} : "
+        f"{index[leaf][1].get('declaration')})"
+        for leaf in leaves)
+    statement = conclusion.get("declaration")
+    theorem = (f"theorem {SPINOFF_NAMESPACE}.main{binders} :\n    {statement} := by\n  sorry\n"
+               if binders else
+               f"theorem {SPINOFF_NAMESPACE}.main : {statement} := by\n  sorry\n")
+
+    rests_on = ("\n".join(f"* `{leaf}`, taken as a hypothesis." for leaf in leaves)
+                or "* nothing. Every definition it needs is inlined below and the statement is "
+                   "unconditional.")
+    challenge = (
+        LICENCE_HEADER
+        + "".join(f"import {module}\n" for module in mathlib_imports)
+        + f"""
+/-!
+# Challenge: `{key}`
+
+Spun off from the IEANTN network ({REPOSITORY_URL}), node `{node_id}`.
+**Generated file** -- regenerated by `python scripts/ieantn.py spinoff {key}`.
+
+The definitions below are inlined from that repository's `IEANTN/Vocabulary/` and the node's
+`Conclusions.lean`, verbatim and with their docstrings, so that this file's import closure is Lean
+core and Mathlib only. They keep their original names: the Solution obtains the identical constants
+by depending on the repository, and Comparator compares the two exported environments, so a
+divergence between an inlined copy and the real definition is exactly what it would catch.
+
+What the statement rests on:
+
+{rests_on}
+-/
+
+"""
+        + "".join(blocks)
+        + "\n"
+        + theorem)
+    (target / "Challenge.lean").write_text(challenge, encoding="utf-8", newline="\n")
+
+    # --- Solution --------------------------------------------------------------------------
+    vendored = sorted(path.stem for path in solution_dir.glob("*.lean"))
+    arguments = " ".join(
+        hypothesis_name({"node": leaf.rsplit(".", 1)[0], "conclusion": leaf.rsplit(".", 1)[1]})
+        for leaf in leaves)
+    solution = (
+        LICENCE_HEADER
+        + "".join(f"import {stem}\n" for stem in vendored)
+        + f"""
+/-!
+# Solution: `{key}`
+
+**Generated file** -- regenerated by `python scripts/ieantn.py spinoff {key}`.
+
+The proof is `{node_id}.challenge_{cid}`, vendored from the node's solution project unchanged. This
+file only renames it into the namespace the Challenge uses, which exists so that the compared name
+does not collide with the sorried challenge the source repository generates for its own build.
+-/
+
+theorem {SPINOFF_NAMESPACE}.main{binders} :
+    {statement} :=
+  {node_id}.challenge_{cid}{(' ' + arguments) if arguments else ''}
+""")
+    (target / "Solution.lean").write_text(solution, encoding="utf-8", newline="\n")
+
+    for path in solution_dir.glob("*.lean"):
+        if path.name != "Solution.lean":
+            (target / path.name).write_text(path.read_text(encoding="utf-8"),
+                                            encoding="utf-8", newline="\n")
+    vendor = solution_dir / "Solution.lean"
+    (target / "NodeSolution.lean").write_text(vendor.read_text(encoding="utf-8"),
+                                              encoding="utf-8", newline="\n")
+
+    (target / "comparator.json").write_text(
+        json.dumps({
+            "challenge_module": "Challenge",
+            "solution_module": "Solution",
+            "theorem_names": [f"{SPINOFF_NAMESPACE}.main"],
+            "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+        }, indent=2) + "\n", encoding="utf-8", newline="\n")
+
+    (target / "lean-toolchain").write_text(
+        (ROOT / "lean-toolchain").read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
+    for name in ("LICENSE", "LICENCE"):
+        if (ROOT / name).is_file():
+            (target / name).write_text((ROOT / name).read_text(encoding="utf-8"),
+                                       encoding="utf-8", newline="\n")
+            break
+    else:
+        print("warning: no LICENSE at the repository root; Palomar requires exactly one")
+
+    inside = target.is_relative_to(ROOT)
+    print(f"wrote {rel(target) if inside else target}")
+    print("\nstill to do by hand, and deliberately not guessed at:")
+    print("  1. lakefile.toml -- this needs a pinned git dependency on the source repository")
+    print("  2. lake-manifest.json -- commit the one Lake resolves")
+    print("  3. formalization.yaml -- start from the node's, drop `node` and `conclusions`, and")
+    print("     add a limitation naming each hypothesis above")
+    print("  4. validate: see the `palomar-submission` skill for running Palomar's own validator")
+    if compile_check:
+        # The Challenge imports Mathlib and nothing else, so this repository's own
+        # environment can elaborate it as-is -- the assembled Lake project is not needed.
+        # This is the check that the inlining is faithful rather than merely plausible.
+        print("\nchecking the assembled Challenge elaborates...")
+        built = subprocess.run(
+            ["lake", "env", "lean", str(target / "Challenge.lean")],
+            cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+        noise = [line for line in (built.stdout + built.stderr).splitlines()
+                 if "declaration uses" not in line and line.strip()]
+        if built.returncode != 0 or noise:
+            print("FAIL: the inlined Challenge does not compile cleanly")
+            print("\n".join(noise[:20]))
+            return False
+        print("ok  the Challenge elaborates, with only the deliberate `sorry`")
+    return True
+
+
+# ---------------------------------------------------------------------------
 # new-version / deprecate
 # ---------------------------------------------------------------------------
 
@@ -2140,6 +2462,10 @@ def main() -> int:
     fresh.add_argument(
         "--kind", default="paper", choices=["paper", "pipeline", "folklore", "computation"]
     )
+    spun = sub.add_parser("spinoff")
+    spun.add_argument("conclusion", help="e.g. Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap")
+    spun.add_argument("--out", required=True, help="directory to write the submission into")
+    spun.add_argument("--compile", action="store_true", help="build the assembled project")
     version = sub.add_parser("new-version")
     version.add_argument("family", help="e.g. Lcm")
     changed = sub.add_parser("diff")
@@ -2184,6 +2510,8 @@ def main() -> int:
         return 0 if housekeeping() else 1
     if args.command == "new-node":
         return 0 if new_node(args.family, args.kind) else 1
+    if args.command == "spinoff":
+        return 0 if spinoff(args.conclusion, args.out, args.compile) else 1
     if args.command == "new-version":
         return 0 if new_version(args.family) else 1
     if args.command == "deprecate":

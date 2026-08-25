@@ -62,6 +62,7 @@ python scripts/ieantn.py report         # what each conclusion rests on
 python scripts/ieantn.py status         # green / yellow / orange / BROKEN per conclusion
 python scripts/ieantn.py diff           # what your branch degrades, and for whom
 python scripts/ieantn.py housekeeping   # the derived task queue
+python scripts/ieantn.py spinoff <conclusion> --out <dir> --compile   # Palomar submission
 ```
 
 `Challenge.lean` files are generated: after editing a `Conclusions.lean` or a

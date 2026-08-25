@@ -22,3 +22,8 @@ name = "IEANTN"
 [[lean_exe]]
 name = "ieantn_hash"
 root = "Tools.Hash"
+
+# Not in defaultTargets either: only needed when generating a Palomar spin-off.
+[[lean_exe]]
+name = "ieantn_spinoff"
+root = "Tools.Spinoff"

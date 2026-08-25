@@ -24,6 +24,13 @@ kind of change it deliberately cannot see.
 `ieantn.py record-receipt` (workflow-only) and `ieantn.py status` grading them green / yellow /
 orange / BROKEN. `check-graph` refuses a `lean-comparator` justification with no matching receipt.
 
+`status` also notes when a *solution* has been edited since the verification that attested to it.
+The fingerprints catch a statement moving out from under a receipt; nothing caught the solution
+moving, and after an edit the receipt has accepted something other than what is on disk. It is a
+note rather than a failure because the common case really is a comment — but the receipt cannot
+tell you which case you are in, so it says so and leaves the judgement where it belongs. Only
+`"schema": 2` receipts record the commit this needs; older ones are skipped rather than guessed at.
+
 **The intended `receipts/` path ruleset is impossible here, and provenance replaced it.** GitHub
 refuses push rulesets on a public repository *and* on any repository not owned by an organisation,
 and separately refuses to make the Actions app a bypass actor outside an organisation -- so a rule
@@ -58,8 +65,8 @@ tools pinned, and `.github/workflows/verify.yml` splitting the run in two: `comp
 contributor code with **no write access and no secrets**, and `receipt` holds write access but runs
 no contributor code and recomputes the fingerprints itself from the core library.
 
-Comparator accepts `Solutions/Lcm.v1` -- both the Lean kernel and NanoDa -- in about 50 seconds
-locally. Getting there took four fixes, all recorded in the code audit below, and the most
+Comparator accepts `Solutions/Lcm.v1` and `Solutions/Lcm.v2` -- both the Lean kernel and
+NanoDa -- in about 50 seconds locally. Getting there took four fixes, all recorded in the code audit below, and the most
 instructive of them is that a solution must carry a `lean-toolchain` *equal* to the repository's:
 Mathlib's `cache` reads it from the project directory, and the rule that briefly forbade the file
 is what caused the 64-minute first run.
@@ -72,7 +79,7 @@ its own dispatch; there, the controls are cost visibility and keeping dispatch a
 **6. Staleness and the housekeeping queue's time-sensitive half.** Green / yellow / orange against
 the Mathlib cache window (CONTRIBUTING §8).
 
-**7. Unit tests for the tooling.** *Done* -- 73 tests in `tests/`, run against a fixture
+**7. Unit tests for the tooling.** *Done* -- 97 tests in `tests/`, run against a fixture
 repository the real functions are pointed at, and mutation-checked rather than merely passing.
 Several are regression tests for defects that shipped.
 
@@ -81,6 +88,25 @@ is the silent-no-op class in the code audit below and the one unit tests would c
 
 **8. Visualisation.** A rendered graph over the receipts and metadata, computed rather than
 re-running any verification.
+
+**9. The Palomar spin-off generator.** *Partly done* -- `ieantn.py spinoff <conclusion> --out <dir>`
+emits a self-contained submission for the one-level case, where every transitive unjustified leaf is
+also a direct import. It inlines the node's definitions so the Challenge's closure is Mathlib-only,
+takes each leaf as a hypothesis, and vendors the node's solution.
+
+Two things it deliberately does not do. It refuses the multi-level case rather than emitting
+something incomplete: composing several nodes' solutions into one is the harder half of section 7
+and is still open. And it stops short of `lakefile.toml`, `lake-manifest.json` and
+`formalization.yaml`, printing what remains -- those need a pinned dependency on a *published*
+commit and a limitations section naming the hypotheses, neither of which a generator should invent.
+
+The route not taken is worth recording. Pretty-printing the elaborated definitions is the obvious
+way to inline them and produces correct, unreadable output -- `LE.le 5 c` for `5 ≤ c` -- because a
+standalone executable has no notation delaborators registered, and `pp.notation` and
+`enableInitializersExecution` do not bring them back. Correct-but-unreadable is the dangerous
+failure here, because nothing downstream complains: Comparator would accept such a Challenge
+happily. The Challenge is the one file a mathematical reader audits, so the text now comes from the
+source files, which were written to be read.
 
 ## Considered and dropped: tiered verification levels
 

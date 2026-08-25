@@ -382,6 +382,134 @@ class TestGraphChecks(FixtureRepo):
         self.assertFalse(ieantn.check_graph())
 
 
+class TestSolutionDrift(FixtureRepo):
+    """A receipt attests to the solution as it was, not as it is.
+
+    `assess` catches a *statement* moving out from under a receipt. Nothing caught the *solution*
+    moving, and after an edit the receipt has accepted something other than what is on disk. What
+    makes it detectable is `repository.commit`, which schema 2 records.
+    """
+
+    def test_a_schema_one_receipt_is_skipped(self) -> None:
+        """Receipts written before the commit was recorded cannot be checked, and are not guessed
+        at -- reporting drift that may not exist would train people to ignore the note."""
+        self.assertIsNone(ieantn.solution_drift(
+            {"schema": 1, "solution": {"project": "Solutions/A.v1"}}))
+
+    def test_a_receipt_with_no_solution_project_is_skipped(self) -> None:
+        self.assertIsNone(ieantn.solution_drift(
+            {"schema": 2, "repository": {"commit": "a" * 40}}))
+
+    def test_an_unknown_commit_is_skipped(self) -> None:
+        """A shallow clone, or a branch since deleted, leaves nothing to diff against."""
+        self.assertIsNone(ieantn.solution_drift({
+            "schema": 2,
+            "repository": {"commit": "0" * 40},
+            "solution": {"project": "Solutions/A.v1"},
+        }))
+
+
+class TestSpinoffSlicing(unittest.TestCase):
+    """Turning a declaration's source range back into text that still resolves.
+
+    The generator inlines IEANTN's own definitions into a Palomar Challenge, because a Challenge
+    may not import the submitter's library. Lean supplies the ranges; these test what is done with
+    them.
+    """
+
+    SOURCE = (
+        "import Mathlib.Foo\n"          # 1
+        "\n"                            # 2
+        "namespace IEANTN\n"            # 3
+        "open Real\n"                   # 4
+        "\n"                            # 5
+        "/-- Doc. -/\n"                 # 6
+        "def Wrapper.thing (x : ℝ) : Prop :=\n"   # 7
+        "  log x > 0\n"                 # 8
+        "\n"                            # 9
+        "end IEANTN\n"                  # 10
+    )
+
+    def _decl(self, **over):
+        base = dict(name="IEANTN.Wrapper.thing", module="IEANTN.Vocabulary.X", kind="def",
+                    startLine=6, startCol=0, endLine=8, endCol=12,
+                    nameStartLine=7, nameStartCol=4, nameEndLine=7, nameEndCol=17)
+        base.update(over)
+        return base
+
+    def test_the_slice_carries_the_docstring(self) -> None:
+        """The range Lean reports starts at the docstring, which is most of why this is worth
+        doing: the docstring is the informal statement a Palomar reviewer reads."""
+        body, _ = ieantn.slice_source(self.SOURCE, self._decl(), "")
+        self.assertTrue(body.startswith("/-- Doc. -/"))
+        self.assertIn("log x > 0", body)
+
+    def test_the_namespace_comes_from_the_written_name(self) -> None:
+        """`IEANTN.Wrapper.thing` written as `Wrapper.thing` means the namespace is `IEANTN`.
+
+        Recovering it any other way means parsing Lean; the selection range makes it arithmetic.
+        """
+        _, namespace = ieantn.slice_source(self.SOURCE, self._decl(), "")
+        self.assertEqual(namespace, "IEANTN")
+
+    def test_a_name_that_is_not_a_suffix_is_refused(self) -> None:
+        """If the written name is not a suffix of the full name the namespace cannot be recovered.
+
+        Guessing would produce a Challenge that compiles and states something else, which is the
+        one outcome worth refusing outright.
+        """
+        with self.assertRaises(SystemExit):
+            ieantn.slice_source(self.SOURCE, self._decl(name="Other.entirely"), "")
+
+
+class TestSpinoffOpens(unittest.TestCase):
+    def test_module_level_opens_are_collected(self) -> None:
+        """`log x` in an inlined body means `Real.log` only because its file opened `Real`."""
+        with tempfile.TemporaryDirectory() as tmp:
+            f = pathlib.Path(tmp) / "X.lean"
+            f.write_text(
+                "import Mathlib\nopen Real ArithmeticFunction\nopen scoped Nat\n"
+                "open Finset in\ndef a := 1\n-- open Commented\n",
+                encoding="utf-8")
+            self.assertEqual(
+                ieantn.opens_of(f), ["open Real ArithmeticFunction", "open scoped Nat"])
+
+    def test_open_in_is_excluded_and_comments_ignored(self) -> None:
+        """`open X in` scopes to the next declaration, so it is already inside the sliced text."""
+        with tempfile.TemporaryDirectory() as tmp:
+            f = pathlib.Path(tmp) / "X.lean"
+            f.write_text("open Finset in\ndef a := 1\n-- open Nope\n", encoding="utf-8")
+            self.assertEqual(ieantn.opens_of(f), [])
+
+
+class TestUnjustifiedLeaves(FixtureRepo):
+    """What a spun-off Challenge must take as hypotheses.
+
+    Palomar records a verified formalization; anything this network is content to accept on a
+    citation's authority has to appear in the statement as an assumption rather than be silently
+    absorbed.
+    """
+
+    def test_a_verified_conclusion_rests_on_nothing(self) -> None:
+        self.write_node("A.v1", LITERATURE.replace("kind: literature", "kind: lean-comparator"))
+        self._receipt_for("A.v1.main")
+        index = ieantn.index_conclusions(ieantn.load_nodes())
+        self.assertEqual(ieantn.unjustified_leaves(index, "A.v1.main"), [])
+
+    def test_an_imported_citation_becomes_a_leaf(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        self.write_node(
+            "A.v1", importing("Upstream.v1").replace("kind: none-yet", "kind: lean-comparator"))
+        self._receipt_for("A.v1.main")
+        index = ieantn.index_conclusions(ieantn.load_nodes())
+        self.assertEqual(ieantn.unjustified_leaves(index, "A.v1.main"), ["Upstream.v1.main"])
+
+    def _receipt_for(self, key: str) -> None:
+        (self.root / "receipts").mkdir(exist_ok=True)
+        (self.root / "receipts" / f"{key}.json").write_text(
+            json.dumps({"conclusion": key}), encoding="utf-8")
+
+
 class TestImportParsing(FixtureRepo):
     """What counts as an import, and what does not.
 
