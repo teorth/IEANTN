@@ -382,6 +382,63 @@ class TestGraphChecks(FixtureRepo):
         self.assertFalse(ieantn.check_graph())
 
 
+class TestConclusionlessNodes(FixtureRepo):
+    """A node may state nothing yet, and must still be visible.
+
+    Starting a paper as a stub and adding conclusions later is a supported workflow. It only works
+    if the tooling can see the stub: every report iterates conclusions, so before this a node with
+    none appeared in `report`, `status`, `housekeeping` and `STATE.md` exactly nowhere -- and the
+    graph is meant to *be* the task queue, so a task it cannot show is not queued.
+    """
+
+    def _stub(self, node_id: str = "Paper.v1", *, status: str = "stub") -> pathlib.Path:
+        directory = self.root / "IEANTN" / "Nodes" / node_id.replace(".", "/")
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / "formalization.yaml").write_text(
+            node_yaml(node_id, "[]", status=status), encoding="utf-8")
+        (directory / "Conclusions.lean").write_text(
+            "import IEANTN.Vocabulary\n", encoding="utf-8")
+        return directory
+
+    def test_a_node_with_no_conclusions_passes_the_checks(self) -> None:
+        self._stub()
+        self.assertTrue(ieantn.check_graph())
+        self.assertTrue(ieantn.check_closure())
+
+    def test_its_generated_challenge_has_no_theorems(self) -> None:
+        self._stub()
+        self.generate()
+        challenge = (self.root / "IEANTN" / "Nodes" / "Paper" / "v1" / "Challenge.lean")
+        self.assertTrue(challenge.is_file())
+        self.assertNotIn("theorem", challenge.read_text(encoding="utf-8"))
+
+    def test_it_appears_in_the_housekeeping_queue(self) -> None:
+        self._stub()
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            ieantn.housekeeping()
+        self.assertIn("Paper.v1", printed.getvalue())
+        self.assertIn("no conclusions yet", printed.getvalue())
+
+    def test_it_gets_a_row_in_the_state_snapshot(self) -> None:
+        self._stub()
+        rendered = ieantn.render_state(ieantn.load_nodes())
+        self.assertIn("`Paper.v1`", rendered)
+        self.assertIn("state nothing yet", rendered)
+
+    def test_a_deprecated_stub_is_not_queued(self) -> None:
+        """Deprecation already says "this should go away"; asking for conclusions would be noise."""
+        directory = self._stub(status="deprecated")
+        text = (directory / "formalization.yaml").read_text(encoding="utf-8")
+        (directory / "formalization.yaml").write_text(
+            text.replace("  status: deprecated", "  status: deprecated\n  superseded_by: Paper.v1"),
+            encoding="utf-8")
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            ieantn.housekeeping()
+        self.assertNotIn("no conclusions yet", printed.getvalue())
+
+
 class TestSolutionDrift(FixtureRepo):
     """A receipt attests to the solution as it was, not as it is.
 
