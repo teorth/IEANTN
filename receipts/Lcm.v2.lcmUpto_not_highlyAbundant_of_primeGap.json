@@ -1,0 +1,28 @@
+{
+  "challenge": "Lcm.v2.challenge_lcmUpto_not_highlyAbundant_of_primeGap",
+  "conclusion": "Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "5b1c3618759375e0ef0033d39000b1338e99f133"
+  },
+  "repository": {
+    "commit": "c6eea4d640196cbff7a83862895c0ab1efcfd54f"
+  },
+  "run": {
+    "recorded_at": "2026-08-25T06:42:21Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/32817004647"
+  },
+  "schema": 2,
+  "solution": {
+    "project": "Solutions/Lcm.v2"
+  },
+  "statement": {
+    "Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap": "90d4cacf4a5de6e381f02cabdb5b8d6b5f8bf442a7ce3f5197fefda84c80ee7a"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}

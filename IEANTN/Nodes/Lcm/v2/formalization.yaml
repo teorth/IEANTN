@@ -12,7 +12,7 @@ node:
   family: Lcm
   version: v2
   kind: pipeline
-  status: awaiting-solution
+  status: active
 project:
   name: "The lcm sequence is not highly abundant, with the threshold abstracted"
   description: >-
@@ -40,15 +40,15 @@ conclusions:
   - id: unjustified
     kind: none-yet
     note: >-
-      Generalising Solutions/Lcm.v1/LcmDev.lean. The development fixes X0 = 89693 as an abbrev and uses
-      the literal in several estimates, so this is real work rather than a rename. Two things the solver
-      should know. The numerical side condition at the instance is already proved there as `log_X0_gt`.
-      And the bound c >= 5 is the constraint read out of that development's final product comparison (Criterion.h_crit,
-      via prod_epsilon_le / final_comparison / prod_epsilon_ge) and evaluated: it binds near c > 4.12
-      in the worst permitted case X0 = e^c, and near c > 3.6 at X0 = 89693. 5 carries margin deliberately
-      and is not claimed sharp -- if the generalised proof will not close at 5, the right response is
-      to say so and raise it, not to weaken anything else.
-  designated: unjustified
+      A complete, sorry-free solution now exists at Solutions/Lcm.v2/, generalising Solutions/Lcm.v1/LcmDev.lean.
+      It awaits Comparator: the justification stays none-yet until the verification workflow writes a
+      receipt, because a justification an author can set is not evidence. Locally the two guarantees Comparator
+      checks both hold -- the challenge and the solution declare identical types under pp.all, and the
+      solution depends on propext, Classical.choice and Quot.sound alone.
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/32817004647'
+  designated: comparator
 
   issue: 10
 sources:
