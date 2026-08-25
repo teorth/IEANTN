@@ -21,7 +21,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 |---|---|---|---|---:|---|
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
 | `Lcm.v1` | active | `lcmUpto_not_highlyAbundant` | lean-comparator | 1 | - |
-| `Lcm.v2` | awaiting-solution | `lcmUpto_not_highlyAbundant_of_primeGap` | none-yet | 0 | #10 |
+| `Lcm.v2` | awaiting-verification | `lcmUpto_not_highlyAbundant_of_primeGap` | none-yet | 0 | #10 |
 
 ## Leverage
 

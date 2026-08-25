@@ -1,0 +1,13 @@
+{
+  "challenge_module": "IEANTN.Nodes.Lcm.v2.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "Lcm.v2.challenge_lcmUpto_not_highlyAbundant_of_primeGap"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
