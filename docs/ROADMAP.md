@@ -156,11 +156,62 @@ impossible or merely inconvenient. Most numerical claims in explicit analytic nu
 certifiable: the interval-arithmetic and table-driven results in PNT+ are already of that shape.
 Tier B should stay rare enough to be conspicuous.
 
-## Code audit, still to do
+## Code audit
 
-The tooling has accumulated a real defect rate during the proof-of-concept phase, and the classes
-below are the ones actually observed rather than a generic wish for review. They are recorded
-because each predicts where the next one will be.
+**First pass done.** What follows is in two parts: what the pass found and fixed, and the defect
+*classes* observed during development, kept because each predicts where the next one will be.
+
+### What the first pass found
+
+Read end to end: `scripts/ieantn.py`, `Tools/Hash.lean`, `scripts/verify-comparator.sh`, and the
+workflows. Nine defects, each now covered by a test that was checked to fail without its fix.
+
+Two were soundness holes in the thing the repository exists to get right:
+
+- **A receipt could cover a conclusion Comparator never saw.** Comparator runs once per node
+  against `theorem_names` in the solution's `comparator.json`; receipts are written per conclusion;
+  nothing connected the two. Adding a second conclusion to an already-verified node was enough to
+  earn it a full `lean-comparator` justification for a statement no verifier had seen. No adversary
+  required, and `status` would have shown it green. `record-receipt` now refuses unless every
+  conclusion is listed.
+- **Any successful verification validated any receipt.** `check-receipts` checked that the run
+  existed, succeeded, and was `verify.yml` — not that it was *this node's*. Copying a real run URL
+  into a fabricated receipt passed. The dispatched node now appears in `verify.yml`'s job names, so
+  GitHub's record of the run decides what was verified; older runs fall back to one-run-one-node.
+
+One was a live vulnerability:
+
+- **Script injection in `verify.yml`.** Dispatch inputs were interpolated into `run:` bodies with
+  `${{ }}`, which splices the value in before any shell exists to quote it. The worst case is the
+  `receipt` job, which holds `contents: write` — precisely what the privilege split exists to
+  protect. Inputs now reach the shell through `env:`.
+
+Three were checks that did not check:
+
+- **A trailing comment hid an import.** The import pattern was anchored at end of line, so
+  `import Solutions.Whatever -- for now` matched nothing and every closure check silently passed.
+- **`startswith` ignored module boundaries**, accepting `IEANTN.VocabularyScratch` as Vocabulary.
+- **The receipt warning read the wrong justification** — the `kind` left over from a loop rather
+  than the designated one — so recording any second ground made a verified node report unverified.
+  Found by hitting it, not by reading: adding the `Lcm.v2` bridge triggered it immediately.
+
+Three were hardening and hygiene:
+
+- **Metadata is interpolated verbatim into generated Lean.** A conclusion `id`, and both halves of
+  an import reference, become declaration names and binder types in `Challenge.lean`. Since CI only
+  diffs that file against what the generator produces, crafted text would be regenerated faithfully
+  and compiled into the core library. Ids must now be Lean identifiers.
+- **`designate_verification` un-deprecated nodes** and left a stale run URL in the note on
+  re-verification.
+- **`deprecate` accepted a node superseding itself**, or a replacement already deprecated.
+
+Documentation contradicted itself in three places about the `receipts/` ruleset — asserted as the
+enforcement in `ARCHITECTURE.md` and `receipts/README.md`, correctly described as impossible in
+`ROADMAP.md`. Provenance is the enforcement; the docs now say so uniformly.
+
+### Defect classes to keep watching
+
+The classes below are the ones actually observed rather than a generic wish for review.
 
 **Silent no-ops.** The worst class, because the tool reports success. A blanket `v1` to `v2`
 rewrite in `new-version` silently repointed a node's *imports* at a version that did not exist. A
@@ -172,8 +223,10 @@ exactly this, and it is what caught most of these; the shipped tooling does not.
 **Tests that do not test.** An `exit=$?` after a pipe reports the exit code of `head`. A `sed` that
 matched nothing left a test asserting a property it had not established. This is the project's own
 failure mode one level up: a check that passes vacuously is the junk-value problem applied to CI,
-and it deserves the same suspicion the Vocabulary docstrings give to `tsum`.
-**There are currently no unit tests for `scripts/ieantn.py` at all.**
+and it deserves the same suspicion the Vocabulary docstrings give to `tsum`. Three of the nine
+findings above are of exactly this class. The standing practice: **every new test is run once
+against the unfixed code and must fail**, which is how the twelve added in the audit pass were
+shown not to be decorative.
 
 **Destructive round-trips.** `yaml.safe_dump` silently discarded every comment in a node's
 metadata, where the comments carry the provenance. Fixed by moving the mutating commands to

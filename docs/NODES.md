@@ -133,6 +133,9 @@ classification:
   msc2020: ["11N05"]
 
 conclusions:
+  # `id`, and both halves of every `imports` entry, must be Lean identifiers: they are written
+  # verbatim into the generated challenge, as declaration names and as binder types. CI rejects
+  # anything else.
   - id: proposition_5_4
     declaration: Dusart2018.v1.proposition_5_4
     challenge: Dusart2018.v1.challenge_proposition_5_4
