@@ -301,6 +301,16 @@ A **bridge** is a short Lean file showing that one version's conclusions imply a
 registered as an import, a bidirectional pair of bridges would be an import cycle -- and
 bidirectional bridges are exactly what version migration needs.
 
+Bridges live at `IEANTN/Bridges/<Family>/`, **inside the library**, so `lake build` compiles them.
+This is the one place where the repository trusts a Lean file without Comparator, and it can afford
+to: a bridge is a short implication between two statements that are already pinned by their
+fingerprints, with no untrusted development behind it. What it cannot afford is a bridge nobody
+compiles. Versions exist precisely so that statements can move, and a bridge sitting outside the
+build would go on satisfying "the file named exists" long after the statements it relates had moved
+out from under it — recorded evidence that had quietly stopped being evidence, which is the failure
+mode this whole design is built to make impossible. `check-closure` rejects a bridge outside
+`IEANTN/Bridges/`, one containing `sorry`, and one importing a `Challenge`.
+
 So there are three relations with three different rules:
 
 | Relation | Acyclic? | What it is |

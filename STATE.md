@@ -5,7 +5,7 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-2 node version(s), 2 conclusion(s).
+3 node version(s), 3 conclusion(s).
 
 ## Evidence
 
@@ -13,6 +13,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 |---|---:|
 | `lean-comparator` | 1 |
 | `literature` | 1 |
+| `none-yet` | 1 |
 
 ## Nodes
 
@@ -20,6 +21,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 |---|---|---|---|---:|---|
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
 | `Lcm.v1` | active | `lcmUpto_not_highlyAbundant` | lean-comparator | 1 | - |
+| `Lcm.v2` | awaiting-solution | `lcmUpto_not_highlyAbundant_of_primeGap` | none-yet | 0 | #10 |
 
 ## Leverage
 

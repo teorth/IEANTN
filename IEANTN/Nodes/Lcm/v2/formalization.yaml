@@ -1,4 +1,4 @@
-# Node metadata for `Lcm.v1`.
+# Node metadata for `Lcm.v2`.
 #
 # See IEANTN/Nodes/Dusart2018/v1/formalization.yaml for the shape of this file and its
 # relationship to Palomar's contract.
@@ -8,20 +8,18 @@
 version: "v0.4"
 
 node:
-  id: Lcm.v1
+  id: Lcm.v2
   family: Lcm
-  version: v1
-  kind: paper
-  status: active
+  version: v2
+  kind: pipeline
+  status: awaiting-solution
 project:
-  name: "The least common multiple sequence is not highly abundant for large n"
+  name: "The lcm sequence is not highly abundant, with the threshold abstracted"
   description: >-
-    A refutation of the conjecture that every term of L_n = lcm(1, 2, ..., n) is a highly abundant
-    number. The conjecture fails for every n >= 89693^2, not merely infinitely often. The argument
-    adjoins three primes slightly above sqrt(n) to L_n and removes three primes slightly below n,
-    chosen so that the product removed slightly exceeds the product adjoined, producing a smaller
-    integer with a larger sum of divisors. The primes are located using Dusart's Proposition 5.4,
-    which is where the threshold 89693^2 comes from.
+    The argument of Lcm.v1 with its threshold abstracted: any Dusart-type prime-gap result at a threshold
+    X0 with log X0 > 11.4 gives that lcm(1..n) fails to be highly abundant for every n >= X0^2. Lcm.v1
+    is the instance at 89693. Stated without imports, so a downstream user supplies whichever prime-gap
+    result they have.
   authors: ["Terence Tao"]
   license: "Apache-2.0"
   responsible_maintainers: ["Terence Tao"]
@@ -34,41 +32,19 @@ classification:
   msc2020: ["11N56", "11A25", "11N05"]
 
 conclusions:
-- id: lcmUpto_not_highlyAbundant
-  declaration: Lcm.v1.lcmUpto_not_highlyAbundant
-  challenge: Lcm.v1.challenge_lcmUpto_not_highlyAbundant
-  imports:
-  - node: Dusart2018.v1
-    conclusion: proposition_5_4
+- id: lcmUpto_not_highlyAbundant_of_primeGap
+  declaration: Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap
+  challenge: Lcm.v2.challenge_lcmUpto_not_highlyAbundant_of_primeGap
+  imports: []
   justifications:
   - id: unjustified
     kind: none-yet
-    note: >-
-      A complete, sorry-free Lean proof of this statement exists in the PNT+ repository at
-      PrimeNumberTheoremAnd/IEANTN/Lcm.lean, commit
-      ae881f2e2b3acefc9b92f8d4dda7c2b8f6e8f5fe (declaration Lcm.L_not_HA_of_ge). Porting it
-      into Solutions/Lcm.v1/ and verifying it with Comparator is a well-posed task; until
-      that is done this node carries no justification. Note that the PNT+ proof consumes
-      Dusart.proposition_5_4, which is itself sorried there, so the port yields exactly the
-      conditional implication this node claims.
-  - id: comparator-2026-08
-    kind: lean-comparator
-    note: 'Comparator accepted Solutions/Lcm.v1: the challenge and solution declare the same type, the
-      solution uses only propext, Classical.choice and Quot.sound, and both the Lean kernel and NanoDa
-      accept it. The receipt is in receipts/, written by the verification workflow.'
-  - id: bridge-from-v2
-    kind: bridged
-    from: Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap
-    bridge: IEANTN/Bridges/Lcm/V2ToV1.lean
-    note: >-
-      A second, independent ground: this conclusion is the instance of Lcm.v2 at X0 = 89693. The bridge
-      discharges the side condition log X0 > 11.4 and instantiates. It is compiled by the core build,
-      so it cannot silently stop being a proof. Recorded but NOT designated: Lcm.v2 is itself unjustified,
-      so this ground currently transports nothing, and the direct Comparator receipt is the better designation
-      anyway -- it depends on no other node. The value of recording it now is that the moment Lcm.v2 acquires
-      a solution, this node has a second path to trust, and `report` can see it.
-  designated: comparator-2026-08
+    note: Generalising Solutions/Lcm.v1/LcmDev.lean. The development fixes X0 = 89693 as an abbrev 
+      and uses the literal in several estimates, so this is real work rather than a rename. The 
+      numerical side condition itself is already proved there as `log_X0_gt`.
+  designated: unjustified
 
+  issue: 10
 sources:
 - title: "Is the least common multiple sequence lcm(1, 2, ..., n) a subset of the highly abundant numbers?"
   authors: ["Jose Damian Espinosa"]
@@ -130,8 +106,8 @@ review:
 
 limitations:
 - >-
-  The Comparator receipt checks the implication only. Dusart's Proposition 5.4 is imported as a citation,
-  not proved here, so the conclusion is trusted exactly as far as that paper is.
+  This node has no justification yet: the implication from Dusart's Proposition 5.4 to the
+  conclusion is claimed but not checked here.
 - >-
   No novelty is claimed, and no literature search was performed beyond reading the cited
   MathOverflow thread. See the Alaoglu-Erdos entry.

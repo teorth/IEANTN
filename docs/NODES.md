@@ -31,8 +31,9 @@ IEANTN/Nodes/<Family>/<version>/
   Challenge.lean         generated — conditional theorems, sorried
   formalization.yaml     metadata: imports, justification, sources, receipts
   README.md              optional prose
+  Examples.lean          optional — consequences, to show what the node buys
 Solutions/<Family>.<version>/    optional; separate Lake project, own toolchain pin
-Bridges/<Family>/                short proofs that one version implies another
+IEANTN/Bridges/<Family>/         short proofs that one version implies another
 ```
 
 Nodes are **versioned**: `IEANTN/Nodes/Lcm/v1/` has id `Lcm.v1`, and a version id is stable
@@ -320,11 +321,31 @@ Neither ⇒ the change is an amendment, and downstream nodes need human re-exami
 A `bridged` justification names `from` and `bridge`:
 
 ```yaml
-justification:
-  kind: bridged
-  from: Lcm.v1.lcmUpto_not_highlyAbundant
-  bridge: Bridges/Lcm/v1_to_v2.lean
+justifications:
+  - id: bridge-from-v2
+    kind: bridged
+    from: Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap
+    bridge: IEANTN/Bridges/Lcm/V2ToV1.lean
 ```
 
 Chains of `bridged` must terminate at a primitive justification. CI enforces this: without it two
 versions could each borrow their evidence from the other while neither is justified by anything.
+
+**A bridge file lives under `IEANTN/Bridges/`, and CI rejects one that does not.** That directory
+is inside the library, so the core build compiles it. A bridge somewhere else would still satisfy
+"the file named exists" for as long as anyone cared to look, while having stopped being a proof the
+moment either statement it relates moved — which is exactly the situation versioning creates. The
+generated `IEANTN/Bridges.lean` imports every one of them.
+
+Consequently a bridge is held to the same closure rule as a Conclusions file — Mathlib, Vocabulary,
+other Conclusions, other bridges — and may not contain `sorry`, and may not import a `Challenge`. A
+bridge resting on the very `sorry` it exists to discharge would elaborate, would be recorded, and
+would prove nothing.
+
+Its hypotheses are the conclusions named in `from`, plus whatever the *target* node already
+imports. `IEANTN/Bridges/Lcm/V2ToV1.lean` is the worked example: it takes `Lcm.v2`'s conclusion and
+Dusart's Proposition 5.4 — which `Lcm.v1` imports anyway — and produces `Lcm.v1`'s conclusion.
+
+Unlike a solution, a bridge is not sandboxed and not Comparator-checked. It does not need to be:
+there is no untrusted development here, only a short implication between two statements that are
+already pinned by their fingerprints, and `lake build` checks it on every push.
