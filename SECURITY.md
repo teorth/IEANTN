@@ -129,6 +129,8 @@ These are repository settings, not files, so they are worth re-checking after an
 - `main` ruleset: active, requires a pull request and code-owner review.
 - `verification` environment: required reviewers, non-empty.
 - Default workflow permissions: **read**.
-- Allow GitHub Actions to approve pull requests: should be **off** — otherwise a workflow can
-  satisfy a review requirement by approving its own pull request.
+- Allow GitHub Actions to approve pull requests: **off**, so a workflow cannot satisfy a review
+  requirement by approving its own pull request.
+- Required status checks on `main`: `Build Vocabulary and Nodes`, `Check the node network`, and
+  `Network impact` — the last being the hard gate against editing a conclusion others depend on.
 - Require approval for fork pull request workflows: at least "first-time contributors".
