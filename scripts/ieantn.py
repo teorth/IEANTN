@@ -369,6 +369,20 @@ def check_receipts(online: bool = True) -> bool:
     expected = re.sub(r"^.*github\.com[:/]|\.git$", "", remote) if remote else None
     seen_runs: dict[str, str] = {}
 
+    # Everything below rests on the receipt naming a run in *this* repository: anyone can stand up
+    # a repository with a workflow called `verify.yml` whose jobs succeed. So when the check is
+    # online and cannot tell which repository this is, it must refuse rather than go and ask the
+    # one the receipt names -- which is what it used to do, making the whole check bypassable by
+    # deleting a git remote.
+    if online and expected is None and RECEIPTS.is_dir() and any(RECEIPTS.glob("*.json")):
+        problems.add(
+            rel(RECEIPTS),
+            "cannot determine this repository from `git remote get-url origin`, so a receipt's "
+            "recorded run cannot be checked against it. Refusing rather than trusting the "
+            "repository the receipt names.",
+        )
+        return problems.report("receipt provenance")
+
     for path in sorted(RECEIPTS.glob("*.json")) if RECEIPTS.is_dir() else []:
         receipt = json.loads(path.read_text(encoding="utf-8"))
         url = (receipt.get("run") or {}).get("workflow_run", "")

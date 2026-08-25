@@ -48,6 +48,7 @@ defeat the purpose of the split.
 3. [docs/NODES.md](docs/NODES.md) — node file formats, in detail.
 4. [CLAUDE.md](CLAUDE.md) — the short version, for coding agents.
 5. [docs/ROADMAP.md](docs/ROADMAP.md) — what is deliberately not built yet, and why.
+6. [SECURITY.md](SECURITY.md) — the trust model, and what a forged receipt would take.
 
 ## Status
 
@@ -59,8 +60,9 @@ all exist and run in CI.
 **The Comparator path works end to end**: `Lcm.v1` carries a receipt written by the verification
 workflow, and `ieantn.py status` grades it against the current environment.
 
-Outstanding: visualisation, the `/verify` comment trigger, the Palomar spin-off generator, and the
-security audit. [docs/ROADMAP.md](docs/ROADMAP.md) tracks what is deliberately not built and why.
+Outstanding: visualisation, the `/verify` comment trigger, and the Palomar spin-off generator.
+[docs/ROADMAP.md](docs/ROADMAP.md) tracks what is deliberately not built and why; [SECURITY.md](SECURITY.md)
+states the trust model.
 
 This work grows out of the IEANTN subproject of
 [PNT+](https://github.com/AlexKontorovich/PrimeNumberTheoremAnd), whose blueprint-based structure
