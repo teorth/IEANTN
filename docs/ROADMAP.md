@@ -24,9 +24,22 @@ kind of change it deliberately cannot see.
 `ieantn.py record-receipt` (workflow-only) and `ieantn.py status` grading them green / yellow /
 orange / BROKEN. `check-graph` refuses a `lean-comparator` justification with no matching receipt.
 
-**Still to configure, once a receipt actually exists:** the ruleset path rule restricting
-`receipts/` to the verification workflow's identity. Until that is set, the protection is review
-convention rather than enforcement.
+**The intended `receipts/` path ruleset is impossible here, and provenance replaced it.** GitHub
+refuses push rulesets on a public repository *and* on any repository not owned by an organisation,
+and separately refuses to make the Actions app a bypass actor outside an organisation -- so a rule
+restricting who may write `receipts/` cannot be created, and would block the verification workflow's
+own push if it could.
+
+`ieantn.py check-receipts` enforces the same intent more directly: every receipt must name a run
+that really is a **successful run of `verify.yml` in this repository**. A path rule says who wrote
+the file; this says the verification happened, which is what a forger would have to fake. A commit
+author is trivially forged locally; a successful `verify.yml` run is not, because it needs a
+maintainer to approve the `verification` environment. Verified to reject a receipt pointing at
+another repository, at a real run of the *wrong* workflow, and at a real verification run that
+*failed*.
+
+If the repository ever moves to an organisation, the path rule becomes available and is worth
+adding as defence in depth -- not as a replacement.
 
 **3. The breaking-change detector.** *Done* -- `ieantn.py diff --base <ref>`, run on every pull
 request. Fails when a conclusion with downstream importers or a recorded receipt is edited in
@@ -40,40 +53,59 @@ they were are readable with `git show`. That is most of why this is cheap enough
 needs no token and no permissions. Still to do: posting it as a PR comment so it appears inline,
 and adding the recommended-modification text for cases beyond the in-place edit.
 
-**5. Verification.** *Mostly done* -- `scripts/verify-comparator.sh` with the four trusted tools
-pinned, and `.github/workflows/verify.yml` splitting the run in two: `comparator` executes
+**5. Verification.** *Done, and exercised.* `scripts/verify-comparator.sh` with the four trusted
+tools pinned, and `.github/workflows/verify.yml` splitting the run in two: `comparator` executes
 contributor code with **no write access and no secrets**, and `receipt` holds write access but runs
 no contributor code and recomputes the fingerprints itself from the core library.
 
-**Untested end to end**, because no solution exists yet to verify. The pieces that could be tested
-were: the scaffolder produces a project that builds, and `record-receipt` produces correct
-receipts.
+Comparator accepts `Solutions/Lcm.v1` -- both the Lean kernel and NanoDa -- in about 50 seconds
+locally. Getting there took four fixes, all recorded in the code audit below, and the most
+instructive of them is that a solution must carry a `lean-toolchain` *equal* to the repository's:
+Mathlib's `cache` reads it from the project directory, and the rule that briefly forbade the file
+is what caused the 64-minute first run.
 
-**Still to configure:** a `verification` GitHub Environment with required reviewers, so that
-*requesting* a verification is open to any contributor while *approving* the run stays with
-maintainers. Without it, `workflow_dispatch` silently restricts requests to people with write
-access, which is an accident rather than a policy.
+The `verification` GitHub Environment now exists with a required reviewer, so a dispatch pauses
+until a maintainer approves. Note what that gate is and is not: it stops a *contributor* spending
+hour-scale compute at will. It is no protection against a maintainer's own agent, which can approve
+its own dispatch; there, the controls are cost visibility and keeping dispatch an explicit act.
 
 **6. Staleness and the housekeeping queue's time-sensitive half.** Green / yellow / orange against
 the Mathlib cache window (CONTRIBUTING §8).
 
-**7. Unit tests for the tooling.** There are none. `scripts/ieantn.py` is now around a thousand
-lines carrying every invariant the network relies on, and it is exercised only by being run on a
-two-node repository where most branches never execute. The tests that matter most are the ones a
-manual check cannot give:
+**7. Unit tests for the tooling.** *Done* -- 73 tests in `tests/`, run against a fixture
+repository the real functions are pointed at, and mutation-checked rather than merely passing.
+Several are regression tests for defects that shipped.
 
-* a fixture repository with several nodes, versions, bridges and receipts, so `check-graph`,
-  `diff`, `status` and `housekeeping` run against a graph with actual shape;
-* **assertions that each substitution changed something** -- the silent-no-op class in the code
-  audit below is the one unit tests would have caught outright;
-* round-trip tests for `gen-challenges`, `new-version` and `deprecate`, including that comments
-  survive;
-* the fingerprint invariants, which were checked by hand once and should not have to be again:
-  a binder rename does not move a fingerprint, an edited numeral does, and a Vocabulary edit
-  propagates.
+Still absent: the substitutions inside `ieantn.py` do not assert that they changed anything, which
+is the silent-no-op class in the code audit below and the one unit tests would catch outright.
 
 **8. Visualisation.** A rendered graph over the receipts and metadata, computed rather than
 re-running any verification.
+
+## Considered and dropped: tiered verification levels
+
+A two-level scheme was considered — an "express" run using only Lean's kernel, and a "full service"
+run adding the independent NanoDa replay, on the reasoning that only a deliberate Lean-kernel
+exploit merits the second. Comparator supports exactly this split: `enable_nanoda` registers NanoDa
+in its `external_kernels` map, and its own trust assumptions state the difference precisely —
+express requires you to trust that *"the Lean kernel is correct"*, full only that *"at least one of
+the Lean kernel or the external kernels is correct"*.
+
+**Dropped, because the measurement removed the reason for it.** The first CI run took 64 minutes
+and suggested verification was expensive enough to want a cheap tier. It was not: 60 of those
+minutes were Mathlib compiling from source because a cache fetch failed behind a `|| true`. With
+that fixed, a full verification of `Lcm.v1` — both kernels — runs in **50 seconds**, of which NanoDa
+is about one. There is no cost argument for skipping it.
+
+The trust-legibility argument survives: two levels really do mean different things, and a network
+whose promise is *read off how good the evidence is* should not paint them the same colour. But
+that argument alone does not justify the machinery, and a level recorded in every receipt would
+have to be maintained forever. Revisit only if CI proves expensive in a way local runs do not.
+
+**If it is revisited**, the level belongs in two places and they must not be conflated: a
+`required_level` in `formalization.yaml` is *policy* about a node, and a `level` in the receipt is
+*fact* about a run. The gap between them — a node requiring `full` whose receipt says `express` —
+is then a derived housekeeping task, exactly like staleness.
 
 ## Longer term: verification backends other than Comparator
 
@@ -150,6 +182,21 @@ whatever it did not model.
 
 **Heuristics where exact data was available.** The fingerprinter first decided "is this constant
 ours?" by guessing at name prefixes; the environment records the defining module exactly.
+
+**Reasoning to a rule instead of testing it.** A solution must carry a `lean-toolchain` equal to
+the repository's. The divergence argument -- a path dependency is built with the root's toolchain,
+so a different pin cannot work -- is correct, and the conclusion drawn from it twice was not: first
+that solutions pin freely, then that they carry none at all. Mathlib's `cache` reads the file from
+the project directory, so absence meant compiling Mathlib from source. Both wrong answers were
+written into the documentation before anything had been run.
+
+**Guards that swallow the failure they guard.** `lake exe cache get || true` turned a failed cache
+fetch into an hour of compiling. The `|| true` was defensive habit; what it defended against was
+knowing.
+
+**Copying a fix for a problem you do not have.** Restoring PalomarTemplate's landrun wrapper was
+correct for the Comparator revision *it* pins and wrong for ours, which supplies the delimiter the
+wrapper exists to add -- so the wrapper rejected it.
 
 **Environment-dependent checks.** The pyright step passed locally and failed in CI, because
 `ruamel.yaml` is installed on the author's machine and CI installs only `pyyaml`. Any check whose

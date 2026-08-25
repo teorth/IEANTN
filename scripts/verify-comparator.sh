@@ -81,8 +81,25 @@ GOBIN="$bin_dir" go install "github.com/zouuup/landrun/cmd/landrun@$landrun_comm
 (cd "$lean4export_dir" && lake build lean4export)
 (cd "$nanoda_dir" && cargo build --release --locked)
 
+# A solution is a separate Lake project, so it resolves its *own* copy of Mathlib: a path
+# dependency does not share the parent's `.lake/packages`. Fetching that from cache is the
+# difference between a one-minute step and an hour of compiling Mathlib from source, so this must
+# fail loudly rather than fall through to a rebuild. The `|| true` that used to be here cost
+# exactly that hour on the first run.
 cd "$solution_dir"
-lake exe cache get || true
+lake exe cache get
+
+# Build the core library *outside* the sandbox. Comparator builds the solution under Landlock,
+# which grants write access to the solution's own directory; the path dependency on `../..` would
+# otherwise have to write the core's build artifacts from inside the sandbox, and Landlock denies
+# it. Building here first leaves the sandboxed build nothing to write outside its own tree.
+(cd "$repository_root" && lake build)
+lake build
+
+# Landrun is invoked directly. PalomarTemplate wraps it to insert an outer `--` before the
+# sandboxed command, because the Comparator revision it pins does not supply one. The revision
+# pinned here does, and the wrapper then rejects that `--` as an unrecognised option. If
+# `comparator_commit` is ever moved backwards, the wrapper has to come back with it.
 COMPARATOR_LEAN4EXPORT="$lean4export_dir/.lake/build/bin/lean4export" \
 COMPARATOR_NANODA="$nanoda_dir/target/release/nanoda_bin" \
 COMPARATOR_LANDRUN="$bin_dir/landrun" \

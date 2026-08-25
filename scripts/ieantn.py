@@ -15,6 +15,7 @@ routine node-management tasks.
     python scripts/ieantn.py diff --base origin/main what this branch degrades, and for whom
     python scripts/ieantn.py housekeeping            the derived task queue
     python scripts/ieantn.py state                   refresh the committed STATE.md snapshot
+    python scripts/ieantn.py check-receipts          every receipt names a real verification run
     python scripts/ieantn.py check                   every check, in --check mode
 
     python scripts/ieantn.py new-node FKS2           scaffold a brand-new node at v1
@@ -312,6 +313,65 @@ def check_pins() -> bool:
     return problems.report("verification pins")
 
 
+RUN_URL_RE = re.compile(r"^https://github\.com/([^/]+/[^/]+)/actions/runs/(\d+)$")
+
+
+def check_receipts(online: bool = True) -> bool:
+    """Every receipt must point at a real, successful run of the verification workflow.
+
+    This exists because the intended enforcement is impossible here. The plan was a ruleset
+    restricting `receipts/` to the verification workflow's identity; GitHub refuses push rulesets on
+    a public repository and on any repository not owned by an organisation, and separately refuses
+    to make the Actions app a bypass actor outside an organisation. So there is no path rule to be
+    had.
+
+    Checking provenance turns out to be the better control regardless. A path rule says *who wrote
+    the file*; this says *that the verification actually happened*, which is the thing anyone
+    forging a receipt would have to fake. A commit author is trivially forged locally; a successful
+    run of `verify.yml` in this repository is not, because it needs a maintainer to approve the
+    `verification` environment.
+
+    Offline this checks only the shape of the recorded URL, so it stays useful without network
+    access; CI runs it online.
+    """
+    problems = Problems()
+    remote = subprocess.run(
+        ["git", "remote", "get-url", "origin"],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+    ).stdout.strip()
+    expected = re.sub(r"^.*github\.com[:/]|\.git$", "", remote) if remote else None
+
+    for path in sorted(RECEIPTS.glob("*.json")) if RECEIPTS.is_dir() else []:
+        receipt = json.loads(path.read_text(encoding="utf-8"))
+        url = (receipt.get("run") or {}).get("workflow_run", "")
+        match = RUN_URL_RE.match(url)
+        if match is None:
+            problems.add(rel(path), f"records no usable workflow run (`{url}`)")
+            continue
+        repository, run_id = match.group(1), match.group(2)
+        if expected and repository != expected:
+            problems.add(rel(path), f"points at `{repository}`, not `{expected}`")
+            continue
+        if not online:
+            continue
+        finished = subprocess.run(
+            ["gh", "api", f"repos/{repository}/actions/runs/{run_id}",
+             "--jq", "[.conclusion, .path] | @tsv"],
+            cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+        )
+        if finished.returncode != 0:
+            problems.add(rel(path), f"run {run_id} could not be read: {finished.stderr.strip()}")
+            continue
+        parts = finished.stdout.strip().split("\t")
+        conclusion, workflow = (parts + ["", ""])[:2]
+        if conclusion != "success":
+            problems.add(rel(path), f"run {run_id} concluded `{conclusion}`, not `success`")
+        if workflow != ".github/workflows/verify.yml":
+            problems.add(rel(path), f"run {run_id} is `{workflow}`, not the verification workflow")
+
+    return problems.report("receipt provenance")
+
+
 def check_closure() -> bool:
     """Vocabulary and Conclusions may not reach outside Mathlib.
 
@@ -383,16 +443,34 @@ def check_closure() -> bool:
                     )
 
     # A solution takes the core as a path dependency, and Lake builds a path dependency with the
-    # *root* project's toolchain. A solution pinning its own would therefore either be ignored or
-    # try to build the core under the wrong Lean -- so a divergent pin cannot work, and an
-    # identical one is noise that will silently drift. Solutions inherit the repository toolchain;
-    # what pins a verification is the commit its receipt records.
-    for toolchain in sorted(SOLUTIONS.glob("*/lean-toolchain")) if SOLUTIONS.is_dir() else []:
-        problems.add(
-            rel(toolchain),
-            "a solution must not carry its own `lean-toolchain`; it inherits the repository's, and "
-            "its verification is pinned by the commit recorded in its receipt. Delete this file.",
-        )
+    # *root* project's toolchain, so a solution pinning a *different* Lean than the repository
+    # either gets ignored or tries to build the core under the wrong compiler.
+    #
+    # The first version of this check concluded that solutions should therefore carry no
+    # `lean-toolchain` at all. That was wrong, and local iteration caught it: Mathlib's `cache`
+    # executable reads `lean-toolchain` from the project it runs in, so a solution without one
+    # cannot fetch its Mathlib from cache -- which is the difference between a one-minute step and
+    # an hour of compiling. The right rule is equality, not absence.
+    root_toolchain = (ROOT / "lean-toolchain").read_text(encoding="utf-8").strip()
+    for directory in sorted(SOLUTIONS.iterdir()) if SOLUTIONS.is_dir() else []:
+        if not (directory / "lakefile.toml").is_file():
+            continue
+        toolchain = directory / "lean-toolchain"
+        if not toolchain.is_file():
+            problems.add(
+                rel(directory),
+                "a solution needs its own `lean-toolchain`, matching the repository's: Mathlib's "
+                "`cache` tool reads it from the project directory, and without it the solution "
+                "compiles Mathlib from source instead of fetching it.",
+            )
+        elif toolchain.read_text(encoding="utf-8").strip() != root_toolchain:
+            problems.add(
+                rel(toolchain),
+                f"pins `{toolchain.read_text(encoding='utf-8').strip()}` but the repository is on "
+                f"`{root_toolchain}`. A solution takes the core as a path dependency, so a "
+                "divergent pin cannot work; what pins a verification is the commit its receipt "
+                "records.",
+            )
 
     return problems.report("import closure")
 
@@ -560,6 +638,19 @@ def check_graph() -> bool:
                     f"conclusion `{cid}`: `designated` is `{conclusion.get('designated')}`, which "
                     f"is not one of its justification ids ({sorted(seen_ids)})",
                 )
+            # A receipt with nothing designating it means a verification happened and the graph
+            # does not know. That is how the first real verification landed: the workflow wrote
+            # the receipt, the metadata still said `none-yet`, and `status` reported the node as
+            # unverified. A warning rather than an error, because the window between the workflow's
+            # commit and the pull request that designates it is legitimate.
+            if load_receipt(f"{node_id}.{cid}") is not None and kind != "lean-comparator":
+                problems.warn(
+                    where,
+                    f"conclusion `{cid}` has a receipt but designates `{kind}`. A verification "
+                    "was recorded and nothing points at it; add a `lean-comparator` justification "
+                    "and designate it.",
+                )
+
             issue = conclusion.get("issue")
             if issue is not None and not isinstance(issue, int):
                 problems.add(where, f"conclusion `{cid}`: `issue` must be a number, not `{issue}`")
@@ -1072,7 +1163,43 @@ def record_receipt(node_id: str, solution: str, run_url: str, stamp: str) -> boo
             json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
         )
         print(f"wrote {rel(path)}")
+
+    designate_verification(node_id, run_url)
     return True
+
+
+def designate_verification(node_id: str, run_url: str) -> None:
+    """Record the verification as the node's designated justification.
+
+    A Lean-verified justification dominates the alternatives: it rests on no citation, no external
+    computation and no other version, so once a verification exists it is almost always the right
+    thing to point at. Designating it here rather than leaving it to a later pull request avoids the
+    state the first real verification landed in -- a receipt written, the metadata still saying
+    `none-yet`, and `status` reporting a node unverified moments after verifying it.
+
+    A maintainer can still re-designate afterwards; that is an ordinary reviewed edit. What should
+    not happen is the graph silently disagreeing with the receipts.
+    """
+    metadata = NODES_DIR / pathlib.PurePosixPath(node_id.replace(".", "/")) / "formalization.yaml"
+    writer, data = edit_yaml(metadata)
+    for conclusion in data.get("conclusions") or []:
+        justifications = conclusion.setdefault("justifications", [])
+        existing = next(
+            (j for j in justifications if j.get("kind") == "lean-comparator"), None
+        )
+        if existing is None:
+            existing = {
+                "id": "comparator",
+                "kind": "lean-comparator",
+                "note": f"Comparator accepted the solution. Run: {run_url}",
+            }
+            justifications.append(existing)
+        conclusion["designated"] = existing["id"]
+        conclusion.pop("progress", None)
+    data.setdefault("node", {})["status"] = "active"
+    with metadata.open("w", encoding="utf-8", newline="\n") as handle:
+        writer.dump(data, handle)
+    print(f"designated the verification in {rel(metadata)}")
 
 
 # ---------------------------------------------------------------------------
@@ -1685,7 +1812,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     for name in (
-        "check-closure", "check-graph", "check-pins", "report", "housekeeping", "status", "check"
+        "check-closure", "check-graph", "check-pins", "check-receipts", "report", "housekeeping",
+        "status", "check"
     ):
         sub.add_parser(name)
     generate = sub.add_parser("gen-challenges")
@@ -1721,6 +1849,8 @@ def main() -> int:
         return 0 if check_graph() else 1
     if args.command == "check-pins":
         return 0 if check_pins() else 1
+    if args.command == "check-receipts":
+        return 0 if check_receipts() else 1
     if args.command == "gen-challenges":
         return 0 if gen_challenges(args.check) else 1
     if args.command == "state":
@@ -1747,7 +1877,8 @@ def main() -> int:
         return 0 if deprecate(args.node, args.replacement) else 1
     if args.command == "check":
         return 0 if all(
-            [check_closure(), check_graph(), check_pins(), gen_challenges(True), state(True)]
+            [check_closure(), check_graph(), check_pins(), check_receipts(online=False),
+             gen_challenges(True), state(True)]
         ) else 1
     return 2
 

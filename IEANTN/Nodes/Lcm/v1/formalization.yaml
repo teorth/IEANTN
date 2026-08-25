@@ -12,7 +12,7 @@ node:
   family: Lcm
   version: v1
   kind: paper
-  status: awaiting-verification
+  status: active
 project:
   name: "The least common multiple sequence is not highly abundant for large n"
   description: >-
@@ -51,16 +51,13 @@ conclusions:
       that is done this node carries no justification. Note that the PNT+ proof consumes
       Dusart.proposition_5_4, which is itself sorried there, so the port yields exactly the
       conditional implication this node claims.
-  designated: unjustified
+  - id: comparator-2026-08
+    kind: lean-comparator
+    note: 'Comparator accepted Solutions/Lcm.v1: the challenge and solution declare the same type, the
+      solution uses only propext, Classical.choice and Quot.sound, and both the Lean kernel and NanoDa
+      accept it. The receipt is in receipts/, written by the verification workflow.'
+  designated: comparator-2026-08
 
-  progress:
-    solution: Solutions/Lcm.v1/
-    state: complete
-    remaining_holes: 0
-    note: 'Ported from PrimeNumberTheoremAnd/IEANTN/Lcm.lean at commit ae881f2e2b3acefc9b92f8d4dda7c2b8f6e8f5fe.
-      Locally: challenge and solution have identical types under pp.all, and the solution depends on propext,
-      Classical.choice and Quot.sound alone. Awaiting a Comparator run; the justification stays none-yet
-      until the verification workflow records a receipt.'
 sources:
 - title: "Is the least common multiple sequence lcm(1, 2, ..., n) a subset of the highly abundant numbers?"
   authors: ["Jose Damian Espinosa"]
