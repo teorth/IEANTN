@@ -58,13 +58,19 @@ theorem lt_log_89693 : (11.4 : ℝ) < Real.log 89693 := by
 /-- **The bridge.**  `Lcm.v2`'s abstract form, together with the Dusart hypothesis that `Lcm.v1`
 imports, gives `Lcm.v1`'s conclusion.
 
-The whole content is instantiating `X₀ := 89693`, discharging the side condition, and moving the
-threshold hypothesis from `ℕ` to `ℝ`. That it is this short is the point: `v1` is an instance of
-`v2`, and the bridge exhibits the instantiation. -/
+The whole content is instantiating `c := 11.4` and `X₀ := 89693`, discharging the side conditions,
+and moving the threshold hypothesis from `ℕ` to `ℝ`. That it is this short is the point: `v1` is an
+instance of `v2`, and the bridge exhibits the instantiation.
+
+`11.4` is passed for `c` because that is the value `Lcm.v1`'s development uses, and `lt_log_89693`
+is exactly the side condition it needs. `Lcm.v2` requires only `5 ≤ c`, so any value in `[5, 11.4]`
+would do here; keeping `11.4` makes the bridge a faithful record of what the ported proof actually
+establishes. -/
 theorem bridge_v2_to_v1
     (general : Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap)
     (dusart : Dusart2018.v1.proposition_5_4) :
     Lcm.v1.lcmUpto_not_highlyAbundant :=
-  fun n hn => general 89693 lt_log_89693 dusart n (by exact_mod_cast hn)
+  fun n hn =>
+    general 11.4 89693 (by norm_num) lt_log_89693.le dusart n (by exact_mod_cast hn)
 
 end Lcm

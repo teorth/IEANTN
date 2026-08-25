@@ -17,9 +17,9 @@ project:
   name: "The lcm sequence is not highly abundant, with the threshold abstracted"
   description: >-
     The argument of Lcm.v1 with its threshold abstracted: any Dusart-type prime-gap result at a threshold
-    X0 with log X0 > 11.4 gives that lcm(1..n) fails to be highly abundant for every n >= X0^2. Lcm.v1
-    is the instance at 89693. Stated without imports, so a downstream user supplies whichever prime-gap
-    result they have.
+    X0 admitting a lower bound c >= 5 on log X0 gives that lcm(1..n) fails to be highly abundant for every
+    n >= X0^2. Lcm.v1 is the instance at 89693. Stated without imports, so a downstream user supplies
+    whichever prime-gap result they have.
   authors: ["Terence Tao"]
   license: "Apache-2.0"
   responsible_maintainers: ["Terence Tao"]
@@ -39,9 +39,15 @@ conclusions:
   justifications:
   - id: unjustified
     kind: none-yet
-    note: Generalising Solutions/Lcm.v1/LcmDev.lean. The development fixes X0 = 89693 as an abbrev 
-      and uses the literal in several estimates, so this is real work rather than a rename. The 
-      numerical side condition itself is already proved there as `log_X0_gt`.
+    note: >-
+      Generalising Solutions/Lcm.v1/LcmDev.lean. The development fixes X0 = 89693 as an abbrev and uses
+      the literal in several estimates, so this is real work rather than a rename. Two things the solver
+      should know. The numerical side condition at the instance is already proved there as `log_X0_gt`.
+      And the bound c >= 5 is the constraint read out of that development's final product comparison (Criterion.h_crit,
+      via prod_epsilon_le / final_comparison / prod_epsilon_ge) and evaluated: it binds near c > 4.12
+      in the worst permitted case X0 = e^c, and near c > 3.6 at X0 = 89693. 5 carries margin deliberately
+      and is not claimed sharp -- if the generalised proof will not close at 5, the right response is
+      to say so and raise it, not to weaken anything else.
   designated: unjustified
 
   issue: 10

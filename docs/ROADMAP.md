@@ -404,11 +404,28 @@ imports at all**:
 
 ```lean
 def lcmUpto_not_highlyAbundant_of_primeGap : Prop :=
-  ∀ X₀ : ℝ, 11.4 < Real.log X₀ → IEANTN.HasPrimeInInterval.logPower X₀ 3 →
+  ∀ c X₀ : ℝ, 5 ≤ c → c ≤ Real.log X₀ → IEANTN.HasPrimeInInterval.logPower X₀ 3 →
     ∀ n : ℕ, X₀ ^ 2 ≤ (n : ℝ) → ¬ HighlyAbundant (Nat.lcmUpto n)
 ```
 
-Step 2 determined the side condition: `log X₀ > 11.4`, and nothing else.
+Step 2 determined the side condition: a lower bound on `log X₀`, and nothing else.
+
+**The first attempt carried the wrong constant, and carrying it as a parameter is what exposed
+that.** It initially read `11.4 < Real.log X₀`, lifted from the development. But `11.4` is not a
+property of the argument — it is `log 89693` rounded down, which is to say it came from the very
+threshold this version exists to abstract away. Abstracting a number without asking what constrains
+it just relocates it.
+
+Reading the constraint out of `Criterion.h_crit` and the chain that discharges it
+(`prod_epsilon_le` → `final_comparison` → `prod_epsilon_ge`), and evaluating it, gives a genuine
+threshold near `c > 4.12` in the worst permitted case `X₀ = eᶜ`, and near `3.6` at `X₀ = 89693`.
+The stated `5` is that with margin. The gain is not the parameter, which is logically eliminable
+since the conclusion never mentions `c`; it is that a prime-gap result at any threshold above
+`e⁵ ≈ 149` now feeds this node where `11.4` demanded one above `89000`.
+
+The general lesson, and it is the same one as the `log 7` scouting below: **a constant in a
+statement of record should be traced to the inequality that forces it.** Until it is, nobody can
+tell whether it is a fact about the mathematics or a fossil of one instance.
 
 **The bridge** discharges `Lcm.v1`'s conclusion from `Lcm.v2`'s by instantiating `X₀ := 89693`,
 verifying the side condition, and handling the ℕ→ℝ cast — three lines. It is a bridge, not an
