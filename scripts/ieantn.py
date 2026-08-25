@@ -81,7 +81,13 @@ NODE_STATUSES = {
     "deprecated",
 }
 
-IMPORT_RE = re.compile(r"^import\s+([A-Za-z0-9_.]+)\s*$", re.MULTILINE)
+IMPORT_RE = re.compile(r"^import\s+(\S+)", re.MULTILINE)
+
+#: What may appear as a conclusion id, or as either half of an import reference. These strings are
+#: interpolated verbatim into generated Lean, so anything not an identifier is either a typo or an
+#: injection; there is no third case, and no reason to accept one.
+LEAN_NAME_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_']*")
+LEAN_PATH_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_0-9][A-Za-z0-9_']*)*")
 
 
 def _set_root(path: pathlib.Path) -> None:
@@ -140,8 +146,26 @@ def rel(path: pathlib.Path) -> str:
     return path.relative_to(ROOT).as_posix()
 
 
+def under(module: str, root: str) -> bool:
+    """Is `module` the module `root`, or one beneath it?
+
+    `startswith` is not this test: it accepts `IEANTN.VocabularyScratch` as Vocabulary and
+    `MathlibExtras` as Mathlib. Nothing has ever been named that way here, which is the problem --
+    the check would go on passing on the day something was.
+    """
+    return module == root or module.startswith(root + ".")
+
+
 def imports_of(path: pathlib.Path) -> list[str]:
-    return IMPORT_RE.findall(path.read_text(encoding="utf-8"))
+    """Every module a Lean file imports.
+
+    Comments are stripped first, and the module name is read up to whitespace rather than to end of
+    line. Both matter, in opposite directions. Anchoring the old pattern at `$` meant
+    `import Mathlib.Tactic -- why` matched nothing at all, so a trailing comment was enough to hide
+    an import from every closure check -- silently, and in the direction that lets a violation
+    through. Not stripping comments meant a commented-out import was reported as real.
+    """
+    return IMPORT_RE.findall(strip_lean_comments(path.read_text(encoding="utf-8")))
 
 
 def strip_lean_comments(text: str) -> str:
@@ -343,6 +367,7 @@ def check_receipts(online: bool = True) -> bool:
         cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
     ).stdout.strip()
     expected = re.sub(r"^.*github\.com[:/]|\.git$", "", remote) if remote else None
+    seen_runs: dict[str, str] = {}
 
     for path in sorted(RECEIPTS.glob("*.json")) if RECEIPTS.is_dir() else []:
         receipt = json.loads(path.read_text(encoding="utf-8"))
@@ -355,6 +380,19 @@ def check_receipts(online: bool = True) -> bool:
         if expected and repository != expected:
             problems.add(rel(path), f"points at `{repository}`, not `{expected}`")
             continue
+        # One run, one node. Without this, a receipt for any node validated against any successful
+        # verification: copying the run URL out of a real receipt into a fabricated one passed.
+        # Uniqueness is the part that works retroactively; the job-name check below is the sharper
+        # one, and applies to every run recorded since the node went into the job name.
+        node_of = str(receipt.get("conclusion") or path.stem).rsplit(".", 1)[0]
+        claimed = seen_runs.setdefault(url, node_of)
+        if claimed != node_of:
+            problems.add(
+                rel(path),
+                f"cites run {run_id}, which another receipt already cites for `{claimed}`. One "
+                "verification run covers one node.",
+            )
+
         if not online:
             continue
         finished = subprocess.run(
@@ -371,6 +409,23 @@ def check_receipts(online: bool = True) -> bool:
             problems.add(rel(path), f"run {run_id} concluded `{conclusion}`, not `success`")
         if workflow != ".github/workflows/verify.yml":
             problems.add(rel(path), f"run {run_id} is `{workflow}`, not the verification workflow")
+            continue
+
+        # `verify.yml` puts the dispatched node in its job names, so GitHub's record of the run
+        # says which node was verified -- independently of anything the receipt asserts. Runs from
+        # before that convention have no parenthesised job name; those fall back to the uniqueness
+        # check above rather than failing, since re-running them is not possible.
+        jobs = subprocess.run(
+            ["gh", "api", f"repos/{repository}/actions/runs/{run_id}/jobs",
+             "--jq", ".jobs[].name"],
+            cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+        )
+        names = jobs.stdout.split("\n") if jobs.returncode == 0 else []
+        if any("(" in name for name in names) and not any(f"({node_of})" in name for name in names):
+            problems.add(
+                rel(path),
+                f"run {run_id} verified {[n for n in names if '(' in n]}, not `{node_of}`",
+            )
 
     return problems.report("receipt provenance")
 
@@ -386,7 +441,7 @@ def check_closure() -> bool:
 
     for path in sorted(VOCAB_DIR.rglob("*.lean")):
         for module in imports_of(path):
-            if not (module.startswith("Mathlib") or module.startswith("IEANTN.Vocabulary")):
+            if not (under(module, "Mathlib") or under(module, "IEANTN.Vocabulary")):
                 problems.add(rel(path), f"Vocabulary may import only Mathlib; found `{module}`")
 
     for directory in node_dirs():
@@ -394,9 +449,9 @@ def check_closure() -> bool:
         if conclusions.is_file():
             for module in imports_of(conclusions):
                 ok = (
-                    module.startswith("Mathlib")
-                    or module.startswith("IEANTN.Vocabulary")
-                    or (module.startswith("IEANTN.Nodes.") and module.endswith(".Conclusions"))
+                    under(module, "Mathlib")
+                    or under(module, "IEANTN.Vocabulary")
+                    or (under(module, "IEANTN.Nodes") and module.endswith(".Conclusions"))
                 )
                 if not ok:
                     problems.add(
@@ -413,9 +468,9 @@ def check_closure() -> bool:
         if examples.is_file():
             for module in imports_of(examples):
                 ok = (
-                    module.startswith("Mathlib")
-                    or module.startswith("IEANTN.Vocabulary")
-                    or (module.startswith("IEANTN.Nodes.") and module.endswith(".Conclusions"))
+                    under(module, "Mathlib")
+                    or under(module, "IEANTN.Vocabulary")
+                    or (under(module, "IEANTN.Nodes") and module.endswith(".Conclusions"))
                 )
                 if not ok:
                     problems.add(
@@ -444,10 +499,10 @@ def check_closure() -> bool:
     for path in sorted(BRIDGES_DIR.rglob("*.lean")):
         for module in imports_of(path):
             ok = (
-                module.startswith("Mathlib")
-                or module.startswith("IEANTN.Vocabulary")
-                or (module.startswith("IEANTN.Nodes.") and module.endswith(".Conclusions"))
-                or module.startswith("IEANTN.Bridges.")
+                under(module, "Mathlib")
+                or under(module, "IEANTN.Vocabulary")
+                or (under(module, "IEANTN.Nodes") and module.endswith(".Conclusions"))
+                or under(module, "IEANTN.Bridges")
             )
             if not ok:
                 problems.add(
@@ -472,7 +527,7 @@ def check_closure() -> bool:
         challenge = directory / "Challenge.lean"
         if challenge.is_file():
             for module in imports_of(challenge):
-                if not (module.startswith("IEANTN.Nodes.") and module.endswith(".Conclusions")):
+                if not (under(module, "IEANTN.Nodes") and module.endswith(".Conclusions")):
                     problems.add(
                         rel(challenge),
                         f"a Challenge file may import only Conclusions files; found `{module}`",
@@ -592,6 +647,19 @@ def check_graph() -> bool:
             if cid in seen:
                 problems.add(where, f"duplicate conclusion id `{cid}`")
             seen.add(cid)
+
+            # `cid` is interpolated into the generated Challenge as a declaration name. Nothing
+            # downstream re-reads that file critically -- CI only diffs it against what the
+            # generator produces, so text smuggled in through the metadata would be regenerated
+            # faithfully and compiled into the core library. An id is an identifier or it is
+            # wrong.
+            if not LEAN_NAME_RE.fullmatch(str(cid)):
+                problems.add(
+                    where,
+                    f"conclusion id `{cid}` is not a Lean identifier. It is written into the "
+                    "generated challenge as a declaration name, so it may contain only letters, "
+                    "digits, underscores and primes, and may not begin with a digit.",
+                )
 
             if conclusion.get("declaration") != f"{node_id}.{cid}":
                 problems.add(
@@ -721,6 +789,20 @@ def check_graph() -> bool:
             for dependency in conclusion.get("imports") or []:
                 target_node = dependency.get("node")
                 target_conclusion = dependency.get("conclusion")
+                # Both halves become part of a hypothesis binder's type in the generated
+                # challenge, so they are subject to the same rule as a conclusion id. Checked
+                # before the existence test below, which would otherwise report a crafted string
+                # as a mere unknown node.
+                for label, value, pattern in (
+                    ("node", target_node, LEAN_PATH_RE),
+                    ("conclusion", target_conclusion, LEAN_NAME_RE),
+                ):
+                    if not pattern.fullmatch(str(value)):
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`: import {label} `{value}` is not a Lean name, and "
+                            "is written verbatim into the generated challenge",
+                        )
                 if target_node not in nodes:
                     problems.add(where, f"conclusion `{cid}` imports unknown node `{target_node}`")
                     continue
@@ -1209,17 +1291,63 @@ under `progress`, and leave the justification alone -- an incomplete solution ju
     return True
 
 
+def _comparator_covers_every_conclusion(node_id: str, node: dict) -> bool:
+    """Refuse to receipt conclusions Comparator was never asked about.
+
+    A receipt is written per conclusion, but Comparator is run once per *node*, against the
+    `theorem_names` listed in the solution's `comparator.json`. Nothing previously connected the
+    two, so a node whose conclusions had grown since its solution was written would receive a
+    receipt for the new conclusion as well -- a full `lean-comparator` justification for a
+    statement no verifier had ever seen. That is the one failure this whole apparatus exists to
+    prevent, and it needed no adversary: adding a second conclusion to a verified node was enough.
+    """
+    config = SOLUTIONS / node_id / "comparator.json"
+    where = rel(config)
+    if not config.is_file():
+        print(f"error: {where} does not exist, so nothing says what was verified")
+        return False
+    try:
+        listed = set(json.loads(config.read_text(encoding="utf-8")).get("theorem_names") or [])
+    except json.JSONDecodeError as broken:
+        print(f"error: {where} is not readable JSON: {broken}")
+        return False
+
+    expected = {f"{node_id}.challenge_{c.get('id')}" for c in conclusions_of(node)}
+    unverified = sorted(expected - listed)
+    if unverified:
+        print(
+            f"error: {where} does not list {', '.join(unverified)}.\n"
+            "       Comparator was not asked about "
+            f"{'them' if len(unverified) > 1 else 'it'}, so no receipt may claim "
+            f"{'they were' if len(unverified) > 1 else 'it was'} verified. Add "
+            f"{'them' if len(unverified) > 1 else 'it'} to the solution and re-run the "
+            "verification."
+        )
+        return False
+    # The converse is a mistake rather than a hazard -- a name that no longer corresponds to a
+    # conclusion was probably renamed, and the receipt would be recorded under the new name while
+    # Comparator checked the old one.
+    for stale in sorted(listed - expected):
+        print(f"warning: {where} lists `{stale}`, which is not a conclusion of {node_id}")
+    return True
+
+
 def record_receipt(node_id: str, solution: str, run_url: str, stamp: str) -> bool:
     """Write a receipt. **Run by the verification workflow, never by an author.**
 
-    An author-written receipt is worth nothing -- it is a claim of verification typed by the
-    person making the claim. The protection is not this function refusing to run; it is that
-    `receipts/` is writable only by the verification workflow's identity, enforced by a ruleset
-    path restriction, and that a receipt arriving in a PR from anyone else is a review failure.
+    An author-written receipt is worth nothing -- it is a claim of verification typed by the person
+    making the claim. What makes a receipt mean something is not this function refusing to run: it
+    is that `check-receipts` fetches the run it names and requires a successful run of `verify.yml`
+    for this node, which needs a maintainer to approve the `verification` environment. (The
+    intended `receipts/` path ruleset is not available -- GitHub refuses push rules on public
+    repositories and on repositories outside an organisation. Provenance replaced it.)
     """
     nodes = load_nodes()
     if node_id not in nodes:
         print(f"error: unknown node `{node_id}`")
+        return False
+
+    if not _comparator_covers_every_conclusion(node_id, nodes[node_id]):
         return False
 
     fingerprints = compute_fingerprints()
@@ -1278,9 +1406,19 @@ def designate_verification(node_id: str, run_url: str) -> None:
                 "note": f"Comparator accepted the solution. Run: {run_url}",
             }
             justifications.append(existing)
+        else:
+            # Re-verification: the receipt now names the new run, and a note still naming the old
+            # one sends a reader to a run that verified a statement this one may have replaced.
+            existing["note"] = f"Comparator accepted the solution. Run: {run_url}"
         conclusion["designated"] = existing["id"]
         conclusion.pop("progress", None)
-    data.setdefault("node", {})["status"] = "active"
+    # Not an unconditional `active`: verifying a deprecated node is a legitimate thing to do --
+    # keeping an old version green while dependants migrate off it is exactly the case -- and
+    # flipping its status here would silently un-deprecate it, dropping it out of the migration
+    # queue that `housekeeping` derives.
+    meta = data.setdefault("node", {})
+    if meta.get("status") != "deprecated":
+        meta["status"] = "active"
     with metadata.open("w", encoding="utf-8", newline="\n") as handle:
         writer.dump(data, handle)
     print(f"designated the verification in {rel(metadata)}")
@@ -1353,11 +1491,42 @@ def report() -> bool:
     return True
 
 
+def closed_issues(numbers: set[int]) -> set[int]:
+    """Which of these issue numbers are closed, as far as `gh` can tell.
+
+    Best-effort and silent on failure: `gh` may be absent, unauthenticated, or offline, and
+    housekeeping has to stay useful without it. An issue that cannot be read is treated as open,
+    because reporting live work as abandoned is the more expensive mistake.
+    """
+    closed: set[int] = set()
+    for number in sorted(numbers):
+        finished = subprocess.run(
+            ["gh", "issue", "view", str(number), "--json", "state", "--jq", ".state"],
+            cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+        )
+        if finished.returncode == 0 and finished.stdout.strip().upper() == "CLOSED":
+            closed.add(number)
+    return closed
+
+
 def housekeeping() -> bool:
     """The task queue, derived from graph state rather than maintained by hand."""
     nodes = load_nodes()
     importers = importers_of(nodes)
     tasks: list[str] = []
+
+    # An outstanding conclusion whose issue has been closed is work nobody is tracking any more:
+    # the queue says it is claimed, and the issue tracker says it is finished. It happens by
+    # accident -- closing the issue alongside the pull request that created the node rather than
+    # the one that justifies it -- and nothing else in the tooling would ever mention it again.
+    outstanding = {
+        conclusion.get("issue")
+        for node in nodes.values()
+        for conclusion in conclusions_of(node)
+        if designated_kind(conclusion) in {"none-yet", "literature", "asserted"}
+        and isinstance(conclusion.get("issue"), int)
+    }
+    stale_issues = closed_issues({n for n in outstanding if isinstance(n, int)})
 
     for node_id, node in sorted(nodes.items()):
         meta = node.get("node") or {}
@@ -1375,7 +1544,12 @@ def housekeeping() -> bool:
         for conclusion in conclusions_of(node):
             kind = designated_kind(conclusion)
             issue = conclusion.get("issue")
-            claim = f"#{issue}" if issue else "UNCLAIMED, no issue"
+            if issue is None:
+                claim = "UNCLAIMED, no issue"
+            elif issue in stale_issues:
+                claim = f"#{issue} CLOSED -- reopen it, or drop the `issue` field"
+            else:
+                claim = f"#{issue}"
             if kind == "none-yet":
                 tasks.append(f"justify   {node_id}.{conclusion.get('id')}  [{claim}]")
             elif kind in {"literature", "asserted"}:
@@ -1875,6 +2049,12 @@ def deprecate(node_id: str, replacement: str) -> bool:
         return False
     if replacement not in nodes:
         print(f"error: unknown replacement node `{replacement}`")
+        return False
+    if replacement == node_id:
+        print(f"error: `{node_id}` cannot supersede itself")
+        return False
+    if ((nodes[replacement].get("node") or {}).get("status")) == "deprecated":
+        print(f"error: `{replacement}` is itself deprecated; name a live node")
         return False
 
     path = nodes[node_id]["_dir"] / "formalization.yaml"

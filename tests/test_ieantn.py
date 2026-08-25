@@ -195,6 +195,23 @@ class FixtureRepo(unittest.TestCase):
         )
         return directory
 
+    def write_comparator_config(self, node_id: str, theorem_names: list[str] | None = None) -> None:
+        """The solution config naming what Comparator was asked to check.
+
+        `record-receipt` refuses without it: a receipt is written per conclusion, but Comparator
+        runs once per node against exactly this list.
+        """
+        directory = self.root / "Solutions" / node_id
+        directory.mkdir(parents=True, exist_ok=True)
+        if theorem_names is None:
+            node = ieantn.load_nodes()[node_id]
+            theorem_names = [
+                f"{node_id}.challenge_{c.get('id')}" for c in ieantn.conclusions_of(node)
+            ]
+        (directory / "comparator.json").write_text(
+            json.dumps({"theorem_names": theorem_names}), encoding="utf-8"
+        )
+
     def write_bridge(self, body: str = "-- bridge\n") -> pathlib.Path:
         directory = self.root / "IEANTN" / "Bridges"
         directory.mkdir(parents=True, exist_ok=True)
@@ -363,6 +380,99 @@ class TestGraphChecks(FixtureRepo):
             "A.v2", bridged("A.v1.main").replace("IEANTN/Bridges/a.lean", "Bridges/a.lean")
         )
         self.assertFalse(ieantn.check_graph())
+
+
+class TestImportParsing(FixtureRepo):
+    """What counts as an import, and what does not.
+
+    Every closure check in this file is only as good as this parse. The old pattern anchored the
+    module name at end of line, so a trailing comment hid an import from all of them -- silently,
+    and in the direction that lets a violation through.
+    """
+
+    def test_a_trailing_comment_does_not_hide_an_import(self) -> None:
+        (self.root / "IEANTN" / "Vocabulary" / "Bad.lean").write_text(
+            "import Solutions.A.v1.Solution -- just for now\n", encoding="utf-8"
+        )
+        self.assertFalse(ieantn.check_closure())
+
+    def test_a_commented_out_import_is_not_an_import(self) -> None:
+        (self.root / "IEANTN" / "Vocabulary" / "Fine.lean").write_text(
+            "-- import Solutions.A.v1.Solution\n/- import PNT.Everything -/\nimport Mathlib.Data.Nat.Defs\n",
+            encoding="utf-8",
+        )
+        self.assertTrue(ieantn.check_closure())
+
+    def test_a_lookalike_module_is_not_vocabulary(self) -> None:
+        """`startswith` accepted `IEANTN.VocabularyScratch` as Vocabulary, and `MathlibExtras` as
+        Mathlib. Nothing was ever named that way, which is precisely the problem."""
+        (self.root / "IEANTN" / "Vocabulary" / "Bad.lean").write_text(
+            "import IEANTN.VocabularyScratch\n", encoding="utf-8"
+        )
+        self.assertFalse(ieantn.check_closure())
+
+    def test_imports_of_reads_the_module_name(self) -> None:
+        target = self.root / "x.lean"
+        target.write_text("import A.B -- c\nimport D\n", encoding="utf-8")
+        self.assertEqual(ieantn.imports_of(target), ["A.B", "D"])
+
+
+class TestGeneratedLeanIsNotInjectable(FixtureRepo):
+    """Metadata strings are interpolated verbatim into the generated challenge.
+
+    Nothing downstream reads that file critically -- CI only diffs it against what the generator
+    produces -- so a crafted id would be regenerated faithfully and compiled into the core library.
+    """
+
+    def test_a_conclusion_id_must_be_an_identifier(self) -> None:
+        """The crafted id is propagated to `declaration` and `challenge` too, so the consistency
+        checks are satisfied and only the identifier rule can reject it."""
+        crafted = "main : True := trivial\n\naxiom sneaky : False\n\ntheorem unused"
+        self.write_node("A.v1", (
+            f"\n- id: {json.dumps(crafted)}\n"
+            f"  declaration: {json.dumps('A.v1.' + crafted)}\n"
+            f"  challenge: {json.dumps('A.v1.challenge_' + crafted)}\n"
+            "  imports: []\n"
+            "  justifications:\n"
+            "    - id: paper\n"
+            "      kind: literature\n"
+            "  designated: paper\n"
+        ))
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            passed = ieantn.check_graph()
+        self.assertFalse(passed)
+        self.assertIn("is not a Lean identifier", printed.getvalue())
+
+    def test_an_import_reference_must_be_a_lean_name(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        self.write_node(
+            "A.v1", importing("Upstream.v1").replace("conclusion: main", "conclusion: 'main) (h : False'")
+        )
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            passed = ieantn.check_graph()
+        self.assertFalse(passed)
+        self.assertIn("written verbatim into the generated challenge", printed.getvalue())
+
+    def test_an_ordinary_id_still_passes(self) -> None:
+        self.write_node("A.v1", LITERATURE.replace("main", "theorem_5_4'"))
+        self.assertTrue(ieantn.check_graph())
+
+
+class TestDeprecateGuards(FixtureRepo):
+    def test_a_node_may_not_supersede_itself(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            self.assertFalse(ieantn.deprecate("A.v1", "A.v1"))
+
+    def test_the_replacement_may_not_be_deprecated(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_node("A.v2", LITERATURE, status="deprecated")
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            self.assertFalse(ieantn.deprecate("A.v1", "A.v2"))
 
 
 class TestBridgeClosure(FixtureRepo):
@@ -860,6 +970,7 @@ class TestRecordReceipt(FixtureRepo):
         except ImportError:
             self.skipTest("ruamel.yaml not installed")
         self.write_node("A.v1", LITERATURE.replace("kind: literature", "kind: none-yet"))
+        self.write_comparator_config("A.v1")
         self.assertTrue(ieantn.record_receipt("A.v1", "Solutions/A.v1", "http://run", "now"))
         self.assertTrue((self.root / "receipts" / "A.v1.main.json").is_file())
         conclusion = ieantn.conclusions_of(ieantn.load_nodes()["A.v1"])[0]
@@ -874,6 +985,7 @@ class TestRecordReceipt(FixtureRepo):
             self.skipTest("ruamel.yaml not installed")
         self.write_node("Upstream.v1", LITERATURE)
         self.write_node("A.v1", importing("Upstream.v1"))
+        self.write_comparator_config("A.v1")
         self.assertTrue(ieantn.record_receipt("A.v1", "Solutions/A.v1", "http://run", "now"))
         receipt = json.loads(
             (self.root / "receipts" / "A.v1.main.json").read_text(encoding="utf-8")
@@ -881,6 +993,59 @@ class TestRecordReceipt(FixtureRepo):
         self.assertEqual(
             sorted(receipt["statement"]), ["A.v1.main", "Upstream.v1.main"]
         )
+
+
+class TestReceiptCoverage(FixtureRepo):
+    """A receipt may only cover conclusions Comparator was actually asked about.
+
+    Comparator runs once per node, against the `theorem_names` in the solution's `comparator.json`;
+    receipts are written per conclusion. Nothing connected the two, so adding a second conclusion
+    to an already-verified node earned it a full `lean-comparator` justification for a statement no
+    verifier had ever seen. No adversary required.
+    """
+
+    def setUp(self) -> None:
+        super().setUp()
+        self._real = ieantn.compute_fingerprints
+        ieantn.compute_fingerprints = lambda: {  # type: ignore[assignment]
+            "A.v1.main": "aa", "A.v1.second": "cc", "Upstream.v1.main": "bb"
+        }
+        self.addCleanup(lambda: setattr(ieantn, "compute_fingerprints", self._real))
+
+    def _two_conclusions(self) -> None:
+        self.write_node(
+            "A.v1",
+            LITERATURE + LITERATURE.replace("id: main", "id: second")
+            .replace("{node}.main", "{node}.second")
+            .replace("challenge_main", "challenge_second"),
+        )
+
+    def test_a_conclusion_comparator_never_saw_gets_no_receipt(self) -> None:
+        self._two_conclusions()
+        self.write_comparator_config("A.v1", ["A.v1.challenge_main"])
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            recorded = ieantn.record_receipt("A.v1", "Solutions/A.v1", "http://run", "now")
+        self.assertFalse(recorded)
+        self.assertIn("A.v1.challenge_second", printed.getvalue())
+        self.assertFalse((self.root / "receipts").exists())
+
+    def test_a_missing_config_is_refused(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            self.assertFalse(ieantn.record_receipt("A.v1", "Solutions/A.v1", "http://run", "now"))
+        self.assertIn("does not exist", printed.getvalue())
+
+    def test_full_coverage_is_accepted(self) -> None:
+        try:
+            import ruamel.yaml  # noqa: F401
+        except ImportError:
+            self.skipTest("ruamel.yaml not installed")
+        self._two_conclusions()
+        self.write_comparator_config("A.v1")
+        self.assertTrue(ieantn.record_receipt("A.v1", "Solutions/A.v1", "http://run", "now"))
+        self.assertTrue((self.root / "receipts" / "A.v1.second.json").is_file())
 
 
 class TestReceiptProvenance(FixtureRepo):

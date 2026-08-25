@@ -193,10 +193,18 @@ dispatchable CI workflow rather than on a maintainer's machine: a receipt backed
 workflow with public logs is much stronger evidence than one produced locally.
 
 **They are written by the verifier, never by the author.** A receipt an author can write is a claim
-of verification typed by the person making the claim. `receipts/` is restricted to the verification
-workflow's identity by a ruleset path rule; `check-graph` refuses a `lean-comparator` justification
-with no matching receipt file; and a receipt arriving in a pull request from anyone else is a
-review failure rather than a formatting nit.
+of verification typed by the person making the claim, and a receipt arriving in a pull request from
+anyone else is a review failure rather than a formatting nit.
+
+The intended enforcement was a ruleset restricting `receipts/` to the workflow's identity. GitHub
+does not offer it here -- it refuses push rulesets on public repositories and outside an
+organisation -- so `check-receipts` enforces provenance instead, which is the better control:
+a path rule says who wrote the file, provenance says the verification happened. It requires each
+receipt to name a run that exists, succeeded, is `verify.yml`, and is **that node's** -- the
+dispatched node appears in the job name, so GitHub's record of the run, not the receipt, decides
+what was verified. Separately, `check-graph` refuses a `lean-comparator` justification with no
+matching receipt, and `record-receipt` refuses to receipt any conclusion absent from the solution's
+`comparator.json`.
 
 `python scripts/ieantn.py status` grades every receipt against the world as it is now.
 
@@ -429,6 +437,7 @@ Built and running in CI:
 | `scripts/verify-comparator.sh` | Comparator with the four trusted tools pinned. |
 | `scripts/check_palomar_metadata.py` | Validates each node against Palomar's *current* contract. |
 | `.github/workflows/ci.yml` | Core build, network checks, fingerprint check, impact report. |
+| `IEANTN/Bridges/` | Proofs that one node's conclusion implies another's; in the core build. |
 | `.github/workflows/verify.yml` | Verification, split on privilege (§4). |
 
 The tooling commands:
@@ -446,13 +455,13 @@ python scripts/ieantn.py new-solution     # scaffold a solution project
 python scripts/ieantn.py deprecate        # mark a version for retirement
 ```
 
-**Not yet built**, and tracked in [ROADMAP.md](ROADMAP.md): the reviewer report as a PR comment
-rather than a job summary; the `verification` environment gate; the ruleset rule restricting
-`receipts/`; the Palomar spin-off generator; visualisation; unit tests for the tooling; and the
-code and security audits.
+**Not yet built**, and tracked in [ROADMAP.md](ROADMAP.md): the reviewer report as a pull request
+comment rather than a job summary; a `/verify` comment trigger; the Palomar spin-off generator;
+visualisation; and verification methods beyond Comparator. The `receipts/` ruleset is not pending
+but unavailable, and provenance replaced it -- see above.
 
-**No node carries a Lean-verified justification yet**, so the Comparator path is untested end to
-end. That waits on porting a first solution.
+**The Comparator path is exercised end to end**: `Lcm.v1` carries a receipt written by the
+verification workflow, and `status` grades it against the current environment.
 
 See [NODES.md](NODES.md) for the authoring recipe and [../CONTRIBUTING.md](../CONTRIBUTING.md) for
-the nine kinds of change.
+the ten kinds of change.

@@ -59,8 +59,14 @@ namespace IEANTN.Fingerprint
 /-- Is this constant defined by this project, rather than by Lean core or Mathlib?
 
 Decided by **module provenance**, not by guessing at name prefixes: the environment records which
-module every constant came from, and ours are exactly those under `IEANTN`. A constant with no
-recorded module was defined in the module currently being elaborated, which is also ours. -/
+module every constant came from, and ours are exactly those under `IEANTN`.
+
+The `none` case is not "defined in the module being elaborated", as this comment used to say -- this
+runs against an imported environment, so there is no such module. It means provenance could not be
+established at all, and `true` is the deliberate choice: an unrecognised constant that is really
+ours must be followed or a change to it would go unnoticed, whereas one that is really Mathlib's
+costs at worst a spurious fingerprint move at a toolchain bump. The error directions are not
+symmetric, so the default goes to the noisy one. -/
 def isLocal (env : Environment) (n : Name) : Bool :=
   match env.getModuleFor? n with
   | some m => (`IEANTN).isPrefixOf m

@@ -6,14 +6,22 @@ name: Verify a solution
 #
 #   * `comparator` runs UNTRUSTED code -- elaborating a contributor's Lean solution can execute
 #     arbitrary code -- and therefore holds no write access and no secrets.
-#   * `receipt` holds write access but runs no contributor code. It recomputes the statement
-#     fingerprints itself from the core library, which is trusted repository content, so it never
-#     has to believe anything the first job says about them.
+#   * `receipt` holds write access but never builds the contributor's *solution*. It recomputes the
+#     statement fingerprints itself from the core library, so it never has to believe anything the
+#     first job says about them.
 #
-# The residual trust is the same as Palomar's: that Comparator's Landlock sandbox contains the
-# export step, and that this workflow file is itself reviewed. A job running untrusted code can
-# always lie about its own verdict; what it cannot do here is obtain a token or forge a
-# fingerprint.
+# Being exact about the second one, because the obvious reading is too generous: the receipt job
+# does run `lake build` on the branch, and the core library on a contributor's branch is not
+# trusted content -- Lean elaboration can run arbitrary code, so a hostile `Conclusions.lean` would
+# run it here, with a write token. What stops that is not the split but the `verification`
+# environment gate on the job before it: nothing in this workflow runs until a maintainer approves
+# the run, and approving means having looked at the branch. The split buys something narrower and
+# still worth having -- the *solution*, which is the large machine-generated artefact nobody reads,
+# is confined to the unprivileged job.
+#
+# The residual trust is otherwise Palomar's: that Comparator's Landlock sandbox contains the export
+# step, and that this workflow file is itself reviewed. A job running untrusted code can always lie
+# about its own verdict; what it cannot do here is obtain a token or forge a fingerprint.
 
 on:
   workflow_dispatch:
@@ -34,7 +42,12 @@ concurrency:
 
 jobs:
   comparator:
-    name: Run Comparator
+    # The node goes in the job name so that a receipt can be bound to the node it claims. The run
+    # id in a receipt is checked against GitHub, but until this was here, *any* successful run of
+    # this workflow validated *any* receipt: copying one node's run URL into another node's receipt
+    # passed provenance. GitHub records the job name from the dispatch input, not from the receipt,
+    # so `check-receipts` can now insist the two agree.
+    name: Run Comparator (${{ inputs.node }})
     runs-on: ubuntu-latest
     # Gate the *run*, not the request. Configure `verification` with required reviewers so any
     # contributor can ask for a verification and a maintainer approves it -- verification is
@@ -55,10 +68,17 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: "1.24.0"
+      # `inputs.node` reaches the shell through the environment, never through `${{ }}`
+      # interpolation into the script body. Interpolation splices the value into the script before
+      # any shell exists to quote it, so a dispatch input containing shell metacharacters runs as
+      # code. That matters most in the `receipt` job below, which holds `contents: write` -- the
+      # whole point of the privilege split is that no contributor input reaches a token.
       - name: Comparator
+        env:
+          NODE: ${{ inputs.node }}
         run: |
           chmod +x scripts/verify-comparator.sh
-          scripts/verify-comparator.sh "${{ inputs.node }}"
+          scripts/verify-comparator.sh "$NODE"
       - name: Record the verdict
         run: |
           python3 - <<'PY'
@@ -79,7 +99,7 @@ jobs:
           if-no-files-found: error
 
   receipt:
-    name: Record the receipt
+    name: Record the receipt (${{ inputs.node }})
     needs: comparator
     runs-on: ubuntu-latest
     permissions:
@@ -114,18 +134,23 @@ jobs:
       # Fingerprints are recomputed here from the core library -- trusted repository content, not
       # the contributor's solution -- so this job never trusts the untrusted one about them.
       - name: Write the receipt
+        env:
+          NODE: ${{ inputs.node }}
         run: |
           lake build ieantn_hash
-          python3 scripts/ieantn.py record-receipt "${{ inputs.node }}" \
-            --solution "Solutions/${{ inputs.node }}" \
+          python3 scripts/ieantn.py record-receipt "$NODE" \
+            --solution "Solutions/$NODE" \
             --run-url "$(python3 -c 'import json;print(json.load(open("verdict.json"))["run"])')" \
             --stamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
       - name: Commit
+        env:
+          NODE: ${{ inputs.node }}
+          BRANCH: ${{ inputs.branch }}
         run: |
           git config user.name "ieantn-verifier[bot]"
           git config user.email "ieantn-verifier@users.noreply.github.com"
           python3 scripts/ieantn.py state
           git add receipts/ IEANTN/Nodes/ STATE.md
           git diff --cached --quiet && { echo "nothing to record"; exit 0; }
-          git commit -m "Record verification receipt for ${{ inputs.node }}"
-          git push origin HEAD:"${{ inputs.branch }}"
+          git commit -m "Record verification receipt for $NODE"
+          git push origin HEAD:"refs/heads/$BRANCH"
