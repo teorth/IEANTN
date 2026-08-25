@@ -58,14 +58,14 @@ jobs:
       contents: read
     timeout-minutes: 180
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ inputs.branch }}
           persist-credentials: false
-      - uses: leanprover/lean-action@v1
+      - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596 # v1
         with:
           build: false
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version: "1.24.0"
       # `inputs.node` reaches the shell through the environment, never through `${{ }}`
@@ -92,7 +92,7 @@ jobs:
         env:
           NODE: ${{ inputs.node }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: verdict
           path: verdict.json
@@ -106,19 +106,19 @@ jobs:
       contents: write
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ inputs.branch }}
-      - uses: leanprover/lean-action@v1
+      - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596 # v1
         with:
           build: true
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
       # ruamel too: record-receipt designates the verification in the node metadata, and that
       # file's comments carry the provenance.
       - run: pip install -r requirements-dev.txt
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: verdict
       - name: Check the verdict is what it claims
@@ -146,7 +146,17 @@ jobs:
         env:
           NODE: ${{ inputs.node }}
           BRANCH: ${{ inputs.branch }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
+          # A receipt goes onto the branch being verified, and then through review like anything
+          # else. Writing one straight to the default branch would put the one file the network
+          # trusts most into `main` without a pull request -- and this job is the only place in
+          # the repository holding a write token, so it is the only place that could.
+          if [ "$BRANCH" = "$DEFAULT_BRANCH" ]; then
+            echo "refusing to commit a receipt directly to $DEFAULT_BRANCH." >&2
+            echo "Verify a branch and merge the receipt through review." >&2
+            exit 1
+          fi
           git config user.name "ieantn-verifier[bot]"
           git config user.email "ieantn-verifier@users.noreply.github.com"
           python3 scripts/ieantn.py state

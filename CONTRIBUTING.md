@@ -6,7 +6,8 @@ from the file you edited. The workflows below are designed so that the cheap pat
 one.
 
 Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) once before your first contribution.
-[docs/NODES.md](docs/NODES.md) is the reference for node file formats.
+[docs/NODES.md](docs/NODES.md) is the reference for node file formats, and
+[SECURITY.md](SECURITY.md) states what the repository trusts and why.
 
 > **Status.** Everything below works today except where marked *(planned)*: the `/verify` comment
 > trigger (workflow 3 gives what to do meanwhile), the `build-solution` label (workflow 2), and

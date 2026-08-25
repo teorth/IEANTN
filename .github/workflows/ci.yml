@@ -24,13 +24,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
-      - uses: leanprover/lean-action@v1
+      - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596 # v1
         with:
           build: true
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
       - run: pip install pyyaml
@@ -48,16 +48,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
       - run: pip install pyyaml
       # Cheap automated review of the tooling itself. Most of this code is written by agents
       # and read closely by nobody, which is exactly where a type checker earns its keep.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22"
       # Installs ruamel too: it is optional at runtime but the type checker should still see
@@ -84,30 +84,46 @@ jobs:
   # node stays spin-off-ready. The validator is fetched fresh on every run and never vendored:
   # its required-field list moves, and a cached copy would accept files the live contract now
   # rejects. Non-blocking until the metadata settles.
+  #
+  # This job imports and runs Python fetched from another repository, which is a deliberate
+  # trade -- pinning it would defeat the point, since tracking the moving contract is the whole
+  # reason it exists. So the exposure is bounded instead of eliminated:
+  #
+  #   * `permissions: {}` -- the job holds no token at all, and the fetch is an anonymous HTTPS
+  #     GET rather than an authenticated `gh api` call. A compromised validator therefore gets
+  #     compute on a throwaway runner and nothing else. This is the whole reason the fetch does
+  #     not use `gh`.
+  #   * `persist-credentials: false` -- no credential is left in `.git/config` to be read.
+  #   * the resolved commit is recorded in the job summary, so *which* validator ran is visible
+  #     after the fact rather than being whatever `main` happened to be.
   palomar-metadata:
     name: Validate node metadata against Palomar
     runs-on: ubuntu-latest
     timeout-minutes: 10
     continue-on-error: true
+    permissions: {}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
       - run: pip install pyyaml
       - name: Fetch the current validator
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPSTREAM: PalomarRegistry/PalomarSubmission
         run: |
+          set -euo pipefail
           mkdir -p /tmp/pal/scripts /tmp/pal/taxonomies
+          commit=$(curl -fsSL "https://api.github.com/repos/$UPSTREAM/commits/main" \
+                     | python3 -c 'import json,sys; print(json.load(sys.stdin)["sha"])')
           for f in scripts/submission_contract.py scripts/verification_errors.py \
                    taxonomies/arxiv-categories.json taxonomies/msc2020-codes.json; do
-            gh api "repos/PalomarRegistry/PalomarSubmission/contents/$f" --jq '.content' \
-              | base64 -d > "/tmp/pal/$f"
+            curl -fsSL "https://raw.githubusercontent.com/$UPSTREAM/$commit/$f" -o "/tmp/pal/$f"
           done
           touch /tmp/pal/scripts/__init__.py
+          echo "Validated against \`$UPSTREAM\` at \`$commit\`." >> "$GITHUB_STEP_SUMMARY"
       - name: Validate each node
         run: python3 scripts/check_palomar_metadata.py /tmp/pal
 
@@ -118,11 +134,11 @@ jobs:
     timeout-minutes: 10
     steps:
       # Full history: the base state is recovered with `git show`, not by checking it out.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
       - run: pip install pyyaml

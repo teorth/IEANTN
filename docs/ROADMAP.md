@@ -311,40 +311,58 @@ verification approval procedure and what to actually look at before approving, t
 checking recipe that needs an LLM and so cannot be CI, cross-repository paths, PNT+ migration
 state, and the accumulated traps in operational form.
 
-## Security audit, still to do
+## Security audit
 
-Worth being proactive about, given that contributors are increasingly agents and that some pull
-requests will be too large for a human to review. Four vectors, with what exists today:
+**First pass done.** The written outcome is [SECURITY.md](../SECURITY.md) — the trust model, the
+trusted base of a receipt, and the residual risks. What follows is what the pass found.
 
-**Executable code in submitted Lean.** Elaboration can run arbitrary code, so any job that
-compiles contributor Lean is running their program. Mitigated for verification by the privilege
-split in `verify.yml` and by Comparator's Landlock sandbox. **Not** separately mitigated for the
-*core* CI build, which compiles a PR's `Conclusions.lean`; it holds only `contents: read` and no
-secrets, so the exposure is compute rather than credentials, but it has not been audited.
+The starting position was better than expected in one respect and worse in another. Better: there
+are **no secrets** in the repository or in any environment, default workflow permissions are read,
+`persist-credentials: false` is set everywhere but the one job that must push, and the `main`
+ruleset requires code-owner review. So the untrusted job has nothing to steal, and the exposure
+from compiling contributor Lean really is compute rather than credentials — which is worth stating
+positively rather than leaving as "not audited".
 
-**Denial of service by triggering CI.** The verification workflow is hour-scale and should sit
-behind the environment gate above. Core CI runs per push and is cheap, but nothing rate-limits it.
+Worse: the supply chain was unpinned.
 
-**Alignment checking stays maintainer-side, deliberately.** The obvious answer to the gap below is
-an LLM that reads a conclusions file against its informal description and its cited source. That is
-**not** going into CI: it needs API keys, and it would put a paid, non-deterministic, prompt-
-injectable step on the path of every pull request. Instead it belongs in **agent skills that
-individual maintainers run**, against the bounded surface the architecture already guarantees — the
-conclusions files and the metadata, not the solutions. So the design requirement on this repository
-is only that the surface stay small and the metadata stay machine-readable, which it is.
+**Every action was pinned to a mutable ref, and two of them were branches.** `@v1` for
+`leanprover-community/mathlib-update-action` and `leanprover-community/lean-release-tag` resolves
+to a *branch*, not a tag — a branch head moves on every push upstream. Both are used in jobs
+holding `contents: write`, and the update workflow additionally holds `issues: write` and
+`pull-requests: write`. `leanprover/lean-action@v1` is a tag, and is used in the receipt job, which
+also holds `contents: write`. All actions are now pinned to full commit SHAs with the ref they came
+from in a trailing comment.
 
-**Degradation of the informal layer -- the one that most deserves attention.** Statement
-fingerprints cover the *Lean* statement and nothing else. A pull request can rewrite a conclusion's
-docstring so it appears to say something it does not, change a `locator` from "Proposition 5.4" to
-"Proposition 5.7", swap a `source` for a different paper, or flip a justification from `none-yet`
-to `literature` with a fabricated citation -- **and no fingerprint moves, so nothing in CI
-notices.** For `literature`, `asserted` and `numerical` nodes, which will be most of the network,
-that informal layer *is* the evidence. The cheap first step is to fingerprint each conclusion's
-justification and sources alongside its statement, so that such a change at least appears in the
-impact report rather than passing silently.
+This is the highest-severity finding of the three audits, and it is entirely conventional — it is
+the first thing any Actions hardening guide says. It survived because the workflows were copied
+from working examples, which is exactly how supply-chain exposure normally arrives.
 
-**Trust in the tool pins.** Four revisions in `scripts/verify-comparator.sh` are the trusted base
-of every receipt. Bumping them is a security change, not a chore.
+**The job that runs foreign code held a token.** `palomar-metadata` imports and executes Python
+fetched from `PalomarRegistry/PalomarSubmission`, deliberately unpinned because the job exists to
+track a moving contract. It fetched with an authenticated `gh api` call, so a compromised upstream
+would have run with the workflow token. It now declares `permissions: {}`, fetches anonymously over
+HTTPS, and records the resolved upstream commit in the job summary so which validator ran is
+visible after the fact. Bounding the blast radius was available where pinning was not.
+
+**Provenance was bypassable by deleting a git remote.** `check-receipts` identifies this repository
+from `git remote get-url origin`; if that produced nothing it skipped the comparison and went on to
+query whichever repository the receipt named. Since anyone can stand up a repository with a
+`verify.yml` whose jobs succeed, that was the whole check. It now refuses.
+
+**Two smaller ones.** The receipt job would push to any branch the dispatcher named, including
+`main` — and it is the only job in the repository holding a write token, so it was the only thing
+that could put a receipt into `main` without review; it now refuses the default branch.
+`verify-comparator.sh` did not constrain the node id it turns into a path; shell injection was
+already closed in the code audit, but `x/../../elsewhere` was not.
+
+### Settings, which are not files
+
+Three repository settings are worth changing and one worth confirming; they are listed at the end
+of SECURITY.md so they can be re-checked after any settings change. The one that matters most is
+**"Allow GitHub Actions to approve pull requests"**, currently on: it lets a workflow satisfy a
+review requirement by approving its own pull request. Also worth adding **`Network impact` to the
+required status checks** — it is the hard gate against editing a depended-on conclusion, and a pull
+request can currently merge with it red.
 
 ## A bridge must be trust-neutral
 
