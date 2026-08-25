@@ -1083,6 +1083,39 @@ def current_environment() -> dict:
     }
 
 
+def verification_tools() -> dict[str, str]:
+    """The pinned revisions of the four tools a verification actually trusts.
+
+    Read out of `verify-comparator.sh` rather than duplicated, so they cannot drift apart. Recording
+    them is what makes "re-run at the recorded pin" (ARCHITECTURE section 4) a defined operation
+    rather than a phrase: without them a receipt says a verification happened but not what checked
+    it, and a later Comparator or NanoDa is a different verifier.
+    """
+    if not VERIFY_SCRIPT.is_file():
+        return {}
+    text = VERIFY_SCRIPT.read_text(encoding="utf-8")
+    found = {}
+    for tool in ("comparator", "lean4export", "landrun", "nanoda"):
+        match = re.search(rf"^{tool}_commit=(\S+)", text, re.MULTILINE)
+        if match:
+            found[tool] = match.group(1)
+    return found
+
+
+def repository_commit() -> str | None:
+    """The commit a verification ran against, if this is a git checkout.
+
+    The receipt's own pin: re-running means checking this out, where the core and the solution agree
+    by construction. Without it the receipt names a workflow run and a set of statements but not the
+    tree they were verified in.
+    """
+    finished = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+    )
+    return finished.stdout.strip() or None if finished.returncode == 0 else None
+
+
 def receipt_path(conclusion_key: str) -> pathlib.Path:
     return RECEIPTS / f"{conclusion_key}.json"
 
@@ -1362,11 +1395,13 @@ def record_receipt(node_id: str, solution: str, run_url: str, stamp: str) -> boo
             print(f"error: no fingerprint for {missing}")
             return False
         receipt = {
-            "schema": 1,
+            "schema": 2,
             "conclusion": key,
             "challenge": conclusion.get("challenge"),
             "statement": {name: fingerprints[name] for name in wanted},
             "environment": current_environment(),
+            "repository": {"commit": repository_commit()},
+            "tools": verification_tools(),
             "solution": {"project": solution},
             "run": {"workflow_run": run_url, "recorded_at": stamp},
         }

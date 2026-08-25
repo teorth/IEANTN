@@ -28,10 +28,13 @@ separate, auditable question.
 ## Layout
 
 ```
-IEANTN/Vocabulary/          the shared language — definitions only, Mathlib-only
-IEANTN/Nodes/<Id>/          Conclusions.lean, Challenge.lean, formalization.yaml
-Solutions/<Id>/             proofs — separate Lake projects, not in the core build
-docs/                       ARCHITECTURE.md, NODES.md
+IEANTN/Vocabulary/               the shared language — definitions only, Mathlib-only
+IEANTN/Nodes/<Family>/<version>/ Conclusions.lean, Challenge.lean, formalization.yaml
+IEANTN/Bridges/<Family>/         proofs that one version's conclusions imply another's
+Solutions/<Family>.<version>/    proofs — separate Lake projects, not in the core build
+receipts/                        one JSON file per Lean-verified conclusion
+fingerprints.json, STATE.md      generated and committed, so a change of meaning is a diff line
+docs/                            ARCHITECTURE.md, NODES.md, ROADMAP.md
 ```
 
 The core build is Vocabulary and Nodes only, and is deliberately fast. Solution verification is a
@@ -48,14 +51,16 @@ defeat the purpose of the split.
 
 ## Status
 
-Early, but the machinery is in place. Vocabulary, two proof-of-concept nodes, challenge
-generation, statement fingerprints, verification receipts, the breaking-change detector, the
-network checks and the housekeeping queue all exist and run in CI.
+Early, but the machinery is in place and exercised. Vocabulary, three proof-of-concept node
+versions and the bridge between two of them, challenge generation, statement fingerprints,
+verification receipts, the breaking-change detector, the network checks and the housekeeping queue
+all exist and run in CI.
 
-**No node carries a Lean-verified justification yet**, so the Comparator path is untested end to
-end; that waits on porting a first solution. Visualisation, unit tests for the tooling, and the
-code and security audits are outstanding. [docs/ROADMAP.md](docs/ROADMAP.md) tracks what is
-deliberately not built and why.
+**The Comparator path works end to end**: `Lcm.v1` carries a receipt written by the verification
+workflow, and `ieantn.py status` grades it against the current environment.
+
+Outstanding: visualisation, the `/verify` comment trigger, the Palomar spin-off generator, and the
+security audit. [docs/ROADMAP.md](docs/ROADMAP.md) tracks what is deliberately not built and why.
 
 This work grows out of the IEANTN subproject of
 [PNT+](https://github.com/AlexKontorovich/PrimeNumberTheoremAnd), whose blueprint-based structure
@@ -70,5 +75,5 @@ lake exe cache get
 lake build
 ```
 
-Two `declaration uses 'sorry'` warnings are expected — one per node conclusion. A challenge states;
-it does not prove.
+One `declaration uses 'sorry'` warning per node conclusion is expected. A challenge states; it does
+not prove.

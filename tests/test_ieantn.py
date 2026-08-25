@@ -1037,6 +1037,36 @@ class TestReceiptCoverage(FixtureRepo):
             self.assertFalse(ieantn.record_receipt("A.v1", "Solutions/A.v1", "http://run", "now"))
         self.assertIn("does not exist", printed.getvalue())
 
+    def test_the_receipt_records_what_pinned_the_verification(self) -> None:
+        """ARCHITECTURE says "what pins a verification is the commit its receipt records", and says
+        the receipt carries the four tool revisions. Neither was true until the docs audit checked.
+
+        Both matter for the same reason: without them a receipt says a verification happened but
+        not what tree it ran against or what checked it, and "re-run at the recorded pin" has no
+        referent."""
+        try:
+            import ruamel.yaml  # noqa: F401
+        except ImportError:
+            self.skipTest("ruamel.yaml not installed")
+        self.write_node("A.v1", LITERATURE)
+        self.write_comparator_config("A.v1")
+        (self.root / "scripts").mkdir(exist_ok=True)
+        (self.root / "scripts" / "verify-comparator.sh").write_text(
+            "comparator_commit=aaa\nlean4export_commit=bbb\n"
+            "lean4export_toolchain=leanprover/lean4:v4.34.0-rc2\n"
+            "landrun_commit=ccc\nnanoda_commit=ddd\n",
+            encoding="utf-8",
+        )
+        self.assertTrue(ieantn.record_receipt("A.v1", "Solutions/A.v1", "http://run", "now"))
+        receipt = json.loads(
+            (self.root / "receipts" / "A.v1.main.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            receipt["tools"],
+            {"comparator": "aaa", "lean4export": "bbb", "landrun": "ccc", "nanoda": "ddd"},
+        )
+        self.assertIn("commit", receipt["repository"])
+
     def test_full_coverage_is_accepted(self) -> None:
         try:
             import ruamel.yaml  # noqa: F401
