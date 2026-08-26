@@ -5,6 +5,7 @@ Authors: Terence Tao
 -/
 import IEANTN.Nodes.Kadiri2005.v1.Conclusions
 import IEANTN.Nodes.MT.v1.Conclusions
+import IEANTN.Nodes.Platt2015.v1.Conclusions
 import IEANTN.Nodes.PlattTrudgian.v1.Conclusions
 
 /-!
@@ -19,7 +20,8 @@ How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
 
 theorem MT.v1.challenge_zero_free_region
-    (kadiri2005_v1_zero_free_region : Kadiri2005.v1.zero_free_region) :
+    (kadiri2005_v1_zero_free_region : Kadiri2005.v1.zero_free_region)
+    (platt2015_v1_rh_up_to : Platt2015.v1.rh_up_to) :
     MT.v1.zero_free_region := by
   sorry
 

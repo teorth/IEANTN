@@ -71,14 +71,29 @@ Lean solution. -/
 def RiemannHypothesisUpTo (T : ℝ) : Prop :=
   IsEmpty (zetaZeroesIn (Set.Ioo (1 / 2) 1) (Set.Icc 0 T))
 
-/-- `ClassicalZeroFreeRegion R`: `ζ` has no zeroes with `Re s ≥ 1 - 1/(R log |Im s|)` and
-`Im s ≥ 3`.
+/-- `ClassicalZeroFreeRegion R t₀`: `ζ` has no zeroes with `Re s ≥ 1 - 1/(R log |Im s|)` and
+`Im s ≥ t₀`.
 
 `R` is the zero-free region parameter; smaller is stronger.  The chain of record values is
 `5.573412` (Mossinghoff–Trudgian), `5.558691` (Mossinghoff–Trudgian–Yang), `4.896`
-(Bellotti–Trudgian–Yang). -/
-def ClassicalZeroFreeRegion (R : ℝ) : Prop :=
-  ∀ σ t : ℝ, 3 ≤ t → 1 - 1 / (R * log t) ≤ σ → riemannZeta (σ + t * Complex.I) ≠ 0
+(Bellotti–Trudgian–Yang).
+
+`t₀` is the height above which the region is claimed, and it is a parameter because the literature
+has no consistent choice: Kadiri, Mossinghoff–Trudgian and Mossinghoff–Trudgian–Yang all state
+`|t| ≥ 2`, Mossinghoff–Trudgian–Yang's Korobov–Vinogradov theorem states `|t| ≥ 3`, and
+Rosser–Schoenfeld states `|t| ≥ 21` in a different shape entirely.  Fixing it at one value silently
+weakened every node that used this definition; a smaller `t₀` is a *stronger* claim.
+
+Only positive `t` is quantified over. Zeroes of `ζ` are symmetric about the real axis, so the
+`|Im s|` form of the literature follows, but a consumer wanting negative `t` must do that step.
+
+**Watch small `t₀`.** At `t = 1` the bound reads `1 - 1/(R * 0)`, and Lean's `1/0 = 0` makes it
+`σ ≥ 1` — true but not what the formula suggests. For `t < 1`, `log t < 0` and the bound exceeds
+`1`, so the claim says nothing. For `t` slightly above `1` the bound is hugely negative and the
+claim is correspondingly strong. None of this is wrong, but `t₀ < 2` is not a region anybody has
+stated, and a node claiming one should say why. -/
+def ClassicalZeroFreeRegion (R t₀ : ℝ) : Prop :=
+  ∀ σ t : ℝ, t₀ ≤ t → 1 - 1 / (R * log t) ≤ σ → riemannZeta (σ + t * Complex.I) ≠ 0
 
 /-- The Riemann–von Mangoldt error shape `b₁ log T + b₂ log log T + b₃`. -/
 noncomputable def rvmBound (b₁ b₂ b₃ T : ℝ) : ℝ :=

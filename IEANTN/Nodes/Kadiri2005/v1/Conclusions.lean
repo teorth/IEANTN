@@ -30,16 +30,13 @@ namespace Kadiri2005.v1
 
 open IEANTN
 
-/-- **The zero-free region.** The classical zero-free region holds with `R = 5.69693`.
+/-- **The zero-free region.** The classical zero-free region holds with `R = 5.69693` above
+height `2`.
 
-`ζ` has no zeroes with `Re s ≥ 1 - 1/(R log |Im s|)` and `Im s ≥ 3`. Kadiri obtained this by
-an iterative procedure starting from Rosser and Schoenfeld's region and a height to which the
-Riemann hypothesis had been verified; `MT` Section 2 records the parameters.
-
-Note the shape. Kadiri states the region for `|Im s| ≥ 2`, and the vocabulary here requires
-`Im s ≥ 3`, so this conclusion is weaker than the paper on `2 ≤ |Im s| < 3`. That is the common
-denominator across the nodes that state a classical region, not a limitation of this paper. -/
+`ζ` has no zeroes with `Re s ≥ 1 - 1/(R log |Im s|)` and `Im s ≥ 2`. Kadiri obtained this by an
+iterative procedure starting from Rosser and Schoenfeld's region and a height to which the Riemann
+hypothesis had been verified; `MT` Section 2 records the parameters. -/
 def zero_free_region : Prop :=
-  ClassicalZeroFreeRegion 5.69693
+  ClassicalZeroFreeRegion 5.69693 2
 
 end Kadiri2005.v1

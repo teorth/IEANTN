@@ -17,10 +17,11 @@
   "FKS2.v1.corollary_23": "a4e8b9028e790796ea6cfd90000b6a6c8128a62bc8b12351cc4986cd3483380a",
   "FKS2.v1.corollary_26": "b599170683ab0585cacde23f0aad801f36814b4ca3fda025c9575390fecd8191",
   "KLN.v1.subconvexity_bound": "7bf4e09385b1b412844527a59bcdae81b3b6e03790530cda3f0d09a154245647",
-  "Kadiri2005.v1.zero_free_region": "70d086ff86e52c2580350bdd5707dec2a93216ba2dfee58acb2abff79582157a",
+  "Kadiri2005.v1.zero_free_region": "d09ea8e1bd626ad3e1c7da668e62d1e0a98dc9f51084e5db050c719750ea9a96",
   "Lcm.v1.lcmUpto_not_highlyAbundant": "7dd7914d659103ca6fef5fa518d4db55a8372b9161fd3e2966f1772976cdf4f0",
   "Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap": "90d4cacf4a5de6e381f02cabdb5b8d6b5f8bf442a7ce3f5197fefda84c80ee7a",
-  "MT.v1.zero_free_region": "99f7229632e0e97ee79938750de57d42360efb8ba5d31d71de651927088657cd",
-  "MT.v1.zero_free_region_sharpened": "e3293bc0531b434c4e1b73d837c167de6586a240632efeb284932c8d26a82118",
+  "MT.v1.zero_free_region": "5993cefbaae8ae91379b97839727861ba0548a309dd251185ec99c8f658bfddc",
+  "MT.v1.zero_free_region_sharpened": "b7f4a534c49cc453a82558ecb2ec6cd721ef7f76b0317127e033b82161c5455f",
+  "Platt2015.v1.rh_up_to": "61aefa5dbdeab5aedd931f4d7bed26d7cd2ecf6ee4d24d6e0dd812e80fb243ea",
   "PlattTrudgian.v1.rh_up_to": "73439a92990285f0e57e065923c3ab443344e83550d452c73fba5467776160eb"
 }

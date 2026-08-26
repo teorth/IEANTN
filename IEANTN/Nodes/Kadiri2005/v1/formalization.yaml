@@ -91,7 +91,4 @@ limitations:
   The value stated is the published one, 5.69693. The version held locally is the arXiv preprint, which
   gives the weaker 5.70176.
 - >-
-  Kadiri states the region for |Im s| >= 2 and the vocabulary requires Im s >= 3, so real content is discarded
-  on 2 <= |Im s| < 3.
-- >-
   No novelty is claimed. The result is Kadiri's.
