@@ -38,6 +38,22 @@ a two-sided bound needs both. -/
 def theorem_2_theta : Prop :=
   ∀ x : ℝ, 1423 ≤ x → x ≤ 10 ^ (19 : ℕ) → x - Chebyshev.theta x ≤ 1.95 * Real.sqrt x
 
+/-- **Theorem 2, equation (1.7).** `x − θ(x) > 0.05 √x` for `1 ≤ x ≤ 10¹⁹`.
+
+The lower bound matching (1.6). Together they pin `x − θ(x)` from both sides on the overlap
+`[1423, 10¹⁹]`, which is what a two-sided estimate needs; neither alone gives one. -/
+def theorem_2_theta_lower : Prop :=
+  ∀ x : ℝ, 1 ≤ x → x ≤ 10 ^ (19 : ℕ) → 0.05 * Real.sqrt x < x - Chebyshev.theta x
+
+/-- **Theorem 2, equation (1.8).** `|li(x) − π*(x)| < √x / log x` for `2 ≤ x ≤ 10¹⁹`.
+
+For the **Riemann** prime-counting function `π*(x) = Σ_{k≥1} π(x^{1/k})/k`, not `π`. The two differ
+by about `√x / log x` in this range, which is exactly the size of the bound — so reading this as a
+statement about `π` would be not merely imprecise but vacuous. -/
+def theorem_2_li_minus_riemann_pi : Prop :=
+  ∀ x : ℝ, 2 ≤ x → x ≤ 10 ^ (19 : ℕ) →
+    |li x - riemannPrimeCounting x| < Real.sqrt x / Real.log x
+
 /-- **Theorem 2, equation (1.9).** For `2 ≤ x ≤ 10¹⁹`,
 `li(x) − π(x) ≤ (√x / log x) (1.95 + 3.9 / log x + 19.5 / (log x)²)`.
 

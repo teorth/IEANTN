@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import IEANTN.Nodes.Buthe.v1.Conclusions
+import IEANTN.Nodes.FKBJ.v1.Conclusions
 
 /-!
 # Challenge: `Buthe.v1`
@@ -16,14 +17,32 @@ Each `sorry` below is deliberate and permanent: a challenge *states*, it does no
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
 
-theorem Buthe.v1.challenge_theorem_2_psi : Buthe.v1.theorem_2_psi := by
+theorem Buthe.v1.challenge_theorem_2_psi
+    (fkbj_v1_rh_up_to : FKBJ.v1.rh_up_to) :
+    Buthe.v1.theorem_2_psi := by
   sorry
 
-theorem Buthe.v1.challenge_theorem_2_theta : Buthe.v1.theorem_2_theta := by
+theorem Buthe.v1.challenge_theorem_2_theta
+    (fkbj_v1_rh_up_to : FKBJ.v1.rh_up_to) :
+    Buthe.v1.theorem_2_theta := by
   sorry
 
-theorem Buthe.v1.challenge_theorem_2_li_minus_pi : Buthe.v1.theorem_2_li_minus_pi := by
+theorem Buthe.v1.challenge_theorem_2_theta_lower
+    (fkbj_v1_rh_up_to : FKBJ.v1.rh_up_to) :
+    Buthe.v1.theorem_2_theta_lower := by
   sorry
 
-theorem Buthe.v1.challenge_theorem_2_li_gt_pi : Buthe.v1.theorem_2_li_gt_pi := by
+theorem Buthe.v1.challenge_theorem_2_li_minus_riemann_pi
+    (fkbj_v1_rh_up_to : FKBJ.v1.rh_up_to) :
+    Buthe.v1.theorem_2_li_minus_riemann_pi := by
+  sorry
+
+theorem Buthe.v1.challenge_theorem_2_li_minus_pi
+    (fkbj_v1_rh_up_to : FKBJ.v1.rh_up_to) :
+    Buthe.v1.theorem_2_li_minus_pi := by
+  sorry
+
+theorem Buthe.v1.challenge_theorem_2_li_gt_pi
+    (fkbj_v1_rh_up_to : FKBJ.v1.rh_up_to) :
+    Buthe.v1.theorem_2_li_gt_pi := by
   sorry
