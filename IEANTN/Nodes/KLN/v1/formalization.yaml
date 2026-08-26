@@ -9,7 +9,7 @@ node:
   family: KLN
   version: v1
   kind: paper
-  status: stub
+  status: active
 
 project:
   name: "Kadiri-Lumley-Ng: explicit zero density for the Riemann zeta function"
@@ -30,7 +30,27 @@ classification:
   arxiv: [math.NT]
   msc2020: ["11M06"]
 
-conclusions: []
+conclusions:
+- id: subconvexity_bound
+  declaration: KLN.v1.subconvexity_bound
+  challenge: KLN.v1.challenge_subconvexity_bound
+  imports: []
+  justifications:
+  - id: kln-paper
+    kind: literature
+    source: KLN
+    locator: Lemma 3.2, equation (3.2), with the constant corrected
+    note: >-
+      The paper prints a1 = 0.63 and this node states 0.77. FKS (J. Math. Anal. Appl. 527 (2023) 127426)
+      reports that 0.63 rests on an erroneous explicit version of the Cheng-Graham second derivative test,
+      gives 0.77 as the corrected value, and says the error 'would render many results concerning the
+      prime number theorem unreliable'; it then redoes its own work with 0.77. Stating the printed value
+      would put a knowably false claim in the network, which nothing could soundly import -- so the correction
+      is made in place rather than by keeping a faithful-to-print version that would have no valid consumer.
+      The bound itself is Hiary's, quoted by KLN in the form its density argument uses. A later preprint
+      of Hiary, Patel and Yang announces 0.618, which would be a strict improvement and is the natural
+      content of a future version of this node.
+  designated: kln-paper
 
 sources:
 - title: "Explicit zero density for the Riemann zeta function"
@@ -54,26 +74,21 @@ review:
   status: self-assessed
   reviewers: ["Terence Tao"]
   notes: >-
-    Bibliographic details taken from blueprint/src/references.bib in PrimeNumberTheoremAnd
-    rather than from the printed paper. Verify them against the paper before this node is
-    cited externally or used as the basis for a submission.
+    Lemma 3.2 read from the arXiv preprint 2101.12263v1 directly. The correction to its constant is FKS's,
+    read from the published J. Math. Anal. Appl. version. Neither the published KLN nor any recomputation
+    of its tables has been consulted.
 
 limitations:
 - >-
-  This node states nothing. It exists so that the network records the paper as in scope, and so that the
-  housekeeping queue asks for conclusions.
+  The stated constant is not the paper's. It is FKS's correction of an input the paper quotes from elsewhere;
+  see the conclusion's note and the Conclusions module docstring.
 - >-
-  Before stating its zero-density estimate, read FKS's remark on it. FKS (J. Math. Anal. Appl. 527 (2023)
-  127426) says the value a1 = 0.63 used in this paper's Theorem 1.1 rests on an erroneous explicit van
-  der Corput second derivative test of Cheng and Graham, that the corrected value is 0.77, and that the
-  error 'would render many results concerning the prime number theorem unreliable'. Whether this node
-  states the printed constant, the corrected one, or both as separate versions is a decision for someone
-  who has read the paper. It is also the clearest case so far for a node carrying two versions of the
-  same claim.
+  The paper's Theorem 1.1 and its numerical density tables are deliberately not stated. Their constants
+  are computed with the erroneous a1 = 0.63, and nobody has published recomputed values -- FKS redid its
+  own estimates rather than reissuing this paper's tables. Correcting them is a recomputation, not a transcription,
+  and wants someone with the method in hand.
 - >-
-  Kadiri, Lumley and Ng also have an unpublished preprint, 'Bounding psi(x) with zero-density', which
-  FKS cites as [19] and which appears not to be publicly available. It is a different work from this one
-  and is not what this node records. FKS does not depend on it: the lemma attributed to it there is proved
-  in FKS itself.
+  The error is in an input, not in the method: a1 enters this paper quoted from Hiary, and the structure
+  of Theorem 1.1 is unaffected by it.
 - >-
-  No novelty is claimed. The results are Kadiri, Lumley and Ng's.
+  No novelty is claimed. The results are Kadiri, Lumley and Ng's, and the subconvexity bound is Hiary's.

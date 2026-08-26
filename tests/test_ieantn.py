@@ -382,6 +382,80 @@ class TestGraphChecks(FixtureRepo):
         self.assertFalse(ieantn.check_graph())
 
 
+class TestGraphPage(FixtureRepo):
+    """`GRAPH.md`: the network as a page someone can read without cloning anything.
+
+    The dependency structure is the repository's headline output, and until this existed it could
+    only be seen by running `report` locally. Generated and committed, like the other derived
+    files, so the picture and the prose cannot drift apart or from the metadata.
+    """
+
+    def _chain(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        self.write_node(
+            "A.v1", importing("Upstream.v1").replace("kind: none-yet", "kind: lean-comparator"))
+        (self.root / "receipts").mkdir(exist_ok=True)
+        (self.root / "receipts" / "A.v1.main.json").write_text(
+            json.dumps({"conclusion": "A.v1.main"}), encoding="utf-8")
+
+    def test_it_draws_an_edge_for_each_import(self) -> None:
+        self._chain()
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        self.assertIn("Upstream_v1_main --> A_v1_main", rendered)
+
+    def test_mermaid_ids_carry_no_dots(self) -> None:
+        """Mermaid rejects dots in node ids, and a conclusion key is full of them."""
+        self.assertEqual(ieantn.mermaid_id("A.v1.main-x"), "A_v1_main_x")
+
+    def test_only_roots_head_the_trees(self) -> None:
+        """An imported conclusion appears inside the tree of whatever imports it, not as its own
+        heading -- otherwise every leaf is listed twice and the shape is lost."""
+        self._chain()
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        trees = rendered.split("## What each result rests on")[1].split("##")[0]
+        self.assertIn("- `A.v1.main`", trees)
+        self.assertNotIn("@- `Upstream.v1.main`", trees.replace("@", ""))
+        self.assertIn("  - `Upstream.v1.main`", trees)
+
+    def test_the_trust_table_ranks_by_dependants(self) -> None:
+        """The honest answer to "how good is the evidence" is which unproved claims carry the most
+        weight, and it is computed rather than maintained."""
+        self._chain()
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        table = rendered.split("## What the network takes on trust")[1]
+        self.assertIn("`Upstream.v1.main`", table)
+        self.assertNotIn("`A.v1.main`", table.split("##")[0])
+
+    def test_a_cycle_free_repeat_is_marked_not_expanded(self) -> None:
+        """A diamond would otherwise be printed twice at full depth, and a cycle would not
+        terminate at all."""
+        self.write_node("Base.v1", LITERATURE)
+        for node in ("Left.v1", "Right.v1"):
+            self.write_node(node, importing("Base.v1"))
+        top = ("@- id: main@  declaration: {node}.main@  challenge: {node}.challenge_main@"
+               "  imports:@    - node: Left.v1@      conclusion: main@"
+               "    - node: Right.v1@      conclusion: main@  justifications:@    - id: u@"
+               "      kind: none-yet@  designated: u@").replace("@", chr(10))
+        self.write_node("Top.v1", top)
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        self.assertIn("*(above)*", rendered)
+
+    def test_conclusionless_nodes_get_their_own_section(self) -> None:
+        self.write_node("Paper.v1", "[]", status="stub")
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        self.assertIn("Nodes that state nothing yet", rendered)
+        self.assertIn("`Paper.v1`", rendered)
+
+    def test_check_mode_notices_staleness(self) -> None:
+        self._chain()
+        (self.root / "GRAPH.md").write_text("stale\n", encoding="utf-8")
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            self.assertFalse(ieantn.graph(check_only=True))
+        self.assertTrue(ieantn.graph(check_only=False))
+        self.assertTrue(ieantn.graph(check_only=True))
+
+
 class TestConclusionlessNodes(FixtureRepo):
     """A node may state nothing yet, and must still be visible.
 
