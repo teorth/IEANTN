@@ -9,6 +9,10 @@
   "Buthe.v1.theorem_2_psi": "447800284eca373b603b7a9eeaaf2698f358b3e38e08f28e2be4a4b6266f2816",
   "Buthe.v1.theorem_2_theta": "e34587a37c532c4c8fc0691782b26f3d7f9825f62cb0e04ef7f11a221bac3fab",
   "Buthe.v1.theorem_2_theta_lower": "35ce365b117b8b012e43d64b94970b2b5b9f3e259ddaec8ae8aea60725583f0e",
+  "Buthe2016.v1.theorem_2_li_minus_pi": "207c0810e6f0b32c2de0cdf221348833e8ef4a600e6f8a8cb7af2be923a125e3",
+  "Buthe2016.v1.theorem_2_li_minus_riemann_pi": "1707a5556e79d07a87637b4794e477c34c66e17ed0c987d826a098153313aeb7",
+  "Buthe2016.v1.theorem_2_psi": "63455dc36bfc713e6f49b2eff9c9168baaf82a98f123dab9f77aecb7c4c011ce",
+  "Buthe2016.v1.theorem_2_theta": "e42d6b01041d0e584271ad5973428bfcdc80e18ee3df8b5b4d69928bb145f978",
   "Dusart2018.v1.proposition_5_4": "a2a27b8382fc7657f765de82fb89561e797db20370d0375e1114b2a5b943b134",
   "FKBJ.v1.rh_up_to": "a0e3f733f20d8df755c8016cd0e4509a233411a168cd2fd6cb4fc3ccb5918698",
   "FKS.v1.psi_bound_all_x": "f5963ba07855070c1cabac8cd3c5e22dc810b0d9b4acd4761bd28321646ad4ef",
@@ -24,5 +28,7 @@
   "MT.v1.zero_free_region_sharpened": "b7f4a534c49cc453a82558ecb2ec6cd721ef7f76b0317127e033b82161c5455f",
   "Platt2015.v1.rh_up_to": "61aefa5dbdeab5aedd931f4d7bed26d7cd2ecf6ee4d24d6e0dd812e80fb243ea",
   "PlattTrudgian.v1.rh_up_to": "73439a92990285f0e57e065923c3ab443344e83550d452c73fba5467776160eb",
+  "PlattTrudgian2021.v1.theorem_1_classical": "aa668d9127fe2beb010afaa473b09c1a0fc83eec418e839fa158ceed7a616b49",
+  "PlattTrudgian2021.v1.theorem_1_numerical": "38ae386be11b4f07ba0802bddb4e770582f8370b33513bcd4b6ca1cb34d11290",
   "ZeroFreeHeight.v1.classical_region_descends": "796809d584f97568c9b74fbd219ee65b3a6a70a0b52a2660f08e8302be76a367"
 }

@@ -5,14 +5,14 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-16 node version(s), 26 conclusion(s).  2 state nothing yet.
+18 node version(s), 32 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
 | Designated justification | Conclusions |
 |---|---:|
 | `lean-comparator` | 3 |
-| `literature` | 21 |
+| `literature` | 27 |
 | `numerical` | 2 |
 
 ## Nodes
@@ -20,8 +20,8 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | Node | Status | Conclusion | Evidence | Imports | Issue |
 |---|---|---|---|---:|---|
 | `BKLNW.v1` | active | `corollary_5_1` | literature | 1 | - |
-| `BKLNW.v1` | active | `table8_psi_bound` | literature | 0 | - |
-| `BKLNW.v1` | active | `table8_psi_bound_above` | literature | 0 | - |
+| `BKLNW.v1` | active | `table8_psi_bound` | literature | 2 | - |
+| `BKLNW.v1` | active | `table8_psi_bound_above` | literature | 2 | - |
 | `BKLNW.v1` | active | `theta_error_le_one` | literature | 0 | - |
 | `Buthe.v1` | active | `theorem_2_psi` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_theta` | literature | 1 | - |
@@ -29,6 +29,10 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `Buthe.v1` | active | `theorem_2_li_minus_riemann_pi` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_li_minus_pi` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_li_gt_pi` | literature | 1 | - |
+| `Buthe2016.v1` | stub | `theorem_2_psi` | literature | 0 | - |
+| `Buthe2016.v1` | stub | `theorem_2_theta` | literature | 0 | - |
+| `Buthe2016.v1` | stub | `theorem_2_li_minus_riemann_pi` | literature | 0 | - |
+| `Buthe2016.v1` | stub | `theorem_2_li_minus_pi` | literature | 0 | - |
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
 | `FKBJ.v1` | active | `rh_up_to` | numerical | 0 | - |
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 3 | - |
@@ -45,6 +49,8 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `MTY.v1` | stub | *(none yet)* | - | - | - |
 | `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
+| `PlattTrudgian2021.v1` | stub | `theorem_1_classical` | literature | 2 | - |
+| `PlattTrudgian2021.v1` | stub | `theorem_1_numerical` | literature | 2 | - |
 | `RosserSchoenfeld.v1` | stub | *(none yet)* | - | - | - |
 | `ZeroFreeHeight.v1` | active | `classical_region_descends` | lean-comparator | 0 | #30 |
 
@@ -56,11 +62,14 @@ downstream.
 | Conclusion | Dependants |
 |---|---:|
 | `FKBJ.v1.rh_up_to` | 6 |
-| `PlattTrudgian.v1.rh_up_to` | 3 |
+| `PlattTrudgian.v1.rh_up_to` | 5 |
+| `PlattTrudgian2021.v1.theorem_1_numerical` | 2 |
 | `MT.v1.zero_free_region_sharpened` | 2 |
+| `MT.v1.zero_free_region` | 2 |
 | `Kadiri2005.v1.zero_free_region` | 2 |
 | `KLN.v1.subconvexity_bound` | 2 |
 | `FKS.v1.psi_classical_bound` | 2 |
+| `Buthe2016.v1.theorem_2_psi` | 2 |
 | `Buthe.v1.theorem_2_li_minus_pi` | 2 |
 | `Platt2015.v1.rh_up_to` | 1 |
 | `Dusart2018.v1.proposition_5_4` | 1 |

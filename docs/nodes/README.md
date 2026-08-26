@@ -8,6 +8,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 |---|---|---:|---|
 | [`BKLNW.v1`](BKLNW-v1.md) | paper | 4 | cited |
 | [`Buthe.v1`](Buthe-v1.md) | paper | 6 | cited |
+| [`Buthe2016.v1`](Buthe2016-v1.md) | paper | 4 | cited |
 | [`Dusart2018.v1`](Dusart2018-v1.md) | paper | 1 | cited |
 | [`FKBJ.v1`](FKBJ-v1.md) | computation | 1 | computation |
 | [`FKS.v1`](FKS-v1.md) | paper | 2 | cited |
@@ -20,6 +21,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`MTY.v1`](MTY-v1.md) | paper | 0 | — |
 | [`Platt2015.v1`](Platt2015-v1.md) | computation | 1 | computation |
 | [`PlattTrudgian.v1`](PlattTrudgian-v1.md) | computation | 1 | cited |
+| [`PlattTrudgian2021.v1`](PlattTrudgian2021-v1.md) | paper | 2 | cited |
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 0 | — |
 | [`ZeroFreeHeight.v1`](ZeroFreeHeight-v1.md) | folklore | 1 | verified |
 

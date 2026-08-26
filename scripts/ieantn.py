@@ -2375,6 +2375,17 @@ def render_node_page(node_id: str, nodes: dict, index: dict, importers: dict) ->
                 f"| Challenge | `{_quote(conclusion.get('challenge'))}` |"]
         if url:
             out.append(f"| Source | [{conclusions_source(node_id).name}]({url}) |")
+        # The evidence a reader would actually want to open. Naming the path without linking it
+        # made them reconstruct the URL by hand, which is the sort of friction that stops people
+        # checking at all.
+        solution = SOLUTIONS / node_id
+        if solution.is_dir():
+            out.append(f"| Solution | [`Solutions/{node_id}`]"
+                       f"({REPOSITORY_URL}/tree/main/Solutions/{node_id}) |")
+        receipt = RECEIPTS / f"{key}.json"
+        if receipt.is_file():
+            out.append(f"| Receipt | [`{receipt.name}`]"
+                       f"({REPOSITORY_URL}/blob/main/receipts/{receipt.name}) |")
         kind = designated_kind(conclusion) or "none-yet"
         label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
         out.append(f"| Evidence | {label} (`{kind}`) |")
