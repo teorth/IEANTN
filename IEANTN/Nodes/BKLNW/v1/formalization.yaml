@@ -9,7 +9,7 @@ node:
   family: BKLNW
   version: v1
   kind: paper
-  status: stub
+  status: active
 
 project:
   name: "Broadbent-Kadiri-Lumley-Ng-Wilk: sharper bounds for the Chebyshev function theta(x)"
@@ -31,37 +31,82 @@ classification:
   arxiv: [math.NT]
   msc2020: ["11N05", "11M06", "11M26"]
 
-conclusions: []
+conclusions:
+- id: corollary_5_1
+  declaration: BKLNW.v1.corollary_5_1
+  challenge: BKLNW.v1.challenge_corollary_5_1
+  imports: []
+  justifications:
+  - id: bklnw-paper
+    kind: literature
+    source: BKLNW
+    locator: Corollary 5.1, equations (2.10) to (2.12), restricted to b <= 38 log 10
+    note: >-
+      Asserted on the authority of the paper, transcribed from arXiv:2002.11068v2. Stated on 7 <= b <=
+      38 log 10 only. Above that threshold a1(b) is 1 + eps(b/2) with eps read from the paper's Table
+      8; below it a1 is the explicit constant 1 + 1.93378e-8, and every current consumer is below it --
+      FKS2 uses x0 = e^30, and 38 log 10 is about 87.4982. This is a restriction of the paper's range,
+      not a weakening of what it claims on that range. The paper contradicts itself here and the displayed
+      statement is the correct side, so that is what is transcribed. Theorem 5 gives a2 = (1 + alpha)
+      max{...}; Corollary 5.1's proof declares alpha = 1.93378e-8 from Corollary 2.1 and then writes 1.15177e-8
+      for the same quantity one sentence later, so (2.12) is self-consistent and the proof's figure is
+      a stray -- most likely a leftover from a draft with a different epsilon. It appears on page 9 of
+      both arXiv:2002.11068v2 and the published Math. Comp. version, and never reached PNT+, whose formalization
+      uses the correct value. The difference is lower order and harmless; it is recorded because a stray
+      constant that nobody writes down is the kind of thing that gets propagated later.
+  designated: bklnw-paper
+- id: theta_error_le_one
+  declaration: BKLNW.v1.theta_error_le_one
+  challenge: BKLNW.v1.challenge_theta_error_le_one
+  imports: []
+  justifications:
+  - id: bklnw-paper
+    kind: literature
+    source: BKLNW
+    locator: Tables 13 and 14, as used in FKS2 Corollary 14
+    note: >-
+      Asserted on the authority of the paper. Stated as the consequence FKS2 draws from those tables --
+      E_theta(x) <= 1 on [2, e^30] -- rather than as the tables themselves, because the consequence is
+      what is consumed and it is a single clean inequality. Transcribed from FKS2's proof of its Corollary
+      14, not read off the tables directly; confirm against the published tables before relying on it
+      for anything sharper.
+  designated: bklnw-paper
 
 sources:
-  - title: "Sharper bounds for the Chebyshev function theta(x)"
-    authors: ["Samuel Broadbent", "Habiba Kadiri", "Allysa Lumley", "Nathan Ng", "Kirsten Wilk"]
-    type: "paper"
-    id: "https://doi.org/10.1090/mcom/3643"
-    location: "Math. Comp. 90 (2021), no. 331, 2281-2315"
-    relationship: formalizes
+- title: "Sharper bounds for the Chebyshev function theta(x)"
+  authors: ["Samuel Broadbent", "Habiba Kadiri", "Allysa Lumley", "Nathan Ng", "Kirsten Wilk"]
+  type: "paper"
+  id: "https://doi.org/10.1090/mcom/3643"
+  location: "Math. Comp. 90 (2021), no. 331, 2281-2315"
+  relationship: formalizes
 
 automation:
   methods:
-    - method: agent
-      models: ["Claude Opus 5 (Anthropic)"]
-      framework: "Claude Code"
-      role: >-
-        Created this stub and transcribed its bibliographic record from the PNT+
-        bibliography, under the direction of the maintainer. No mathematical claim is
-        made and no statement has been transcribed from the paper.
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Created this stub and transcribed its bibliographic record from the PNT+
+      bibliography, under the direction of the maintainer. No mathematical claim is
+      made and no statement has been transcribed from the paper.
 
 review:
   status: self-assessed
   reviewers: ["Terence Tao"]
   notes: >-
-    Bibliographic details taken from blueprint/src/references.bib in PrimeNumberTheoremAnd
-    rather than from the printed paper. Verify them against the paper before this node is
-    cited externally or used as the basis for a submission.
+    Statements read from the arXiv preprint 2002.11068v2 directly, including the definition of f in equation
+    (2.4), which the plain-text extraction rendered unusably and which was read off the rendered page
+    instead. Not checked against the published Math. Comp. version.
 
 limitations:
-  - >-
-    This node states nothing. It exists so that the network records the paper as in scope,
-    and so that the housekeeping queue asks for conclusions.
-  - >-
-    No novelty is claimed. The results are the cited authors'.
+- >-
+  Both conclusions rest on the cited paper; neither is proved in Lean here.
+- >-
+  Corollary 5.1 is stated only for 7 <= b <= 38 log 10, the range where its coefficients are explicit.
+  The branch above that threshold needs the paper's Table 8, which would go in a Tables.lean beside this
+  file; it is left until something needs it.
+- >-
+  theta_error_le_one is transcribed from FKS2's use of Tables 13 and 14 rather than read off those tables,
+  so it records what a consumer needs rather than the tables' full strength.
+- >-
+  No novelty is claimed. The results are Broadbent, Kadiri, Lumley, Ng and Wilk's.

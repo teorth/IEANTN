@@ -35,7 +35,13 @@ conclusions:
 - id: corollary_14
   declaration: FKS2.v1.corollary_14
   challenge: FKS2.v1.challenge_corollary_14
-  imports: []
+  imports:
+  - node: FKS.v1
+    conclusion: psi_classical_bound
+  - node: BKLNW.v1
+    conclusion: corollary_5_1
+  - node: BKLNW.v1
+    conclusion: theta_error_le_one
   justifications:
   - id: fks2-paper
     kind: literature
@@ -45,12 +51,21 @@ conclusions:
       Asserted on the authority of the paper. The parameters are transcribed from PNT+'s formalization
       of the same corollary (PrimeNumberTheoremAnd/IEANTN/FKS2.lean, `corollary_14`), which proves it
       in Lean from the paper's Proposition 13 and its numerical inputs; that proof is complete there,
-      so this is a conclusion a port could justify rather than a bare citation.
+      so this is a conclusion a port could justify rather than a bare citation. Imports: FKS supplies
+      the E_psi bound that Proposition 13 converts. The other input the paper names is BKLNW -- Corollary
+      5.1 for the coefficients a1, a2 in Proposition 13's multiplier, and Tables 13 and 14 to cover 2
+      <= x <= e^30 -- both of which are now recorded. Corollary 5.1 is stated on 7 <= b <= 38 log 10,
+      which covers the x0 = e^30 this proof uses; Tables 13 and 14 enter as the single inequality E_theta(x)
+      <= 1 on [2, e^30] that the proof actually consumes.
   designated: fks2-paper
 - id: corollary_23
   declaration: FKS2.v1.corollary_23
   challenge: FKS2.v1.challenge_corollary_23
-  imports: []
+  imports:
+  - node: FKS.v1
+    conclusion: psi_classical_bound
+  - node: Buthe.v1
+    conclusion: theorem_2_li_minus_pi
   justifications:
   - id: fks2-paper
     kind: literature
@@ -59,12 +74,19 @@ conclusions:
     note: >-
       Asserted on the authority of the paper. PNT+ states this corollary for every row of Table 6 and
       leaves it `sorry`, so unlike Corollary 14 there is no existing Lean proof to port. Note the fourth
-      column of Table 6 is log x0, not x0; the threshold recorded here is exp 1.
+      column of Table 6 is log x0, not x0; the threshold recorded here is exp 1. Imports: Rests on Corollary
+      22, hence on the same FKS input, and on Buthe's Theorem 2 to verify the range x < 10^19. FKS's Table
+      6 and its Lemmas 5.2 and 5.3 are also cited, the former as data and the latter as a method of interpolation
+      rather than as a claim consumed; neither is an import edge.
   designated: fks2-paper
 - id: corollary_26
   declaration: FKS2.v1.corollary_26
   challenge: FKS2.v1.challenge_corollary_26
-  imports: []
+  imports:
+  - node: Buthe.v1
+    conclusion: theorem_2_li_minus_pi
+  - node: Buthe.v1
+    conclusion: theorem_2_li_gt_pi
   justifications:
   - id: fks2-paper
     kind: literature
@@ -74,7 +96,11 @@ conclusions:
       Asserted on the authority of the paper. PNT+ proves it in Lean from Corollary 23 together with a
       direct argument on [2, e); since Corollary 23 is `sorry` there, that proof is conditional in PNT+
       and porting it here would need Corollary 23 first. The paper itself obtains the estimate by combining
-      Corollary 23 above 10^19 with Buthe's estimates below it and explicit checks on small x.
+      Corollary 23 above 10^19 with Buthe's estimates below it and explicit checks on small x. Imports:
+      Buthe's Theorem 2 covers 97 <= x <= 10^19 -- (1.9) for the bound and (1.10) for its sign, which
+      together give the two-sided estimate. Below 97 the paper checks the 25 relevant prime intervals
+      directly and above 10^19 it uses its own Theorem 6 with Table 4; both are internal and neither is
+      an import.
   designated: fks2-paper
 
 sources:

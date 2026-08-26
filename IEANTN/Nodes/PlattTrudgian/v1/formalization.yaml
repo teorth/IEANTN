@@ -1,0 +1,87 @@
+# Node metadata for `PlattTrudgian.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: PlattTrudgian.v1
+  family: PlattTrudgian
+  version: v1
+  kind: computation
+  status: active            # change this once the node is filled in
+
+project:
+  name: "Platt-Trudgian: the Riemann hypothesis is true up to 3 x 10^12"
+  description: >-
+    A numerical verification that every zero of zeta with imaginary part up to 3 x 10^12 lies on the critical
+    line. This is the finite computation the explicit estimates downstream ultimately rest on: FKS takes
+    H0 = 3 x 10^12 from here, and everything FKS feeds inherits it.
+  authors:
+  - Terence Tao
+  license: "Apache-2.0"
+  responsible_maintainers:
+  - Terence Tao
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11M26
+  - 11Y35
+
+conclusions:
+- id: rh_up_to
+  declaration: PlattTrudgian.v1.rh_up_to
+  challenge: PlattTrudgian.v1.challenge_rh_up_to
+  imports: []
+  justifications:
+  - id: platttrudgian-paper
+    kind: literature
+    source: PlattTrudgian
+    locator: the paper's main result
+    note: >-
+      Asserted on the authority of the paper. This is a very large finite computation and the node is
+      kind: computation accordingly -- it will not carry a Lean solution in any foreseeable sense, and
+      what a formalization offers here is a statement of record with an honest citation rather than a
+      proof. The paper's own framing is that the first 10^13 zeros lie on the critical line; the round
+      3 x 10^12 recorded here is the height downstream papers quote.
+  designated: platttrudgian-paper
+sources:
+- title: The Riemann hypothesis is true up to 3 x 10^12
+  authors:
+  - David J. Platt
+  - Timothy S. Trudgian
+  type: paper
+  id: https://doi.org/10.1112/blms.12460
+  location: Bull. Lond. Math. Soc. 53 (2021), no. 3, 792-797
+  relationship: formalizes
+  note: >-
+    Bibliographic details from PNT+'s references.bib and FKS's reference [26]; the DOI has not been confirmed
+    against the publisher and should be before external use.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Transcribed the statement into the network's vocabulary and wrote this metadata, under the direction
+      of the maintainer. No proof is claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    Statement transcribed from FKS's use of the result, which quotes the height as H0 = 3 x 10^12. Not
+    read from the paper itself.
+
+limitations:
+- >-
+  Rests entirely on the cited computation. Nothing downstream of it is unconditional in any stronger sense
+  than that computation is correct.
+- >-
+  The height is recorded as the round 3 x 10^12 that downstream papers quote. A node needing the sharper
+  height implied by the first 10^13 zeros should state it separately.
+- >-
+  No novelty is claimed.

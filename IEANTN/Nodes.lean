@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import IEANTN.Nodes.BKLNW.v1.Challenge
+import IEANTN.Nodes.Buthe.v1.Challenge
 import IEANTN.Nodes.Dusart2018.v1.Challenge
 import IEANTN.Nodes.FKS.v1.Challenge
 import IEANTN.Nodes.FKS2.v1.Challenge
@@ -12,7 +13,9 @@ import IEANTN.Nodes.Kadiri2005.v1.Challenge
 import IEANTN.Nodes.Lcm.v1.Challenge
 import IEANTN.Nodes.Lcm.v1.Examples
 import IEANTN.Nodes.Lcm.v2.Challenge
+import IEANTN.Nodes.MT.v1.Challenge
 import IEANTN.Nodes.MTY.v1.Challenge
+import IEANTN.Nodes.PlattTrudgian.v1.Challenge
 import IEANTN.Nodes.RosserSchoenfeld.v1.Challenge
 
 /-!

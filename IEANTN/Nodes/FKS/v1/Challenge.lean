@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import IEANTN.Nodes.FKS.v1.Conclusions
+import IEANTN.Nodes.MT.v1.Conclusions
+import IEANTN.Nodes.PlattTrudgian.v1.Conclusions
 
 /-!
 # Challenge: `FKS.v1`
@@ -15,3 +17,15 @@ import IEANTN.Nodes.FKS.v1.Conclusions
 Each `sorry` below is deliberate and permanent: a challenge *states*, it does not prove.
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
+
+theorem FKS.v1.challenge_psi_bound_all_x
+    (mt_v1_zero_free_region_sharpened : MT.v1.zero_free_region_sharpened)
+    (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to) :
+    FKS.v1.psi_bound_all_x := by
+  sorry
+
+theorem FKS.v1.challenge_psi_classical_bound
+    (mt_v1_zero_free_region_sharpened : MT.v1.zero_free_region_sharpened)
+    (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to) :
+    FKS.v1.psi_classical_bound := by
+  sorry

@@ -41,12 +41,14 @@ sources:
   relationship: formalizes
   note: >-
     Identifier is the arXiv entry; PNT+'s bibliography records no DOI and the published version's should
-    be confirmed before external use. The title above was checked against the preprint itself: note that
-    FKS2's reference [12] gives this paper the title of Mossinghoff and Trudgian's 2015 paper instead,
-    which is an error in that bibliography rather than here. Substantively, this paper improves the classical
-    zero-free region constant to R = 5.558691; FKS2 and FKS use R = 5.5666305 from Mossinghoff and Trudgian,
-    J. Number Theory 157 (2015), and state explicitly that their numerics do not reflect this improvement.
-    So this node is a future sharpening of the chain, not an input to its current constants.
+    be confirmed before external use. The title above was checked against the arXiv:2212.06867 preprint
+    itself: 'Explicit zero-free regions for the Riemann zeta-function'. Two separate bibliographies get
+    this wrong in mirror-image ways -- FKS2's reference [12] gives this paper the title of Mossinghoff and
+    Trudgian's 2015 paper, while the published FKS swaps the two titles between its [21] and [22]; see
+    MT.v1. Substantively, this paper improves the classical zero-free region constant to R = 5.558691;
+    FKS2 and FKS use R = 5.5666305 from Mossinghoff and Trudgian, J. Number Theory 157 (2015), and state
+    explicitly that their numerics do not reflect this improvement. So this node is a future sharpening of
+    the chain, not an input to its current constants.
 
 automation:
   methods:

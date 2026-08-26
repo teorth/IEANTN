@@ -33,22 +33,22 @@ classification:
 conclusions: []
 
 sources:
-  - title: "Explicit zero density for the Riemann zeta function"
-    authors: ["Habiba Kadiri", "Allysa Lumley", "Nathan Ng"]
-    type: "paper"
-    id: "https://doi.org/10.1016/j.jmaa.2018.04.071"
-    location: "J. Math. Anal. Appl. 465 (2018), no. 1, 22-46"
-    relationship: formalizes
+- title: "Explicit zero density for the Riemann zeta function"
+  authors: ["Habiba Kadiri", "Allysa Lumley", "Nathan Ng"]
+  type: "paper"
+  id: "https://doi.org/10.1016/j.jmaa.2018.04.071"
+  location: "J. Math. Anal. Appl. 465 (2018), no. 1, 22-46"
+  relationship: formalizes
 
 automation:
   methods:
-    - method: agent
-      models: ["Claude Opus 5 (Anthropic)"]
-      framework: "Claude Code"
-      role: >-
-        Created this stub and transcribed its bibliographic record from the PNT+
-        bibliography, under the direction of the maintainer. No mathematical claim is
-        made and no statement has been transcribed from the paper.
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Created this stub and transcribed its bibliographic record from the PNT+
+      bibliography, under the direction of the maintainer. No mathematical claim is
+      made and no statement has been transcribed from the paper.
 
 review:
   status: self-assessed
@@ -59,8 +59,21 @@ review:
     cited externally or used as the basis for a submission.
 
 limitations:
-  - >-
-    This node states nothing. It exists so that the network records the paper as in scope,
-    and so that the housekeeping queue asks for conclusions.
-  - >-
-    No novelty is claimed. The results are the cited authors'.
+- >-
+  This node states nothing. It exists so that the network records the paper as in scope, and so that the
+  housekeeping queue asks for conclusions.
+- >-
+  Before stating its zero-density estimate, read FKS's remark on it. FKS (J. Math. Anal. Appl. 527 (2023)
+  127426) says the value a1 = 0.63 used in this paper's Theorem 1.1 rests on an erroneous explicit van
+  der Corput second derivative test of Cheng and Graham, that the corrected value is 0.77, and that the
+  error 'would render many results concerning the prime number theorem unreliable'. Whether this node
+  states the printed constant, the corrected one, or both as separate versions is a decision for someone
+  who has read the paper. It is also the clearest case so far for a node carrying two versions of the
+  same claim.
+- >-
+  Kadiri, Lumley and Ng also have an unpublished preprint, 'Bounding psi(x) with zero-density', which
+  FKS cites as [19] and which appears not to be publicly available. It is a different work from this one
+  and is not what this node records. FKS does not depend on it: the lemma attributed to it there is proved
+  in FKS itself.
+- >-
+  No novelty is claimed. The results are Kadiri, Lumley and Ng's.
