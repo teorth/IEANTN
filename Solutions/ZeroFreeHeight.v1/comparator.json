@@ -1,0 +1,13 @@
+{
+  "challenge_module": "IEANTN.Nodes.ZeroFreeHeight.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ZeroFreeHeight.v1.challenge_classical_region_descends"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

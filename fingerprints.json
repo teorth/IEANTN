@@ -23,5 +23,6 @@
   "MT.v1.zero_free_region": "5993cefbaae8ae91379b97839727861ba0548a309dd251185ec99c8f658bfddc",
   "MT.v1.zero_free_region_sharpened": "b7f4a534c49cc453a82558ecb2ec6cd721ef7f76b0317127e033b82161c5455f",
   "Platt2015.v1.rh_up_to": "61aefa5dbdeab5aedd931f4d7bed26d7cd2ecf6ee4d24d6e0dd812e80fb243ea",
-  "PlattTrudgian.v1.rh_up_to": "73439a92990285f0e57e065923c3ab443344e83550d452c73fba5467776160eb"
+  "PlattTrudgian.v1.rh_up_to": "73439a92990285f0e57e065923c3ab443344e83550d452c73fba5467776160eb",
+  "ZeroFreeHeight.v1.classical_region_descends": "796809d584f97568c9b74fbd219ee65b3a6a70a0b52a2660f08e8302be76a367"
 }

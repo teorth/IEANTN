@@ -1,0 +1,105 @@
+# Node metadata for `ZeroFreeHeight.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: ZeroFreeHeight.v1
+  family: ZeroFreeHeight
+  version: v1
+  kind: folklore
+  status: awaiting-verification # change this once the node is filled in
+
+project:
+  name: Lowering the height of a classical zero-free region
+  description: >-
+    A classical zero-free region is stated above some height -- 2 in Kadiri, Mossinghoff-Trudgian and
+    Mossinghoff-Trudgian-Yang, 3 in the Korobov-Vinogradov theorem of the last, 21 in Rosser-Schoenfeld.
+    This node supplies the step that lowers that height, given any numerical verification of the Riemann
+    hypothesis reaching at least as far: below the old height a zero would have to sit on the critical
+    line or right of Re s = 1, and the region excludes both. It is used without comment throughout the
+    literature, which is what makes it folklore rather than a citation.
+  authors:
+  - Terence Tao
+  license: Apache-2.0
+  responsible_maintainers:
+  - Terence Tao
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11M26
+  - 11M06
+
+conclusions:
+- id: classical_region_descends
+  declaration: ZeroFreeHeight.v1.classical_region_descends
+  challenge: ZeroFreeHeight.v1.challenge_classical_region_descends
+  imports: []
+  imports_status: none
+  justifications:
+  - id: folklore-lean
+    kind: none-yet
+    source: ZeroFreeHeight
+    note: >-
+      Imports none, and that is a real `none` rather than an untraced `undetermined`: the statement is
+      a conditional whose two analytic inputs are its own hypotheses -- a verification of the Riemann
+      hypothesis and a zero-free region -- so a consumer supplies them rather than this node importing
+      them. The only external fact used is the classical non-vanishing of zeta on Re s >= 1, which is
+      Mathlib's riemannZeta_ne_zero_of_one_le_re and therefore not a network edge. A Lean solution exists
+      in Solutions/ZeroFreeHeight.v1 and is awaiting Comparator; until a receipt is written this node
+      is unjustified, and the justification must not be edited by hand.
+  designated: folklore-lean
+  issue: 30
+sources:
+- title: Lowering the height threshold of a classical zero-free region
+  authors:
+  - Terence Tao
+  type: folklore
+  id: unattributed; used without comment in the explicit zero-free region literature
+  location: no single source
+  relationship: other
+  note: >-
+    Folklore in the strict sense the network means: every paper that states a classical zero-free region
+    above a particular height chooses that height for its own convenience, and nobody argues the low range
+    because there is nothing there to argue about. Recording it as a node makes the step citable and,
+    once verified, checkable.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Stated the conclusion and wrote the Lean solution, under the direction of the maintainer. The mathematical
+      content is a routine case split; the work was in identifying the exact constraint on the new height
+      and the junk-value hazard in stating it.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    The statement is short and the proof is four cases. What deserves scrutiny is the hypothesis exp (2
+    / R) < t0 -- whether it is the weakest that works, and whether the exp form really closes the junk-value
+    hole the log form leaves open.
+
+limitations:
+- >-
+  The height cannot be lowered below exp (2 / R). RiemannHypothesisUpTo excludes zeroes with Re s in the
+  open interval (1/2, 1) and says nothing at Re s = 1/2, where the nontrivial zeroes actually are, so
+  the argument needs the region to stay strictly right of the critical line. For R = 5.5666305 that permits
+  t0 > 1.4324; for Bellotti-Trudgian-Yang's R = 4.896 it permits only t0 > 1.5045, so a hardcoded 1.5
+  would have covered the first and quietly failed the second.
+- >-
+  Going below exp (2 / R) needs the height of the first nontrivial zero -- that no zero has 0 < Im s <
+  14.134... at all, not merely none off the critical line. That is a different input and a natural second
+  conclusion for this node whenever something wants it.
+- >-
+  Only positive imaginary part is covered, since ClassicalZeroFreeRegion quantifies over t >= t0. The
+  literature's |t| form follows from the symmetry of the zeroes about the real axis, but that step is
+  not done here.
+- >-
+  No novelty is claimed. The argument is standard and is used without comment in the sources this network
+  already records.

@@ -21,4 +21,5 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`Platt2015.v1`](Platt2015-v1.md) | computation | 1 | computation |
 | [`PlattTrudgian.v1`](PlattTrudgian-v1.md) | computation | 1 | cited |
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 0 | — |
+| [`ZeroFreeHeight.v1`](ZeroFreeHeight-v1.md) | folklore | 1 | unjustified |
 
