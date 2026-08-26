@@ -60,12 +60,15 @@ sources:
   type: folklore
   id: unattributed; used without comment in the explicit zero-free region literature
   location: no single source
-  relationship: other
+  relationship: formalizes
   note: >-
     Folklore in the strict sense the network means: every paper that states a classical zero-free region
     above a particular height chooses that height for its own convenience, and nobody argues the low range
     because there is nothing there to argue about. Recording it as a node makes the step citable and,
-    once verified, checkable.
+    once verified, checkable. Recorded as `formalizes` rather than `other`: Palomar's contract requires
+    a source-based result to name a formalizes, adapts or independently-proves relationship, and a folklore
+    fact proved in Lean is source-based -- a new proof of a known result, not an original one. `other`
+    satisfied neither alternative and CI rejected it.
 automation:
   methods:
   - method: agent
