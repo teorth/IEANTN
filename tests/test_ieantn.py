@@ -660,6 +660,117 @@ class TestDeprecateGuards(FixtureRepo):
             self.assertFalse(ieantn.deprecate("A.v1", "A.v2"))
 
 
+class TestTablesFile(FixtureRepo):
+    """`Tables.lean`: a node's bulk data, kept out of the file a human audits.
+
+    Some explicit results are stated against a paper's numeric tables. Those belong beside the
+    conclusions rather than inside them, because `Conclusions.lean` is the short file a reviewer
+    reads and its shortness is the point -- checking three claims should not mean scrolling past
+    two hundred rows to reach them.
+    """
+
+    def write_tables(self, node_id: str, body: str) -> pathlib.Path:
+        directory = self.root / "IEANTN" / "Nodes" / node_id.replace(".", "/")
+        directory.mkdir(parents=True, exist_ok=True)
+        written = directory / "Tables.lean"
+        written.write_text(body, encoding="utf-8")
+        return written
+
+    def test_conclusions_may_import_its_own_tables(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_tables("A.v1", "import IEANTN.Vocabulary\ndef t : List ℝ := [1]\n")
+        directory = self.root / "IEANTN" / "Nodes" / "A" / "v1"
+        (directory / "Conclusions.lean").write_text(
+            "import IEANTN.Vocabulary\nimport IEANTN.Nodes.A.v1.Tables\n", encoding="utf-8")
+        self.assertTrue(ieantn.check_closure())
+
+    def test_conclusions_may_import_another_nodes_tables(self) -> None:
+        """A table is data, and the node that computed it is not always the node that states a
+        claim about it. Forcing a copy would create a second source of truth."""
+        self.write_node("A.v1", LITERATURE)
+        self.write_tables("B.v1", "import IEANTN.Vocabulary\ndef t : List ℝ := [1]\n")
+        directory = self.root / "IEANTN" / "Nodes" / "A" / "v1"
+        (directory / "Conclusions.lean").write_text(
+            "import IEANTN.Vocabulary\nimport IEANTN.Nodes.B.v1.Tables\n", encoding="utf-8")
+        self.assertTrue(ieantn.check_closure())
+
+    def test_a_table_may_not_declare_a_theorem(self) -> None:
+        """Data, not claims. A statement about a table is a conclusion, with a fingerprint and a
+        justification; a proof about one belongs in a solution."""
+        self.write_node("A.v1", LITERATURE)
+        self.write_tables(
+            "A.v1", "import IEANTN.Vocabulary\ntheorem t : True := trivial\n")
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            passed = ieantn.check_closure()
+        self.assertFalse(passed)
+        self.assertIn("may not declare a `theorem`", printed.getvalue())
+
+    def test_a_table_may_not_declare_a_lemma(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_tables("A.v1", "import IEANTN.Vocabulary\nlemma t : True := trivial\n")
+        self.assertFalse(ieantn.check_closure())
+
+    def test_a_table_may_not_import_a_conclusion(self) -> None:
+        """The guidance is that a table has very few imports; the rule is that it has no claims
+        upstream of it. A table needing a conclusion in order to be stated is not data."""
+        self.write_node("A.v1", LITERATURE)
+        self.write_tables("A.v1", "import IEANTN.Nodes.A.v1.Conclusions\ndef t : List ℝ := [1]\n")
+        self.assertFalse(ieantn.check_closure())
+
+    def test_a_table_may_not_contain_sorry(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_tables("A.v1", "import IEANTN.Vocabulary\ndef t : List ℝ := sorry\n")
+        self.assertFalse(ieantn.check_closure())
+
+    def test_the_umbrella_imports_tables(self) -> None:
+        """A table no conclusion mentions yet is still data of record; leaving it out of the
+        umbrella would mean nothing compiled it."""
+        self.write_node("A.v1", LITERATURE)
+        self.write_tables("A.v1", "import IEANTN.Vocabulary\ndef t : List ℝ := [1]\n")
+        self.generate()
+        umbrella = (self.root / "IEANTN" / "Nodes.lean").read_text(encoding="utf-8")
+        self.assertIn("import IEANTN.Nodes.A.v1.Tables\n".replace("\n", chr(10)), umbrella)
+
+
+class TestNewVersionClonesTheNode(FixtureRepo):
+    """Branching a version must carry the whole node, not just its conclusions.
+
+    Copying only `Conclusions.lean` left the new version missing `Tables.lean` and
+    `Examples.lean` -- and it still compiled, because the old version's copies were there to
+    satisfy the imports. It would have failed only when the old version was finally deleted.
+    """
+
+    def test_tables_and_examples_are_copied(self) -> None:
+        try:
+            import ruamel.yaml  # noqa: F401
+        except ImportError:
+            self.skipTest("ruamel.yaml not installed")
+        directory = self.write_node("A.v1", LITERATURE)
+        (directory / "Tables.lean").write_text(
+            "import IEANTN.Vocabulary\ndef t : List ℝ := [1]\n", encoding="utf-8")
+        (directory / "Examples.lean").write_text(
+            "import IEANTN.Nodes.A.v1.Conclusions\n", encoding="utf-8")
+        self.assertTrue(ieantn.new_version("A"))
+        fresh = self.root / "IEANTN" / "Nodes" / "A" / "v2"
+        self.assertTrue((fresh / "Tables.lean").is_file(), "Tables.lean was not carried over")
+        self.assertTrue((fresh / "Examples.lean").is_file(), "Examples.lean was not carried over")
+
+    def test_the_copies_are_repointed_at_the_new_version(self) -> None:
+        """`Examples.lean` imports its own node's conclusions by name, so a copy that still names
+        `A.v1` would quietly demonstrate things about the version it was branched from."""
+        try:
+            import ruamel.yaml  # noqa: F401
+        except ImportError:
+            self.skipTest("ruamel.yaml not installed")
+        directory = self.write_node("A.v1", LITERATURE)
+        (directory / "Examples.lean").write_text(
+            "import IEANTN.Nodes.A.v1.Conclusions\n", encoding="utf-8")
+        self.assertTrue(ieantn.new_version("A"))
+        fresh = (self.root / "IEANTN" / "Nodes" / "A" / "v2" / "Examples.lean")
+        self.assertIn("A.v2.Conclusions", fresh.read_text(encoding="utf-8"))
+
+
 class TestBridgeClosure(FixtureRepo):
     """A bridge is held to the closure rule a Conclusions file is held to, and then some.
 

@@ -35,7 +35,8 @@ Three consequences follow, and they are the whole design:
 | Layer | Hand-written? | In the core build? | May import | Purpose |
 |---|---|---|---|---|
 | **Vocabulary** | yes | yes | Mathlib only | The shared language. Definitions only. |
-| **Conclusions** | yes | yes | Mathlib, Vocabulary, other Conclusions | Each node's claims, as named `Prop`s. |
+| **Conclusions** | yes | yes | Mathlib, Vocabulary, other Conclusions, any `Tables` | Each node's claims, as named `Prop`s. |
+| **Tables** | yes | yes | Mathlib, Vocabulary, other Tables | Optional. A paper's bulk data, so that Conclusions stays short. No theorems. |
 | **Challenge** | **generated** | yes | its own and imported Conclusions | The conditional theorems, sorried. |
 | **Solution** | generated / AI | **no** | anything at all | The proof. Verified once, then frozen. |
 

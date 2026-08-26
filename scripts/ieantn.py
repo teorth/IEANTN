@@ -476,12 +476,18 @@ def check_closure() -> bool:
                     under(module, "Mathlib")
                     or under(module, "IEANTN.Vocabulary")
                     or (under(module, "IEANTN.Nodes") and module.endswith(".Conclusions"))
+                    # Any node's `Tables`, not only this node's. A table is data, and the node that
+                    # computed it is not always the node that states a claim about it -- FKS2's
+                    # pipelines are stated in terms of quantities BKLNW tabulates. Restricting
+                    # tables to their own node would force a copy, and a copied table is a second
+                    # source of truth.
+                    or (under(module, "IEANTN.Nodes") and module.endswith(".Tables"))
                 )
                 if not ok:
                     problems.add(
                         rel(conclusions),
-                        "a Conclusions file may import only Mathlib, Vocabulary and other "
-                        f"Conclusions; found `{module}`",
+                        "a Conclusions file may import only Mathlib, Vocabulary, other "
+                        f"Conclusions and any node's Tables; found `{module}`",
                     )
         # A node may carry `Examples.lean`: consequences drawn from its conclusions, to show what
         # the node actually buys. They make no claims of record, so they are not fingerprinted --
@@ -548,6 +554,42 @@ def check_closure() -> bool:
             )
 
     for directory in node_dirs():
+        # `Tables.lean` is the optional home for a paper's bulk data -- the numeric tables and
+        # parameter sets that some explicit results are stated against. It exists so that
+        # `Conclusions.lean` stays the short file a human audits: a reviewer checking three claims
+        # should not have to scroll past two hundred rows to reach them.
+        #
+        # Pure data, so no theorems: a *statement* about a table belongs in Conclusions, where it
+        # becomes a claim of record with a fingerprint, and a *proof* about one belongs in a
+        # solution. Held to the same import closure as Conclusions for the usual reason -- a
+        # challenge transitively imports this, so anything it reaches must be spin-off-able.
+        tables = directory / "Tables.lean"
+        if tables.is_file():
+            for module in imports_of(tables):
+                ok = (
+                    under(module, "Mathlib")
+                    or under(module, "IEANTN.Vocabulary")
+                    or (under(module, "IEANTN.Nodes") and module.endswith(".Tables"))
+                )
+                if not ok:
+                    problems.add(
+                        rel(tables),
+                        "a Tables file may import only Mathlib, Vocabulary and other Tables; "
+                        f"found `{module}`. Keep the import list short -- a table that needs a "
+                        "conclusion to state it is not data.",
+                    )
+            code = strip_lean_comments(tables.read_text(encoding="utf-8"))
+            for keyword in ("theorem", "lemma"):
+                if re.search(rf"\b{keyword}\s", code):
+                    problems.add(
+                        rel(tables),
+                        f"a Tables file may not declare a `{keyword}`: it holds data, not claims. "
+                        "A statement about a table is a conclusion; a proof about one belongs in a "
+                        "solution.",
+                    )
+            if re.search(r"\bsorry\b", code):
+                problems.add(rel(tables), "a Tables file may not contain `sorry`")
+
         challenge = directory / "Challenge.lean"
         if challenge.is_file():
             for module in imports_of(challenge):
@@ -966,6 +1008,11 @@ def render_umbrella(nodes: dict[str, dict]) -> str:
     """
     modules = []
     for node_id, node in sorted(nodes.items()):
+        # Tables before the challenge, and listed even though `Conclusions` usually imports them:
+        # a table no conclusion mentions yet is still data of record, and leaving it out of the
+        # umbrella would mean nothing compiled it.
+        if (node["_dir"] / "Tables.lean").is_file():
+            modules.append(f"IEANTN.Nodes.{node_id}.Tables")
         modules.append(f"IEANTN.Nodes.{node_id}.Challenge")
         if (node["_dir"] / "Examples.lean").is_file():
             modules.append(f"IEANTN.Nodes.{node_id}.Examples")
@@ -2386,7 +2433,12 @@ def new_version(family: str) -> bool:
 
     old_id, new_id = f"{family}.v{latest_n}", f"{family}.v{new_n}"
     target.mkdir(parents=True)
-    for name in ("Conclusions.lean", "formalization.yaml"):
+    # Every Lean file in the node, not just `Conclusions.lean`. A node may carry `Tables.lean`
+    # and `Examples.lean` too, and copying only the conclusions left the new version silently
+    # missing them -- which compiled, because the old version's copies were still there to satisfy
+    # the imports, and so would have been noticed only when the old version was deleted.
+    for name in ["formalization.yaml"] + sorted(
+            path.name for path in latest.glob("*.lean") if path.name != "Challenge.lean"):
         text = (latest / name).read_text(encoding="utf-8")
         # Only this family's own version references may be bumped. A blanket `v1` -> `v2`
         # would also rewrite the *imported* nodes' versions, silently repointing the new node

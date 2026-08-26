@@ -29,6 +29,7 @@ IEANTN/Nodes/<Family>/<version>/
   formalization.yaml     metadata: imports, justification, sources, receipts
   README.md              optional prose
   Examples.lean          optional — consequences, to show what the node buys
+  Tables.lean            optional — the paper's bulk data, and nothing else
 Solutions/<Family>.<version>/    optional; separate Lake project, toolchain pinned equal
 IEANTN/Bridges/<Family>/         short proofs that one version implies another
 ```
@@ -182,6 +183,36 @@ Notes:
 - **Never claim novelty without a documented search.** "Unknown" is acceptable and safe; an
   unsupported novelty claim is a finding under Palomar review and a liability here too.
 - **Check citations.** Authors, title, identifier, and which name is a given name.
+
+## `Tables.lean`, for a paper that carries data
+
+Some explicit results are stated against a paper's numeric tables — rows of constants, parameter
+sets, thresholds. Those go in an optional `Tables.lean` beside the conclusions, **not inside them**.
+
+The reason is the one thing `Conclusions.lean` is for: it is the file a human audits, and its
+shortness is a feature. A reviewer checking three claims should not have to scroll past two hundred
+rows of data to reach them. Anything that would make them scroll belongs next door. A definition or
+two the conclusions need — `Lcm.v2`'s `HighlyAbundant`, say — is not data in this sense and stays
+where it is; the test is bulk, not kind.
+
+**Data only.** A `Tables.lean` may not declare a `theorem` or a `lemma`, and CI enforces it:
+
+- a *statement* about a table is a **conclusion**, where it becomes a claim of record with a
+  fingerprint and a justification;
+- a *proof* about one — the numerical verification that a table's rows satisfy what the paper says
+  they do — belongs in a **solution**, unless it is somehow needed in order to state an exportable
+  result at all. That should be rare, and is worth resisting when it is not.
+
+**Any node's conclusions may import any node's tables**, not only its own. A table is data, and the
+node that computed it is often not the node that states a claim about it — FKS2's conversion
+pipelines are stated in terms of quantities BKLNW tabulates. Forcing a copy would create a second
+source of truth, which is the thing this repository exists to avoid.
+
+**Keep the import list very short.** A table file may import only Mathlib, Vocabulary and other
+table files; CI enforces that much, which rules out the case that matters — a table that needs a
+*conclusion* in order to be stated is not data. Beyond that it is guidance rather than a rule: a
+table wanting a long list of imports is usually a computation wearing a table's clothes, and
+probably wants to be its own node.
 
 ## Step 3: generate `Challenge.lean`
 
