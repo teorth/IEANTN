@@ -65,7 +65,8 @@ on arXiv.**
 PDF text extraction loses glyphs that carry meaning. The one that cost this project a wrong finding
 across five conclusions is the absolute-value bar around a displayed fraction:
 `|(ψ(x) − x)/x| ≤ ε` extracts as `ψ(x) −x x ≤ε`, which reads as a signed one-sided bound and is
-indistinguishable from one. In source it is `\left|rac{\psi(x) - x}{x}ight|` and there is
+indistinguishable from one. In source it is `\left|\frac{\psi(x) - x}{x}\right|` and there is
+ight|` and there is
 nothing to misread. Source also turns tables into `&`-separated rows rather than a coordinate
 puzzle, and makes `\cite{}` keys resolve exactly — no more matching `[3]` against a bibliography
 and hoping the author name is unique.
