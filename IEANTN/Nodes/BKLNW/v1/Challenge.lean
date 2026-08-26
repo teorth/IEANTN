@@ -5,6 +5,8 @@ Authors: Terence Tao
 -/
 import IEANTN.Nodes.BKLNW.v1.Conclusions
 import IEANTN.Nodes.Buthe.v1.Conclusions
+import IEANTN.Nodes.Buthe2016.v1.Conclusions
+import IEANTN.Nodes.PlattTrudgian2021.v1.Conclusions
 
 /-!
 # Challenge: `BKLNW.v1`
@@ -22,10 +24,16 @@ theorem BKLNW.v1.challenge_corollary_5_1
     BKLNW.v1.corollary_5_1 := by
   sorry
 
-theorem BKLNW.v1.challenge_table8_psi_bound : BKLNW.v1.table8_psi_bound := by
+theorem BKLNW.v1.challenge_table8_psi_bound
+    (buthe2016_v1_theorem_2_psi : Buthe2016.v1.theorem_2_psi)
+    (platttrudgian2021_v1_theorem_1_numerical : PlattTrudgian2021.v1.theorem_1_numerical) :
+    BKLNW.v1.table8_psi_bound := by
   sorry
 
-theorem BKLNW.v1.challenge_table8_psi_bound_above : BKLNW.v1.table8_psi_bound_above := by
+theorem BKLNW.v1.challenge_table8_psi_bound_above
+    (buthe2016_v1_theorem_2_psi : Buthe2016.v1.theorem_2_psi)
+    (platttrudgian2021_v1_theorem_1_numerical : PlattTrudgian2021.v1.theorem_1_numerical) :
+    BKLNW.v1.table8_psi_bound_above := by
   sorry
 
 theorem BKLNW.v1.challenge_theta_error_le_one : BKLNW.v1.theta_error_le_one := by

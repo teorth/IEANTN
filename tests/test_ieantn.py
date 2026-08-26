@@ -671,6 +671,21 @@ class TestNodePages(FixtureRepo):
         self.assertFalse(passed)
         self.assertIn("out of date", printed.getvalue())
 
+    def test_the_page_links_the_solution_and_receipt_when_they_exist(self) -> None:
+        """Naming a path without linking it made readers rebuild the URL by hand, which is the
+        friction that stops people checking evidence at all."""
+        self._node("def main : Prop := True" + chr(10))
+        (self.root / "Solutions" / "A.v1").mkdir(parents=True, exist_ok=True)
+        (self.root / "receipts").mkdir(exist_ok=True)
+        (self.root / "receipts" / "A.v1.main.json").write_text("{}", encoding="utf-8")
+        page = self._page()
+        self.assertIn("/tree/main/Solutions/A.v1)", page)
+        self.assertIn("/blob/main/receipts/A.v1.main.json)", page)
+
+    def test_no_solution_row_when_there_is_no_solution(self) -> None:
+        self._node("def main : Prop := True" + chr(10))
+        self.assertNotIn("| Solution |", self._page())
+
     def test_a_node_stating_nothing_still_gets_a_page(self) -> None:
         self.write_node("Empty.v1", "[]" + chr(10))
         ieantn.pages(False)

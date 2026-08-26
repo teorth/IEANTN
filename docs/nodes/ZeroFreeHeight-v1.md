@@ -53,6 +53,8 @@ def classical_region_descends : Prop :=
 | Lean name | `ZeroFreeHeight.v1.classical_region_descends` |
 | Challenge | `ZeroFreeHeight.v1.challenge_classical_region_descends` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZeroFreeHeight/v1/Conclusions.lean#L69) |
+| Solution | [`Solutions/ZeroFreeHeight.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/ZeroFreeHeight.v1) |
+| Receipt | [`ZeroFreeHeight.v1.classical_region_descends.json`](https://github.com/teorth/IEANTN/blob/main/receipts/ZeroFreeHeight.v1.classical_region_descends.json) |
 | Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |

@@ -43,6 +43,8 @@ def lcmUpto_not_highlyAbundant : Prop :=
 | Lean name | `Lcm.v1.lcmUpto_not_highlyAbundant` |
 | Challenge | `Lcm.v1.challenge_lcmUpto_not_highlyAbundant` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Lcm/v1/Conclusions.lean#L42) |
+| Solution | [`Solutions/Lcm.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/Lcm.v1) |
+| Receipt | [`Lcm.v1.lcmUpto_not_highlyAbundant.json`](https://github.com/teorth/IEANTN/blob/main/receipts/Lcm.v1.lcmUpto_not_highlyAbundant.json) |
 | Evidence | verified (`lean-comparator`) |
 | Sources traced | identified |
 | Assumes | [`Dusart2018.v1.proposition_5_4`](Dusart2018-v1.md#proposition_5_4) |

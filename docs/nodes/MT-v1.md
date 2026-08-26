@@ -45,7 +45,7 @@ def zero_free_region : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`Kadiri2005.v1.zero_free_region`](Kadiri2005-v1.md#zero_free_region), [`Platt2015.v1.rh_up_to`](Platt2015-v1.md#rh_up_to) |
-| Assumed by | nothing yet |
+| Assumed by | [`PlattTrudgian2021.v1.theorem_1_classical`](PlattTrudgian2021-v1.md#theorem_1_classical), [`PlattTrudgian2021.v1.theorem_1_numerical`](PlattTrudgian2021-v1.md#theorem_1_numerical) |
 
 **Justification `mt-paper`** — **designated** — literature, Theorem 1
 

@@ -1,0 +1,122 @@
+# Node metadata for `Buthe.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: PlattTrudgian2021.v1
+  family: PlattTrudgian2021
+  version: v1
+  kind: paper
+  status: stub
+project:
+  name: 'Platt-Trudgian: the error term in the prime number theorem'
+  description: >-
+    An explicit form of a theorem of Pintz, giving a prime number theorem whose error term is roughly
+    the square root of what was previously known. Its Theorem 1 tabulates bounds for E_psi, both in the
+    classical asymptotic shape and as a plain numerical constant, and is where BKLNW's Table 8 gets its
+    large-b half.
+  authors:
+  - Terence Tao
+  license: Apache-2.0
+  responsible_maintainers:
+  - Terence Tao
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11N05
+  - 11M26
+conclusions:
+- id: theorem_1_classical
+  declaration: PlattTrudgian2021.v1.theorem_1_classical
+  challenge: PlattTrudgian2021.v1.challenge_theorem_1_classical
+  imports:
+  - node: MT.v1
+    conclusion: zero_free_region
+  - node: PlattTrudgian.v1
+    conclusion: rh_up_to
+  imports_status: undetermined
+  justifications:
+  - id: pt2021-paper
+    kind: literature
+    source: PlattTrudgian2021
+    locator: Theorem 1, the asymptotic half, over Table 1
+    note: >-
+      Asserted on the authority of the paper. Imports: partly traced, and left undetermined because one
+      input is not yet a conclusion. The paper fixes R = 5.573412, which is exactly MT.v1.zero_free_region
+      -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its Section 6.1 that the FKS chain uses.
+      Its Section 2 notes it is 'free to start counting from any height H <= 3e12', which is PlattTrudgian.v1.
+      The third input is the zero-density estimate of Kadiri-Lumley-Ng, which BKLNW describes as 'a truncated
+      Perron's formula combined with the zero density obtained in [25]': KLN.v1 exists but states only
+      the subconvexity bound of its Lemma 3.2, not the density result the paper is named for. Adding that
+      conclusion would complete this tracing. Equation (4) carries absolute value bars -- |(psi(x) - x)/x|
+      <= A (...) -- matching E_psi. An earlier draft of this node said otherwise, because `get_text` on
+      the PDF drops the bars around a displayed fraction; the rendered page settles it.
+  designated: pt2021-paper
+- id: theorem_1_numerical
+  declaration: PlattTrudgian2021.v1.theorem_1_numerical
+  challenge: PlattTrudgian2021.v1.challenge_theorem_1_numerical
+  imports:
+  - node: MT.v1
+    conclusion: zero_free_region
+  - node: PlattTrudgian.v1
+    conclusion: rh_up_to
+  imports_status: undetermined
+  justifications:
+  - id: pt2021-paper
+    kind: literature
+    source: PlattTrudgian2021
+    locator: Theorem 1, the numerical half, over Table 1
+    note: >-
+      Asserted on the authority of the paper. Imports: partly traced, and left undetermined because one
+      input is not yet a conclusion. The paper fixes R = 5.573412, which is exactly MT.v1.zero_free_region
+      -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its Section 6.1 that the FKS chain uses.
+      Its Section 2 notes it is 'free to start counting from any height H <= 3e12', which is PlattTrudgian.v1.
+      The third input is the zero-density estimate of Kadiri-Lumley-Ng, which BKLNW describes as 'a truncated
+      Perron's formula combined with the zero density obtained in [25]': KLN.v1 exists but states only
+      the subconvexity bound of its Lemma 3.2, not the density result the paper is named for. Adding that
+      conclusion would complete this tracing. Equation (4) carries absolute value bars -- |(psi(x) - x)/x|
+      <= A (...) -- matching E_psi. An earlier draft of this node said otherwise, because `get_text` on
+      the PDF drops the bars around a displayed fraction; the rendered page settles it.
+  designated: pt2021-paper
+sources:
+- title: The error term in the prime number theorem
+  authors:
+  - David J. Platt
+  - Timothy S. Trudgian
+  type: paper
+  id: Math. Comp. 90 (2021), no. 328, 871-881
+  location: Mathematics of Computation 90 (2021), 871-881; doi:10.1090/mcom/3583
+  relationship: formalizes
+  note: >-
+    Distinct from PlattTrudgian.v1, The Riemann hypothesis is true up to 3e12, by the same authors. BKLNW
+    cites them as [37] and [38] and uses both.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Transcribed the statements from the source paper and recorded what they rest on, under the direction
+      of the maintainer. No proof is claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    Worth checking that R = 5.573412 is used throughout rather than only in Theorem 1, and that Table
+    1's rows were read off correctly -- the X = 3000 row cross-checks against FKS's abstract, but the
+    others were not independently confirmed.
+limitations:
+- >-
+  Both conclusions rest on the cited paper; neither is proved in Lean here.
+- >-
+  Table 1's sigma column is deliberately not recorded: Theorem 1 says 'for each row {X, A, B, C, eps_0}',
+  so sigma is the zero-density abscissa the authors optimised over, not part of what is claimed.
+- >-
+  The paper's Theorem 2, on a Ramanujan inequality, is not stated; nothing consumes it.
+- >-
+  No novelty is claimed. The results are the authors'.

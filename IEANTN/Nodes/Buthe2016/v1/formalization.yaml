@@ -1,0 +1,147 @@
+# Node metadata for `Buthe.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: Buthe2016.v1
+  family: Buthe2016
+  version: v1
+  kind: paper
+  status: stub
+project:
+  name: 'Buthe: estimating pi(x) and related functions under partial RH assumptions'
+  description: >-
+    Schoenfeld proved his explicit bounds for psi, theta, pi* and pi on the Riemann hypothesis. This paper
+    shows they already follow from a partial verification, provided x is small enough relative to the
+    height reached -- precisely 4.92 sqrt(x / log x) <= T. That makes it the bridge between the network's
+    computational nodes and its analytic ones, and it is one of the three inputs BKLNW uses to compute
+    the eps(b) of its Table 8.
+  authors:
+  - Terence Tao
+  license: Apache-2.0
+  responsible_maintainers:
+  - Terence Tao
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11N05
+  - 11M26
+  - 11Y35
+conclusions:
+- id: theorem_2_psi
+  declaration: Buthe2016.v1.theorem_2_psi
+  challenge: Buthe2016.v1.challenge_theorem_2_psi
+  imports: []
+  imports_status: none
+  justifications:
+  - id: buthe2016-paper
+    kind: literature
+    source: Buthe2016
+    locator: Theorem 2, the psi estimate
+    note: >-
+      Asserted on the authority of the paper, transcribed from arXiv:1410.7015v4. Imports none, and this
+      is a real `none` rather than an untraced `undetermined`: Theorem 2 is stated as a conditional, universally
+      quantified in the height T with the verification as a hypothesis, so a consumer supplies it rather
+      than this node importing one. The paper notes that Platt's verification (T about 3.061e10) instantiates
+      it, which is Platt2015.v1 -- but that is an instantiation a consumer makes, not a dependency of
+      the statement. 
+  designated: buthe2016-paper
+- id: theorem_2_theta
+  declaration: Buthe2016.v1.theorem_2_theta
+  challenge: Buthe2016.v1.challenge_theorem_2_theta
+  imports: []
+  imports_status: none
+  justifications:
+  - id: buthe2016-paper
+    kind: literature
+    source: Buthe2016
+    locator: Theorem 2, the theta estimate
+    note: >-
+      Asserted on the authority of the paper, transcribed from arXiv:1410.7015v4. Imports none, and this
+      is a real `none` rather than an untraced `undetermined`: Theorem 2 is stated as a conditional, universally
+      quantified in the height T with the verification as a hypothesis, so a consumer supplies it rather
+      than this node importing one. The paper notes that Platt's verification (T about 3.061e10) instantiates
+      it, which is Platt2015.v1 -- but that is an instantiation a consumer makes, not a dependency of
+      the statement. Note the threshold is 599 here and 59 for psi.
+  designated: buthe2016-paper
+- id: theorem_2_li_minus_riemann_pi
+  declaration: Buthe2016.v1.theorem_2_li_minus_riemann_pi
+  challenge: Buthe2016.v1.challenge_theorem_2_li_minus_riemann_pi
+  imports: []
+  imports_status: none
+  justifications:
+  - id: buthe2016-paper
+    kind: literature
+    source: Buthe2016
+    locator: Theorem 2, equation (7.1)
+    note: >-
+      Asserted on the authority of the paper, transcribed from arXiv:1410.7015v4. Imports none, and this
+      is a real `none` rather than an untraced `undetermined`: Theorem 2 is stated as a conditional, universally
+      quantified in the height T with the verification as a hypothesis, so a consumer supplies it rather
+      than this node importing one. The paper notes that Platt's verification (T about 3.061e10) instantiates
+      it, which is Platt2015.v1 -- but that is an instantiation a consumer makes, not a dependency of
+      the statement. About pi*, the Riemann prime-counting function, not pi; the two differ by roughly
+      sqrt(x)/log x, which is the size of the bound itself.
+  designated: buthe2016-paper
+- id: theorem_2_li_minus_pi
+  declaration: Buthe2016.v1.theorem_2_li_minus_pi
+  challenge: Buthe2016.v1.challenge_theorem_2_li_minus_pi
+  imports: []
+  imports_status: none
+  justifications:
+  - id: buthe2016-paper
+    kind: literature
+    source: Buthe2016
+    locator: Theorem 2, equation (7.2)
+    note: >-
+      Asserted on the authority of the paper, transcribed from arXiv:1410.7015v4. Imports none, and this
+      is a real `none` rather than an untraced `undetermined`: Theorem 2 is stated as a conditional, universally
+      quantified in the height T with the verification as a hypothesis, so a consumer supplies it rather
+      than this node importing one. The paper notes that Platt's verification (T about 3.061e10) instantiates
+      it, which is Platt2015.v1 -- but that is an instantiation a consumer makes, not a dependency of
+      the statement. The paper's headline. Stated against li, the un-offset logarithmic integral, not
+      Li.
+  designated: buthe2016-paper
+sources:
+- title: Estimating pi(x) and related functions under partial RH assumptions
+  authors:
+  - Jan Buthe
+  type: paper
+  id: arXiv:1410.7015v4; Math. Comp. 85 (2016), no. 301, 2483-2498
+  location: Mathematics of Computation 85 (2016), 2483-2498
+  relationship: formalizes
+  note: >-
+    Distinct from Buthe.v1, which is the same author's An analytic method for bounding psi(x), Math. Comp.
+    87 (2018). BKLNW cites them as [3] and [4] and uses both.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Transcribed the statements from the source paper and recorded what they rest on, under the direction
+      of the maintainer. No proof is claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    The statements were transcribed from the arXiv version. The conditional shape -- quantified in T with
+    the verification as a hypothesis -- is a deliberate choice and is what makes the node importable by
+    any verification.
+limitations:
+- >-
+  Every conclusion rests on the cited paper; none is proved in Lean here.
+- >-
+  All four are stated against li rather than Li, as the paper states them. A node consuming them alongside
+  FKS2, which works with Li, must do the conversion; li 2 is about 1.045 and the bounds are of size sqrt(x)
+  log x / (8 pi).
+- >-
+  Theorem 1 of the paper, an explicit bound with a different shape, is not stated; nothing in the network
+  consumes it yet.
+- >-
+  No novelty is claimed. The results are Buthe's.

@@ -61,17 +61,19 @@ the shape produced by a classical zero-free region with parameter `R`.
 noncomputable def admissibleBound (A B C R x : ℝ) : ℝ :=
   A * (log x / R) ^ B * exp (-C * (log x / R) ^ ((1 : ℝ) / 2))
 
-/-- **A transcription trap.** The papers these error terms come from define them *signed* — FKS
-(1.1) has `Eψ(x) = (ψ(x) - x)/x`, FKS2 (1) and (2) the same for `Eπ` and `Eθ` — and then state
-their results as `E(x) ≤ …` with no absolute value. The definitions above use `|·|`, so a bound
-transcribed from such a corollary is *stronger* than the corollary as printed.
+/-- **A transcription trap, and it is not the one previously recorded here.**
 
-That reading is right, and it is the papers' own: FKS's abstract gives `|ψ(x) - x| < …` and FKS2's
-gives `|π(x) - Li(x)| ≤ …`, both with explicit bars. But it does not follow from the corollary, so
-whoever adds a row from FKS2's Table 6 or Table 7 must confirm the two-sided form is stated
-somewhere rather than assume it. Neither paper ever writes `|E|`.
+The papers these error terms come from define them exactly as above, with absolute values: FKS
+(1.1) has `Eψ(x) = |(ψ(x) - x)/x|`, and FKS2 (1) and (2) do the same for `Eπ`, `Eθ` and `Eψ`. A
+note here once claimed they were *signed*, and that a bound transcribed from such a corollary was
+therefore stronger than the corollary. That was wrong, and the way it went wrong is the thing worth
+recording: **PDF text extraction silently drops the absolute-value bars around a displayed
+fraction.** `|(ψ(x) - x)/x| ≤ ε` extracts as `ψ(x) −x x ≤ε`, which reads as a signed one-sided
+bound and is indistinguishable from one.
 
-`Eθ` is the weak case: FKS2 contains no `|θ(x) - x| ≤ …` statement at all.
+Bars *inline* and in captions usually survive, which is what made the mistake look confirmed. So:
+when a transcription turns on whether something is two-sided, render the page and look at it —
+`page.get_pixmap(clip=...)` in `pymupdf` — rather than trusting `get_text`.
 
 `HasClassicalBound E A B C R x₀`: the error term `E` obeys the classical admissible bound with
 parameters `A, B, C, R` for all `x ≥ x₀`. -/

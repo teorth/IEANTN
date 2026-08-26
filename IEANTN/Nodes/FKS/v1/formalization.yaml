@@ -61,20 +61,13 @@ conclusions:
       value and nobody has published recomputed ones. FKS's other Kadiri-Lumley-Ng reference [19], the
       unpublished preprint 'Bounding psi(x) with zero-density', is NOT an input: Lemma 2.5, the sums-over-zeros
       estimate, is proved in FKS itself and the preprint is cited as attribution. It is background, not
-      an edge. Note on absolute values, which is not visible from the cited corollary. FKS defines Epsi(x)
-      = (psi(x) - x)/x in its (1.1) and FKS2 defines Etheta, Epi likewise in its (1) and (2) -- all three
-      SIGNED, with no absolute value -- and both papers then write their bounds as E(x) <= ... with no
-      bars. The network's Vocabulary defines all three with |.|, so read literally against the corollary
-      alone, the conclusion here is strictly stronger than what is printed. The two-sided reading is nevertheless
-      the papers' own: FKS's abstract states |psi(x) - x| < 9.22022 x (log x)^{3/2} exp(-0.8476836 sqrt(log
-      x)) for all x > 2, and FKS2's abstract states |pi(x) - Li(x)| <= 9.2211 x sqrt(log x) exp(-0.8476
-      sqrt(log x)) for all x >= 2, both with explicit bars. Neither paper ever writes |E|. Imports confirmed
-      2026-08-26 against the published version. Remark 1.5(1) names both analytic inputs in one passage:
-      'we use the partial numerical verification of the Riemann Hypothesis H0 = 3e12 from [29]. As in
-      [5] we use R = 5.5666305 for the zero-free region following [21, Theorem 1 and Section 6.1]' --
-      [29] is Platt-Trudgian and [21] is MT -- and Remark 1.5(2) names the third, Hiary's subconvexity
-      bound as corrected, which is KLN.v1. All three edges check out. Note the region is used only above
-      H0, per (1.8), with (1.7) covering below it.
+      an edge. Absolute values, checked against the rendered page. FKS (1.1) defines E_psi(x) = |(psi(x)
+      - x)/x| and FKS2 (1) and (2) define E_pi, E_theta and E_psi the same way, all with bars, exactly
+      as this network's Vocabulary does. An earlier note here claimed the papers defined these signed
+      and that the conclusions were therefore stronger than the printed corollaries; that was wrong. PDF
+      text extraction silently drops absolute-value bars around a displayed fraction, and the definitions
+      were read from extracted text. They have since been read from the rendered page, where the bars
+      are plainly there. Nothing about the statements needed to change.
   designated: fks-paper
   imports_status: identified
 - id: psi_classical_bound
@@ -109,20 +102,13 @@ conclusions:
       were computed with the erroneous value and nobody has published recomputed ones. FKS's other Kadiri-Lumley-Ng
       reference [19], the unpublished preprint 'Bounding psi(x) with zero-density', is NOT an input: Lemma
       2.5, the sums-over-zeros estimate, is proved in FKS itself and the preprint is cited as attribution.
-      It is background, not an edge. Note on absolute values, which is not visible from the cited corollary.
-      FKS defines Epsi(x) = (psi(x) - x)/x in its (1.1) and FKS2 defines Etheta, Epi likewise in its (1)
-      and (2) -- all three SIGNED, with no absolute value -- and both papers then write their bounds as
-      E(x) <= ... with no bars. The network's Vocabulary defines all three with |.|, so read literally
-      against the corollary alone, the conclusion here is strictly stronger than what is printed. The
-      two-sided reading is nevertheless the papers' own: FKS's abstract states |psi(x) - x| < 9.22022
-      x (log x)^{3/2} exp(-0.8476836 sqrt(log x)) for all x > 2, and FKS2's abstract states |pi(x) - Li(x)|
-      <= 9.2211 x sqrt(log x) exp(-0.8476 sqrt(log x)) for all x >= 2, both with explicit bars. Neither
-      paper ever writes |E|. Imports confirmed 2026-08-26 against the published version. Remark 1.5(1)
-      names both analytic inputs in one passage: 'we use the partial numerical verification of the Riemann
-      Hypothesis H0 = 3e12 from [29]. As in [5] we use R = 5.5666305 for the zero-free region following
-      [21, Theorem 1 and Section 6.1]' -- [29] is Platt-Trudgian and [21] is MT -- and Remark 1.5(2) names
-      the third, Hiary's subconvexity bound as corrected, which is KLN.v1. All three edges check out.
-      Note the region is used only above H0, per (1.8), with (1.7) covering below it.
+      It is background, not an edge. Absolute values, checked against the rendered page. FKS (1.1) defines
+      E_psi(x) = |(psi(x) - x)/x| and FKS2 (1) and (2) define E_pi, E_theta and E_psi the same way, all
+      with bars, exactly as this network's Vocabulary does. An earlier note here claimed the papers defined
+      these signed and that the conclusions were therefore stronger than the printed corollaries; that
+      was wrong. PDF text extraction silently drops absolute-value bars around a displayed fraction, and
+      the definitions were read from extracted text. They have since been read from the rendered page,
+      where the bars are plainly there. Nothing about the statements needed to change.
   designated: fks-paper
 
   imports_status: identified

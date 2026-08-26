@@ -25,14 +25,14 @@ Mossinghoff–Trudgian's title, and BKLNW's own proof contradicts its displayed 
 | `MTY.v1` | Mossinghoff–Trudgian–Yang, *Explicit zero-free regions* | [arXiv:2212.06867](https://arxiv.org/abs/2212.06867) | `MTY2024-explicit-zero-free.pdf` |
 | `Kadiri2005.v1` | Kadiri, *Une région explicite sans zéros pour ζ* | [arXiv:math/0401238](https://arxiv.org/abs/math/0401238) | `Kadiri2005-region-sans-zeros.pdf` |
 | `PlattTrudgian.v1` | Platt–Trudgian, *The Riemann hypothesis is true up to 3·10¹²* | [arXiv:2004.09765](https://arxiv.org/abs/2004.09765) | `PlattTrudgian2021-RH-to-3e12.pdf` |
-| — | Büthe, *Estimating π(x) … under partial RH assumptions* | [arXiv:1410.7015](https://arxiv.org/abs/1410.7015) | `Buthe2016-pi-under-partial-RH.pdf` |
+| `Buthe2016.v1` | Büthe, *Estimating π(x) … under partial RH assumptions* | [arXiv:1410.7015](https://arxiv.org/abs/1410.7015) | `Buthe2016-pi-under-partial-RH.pdf` |
 | — | Hiary, *An explicit van der Corput estimate for ζ(1/2+it)* | [arXiv:1507.01261](https://arxiv.org/abs/1507.01261) | `Hiary2016-van-der-Corput.pdf` |
 | — | Hiary–Patel–Yang, *An improved explicit estimate for ζ(1/2+it)* | [arXiv:2207.02366](https://arxiv.org/abs/2207.02366) | `HiaryPatelYang2022-improved-zeta-half.pdf` |
 | — | Johnston–Yang, *Some explicit estimates for the error term in the PNT* | [arXiv:2204.01980](https://arxiv.org/abs/2204.01980) | `JohnstonYang2023-error-term-PNT.pdf` |
 | — | Johnston, *Improving bounds … by partial verification of RH* | [arXiv:2109.02249](https://arxiv.org/abs/2109.02249) | `Johnston2022-partial-verification.pdf` |
 | `FKBJ.v1` | Franke–Kleinjung–Büthe–Jost, *A practical analytic method for calculating π(x)* | Math. Comp. **86** (2017) no. 308, 2889–2909 | `FKBJ-practical-analytic-pi.pdf` |
 | — | Platt, *Isolating some non-trivial zeros of zeta* | Math. Comp. **86** (2017) 2449–2467 | `Platt2017-isolating-zeros.pdf` |
-| — | Platt–Trudgian, *The error term in the prime number theorem* | Math. Comp. **90** (2021) no. 328, 871–881 | `PlattTrudgian2021-error-term-PNT.pdf` |
+| `PlattTrudgian2021.v1` | Platt–Trudgian, *The error term in the prime number theorem* | Math. Comp. **90** (2021) no. 328, 871–881 | `PlattTrudgian2021-error-term-PNT.pdf` |
 | `RosserSchoenfeld.v1` | Rosser–Schoenfeld, *Sharper bounds for θ(x) and ψ(x)* | Math. Comp. **29** (1975) 243–269 | `RosserSchoenfeld1975-sharper-bounds.pdf` |
 | `Dusart2018.v1` | Dusart, *Explicit estimates of some functions over primes* | [doi:10.1007/s11139-016-9839-4](https://doi.org/10.1007/s11139-016-9839-4) | `Dusart2018-explicit-estimates-published.pdf` |
 | — | Cheng–Graham, *Explicit estimates for the Riemann zeta function* | Rocky Mt. J. Math. **34** (2004) 1261–1280 | `ChengGraham2004-explicit-zeta.pdf` |
@@ -41,7 +41,9 @@ Several of these have no node yet. They are held because they are the obvious ne
 is where `KLN.v1`'s subconvexity constant comes from, Hiary–Patel–Yang is the improvement that
 would sharpen it, and Büthe 2016 — *Estimating π(x) … under partial RH assumptions*, Math. Comp.
 **85** (2016) 2483–2498 — is BKLNW's reference [3], the source of the `b ≤ 2000` half of its
-Table 8. Note that BKLNW's [3] and [4] are two different Büthe papers, and only [4] is `Buthe.v1`.
+Table 8, and is now `Buthe2016.v1`. Note that BKLNW's [3] and [4] are two different Büthe papers,
+and only [4] is `Buthe.v1`; likewise its [37] and [38] are two different Platt–Trudgian papers, and
+only [38] is `PlattTrudgian.v1`.
 
 ## Wanted
 
@@ -53,6 +55,27 @@ Not on arXiv, or not found there. Each blocks a specific piece of work.
 | Kadiri, *Une région explicite sans zéros pour ζ*, **published** Acta Arith. **117** (2005) 303–339 | We hold the arXiv preprint, which gives the weaker `5.70176`; the published version gives the `5.69693` everyone cites, and `Kadiri2005.v1` records it at second hand from MT. | moving `Kadiri2005.v1` to first hand |
 | Wedeniwski, *ZetaGrid* — the height `T₀ = 3 330 657 430.697` | Kadiri's verification height, per MT §2. A website rather than a paper, which is itself worth recording. | `Kadiri2005.v1`'s `imports_status` |
 | Kadiri–Lumley–Ng, *Bounding ψ(x) with zero-density*, preprint | Cited by FKS as [19]. Appears not to be publicly available, and not listed on the authors' pages. **Not** an input — the lemma attributed to it is proved in FKS itself — so this is for completeness rather than to unblock anything. | nothing |
+
+## LaTeX source, and why it is the primary surface
+
+`../IEANTN-papers/source/<name>/` holds the arXiv **LaTeX source** for fourteen of these papers,
+fetched from `https://arxiv.org/e-print/<id>`. **Read the source, not the PDF, whenever the paper is
+on arXiv.**
+
+PDF text extraction loses glyphs that carry meaning. The one that cost this project a wrong finding
+across five conclusions is the absolute-value bar around a displayed fraction:
+`|(ψ(x) − x)/x| ≤ ε` extracts as `ψ(x) −x x ≤ε`, which reads as a signed one-sided bound and is
+indistinguishable from one. In source it is `\left|\frac{\psi(x) - x}{x}\right|` and there is
+ight|` and there is
+nothing to misread. Source also turns tables into `&`-separated rows rather than a coordinate
+puzzle, and makes `\cite{}` keys resolve exactly — no more matching `[3]` against a bibliography
+and hoping the author name is unique.
+
+Two caveats. Source is the **arXiv** version, which is not always the published one: `Kadiri2005`
+gives `5.70176` on arXiv and `5.69693` in Acta Arith., and `FKS`'s tables differ between preprint
+and JMAA. Where a node cites the published version, the PDF is still the authority. And the papers
+with no arXiv entry — Rosser–Schoenfeld, Dusart 2018, Cheng–Graham, FKBJ, Platt 2015, Kadiri's
+published version — have no source to read.
 
 ## Adding to the library
 
