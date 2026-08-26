@@ -11,6 +11,7 @@ import IEANTN.Nodes.Dusart2018.v1.Challenge
 import IEANTN.Nodes.FKBJ.v1.Challenge
 import IEANTN.Nodes.FKS.v1.Challenge
 import IEANTN.Nodes.FKS2.v1.Challenge
+import IEANTN.Nodes.Hiary2016.v1.Challenge
 import IEANTN.Nodes.KLN.v1.Challenge
 import IEANTN.Nodes.Kadiri2005.v1.Challenge
 import IEANTN.Nodes.Lcm.v1.Challenge

@@ -36,5 +36,7 @@ theorem BKLNW.v1.challenge_table8_psi_bound_above
     BKLNW.v1.table8_psi_bound_above := by
   sorry
 
-theorem BKLNW.v1.challenge_theta_error_le_one : BKLNW.v1.theta_error_le_one := by
+theorem BKLNW.v1.challenge_theta_error_le_one
+    (buthe_v1_theorem_2_theta_lower : Buthe.v1.theorem_2_theta_lower) :
+    BKLNW.v1.theta_error_le_one := by
   sorry

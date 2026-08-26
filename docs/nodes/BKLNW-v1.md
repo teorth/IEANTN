@@ -141,13 +141,13 @@ def theta_error_le_one : Prop :=
 | Challenge | `BKLNW.v1.challenge_theta_error_le_one` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L107) |
 | Evidence | cited (`literature`) |
-| Sources traced | undetermined |
-| Assumes | nothing recorded |
+| Sources traced | identified |
+| Assumes | [`Buthe.v1.theorem_2_theta_lower`](Buthe-v1.md#theorem_2_theta_lower) |
 | Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14) |
 
 **Justification `bklnw-paper`** — **designated** — literature, Tables 13 and 14, as used in FKS2 Corollary 14
 
-> Asserted on the authority of the paper. Stated as the consequence FKS2 draws from those tables -- E_theta(x) <= 1 on [2, e^30] -- rather than as the tables themselves, because the consequence is what is consumed and it is a single clean inequality. Transcribed from FKS2's proof of its Corollary 14, not read off the tables directly; confirm against the published tables before relying on it for anything sharper.
+> Asserted on the authority of the paper. Stated as the consequence FKS2 draws from those tables -- E_theta(x) <= 1 on [2, e^30] -- rather than as the tables themselves, because the consequence is what is consumed and it is a single clean inequality. Transcribed from FKS2's proof of its Corollary 14, not read off the tables directly; confirm against the published tables before relying on it for anything sharper. Attribution confirmed from FKS2's LaTeX source, which reads 'The results found in \cite[Table~13 and 14]{BKLNW21} give E_theta(x) <= 1 < eps_{theta,asymp}(2) <= eps_{theta,asymp}(x) for all 2 <= x <= e^30' -- exactly this conclusion. Previously this was transcribed from the PDF. Imports, preliminary. BKLNW says of that range: "Buthe's [4, Theorem 2, (1.7)] implies that, for all x < 10^19, theta(x) < x, giving M_k = 0 for all k and x in this range. In addition we did direct calculations for values of x up to 7 * 10^11 (see Table 13)." The second is BKLNW's own computation and internal. The first is Buthe.v1.theorem_2_theta_lower, and it is what carries the claim: e^30 is about 1.07e13, well inside x < 10^19, so theta(x) < x there, whence \|theta(x) - x\| = x - theta(x) <= x because theta is non-negative -- which is exactly E_theta(x) <= 1. Marked identified rather than undetermined because the one external input is an edge and the other input is internal. It is called preliminary because Tables 13 and 14 are commented out in BKLNW's arXiv source and have not been read directly; they establish far more than this weak bound, and a node wanting their sharper values must read the published tables.
 
 ## Limitations
 

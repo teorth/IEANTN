@@ -5,14 +5,14 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-19 node version(s), 34 conclusion(s).  2 state nothing yet.
+20 node version(s), 35 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
 | Designated justification | Conclusions |
 |---|---:|
 | `lean-comparator` | 3 |
-| `literature` | 28 |
+| `literature` | 29 |
 | `numerical` | 3 |
 
 ## Nodes
@@ -22,7 +22,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `BKLNW.v1` | active | `corollary_5_1` | literature | 1 | - |
 | `BKLNW.v1` | active | `table8_psi_bound` | literature | 2 | - |
 | `BKLNW.v1` | active | `table8_psi_bound_above` | literature | 2 | - |
-| `BKLNW.v1` | active | `theta_error_le_one` | literature | 0 | - |
+| `BKLNW.v1` | active | `theta_error_le_one` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_psi` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_theta` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_theta_lower` | literature | 1 | - |
@@ -40,7 +40,8 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `FKS2.v1` | active | `corollary_14` | literature | 3 | - |
 | `FKS2.v1` | active | `corollary_23` | literature | 2 | - |
 | `FKS2.v1` | active | `corollary_26` | literature | 2 | - |
-| `KLN.v1` | active | `subconvexity_bound` | literature | 0 | - |
+| `Hiary2016.v1` | stub | `zeta_half_line_bound` | literature | 0 | - |
+| `KLN.v1` | active | `subconvexity_bound` | literature | 1 | - |
 | `KLN.v1` | active | `zero_density` | literature | 1 | - |
 | `Kadiri2005.v1` | stub | `zero_free_region` | literature | 0 | - |
 | `Lcm.v1` | active | `lcmUpto_not_highlyAbundant` | lean-comparator | 1 | - |
@@ -73,11 +74,12 @@ downstream.
 | `KLN.v1.subconvexity_bound` | 2 |
 | `FKS.v1.psi_classical_bound` | 2 |
 | `Buthe2016.v1.theorem_2_psi` | 2 |
+| `Buthe.v1.theorem_2_theta_lower` | 2 |
 | `Buthe.v1.theorem_2_li_minus_pi` | 2 |
 | `Platt2017.v1.rh_up_to` | 1 |
 | `Platt2015.v1.rh_up_to` | 1 |
+| `Hiary2016.v1.zeta_half_line_bound` | 1 |
 | `Dusart2018.v1.proposition_5_4` | 1 |
-| `Buthe.v1.theorem_2_theta_lower` | 1 |
 | `Buthe.v1.theorem_2_li_gt_pi` | 1 |
 | `BKLNW.v1.theta_error_le_one` | 1 |
 | `BKLNW.v1.corollary_5_1` | 1 |

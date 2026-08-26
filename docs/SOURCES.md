@@ -26,7 +26,7 @@ Mossinghoff–Trudgian's title, and BKLNW's own proof contradicts its displayed 
 | `Kadiri2005.v1` | Kadiri, *Une région explicite sans zéros pour ζ* | [arXiv:math/0401238](https://arxiv.org/abs/math/0401238) | `Kadiri2005-region-sans-zeros.pdf` |
 | `PlattTrudgian.v1` | Platt–Trudgian, *The Riemann hypothesis is true up to 3·10¹²* | [arXiv:2004.09765](https://arxiv.org/abs/2004.09765) | `PlattTrudgian2021-RH-to-3e12.pdf` |
 | `Buthe2016.v1` | Büthe, *Estimating π(x) … under partial RH assumptions* | [arXiv:1410.7015](https://arxiv.org/abs/1410.7015) | `Buthe2016-pi-under-partial-RH.pdf` |
-| — | Hiary, *An explicit van der Corput estimate for ζ(1/2+it)* | [arXiv:1507.01261](https://arxiv.org/abs/1507.01261) | `Hiary2016-van-der-Corput.pdf` |
+| `Hiary2016.v1` | Hiary, *An explicit van der Corput estimate for ζ(1/2+it)* | [arXiv:1507.01261](https://arxiv.org/abs/1507.01261) | `Hiary2016-van-der-Corput.pdf` |
 | — | Hiary–Patel–Yang, *An improved explicit estimate for ζ(1/2+it)* | [arXiv:2207.02366](https://arxiv.org/abs/2207.02366) | `HiaryPatelYang2022-improved-zeta-half.pdf` |
 | — | Johnston–Yang, *Some explicit estimates for the error term in the PNT* | [arXiv:2204.01980](https://arxiv.org/abs/2204.01980) | `JohnstonYang2023-error-term-PNT.pdf` |
 | — | Johnston, *Improving bounds … by partial verification of RH* | [arXiv:2109.02249](https://arxiv.org/abs/2109.02249) | `Johnston2022-partial-verification.pdf` |
@@ -54,6 +54,7 @@ Not on arXiv, or not found there. Each blocks a specific piece of work.
 |---|---|---|
 | Kadiri, *Une région explicite sans zéros pour ζ*, **published** Acta Arith. **117** (2005) 303–339 | We hold the arXiv preprint, which gives the weaker `5.70176`; the published version gives the `5.69693` everyone cites, and `Kadiri2005.v1` records it at second hand from MT. | moving `Kadiri2005.v1` to first hand |
 | Wedeniwski, *ZetaGrid* — the height `T₀ = 3 330 657 430.697` | Kadiri's verification height, per MT §2. A website rather than a paper, which is itself worth recording. | `Kadiri2005.v1`'s `imports_status` |
+| Patel, *An Explicit Upper Bound for \|ζ(1 + it)\|*, Indag. Math. (N.S.) **33** (2022) no. 5, 1012–1032 | Its Footnote 3 is where the Cheng–Graham van der Corput error is documented, and so where `Hiary2016.v1`'s correction from `0.63` to `0.77` is actually argued. We take it from FKS at second hand. | verifying `Hiary2016.v1`'s correction |
 | Kadiri–Lumley–Ng, *Bounding ψ(x) with zero-density*, preprint | Cited by FKS as [19]. Appears not to be publicly available, and not listed on the authors' pages. **Not** an input — the lemma attributed to it is proved in FKS itself — so this is for completeness rather than to unblock anything. | nothing |
 
 ## LaTeX source, and why it is the primary surface
