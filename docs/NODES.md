@@ -163,12 +163,29 @@ sources:
 Notes:
 
 - `imports` is **per conclusion**, each entry naming another node's conclusion.
-- `imports_status` says whether anyone has worked out what the conclusion assumes: `identified`
-  (traced, and the edges are listed), `none` (traced, and there genuinely are none), or
-  `undetermined`, which is the default when the field is absent. An empty `imports` list on its own
-  is ambiguous — it means either "rests on nothing" or "nobody looked" — and those are very
-  different things to show a reader, so the honest one is what you get for free. `GRAPH.md` draws
-  `undetermined` boxes with a dashed border, and `housekeeping` lists them.
+- `imports_status` answers one question: *has anyone worked out what this rests on, and could all
+  of it be drawn?*
+
+  | value | meaning | border in `GRAPH.md` |
+  |---|---|---|
+  | `undetermined` | Nobody has looked. The default when the field is absent. | dashed (long) |
+  | `traced` | The inputs are written down in a justification note, and at least one is **not** an edge — either not a node yet, or something an arrow can never carry: an algorithm, a data set, a computation. | dotted (short) |
+  | `identified` | Every input is drawn as an edge. The arrows tell the whole story. | solid |
+  | `none` | There are no inputs — a conditional whose hypotheses a consumer supplies, for instance. | solid |
+
+  An empty `imports` list on its own is ambiguous — it means either "rests on nothing" or "nobody
+  looked" — and those are very different things to show a reader, so the honest one is what you get
+  for free.
+
+  `traced` exists because `undetermined` was doing two jobs. "Nobody has looked at this
+  verification" and "it rests on Trudgian's Theorem 4.2, Whittaker–Shannon sampling, a subconvexity
+  bound, and its own FFT, of which only the third could currently be an edge" are not the same
+  state. It also lets `identified` mean exactly what it says, rather than "identified apart from
+  the bits that cannot be drawn".
+
+  `housekeeping` lists `undetermined` conclusions. It deliberately does **not** list `traced` ones:
+  some of their missing edges await a node that could exist and some await one that never can, and
+  nothing can tell those apart mechanically — a queue of unactionable items is worse than none.
 - `justifications` is a **list**, and `designated` names the id of the one that counts. A
   conclusion may legitimately have several — a paper, a Lean solution, a bridge — and recording
   the spares is useful, but only the designated one carries trust or appears in the dependency

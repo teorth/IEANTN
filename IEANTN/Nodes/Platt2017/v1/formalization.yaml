@@ -32,7 +32,7 @@ conclusions:
   declaration: Platt2017.v1.rh_up_to
   challenge: Platt2017.v1.challenge_rh_up_to
   imports: []
-  imports_status: undetermined
+  imports_status: traced
   justifications:
   - id: platt2017-paper
     kind: numerical
@@ -50,7 +50,21 @@ conclusions:
       zeta on the half line', which is what became Isolating some non-trivial zeros of zeta. That paper's
       abstract reports the same height. KLN records N(H_0) = 103 800 788 359 at H_0 = 3.0610046e10 --
       the same zero count. MT cites the pi(x) paper and rounds the height down to 3.06e10, which is why
-      this node states the weaker number: it exists to serve MT and states what MT selected.
+      this node states the weaker number: it exists to serve MT and states what MT selected. Formalizable
+      surface, assessed 2026-08-26. A verification of this kind is not one opaque computation: most of
+      the paper is analysis that could be formalized, and the computational core is small. Recording where
+      the line falls is what lets a reader size the hole rather than guess at it, and is the prerequisite
+      for ever splitting the node into a formal harness, a computational core, and a bridge from the two
+      to the conclusion. Here the analytic part is Section 4 and Appendices A to C: Theorem 4.1 defining
+      S(t), Theorem 4.2 (attributed to Trudgian) bounding the integral of S, Theorem 4.3 (Whittaker-Shannon
+      sampling), Theorem 4.4 (Weiss), and Lemmas A.1 to A.11, B.1, B.2, C.1 to C.3 -- incomplete Gamma
+      bounds, a Stirling-type bound on |Gamma((sigma+it)/2)| exp(pi t/4), Gaussian-window truncation bounds
+      and up-sampling bounds. The computational core is Section 5: evaluating the completed zeta function
+      on a lattice and counting sign changes. External inputs, none of which is currently an edge: Theorem
+      4.2 is Trudgian's, not this paper's; Theorem 4.4 is Weiss's; Whittaker-Shannon is classical; and
+      Lemma A.10 uses an explicit subconvexity bound for zeta on the critical line -- the authors' own
+      0.732, which Platt-Trudgian later note could have been Hiary's, now Hiary2016.v1. Any of these could
+      become a node; none is one yet, which is why this is `traced` and not `identified`.
   designated: platt2017-paper
 sources:
 - title: Isolating some non-trivial zeros of zeta

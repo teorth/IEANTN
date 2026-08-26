@@ -72,7 +72,7 @@ conclusions:
     conclusion: theorem_2_psi
   - node: PlattTrudgian2021.v1
     conclusion: theorem_1_numerical
-  imports_status: identified
+  imports_status: traced
   justifications:
   - id: bklnw-paper
     kind: literature
@@ -94,7 +94,9 @@ conclusions:
       unrepresentable, and the unrepresentable one is named. The table's values are the output of running
       both algorithms, so the edges understate the dependency in the same way. The paper notes Buthe's
       technique wins below about e^2300 and Platt-Trudgian's above, which is the b <= 2000 / b >= 2500
-      split visible in the table.
+      split visible in the table. Reclassified from `identified` to `traced`: two of the three inputs
+      are edges and the third, the algorithm of Buthe 2018's Theorem 1, can never be one. `traced` is
+      the value for that, and it lets `identified` mean simply that the arrows tell the whole story.
   designated: bklnw-paper
 - id: table8_psi_bound_above
   declaration: BKLNW.v1.table8_psi_bound_above
@@ -104,7 +106,7 @@ conclusions:
     conclusion: theorem_2_psi
   - node: PlattTrudgian2021.v1
     conclusion: theorem_1_numerical
-  imports_status: identified
+  imports_status: traced
   justifications:
   - id: bklnw-paper
     kind: literature
@@ -131,7 +133,9 @@ conclusions:
       and the unrepresentable one is named. The table's values are the output of running both algorithms,
       so the edges understate the dependency in the same way. The paper notes Buthe's technique wins below
       about e^2300 and Platt-Trudgian's above, which is the b <= 2000 / b >= 2500 split visible in the
-      table.
+      table. Reclassified from `identified` to `traced`: two of the three inputs are edges and the third,
+      the algorithm of Buthe 2018's Theorem 1, can never be one. `traced` is the value for that, and it
+      lets `identified` mean simply that the arrows tell the whole story.
   designated: bklnw-paper
 - id: theta_error_le_one
   declaration: BKLNW.v1.theta_error_le_one

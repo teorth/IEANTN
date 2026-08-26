@@ -31,7 +31,7 @@ conclusions:
   declaration: Platt2015.v1.rh_up_to
   challenge: Platt2015.v1.challenge_rh_up_to
   imports: []
-  imports_status: undetermined
+  imports_status: traced
   justifications:
   - id: platt-paper
     kind: numerical
@@ -50,7 +50,16 @@ conclusions:
       of zeta. That paper's abstract reports the same height. KLN records N(H_0) = 103 800 788 359 at
       H_0 = 3.0610046e10 -- the same zero count. MT cites the pi(x) paper and rounds the height down to
       3.06e10, which is why this node states the weaker number: it exists to serve MT and states what
-      MT selected.
+      MT selected. Formalizable surface, assessed 2026-08-26. A verification of this kind is not one opaque
+      computation: most of the paper is analysis that could be formalized, and the computational core
+      is small. Recording where the line falls is what lets a reader size the hole rather than guess at
+      it, and is the prerequisite for ever splitting the node into a formal harness, a computational core,
+      and a bridge from the two to the conclusion. This paper is the lighter of the two: its Section 6
+      reports the zero computation, and it cites for the technique the paper that became Isolating some
+      non-trivial zeros of zeta, which is Platt2017.v1 and where the analytic apparatus actually lives.
+      So its formalizable surface is largely Platt2017's, and its own contribution is the analytic method
+      for pi(x) built on top. The dependency on Platt2017 is on an algorithm rather than on a proposition,
+      so it cannot be an edge; the bridge between the two nodes records the part that can be.
   - id: bridge-from-platt2017
     kind: bridged
     from: Platt2017.v1.rh_up_to

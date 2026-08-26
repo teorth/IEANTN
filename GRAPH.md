@@ -10,10 +10,13 @@ The colour of a box is the kind of evidence, and only green is checked by Lean h
 Everything else is a leaf of the trust graph -- something the network takes on faith,
 however reasonably -- and the point of drawing it is that you can see exactly which.
 
-A **dashed** border means nobody has yet worked out what that claim itself assumes. It is
-not a claim that the box rests on nothing; it is an admission that the question has not
-been asked. A solid border means someone has traced it to its sources, and the arrows
-into it are the answer.
+The border says how completely the arrows into a box tell the story. **Solid** means they
+tell all of it. **Dashed** (long) means nobody has yet worked out what that claim assumes
+— an admission that the question has not been asked, not a claim that it rests on
+nothing. **Dotted** (short) is in between, and is the usual state of a claim that rests on
+a computation: the inputs are known and written down, but at least one of them is not the
+sort of thing an arrow can carry — an algorithm, a data set, or a paper nobody has made a
+node of yet.
 
 Every box and every claim named below links to that node's page, which carries the Lean
 spelling of the claim, its docstring, and everything recorded about why it should be
@@ -80,13 +83,15 @@ graph LR
   NPlattTrudgian2021_v1 -->|2| NBKLNW_v1
   NLcm_v2 ==>|bridge| NLcm_v1
   NPlatt2017_v1 ==>|bridge| NPlatt2015_v1
+  style NBKLNW_v1 stroke-dasharray: 2 3;
+  style NButhe_v1 stroke-dasharray: 2 3;
   style NDusart2018_v1 stroke-dasharray: 6 4;
-  style NFKBJ_v1 stroke-dasharray: 6 4;
-  style NHiary2016_v1 stroke-dasharray: 6 4;
+  style NFKBJ_v1 stroke-dasharray: 2 3;
+  style NHiary2016_v1 stroke-dasharray: 2 3;
   style NKadiri2005_v1 stroke-dasharray: 6 4;
-  style NPlatt2015_v1 stroke-dasharray: 6 4;
-  style NPlatt2017_v1 stroke-dasharray: 6 4;
-  style NPlattTrudgian_v1 stroke-dasharray: 6 4;
+  style NPlatt2015_v1 stroke-dasharray: 2 3;
+  style NPlatt2017_v1 stroke-dasharray: 2 3;
+  style NPlattTrudgian_v1 stroke-dasharray: 2 3;
   class NMTY_v1,NRosserSchoenfeld_v1 none_yet;
   class NBKLNW_v1,NButhe_v1,NButhe2016_v1,NDusart2018_v1,NFKS_v1,NFKS2_v1,NHiary2016_v1,NKLN_v1,NKadiri2005_v1,NMT_v1,NPlattTrudgian_v1,NPlattTrudgian2021_v1 literature;
   class NFKBJ_v1,NPlatt2015_v1,NPlatt2017_v1 numerical;
@@ -239,13 +244,21 @@ graph LR
   BRPlatt2015_v1_rh_up_to__bridge_from_platt2017{{"<b>P2017ToP2015</b><br/><i>spare</i>"}}
   Platt2017_v1_rh_up_to ==> BRPlatt2015_v1_rh_up_to__bridge_from_platt2017
   BRPlatt2015_v1_rh_up_to__bridge_from_platt2017 ==> Platt2015_v1_rh_up_to
+  style BKLNW_v1_table8_psi_bound stroke-dasharray: 2 3;
+  style BKLNW_v1_table8_psi_bound_above stroke-dasharray: 2 3;
+  style Buthe_v1_theorem_2_li_gt_pi stroke-dasharray: 2 3;
+  style Buthe_v1_theorem_2_li_minus_pi stroke-dasharray: 2 3;
+  style Buthe_v1_theorem_2_li_minus_riemann_pi stroke-dasharray: 2 3;
+  style Buthe_v1_theorem_2_psi stroke-dasharray: 2 3;
+  style Buthe_v1_theorem_2_theta stroke-dasharray: 2 3;
+  style Buthe_v1_theorem_2_theta_lower stroke-dasharray: 2 3;
   style Dusart2018_v1_proposition_5_4 stroke-dasharray: 6 4;
-  style FKBJ_v1_rh_up_to stroke-dasharray: 6 4;
-  style Hiary2016_v1_zeta_half_line_bound stroke-dasharray: 6 4;
+  style FKBJ_v1_rh_up_to stroke-dasharray: 2 3;
+  style Hiary2016_v1_zeta_half_line_bound stroke-dasharray: 2 3;
   style Kadiri2005_v1_zero_free_region stroke-dasharray: 6 4;
-  style Platt2015_v1_rh_up_to stroke-dasharray: 6 4;
-  style Platt2017_v1_rh_up_to stroke-dasharray: 6 4;
-  style PlattTrudgian_v1_rh_up_to stroke-dasharray: 6 4;
+  style Platt2015_v1_rh_up_to stroke-dasharray: 2 3;
+  style Platt2017_v1_rh_up_to stroke-dasharray: 2 3;
+  style PlattTrudgian_v1_rh_up_to stroke-dasharray: 2 3;
   classDef lean_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
   classDef numerical fill:#fff8c5,stroke:#9a6700,color:#1f2328;
   classDef literature fill:#ddf4ff,stroke:#0969da,color:#1f2328;
@@ -299,34 +312,34 @@ graph LR
 Only the conclusions nothing else imports are listed; the rest appear inside them.
 A line is one claim, indented under whatever assumes it.
 
-- [`BKLNW.v1.table8_psi_bound`](docs/nodes/BKLNW-v1.md#table8_psi_bound) — cited
+- [`BKLNW.v1.table8_psi_bound`](docs/nodes/BKLNW-v1.md#table8_psi_bound) — cited — *sources known, not all drawable*
   - [`Buthe2016.v1.theorem_2_psi`](docs/nodes/Buthe2016-v1.md#theorem_2_psi) — cited
   - [`PlattTrudgian2021.v1.theorem_1_numerical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_numerical) — cited
     - [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) — cited
       - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources not traced*
-      - [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) — computation — *sources not traced*
-    - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources not traced*
+      - [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) — computation — *sources known, not all drawable*
+    - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
     - [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) — cited
-      - [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) — computation — *sources not traced*
+      - [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) — computation — *sources known, not all drawable*
 
-- [`BKLNW.v1.table8_psi_bound_above`](docs/nodes/BKLNW-v1.md#table8_psi_bound_above) — cited
+- [`BKLNW.v1.table8_psi_bound_above`](docs/nodes/BKLNW-v1.md#table8_psi_bound_above) — cited — *sources known, not all drawable*
   - [`Buthe2016.v1.theorem_2_psi`](docs/nodes/Buthe2016-v1.md#theorem_2_psi) — cited
   - [`PlattTrudgian2021.v1.theorem_1_numerical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_numerical) — cited
     - [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) — cited
       - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources not traced*
-      - [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) — computation — *sources not traced*
-    - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources not traced*
+      - [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) — computation — *sources known, not all drawable*
+    - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
     - [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) — cited
-      - [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) — computation — *sources not traced*
+      - [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) — computation — *sources known, not all drawable*
 
-- [`Buthe.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi) — cited
-  - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources not traced*
+- [`Buthe.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi) — cited — *sources known, not all drawable*
+  - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
 
-- [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) — cited
-  - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources not traced*
+- [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) — cited — *sources known, not all drawable*
+  - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
 
-- [`Buthe.v1.theorem_2_theta`](docs/nodes/Buthe-v1.md#theorem_2_theta) — cited
-  - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources not traced*
+- [`Buthe.v1.theorem_2_theta`](docs/nodes/Buthe-v1.md#theorem_2_theta) — cited — *sources known, not all drawable*
+  - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
 
 - [`Buthe2016.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_pi) — cited
 
@@ -336,42 +349,42 @@ A line is one claim, indented under whatever assumes it.
 
 - [`FKS.v1.psi_bound_all_x`](docs/nodes/FKS-v1.md#psi_bound_all_x) — cited
   - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
-    - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources not traced*
+    - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources known, not all drawable*
   - [`MT.v1.zero_free_region_sharpened`](docs/nodes/MT-v1.md#zero_free_region_sharpened) — cited
     - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources not traced*
-    - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources not traced*
-  - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited *(above)* — *sources not traced*
+    - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
+  - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited *(above)* — *sources known, not all drawable*
 
 - [`FKS2.v1.corollary_14`](docs/nodes/FKS2-v1.md#corollary_14) — cited
   - [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) — cited
     - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
-      - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources not traced*
+      - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources known, not all drawable*
     - [`MT.v1.zero_free_region_sharpened`](docs/nodes/MT-v1.md#zero_free_region_sharpened) — cited
       - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources not traced*
-      - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources not traced*
-    - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited *(above)* — *sources not traced*
+      - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
+    - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited *(above)* — *sources known, not all drawable*
   - [`BKLNW.v1.corollary_5_1`](docs/nodes/BKLNW-v1.md#corollary_5_1) — cited
-    - [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) — cited
-      - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources not traced*
+    - [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) — cited — *sources known, not all drawable*
+      - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
   - [`BKLNW.v1.theta_error_le_one`](docs/nodes/BKLNW-v1.md#theta_error_le_one) — cited
-    - [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) — cited *(above)*
+    - [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) — cited *(above)* — *sources known, not all drawable*
 
 - [`FKS2.v1.corollary_23`](docs/nodes/FKS2-v1.md#corollary_23) — cited
   - [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) — cited
     - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
-      - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources not traced*
+      - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources known, not all drawable*
     - [`MT.v1.zero_free_region_sharpened`](docs/nodes/MT-v1.md#zero_free_region_sharpened) — cited
       - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources not traced*
-      - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources not traced*
-    - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited *(above)* — *sources not traced*
-  - [`Buthe.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi) — cited
-    - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources not traced*
+      - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
+    - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited *(above)* — *sources known, not all drawable*
+  - [`Buthe.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi) — cited — *sources known, not all drawable*
+    - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
 
 - [`FKS2.v1.corollary_26`](docs/nodes/FKS2-v1.md#corollary_26) — cited
-  - [`Buthe.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi) — cited
-    - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources not traced*
-  - [`Buthe.v1.theorem_2_li_gt_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi) — cited
-    - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation *(above)* — *sources not traced*
+  - [`Buthe.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi) — cited — *sources known, not all drawable*
+    - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
+  - [`Buthe.v1.theorem_2_li_gt_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi) — cited — *sources known, not all drawable*
+    - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation *(above)* — *sources known, not all drawable*
 
 - [`Lcm.v1.lcmUpto_not_highlyAbundant`](docs/nodes/Lcm-v1.md#lcmUpto_not_highlyAbundant) — verified
   - [`Dusart2018.v1.proposition_5_4`](docs/nodes/Dusart2018-v1.md#proposition_5_4) — cited — *sources not traced*
@@ -381,10 +394,10 @@ A line is one claim, indented under whatever assumes it.
 - [`PlattTrudgian2021.v1.theorem_1_classical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_classical) — cited
   - [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) — cited
     - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources not traced*
-    - [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) — computation — *sources not traced*
-  - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources not traced*
+    - [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) — computation — *sources known, not all drawable*
+  - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
   - [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) — cited
-    - [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) — computation — *sources not traced*
+    - [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) — computation — *sources known, not all drawable*
 
 - [`ZeroFreeHeight.v1.classical_region_descends`](docs/nodes/ZeroFreeHeight-v1.md#classical_region_descends) — verified
 
@@ -396,11 +409,11 @@ rather than maintained.
 
 | Claim | Evidence | Depended on by | Its own sources |
 |---|---|---:|---|
-| [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) | computation | 6 | **not yet traced** |
-| [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) | cited | 5 | **not yet traced** |
-| [`Buthe.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi) | cited | 2 | traced |
-| [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) | cited | 2 | traced |
-| [`Buthe2016.v1.theorem_2_psi`](docs/nodes/Buthe2016-v1.md#theorem_2_psi) | cited | 2 | traced |
+| [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) | computation | 6 | known, not all drawable |
+| [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) | cited | 5 | known, not all drawable |
+| [`Buthe.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi) | cited | 2 | known, not all drawable |
+| [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) | cited | 2 | known, not all drawable |
+| [`Buthe2016.v1.theorem_2_psi`](docs/nodes/Buthe2016-v1.md#theorem_2_psi) | cited | 2 | none |
 | [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) | cited | 2 | traced |
 | [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) | cited | 2 | traced |
 | [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) | cited | 2 | traced |
@@ -410,19 +423,19 @@ rather than maintained.
 | [`PlattTrudgian2021.v1.theorem_1_numerical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_numerical) | cited | 2 | traced |
 | [`BKLNW.v1.corollary_5_1`](docs/nodes/BKLNW-v1.md#corollary_5_1) | cited | 1 | traced |
 | [`BKLNW.v1.theta_error_le_one`](docs/nodes/BKLNW-v1.md#theta_error_le_one) | cited | 1 | traced |
-| [`Buthe.v1.theorem_2_li_gt_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi) | cited | 1 | traced |
+| [`Buthe.v1.theorem_2_li_gt_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi) | cited | 1 | known, not all drawable |
 | [`Dusart2018.v1.proposition_5_4`](docs/nodes/Dusart2018-v1.md#proposition_5_4) | cited | 1 | **not yet traced** |
-| [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) | cited | 1 | **not yet traced** |
-| [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) | computation | 1 | **not yet traced** |
-| [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) | computation | 1 | **not yet traced** |
-| [`BKLNW.v1.table8_psi_bound`](docs/nodes/BKLNW-v1.md#table8_psi_bound) | cited | 0 | traced |
-| [`BKLNW.v1.table8_psi_bound_above`](docs/nodes/BKLNW-v1.md#table8_psi_bound_above) | cited | 0 | traced |
-| [`Buthe.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi) | cited | 0 | traced |
-| [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) | cited | 0 | traced |
-| [`Buthe.v1.theorem_2_theta`](docs/nodes/Buthe-v1.md#theorem_2_theta) | cited | 0 | traced |
-| [`Buthe2016.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_pi) | cited | 0 | traced |
-| [`Buthe2016.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_riemann_pi) | cited | 0 | traced |
-| [`Buthe2016.v1.theorem_2_theta`](docs/nodes/Buthe2016-v1.md#theorem_2_theta) | cited | 0 | traced |
+| [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) | cited | 1 | known, not all drawable |
+| [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) | computation | 1 | known, not all drawable |
+| [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) | computation | 1 | known, not all drawable |
+| [`BKLNW.v1.table8_psi_bound`](docs/nodes/BKLNW-v1.md#table8_psi_bound) | cited | 0 | known, not all drawable |
+| [`BKLNW.v1.table8_psi_bound_above`](docs/nodes/BKLNW-v1.md#table8_psi_bound_above) | cited | 0 | known, not all drawable |
+| [`Buthe.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi) | cited | 0 | known, not all drawable |
+| [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) | cited | 0 | known, not all drawable |
+| [`Buthe.v1.theorem_2_theta`](docs/nodes/Buthe-v1.md#theorem_2_theta) | cited | 0 | known, not all drawable |
+| [`Buthe2016.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_pi) | cited | 0 | none |
+| [`Buthe2016.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_riemann_pi) | cited | 0 | none |
+| [`Buthe2016.v1.theorem_2_theta`](docs/nodes/Buthe2016-v1.md#theorem_2_theta) | cited | 0 | none |
 | [`FKS.v1.psi_bound_all_x`](docs/nodes/FKS-v1.md#psi_bound_all_x) | cited | 0 | traced |
 | [`FKS2.v1.corollary_14`](docs/nodes/FKS2-v1.md#corollary_14) | cited | 0 | traced |
 | [`FKS2.v1.corollary_23`](docs/nodes/FKS2-v1.md#corollary_23) | cited | 0 | traced |

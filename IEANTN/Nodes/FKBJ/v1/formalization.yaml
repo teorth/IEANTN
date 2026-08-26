@@ -38,7 +38,7 @@ conclusions:
   declaration: FKBJ.v1.rh_up_to
   challenge: FKBJ.v1.challenge_rh_up_to
   imports: []
-  imports_status: undetermined
+  imports_status: traced
   justifications:
   - id: fkbj-paper
     kind: numerical
@@ -51,7 +51,18 @@ conclusions:
       precision of 2^-64', which agrees with Buthe's description of the input to his Theorem 2. Note the
       node states only the consequence that no zero below that height lies off the critical line; the
       algorithm consumes the tabulated zeros themselves, to the stated precision, and that is data rather
-      than a proposition.
+      than a proposition. Formalizable surface, assessed 2026-08-26. A verification of this kind is not
+      one opaque computation: most of the paper is analysis that could be formalized, and the computational
+      core is small. Recording where the line falls is what lets a reader size the hole rather than guess
+      at it, and is the prerequisite for ever splitting the node into a formal harness, a computational
+      core, and a bridge from the two to the conclusion. Here the analytic part is Section 2, 'Estimation
+      of the remainder': Theorem 2.1, attributed to Rosser, giving N(T) = (T/2pi) log(T/2pi) - T/2pi +
+      ... ; Lemmas 2.4 to 2.6 on sums over zeros and the asymptotics of Ei; and Theorems 2.7 and 2.8,
+      the two methods that bound the remainder. Sections 4 and 5 add Propositions 4.1 and 4.2 on Fourier
+      transforms. The computational core is Section 3, computing the zeros, together with the sieve of
+      Section 4. External inputs, none currently an edge: Theorem 2.1 is Rosser's zero-counting formula,
+      and RosserSchoenfeld.v1 exists as a node that states nothing yet -- making that conclusion would
+      turn this into a real edge, and is the most actionable thing on this node.
   designated: fkbj-paper
 sources:
 - title: A practical analytic method for calculating pi(x)

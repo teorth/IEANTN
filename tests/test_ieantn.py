@@ -742,6 +742,65 @@ class TestVerifyApprovalNotice(FixtureRepo):
         self.assertIn("completed: success", out)
 
 
+class TestTracedStatus(FixtureRepo):
+    """`traced`: the inputs are known, and at least one of them is not an edge.
+
+    `undetermined` was doing two jobs. "Nobody has looked at this verification" and "it rests on
+    Trudgian's Theorem 4.2, Whittaker-Shannon sampling, a subconvexity bound, and its own FFT, of
+    which only the third could currently be an edge" are not the same state, and rendering them
+    identically threw away the second one's work.
+    """
+
+    def _with(self, status: str, imports: bool = True) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        body = importing("Upstream.v1") if imports else LITERATURE
+        body = body.replace("  justifications:", f"  imports_status: {status}\n  justifications:")
+        self.write_node("A.v1", body)
+
+    def test_traced_is_accepted_with_imports(self) -> None:
+        self._with("traced")
+        self.assertTrue(ieantn.check_graph())
+
+    def test_traced_is_accepted_without_imports(self) -> None:
+        """Every input may be undrawable -- a pure computation resting on an algorithm."""
+        self._with("traced", imports=False)
+        self.assertTrue(ieantn.check_graph())
+
+    def test_traced_needs_somewhere_for_the_tracing_to_live(self) -> None:
+        """The note is the only place the named inputs can be, so a justification is required."""
+        self.write_node("A.v1", LITERATURE.replace(
+            "  justifications:\n    - id: paper\n      kind: literature\n  designated: paper",
+            "  imports_status: traced\n  justifications: []\n  designated: paper"))
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            passed = ieantn.check_graph()
+        self.assertFalse(passed)
+        self.assertIn("nowhere for the tracing to live", printed.getvalue())
+
+    def test_the_graph_dots_traced_and_dashes_undetermined(self) -> None:
+        """Three states, three renderings; collapsing any two loses the distinction."""
+        self._with("traced")
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        self.assertIn("style A_v1_main stroke-dasharray: 2 3", rendered)
+        self.assertNotIn("style A_v1_main stroke-dasharray: 6 4", rendered)
+
+    def test_traced_is_not_queued_by_housekeeping(self) -> None:
+        """Some missing edges await a node that could exist and some await one that never can;
+        nothing can tell those apart, and an unactionable queue is worse than none."""
+        self._with("traced")
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            ieantn.housekeeping()
+        self.assertNotIn("A.v1.main  (not yet traced", printed.getvalue())
+
+    def test_undetermined_is_still_queued(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            ieantn.housekeeping()
+        self.assertIn("not yet traced to its sources", printed.getvalue())
+
+
 class TestGraphPage(FixtureRepo):
     """`GRAPH.md`: the network as a page someone can read without cloning anything.
 

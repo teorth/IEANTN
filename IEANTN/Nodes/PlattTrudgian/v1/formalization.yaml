@@ -49,8 +49,22 @@ conclusions:
       beta + i gamma with 0 < gamma <= 3e12 have beta = 1/2', so its range is open at zero, while RiemannHypothesisUpTo
       quantifies over Im s in [0, T]. Including gamma = 0 is harmless -- zeta has no real zero in (0,1)
       -- but that is a classical fact and not something this paper proves, so the conclusion is very slightly
-      stronger than its source.
+      stronger than its source. Formalizable surface, assessed 2026-08-26. A verification of this kind
+      is not one opaque computation: most of the paper is analysis that could be formalized, and the computational
+      core is small. Recording where the line falls is what lets a reader size the hole rather than guess
+      at it, and is the prerequisite for ever splitting the node into a formal harness, a computational
+      core, and a bridge from the two to the conclusion. Here there is nothing to extract, and that is
+      the finding. The paper is short and its section 'Theory and computation' contains no theorem at
+      all -- it is an account of engineering (Arb in place of MPFI, sampling rates, core hours) resting
+      on one sentence: 'We used the algorithm described in [Platt]', which is Platt2017.v1. So this node
+      is genuinely primitive: its only input is another paper's algorithm, which the network cannot express,
+      and there is no analytic component of its own to split off. It is `traced` rather than `identified`
+      for that reason -- the input is known and is not drawable -- and unlike the others it will stay
+      that way. Note also that the paper's Theorem 1 states the sharper height 3,000,175,332,800 -- 'the
+      lowest 12,363,153,437,138 non-trivial zeroes have Re rho = 1/2'. This node states 3e12, which is
+      implied and is the figure the downstream literature quotes.
   designated: platttrudgian-paper
+  imports_status: traced
 sources:
 - title: The Riemann hypothesis is true up to 3 x 10^12
   authors:

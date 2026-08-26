@@ -39,7 +39,7 @@ def zeta_half_line_bound : Prop :=
 | Challenge | `Hiary2016.v1.challenge_zeta_half_line_bound` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Hiary2016/v1/Conclusions.lean#L50) |
 | Evidence | cited (`literature`) |
-| Sources traced | undetermined |
+| Sources traced | traced |
 | Assumes | nothing recorded |
 | Assumed by | [`KLN.v1.subconvexity_bound`](KLN-v1.md#subconvexity_bound) |
 

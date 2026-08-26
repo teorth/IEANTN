@@ -38,7 +38,7 @@ conclusions:
   declaration: Hiary2016.v1.zeta_half_line_bound
   challenge: Hiary2016.v1.challenge_zeta_half_line_bound
   imports: []
-  imports_status: undetermined
+  imports_status: traced
   justifications:
   - id: hiary-paper
     kind: literature
@@ -54,7 +54,7 @@ conclusions:
       Estimates for the Riemann Zeta Function, Rocky Mountain J. Math. 34 (2004), 1261-1280 -- held, no
       node -- in the corrected form documented in D. Patel, An Explicit Upper Bound for |zeta(1 + it)|,
       Indag. Math. (N.S.) 33 (2022), no. 5, 1012-1032, Footnote 3, which is not held. Until the corrected
-      test is a conclusion this stays undetermined: the input could be an edge and is not one yet.
+      test is a conclusion this stays undetermined: the input could be an edge and is not one yet. 
   designated: hiary-paper
 sources:
 - title: An explicit van der Corput estimate for zeta(1/2 + it)
