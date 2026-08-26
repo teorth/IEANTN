@@ -43,12 +43,11 @@ open IEANTN
 `Eψ` obeys the classical admissible bound with `A`, `B`, `C` and `R = 5.573412` for all
 `x ≥ e^X`.
 
-Note on absolute values, as for `FKS` and `FKS2`. The paper writes this as
-`(ψ(x) − x)/x ≤ A (log x / R)^B exp(−C √(log x / R))`, on a signed quantity and with no bars, while
-`Eψ` here is `|ψ(x) − x| / x`. So against the printed line alone this is the stronger claim. Unlike
-`FKS`, this paper gives no two-sided restatement of *this* bound in its abstract — what it does
-give two-sided is the `ε₀` column, stated as `|ψ(x) − x| ≤ ε₀ x` in the same theorem, which is
-`theorem_1_numerical` below. Prefer that one where it suffices. -/
+The paper's equation (4) is `|(ψ(x) − x)/x| ≤ A (log x / R)^B exp(−C √(log x / R))`, with
+absolute value bars, matching `Eψ` here. Worth stating because an earlier draft of this node
+claimed otherwise: `get_text` on the PDF renders that line as `ψ(x) −x x ≤A ...`, dropping the bars
+around the displayed fraction, and it reads exactly like a signed one-sided bound. The rendered
+page settles it. -/
 def theorem_1_classical : Prop :=
   ∀ X A B C ε : ℝ, (X, A, B, C, ε) ∈ table1 →
     HasClassicalBound Eψ A B C 5.573412 (Real.exp X)
@@ -56,8 +55,7 @@ def theorem_1_classical : Prop :=
 /-- **Theorem 1, the numerical bound.** For each row `(X, A, B, C, ε₀)` of Table 1,
 `|ψ(x) − x| ≤ ε₀ x` for all `x ≥ e^X`.
 
-This half of Theorem 1 is printed with explicit absolute value bars, so it needs none of the
-caveat above. It is also the half `FKS` compares itself against: its abstract quotes the `X = 3000`
+`FKS` compares itself against this half: its abstract quotes the `X = 3000`
 row's `4.51 · 10⁻¹³` as the figure it improves to `4.9678 · 10⁻¹⁵`. -/
 def theorem_1_numerical : Prop :=
   ∀ X A B C ε : ℝ, (X, A, B, C, ε) ∈ table1 →

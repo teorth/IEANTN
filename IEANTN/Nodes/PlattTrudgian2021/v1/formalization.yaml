@@ -51,11 +51,9 @@ conclusions:
       The third input is the zero-density estimate of Kadiri-Lumley-Ng, which BKLNW describes as 'a truncated
       Perron's formula combined with the zero density obtained in [25]': KLN.v1 exists but states only
       the subconvexity bound of its Lemma 3.2, not the density result the paper is named for. Adding that
-      conclusion would complete this tracing. Note on absolute values, as for FKS and FKS2: the paper
-      writes this on the signed (psi(x) - x)/x with no bars, while E_psi here is |psi(x) - x| / x, so
-      against the printed line alone this is the stronger claim. Unlike FKS this paper gives no two-sided
-      restatement of this half; what it does give two-sided is the epsilon column, which is theorem_1_numerical.
-      Prefer that where it suffices.
+      conclusion would complete this tracing. Equation (4) carries absolute value bars -- |(psi(x) - x)/x|
+      <= A (...) -- matching E_psi. An earlier draft of this node said otherwise, because `get_text` on
+      the PDF drops the bars around a displayed fraction; the rendered page settles it.
   designated: pt2021-paper
 - id: theorem_1_numerical
   declaration: PlattTrudgian2021.v1.theorem_1_numerical
@@ -79,9 +77,9 @@ conclusions:
       The third input is the zero-density estimate of Kadiri-Lumley-Ng, which BKLNW describes as 'a truncated
       Perron's formula combined with the zero density obtained in [25]': KLN.v1 exists but states only
       the subconvexity bound of its Lemma 3.2, not the density result the paper is named for. Adding that
-      conclusion would complete this tracing. Printed with explicit absolute value bars, so it carries
-      none of the caveat above. This is the half FKS compares itself against, quoting the X = 3000 row's
-      4.51e-13.
+      conclusion would complete this tracing. Equation (4) carries absolute value bars -- |(psi(x) - x)/x|
+      <= A (...) -- matching E_psi. An earlier draft of this node said otherwise, because `get_text` on
+      the PDF drops the bars around a displayed fraction; the rendered page settles it.
   designated: pt2021-paper
 sources:
 - title: The error term in the prime number theorem
@@ -118,9 +116,6 @@ limitations:
 - >-
   Table 1's sigma column is deliberately not recorded: Theorem 1 says 'for each row {X, A, B, C, eps_0}',
   so sigma is the zero-density abscissa the authors optimised over, not part of what is claimed.
-- >-
-  theorem_1_classical is stronger than the line as printed, which is one-sided on a signed quantity. See
-  its note.
 - >-
   The paper's Theorem 2, on a Ramanujan inequality, is not stated; nothing consumes it.
 - >-

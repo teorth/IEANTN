@@ -25,12 +25,11 @@
 `Eψ` obeys the classical admissible bound with `A`, `B`, `C` and `R = 5.573412` for all
 `x ≥ e^X`.
 
-Note on absolute values, as for `FKS` and `FKS2`. The paper writes this as
-`(ψ(x) − x)/x ≤ A (log x / R)^B exp(−C √(log x / R))`, on a signed quantity and with no bars, while
-`Eψ` here is `|ψ(x) − x| / x`. So against the printed line alone this is the stronger claim. Unlike
-`FKS`, this paper gives no two-sided restatement of *this* bound in its abstract — what it does
-give two-sided is the `ε₀` column, stated as `|ψ(x) − x| ≤ ε₀ x` in the same theorem, which is
-`theorem_1_numerical` below. Prefer that one where it suffices.
+The paper's equation (4) is `|(ψ(x) − x)/x| ≤ A (log x / R)^B exp(−C √(log x / R))`, with
+absolute value bars, matching `Eψ` here. Worth stating because an earlier draft of this node
+claimed otherwise: `get_text` on the PDF renders that line as `ψ(x) −x x ≤A ...`, dropping the bars
+around the displayed fraction, and it reads exactly like a signed one-sided bound. The rendered
+page settles it.
 
 ```lean
 def theorem_1_classical : Prop :=
@@ -42,7 +41,7 @@ def theorem_1_classical : Prop :=
 |---|---|
 | Lean name | `PlattTrudgian2021.v1.theorem_1_classical` |
 | Challenge | `PlattTrudgian2021.v1.challenge_theorem_1_classical` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian2021/v1/Conclusions.lean#L52) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian2021/v1/Conclusions.lean#L51) |
 | Evidence | cited (`literature`) |
 | Sources traced | undetermined |
 | Assumes | [`MT.v1.zero_free_region`](MT-v1.md#zero_free_region), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to) |
@@ -50,15 +49,14 @@ def theorem_1_classical : Prop :=
 
 **Justification `pt2021-paper`** — **designated** — literature, Theorem 1, the asymptotic half, over Table 1
 
-> Asserted on the authority of the paper. Imports: partly traced, and left undetermined because one input is not yet a conclusion. The paper fixes R = 5.573412, which is exactly MT.v1.zero_free_region -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its Section 6.1 that the FKS chain uses. Its Section 2 notes it is 'free to start counting from any height H <= 3e12', which is PlattTrudgian.v1. The third input is the zero-density estimate of Kadiri-Lumley-Ng, which BKLNW describes as 'a truncated Perron's formula combined with the zero density obtained in [25]': KLN.v1 exists but states only the subconvexity bound of its Lemma 3.2, not the density result the paper is named for. Adding that conclusion would complete this tracing. Note on absolute values, as for FKS and FKS2: the paper writes this on the signed (psi(x) - x)/x with no bars, while E_psi here is \|psi(x) - x\| / x, so against the printed line alone this is the stronger claim. Unlike FKS this paper gives no two-sided restatement of this half; what it does give two-sided is the epsilon column, which is theorem_1_numerical. Prefer that where it suffices.
+> Asserted on the authority of the paper. Imports: partly traced, and left undetermined because one input is not yet a conclusion. The paper fixes R = 5.573412, which is exactly MT.v1.zero_free_region -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its Section 6.1 that the FKS chain uses. Its Section 2 notes it is 'free to start counting from any height H <= 3e12', which is PlattTrudgian.v1. The third input is the zero-density estimate of Kadiri-Lumley-Ng, which BKLNW describes as 'a truncated Perron's formula combined with the zero density obtained in [25]': KLN.v1 exists but states only the subconvexity bound of its Lemma 3.2, not the density result the paper is named for. Adding that conclusion would complete this tracing. Equation (4) carries absolute value bars -- \|(psi(x) - x)/x\| <= A (...) -- matching E_psi. An earlier draft of this node said otherwise, because `get_text` on the PDF drops the bars around a displayed fraction; the rendered page settles it.
 
 ### `theorem_1_numerical`
 
 **Theorem 1, the numerical bound.** For each row `(X, A, B, C, ε₀)` of Table 1,
 `|ψ(x) − x| ≤ ε₀ x` for all `x ≥ e^X`.
 
-This half of Theorem 1 is printed with explicit absolute value bars, so it needs none of the
-caveat above. It is also the half `FKS` compares itself against: its abstract quotes the `X = 3000`
+`FKS` compares itself against this half: its abstract quotes the `X = 3000`
 row's `4.51 · 10⁻¹³` as the figure it improves to `4.9678 · 10⁻¹⁵`.
 
 ```lean
@@ -71,7 +69,7 @@ def theorem_1_numerical : Prop :=
 |---|---|
 | Lean name | `PlattTrudgian2021.v1.theorem_1_numerical` |
 | Challenge | `PlattTrudgian2021.v1.challenge_theorem_1_numerical` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian2021/v1/Conclusions.lean#L62) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian2021/v1/Conclusions.lean#L60) |
 | Evidence | cited (`literature`) |
 | Sources traced | undetermined |
 | Assumes | [`MT.v1.zero_free_region`](MT-v1.md#zero_free_region), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to) |
@@ -79,7 +77,7 @@ def theorem_1_numerical : Prop :=
 
 **Justification `pt2021-paper`** — **designated** — literature, Theorem 1, the numerical half, over Table 1
 
-> Asserted on the authority of the paper. Imports: partly traced, and left undetermined because one input is not yet a conclusion. The paper fixes R = 5.573412, which is exactly MT.v1.zero_free_region -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its Section 6.1 that the FKS chain uses. Its Section 2 notes it is 'free to start counting from any height H <= 3e12', which is PlattTrudgian.v1. The third input is the zero-density estimate of Kadiri-Lumley-Ng, which BKLNW describes as 'a truncated Perron's formula combined with the zero density obtained in [25]': KLN.v1 exists but states only the subconvexity bound of its Lemma 3.2, not the density result the paper is named for. Adding that conclusion would complete this tracing. Printed with explicit absolute value bars, so it carries none of the caveat above. This is the half FKS compares itself against, quoting the X = 3000 row's 4.51e-13.
+> Asserted on the authority of the paper. Imports: partly traced, and left undetermined because one input is not yet a conclusion. The paper fixes R = 5.573412, which is exactly MT.v1.zero_free_region -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its Section 6.1 that the FKS chain uses. Its Section 2 notes it is 'free to start counting from any height H <= 3e12', which is PlattTrudgian.v1. The third input is the zero-density estimate of Kadiri-Lumley-Ng, which BKLNW describes as 'a truncated Perron's formula combined with the zero density obtained in [25]': KLN.v1 exists but states only the subconvexity bound of its Lemma 3.2, not the density result the paper is named for. Adding that conclusion would complete this tracing. Equation (4) carries absolute value bars -- \|(psi(x) - x)/x\| <= A (...) -- matching E_psi. An earlier draft of this node said otherwise, because `get_text` on the PDF drops the bars around a displayed fraction; the rendered page settles it.
 
 ## Limitations
 
@@ -87,7 +85,6 @@ Recorded by the node itself, not derived.
 
 - Both conclusions rest on the cited paper; neither is proved in Lean here.
 - Table 1's sigma column is deliberately not recorded: Theorem 1 says 'for each row {X, A, B, C, eps_0}', so sigma is the zero-density abscissa the authors optimised over, not part of what is claimed.
-- theorem_1_classical is stronger than the line as printed, which is one-sided on a signed quantity. See its note.
 - The paper's Theorem 2, on a Ramanujan inequality, is not stated; nothing consumes it.
 - No novelty is claimed. The results are the authors'.
 
