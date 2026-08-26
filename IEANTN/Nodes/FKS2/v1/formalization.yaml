@@ -9,19 +9,17 @@ node:
   family: FKS2
   version: v1
   kind: paper
-  status: stub
+  status: active
 
 project:
   name: "Fiori-Kadiri-Swidinsky: sharper bounds for the error term in the prime number theorem"
   description: >-
-    Two conversion pipelines. The first turns an admissible classical bound on the error `E_psi(x)
-    = |psi(x) - x| / x` into one on `E_theta(x) = |theta(x) - x| / x`; the second turns a bound on
-    `E_theta` into one on `E_pi(x) = |pi(x) - li(x)| / (x / log x)`. Each stage carries admissible
-    classical bounds of one error to admissible classical bounds of the next, which is why the
-    paper is a natural `pipeline` as much as a `paper`: its content is a family of implications
-    rather than a single numerical claim. The two pipeline theorems are the conclusions worth
-    exporting first, since they are what downstream nodes consume. The paper's own numerical
-    corollaries follow from them together with whichever input bounds are supplied.
+    Two conversion pipelines carrying admissible classical bounds along psi -> theta -> pi, together with
+    the explicit numerical bounds the paper obtains by running the best available inputs through them.
+    This node exports three of those numerical outputs: a classical bound for E_theta, one row of the
+    Table 6 classical bounds for E_pi, and the headline estimate |pi(x) - Li(x)| <= 0.4298 x / log x for
+    x >= 2. The pipelines themselves are not stated yet; see the Conclusions module docstring for what
+    they need first.
   authors: ["Terence Tao"]
   license: "Apache-2.0"
   responsible_maintainers: ["Terence Tao"]
@@ -33,37 +31,89 @@ classification:
   arxiv: [math.NT]
   msc2020: ["11N05", "11M06", "11M26", "11N56"]
 
-conclusions: []
+conclusions:
+- id: corollary_14
+  declaration: FKS2.v1.corollary_14
+  challenge: FKS2.v1.challenge_corollary_14
+  imports: []
+  justifications:
+  - id: fks2-paper
+    kind: literature
+    source: FKS2
+    locator: Corollary 14
+    note: >-
+      Asserted on the authority of the paper. The parameters are transcribed from PNT+'s formalization
+      of the same corollary (PrimeNumberTheoremAnd/IEANTN/FKS2.lean, `corollary_14`), which proves it
+      in Lean from the paper's Proposition 13 and its numerical inputs; that proof is complete there,
+      so this is a conclusion a port could justify rather than a bare citation.
+  designated: fks2-paper
+- id: corollary_23
+  declaration: FKS2.v1.corollary_23
+  challenge: FKS2.v1.challenge_corollary_23
+  imports: []
+  justifications:
+  - id: fks2-paper
+    kind: literature
+    source: FKS2
+    locator: Corollary 23, Table 6, row [0.826, 0.25, 1.00, 1.000]
+    note: >-
+      Asserted on the authority of the paper. PNT+ states this corollary for every row of Table 6 and
+      leaves it `sorry`, so unlike Corollary 14 there is no existing Lean proof to port. Note the fourth
+      column of Table 6 is log x0, not x0; the threshold recorded here is exp 1.
+  designated: fks2-paper
+- id: corollary_26
+  declaration: FKS2.v1.corollary_26
+  challenge: FKS2.v1.challenge_corollary_26
+  imports: []
+  justifications:
+  - id: fks2-paper
+    kind: literature
+    source: FKS2
+    locator: Corollary 26
+    note: >-
+      Asserted on the authority of the paper. PNT+ proves it in Lean from Corollary 23 together with a
+      direct argument on [2, e); since Corollary 23 is `sorry` there, that proof is conditional in PNT+
+      and porting it here would need Corollary 23 first. The paper itself obtains the estimate by combining
+      Corollary 23 above 10^19 with Buthe's estimates below it and explicit checks on small x.
+  designated: fks2-paper
 
 sources:
-  - title: "Sharper bounds for the error term in the prime number theorem"
-    authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]
-    type: "paper"
-    id: "https://doi.org/10.1007/s40993-023-00454-w"
-    location: "Res. Number Theory 9 (2023), no. 3, Paper No. 63, 19 pp."
-    relationship: formalizes
+- title: "Sharper bounds for the error term in the prime number theorem"
+  authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]
+  type: "paper"
+  id: "https://doi.org/10.1007/s40993-023-00454-w"
+  location: "Res. Number Theory 9 (2023), no. 3, Paper No. 63, 19 pp."
+  relationship: formalizes
 
 automation:
   methods:
-    - method: agent
-      models: ["Claude Opus 5 (Anthropic)"]
-      framework: "Claude Code"
-      role: >-
-        Created this stub and transcribed its bibliographic record from the PNT+
-        bibliography, under the direction of the maintainer. No mathematical claim is
-        made and no statement has been transcribed from the paper.
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Created this stub and transcribed its bibliographic record from the PNT+
+      bibliography, under the direction of the maintainer. No mathematical claim is
+      made and no statement has been transcribed from the paper.
 
 review:
   status: self-assessed
   reviewers: ["Terence Tao"]
   notes: >-
-    Bibliographic details taken from blueprint/src/references.bib in PrimeNumberTheoremAnd
-    rather than from the printed paper. Verify them against the paper before this node is
-    cited externally or used as the basis for a submission.
+    Statements transcribed from PNT+'s formalization of the same paper, whose definitions of E_psi, E_theta,
+    E_pi and the admissible bound were checked line by line against this repository's Vocabulary and agree,
+    including the use of the offset Li rather than li. They have not been checked against the printed
+    paper directly.
 
 limitations:
-  - >-
-    This node states nothing. It exists so that the network records the paper as in scope,
-    and so that the housekeeping queue asks for conclusions.
-  - >-
-    No novelty is claimed. The results are the cited authors'.
+- >-
+  Every conclusion here rests on the cited paper. None is proved in Lean in this repository, and anything
+  downstream inherits that.
+- >-
+  The paper's two conversion pipelines -- Proposition 13 and Corollary 21 -- are its reusable content
+  and are deliberately not stated yet: doing so faithfully needs BKLNW's bounds on psi - theta, which
+  no node yet provides. The Conclusions module docstring sets out the two routes and which is preferable.
+- >-
+  Tables 6 and 7 are exported one row deep. Corollary 23 holds for every row of Table 6 and Corollary
+  24 for every row of Table 7; stating them in full wants the tables as a data structure in Vocabulary.
+- >-
+  No novelty is claimed. The results are Fiori, Kadiri and Swidinsky's.
