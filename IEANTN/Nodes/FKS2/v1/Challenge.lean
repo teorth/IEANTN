@@ -15,3 +15,12 @@ import IEANTN.Nodes.FKS2.v1.Conclusions
 Each `sorry` below is deliberate and permanent: a challenge *states*, it does not prove.
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
+
+theorem FKS2.v1.challenge_corollary_14 : FKS2.v1.corollary_14 := by
+  sorry
+
+theorem FKS2.v1.challenge_corollary_23 : FKS2.v1.corollary_23 := by
+  sorry
+
+theorem FKS2.v1.challenge_corollary_26 : FKS2.v1.corollary_26 := by
+  sorry

@@ -5,14 +5,14 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-10 node version(s), 3 conclusion(s).  7 state nothing yet.
+10 node version(s), 6 conclusion(s).  6 state nothing yet.
 
 ## Evidence
 
 | Designated justification | Conclusions |
 |---|---:|
 | `lean-comparator` | 2 |
-| `literature` | 1 |
+| `literature` | 4 |
 
 ## Nodes
 
@@ -21,7 +21,9 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `BKLNW.v1` | stub | *(none yet)* | - | - | - |
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
 | `FKS.v1` | stub | *(none yet)* | - | - | - |
-| `FKS2.v1` | stub | *(none yet)* | - | - | - |
+| `FKS2.v1` | active | `corollary_14` | literature | 0 | - |
+| `FKS2.v1` | active | `corollary_23` | literature | 0 | - |
+| `FKS2.v1` | active | `corollary_26` | literature | 0 | - |
 | `KLN.v1` | stub | *(none yet)* | - | - | - |
 | `Kadiri2005.v1` | stub | *(none yet)* | - | - | - |
 | `Lcm.v1` | active | `lcmUpto_not_highlyAbundant` | lean-comparator | 1 | - |
