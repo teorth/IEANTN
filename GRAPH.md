@@ -10,6 +10,11 @@ The colour of a box is the kind of evidence, and only green is checked by Lean h
 Everything else is a leaf of the trust graph -- something the network takes on faith,
 however reasonably -- and the point of drawing it is that you can see exactly which.
 
+A **dashed** border means nobody has yet worked out what that claim itself assumes. It is
+not a claim that the box rests on nothing; it is an admission that the question has not
+been asked. A solid border means someone has traced it to its sources, and the arrows
+into it are the answer.
+
 ```mermaid
 graph LR
   BKLNW_v1_corollary_5_1["BKLNW.v1<br/><b>corollary_5_1</b><br/><i>cited</i>"]
@@ -45,6 +50,15 @@ graph LR
   Buthe_v1_theorem_2_li_gt_pi --> FKS2_v1_corollary_26
   Dusart2018_v1_proposition_5_4 --> Lcm_v1_lcmUpto_not_highlyAbundant
   PlattTrudgian_v1_rh_up_to --> MT_v1_zero_free_region_sharpened
+  style BKLNW_v1_corollary_5_1 stroke-dasharray: 6 4;
+  style BKLNW_v1_theta_error_le_one stroke-dasharray: 6 4;
+  style Buthe_v1_theorem_2_li_gt_pi stroke-dasharray: 6 4;
+  style Buthe_v1_theorem_2_li_minus_pi stroke-dasharray: 6 4;
+  style Buthe_v1_theorem_2_psi stroke-dasharray: 6 4;
+  style Buthe_v1_theorem_2_theta stroke-dasharray: 6 4;
+  style Dusart2018_v1_proposition_5_4 stroke-dasharray: 6 4;
+  style KLN_v1_subconvexity_bound stroke-dasharray: 6 4;
+  style PlattTrudgian_v1_rh_up_to stroke-dasharray: 6 4;
   classDef lean_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
   classDef literature fill:#ddf4ff,stroke:#0969da,color:#1f2328;
   class Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap lean_comparator;
@@ -56,39 +70,39 @@ graph LR
 Only the conclusions nothing else imports are listed; the rest appear inside them.
 A line is one claim, indented under whatever assumes it.
 
-- `Buthe.v1.theorem_2_psi` — cited
+- `Buthe.v1.theorem_2_psi` — cited — *sources not traced*
 
-- `Buthe.v1.theorem_2_theta` — cited
+- `Buthe.v1.theorem_2_theta` — cited — *sources not traced*
 
 - `FKS.v1.psi_bound_all_x` — cited
-  - `KLN.v1.subconvexity_bound` — cited
+  - `KLN.v1.subconvexity_bound` — cited — *sources not traced*
   - `MT.v1.zero_free_region_sharpened` — cited
-    - `PlattTrudgian.v1.rh_up_to` — cited
-  - `PlattTrudgian.v1.rh_up_to` — cited *(above)*
+    - `PlattTrudgian.v1.rh_up_to` — cited — *sources not traced*
+  - `PlattTrudgian.v1.rh_up_to` — cited *(above)* — *sources not traced*
 
 - `FKS2.v1.corollary_14` — cited
   - `FKS.v1.psi_classical_bound` — cited
-    - `KLN.v1.subconvexity_bound` — cited
+    - `KLN.v1.subconvexity_bound` — cited — *sources not traced*
     - `MT.v1.zero_free_region_sharpened` — cited
-      - `PlattTrudgian.v1.rh_up_to` — cited
-    - `PlattTrudgian.v1.rh_up_to` — cited *(above)*
-  - `BKLNW.v1.corollary_5_1` — cited
-  - `BKLNW.v1.theta_error_le_one` — cited
+      - `PlattTrudgian.v1.rh_up_to` — cited — *sources not traced*
+    - `PlattTrudgian.v1.rh_up_to` — cited *(above)* — *sources not traced*
+  - `BKLNW.v1.corollary_5_1` — cited — *sources not traced*
+  - `BKLNW.v1.theta_error_le_one` — cited — *sources not traced*
 
 - `FKS2.v1.corollary_23` — cited
   - `FKS.v1.psi_classical_bound` — cited
-    - `KLN.v1.subconvexity_bound` — cited
+    - `KLN.v1.subconvexity_bound` — cited — *sources not traced*
     - `MT.v1.zero_free_region_sharpened` — cited
-      - `PlattTrudgian.v1.rh_up_to` — cited
-    - `PlattTrudgian.v1.rh_up_to` — cited *(above)*
-  - `Buthe.v1.theorem_2_li_minus_pi` — cited
+      - `PlattTrudgian.v1.rh_up_to` — cited — *sources not traced*
+    - `PlattTrudgian.v1.rh_up_to` — cited *(above)* — *sources not traced*
+  - `Buthe.v1.theorem_2_li_minus_pi` — cited — *sources not traced*
 
 - `FKS2.v1.corollary_26` — cited
-  - `Buthe.v1.theorem_2_li_minus_pi` — cited
-  - `Buthe.v1.theorem_2_li_gt_pi` — cited
+  - `Buthe.v1.theorem_2_li_minus_pi` — cited — *sources not traced*
+  - `Buthe.v1.theorem_2_li_gt_pi` — cited — *sources not traced*
 
 - `Lcm.v1.lcmUpto_not_highlyAbundant` — verified
-  - `Dusart2018.v1.proposition_5_4` — cited
+  - `Dusart2018.v1.proposition_5_4` — cited — *sources not traced*
 
 - `Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap` — verified
 
@@ -100,24 +114,24 @@ Every claim above that Lean has not checked here, ordered by how much depends on
 This table is the honest answer to "how good is the evidence", and it is computed
 rather than maintained.
 
-| Claim | Evidence | Depended on by |
-|---|---|---:|
-| `PlattTrudgian.v1.rh_up_to` | cited | 3 |
-| `Buthe.v1.theorem_2_li_minus_pi` | cited | 2 |
-| `FKS.v1.psi_classical_bound` | cited | 2 |
-| `KLN.v1.subconvexity_bound` | cited | 2 |
-| `MT.v1.zero_free_region_sharpened` | cited | 2 |
-| `BKLNW.v1.corollary_5_1` | cited | 1 |
-| `BKLNW.v1.theta_error_le_one` | cited | 1 |
-| `Buthe.v1.theorem_2_li_gt_pi` | cited | 1 |
-| `Dusart2018.v1.proposition_5_4` | cited | 1 |
-| `Buthe.v1.theorem_2_psi` | cited | 0 |
-| `Buthe.v1.theorem_2_theta` | cited | 0 |
-| `FKS.v1.psi_bound_all_x` | cited | 0 |
-| `FKS2.v1.corollary_14` | cited | 0 |
-| `FKS2.v1.corollary_23` | cited | 0 |
-| `FKS2.v1.corollary_26` | cited | 0 |
-| `MT.v1.zero_free_region` | cited | 0 |
+| Claim | Evidence | Depended on by | Its own sources |
+|---|---|---:|---|
+| `PlattTrudgian.v1.rh_up_to` | cited | 3 | **not yet traced** |
+| `Buthe.v1.theorem_2_li_minus_pi` | cited | 2 | **not yet traced** |
+| `FKS.v1.psi_classical_bound` | cited | 2 | traced |
+| `KLN.v1.subconvexity_bound` | cited | 2 | **not yet traced** |
+| `MT.v1.zero_free_region_sharpened` | cited | 2 | traced |
+| `BKLNW.v1.corollary_5_1` | cited | 1 | **not yet traced** |
+| `BKLNW.v1.theta_error_le_one` | cited | 1 | **not yet traced** |
+| `Buthe.v1.theorem_2_li_gt_pi` | cited | 1 | **not yet traced** |
+| `Dusart2018.v1.proposition_5_4` | cited | 1 | **not yet traced** |
+| `Buthe.v1.theorem_2_psi` | cited | 0 | **not yet traced** |
+| `Buthe.v1.theorem_2_theta` | cited | 0 | **not yet traced** |
+| `FKS.v1.psi_bound_all_x` | cited | 0 | traced |
+| `FKS2.v1.corollary_14` | cited | 0 | traced |
+| `FKS2.v1.corollary_23` | cited | 0 | traced |
+| `FKS2.v1.corollary_26` | cited | 0 | traced |
+| `MT.v1.zero_free_region` | cited | 0 | traced |
 
 ## Nodes that state nothing yet
 

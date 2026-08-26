@@ -58,6 +58,7 @@ conclusions:
       which covers the x0 = e^30 this proof uses; Tables 13 and 14 enter as the single inequality E_theta(x)
       <= 1 on [2, e^30] that the proof actually consumes.
   designated: fks2-paper
+  imports_status: identified
 - id: corollary_23
   declaration: FKS2.v1.corollary_23
   challenge: FKS2.v1.challenge_corollary_23
@@ -79,6 +80,7 @@ conclusions:
       6 and its Lemmas 5.2 and 5.3 are also cited, the former as data and the latter as a method of interpolation
       rather than as a claim consumed; neither is an import edge.
   designated: fks2-paper
+  imports_status: identified
 - id: corollary_26
   declaration: FKS2.v1.corollary_26
   challenge: FKS2.v1.challenge_corollary_26
@@ -103,6 +105,7 @@ conclusions:
       an import.
   designated: fks2-paper
 
+  imports_status: identified
 sources:
 - title: "Sharper bounds for the error term in the prime number theorem"
   authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]

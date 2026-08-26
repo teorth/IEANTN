@@ -63,6 +63,7 @@ conclusions:
       estimate, is proved in FKS itself and the preprint is cited as attribution. It is background, not
       an edge.
   designated: fks-paper
+  imports_status: identified
 - id: psi_classical_bound
   declaration: FKS.v1.psi_classical_bound
   challenge: FKS.v1.challenge_psi_classical_bound
@@ -98,6 +99,7 @@ conclusions:
       It is background, not an edge.
   designated: fks-paper
 
+  imports_status: identified
 sources:
 - title: "Sharper bounds for the Chebyshev function psi(x)"
   authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]

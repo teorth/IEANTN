@@ -73,6 +73,26 @@ LICENCE_HEADER = (
 #: Mathlib cache window and cost many times the per-node budget. A heuristic, not a measurement.
 CACHE_WINDOW_RELEASES = 2
 
+#: Whether anyone has worked out what a conclusion assumes.
+#:
+#: An empty `imports` list is ambiguous on its own: it means either "this claim genuinely rests on
+#: nothing else in the network" or "nobody has looked yet". Those are very different things to show
+#: a reader, and the second is the normal state of a freshly cited result. `undetermined` is the
+#: default precisely so that the honest state is the one you get without doing anything.
+#:
+#: `none` is the third case and is not the same as `identified` with an empty list: it says someone
+#: looked and there is genuinely nothing upstream. Lcm.v2 assumes its prime-gap input internally by
+#: design; MT's Theorem 1 is unconditional. Having a word for that keeps the check from emitting a
+#: warning nobody can ever act on, which is how warnings stop being read.
+IMPORT_STATUSES = {"identified", "none", "undetermined"}
+DEFAULT_IMPORT_STATUS = "undetermined"
+
+
+def import_status(conclusion: dict) -> str:
+    """Whether this conclusion's imports have been worked out. Absent means not."""
+    return conclusion.get("imports_status") or DEFAULT_IMPORT_STATUS
+
+
 #: A justification that stands on its own evidence.
 PRIMITIVE_KINDS = {"lean-comparator", "numerical", "literature", "asserted", "none-yet"}
 #: A justification borrowed from another version via a proved bridge.
@@ -835,6 +855,26 @@ def check_graph() -> bool:
                     f"conclusion `{cid}` has a receipt but designates `{settled}`. A verification "
                     "was recorded and nothing points at it; add a `lean-comparator` justification "
                     "and designate it.",
+                )
+
+            status = conclusion.get("imports_status")
+            if status is not None and status not in IMPORT_STATUSES:
+                problems.add(
+                    where,
+                    f"conclusion `{cid}`: imports_status `{status}` is not one of "
+                    + ", ".join(sorted(IMPORT_STATUSES)),
+                )
+            if status == "identified" and not (conclusion.get("imports") or []):
+                problems.add(
+                    where,
+                    f"conclusion `{cid}`: `imports_status: identified` but no imports are listed. "
+                    "If someone looked and there are genuinely none, say `none`; if nobody has "
+                    "looked, drop the field and let it read as undetermined.",
+                )
+            if status == "none" and (conclusion.get("imports") or []):
+                problems.add(
+                    where,
+                    f"conclusion `{cid}`: `imports_status: none` but imports are listed.",
                 )
 
             issue = conclusion.get("issue")
@@ -1701,6 +1741,9 @@ def housekeeping() -> bool:
                 claim = f"#{issue} CLOSED -- reopen it, or drop the `issue` field"
             else:
                 claim = f"#{issue}"
+            if import_status(conclusion) == "undetermined":
+                tasks.append(
+                    f"imports   {node_id}.{conclusion.get('id')}  (not yet traced to its sources)")
             if kind == "none-yet":
                 tasks.append(f"justify   {node_id}.{conclusion.get('id')}  [{claim}]")
             elif kind in {"literature", "asserted"}:
@@ -1849,6 +1892,11 @@ def render_graph(nodes: dict[str, dict]) -> str:
         "Everything else is a leaf of the trust graph -- something the network takes on faith,",
         "however reasonably -- and the point of drawing it is that you can see exactly which.",
         "",
+        "A **dashed** border means nobody has yet worked out what that claim itself assumes. It is",
+        "not a claim that the box rests on nothing; it is an admission that the question has not",
+        "been asked. A solid border means someone has traced it to its sources, and the arrows",
+        "into it are the answer.",
+        "",
     ]
 
     # --- the picture -------------------------------------------------------------------
@@ -1865,6 +1913,9 @@ def render_graph(nodes: dict[str, dict]) -> str:
             source = f"{dependency.get('node')}.{dependency.get('conclusion')}"
             if source in index:
                 lines.append(f"  {mermaid_id(source)} --> {mermaid_id(key)}")
+    for key in sorted(index):
+        if import_status(index[key][1]) == "undetermined":
+            lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 6 4;")
     seen_kinds = {designated_kind(c) or "none-yet" for _, c in index.values()}
     for kind in sorted(seen_kinds):
         label, stroke, fill = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
@@ -1892,7 +1943,9 @@ def render_graph(nodes: dict[str, dict]) -> str:
         label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
         mark = "  " * depth
         repeated = " *(above)*" if key in seen else ""
-        out.append(f"{mark}- `{key}` — {label}{repeated}")
+        pending = (" — *sources not traced*"
+                   if import_status(conclusion) == "undetermined" else "")
+        out.append(f"{mark}- `{key}` — {label}{repeated}{pending}")
         if key in seen:
             return
         seen.add(key)
@@ -1919,13 +1972,16 @@ def render_graph(nodes: dict[str, dict]) -> str:
             "This table is the honest answer to \"how good is the evidence\", and it is computed",
             "rather than maintained.",
             "",
-            "| Claim | Evidence | Depended on by |",
-            "|---|---|---:|",
+            "| Claim | Evidence | Depended on by | Its own sources |",
+            "|---|---|---:|---|",
         ]
         for key in leaves:
             kind = designated_kind(index[key][1]) or "none-yet"
             label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
-            lines.append(f"| `{key}` | {label} | {len(importers.get(key, []))} |")
+            traced = ("**not yet traced**"
+                      if import_status(index[key][1]) == "undetermined" else "traced")
+            lines.append(
+                f"| `{key}` | {label} | {len(importers.get(key, []))} | {traced} |")
         lines.append("")
 
     # --- nodes with nothing stated yet --------------------------------------------------
