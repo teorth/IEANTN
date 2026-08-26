@@ -15,3 +15,9 @@ import IEANTN.Nodes.BKLNW.v1.Conclusions
 Each `sorry` below is deliberate and permanent: a challenge *states*, it does not prove.
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
+
+theorem BKLNW.v1.challenge_corollary_5_1 : BKLNW.v1.corollary_5_1 := by
+  sorry
+
+theorem BKLNW.v1.challenge_theta_error_le_one : BKLNW.v1.theta_error_le_one := by
+  sorry

@@ -3,6 +3,7 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
+import IEANTN.Nodes.BKLNW.v1.Conclusions
 import IEANTN.Nodes.Buthe.v1.Conclusions
 import IEANTN.Nodes.FKS.v1.Conclusions
 import IEANTN.Nodes.FKS2.v1.Conclusions
@@ -19,7 +20,9 @@ How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
 
 theorem FKS2.v1.challenge_corollary_14
-    (fks_v1_psi_classical_bound : FKS.v1.psi_classical_bound) :
+    (fks_v1_psi_classical_bound : FKS.v1.psi_classical_bound)
+    (bklnw_v1_corollary_5_1 : BKLNW.v1.corollary_5_1)
+    (bklnw_v1_theta_error_le_one : BKLNW.v1.theta_error_le_one) :
     FKS2.v1.corollary_14 := by
   sorry
 

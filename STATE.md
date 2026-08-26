@@ -5,20 +5,21 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-11 node version(s), 12 conclusion(s).  5 state nothing yet.
+11 node version(s), 14 conclusion(s).  4 state nothing yet.
 
 ## Evidence
 
 | Designated justification | Conclusions |
 |---|---:|
 | `lean-comparator` | 2 |
-| `literature` | 10 |
+| `literature` | 12 |
 
 ## Nodes
 
 | Node | Status | Conclusion | Evidence | Imports | Issue |
 |---|---|---|---|---:|---|
-| `BKLNW.v1` | stub | *(none yet)* | - | - | - |
+| `BKLNW.v1` | active | `corollary_5_1` | literature | 0 | - |
+| `BKLNW.v1` | active | `theta_error_le_one` | literature | 0 | - |
 | `Buthe.v1` | active | `theorem_2_psi` | literature | 0 | - |
 | `Buthe.v1` | active | `theorem_2_theta` | literature | 0 | - |
 | `Buthe.v1` | active | `theorem_2_li_minus_pi` | literature | 0 | - |
@@ -26,7 +27,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 0 | - |
 | `FKS.v1` | active | `psi_classical_bound` | literature | 0 | - |
-| `FKS2.v1` | active | `corollary_14` | literature | 1 | - |
+| `FKS2.v1` | active | `corollary_14` | literature | 3 | - |
 | `FKS2.v1` | active | `corollary_23` | literature | 2 | - |
 | `FKS2.v1` | active | `corollary_26` | literature | 2 | - |
 | `KLN.v1` | stub | *(none yet)* | - | - | - |
@@ -47,3 +48,5 @@ downstream.
 | `Buthe.v1.theorem_2_li_minus_pi` | 2 |
 | `Dusart2018.v1.proposition_5_4` | 1 |
 | `Buthe.v1.theorem_2_li_gt_pi` | 1 |
+| `BKLNW.v1.theta_error_le_one` | 1 |
+| `BKLNW.v1.corollary_5_1` | 1 |

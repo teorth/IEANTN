@@ -38,6 +38,10 @@ conclusions:
   imports:
   - node: FKS.v1
     conclusion: psi_classical_bound
+  - node: BKLNW.v1
+    conclusion: corollary_5_1
+  - node: BKLNW.v1
+    conclusion: theta_error_le_one
   justifications:
   - id: fks2-paper
     kind: literature
@@ -50,8 +54,9 @@ conclusions:
       so this is a conclusion a port could justify rather than a bare citation. Imports: FKS supplies
       the E_psi bound that Proposition 13 converts. The other input the paper names is BKLNW -- Corollary
       5.1 for the coefficients a1, a2 in Proposition 13's multiplier, and Tables 13 and 14 to cover 2
-      <= x <= e^30 -- which is not recorded as an import yet because BKLNW.v1 states nothing. See that
-      node.
+      <= x <= e^30 -- both of which are now recorded. Corollary 5.1 is stated on 7 <= b <= 38 log 10,
+      which covers the x0 = e^30 this proof uses; Tables 13 and 14 enter as the single inequality E_theta(x)
+      <= 1 on [2, e^30] that the proof actually consumes.
   designated: fks2-paper
 - id: corollary_23
   declaration: FKS2.v1.corollary_23
