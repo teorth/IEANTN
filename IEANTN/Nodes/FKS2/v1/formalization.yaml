@@ -56,7 +56,19 @@ conclusions:
       5.1 for the coefficients a1, a2 in Proposition 13's multiplier, and Tables 13 and 14 to cover 2
       <= x <= e^30 -- both of which are now recorded. Corollary 5.1 is stated on 7 <= b <= 38 log 10,
       which covers the x0 = e^30 this proof uses; Tables 13 and 14 enter as the single inequality E_theta(x)
-      <= 1 on [2, e^30] that the proof actually consumes.
+      <= 1 on [2, e^30] that the proof actually consumes. Note on absolute values, which is not visible
+      from the cited corollary. FKS defines Epsi(x) = (psi(x) - x)/x in its (1.1) and FKS2 defines Etheta,
+      Epi likewise in its (1) and (2) -- all three SIGNED, with no absolute value -- and both papers then
+      write their bounds as E(x) <= ... with no bars. The network's Vocabulary defines all three with
+      |.|, so read literally against the corollary alone, the conclusion here is strictly stronger than
+      what is printed. The two-sided reading is nevertheless the papers' own: FKS's abstract states |psi(x)
+      - x| < 9.22022 x (log x)^{3/2} exp(-0.8476836 sqrt(log x)) for all x > 2, and FKS2's abstract states
+      |pi(x) - Li(x)| <= 9.2211 x sqrt(log x) exp(-0.8476 sqrt(log x)) for all x >= 2, both with explicit
+      bars. Neither paper ever writes |E|. For Etheta specifically this is weaker than for the other two:
+      a search of FKS2 finds no statement of the form |theta(x) - x| <= ... anywhere, so the two-sided
+      reading of Corollary 14 rests on the paper's uniform usage and on the two-sided pi bound it feeds,
+      not on an explicit statement. That is the least-supported step in this chain and should be checked
+      against the published version before anything sharp rests on the boundary.
   designated: fks2-paper
   imports_status: identified
 - id: corollary_23
@@ -78,7 +90,15 @@ conclusions:
       column of Table 6 is log x0, not x0; the threshold recorded here is exp 1. Imports: Rests on Corollary
       22, hence on the same FKS input, and on Buthe's Theorem 2 to verify the range x < 10^19. FKS's Table
       6 and its Lemmas 5.2 and 5.3 are also cited, the former as data and the latter as a method of interpolation
-      rather than as a claim consumed; neither is an import edge.
+      rather than as a claim consumed; neither is an import edge. Note on absolute values, which is not
+      visible from the cited corollary. FKS defines Epsi(x) = (psi(x) - x)/x in its (1.1) and FKS2 defines
+      Etheta, Epi likewise in its (1) and (2) -- all three SIGNED, with no absolute value -- and both
+      papers then write their bounds as E(x) <= ... with no bars. The network's Vocabulary defines all
+      three with |.|, so read literally against the corollary alone, the conclusion here is strictly stronger
+      than what is printed. The two-sided reading is nevertheless the papers' own: FKS's abstract states
+      |psi(x) - x| < 9.22022 x (log x)^{3/2} exp(-0.8476836 sqrt(log x)) for all x > 2, and FKS2's abstract
+      states |pi(x) - Li(x)| <= 9.2211 x sqrt(log x) exp(-0.8476 sqrt(log x)) for all x >= 2, both with
+      explicit bars. Neither paper ever writes |E|.
   designated: fks2-paper
   imports_status: identified
 - id: corollary_26
@@ -102,7 +122,14 @@ conclusions:
       Buthe's Theorem 2 covers 97 <= x <= 10^19 -- (1.9) for the bound and (1.10) for its sign, which
       together give the two-sided estimate. Below 97 the paper checks the 25 relevant prime intervals
       directly and above 10^19 it uses its own Theorem 6 with Table 4; both are internal and neither is
-      an import.
+      an import. Note on absolute values, which is not visible from the cited corollary. FKS defines Epsi(x)
+      = (psi(x) - x)/x in its (1.1) and FKS2 defines Etheta, Epi likewise in its (1) and (2) -- all three
+      SIGNED, with no absolute value -- and both papers then write their bounds as E(x) <= ... with no
+      bars. The network's Vocabulary defines all three with |.|, so read literally against the corollary
+      alone, the conclusion here is strictly stronger than what is printed. The two-sided reading is nevertheless
+      the papers' own: FKS's abstract states |psi(x) - x| < 9.22022 x (log x)^{3/2} exp(-0.8476836 sqrt(log
+      x)) for all x > 2, and FKS2's abstract states |pi(x) - Li(x)| <= 9.2211 x sqrt(log x) exp(-0.8476
+      sqrt(log x)) for all x >= 2, both with explicit bars. Neither paper ever writes |E|.
   designated: fks2-paper
 
   imports_status: identified

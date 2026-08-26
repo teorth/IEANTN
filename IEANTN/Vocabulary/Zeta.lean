@@ -87,6 +87,18 @@ weakened every node that used this definition; a smaller `t₀` is a *stronger* 
 Only positive `t` is quantified over. Zeroes of `ζ` are symmetric about the real axis, so the
 `|Im s|` form of the literature follows, but a consumer wanting negative `t` must do that step.
 
+**The boundary is stronger than any consumer needs.** This states that the *closed* region is
+zero-free. Kadiri, MT's abstract and MTY all state it that way, but MT's own Theorem 1 states only
+the open region (`σ >`), and — more to the point — `FKS` consumes it in the open form: its (1.8)
+says a non-trivial zero `ϱ = β + iγ` satisfies `β ≤ 1 - 1/(R log|γ|)`, which is exactly "no zero
+with `σ >`". So nothing downstream depends on the boundary case, and restating this definition with
+`<` would match MT's theorem and cost the chain nothing. Left as `≤` because three of the four
+source statements say `≥`; recorded here so the choice is visible rather than accidental.
+
+Note also that `FKS` splits at the verification height rather than using this for all `t`: its
+(1.7) uses `β = 1/2` for `|γ| ≤ H₀ = 3·10¹²` and (1.8) only for `|γ| > H₀`. That is why a node
+consuming a classical region generally imports a `RiemannHypothesisUpTo` node alongside it.
+
 **Watch small `t₀`.** At `t = 1` the bound reads `1 - 1/(R * 0)`, and Lean's `1/0 = 0` makes it
 `σ ≥ 1` — true but not what the formula suggests. For `t < 1`, `log t < 0` and the bound exceeds
 `1`, so the claim says nothing. For `t` slightly above `1` the bound is hugely negative and the
