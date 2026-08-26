@@ -1,0 +1,69 @@
+# Node metadata for `MTY.v1`.  See docs/NODES.md.
+#
+# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
+# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+version: "v0.4"
+
+node:
+  id: MTY.v1
+  family: MTY
+  version: v1
+  kind: paper
+  status: stub
+
+project:
+  name: "Mossinghoff-Trudgian-Yang: explicit zero-free regions for the Riemann zeta-function"
+  description: >-
+    Sharpened explicit zero-free regions for the Riemann zeta function, improving the constants
+    available to every downstream explicit estimate. The zero-free region in the same shape as
+    `Kadiri2005`'s, so that a node consuming one can be migrated to the other by a bridge rather
+    than a rewrite. Getting those two statements into a common form is the first real test of
+    whether the vocabulary is right.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M26"]
+
+conclusions: []
+
+sources:
+  - title: "Explicit zero-free regions for the Riemann zeta-function"
+    authors: ["Michael J. Mossinghoff", "Timothy S. Trudgian", "Andrew Yang"]
+    type: "paper"
+    id: "https://arxiv.org/abs/2212.06867"
+    location: "Res. Number Theory 10 (2024), no. 1, Paper No. 11, 27 pp."
+    relationship: formalizes
+    note: >-
+      PNT+'s bibliography records the arXiv identifier and no DOI, so the arXiv entry is the
+      identifier here. Confirm the published version's DOI before any external submission.
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude Opus 5 (Anthropic)"]
+      framework: "Claude Code"
+      role: >-
+        Created this stub and transcribed its bibliographic record from the PNT+
+        bibliography, under the direction of the maintainer. No mathematical claim is
+        made and no statement has been transcribed from the paper.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    Bibliographic details taken from blueprint/src/references.bib in PrimeNumberTheoremAnd
+    rather than from the printed paper. Verify them against the paper before this node is
+    cited externally or used as the basis for a submission.
+
+limitations:
+  - >-
+    This node states nothing. It exists so that the network records the paper as in scope,
+    and so that the housekeeping queue asks for conclusions.
+  - >-
+    No novelty is claimed. The results are the cited authors'.

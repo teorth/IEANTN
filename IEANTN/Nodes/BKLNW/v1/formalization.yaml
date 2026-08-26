@@ -1,0 +1,67 @@
+# Node metadata for `BKLNW.v1`.  See docs/NODES.md.
+#
+# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
+# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+version: "v0.4"
+
+node:
+  id: BKLNW.v1
+  family: BKLNW
+  version: v1
+  kind: paper
+  status: stub
+
+project:
+  name: "Broadbent-Kadiri-Lumley-Ng-Wilk: sharper bounds for the Chebyshev function theta(x)"
+  description: >-
+    Explicit bounds on `theta(x) - x`. The method rests on a zero-free region, a zero density
+    estimate, and a verification of the Riemann hypothesis to a finite height, together with
+    substantial numerical work. The headline admissible classical bound on `E_theta` is the
+    conclusion downstream nodes want. The paper's table-driven components are a natural candidate
+    for splitting into their own node once anyone formalizes them, since a table is a different
+    kind of evidence from an analytic argument.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M06", "11M26"]
+
+conclusions: []
+
+sources:
+  - title: "Sharper bounds for the Chebyshev function theta(x)"
+    authors: ["Samuel Broadbent", "Habiba Kadiri", "Allysa Lumley", "Nathan Ng", "Kirsten Wilk"]
+    type: "paper"
+    id: "https://doi.org/10.1090/mcom/3643"
+    location: "Math. Comp. 90 (2021), no. 331, 2281-2315"
+    relationship: formalizes
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude Opus 5 (Anthropic)"]
+      framework: "Claude Code"
+      role: >-
+        Created this stub and transcribed its bibliographic record from the PNT+
+        bibliography, under the direction of the maintainer. No mathematical claim is
+        made and no statement has been transcribed from the paper.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    Bibliographic details taken from blueprint/src/references.bib in PrimeNumberTheoremAnd
+    rather than from the printed paper. Verify them against the paper before this node is
+    cited externally or used as the basis for a submission.
+
+limitations:
+  - >-
+    This node states nothing. It exists so that the network records the paper as in scope,
+    and so that the housekeeping queue asks for conclusions.
+  - >-
+    No novelty is claimed. The results are the cited authors'.

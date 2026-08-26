@@ -1,0 +1,71 @@
+# Node metadata for `Kadiri2005.v1`.  See docs/NODES.md.
+#
+# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
+# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+version: "v0.4"
+
+node:
+  id: Kadiri2005.v1
+  family: Kadiri2005
+  version: v1
+  kind: paper
+  status: stub
+
+project:
+  name: "Kadiri: an explicit zero-free region for the Riemann zeta function"
+  description: >-
+    An explicit zero-free region of classical de la Vallee Poussin shape: zeta has no zeros in a
+    region defined by an explicit constant. The other analytic input, alongside a zero density
+    estimate, to explicit bounds on the Chebyshev functions. The zero-free region, stated with its
+    constant as a parameter rather than baked in, so that a later sharpening -- `MTY`, for
+    instance -- can be swapped in by a downstream node without restating anything.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M26"]
+
+conclusions: []
+
+sources:
+  - title: "Une region explicite sans zeros pour la fonction zeta de Riemann"
+    authors: ["Habiba Kadiri"]
+    type: "paper"
+    id: "Acta Arith. 117 (2005), no. 4, 303-339"
+    location: "Acta Arith. 117 (2005), no. 4, 303-339"
+    relationship: formalizes
+    note: >-
+      PNT+'s bibliography records no DOI for this paper, so the journal reference stands as the
+      identifier. Confirm one against the publisher before this node is used as the basis for any
+      external submission. The title is in French and is transcribed here without diacritics;
+      check it against the printed paper.
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude Opus 5 (Anthropic)"]
+      framework: "Claude Code"
+      role: >-
+        Created this stub and transcribed its bibliographic record from the PNT+
+        bibliography, under the direction of the maintainer. No mathematical claim is
+        made and no statement has been transcribed from the paper.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    Bibliographic details taken from blueprint/src/references.bib in PrimeNumberTheoremAnd
+    rather than from the printed paper. Verify them against the paper before this node is
+    cited externally or used as the basis for a submission.
+
+limitations:
+  - >-
+    This node states nothing. It exists so that the network records the paper as in scope,
+    and so that the housekeeping queue asks for conclusions.
+  - >-
+    No novelty is claimed. The results are the cited authors'.
