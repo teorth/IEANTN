@@ -6,7 +6,7 @@ node:
   family: ZeroFreeHeight
   version: v1
   kind: folklore
-  status: active                # change this once the node is filled in
+  status: active
 
 project:
   name: Lowering the height of a classical zero-free region
