@@ -26,19 +26,28 @@ namespace MT.v1
 
 open IEANTN
 
-/-- **Theorem 1.** The classical zero-free region holds with `R = 5.573412`.
+/-- **Theorem 1.** The classical zero-free region holds with `R = 5.573412` above height `2`.
 
-`ζ` has no zeroes with `Re s ≥ 1 - 1/(R log |Im s|)` and `Im s ≥ 3`. This is the paper's
-unconditional headline value. -/
+`ζ` has no zeroes with `Re s ≥ 1 - 1/(R log |Im s|)` and `Im s ≥ 2`. This is the paper's
+unconditional headline value.
+
+Note the boundary. The paper's abstract claims the closed region, `σ ≥ 1 - 1/(R log|t|)`, while
+Theorem 1 itself claims only the open one, `σ > ...`. The closed form is stated here, matching the
+abstract and matching Kadiri before and `MTY` after, each of which states `≥`; but a consumer that
+genuinely needs the boundary case should know it rests on the abstract rather than on the theorem.
+See the node's limitations. -/
 def zero_free_region : Prop :=
-  ClassicalZeroFreeRegion 5.573412
+  ClassicalZeroFreeRegion 5.573412 2
 
 /-- **§6.1**, the value the downstream chain actually uses: the classical zero-free region holds
 with `R = 5.5666305`.
 
-`FKS` cites "[20, Theorem 1 and Section 6.1]" for this, alongside the verification height
-`H₀ = 3 · 10¹²` of `PlattTrudgian.v1`; §6.1 is where the constant is sharpened using a partial
-verification of the Riemann hypothesis. Recorded as a separate conclusion from Theorem 1 because it
+§6.1 is where the constant is sharpened using a partial verification of the Riemann hypothesis:
+"if `T₀ = 3 · 10¹¹`, then by choosing `θ = 1.85567` with `F₁₆(φ)`, we obtain that `R₀ = 5.5666305`
+is permissible", whose footnote records that `T₀ = 3 · 10¹¹` "has been announced by Jan Büthe and
+Jens Franke in a personal communication". `FKS` cites this alongside `H₀ = 3 · 10¹²`, which is a
+different and larger height; `PlattTrudgian.v1` supplies it and so discharges the requirement, but
+the requirement itself is `3 · 10¹¹`. Recorded as a separate conclusion from Theorem 1 because it
 is a different claim resting on a different input, and conflating the two would hide that this one
 is conditional on a numerical verification.
 
@@ -46,6 +55,6 @@ Stated here unconditionally, as the paper states it, with the dependence on the 
 recorded as an import rather than as a hypothesis. That is a choice worth revisiting if the height
 ever changes: see the node's limitations. -/
 def zero_free_region_sharpened : Prop :=
-  ClassicalZeroFreeRegion 5.5666305
+  ClassicalZeroFreeRegion 5.5666305 2
 
 end MT.v1

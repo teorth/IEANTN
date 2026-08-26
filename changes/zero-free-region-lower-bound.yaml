@@ -1,0 +1,29 @@
+# The height above which a classical zero-free region is claimed was hardcoded at 3 in
+# Vocabulary. No paper states it there. Kadiri, Mossinghoff-Trudgian and
+# Mossinghoff-Trudgian-Yang all state |t| >= 2, so every node using the definition was
+# silently claiming less than its source, and a node wanting a different threshold could
+# not say so at all. Making it a parameter moves three fingerprints.
+#
+# Versioning instead was considered and rejected. A v2 of each affected node would leave a
+# v1 behind whose only distinguishing feature is that it understates its own paper -- which
+# is the situation KLN.v1 was corrected out of, for the same reason: a node nobody should
+# use is worse than no node.
+acknowledge:
+  - conclusion: MT.v1.zero_free_region_sharpened
+    effect: statement-restated
+    reason: >-
+      ClassicalZeroFreeRegion gained a lower-bound parameter and this conclusion now passes 2,
+      the threshold the paper actually proves, where the definition previously forced 3. The
+      claim is strictly stronger than before and still no stronger than the paper, so both
+      importers -- FKS.v1.psi_bound_all_x and FKS.v1.psi_classical_bound -- keep everything
+      they were relying on and gain the band 2 <= t < 3. Neither carries a Lean receipt, so
+      nothing mechanically verified is invalidated.
+  - conclusion: MT.v1.zero_free_region
+    effect: statement-restated
+    reason: >-
+      The same change. Nothing imports this one yet.
+  - conclusion: Kadiri2005.v1.zero_free_region
+    effect: statement-restated
+    reason: >-
+      The same change. Its only importer, MT.v1.zero_free_region, is in this branch and was
+      written against the new form.

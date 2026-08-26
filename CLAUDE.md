@@ -60,6 +60,7 @@ lake build                              # Vocabulary + Conclusions + Challenges.
 lake build IEANTN.Vocabulary.PrimeGaps  # a single module while iterating
 python scripts/ieantn.py check          # every network invariant
 python scripts/ieantn.py report         # what each conclusion rests on
+python scripts/ieantn.py pages          # one summary page per node, under docs/nodes/
 python scripts/ieantn.py status         # green / yellow / orange / BROKEN per conclusion
 python scripts/ieantn.py diff           # what your branch degrades, and for whom
 python scripts/ieantn.py housekeeping   # the derived task queue

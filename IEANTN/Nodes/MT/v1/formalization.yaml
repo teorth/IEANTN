@@ -36,22 +36,23 @@ conclusions:
   imports:
   - node: Kadiri2005.v1
     conclusion: zero_free_region
+  - node: Platt2015.v1
+    conclusion: rh_up_to
   justifications:
   - id: mt-paper
     kind: literature
     source: MT
     locator: Theorem 1
     note: >-
-      Asserted on the authority of the paper. The unconditional headline value. Imports: this conclusion
-      previously recorded `none`, which was wrong -- an affirmative claim that Theorem 1 rests on nothing.
-      Section 3 says plainly: 'We select T0 = 3.06e10 as established in [10], t0 = 10^5, theta = 1.85573,
-      r = 5, and R = 5.7.' So Theorem 1 consumes both a height to which the Riemann hypothesis has been
-      verified and an already-established zero-free region, and then iterates. R = 5.7 is Kadiri's 5.69693
-      rounded off in the safe direction, so Kadiri2005.v1 is a genuine edge. The height is Platt, 'Computing
-      pi(x) analytically', the paper's [10], which is not held and not a node; that is why this is marked
-      undetermined rather than identified, one input of two being unrepresentable as an edge.
+      Asserted on the authority of the paper. The unconditional headline value. Imports: Section 3 says
+      plainly 'We select T0 = 3.06e10 as established in [10], t0 = 10^5, theta = 1.85573, r = 5, and R
+      = 5.7', and Section 2 defines T0 as 'a height to which the Riemann hypothesis has been verified'
+      and R as 'a positive constant for which the classical zero-free region has already been established'.
+      So Theorem 1 consumes both, and then iterates. R = 5.7 is Kadiri's 5.69693 rounded in the safe direction;
+      the height is Platt, 'Computing pi(x) analytically', now Platt2015.v1. This conclusion previously
+      recorded `none`, an affirmative claim that it rested on nothing, which was wrong.
   designated: mt-paper
-  imports_status: undetermined
+  imports_status: identified
 - id: zero_free_region_sharpened
   declaration: MT.v1.zero_free_region_sharpened
   challenge: MT.v1.challenge_zero_free_region_sharpened
@@ -120,10 +121,6 @@ limitations:
 - >-
   Both conclusions rest on the cited paper; neither is proved in Lean here.
 - >-
-  The paper proves its region for |t| >= 2 and the vocabulary's ClassicalZeroFreeRegion requires Im s
-  >= 3, so real content is discarded on 2 <= |t| < 3. The same applies to MTY and Kadiri2005; 3 is the
-  common denominator, not any paper's own threshold.
-- >-
   The paper is internally inconsistent about the boundary. Its abstract claims the closed region, 'no
   zeros in the region sigma >= 1 - 1/(5.573412 log|t|)', while its Theorem 1 claims only the open one,
   'sigma > 1 - ...'. The vocabulary states the closed form, which matches the abstract and matches both
@@ -131,8 +128,14 @@ limitations:
   like the anomaly, but it is the paper's own theorem statement, and a node that wanted to be certain
   of the boundary case should not lean on this one.
 - >-
-  zero_free_region is marked undetermined although its inputs are known, because one of the two -- Platt,
-  'Computing pi(x) analytically' -- is not a node and so cannot be an edge. The vocabulary has no value
-  for 'traced, but not fully representable'.
+  The paper is internally inconsistent about the boundary. Its abstract claims the closed region, 'no
+  zeros in the region sigma >= 1 - 1/(5.573412 log|t|)', while its Theorem 1 claims only the open one.
+  The closed form is stated, matching the abstract and matching Kadiri before and MTY after, each of which
+  states >=. A consumer needing the boundary case should know it rests on the abstract rather than on
+  the theorem.
+- >-
+  The height parameter is now 2 for both conclusions, which is what the paper proves. MTY's Korobov-Vinogradov
+  region uses 3 and Rosser-Schoenfeld uses 21 in a different shape, so no default would have suited every
+  node.
 - >-
   No novelty is claimed. The results are the paper's.

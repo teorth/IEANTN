@@ -5,7 +5,7 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-14 node version(s), 24 conclusion(s).  2 state nothing yet.
+15 node version(s), 25 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
@@ -13,7 +13,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 |---|---:|
 | `lean-comparator` | 2 |
 | `literature` | 21 |
-| `numerical` | 1 |
+| `numerical` | 2 |
 
 ## Nodes
 
@@ -40,9 +40,10 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `Kadiri2005.v1` | stub | `zero_free_region` | literature | 0 | - |
 | `Lcm.v1` | active | `lcmUpto_not_highlyAbundant` | lean-comparator | 1 | - |
 | `Lcm.v2` | active | `lcmUpto_not_highlyAbundant_of_primeGap` | lean-comparator | 0 | #10 |
-| `MT.v1` | active | `zero_free_region` | literature | 1 | - |
+| `MT.v1` | active | `zero_free_region` | literature | 2 | - |
 | `MT.v1` | active | `zero_free_region_sharpened` | literature | 2 | - |
 | `MTY.v1` | stub | *(none yet)* | - | - | - |
+| `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
 | `RosserSchoenfeld.v1` | stub | *(none yet)* | - | - | - |
 
@@ -60,6 +61,7 @@ downstream.
 | `KLN.v1.subconvexity_bound` | 2 |
 | `FKS.v1.psi_classical_bound` | 2 |
 | `Buthe.v1.theorem_2_li_minus_pi` | 2 |
+| `Platt2015.v1.rh_up_to` | 1 |
 | `Dusart2018.v1.proposition_5_4` | 1 |
 | `Buthe.v1.theorem_2_theta_lower` | 1 |
 | `Buthe.v1.theorem_2_li_gt_pi` | 1 |

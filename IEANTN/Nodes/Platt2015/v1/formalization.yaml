@@ -1,0 +1,82 @@
+version: "v0.4"
+node:
+  id: Platt2015.v1
+  family: Platt2015
+  version: v1
+  kind: computation
+  status: stub
+project:
+  name: 'Platt: computing pi(x) analytically'
+  description: >-
+    The verification of the Riemann hypothesis to height 3.06e10 that Mossinghoff-Trudgian's Theorem 1
+    consumes. The node states the part of the computation that is expressible as a proposition -- that
+    no zero below that height lies off the critical line -- which is precisely what MT takes from it.
+  authors:
+  - Terence Tao
+  license: Apache-2.0
+  responsible_maintainers:
+  - Terence Tao
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11M26
+  - 11Y35
+  - 11Y70
+conclusions:
+- id: rh_up_to
+  declaration: Platt2015.v1.rh_up_to
+  challenge: Platt2015.v1.challenge_rh_up_to
+  imports: []
+  imports_status: undetermined
+  justifications:
+  - id: platt-paper
+    kind: numerical
+    source: Platt2015
+    locator: the zero verification the paper reports, as cited by MT Section 3
+    note: >-
+      A large finite computation, so `numerical` rather than `literature`. Recorded at second hand: MT
+      states 'We select T0 = 3.06e10 as established in [10]' and defines T0 as a height to which the Riemann
+      hypothesis has been verified. The paper itself has not been obtained, so its own statement of the
+      height wants checking; see docs/SOURCES.md.
+  designated: platt-paper
+sources:
+- title: Computing pi(x) analytically
+  authors:
+  - David J. Platt
+  type: paper
+  id: Math. Comp. 84 (2015), 1521-1535
+  location: Mathematics of Computation; volume and pages taken from the standard citation
+  relationship: formalizes
+  note: >-
+    Bibliographic details not confirmed against the paper, which has not been obtained. MT's reference
+    list records it as 'published electronically Oct. 3, 2014, to appear in print; DOI 10.1090/S0025-5718-2014-02884-6'.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Created this node and stated the consequence of the computation that MT's Theorem 1 rests on, under
+      the direction of the maintainer. No proof is claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    Everything here is at second hand, from MT's description of the height it selected. The cited paper
+    has not been obtained.
+limitations:
+- >-
+  The cited paper has not been read. The height 3.06e10 is MT's description of what it selected, not a
+  quotation of this paper's own statement.
+- >-
+  The node states only the consequence that there are no zeros off the critical line below that height.
+  The computation's real output is a list of zeros, which is data rather than a proposition; a consumer
+  needing the zeros themselves needs more than the node says.
+- >-
+  No novelty is claimed.

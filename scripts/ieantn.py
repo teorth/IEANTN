@@ -54,6 +54,7 @@ BRIDGES_DIR = ROOT / "IEANTN" / "Bridges"
 FINGERPRINTS = ROOT / "fingerprints.json"
 STATE = ROOT / "STATE.md"
 GRAPH = ROOT / "GRAPH.md"
+PAGES = ROOT / "docs" / "nodes"
 VERIFY_SCRIPT = ROOT / "scripts" / "verify-comparator.sh"
 RECEIPTS = ROOT / "receipts"
 CHANGES = ROOT / "changes"
@@ -128,12 +129,13 @@ def _set_root(path: pathlib.Path) -> None:
     this one. Nothing else should call it: the paths are derived from `__file__` precisely so that
     the tooling cannot be pointed somewhere unexpected by accident.
     """
-    global ROOT, NODES_DIR, VOCAB_DIR, BRIDGES_DIR, FINGERPRINTS, STATE, GRAPH, VERIFY_SCRIPT
+    global ROOT, NODES_DIR, VOCAB_DIR, BRIDGES_DIR, FINGERPRINTS, STATE, GRAPH, PAGES, VERIFY_SCRIPT
     global RECEIPTS, CHANGES, SOLUTIONS
     ROOT = path
     NODES_DIR = ROOT / "IEANTN" / "Nodes"
     VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
     BRIDGES_DIR = ROOT / "IEANTN" / "Bridges"
+    PAGES = ROOT / "docs" / "nodes"
     FINGERPRINTS = ROOT / "fingerprints.json"
     STATE = ROOT / "STATE.md"
     GRAPH = ROOT / "GRAPH.md"
@@ -1863,6 +1865,64 @@ EVIDENCE_STYLE = {
 }
 
 
+#: Lines that end a declaration when they start one of their own.
+_DECLARATION_START = ("def ", "noncomputable def ", "abbrev ", "theorem ", "lemma ", "/--",
+                      "end ", "namespace ", "section ", "@[", "open ", "variable ")
+
+
+def conclusions_source(node_id: str) -> pathlib.Path:
+    return NODES_DIR / node_id.replace(".", "/") / "Conclusions.lean"
+
+
+def read_declaration(node_id: str, cid: str) -> tuple[str, str]:
+    """The docstring and the Lean source of one conclusion, as written.
+
+    The docstring is where a node's informal statement lives -- there is no blueprint -- so a
+    summary that omitted it would be a summary of the metadata rather than of the claim. And the
+    source is the *Lean spelling*: the thing a reader has to match if they want to import it, and
+    the thing that decides whether a transcription is faithful.
+    """
+    path = conclusions_source(node_id)
+    if not path.is_file():
+        return "", ""
+    lines = path.read_text(encoding="utf-8").splitlines()
+    start = None
+    for number, line in enumerate(lines):
+        stripped = line.lstrip()
+        for prefix in ("def ", "noncomputable def ", "abbrev "):
+            if stripped.startswith(prefix) and stripped[len(prefix):].split()[:1] == [cid]:
+                start = number
+                break
+        if start is not None:
+            break
+    if start is None:
+        return "", ""
+
+    # The docstring is the /-- ... -/ block ending on the line before, if there is one.
+    doc: list[str] = []
+    if start and lines[start - 1].rstrip().endswith("-/"):
+        end = start - 1
+        begin = end
+        while begin >= 0 and not lines[begin].lstrip().startswith("/--"):
+            begin -= 1
+        if begin >= 0:
+            doc = lines[begin:end + 1]
+            doc[0] = doc[0].lstrip()[3:].lstrip()
+            doc[-1] = doc[-1].rstrip()[:-2].rstrip()
+            doc = [line for line in doc if line is not None]
+
+    body = [lines[start]]
+    for line in lines[start + 1:]:
+        stripped = line.lstrip()
+        if stripped and not any(stripped.startswith(prefix) for prefix in _DECLARATION_START):
+            body.append(line)
+            continue
+        break
+    while body and not body[-1].strip():
+        body.pop()
+    return "\n".join(doc).strip(), "\n".join(body)
+
+
 def declaration_url(key: str) -> str | None:
     """Where a reader can go to read the claim itself.
 
@@ -1876,7 +1936,7 @@ def declaration_url(key: str) -> str | None:
     caller follows.
     """
     node_id, _, cid = key.rpartition(".")
-    relative = pathlib.PurePosixPath("IEANTN/Nodes") / node_id.replace(".", "/") / "Conclusions.lean"
+    relative = pathlib.PurePosixPath("IEANTN/Nodes") / node_id.replace(".", "/") / "Conclusions.lean"  # noqa: E501
     path = ROOT / relative
     if not path.is_file():
         return None
@@ -1943,10 +2003,10 @@ def click_lines(index: dict, prefix: str = "", key=None) -> list[str]:
         box = (key(conclusion_key) if key else conclusion_key)
         if box in seen:
             continue
-        url = declaration_url(conclusion_key)
-        if url:
-            seen.add(box)
-            out.append(f'  click {prefix}{mermaid_id(box)} href "{url}" _blank')
+        node_id, _, cid = conclusion_key.rpartition(".")
+        url = node_page_url(node_id, "" if key else cid, from_root=True)
+        seen.add(box)
+        out.append(f'  click {prefix}{mermaid_id(box)} href "{url}" _blank')
     return out
 
 
@@ -2045,7 +2105,9 @@ def render_graph(nodes: dict[str, dict]) -> str:
         "been asked. A solid border means someone has traced it to its sources, and the arrows",
         "into it are the answer.",
         "",
-        "Every box and every claim named below links to the line of Lean that states it.",
+        "Every box and every claim named below links to that node's page, which carries the Lean",
+        "spelling of the claim, its docstring, and everything recorded about why it should be",
+        "believed. The pages are indexed at [docs/nodes/](docs/nodes/README.md).",
         "",
         "A **hexagon** is a *bridge*, and the thick arrows around it are a different relation from",
         "the thin ones. A thin arrow into a box means the box **assumes** what the arrow comes",
@@ -2152,8 +2214,8 @@ def render_graph(nodes: dict[str, dict]) -> str:
         repeated = " *(above)*" if key in seen else ""
         pending = (" — *sources not traced*"
                    if import_status(conclusion) == "undetermined" else "")
-        url = declaration_url(key)
-        shown = f"[`{key}`]({url})" if url else f"`{key}`"
+        node_id, _, cid = key.rpartition(".")
+        shown = f"[`{key}`]({node_page_url(node_id, cid, from_root=True)})"
         out.append(f"{mark}- {shown} — {label}{repeated}{pending}")
         if key in seen:
             return
@@ -2189,8 +2251,8 @@ def render_graph(nodes: dict[str, dict]) -> str:
             label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
             traced = ("**not yet traced**"
                       if import_status(index[key][1]) == "undetermined" else "traced")
-            url = declaration_url(key)
-            shown = f"[`{key}`]({url})" if url else f"`{key}`"
+            node_id, _, cid = key.rpartition(".")
+            shown = f"[`{key}`]({node_page_url(node_id, cid, from_root=True)})"
             lines.append(
                 f"| {shown} | {label} | {len(importers.get(key, []))} | {traced} |")
         lines.append("")
@@ -2205,7 +2267,8 @@ def render_graph(nodes: dict[str, dict]) -> str:
             "the network's open invitations.",
             "",
         ]
-        lines += [f"- `{node_id}`" for node_id in empty]
+        lines += [f"- [`{node_id}`]({node_page_url(node_id, from_root=True)})"
+                  for node_id in empty]
         lines.append("")
 
     lines += [
@@ -2217,6 +2280,190 @@ def render_graph(nodes: dict[str, dict]) -> str:
         "fresh each Lean verification is.",
     ]
     return "\n".join(lines) + "\n"
+
+
+def node_page_path(node_id: str) -> pathlib.Path:
+    return PAGES / f"{node_id.replace('.', '-')}.md"
+
+
+def node_page_url(node_id: str, anchor: str = "", from_root: bool = False) -> str:
+    """A link to a node's page.
+
+    `from_root` because GRAPH.md sits at the repository root and the node pages link to each other
+    from inside `docs/nodes/`; a path that is right for one is broken for the other.
+    """
+    fragment = f"#{anchor}" if anchor else ""
+    prefix = "docs/nodes/" if from_root else ""
+    return f"{prefix}{node_id.replace('.', '-')}.md{fragment}"
+
+
+def _quote(value) -> str:
+    """One metadata value, flattened onto a line and safe inside a table cell."""
+    if isinstance(value, list):
+        return ", ".join(_quote(entry) for entry in value)
+    return " ".join(str(value or "").split()).replace("|", "\\|")
+
+
+def render_node_page(node_id: str, nodes: dict, index: dict, importers: dict) -> str:
+    """Everything recorded about one node, for someone who is not going to read the YAML.
+
+    The metadata is the justification: a node's claim is only as good as what stands behind it,
+    and that lives in `formalization.yaml` in a shape built for machines. This is the same content
+    for a person -- with the Lean spelling next to each claim, since that is what a consumer has
+    to write and what decides whether a transcription is faithful.
+    """
+    node = nodes[node_id]
+    meta, project = node.get("node") or {}, node.get("project") or {}
+    out = [
+        f"# `{node_id}`",
+        "",
+        "**Generated file - do not edit.**  Regenerated by `python scripts/ieantn.py pages`.",
+        "",
+        f"> {_quote(project.get('description')) or '_No description recorded._'}",
+        "",
+        "| | |",
+        "|---|---|",
+        f"| Kind | {_quote(meta.get('kind'))} |",
+        f"| Status | {_quote(meta.get('status'))} |",
+        f"| Maintainers | {_quote(project.get('responsible_maintainers'))} |",
+        f"| Licence | {_quote(project.get('license'))} |",
+        f"| Review | {_quote((node.get('review') or {}).get('status'))} |",
+        "",
+    ]
+
+    sources = node.get("sources") or []
+    if sources:
+        out += ["## The source", ""]
+        for source in sources:
+            title = _quote(source.get("title"))
+            authors = _quote(source.get("authors"))
+            where = _quote(source.get("location") or source.get("id"))
+            out.append(f"- **{title}** — {authors}. {where}"
+                       + (f"  \n  _{_quote(source.get('note'))}_" if source.get("note") else ""))
+        out.append("")
+
+    conclusions = conclusions_of(node)
+    out += ["## Conclusions", ""]
+    if not conclusions:
+        out += ["_This node states nothing yet._  It records that the source is in scope and "
+                "carries its citation, so a conclusion can be added the moment something needs "
+                "one.", ""]
+    for conclusion in conclusions:
+        cid = str(conclusion.get("id") or "")
+        key = f"{node_id}.{cid}"
+        doc, body = read_declaration(node_id, cid)
+        url = declaration_url(key)
+        out += [f"### `{cid}`", ""]
+        if doc:
+            out += [doc, ""]
+        if body:
+            out += ["```lean", body, "```", ""]
+        out += [f"| | |", "|---|---|",
+                f"| Lean name | `{_quote(conclusion.get('declaration'))}` |",
+                f"| Challenge | `{_quote(conclusion.get('challenge'))}` |"]
+        if url:
+            out.append(f"| Source | [{conclusions_source(node_id).name}]({url}) |")
+        kind = designated_kind(conclusion) or "none-yet"
+        label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
+        out.append(f"| Evidence | {label} (`{kind}`) |")
+        out.append(f"| Sources traced | {import_status(conclusion)} |")
+        depends = [f"{d.get('node')}.{d.get('conclusion')}" for d in conclusion.get("imports") or []]
+        out.append("| Assumes | " + (", ".join(
+            f"[`{d}`]({node_page_url(d.rsplit('.', 1)[0], d.rsplit('.', 1)[1])})"
+            for d in depends) or "nothing recorded") + " |")
+        used_by = importers.get(key) or []
+        out.append("| Assumed by | " + (", ".join(
+            f"[`{u}`]({node_page_url(u.rsplit('.', 1)[0], u.rsplit('.', 1)[1])})"
+            for u in sorted(used_by)) or "nothing yet") + " |")
+        out.append("")
+
+        for justification in conclusion.get("justifications") or []:
+            jid = justification.get("id")
+            mark = " — **designated**" if jid == conclusion.get("designated") else ""
+            out.append(f"**Justification `{jid}`**{mark} — {_quote(justification.get('kind'))}"
+                       + (f", {_quote(justification.get('locator'))}"
+                          if justification.get("locator") else ""))
+            if justification.get("from"):
+                out.append(f"  \n  Bridged from {_quote(bridge_sources(justification))}"
+                           f" via `{_quote(justification.get('bridge'))}`.")
+            if justification.get("note"):
+                out += ["", f"> {_quote(justification.get('note'))}"]
+            out.append("")
+
+    limitations = node.get("limitations") or []
+    if limitations:
+        out += ["## Limitations", "",
+                "Recorded by the node itself, not derived.", ""]
+        out += [f"- {_quote(limitation)}" for limitation in limitations] + [""]
+
+    automation = (node.get("automation") or {}).get("methods") or []
+    if automation:
+        out += ["## How this node was made", ""]
+        for method in automation:
+            out.append(f"- **{_quote(method.get('method'))}**"
+                       + (f" ({_quote(method.get('models'))})" if method.get("models") else "")
+                       + (f" — {_quote(method.get('role'))}" if method.get("role") else ""))
+        out.append("")
+
+    out += ["---", "",
+            f"[All nodes](README.md) · [The network](../../GRAPH.md) · "
+            f"[State](../../STATE.md)"]
+    return "\n".join(out) + "\n"
+
+
+def render_pages_index(nodes: dict, index: dict) -> str:
+    out = [
+        "# Nodes",
+        "",
+        "**Generated file - do not edit.**  Regenerated by `python scripts/ieantn.py pages`.",
+        "",
+        "One page per node: what it claims, in Lean and in prose, and everything recorded about "
+        "why it should be believed. [GRAPH.md](../../GRAPH.md) is the same network as a picture.",
+        "",
+        "| Node | Kind | Claims | Weakest evidence |",
+        "|---|---|---:|---|",
+    ]
+    for node_id in sorted(nodes):
+        node = nodes[node_id]
+        cs = conclusions_of(node)
+        kind = weakest_kind(cs) if cs else "none-yet"
+        label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
+        out.append(f"| [`{node_id}`]({node_id.replace('.', '-')}.md) "
+                   f"| {_quote((node.get('node') or {}).get('kind'))} | {len(cs)} "
+                   f"| {label if cs else '—'} |")
+    out.append("")
+    return "\n".join(out) + "\n"
+
+
+def pages(check_only: bool) -> bool:
+    """Write (or verify) one page per node."""
+    nodes = load_nodes()
+    index = index_conclusions(nodes)
+    importers = importers_of(nodes)
+    wanted = {node_page_path(node_id): render_node_page(node_id, nodes, index, importers)
+              for node_id in sorted(nodes)}
+    wanted[PAGES / "README.md"] = render_pages_index(nodes, index)
+
+    if check_only:
+        problems = Problems()
+        for path, text in sorted(wanted.items()):
+            current = path.read_text(encoding="utf-8") if path.is_file() else ""
+            if current != text:
+                problems.add(rel(path), "out of date; run `python scripts/ieantn.py pages`")
+        for path in sorted(PAGES.glob("*.md")) if PAGES.is_dir() else []:
+            if path not in wanted:
+                problems.add(rel(path), "no such node; delete it and rerun `pages`")
+        return problems.report("node pages")
+
+    PAGES.mkdir(parents=True, exist_ok=True)
+    for path in sorted(PAGES.glob("*.md")):
+        if path not in wanted:
+            path.unlink()
+            print(f"removed {rel(path)}")
+    for path, text in sorted(wanted.items()):
+        path.write_text(text, encoding="utf-8", newline="\n")
+    print(f"wrote {len(wanted)} pages under {rel(PAGES)}")
+    return True
 
 
 def graph(check_only: bool) -> bool:
@@ -2950,6 +3197,8 @@ def main() -> int:
     prints.add_argument("--check", action="store_true", help="fail instead of rewriting")
     picture = sub.add_parser("graph")
     picture.add_argument("--check", action="store_true", help="fail instead of rewriting")
+    per_node = sub.add_parser("pages")
+    per_node.add_argument("--check", action="store_true", help="fail instead of rewriting")
     snapshot = sub.add_parser("state")
     snapshot.add_argument("--check", action="store_true", help="fail instead of rewriting")
     fresh = sub.add_parser("new-node")
@@ -3007,6 +3256,8 @@ def main() -> int:
         return 0 if new_node(args.family, args.kind) else 1
     if args.command == "graph":
         return 0 if graph(args.check) else 1
+    if args.command == "pages":
+        return 0 if pages(args.check) else 1
     if args.command == "spinoff":
         return 0 if spinoff(args.conclusion, args.out, args.compile) else 1
     if args.command == "new-version":
@@ -3016,7 +3267,7 @@ def main() -> int:
     if args.command == "check":
         return 0 if all(
             [check_closure(), check_graph(), check_pins(), check_receipts(online=False),
-             gen_challenges(True), state(True), graph(True)]
+             gen_challenges(True), state(True), graph(True), pages(True)]
         ) else 1
     return 2
 
