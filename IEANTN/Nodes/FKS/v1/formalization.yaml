@@ -33,7 +33,11 @@ conclusions:
 - id: psi_bound_all_x
   declaration: FKS.v1.psi_bound_all_x
   challenge: FKS.v1.challenge_psi_bound_all_x
-  imports: []
+  imports:
+  - node: MT.v1
+    conclusion: zero_free_region_sharpened
+  - node: PlattTrudgian.v1
+    conclusion: rh_up_to
   justifications:
   - id: fks-paper
     kind: literature
@@ -43,12 +47,22 @@ conclusions:
       Asserted on the authority of the paper, and transcribed from the preprint in the paper's own normalisation
       rather than converted to the admissible-bound shape. The conversion is not free: with R = 5.5666305
       it gives A = 9.22022 * R^(3/2) = 121.0916... and C = 0.8476836 * sqrt(R) = 2.0000..., and the rounding
-      there is the difference between this constant and the 121.096 FKS2 quotes.
+      there is the difference between this constant and the 121.096 FKS2 quotes. Imports: FKS names three
+      inputs -- the verification height H0 = 3 x 10^12 from Platt and Trudgian, the zero-free region R
+      = 5.5666305 from Mossinghoff and Trudgian, and a zero density estimate from Kadiri, Lumley and Ng.
+      The first two are recorded. The third is not, because FKS's reference [18] is a Kadiri-Lumley-Ng
+      *preprint* titled 'Bounding psi(x) with zero-density', which is not evidently the same work as the
+      JMAA 2018 paper KLN.v1 records; conflating them would be a citation error of exactly the kind this
+      network is supposed to prevent. Resolve which paper is meant before adding that edge.
   designated: fks-paper
 - id: psi_classical_bound
   declaration: FKS.v1.psi_classical_bound
   challenge: FKS.v1.challenge_psi_classical_bound
-  imports: []
+  imports:
+  - node: MT.v1
+    conclusion: zero_free_region_sharpened
+  - node: PlattTrudgian.v1
+    conclusion: rh_up_to
   justifications:
   - id: fks-paper
     kind: literature
@@ -60,7 +74,13 @@ conclusions:
       1.3]. The arXiv preprint numbers its results differently -- its Corollary 1.3 is a remark -- and
       tabulates A(x0) only for log x0 > 1000, so the value at e^30 could not be checked against the version
       to hand. CONFIRM the locator and the constant against the published J. Math. Anal. Appl. version
-      before relying on this.
+      before relying on this. Imports: FKS names three inputs -- the verification height H0 = 3 x 10^12
+      from Platt and Trudgian, the zero-free region R = 5.5666305 from Mossinghoff and Trudgian, and a
+      zero density estimate from Kadiri, Lumley and Ng. The first two are recorded. The third is not,
+      because FKS's reference [18] is a Kadiri-Lumley-Ng *preprint* titled 'Bounding psi(x) with zero-density',
+      which is not evidently the same work as the JMAA 2018 paper KLN.v1 records; conflating them would
+      be a citation error of exactly the kind this network is supposed to prevent. Resolve which paper
+      is meant before adding that edge.
   designated: fks-paper
 
 sources:

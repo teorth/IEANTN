@@ -1,0 +1,102 @@
+# Node metadata for `MT.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: MT.v1
+  family: MT
+  version: v1
+  kind: paper
+  status: active            # change this once the node is filled in
+
+project:
+  name: "Mossinghoff-Trudgian: nonnegative trigonometric polynomials and a zero-free region"
+  description: >-
+    The classical zero-free region for the Riemann zeta function with R = 5.573412, and the sharpened
+    R = 5.5666305 of Section 6.1 that the FKS to FKS2 chain is calibrated to. Not to be confused with
+    MTY.v1, which is the 2024 paper by the same authors with Yang.
+  authors:
+  - Terence Tao
+  license: "Apache-2.0"
+  responsible_maintainers:
+  - Terence Tao
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11M26
+
+conclusions:
+- id: zero_free_region
+  declaration: MT.v1.zero_free_region
+  challenge: MT.v1.challenge_zero_free_region
+  imports: []
+  justifications:
+  - id: mt-paper
+    kind: literature
+    source: MT
+    locator: Theorem 1
+    note: >-
+      Asserted on the authority of the paper. The unconditional headline value.
+  designated: mt-paper
+- id: zero_free_region_sharpened
+  declaration: MT.v1.zero_free_region_sharpened
+  challenge: MT.v1.challenge_zero_free_region_sharpened
+  imports:
+  - node: PlattTrudgian.v1
+    conclusion: rh_up_to
+  justifications:
+  - id: mt-paper
+    kind: literature
+    source: MT
+    locator: Section 6.1
+    note: >-
+      Asserted on the authority of the paper. FKS cites '[20, Theorem 1 and Section 6.1]' for R = 5.5666305
+      alongside the verification height H0 = 3 x 10^12, and Section 6.1 is where the constant is sharpened
+      using a partial verification of the Riemann hypothesis. Recorded separately from Theorem 1 because
+      it is a different claim resting on a different input. The dependence on the height is recorded as
+      an import rather than as a hypothesis in the statement; if the height ever changes this conclusion
+      should become a new version rather than be edited.
+  designated: mt-paper
+sources:
+- title: Nonnegative trigonometric polynomials and a zero-free region for the Riemann zeta-function
+  authors:
+  - Michael J. Mossinghoff
+  - Timothy S. Trudgian
+  type: paper
+  id: https://doi.org/10.1016/j.jnt.2015.05.010
+  location: J. Number Theory 157 (2015), 329-349
+  relationship: formalizes
+  note: >-
+    Bibliographic details from PNT+'s references.bib and FKS's reference [20]; the DOI has not been confirmed
+    against the publisher. Note the near-identical title of Mossinghoff, Trudgian and Yang (MTY.v1), which
+    is a different, later paper.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Transcribed the statement into the network's vocabulary and wrote this metadata, under the direction
+      of the maintainer. No proof is claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    Constants transcribed from FKS's citation of this paper rather than from the paper itself, which has
+    not been read. Both the Theorem 1 value and the Section 6.1 value want confirming there.
+
+limitations:
+- >-
+  Both conclusions rest on the cited paper, which has not been read directly; the constants are transcribed
+  from FKS's citation of it.
+- >-
+  The sharpened value of Section 6.1 is conditional on a verification height, recorded here as an import
+  of PlattTrudgian.v1. Whether the paper states it in exactly that form has not been checked.
+- >-
+  No novelty is claimed.

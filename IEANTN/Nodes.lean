@@ -13,7 +13,9 @@ import IEANTN.Nodes.Kadiri2005.v1.Challenge
 import IEANTN.Nodes.Lcm.v1.Challenge
 import IEANTN.Nodes.Lcm.v1.Examples
 import IEANTN.Nodes.Lcm.v2.Challenge
+import IEANTN.Nodes.MT.v1.Challenge
 import IEANTN.Nodes.MTY.v1.Challenge
+import IEANTN.Nodes.PlattTrudgian.v1.Challenge
 import IEANTN.Nodes.RosserSchoenfeld.v1.Challenge
 
 /-!

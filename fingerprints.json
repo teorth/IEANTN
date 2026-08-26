@@ -12,5 +12,8 @@
   "FKS2.v1.corollary_23": "a4e8b9028e790796ea6cfd90000b6a6c8128a62bc8b12351cc4986cd3483380a",
   "FKS2.v1.corollary_26": "b599170683ab0585cacde23f0aad801f36814b4ca3fda025c9575390fecd8191",
   "Lcm.v1.lcmUpto_not_highlyAbundant": "7dd7914d659103ca6fef5fa518d4db55a8372b9161fd3e2966f1772976cdf4f0",
-  "Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap": "90d4cacf4a5de6e381f02cabdb5b8d6b5f8bf442a7ce3f5197fefda84c80ee7a"
+  "Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap": "90d4cacf4a5de6e381f02cabdb5b8d6b5f8bf442a7ce3f5197fefda84c80ee7a",
+  "MT.v1.zero_free_region": "99f7229632e0e97ee79938750de57d42360efb8ba5d31d71de651927088657cd",
+  "MT.v1.zero_free_region_sharpened": "e3293bc0531b434c4e1b73d837c167de6586a240632efeb284932c8d26a82118",
+  "PlattTrudgian.v1.rh_up_to": "73439a92990285f0e57e065923c3ab443344e83550d452c73fba5467776160eb"
 }

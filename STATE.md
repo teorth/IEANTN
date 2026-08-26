@@ -5,14 +5,14 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-11 node version(s), 14 conclusion(s).  4 state nothing yet.
+13 node version(s), 17 conclusion(s).  4 state nothing yet.
 
 ## Evidence
 
 | Designated justification | Conclusions |
 |---|---:|
 | `lean-comparator` | 2 |
-| `literature` | 12 |
+| `literature` | 15 |
 
 ## Nodes
 
@@ -25,8 +25,8 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `Buthe.v1` | active | `theorem_2_li_minus_pi` | literature | 0 | - |
 | `Buthe.v1` | active | `theorem_2_li_gt_pi` | literature | 0 | - |
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
-| `FKS.v1` | active | `psi_bound_all_x` | literature | 0 | - |
-| `FKS.v1` | active | `psi_classical_bound` | literature | 0 | - |
+| `FKS.v1` | active | `psi_bound_all_x` | literature | 2 | - |
+| `FKS.v1` | active | `psi_classical_bound` | literature | 2 | - |
 | `FKS2.v1` | active | `corollary_14` | literature | 3 | - |
 | `FKS2.v1` | active | `corollary_23` | literature | 2 | - |
 | `FKS2.v1` | active | `corollary_26` | literature | 2 | - |
@@ -34,7 +34,10 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `Kadiri2005.v1` | stub | *(none yet)* | - | - | - |
 | `Lcm.v1` | active | `lcmUpto_not_highlyAbundant` | lean-comparator | 1 | - |
 | `Lcm.v2` | active | `lcmUpto_not_highlyAbundant_of_primeGap` | lean-comparator | 0 | #10 |
+| `MT.v1` | active | `zero_free_region` | literature | 0 | - |
+| `MT.v1` | active | `zero_free_region_sharpened` | literature | 1 | - |
 | `MTY.v1` | stub | *(none yet)* | - | - | - |
+| `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
 | `RosserSchoenfeld.v1` | stub | *(none yet)* | - | - | - |
 
 ## Leverage
@@ -44,6 +47,8 @@ downstream.
 
 | Conclusion | Dependants |
 |---|---:|
+| `PlattTrudgian.v1.rh_up_to` | 3 |
+| `MT.v1.zero_free_region_sharpened` | 2 |
 | `FKS.v1.psi_classical_bound` | 2 |
 | `Buthe.v1.theorem_2_li_minus_pi` | 2 |
 | `Dusart2018.v1.proposition_5_4` | 1 |

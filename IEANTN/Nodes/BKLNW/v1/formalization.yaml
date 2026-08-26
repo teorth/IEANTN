@@ -46,9 +46,14 @@ conclusions:
       38 log 10 only. Above that threshold a1(b) is 1 + eps(b/2) with eps read from the paper's Table
       8; below it a1 is the explicit constant 1 + 1.93378e-8, and every current consumer is below it --
       FKS2 uses x0 = e^30, and 38 log 10 is about 87.4982. This is a restriction of the paper's range,
-      not a weakening of what it claims on that range. DISCREPANCY worth resolving: the displayed equation
-      (2.12) gives the leading factor of a2 as 1 + 1.93378e-8 while the proof of Corollary 5.1 writes
-      1 + 1.15177e-8. The displayed statement is transcribed here, being the claim.
+      not a weakening of what it claims on that range. The paper contradicts itself here and the displayed
+      statement is the correct side, so that is what is transcribed. Theorem 5 gives a2 = (1 + alpha)
+      max{...}; Corollary 5.1's proof declares alpha = 1.93378e-8 from Corollary 2.1 and then writes 1.15177e-8
+      for the same quantity one sentence later, so (2.12) is self-consistent and the proof's figure is
+      a stray -- most likely a leftover from a draft with a different epsilon. It appears on page 9 of
+      both arXiv:2002.11068v2 and the published Math. Comp. version, and never reached PNT+, whose formalization
+      uses the correct value. The difference is lower order and harmless; it is recorded because a stray
+      constant that nobody writes down is the kind of thing that gets propagated later.
   designated: bklnw-paper
 - id: theta_error_le_one
   declaration: BKLNW.v1.theta_error_le_one
