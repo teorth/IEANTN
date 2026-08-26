@@ -73,7 +73,12 @@ sources:
   note: >-
     Bibliographic details from PNT+'s references.bib and FKS's reference [20]; the DOI has not been confirmed
     against the publisher. Note the near-identical title of Mossinghoff, Trudgian and Yang (MTY.v1), which
-    is a different, later paper.
+    is a different, later paper. The published FKS reference list swaps this paper's title with that of
+    Mossinghoff, Trudgian and Yang: its [21] pairs this paper's venue, J. Number Theory 157 (2015) 329-349,
+    with MTY's title, and its [22] pairs MTY's arXiv id with this paper's title. FKS2's [12] repeats the
+    same confusion. The titles recorded in this network were checked against the arXiv:2212.06867 preprint
+    itself and are the right way round: this paper is 'Nonnegative trigonometric polynomials and a zero-free
+    region for the Riemann zeta-function'.
 automation:
   methods:
   - method: agent

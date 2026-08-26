@@ -47,13 +47,20 @@ conclusions:
       Asserted on the authority of the paper, and transcribed from the preprint in the paper's own normalisation
       rather than converted to the admissible-bound shape. The conversion is not free: with R = 5.5666305
       it gives A = 9.22022 * R^(3/2) = 121.0916... and C = 0.8476836 * sqrt(R) = 2.0000..., and the rounding
-      there is the difference between this constant and the 121.096 FKS2 quotes. Imports: FKS names three
-      inputs -- the verification height H0 = 3 x 10^12 from Platt and Trudgian, the zero-free region R
-      = 5.5666305 from Mossinghoff and Trudgian, and a zero density estimate from Kadiri, Lumley and Ng.
-      The first two are recorded. The third is not, because FKS's reference [18] is a Kadiri-Lumley-Ng
-      *preprint* titled 'Bounding psi(x) with zero-density', which is not evidently the same work as the
-      JMAA 2018 paper KLN.v1 records; conflating them would be a citation error of exactly the kind this
-      network is supposed to prevent. Resolve which paper is meant before adding that edge.
+      there is the difference between this constant and the 121.096 FKS2 quotes. Imports: Settled against
+      the published version (J. Math. Anal. Appl. 527 (2023) 127426). FKS names three inputs: the verification
+      height H0 = 3 x 10^12 from Platt and Trudgian, the zero-free region R = 5.5666305 from Mossinghoff
+      and Trudgian, and a zero-density bound for N-tilde(sigma, T) of the shape (2.6) from Kadiri, Lumley
+      and Ng [18], the published J. Math. Anal. Appl. 465 (2018) paper that KLN.v1 records. The first
+      two are recorded as edges. The third is not yet, for a reason worth stating: FKS says that the value
+      a1 = 0.63 used in [18, Theorem 1.1] rests on an erroneous explicit van der Corput second derivative
+      test of Cheng and Graham, that the corrected value is 0.77, and that the error 'would render many
+      results concerning the prime number theorem unreliable'. So KLN.v1's conclusion must be stated with
+      the corrected constant, or stated as printed and explicitly marked as superseded -- and that decision
+      should be made by someone reading KLN, not inferred from FKS's description of it. FKS's other Kadiri-Lumley-Ng
+      reference [19], the unpublished preprint 'Bounding psi(x) with zero-density', is NOT an input: Lemma
+      2.5, the sums-over-zeros estimate, is proved in FKS itself and the preprint is cited as attribution
+      -- 'a particular case of the studies done in [19]'. It is background, not an edge.
   designated: fks-paper
 - id: psi_classical_bound
   declaration: FKS.v1.psi_classical_bound
@@ -74,13 +81,20 @@ conclusions:
       1.3]. The arXiv preprint numbers its results differently -- its Corollary 1.3 is a remark -- and
       tabulates A(x0) only for log x0 > 1000, so the value at e^30 could not be checked against the version
       to hand. CONFIRM the locator and the constant against the published J. Math. Anal. Appl. version
-      before relying on this. Imports: FKS names three inputs -- the verification height H0 = 3 x 10^12
-      from Platt and Trudgian, the zero-free region R = 5.5666305 from Mossinghoff and Trudgian, and a
-      zero density estimate from Kadiri, Lumley and Ng. The first two are recorded. The third is not,
-      because FKS's reference [18] is a Kadiri-Lumley-Ng *preprint* titled 'Bounding psi(x) with zero-density',
-      which is not evidently the same work as the JMAA 2018 paper KLN.v1 records; conflating them would
-      be a citation error of exactly the kind this network is supposed to prevent. Resolve which paper
-      is meant before adding that edge.
+      before relying on this. Imports: Settled against the published version (J. Math. Anal. Appl. 527
+      (2023) 127426). FKS names three inputs: the verification height H0 = 3 x 10^12 from Platt and Trudgian,
+      the zero-free region R = 5.5666305 from Mossinghoff and Trudgian, and a zero-density bound for N-tilde(sigma,
+      T) of the shape (2.6) from Kadiri, Lumley and Ng [18], the published J. Math. Anal. Appl. 465 (2018)
+      paper that KLN.v1 records. The first two are recorded as edges. The third is not yet, for a reason
+      worth stating: FKS says that the value a1 = 0.63 used in [18, Theorem 1.1] rests on an erroneous
+      explicit van der Corput second derivative test of Cheng and Graham, that the corrected value is
+      0.77, and that the error 'would render many results concerning the prime number theorem unreliable'.
+      So KLN.v1's conclusion must be stated with the corrected constant, or stated as printed and explicitly
+      marked as superseded -- and that decision should be made by someone reading KLN, not inferred from
+      FKS's description of it. FKS's other Kadiri-Lumley-Ng reference [19], the unpublished preprint 'Bounding
+      psi(x) with zero-density', is NOT an input: Lemma 2.5, the sums-over-zeros estimate, is proved in
+      FKS itself and the preprint is cited as attribution -- 'a particular case of the studies done in
+      [19]'. It is background, not an edge.
   designated: fks-paper
 
 sources:

@@ -33,25 +33,28 @@ classification:
 conclusions: []
 
 sources:
-  - title: "Explicit zero-free regions for the Riemann zeta-function"
-    authors: ["Michael J. Mossinghoff", "Timothy S. Trudgian", "Andrew Yang"]
-    type: "paper"
-    id: "https://arxiv.org/abs/2212.06867"
-    location: "Res. Number Theory 10 (2024), no. 1, Paper No. 11, 27 pp."
-    relationship: formalizes
-    note: >-
-      PNT+'s bibliography records the arXiv identifier and no DOI, so the arXiv entry is the
-      identifier here. Confirm the published version's DOI before any external submission.
+- title: "Explicit zero-free regions for the Riemann zeta-function"
+  authors: ["Michael J. Mossinghoff", "Timothy S. Trudgian", "Andrew Yang"]
+  type: "paper"
+  id: "https://arxiv.org/abs/2212.06867"
+  location: "Res. Number Theory 10 (2024), no. 1, Paper No. 11, 27 pp."
+  relationship: formalizes
+  note: >-
+    PNT+'s bibliography records the arXiv identifier and no DOI, so the arXiv entry is the identifier
+    here. Confirm the published version's DOI before any external submission. The published FKS reference
+    list swaps this paper's title with that of Mossinghoff and Trudgian (2015); see MT.v1. The title recorded
+    here was checked against the arXiv:2212.06867 preprint itself: 'Explicit zero-free regions for the
+    Riemann zeta-function'.
 
 automation:
   methods:
-    - method: agent
-      models: ["Claude Opus 5 (Anthropic)"]
-      framework: "Claude Code"
-      role: >-
-        Created this stub and transcribed its bibliographic record from the PNT+
-        bibliography, under the direction of the maintainer. No mathematical claim is
-        made and no statement has been transcribed from the paper.
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Created this stub and transcribed its bibliographic record from the PNT+
+      bibliography, under the direction of the maintainer. No mathematical claim is
+      made and no statement has been transcribed from the paper.
 
 review:
   status: self-assessed
@@ -62,8 +65,8 @@ review:
     cited externally or used as the basis for a submission.
 
 limitations:
-  - >-
-    This node states nothing. It exists so that the network records the paper as in scope,
-    and so that the housekeeping queue asks for conclusions.
-  - >-
-    No novelty is claimed. The results are the cited authors'.
+- >-
+  This node states nothing. It exists so that the network records the paper as in scope,
+  and so that the housekeeping queue asks for conclusions.
+- >-
+  No novelty is claimed. The results are the cited authors'.
