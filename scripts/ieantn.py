@@ -2349,7 +2349,7 @@ def render_node_page(node_id: str, nodes: dict, index: dict, importers: dict) ->
                 "carries its citation, so a conclusion can be added the moment something needs "
                 "one.", ""]
     for conclusion in conclusions:
-        cid = conclusion.get("id")
+        cid = str(conclusion.get("id") or "")
         key = f"{node_id}.{cid}"
         doc, body = read_declaration(node_id, cid)
         url = declaration_url(key)
