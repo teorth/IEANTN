@@ -88,7 +88,7 @@ def theorem_2_theta_lower : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to) |
-| Assumed by | [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1) |
+| Assumed by | [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one) |
 
 **Justification `buthe-paper`** — **designated** — literature, Theorem 2, equation (1.7)
 

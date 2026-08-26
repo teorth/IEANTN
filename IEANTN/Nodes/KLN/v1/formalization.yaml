@@ -34,7 +34,9 @@ conclusions:
 - id: subconvexity_bound
   declaration: KLN.v1.subconvexity_bound
   challenge: KLN.v1.challenge_subconvexity_bound
-  imports: []
+  imports:
+  - node: Hiary2016.v1
+    conclusion: zeta_half_line_bound
   justifications:
   - id: kln-paper
     kind: literature
@@ -53,9 +55,15 @@ conclusions:
       exact. KLN's Lemma 3.2 (3.2) is '|zeta(1/2 + it)| <= a1 t^(1/6) log t for all t >= 3' with a1 =
       0.63; FKS Remark 1.5(2) gives the same shape and states 'after accounting for this correction, the
       constant, a1, changes to 0.77', and FKS's Tables 7 and 8 record that they are computed with a1 =
-      0.77. Shape, range and corrected constant therefore all check out.
+      0.77. Shape, range and corrected constant therefore all check out. Imports: KLN's LaTeX source settles
+      it -- 'Statement (3.2) is [Hiary, Theorem 1.1]', and its introduction lists among its ingredients
+      'the most recent explicit subconvexity bound for the Riemann zeta function (due to Hiary)'. So this
+      conclusion is a quotation of Hiary2016.v1.zeta_half_line_bound, and the two statements are deliberately
+      identical: this node records that KLN uses it, that one records where it comes from and carries
+      the correction's provenance.
   designated: kln-paper
 
+  imports_status: identified
 - id: zero_density
   declaration: KLN.v1.zero_density
   challenge: KLN.v1.challenge_zero_density

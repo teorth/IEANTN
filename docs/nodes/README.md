@@ -13,6 +13,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`FKBJ.v1`](FKBJ-v1.md) | computation | 1 | computation |
 | [`FKS.v1`](FKS-v1.md) | paper | 2 | cited |
 | [`FKS2.v1`](FKS2-v1.md) | paper | 3 | cited |
+| [`Hiary2016.v1`](Hiary2016-v1.md) | paper | 1 | cited |
 | [`KLN.v1`](KLN-v1.md) | paper | 2 | cited |
 | [`Kadiri2005.v1`](Kadiri2005-v1.md) | paper | 1 | cited |
 | [`Lcm.v1`](Lcm-v1.md) | paper | 1 | verified |

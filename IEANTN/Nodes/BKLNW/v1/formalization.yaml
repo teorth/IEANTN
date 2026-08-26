@@ -136,7 +136,9 @@ conclusions:
 - id: theta_error_le_one
   declaration: BKLNW.v1.theta_error_le_one
   challenge: BKLNW.v1.challenge_theta_error_le_one
-  imports: []
+  imports:
+  - node: Buthe.v1
+    conclusion: theorem_2_theta_lower
   justifications:
   - id: bklnw-paper
     kind: literature
@@ -147,10 +149,22 @@ conclusions:
       E_theta(x) <= 1 on [2, e^30] -- rather than as the tables themselves, because the consequence is
       what is consumed and it is a single clean inequality. Transcribed from FKS2's proof of its Corollary
       14, not read off the tables directly; confirm against the published tables before relying on it
-      for anything sharper.
+      for anything sharper. Attribution confirmed from FKS2's LaTeX source, which reads 'The results found
+      in \cite[Table~13 and 14]{BKLNW21} give E_theta(x) <= 1 < eps_{theta,asymp}(2) <= eps_{theta,asymp}(x)
+      for all 2 <= x <= e^30' -- exactly this conclusion. Previously this was transcribed from the PDF.
+      Imports, preliminary. BKLNW says of that range: "Buthe's [4, Theorem 2, (1.7)] implies that, for
+      all x < 10^19, theta(x) < x, giving M_k = 0 for all k and x in this range. In addition we did direct
+      calculations for values of x up to 7 * 10^11 (see Table 13)." The second is BKLNW's own computation
+      and internal. The first is Buthe.v1.theorem_2_theta_lower, and it is what carries the claim: e^30
+      is about 1.07e13, well inside x < 10^19, so theta(x) < x there, whence |theta(x) - x| = x - theta(x)
+      <= x because theta is non-negative -- which is exactly E_theta(x) <= 1. Marked identified rather
+      than undetermined because the one external input is an edge and the other input is internal. It
+      is called preliminary because Tables 13 and 14 are commented out in BKLNW's arXiv source and have
+      not been read directly; they establish far more than this weak bound, and a node wanting their sharper
+      values must read the published tables.
   designated: bklnw-paper
 
-  imports_status: undetermined
+  imports_status: identified
 sources:
 - title: "Sharper bounds for the Chebyshev function theta(x)"
   authors: ["Samuel Broadbent", "Habiba Kadiri", "Allysa Lumley", "Nathan Ng", "Kirsten Wilk"]

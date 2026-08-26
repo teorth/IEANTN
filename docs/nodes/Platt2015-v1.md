@@ -14,8 +14,8 @@
 
 ## The source
 
-- **Computing pi(x) analytically** — David J. Platt. Mathematics of Computation; volume and pages taken from the standard citation  
-  _Bibliographic details not confirmed against the paper, which has not been obtained. MT's reference list records it as 'published electronically Oct. 3, 2014, to appear in print; DOI 10.1090/S0025-5718-2014-02884-6'._
+- **Computing pi(x) Analytically** — David J. Platt. Mathematics of Computation 84 (2015), 1521-1535; doi:10.1090/S0025-5718-2014-02884-6  
+  _arXiv source held and read. Distinct from Platt's Isolating some non-trivial zeros of zeta, which reports the same computation and which this paper cites for the technique under its preprint title, and from the later Platt-Trudgian verification to 3e12._
 
 ## Conclusions
 
@@ -42,16 +42,23 @@ def rh_up_to : Prop :=
 | Assumes | nothing recorded |
 | Assumed by | [`MT.v1.zero_free_region`](MT-v1.md#zero_free_region) |
 
-**Justification `platt-paper`** — **designated** — numerical, the zero verification the paper reports, as cited by MT Section 3
+**Justification `platt-paper`** — **designated** — numerical, Section 6, the zero computation the paper reports
 
-> A large finite computation, so `numerical` rather than `literature`. Recorded at second hand: MT states 'We select T0 = 3.06e10 as established in [10]' and defines T0 as a height to which the Riemann hypothesis has been verified. The paper itself has not been obtained, so its own statement of the height wants checking; see docs/SOURCES.md.
+> A large finite computation, so `numerical` rather than `literature`. Now recorded at FIRST hand: the arXiv source (1203.5712) is held, and says 'We isolated all the zeros of zeta to a height of 30,610,046,000 (103,800,788,359 zeros)', having 'biased the run time towards computing zeros, both to confirm RH holds to a height sufficient for this computation'. That is 3.0610046e10, so the 3.06e10 stated here is implied with room to spare. Earlier this node rested on MT's citation alone. The relationship to Platt2017.v1 is now established rather than guessed: they are one computation reported in two papers. Computing pi(x) Analytically says 'We isolated all the zeros of zeta to a height of 30,610,046,000 (103,800,788,359 zeros)' and cites for the technique a paper then in preparation titled 'Computing zeta on the half line', which is what became Isolating some non-trivial zeros of zeta. That paper's abstract reports the same height. KLN records N(H_0) = 103 800 788 359 at H_0 = 3.0610046e10 -- the same zero count. MT cites the pi(x) paper and rounds the height down to 3.06e10, which is why this node states the weaker number: it exists to serve MT and states what MT selected.
+
+**Justification `bridge-from-platt2017`** — bridged
+  
+  Bridged from Platt2017.v1.rh_up_to via `IEANTN/Bridges/Platt/P2017ToP2015.lean`.
+
+> A second, independent ground, and the place where 'same computation, two papers' stops being prose. RiemannHypothesisUpTo is antitone in its height, so Platt2017.v1's 3.0610046e10 implies this node's 3.06e10; the bridge is four lines and is compiled by the core build, so it cannot silently stop being a proof. NOT designated: the direct justification above rests on this node's own paper, while this one would route trust through another node. Its value is that the relationship is checked on every push.
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
-- The cited paper has not been read. The height 3.06e10 is MT's description of what it selected, not a quotation of this paper's own statement.
-- The node states only the consequence that there are no zeros off the critical line below that height. The computation's real output is a list of zeros, which is data rather than a proposition; a consumer needing the zeros themselves needs more than the node says.
+- The node states only the consequence that no zero below the height lies off the critical line. The computation's real output is a list of isolated zeros; a consumer needing those -- Buthe's algorithm does -- needs more than the node says.
+- The node states 3.06e10 where the paper states 3.0610046e10, because 3.06e10 is what MT selects and this node exists to serve MT. Platt2017.v1 states the sharper height, and the bridge between them makes the implication explicit.
+- Imports are undetermined: what a zero-verification rests on -- the rigorous interval arithmetic and the zeta evaluation method -- has not been traced.
 - No novelty is claimed.
 
 ## How this node was made

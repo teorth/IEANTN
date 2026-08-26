@@ -49,14 +49,14 @@ def rh_up_to : Prop :=
 
 **Justification `platt2017-paper`** — **designated** — numerical, the abstract, and the computation the paper reports
 
-> A large finite computation, so `numerical` rather than `literature`. Recorded at FIRST hand, unlike Platt2015.v1 and FKBJ.v1: the paper is held and its abstract says the algorithm isolates 'the non-trivial zeros of zeta with imaginary part <= 30,610,046,000 to an absolute precision of +/- 2^-102' and that 'in the process, we provide an independent verification of the Riemann Hypothesis to this height'. 3.0610046e10 is exactly the H_0 that KLN fixes throughout, citing this paper.
+> A large finite computation, so `numerical` rather than `literature`. Recorded at FIRST hand, unlike Platt2015.v1 and FKBJ.v1: the paper is held and its abstract says the algorithm isolates 'the non-trivial zeros of zeta with imaginary part <= 30,610,046,000 to an absolute precision of +/- 2^-102' and that 'in the process, we provide an independent verification of the Riemann Hypothesis to this height'. 3.0610046e10 is exactly the H_0 that KLN fixes throughout, citing this paper. The relationship to Platt2017.v1 is now established rather than guessed: they are one computation reported in two papers. Computing pi(x) Analytically says 'We isolated all the zeros of zeta to a height of 30,610,046,000 (103,800,788,359 zeros)' and cites for the technique a paper then in preparation titled 'Computing zeta on the half line', which is what became Isolating some non-trivial zeros of zeta. That paper's abstract reports the same height. KLN records N(H_0) = 103 800 788 359 at H_0 = 3.0610046e10 -- the same zero count. MT cites the pi(x) paper and rounds the height down to 3.06e10, which is why this node states the weaker number: it exists to serve MT and states what MT selected.
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
 - The node states only the consequence that no zero below the height lies off the critical line. The computation's real output is a list of isolated zeros to a precision of 2^-102, which is data rather than a proposition; a consumer needing the zeros themselves needs more than the node says.
-- Its relationship to Platt2015.v1 is recorded as a guess. This node's 3.0610046e10 implies that node's 3.06e10, and a bridge would let the second-hand node borrow this one's first-hand evidence, but whether they are the same computation is not established here.
+- Its relationship to Platt2015.v1 is one computation reported in two papers, established from both sources rather than assumed. This node's 3.0610046e10 implies that node's 3.06e10, and IEANTN/Bridges/Platt/P2017ToP2015.lean discharges it.
 - Imports are undetermined: what a zero-verification rests on -- the rigorous arithmetic and the zeta evaluation method -- has not been traced.
 - No novelty is claimed.
 
