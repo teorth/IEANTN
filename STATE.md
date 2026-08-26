@@ -5,7 +5,7 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-3 node version(s), 3 conclusion(s).
+10 node version(s), 3 conclusion(s).  7 state nothing yet.
 
 ## Evidence
 
@@ -18,9 +18,16 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 
 | Node | Status | Conclusion | Evidence | Imports | Issue |
 |---|---|---|---|---:|---|
+| `BKLNW.v1` | stub | *(none yet)* | - | - | - |
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
+| `FKS.v1` | stub | *(none yet)* | - | - | - |
+| `FKS2.v1` | stub | *(none yet)* | - | - | - |
+| `KLN.v1` | stub | *(none yet)* | - | - | - |
+| `Kadiri2005.v1` | stub | *(none yet)* | - | - | - |
 | `Lcm.v1` | active | `lcmUpto_not_highlyAbundant` | lean-comparator | 1 | - |
 | `Lcm.v2` | active | `lcmUpto_not_highlyAbundant_of_primeGap` | lean-comparator | 0 | #10 |
+| `MTY.v1` | stub | *(none yet)* | - | - | - |
+| `RosserSchoenfeld.v1` | stub | *(none yet)* | - | - | - |
 
 ## Leverage
 

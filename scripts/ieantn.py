@@ -1637,6 +1637,12 @@ def housekeeping() -> bool:
                     tasks.append(f"migrate  {user}  off deprecated {node_id} -> {replacement}")
             else:
                 tasks.append(f"delete   {node_id}  (deprecated, nothing imports it)")
+        # A node with no conclusions states nothing yet. That is a legitimate starting point --
+        # a stub records that a paper is in scope before anyone has transcribed a claim from it --
+        # but every other report here iterates conclusions, so such a node is invisible in all of
+        # them. Surfacing it is the whole difference between a stub and a forgotten directory.
+        if not conclusions_of(node) and meta.get("status") != "deprecated":
+            tasks.append(f"state     {node_id}  (no conclusions yet)")
         for conclusion in conclusions_of(node):
             kind = designated_kind(conclusion)
             issue = conclusion.get("issue")
@@ -1690,7 +1696,9 @@ def render_state(nodes: dict[str, dict]) -> str:
         "Derived from node metadata alone. Receipt freshness needs Lean, and lives in",
         "`python scripts/ieantn.py status`.",
         "",
-        f"{len(nodes)} node version(s), {len(index)} conclusion(s).",
+        f"{len(nodes)} node version(s), {len(index)} conclusion(s)."
+        + (f"  {sum(1 for n in nodes.values() if not conclusions_of(n))} state nothing yet."
+           if any(not conclusions_of(n) for n in nodes.values()) else ""),
         "",
         "## Evidence",
         "",
@@ -1707,6 +1715,10 @@ def render_state(nodes: dict[str, dict]) -> str:
     ]
     for node_id, node in sorted(nodes.items()):
         status = (node.get("node") or {}).get("status", "?")
+        if not conclusions_of(node):
+            # One row per node rather than per conclusion, so a stub is not silently absent from
+            # the snapshot that exists to say what the network contains.
+            lines.append(f"| `{node_id}` | {status} | *(none yet)* | - | - | - |")
         for conclusion in conclusions_of(node):
             issue = conclusion.get("issue")
             lines.append(

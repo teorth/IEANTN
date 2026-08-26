@@ -1,0 +1,69 @@
+# Node metadata for `FKS2.v1`.  See docs/NODES.md.
+#
+# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
+# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+version: "v0.4"
+
+node:
+  id: FKS2.v1
+  family: FKS2
+  version: v1
+  kind: paper
+  status: stub
+
+project:
+  name: "Fiori-Kadiri-Swidinsky: sharper bounds for the error term in the prime number theorem"
+  description: >-
+    Two conversion pipelines. The first turns an admissible classical bound on the error `E_psi(x)
+    = |psi(x) - x| / x` into one on `E_theta(x) = |theta(x) - x| / x`; the second turns a bound on
+    `E_theta` into one on `E_pi(x) = |pi(x) - li(x)| / (x / log x)`. Each stage carries admissible
+    classical bounds of one error to admissible classical bounds of the next, which is why the
+    paper is a natural `pipeline` as much as a `paper`: its content is a family of implications
+    rather than a single numerical claim. The two pipeline theorems are the conclusions worth
+    exporting first, since they are what downstream nodes consume. The paper's own numerical
+    corollaries follow from them together with whichever input bounds are supplied.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M06", "11M26", "11N56"]
+
+conclusions: []
+
+sources:
+  - title: "Sharper bounds for the error term in the prime number theorem"
+    authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]
+    type: "paper"
+    id: "https://doi.org/10.1007/s40993-023-00454-w"
+    location: "Res. Number Theory 9 (2023), no. 3, Paper No. 63, 19 pp."
+    relationship: formalizes
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude Opus 5 (Anthropic)"]
+      framework: "Claude Code"
+      role: >-
+        Created this stub and transcribed its bibliographic record from the PNT+
+        bibliography, under the direction of the maintainer. No mathematical claim is
+        made and no statement has been transcribed from the paper.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    Bibliographic details taken from blueprint/src/references.bib in PrimeNumberTheoremAnd
+    rather than from the printed paper. Verify them against the paper before this node is
+    cited externally or used as the basis for a submission.
+
+limitations:
+  - >-
+    This node states nothing. It exists so that the network records the paper as in scope,
+    and so that the housekeeping queue asks for conclusions.
+  - >-
+    No novelty is claimed. The results are the cited authors'.

@@ -31,6 +31,11 @@ NODES_DIR = ROOT / "IEANTN" / "Nodes"
 IEANTN_ONLY = ("node", "conclusions")
 
 
+def node_id(directory: pathlib.Path) -> str:
+    """`IEANTN/Nodes/Lcm/v1` -> `Lcm.v1`; the directory name alone is just `v1`."""
+    return directory.relative_to(NODES_DIR).as_posix().replace("/", ".")
+
+
 def main() -> int:
     if len(sys.argv) != 2:
         return int(bool(sys.stderr.write(f"usage: {sys.argv[0]} <validator-dir>\n"))) or 2
@@ -43,7 +48,14 @@ def main() -> int:
         print(f"could not load Palomar's validator from {validator_dir}: {error}")
         return 1
 
-    node_dirs = sorted(d for d in NODES_DIR.iterdir() if (d / "formalization.yaml").is_file())
+    # `rglob`, not `iterdir`: a node lives at `IEANTN/Nodes/<Family>/<version>/`, so the
+    # top-level entries are families and carry no metadata. Iterating them found nothing and this
+    # script then validated nothing, silently, exiting 0 -- which is how the CI job that runs it
+    # spent weeks passing in nine seconds without reading a single file.
+    node_dirs = sorted(path.parent for path in NODES_DIR.rglob("formalization.yaml"))
+    if not node_dirs:
+        print(f"no nodes found under {NODES_DIR}; refusing to report success on an empty run")
+        return 1
     failures = 0
 
     for directory in node_dirs:
@@ -61,10 +73,10 @@ def main() -> int:
         try:
             loaded = contract.load_formalization_metadata(staged)
             origin = contract.normalized_provenance(loaded)["result_origin"]
-            print(f"ok    {directory.name}  (result_origin: {origin})")
+            print(f"ok    {node_id(directory)}  (result_origin: {origin})")
         except Exception as error:
             failures += 1
-            print(f"FAIL  {directory.name}: {error}")
+            print(f"FAIL  {node_id(directory)}: {error}")
         finally:
             staged.unlink(missing_ok=True)
 
