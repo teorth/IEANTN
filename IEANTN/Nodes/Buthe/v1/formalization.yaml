@@ -1,0 +1,126 @@
+# Node metadata for `Buthe.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: Buthe.v1
+  family: Buthe
+  version: v1
+  kind: paper
+  status: active            # change this once the node is filled in
+
+project:
+  name: "Buthe: an analytic method for bounding psi(x)"
+  description: >-
+    Numerical estimates for the Chebyshev functions and for pi on [1, 10^19], obtained by an analytic
+    method resting on a verification of the Riemann hypothesis to a finite height. This is the node that
+    covers the low range for the rest of the network: FKS2's Corollaries 23 and 26 both use Theorem 2
+    below 10^19 and their own machinery above it.
+  authors:
+  - Terence Tao
+  license: "Apache-2.0"
+  responsible_maintainers:
+  - Terence Tao
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11N05
+  - 11Y35
+  - 11M26
+
+conclusions:
+- id: theorem_2_psi
+  declaration: Buthe.v1.theorem_2_psi
+  challenge: Buthe.v1.challenge_theorem_2_psi
+  imports: []
+  justifications:
+  - id: buthe-paper
+    kind: literature
+    source: Buthe
+    locator: Theorem 2, equation (1.5)
+    note: >-
+      Asserted on the authority of the paper, transcribed from arXiv:1511.02032v2.
+  designated: buthe-paper
+- id: theorem_2_theta
+  declaration: Buthe.v1.theorem_2_theta
+  challenge: Buthe.v1.challenge_theorem_2_theta
+  imports: []
+  justifications:
+  - id: buthe-paper
+    kind: literature
+    source: Buthe
+    locator: Theorem 2, equation (1.6)
+    note: >-
+      Asserted on the authority of the paper, transcribed from arXiv:1511.02032v2.
+  designated: buthe-paper
+- id: theorem_2_li_minus_pi
+  declaration: Buthe.v1.theorem_2_li_minus_pi
+  challenge: Buthe.v1.challenge_theorem_2_li_minus_pi
+  imports: []
+  justifications:
+  - id: buthe-paper
+    kind: literature
+    source: Buthe
+    locator: Theorem 2, equation (1.9)
+    note: >-
+      Asserted on the authority of the paper, transcribed from arXiv:1511.02032v2. Note the estimate is
+      against li, the un-offset logarithmic integral, not Li; the two differ by li(2) = 1.045..., which
+      is far from negligible at this precision.
+  designated: buthe-paper
+- id: theorem_2_li_gt_pi
+  declaration: Buthe.v1.theorem_2_li_gt_pi
+  challenge: Buthe.v1.challenge_theorem_2_li_gt_pi
+  imports: []
+  justifications:
+  - id: buthe-paper
+    kind: literature
+    source: Buthe
+    locator: Theorem 2, equation (1.10)
+    note: >-
+      Asserted on the authority of the paper, transcribed from arXiv:1511.02032v2. Note the estimate is
+      against li, the un-offset logarithmic integral, not Li; the two differ by li(2) = 1.045..., which
+      is far from negligible at this precision.
+  designated: buthe-paper
+sources:
+- title: An analytic method for bounding psi(x)
+  authors:
+  - Jan Buthe
+  type: paper
+  id: https://doi.org/10.1090/mcom/3264
+  location: Math. Comp. 87 (2018), no. 312, 1991-2009; preprint arXiv:1511.02032
+  relationship: formalizes
+  note: >-
+    Statements transcribed from the arXiv preprint 1511.02032v2, whose Theorem 2 is the numbered source
+    of (1.5) to (1.10). The author's name carries an umlaut, written here without one; check the rendering
+    before external use.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Transcribed four parts of Theorem 2 from the preprint into the network's vocabulary and wrote this
+      metadata, under the direction of the maintainer. No proof is claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    Read from the preprint PDF directly rather than from a secondary source. The inequality directions
+    and ranges were checked against the rendered page, since the plain-text extraction misaligned them.
+
+limitations:
+- >-
+  Every conclusion rests on the cited paper; none is proved in Lean here.
+- >-
+  (1.9) and (1.10) are stated against li rather than Li. A node consuming them alongside FKS2, which works
+  with Li, must do the conversion rather than assume it away.
+- >-
+  Theorem 2's remaining parts, (1.7) and (1.8), are not stated; add them when something needs them.
+- >-
+  No novelty is claimed. The results are Buthe's.

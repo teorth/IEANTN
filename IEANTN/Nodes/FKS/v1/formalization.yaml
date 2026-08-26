@@ -9,7 +9,7 @@ node:
   family: FKS
   version: v1
   kind: paper
-  status: stub
+  status: active
 
 project:
   name: "Fiori-Kadiri-Swidinsky: sharper bounds for the Chebyshev function psi(x)"
@@ -29,25 +29,57 @@ classification:
   arxiv: [math.NT]
   msc2020: ["11N05", "11M06", "11Y35"]
 
-conclusions: []
+conclusions:
+- id: psi_bound_all_x
+  declaration: FKS.v1.psi_bound_all_x
+  challenge: FKS.v1.challenge_psi_bound_all_x
+  imports: []
+  justifications:
+  - id: fks-paper
+    kind: literature
+    source: FKS
+    locator: arXiv:2204.02588v2, Corollary 1.4
+    note: >-
+      Asserted on the authority of the paper, and transcribed from the preprint in the paper's own normalisation
+      rather than converted to the admissible-bound shape. The conversion is not free: with R = 5.5666305
+      it gives A = 9.22022 * R^(3/2) = 121.0916... and C = 0.8476836 * sqrt(R) = 2.0000..., and the rounding
+      there is the difference between this constant and the 121.096 FKS2 quotes.
+  designated: fks-paper
+- id: psi_classical_bound
+  declaration: FKS.v1.psi_classical_bound
+  challenge: FKS.v1.challenge_psi_classical_bound
+  imports: []
+  justifications:
+  - id: fks-paper
+    kind: literature
+    source: FKS
+    locator: published version, Corollary 1.3 (numbering unconfirmed)
+    note: >-
+      Asserted on the authority of the paper. Transcribed from FKS2's proof of its Corollary 14, which
+      quotes A = 121.096, B = 3/2, C = 2, R = 5.5666305 for x >= e^30 and attributes them to [8, Corollary
+      1.3]. The arXiv preprint numbers its results differently -- its Corollary 1.3 is a remark -- and
+      tabulates A(x0) only for log x0 > 1000, so the value at e^30 could not be checked against the version
+      to hand. CONFIRM the locator and the constant against the published J. Math. Anal. Appl. version
+      before relying on this.
+  designated: fks-paper
 
 sources:
-  - title: "Sharper bounds for the Chebyshev function psi(x)"
-    authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]
-    type: "paper"
-    id: "https://doi.org/10.1016/j.jmaa.2023.127426"
-    location: "J. Math. Anal. Appl. 527 (2023), Paper No. 127426, 28 pp."
-    relationship: formalizes
+- title: "Sharper bounds for the Chebyshev function psi(x)"
+  authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]
+  type: "paper"
+  id: "https://doi.org/10.1016/j.jmaa.2023.127426"
+  location: "J. Math. Anal. Appl. 527 (2023), Paper No. 127426, 28 pp."
+  relationship: formalizes
 
 automation:
   methods:
-    - method: agent
-      models: ["Claude Opus 5 (Anthropic)"]
-      framework: "Claude Code"
-      role: >-
-        Created this stub and transcribed its bibliographic record from the PNT+
-        bibliography, under the direction of the maintainer. No mathematical claim is
-        made and no statement has been transcribed from the paper.
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Created this stub and transcribed its bibliographic record from the PNT+
+      bibliography, under the direction of the maintainer. No mathematical claim is
+      made and no statement has been transcribed from the paper.
 
 review:
   status: self-assessed
@@ -58,8 +90,14 @@ review:
     cited externally or used as the basis for a submission.
 
 limitations:
-  - >-
-    This node states nothing. It exists so that the network records the paper as in scope,
-    and so that the housekeeping queue asks for conclusions.
-  - >-
-    No novelty is claimed. The results are the cited authors'.
+- >-
+  Both conclusions rest on the cited paper; neither is proved in Lean here.
+- >-
+  The preprint and the published version number their results differently, and the second conclusion's
+  locator is taken from FKS2's citation rather than read directly. It is flagged for confirmation in the
+  node and in the module docstring.
+- >-
+  R = 5.5666305 is not this paper's constant but Mossinghoff and Trudgian's, J. Number Theory 157 (2015).
+  A sharper value is available from MTY.v1 and is the first thing to change when the chain is re-run.
+- >-
+  No novelty is claimed. The results are Fiori, Kadiri and Swidinsky's.
