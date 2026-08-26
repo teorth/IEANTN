@@ -33,25 +33,30 @@ classification:
 conclusions: []
 
 sources:
-  - title: "Explicit zero-free regions for the Riemann zeta-function"
-    authors: ["Michael J. Mossinghoff", "Timothy S. Trudgian", "Andrew Yang"]
-    type: "paper"
-    id: "https://arxiv.org/abs/2212.06867"
-    location: "Res. Number Theory 10 (2024), no. 1, Paper No. 11, 27 pp."
-    relationship: formalizes
-    note: >-
-      PNT+'s bibliography records the arXiv identifier and no DOI, so the arXiv entry is the
-      identifier here. Confirm the published version's DOI before any external submission.
+- title: "Explicit zero-free regions for the Riemann zeta-function"
+  authors: ["Michael J. Mossinghoff", "Timothy S. Trudgian", "Andrew Yang"]
+  type: "paper"
+  id: "https://arxiv.org/abs/2212.06867"
+  location: "Res. Number Theory 10 (2024), no. 1, Paper No. 11, 27 pp."
+  relationship: formalizes
+  note: >-
+    Identifier is the arXiv entry; PNT+'s bibliography records no DOI and the published version's should
+    be confirmed before external use. The title above was checked against the preprint itself: note that
+    FKS2's reference [12] gives this paper the title of Mossinghoff and Trudgian's 2015 paper instead,
+    which is an error in that bibliography rather than here. Substantively, this paper improves the classical
+    zero-free region constant to R = 5.558691; FKS2 and FKS use R = 5.5666305 from Mossinghoff and Trudgian,
+    J. Number Theory 157 (2015), and state explicitly that their numerics do not reflect this improvement.
+    So this node is a future sharpening of the chain, not an input to its current constants.
 
 automation:
   methods:
-    - method: agent
-      models: ["Claude Opus 5 (Anthropic)"]
-      framework: "Claude Code"
-      role: >-
-        Created this stub and transcribed its bibliographic record from the PNT+
-        bibliography, under the direction of the maintainer. No mathematical claim is
-        made and no statement has been transcribed from the paper.
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Created this stub and transcribed its bibliographic record from the PNT+
+      bibliography, under the direction of the maintainer. No mathematical claim is
+      made and no statement has been transcribed from the paper.
 
 review:
   status: self-assessed
@@ -62,8 +67,8 @@ review:
     cited externally or used as the basis for a submission.
 
 limitations:
-  - >-
-    This node states nothing. It exists so that the network records the paper as in scope,
-    and so that the housekeeping queue asks for conclusions.
-  - >-
-    No novelty is claimed. The results are the cited authors'.
+- >-
+  This node states nothing. It exists so that the network records the paper as in scope,
+  and so that the housekeeping queue asks for conclusions.
+- >-
+  No novelty is claimed. The results are the cited authors'.
