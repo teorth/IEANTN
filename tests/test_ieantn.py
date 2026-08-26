@@ -25,6 +25,7 @@ import pathlib
 import tempfile
 import textwrap
 import unittest
+import unittest.mock
 
 _SPEC = importlib.util.spec_from_file_location(
     "ieantn", pathlib.Path(__file__).resolve().parent.parent / "scripts" / "ieantn.py"
@@ -690,6 +691,55 @@ class TestNodePages(FixtureRepo):
         ieantn.pages(False)
         page = (self.root / "docs" / "nodes" / "Empty-v1.md").read_text(encoding="utf-8")
         self.assertIn("states nothing yet", page)
+
+
+class TestVerifyApprovalNotice(FixtureRepo):
+    """A verification parked at the approval gate must say so.
+
+    `gh run watch` draws a run that has not started identically to one that is building, and the
+    difference is plainly visible in the API. Someone once waited thirty-two minutes for a run that
+    had executed nothing at all.
+    """
+
+    def _run(self, states: list[str]) -> str:
+        """Drive `verify` through a scripted sequence of run states."""
+        remaining = list(states)
+
+        def fake(args: list[str]) -> str:
+            if args[0] == "run":
+                return "424242"
+            if args[-1].endswith("@tsv"):
+                state = remaining.pop(0)
+                return state + ("\tsuccess" if state == "completed" else "\t")
+            return ""
+
+        printed = io.StringIO()
+        with unittest.mock.patch.object(ieantn, "_gh_json", fake), \
+             unittest.mock.patch.object(ieantn.time, "sleep", lambda _: None), \
+             unittest.mock.patch.object(ieantn, "repository_slug", lambda: "teorth/IEANTN"), \
+             contextlib.redirect_stdout(printed):
+            ieantn.verify("A.v1", "some-branch", dispatch=False)
+        return printed.getvalue()
+
+    def test_a_waiting_run_asks_for_approval_and_gives_the_url(self) -> None:
+        out = self._run(["waiting", "completed"])
+        self.assertIn("WAITING FOR YOUR APPROVAL", out)
+        self.assertIn("https://github.com/teorth/IEANTN/actions/runs/424242", out)
+
+    def test_it_says_what_approving_means(self) -> None:
+        """The gate exists because a human is supposed to have looked at the branch."""
+        self.assertIn("vouching for this branch's core Lean", self._run(["waiting", "completed"]))
+
+    def test_the_notice_is_printed_once_not_every_poll(self) -> None:
+        out = self._run(["waiting", "waiting", "waiting", "completed"])
+        self.assertEqual(out.count("WAITING FOR YOUR APPROVAL"), 1)
+
+    def test_a_run_that_never_waits_says_nothing_about_approval(self) -> None:
+        self.assertNotIn("WAITING", self._run(["in_progress", "completed"]))
+
+    def test_the_conclusion_is_reported(self) -> None:
+        out = self._run(["completed"])
+        self.assertIn("completed: success", out)
 
 
 class TestGraphPage(FixtureRepo):
