@@ -11,9 +11,8 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 
 | Designated justification | Conclusions |
 |---|---:|
-| `lean-comparator` | 2 |
+| `lean-comparator` | 3 |
 | `literature` | 21 |
-| `none-yet` | 1 |
 | `numerical` | 2 |
 
 ## Nodes
@@ -47,7 +46,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
 | `RosserSchoenfeld.v1` | stub | *(none yet)* | - | - | - |
-| `ZeroFreeHeight.v1` | awaiting-verification | `classical_region_descends` | none-yet | 0 | #30 |
+| `ZeroFreeHeight.v1` | active | `classical_region_descends` | lean-comparator | 0 | #30 |
 
 ## Leverage
 

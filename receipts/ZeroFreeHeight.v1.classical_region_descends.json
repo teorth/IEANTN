@@ -1,0 +1,28 @@
+{
+  "challenge": "ZeroFreeHeight.v1.challenge_classical_region_descends",
+  "conclusion": "ZeroFreeHeight.v1.classical_region_descends",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "5b1c3618759375e0ef0033d39000b1338e99f133"
+  },
+  "repository": {
+    "commit": "00ee45dc6e430e1e31b2592bc42fd75a28a5e6cd"
+  },
+  "run": {
+    "recorded_at": "2026-08-26T20:01:01Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/33003934956"
+  },
+  "schema": 2,
+  "solution": {
+    "project": "Solutions/ZeroFreeHeight.v1"
+  },
+  "statement": {
+    "ZeroFreeHeight.v1.classical_region_descends": "796809d584f97568c9b74fbd219ee65b3a6a70a0b52a2660f08e8302be76a367"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}

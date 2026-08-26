@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | folklore |
-| Status | awaiting-verification |
+| Status | active |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -53,14 +53,18 @@ def classical_region_descends : Prop :=
 | Lean name | `ZeroFreeHeight.v1.classical_region_descends` |
 | Challenge | `ZeroFreeHeight.v1.challenge_classical_region_descends` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZeroFreeHeight/v1/Conclusions.lean#L69) |
-| Evidence | unjustified (`none-yet`) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | nothing yet |
 
-**Justification `folklore-lean`** — **designated** — none-yet
+**Justification `folklore-lean`** — none-yet
 
 > Imports none, and that is a real `none` rather than an untraced `undetermined`: the statement is a conditional whose two analytic inputs are its own hypotheses -- a verification of the Riemann hypothesis and a zero-free region -- so a consumer supplies them rather than this node importing them. The only external fact used is the classical non-vanishing of zeta on Re s >= 1, which is Mathlib's riemannZeta_ne_zero_of_one_le_re and therefore not a network edge. A Lean solution exists in Solutions/ZeroFreeHeight.v1 and is awaiting Comparator; until a receipt is written this node is unjustified, and the justification must not be edited by hand.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33003934956
 
 ## Limitations
 
