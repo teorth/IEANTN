@@ -37,23 +37,23 @@ conclusions:
     conclusion: zero_free_region
   - node: PlattTrudgian.v1
     conclusion: rh_up_to
-  imports_status: undetermined
+  - node: KLN.v1
+    conclusion: zero_density
+  imports_status: identified
   justifications:
   - id: pt2021-paper
     kind: literature
     source: PlattTrudgian2021
     locator: Theorem 1, the asymptotic half, over Table 1
     note: >-
-      Asserted on the authority of the paper. Imports: partly traced, and left undetermined because one
-      input is not yet a conclusion. The paper fixes R = 5.573412, which is exactly MT.v1.zero_free_region
-      -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its Section 6.1 that the FKS chain uses.
-      Its Section 2 notes it is 'free to start counting from any height H <= 3e12', which is PlattTrudgian.v1.
-      The third input is the zero-density estimate of Kadiri-Lumley-Ng, which BKLNW describes as 'a truncated
-      Perron's formula combined with the zero density obtained in [25]': KLN.v1 exists but states only
-      the subconvexity bound of its Lemma 3.2, not the density result the paper is named for. Adding that
-      conclusion would complete this tracing. Equation (4) carries absolute value bars -- |(psi(x) - x)/x|
-      <= A (...) -- matching E_psi. An earlier draft of this node said otherwise, because `get_text` on
-      the PDF drops the bars around a displayed fraction; the rendered page settles it.
+      Asserted on the authority of the paper. Imports, now complete. The paper fixes R = 5.573412, which
+      is exactly MT.v1.zero_free_region -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its
+      Section 6.1 that the FKS chain uses. Its Lemma 4 is the verification to 3e12, which is PlattTrudgian.v1.
+      Its Lemma 5 is the zero-density estimate, attributed to 'Kadiri, Lumley, and Ng [16]', which is
+      KLN.v1.zero_density -- stated on that node in exactly this Lemma 5 form for that reason. All three
+      are edges. Equation (4) carries absolute value bars -- |(psi(x) - x)/x| <= A (...) -- matching E_psi.
+      An earlier draft of this node said otherwise, because `get_text` on the PDF drops the bars around
+      a displayed fraction; the rendered page settles it.
   designated: pt2021-paper
 - id: theorem_1_numerical
   declaration: PlattTrudgian2021.v1.theorem_1_numerical
@@ -63,23 +63,23 @@ conclusions:
     conclusion: zero_free_region
   - node: PlattTrudgian.v1
     conclusion: rh_up_to
-  imports_status: undetermined
+  - node: KLN.v1
+    conclusion: zero_density
+  imports_status: identified
   justifications:
   - id: pt2021-paper
     kind: literature
     source: PlattTrudgian2021
     locator: Theorem 1, the numerical half, over Table 1
     note: >-
-      Asserted on the authority of the paper. Imports: partly traced, and left undetermined because one
-      input is not yet a conclusion. The paper fixes R = 5.573412, which is exactly MT.v1.zero_free_region
-      -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its Section 6.1 that the FKS chain uses.
-      Its Section 2 notes it is 'free to start counting from any height H <= 3e12', which is PlattTrudgian.v1.
-      The third input is the zero-density estimate of Kadiri-Lumley-Ng, which BKLNW describes as 'a truncated
-      Perron's formula combined with the zero density obtained in [25]': KLN.v1 exists but states only
-      the subconvexity bound of its Lemma 3.2, not the density result the paper is named for. Adding that
-      conclusion would complete this tracing. Equation (4) carries absolute value bars -- |(psi(x) - x)/x|
-      <= A (...) -- matching E_psi. An earlier draft of this node said otherwise, because `get_text` on
-      the PDF drops the bars around a displayed fraction; the rendered page settles it.
+      Asserted on the authority of the paper. Imports, now complete. The paper fixes R = 5.573412, which
+      is exactly MT.v1.zero_free_region -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its
+      Section 6.1 that the FKS chain uses. Its Lemma 4 is the verification to 3e12, which is PlattTrudgian.v1.
+      Its Lemma 5 is the zero-density estimate, attributed to 'Kadiri, Lumley, and Ng [16]', which is
+      KLN.v1.zero_density -- stated on that node in exactly this Lemma 5 form for that reason. All three
+      are edges. Equation (4) carries absolute value bars -- |(psi(x) - x)/x| <= A (...) -- matching E_psi.
+      An earlier draft of this node said otherwise, because `get_text` on the PDF drops the bars around
+      a displayed fraction; the rendered page settles it.
   designated: pt2021-paper
 sources:
 - title: The error term in the prime number theorem

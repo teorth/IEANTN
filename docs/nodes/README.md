@@ -13,13 +13,14 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`FKBJ.v1`](FKBJ-v1.md) | computation | 1 | computation |
 | [`FKS.v1`](FKS-v1.md) | paper | 2 | cited |
 | [`FKS2.v1`](FKS2-v1.md) | paper | 3 | cited |
-| [`KLN.v1`](KLN-v1.md) | paper | 1 | cited |
+| [`KLN.v1`](KLN-v1.md) | paper | 2 | cited |
 | [`Kadiri2005.v1`](Kadiri2005-v1.md) | paper | 1 | cited |
 | [`Lcm.v1`](Lcm-v1.md) | paper | 1 | verified |
 | [`Lcm.v2`](Lcm-v2.md) | pipeline | 1 | verified |
 | [`MT.v1`](MT-v1.md) | paper | 2 | cited |
 | [`MTY.v1`](MTY-v1.md) | paper | 0 | — |
 | [`Platt2015.v1`](Platt2015-v1.md) | computation | 1 | computation |
+| [`Platt2017.v1`](Platt2017-v1.md) | computation | 1 | computation |
 | [`PlattTrudgian.v1`](PlattTrudgian-v1.md) | computation | 1 | cited |
 | [`PlattTrudgian2021.v1`](PlattTrudgian2021-v1.md) | paper | 2 | cited |
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 0 | — |

@@ -43,13 +43,13 @@ def theorem_1_classical : Prop :=
 | Challenge | `PlattTrudgian2021.v1.challenge_theorem_1_classical` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian2021/v1/Conclusions.lean#L51) |
 | Evidence | cited (`literature`) |
-| Sources traced | undetermined |
-| Assumes | [`MT.v1.zero_free_region`](MT-v1.md#zero_free_region), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to) |
+| Sources traced | identified |
+| Assumes | [`MT.v1.zero_free_region`](MT-v1.md#zero_free_region), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to), [`KLN.v1.zero_density`](KLN-v1.md#zero_density) |
 | Assumed by | nothing yet |
 
 **Justification `pt2021-paper`** — **designated** — literature, Theorem 1, the asymptotic half, over Table 1
 
-> Asserted on the authority of the paper. Imports: partly traced, and left undetermined because one input is not yet a conclusion. The paper fixes R = 5.573412, which is exactly MT.v1.zero_free_region -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its Section 6.1 that the FKS chain uses. Its Section 2 notes it is 'free to start counting from any height H <= 3e12', which is PlattTrudgian.v1. The third input is the zero-density estimate of Kadiri-Lumley-Ng, which BKLNW describes as 'a truncated Perron's formula combined with the zero density obtained in [25]': KLN.v1 exists but states only the subconvexity bound of its Lemma 3.2, not the density result the paper is named for. Adding that conclusion would complete this tracing. Equation (4) carries absolute value bars -- \|(psi(x) - x)/x\| <= A (...) -- matching E_psi. An earlier draft of this node said otherwise, because `get_text` on the PDF drops the bars around a displayed fraction; the rendered page settles it.
+> Asserted on the authority of the paper. Imports, now complete. The paper fixes R = 5.573412, which is exactly MT.v1.zero_free_region -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its Section 6.1 that the FKS chain uses. Its Lemma 4 is the verification to 3e12, which is PlattTrudgian.v1. Its Lemma 5 is the zero-density estimate, attributed to 'Kadiri, Lumley, and Ng [16]', which is KLN.v1.zero_density -- stated on that node in exactly this Lemma 5 form for that reason. All three are edges. Equation (4) carries absolute value bars -- \|(psi(x) - x)/x\| <= A (...) -- matching E_psi. An earlier draft of this node said otherwise, because `get_text` on the PDF drops the bars around a displayed fraction; the rendered page settles it.
 
 ### `theorem_1_numerical`
 
@@ -71,13 +71,13 @@ def theorem_1_numerical : Prop :=
 | Challenge | `PlattTrudgian2021.v1.challenge_theorem_1_numerical` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian2021/v1/Conclusions.lean#L60) |
 | Evidence | cited (`literature`) |
-| Sources traced | undetermined |
-| Assumes | [`MT.v1.zero_free_region`](MT-v1.md#zero_free_region), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to) |
+| Sources traced | identified |
+| Assumes | [`MT.v1.zero_free_region`](MT-v1.md#zero_free_region), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to), [`KLN.v1.zero_density`](KLN-v1.md#zero_density) |
 | Assumed by | [`BKLNW.v1.table8_psi_bound`](BKLNW-v1.md#table8_psi_bound), [`BKLNW.v1.table8_psi_bound_above`](BKLNW-v1.md#table8_psi_bound_above) |
 
 **Justification `pt2021-paper`** — **designated** — literature, Theorem 1, the numerical half, over Table 1
 
-> Asserted on the authority of the paper. Imports: partly traced, and left undetermined because one input is not yet a conclusion. The paper fixes R = 5.573412, which is exactly MT.v1.zero_free_region -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its Section 6.1 that the FKS chain uses. Its Section 2 notes it is 'free to start counting from any height H <= 3e12', which is PlattTrudgian.v1. The third input is the zero-density estimate of Kadiri-Lumley-Ng, which BKLNW describes as 'a truncated Perron's formula combined with the zero density obtained in [25]': KLN.v1 exists but states only the subconvexity bound of its Lemma 3.2, not the density result the paper is named for. Adding that conclusion would complete this tracing. Equation (4) carries absolute value bars -- \|(psi(x) - x)/x\| <= A (...) -- matching E_psi. An earlier draft of this node said otherwise, because `get_text` on the PDF drops the bars around a displayed fraction; the rendered page settles it.
+> Asserted on the authority of the paper. Imports, now complete. The paper fixes R = 5.573412, which is exactly MT.v1.zero_free_region -- MT's unsharpened Theorem 1 value, not the 5.5666305 of its Section 6.1 that the FKS chain uses. Its Lemma 4 is the verification to 3e12, which is PlattTrudgian.v1. Its Lemma 5 is the zero-density estimate, attributed to 'Kadiri, Lumley, and Ng [16]', which is KLN.v1.zero_density -- stated on that node in exactly this Lemma 5 form for that reason. All three are edges. Equation (4) carries absolute value bars -- \|(psi(x) - x)/x\| <= A (...) -- matching E_psi. An earlier draft of this node said otherwise, because `get_text` on the PDF drops the bars around a displayed fraction; the rendered page settles it.
 
 ## Limitations
 

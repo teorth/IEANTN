@@ -1,0 +1,89 @@
+# Node metadata for `FKBJ.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: Platt2017.v1
+  family: Platt2017
+  version: v1
+  kind: computation
+  status: stub
+project:
+  name: 'Platt: isolating some non-trivial zeros of zeta'
+  description: >-
+    The verification of the Riemann hypothesis to height 3.0610046e10 that KLN fixes as its H_0. Unlike
+    the network's other computational nodes this one is recorded at first hand: the paper is held and
+    its abstract states the height and the claim directly.
+  authors:
+  - Terence Tao
+  license: Apache-2.0
+  responsible_maintainers:
+  - Terence Tao
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11M26
+  - 11Y35
+conclusions:
+- id: rh_up_to
+  declaration: Platt2017.v1.rh_up_to
+  challenge: Platt2017.v1.challenge_rh_up_to
+  imports: []
+  imports_status: undetermined
+  justifications:
+  - id: platt2017-paper
+    kind: numerical
+    source: Platt2017
+    locator: the abstract, and the computation the paper reports
+    note: >-
+      A large finite computation, so `numerical` rather than `literature`. Recorded at FIRST hand, unlike
+      Platt2015.v1 and FKBJ.v1: the paper is held and its abstract says the algorithm isolates 'the non-trivial
+      zeros of zeta with imaginary part <= 30,610,046,000 to an absolute precision of +/- 2^-102' and
+      that 'in the process, we provide an independent verification of the Riemann Hypothesis to this height'.
+      3.0610046e10 is exactly the H_0 that KLN fixes throughout, citing this paper.
+  designated: platt2017-paper
+sources:
+- title: Isolating some non-trivial zeros of zeta
+  authors:
+  - David J. Platt
+  type: paper
+  id: Math. Comp. 86 (2017), no. 307, 2449-2467
+  location: Mathematics of Computation 86 (2017), 2449-2467; doi:10.1090/mcom/3198
+  relationship: formalizes
+  note: >-
+    Held and read. Distinct from Platt's Computing pi(x) analytically, which MT cites for the height Platt2015.v1
+    records, and from the later Platt-Trudgian verification to 3e12.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Created this node and stated the consequence of the computation that KLN's H_0 rests on, under the
+      direction of the maintainer. No proof is claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    The height and the claim were read from the paper's own abstract. What wants checking is the relationship
+    to Platt2015.v1 -- whether these are one computation reported twice, which the notes assume but do
+    not establish.
+limitations:
+- >-
+  The node states only the consequence that no zero below the height lies off the critical line. The computation's
+  real output is a list of isolated zeros to a precision of 2^-102, which is data rather than a proposition;
+  a consumer needing the zeros themselves needs more than the node says.
+- >-
+  Its relationship to Platt2015.v1 is recorded as a guess. This node's 3.0610046e10 implies that node's
+  3.06e10, and a bridge would let the second-hand node borrow this one's first-hand evidence, but whether
+  they are the same computation is not established here.
+- >-
+  Imports are undetermined: what a zero-verification rests on -- the rigorous arithmetic and the zeta
+  evaluation method -- has not been traced.
+- >-
+  No novelty is claimed.

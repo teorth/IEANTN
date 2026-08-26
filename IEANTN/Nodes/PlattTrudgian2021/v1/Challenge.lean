@@ -3,6 +3,7 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
+import IEANTN.Nodes.KLN.v1.Conclusions
 import IEANTN.Nodes.MT.v1.Conclusions
 import IEANTN.Nodes.PlattTrudgian.v1.Conclusions
 import IEANTN.Nodes.PlattTrudgian2021.v1.Conclusions
@@ -20,12 +21,14 @@ How each conclusion is justified is recorded in `formalization.yaml`, not here.
 
 theorem PlattTrudgian2021.v1.challenge_theorem_1_classical
     (mt_v1_zero_free_region : MT.v1.zero_free_region)
-    (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to) :
+    (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to)
+    (kln_v1_zero_density : KLN.v1.zero_density) :
     PlattTrudgian2021.v1.theorem_1_classical := by
   sorry
 
 theorem PlattTrudgian2021.v1.challenge_theorem_1_numerical
     (mt_v1_zero_free_region : MT.v1.zero_free_region)
-    (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to) :
+    (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to)
+    (kln_v1_zero_density : KLN.v1.zero_density) :
     PlattTrudgian2021.v1.theorem_1_numerical := by
   sorry
