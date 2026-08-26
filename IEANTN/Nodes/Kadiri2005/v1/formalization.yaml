@@ -33,27 +33,27 @@ classification:
 conclusions: []
 
 sources:
-  - title: "Une region explicite sans zeros pour la fonction zeta de Riemann"
-    authors: ["Habiba Kadiri"]
-    type: "paper"
-    id: "Acta Arith. 117 (2005), no. 4, 303-339"
-    location: "Acta Arith. 117 (2005), no. 4, 303-339"
-    relationship: formalizes
-    note: >-
-      PNT+'s bibliography records no DOI for this paper, so the journal reference stands as the
-      identifier. Confirm one against the publisher before this node is used as the basis for any
-      external submission. The title is in French and is transcribed here without diacritics;
-      check it against the printed paper.
+- title: "Une region explicite sans zeros pour la fonction zeta de Riemann"
+  authors: ["Habiba Kadiri"]
+  type: "paper"
+  id: "https://arxiv.org/abs/math/0401238"
+  location: "Acta Arith. 117 (2005), no. 4, 303-339"
+  relationship: formalizes
+  note: >-
+    PNT+'s bibliography records no DOI for this paper. The arXiv preprint math/0401238 (19 January 2004)
+    is the same work and is used as the identifier; the journal reference above is the version of record.
+    Confirm a publisher DOI before this node is used as the basis for any external submission. The title
+    is in French and is transcribed here without diacritics.
 
 automation:
   methods:
-    - method: agent
-      models: ["Claude Opus 5 (Anthropic)"]
-      framework: "Claude Code"
-      role: >-
-        Created this stub and transcribed its bibliographic record from the PNT+
-        bibliography, under the direction of the maintainer. No mathematical claim is
-        made and no statement has been transcribed from the paper.
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Created this stub and transcribed its bibliographic record from the PNT+
+      bibliography, under the direction of the maintainer. No mathematical claim is
+      made and no statement has been transcribed from the paper.
 
 review:
   status: self-assessed
@@ -64,8 +64,8 @@ review:
     cited externally or used as the basis for a submission.
 
 limitations:
-  - >-
-    This node states nothing. It exists so that the network records the paper as in scope,
-    and so that the housekeeping queue asks for conclusions.
-  - >-
-    No novelty is claimed. The results are the cited authors'.
+- >-
+  This node states nothing. It exists so that the network records the paper as in scope,
+  and so that the housekeeping queue asks for conclusions.
+- >-
+  No novelty is claimed. The results are the cited authors'.
