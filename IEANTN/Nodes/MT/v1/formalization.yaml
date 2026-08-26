@@ -40,8 +40,12 @@ conclusions:
     source: MT
     locator: Theorem 1
     note: >-
-      Asserted on the authority of the paper. The unconditional headline value.
+      Asserted on the authority of the paper. The unconditional headline value. Imports: none. Theorem
+      1 is the paper's unconditional value, established from nonnegative trigonometric polynomials without
+      a verification height -- unlike the Section 6.1 value below it, which is sharpened using one and
+      does import PlattTrudgian.v1.
   designated: mt-paper
+  imports_status: none
 - id: zero_free_region_sharpened
   declaration: MT.v1.zero_free_region_sharpened
   challenge: MT.v1.challenge_zero_free_region_sharpened
@@ -61,6 +65,7 @@ conclusions:
       an import rather than as a hypothesis in the statement; if the height ever changes this conclusion
       should become a new version rather than be edited.
   designated: mt-paper
+  imports_status: identified
 sources:
 - title: Nonnegative trigonometric polynomials and a zero-free region for the Riemann zeta-function
   authors:

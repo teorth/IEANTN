@@ -382,6 +382,117 @@ class TestGraphChecks(FixtureRepo):
         self.assertFalse(ieantn.check_graph())
 
 
+class TestImportStatus(FixtureRepo):
+    """Whether anyone has worked out what a claim assumes.
+
+    An empty `imports` list means either "this rests on nothing" or "nobody has looked", and those
+    are very different things to show a reader. The default is the second, so that the honest state
+    is the one you get without doing anything.
+    """
+
+    def _with(self, status: str | None, imports: bool) -> None:
+        body = importing("Upstream.v1") if imports else LITERATURE
+        if status is not None:
+            body = body.replace("  justifications:", f"  imports_status: {status}\n  justifications:")
+        self.write_node("Upstream.v1", LITERATURE)
+        self.write_node("A.v1", body)
+
+    def test_absent_means_undetermined(self) -> None:
+        self._with(None, imports=False)
+        conclusion = ieantn.conclusions_of(ieantn.load_nodes()["A.v1"])[0]
+        self.assertEqual(ieantn.import_status(conclusion), "undetermined")
+
+    def test_an_unknown_status_is_refused(self) -> None:
+        self._with("probably-fine", imports=False)
+        self.assertFalse(ieantn.check_graph())
+
+    def test_identified_with_no_imports_is_refused(self) -> None:
+        """It is ambiguous exactly where precision matters, so the vocabulary has `none` for the
+        case where someone looked and there was nothing."""
+        self._with("identified", imports=False)
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            passed = ieantn.check_graph()
+        self.assertFalse(passed)
+        self.assertIn("say `none`", printed.getvalue())
+
+    def test_none_with_imports_is_refused(self) -> None:
+        self._with("none", imports=True)
+        self.assertFalse(ieantn.check_graph())
+
+    def test_identified_with_imports_passes(self) -> None:
+        self._with("identified", imports=True)
+        self.assertTrue(ieantn.check_graph())
+
+    def test_none_without_imports_passes(self) -> None:
+        self._with("none", imports=False)
+        self.assertTrue(ieantn.check_graph())
+
+    def test_undetermined_conclusions_are_queued(self) -> None:
+        self._with(None, imports=False)
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            ieantn.housekeeping()
+        self.assertIn("not yet traced to its sources", printed.getvalue())
+
+    def test_traced_conclusions_are_not_queued(self) -> None:
+        self._with("none", imports=False)
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            ieantn.housekeeping()
+        self.assertNotIn("A.v1.main  (not yet traced", printed.getvalue())
+
+    def test_the_graph_dashes_only_undetermined_boxes(self) -> None:
+        self._with(None, imports=False)
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        self.assertIn("style A_v1_main stroke-dasharray", rendered)
+        self._with("none", imports=False)
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        self.assertNotIn("style A_v1_main stroke-dasharray", rendered)
+
+
+class TestNodeOverview(FixtureRepo):
+    """The collapsed, one-box-per-node picture.
+
+    The per-conclusion graph is the true one, but it grows with the number of claims and stops
+    being legible long before the network stops being useful. This one grows with the number of
+    papers instead, which is the scale a reader can hold in their head.
+    """
+
+    def _overview(self) -> str:
+        nodes = ieantn.load_nodes()
+        return chr(10).join(ieantn.render_node_overview(nodes, ieantn.index_conclusions(nodes)))
+
+    def test_a_node_is_summarised_by_its_weakest_claim(self) -> None:
+        """Nine verified claims and one citation is, to anyone importing the node, a citation."""
+        self.assertEqual(
+            ieantn.weakest_kind([{"justifications": [{"id": "j", "kind": k}], "designated": "j"}
+                                 for k in ("lean-comparator", "literature")]),
+            "literature")
+
+    def test_an_edge_is_drawn_between_the_nodes_not_the_claims(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        self.write_node("A.v1", importing("Upstream.v1"))
+        self.assertIn("NUpstream_v1 --> NA_v1", self._overview())
+
+    def test_a_node_with_nothing_stated_still_appears(self) -> None:
+        """A recorded paper with no claim yet is an open invitation, not an absence."""
+        self.write_node("Upstream.v1", LITERATURE)
+        rendered = self._overview()
+        self.assertIn("NUpstream_v1", rendered)
+
+    def test_the_overview_dashes_a_node_with_any_untraced_claim(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        self.assertIn("style NUpstream_v1 stroke-dasharray", self._overview())
+
+    def test_both_pictures_are_in_the_page(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        self.assertIn("## The network at a glance", rendered)
+        self.assertIn("## Every claim", rendered)
+        self.assertIn('subgraph sgUpstream_v1["Upstream.v1"]', rendered)
+
+
 class TestGraphPage(FixtureRepo):
     """`GRAPH.md`: the network as a page someone can read without cloning anything.
 

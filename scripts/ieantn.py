@@ -73,6 +73,26 @@ LICENCE_HEADER = (
 #: Mathlib cache window and cost many times the per-node budget. A heuristic, not a measurement.
 CACHE_WINDOW_RELEASES = 2
 
+#: Whether anyone has worked out what a conclusion assumes.
+#:
+#: An empty `imports` list is ambiguous on its own: it means either "this claim genuinely rests on
+#: nothing else in the network" or "nobody has looked yet". Those are very different things to show
+#: a reader, and the second is the normal state of a freshly cited result. `undetermined` is the
+#: default precisely so that the honest state is the one you get without doing anything.
+#:
+#: `none` is the third case and is not the same as `identified` with an empty list: it says someone
+#: looked and there is genuinely nothing upstream. Lcm.v2 assumes its prime-gap input internally by
+#: design; MT's Theorem 1 is unconditional. Having a word for that keeps the check from emitting a
+#: warning nobody can ever act on, which is how warnings stop being read.
+IMPORT_STATUSES = {"identified", "none", "undetermined"}
+DEFAULT_IMPORT_STATUS = "undetermined"
+
+
+def import_status(conclusion: dict) -> str:
+    """Whether this conclusion's imports have been worked out. Absent means not."""
+    return conclusion.get("imports_status") or DEFAULT_IMPORT_STATUS
+
+
 #: A justification that stands on its own evidence.
 PRIMITIVE_KINDS = {"lean-comparator", "numerical", "literature", "asserted", "none-yet"}
 #: A justification borrowed from another version via a proved bridge.
@@ -835,6 +855,26 @@ def check_graph() -> bool:
                     f"conclusion `{cid}` has a receipt but designates `{settled}`. A verification "
                     "was recorded and nothing points at it; add a `lean-comparator` justification "
                     "and designate it.",
+                )
+
+            status = conclusion.get("imports_status")
+            if status is not None and status not in IMPORT_STATUSES:
+                problems.add(
+                    where,
+                    f"conclusion `{cid}`: imports_status `{status}` is not one of "
+                    + ", ".join(sorted(IMPORT_STATUSES)),
+                )
+            if status == "identified" and not (conclusion.get("imports") or []):
+                problems.add(
+                    where,
+                    f"conclusion `{cid}`: `imports_status: identified` but no imports are listed. "
+                    "If someone looked and there are genuinely none, say `none`; if nobody has "
+                    "looked, drop the field and let it read as undetermined.",
+                )
+            if status == "none" and (conclusion.get("imports") or []):
+                problems.add(
+                    where,
+                    f"conclusion `{cid}`: `imports_status: none` but imports are listed.",
                 )
 
             issue = conclusion.get("issue")
@@ -1701,6 +1741,9 @@ def housekeeping() -> bool:
                 claim = f"#{issue} CLOSED -- reopen it, or drop the `issue` field"
             else:
                 claim = f"#{issue}"
+            if import_status(conclusion) == "undetermined":
+                tasks.append(
+                    f"imports   {node_id}.{conclusion.get('id')}  (not yet traced to its sources)")
             if kind == "none-yet":
                 tasks.append(f"justify   {node_id}.{conclusion.get('id')}  [{claim}]")
             elif kind in {"literature", "asserted"}:
@@ -1820,6 +1863,64 @@ EVIDENCE_STYLE = {
 }
 
 
+#: Evidence kinds from weakest to strongest. A node is summarised by its *weakest* conclusion,
+#: because that is what a reader of the whole node is actually relying on: a node with nine
+#: verified claims and one bare assertion is, for anyone importing all ten, an assertion.
+EVIDENCE_ORDER = ["none-yet", "asserted", "literature", "numerical", "bridged", "lean-comparator"]
+
+
+def weakest_kind(conclusions: list[dict]) -> str:
+    """The least-supported evidence kind among these conclusions."""
+    kinds = [designated_kind(c) or "none-yet" for c in conclusions]
+    return min(kinds, key=lambda k: EVIDENCE_ORDER.index(k) if k in EVIDENCE_ORDER else 0)
+
+
+def render_node_overview(nodes: dict[str, dict], index: dict) -> list[str]:
+    """One box per node, edges aggregated with a count.
+
+    The per-conclusion picture is the truth, but it grows with the network and stops being
+    readable well before the network stops being interesting. This one grows only with the number
+    of papers, which is the scale a reader can actually hold.
+    """
+    lines = ["```mermaid", "graph LR"]
+    for node_id in sorted(nodes):
+        cs = conclusions_of(nodes[node_id])
+        if cs:
+            kind = weakest_kind(cs)
+            label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
+            count = f"{len(cs)} claim" + ("s" if len(cs) != 1 else "")
+            caption = f"{count}<br/><i>weakest: {label}</i>"
+        else:
+            caption = "<i>nothing stated yet</i>"
+        lines.append(f'  N{mermaid_id(node_id)}["<b>{node_id}</b><br/>{caption}"]')
+
+    tally: dict = {}
+    for key in sorted(index):
+        target_node = key.rsplit(".", 1)[0]
+        for dependency in index[key][1].get("imports") or []:
+            source = f"{dependency.get('node')}.{dependency.get('conclusion')}"
+            if source in index:
+                pair = (source.rsplit(".", 1)[0], target_node)
+                if pair[0] != pair[1]:
+                    tally[pair] = tally.get(pair, 0) + 1
+    for (source_node, target_node), count in sorted(tally.items()):
+        arrow = f"-->|{count}|" if count > 1 else "-->"
+        lines.append(f"  N{mermaid_id(source_node)} {arrow} N{mermaid_id(target_node)}")
+
+    for node_id in sorted(nodes):
+        cs = conclusions_of(nodes[node_id])
+        if cs and any(import_status(c) == "undetermined" for c in cs):
+            lines.append(f"  style N{mermaid_id(node_id)} stroke-dasharray: 6 4;")
+    for kind in EVIDENCE_ORDER:
+        members = [f"N{mermaid_id(n)}" for n in sorted(nodes)
+                   if (weakest_kind(conclusions_of(nodes[n]))
+                       if conclusions_of(nodes[n]) else "none-yet") == kind]
+        if members:
+            lines.append(f"  class {','.join(members)} {mermaid_id(kind)};")
+    lines += ["```", ""]
+    return lines
+
+
 def mermaid_id(key: str) -> str:
     """Mermaid node ids may not contain dots."""
     return key.replace(".", "_").replace("-", "_")
@@ -1849,26 +1950,61 @@ def render_graph(nodes: dict[str, dict]) -> str:
         "Everything else is a leaf of the trust graph -- something the network takes on faith,",
         "however reasonably -- and the point of drawing it is that you can see exactly which.",
         "",
+        "A **dashed** border means nobody has yet worked out what that claim itself assumes. It is",
+        "not a claim that the box rests on nothing; it is an admission that the question has not",
+        "been asked. A solid border means someone has traced it to its sources, and the arrows",
+        "into it are the answer.",
+        "",
     ]
 
-    # --- the picture -------------------------------------------------------------------
+    # --- the two pictures ----------------------------------------------------------------
+    class_defs = [
+        f"  classDef {mermaid_id(kind)} fill:{fill},stroke:{stroke},color:#1f2328;"
+        for kind, (_, stroke, fill) in EVIDENCE_STYLE.items()]
+
+    lines += [
+        "## The network at a glance",
+        "",
+        "One box per node, so this stays readable as the network grows. The number on an arrow is",
+        "how many separate claims cross it. A node is coloured by its **weakest** conclusion,",
+        "since that is what someone importing the whole node is relying on, and dashed if any of",
+        "its claims has not been traced to its own sources.",
+        "",
+    ]
+    overview = render_node_overview(nodes, index)
+    lines += overview[:-2] + class_defs + overview[-2:]
+
+    lines += [
+        "## Every claim",
+        "",
+        "The same graph at full resolution, grouped by node. This is the one that is true rather",
+        "than the one that is legible; when they disagree, believe this one.",
+        "",
+    ]
     lines += ["```mermaid", "graph LR"]
-    for key in sorted(index):
-        _, conclusion = index[key]
-        kind = designated_kind(conclusion) or "none-yet"
-        label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
-        node_id, cid = key.rsplit(".", 1)
-        lines.append(f'  {mermaid_id(key)}["{node_id}<br/><b>{cid}</b><br/><i>{label}</i>"]')
+    for node_id in sorted(nodes):
+        keys = [k for k in sorted(index) if k.rsplit(".", 1)[0] == node_id]
+        if not keys:
+            continue
+        lines.append(f'  subgraph sg{mermaid_id(node_id)}["{node_id}"]')
+        for key in keys:
+            _, conclusion = index[key]
+            kind = designated_kind(conclusion) or "none-yet"
+            label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
+            cid = key.rsplit(".", 1)[1]
+            lines.append(f'    {mermaid_id(key)}["<b>{cid}</b><br/><i>{label}</i>"]')
+        lines.append("  end")
     for key in sorted(index):
         _, conclusion = index[key]
         for dependency in conclusion.get("imports") or []:
             source = f"{dependency.get('node')}.{dependency.get('conclusion')}"
             if source in index:
                 lines.append(f"  {mermaid_id(source)} --> {mermaid_id(key)}")
+    for key in sorted(index):
+        if import_status(index[key][1]) == "undetermined":
+            lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 6 4;")
     seen_kinds = {designated_kind(c) or "none-yet" for _, c in index.values()}
-    for kind in sorted(seen_kinds):
-        label, stroke, fill = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
-        lines.append(f"  classDef {mermaid_id(kind)} fill:{fill},stroke:{stroke},color:#1f2328;")
+    lines += class_defs
     for kind in sorted(seen_kinds):
         members = [mermaid_id(k) for k in sorted(index)
                    if (designated_kind(index[k][1]) or "none-yet") == kind]
@@ -1892,7 +2028,9 @@ def render_graph(nodes: dict[str, dict]) -> str:
         label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
         mark = "  " * depth
         repeated = " *(above)*" if key in seen else ""
-        out.append(f"{mark}- `{key}` — {label}{repeated}")
+        pending = (" — *sources not traced*"
+                   if import_status(conclusion) == "undetermined" else "")
+        out.append(f"{mark}- `{key}` — {label}{repeated}{pending}")
         if key in seen:
             return
         seen.add(key)
@@ -1919,13 +2057,16 @@ def render_graph(nodes: dict[str, dict]) -> str:
             "This table is the honest answer to \"how good is the evidence\", and it is computed",
             "rather than maintained.",
             "",
-            "| Claim | Evidence | Depended on by |",
-            "|---|---|---:|",
+            "| Claim | Evidence | Depended on by | Its own sources |",
+            "|---|---|---:|---|",
         ]
         for key in leaves:
             kind = designated_kind(index[key][1]) or "none-yet"
             label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
-            lines.append(f"| `{key}` | {label} | {len(importers.get(key, []))} |")
+            traced = ("**not yet traced**"
+                      if import_status(index[key][1]) == "undetermined" else "traced")
+            lines.append(
+                f"| `{key}` | {label} | {len(importers.get(key, []))} | {traced} |")
         lines.append("")
 
     # --- nodes with nothing stated yet --------------------------------------------------

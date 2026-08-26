@@ -5,26 +5,32 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-13 node version(s), 18 conclusion(s).  3 state nothing yet.
+14 node version(s), 23 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
 | Designated justification | Conclusions |
 |---|---:|
 | `lean-comparator` | 2 |
-| `literature` | 16 |
+| `literature` | 20 |
+| `numerical` | 1 |
 
 ## Nodes
 
 | Node | Status | Conclusion | Evidence | Imports | Issue |
 |---|---|---|---|---:|---|
-| `BKLNW.v1` | active | `corollary_5_1` | literature | 0 | - |
+| `BKLNW.v1` | active | `corollary_5_1` | literature | 1 | - |
+| `BKLNW.v1` | active | `table8_psi_bound` | literature | 0 | - |
+| `BKLNW.v1` | active | `table8_psi_bound_above` | literature | 0 | - |
 | `BKLNW.v1` | active | `theta_error_le_one` | literature | 0 | - |
-| `Buthe.v1` | active | `theorem_2_psi` | literature | 0 | - |
-| `Buthe.v1` | active | `theorem_2_theta` | literature | 0 | - |
-| `Buthe.v1` | active | `theorem_2_li_minus_pi` | literature | 0 | - |
-| `Buthe.v1` | active | `theorem_2_li_gt_pi` | literature | 0 | - |
+| `Buthe.v1` | active | `theorem_2_psi` | literature | 1 | - |
+| `Buthe.v1` | active | `theorem_2_theta` | literature | 1 | - |
+| `Buthe.v1` | active | `theorem_2_theta_lower` | literature | 1 | - |
+| `Buthe.v1` | active | `theorem_2_li_minus_riemann_pi` | literature | 1 | - |
+| `Buthe.v1` | active | `theorem_2_li_minus_pi` | literature | 1 | - |
+| `Buthe.v1` | active | `theorem_2_li_gt_pi` | literature | 1 | - |
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
+| `FKBJ.v1` | active | `rh_up_to` | numerical | 0 | - |
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 3 | - |
 | `FKS.v1` | active | `psi_classical_bound` | literature | 3 | - |
 | `FKS2.v1` | active | `corollary_14` | literature | 3 | - |
@@ -47,12 +53,14 @@ downstream.
 
 | Conclusion | Dependants |
 |---|---:|
+| `FKBJ.v1.rh_up_to` | 6 |
 | `PlattTrudgian.v1.rh_up_to` | 3 |
 | `MT.v1.zero_free_region_sharpened` | 2 |
 | `KLN.v1.subconvexity_bound` | 2 |
 | `FKS.v1.psi_classical_bound` | 2 |
 | `Buthe.v1.theorem_2_li_minus_pi` | 2 |
 | `Dusart2018.v1.proposition_5_4` | 1 |
+| `Buthe.v1.theorem_2_theta_lower` | 1 |
 | `Buthe.v1.theorem_2_li_gt_pi` | 1 |
 | `BKLNW.v1.theta_error_le_one` | 1 |
 | `BKLNW.v1.corollary_5_1` | 1 |

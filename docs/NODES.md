@@ -163,6 +163,12 @@ sources:
 Notes:
 
 - `imports` is **per conclusion**, each entry naming another node's conclusion.
+- `imports_status` says whether anyone has worked out what the conclusion assumes: `identified`
+  (traced, and the edges are listed), `none` (traced, and there genuinely are none), or
+  `undetermined`, which is the default when the field is absent. An empty `imports` list on its own
+  is ambiguous — it means either "rests on nothing" or "nobody looked" — and those are very
+  different things to show a reader, so the honest one is what you get for free. `GRAPH.md` draws
+  `undetermined` boxes with a dashed border, and `housekeeping` lists them.
 - `justifications` is a **list**, and `designated` names the id of the one that counts. A
   conclusion may legitimately have several — a paper, a Lean solution, a bridge — and recording
   the spares is useful, but only the designated one carries trust or appears in the dependency

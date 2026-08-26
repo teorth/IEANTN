@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import IEANTN.Nodes.BKLNW.v1.Conclusions
+import IEANTN.Nodes.Buthe.v1.Conclusions
 
 /-!
 # Challenge: `BKLNW.v1`
@@ -16,7 +17,15 @@ Each `sorry` below is deliberate and permanent: a challenge *states*, it does no
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
 
-theorem BKLNW.v1.challenge_corollary_5_1 : BKLNW.v1.corollary_5_1 := by
+theorem BKLNW.v1.challenge_corollary_5_1
+    (buthe_v1_theorem_2_theta_lower : Buthe.v1.theorem_2_theta_lower) :
+    BKLNW.v1.corollary_5_1 := by
+  sorry
+
+theorem BKLNW.v1.challenge_table8_psi_bound : BKLNW.v1.table8_psi_bound := by
+  sorry
+
+theorem BKLNW.v1.challenge_table8_psi_bound_above : BKLNW.v1.table8_psi_bound_above := by
   sorry
 
 theorem BKLNW.v1.challenge_theta_error_le_one : BKLNW.v1.theta_error_le_one := by

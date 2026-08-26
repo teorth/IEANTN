@@ -70,6 +70,7 @@ conclusions:
       a re-verification.
   designated: comparator-2026-08
 
+  imports_status: identified
 sources:
 - title: "Is the least common multiple sequence lcm(1, 2, ..., n) a subset of the highly abundant numbers?"
   authors: ["Jose Damian Espinosa"]

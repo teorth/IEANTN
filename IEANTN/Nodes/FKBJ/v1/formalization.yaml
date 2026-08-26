@@ -1,0 +1,97 @@
+# Node metadata for `FKBJ.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: FKBJ.v1
+  family: FKBJ
+  version: v1
+  kind: computation
+  status: active            # change this once the node is filled in
+
+project:
+  name: "Franke-Kleinjung-Buthe-Jost: a practical analytic method for pi(x)"
+  description: >-
+    The computation of the zeros of zeta with imaginary part up to 10^11 that Buthe's analytic method
+    consumes. Buthe.v1's Theorem 2 is the output of running that method on this data. The node states
+    the part of the computation that is expressible as a proposition -- that every zero up to that height
+    lies on the critical line -- and records in prose that the algorithm consumes the tabulated zeros
+    themselves, which is data rather than a claim.
+  authors:
+  - Terence Tao
+  license: "Apache-2.0"
+  responsible_maintainers:
+  - Terence Tao
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11M26
+  - 11Y35
+  - 11N05
+
+conclusions:
+- id: rh_up_to
+  declaration: FKBJ.v1.rh_up_to
+  challenge: FKBJ.v1.challenge_rh_up_to
+  imports: []
+  imports_status: undetermined
+  justifications:
+  - id: fkbj-paper
+    kind: numerical
+    source: FKBJ
+    locator: the zero computation the paper reports
+    note: >-
+      A large finite computation, so `numerical` rather than `literature`: what stands behind it is a
+      program that ran, not an argument a referee read. The height is now confirmed at first hand -- the
+      paper states that the authors 'determined all zeros of zeta(1/2 + it) with |t| < 10^11 to an absolute
+      precision of 2^-64', which agrees with Buthe's description of the input to his Theorem 2. Note the
+      node states only the consequence that no zero below that height lies off the critical line; the
+      algorithm consumes the tabulated zeros themselves, to the stated precision, and that is data rather
+      than a proposition.
+  designated: fkbj-paper
+sources:
+- title: A practical analytic method for calculating pi(x)
+  authors:
+  - Jens Franke
+  - Thorsten Kleinjung
+  - Jan Buthe
+  - Alexander Jost
+  type: paper
+  id: Math. Comp. 86 (2017), no. 308, 2889-2909
+  location: Mathematics of Computation, November 2017, Vol. 86, No. 308, pp. 2889-2909
+  relationship: formalizes
+  note: >-
+    Bibliographic details confirmed against the paper itself, which is now held in the library. Buthe's
+    reference list records it as 'to appear', which is why earlier records here were provisional.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Created this node and stated the consequence of the computation that Buthe's Theorem 2 rests on,
+      under the direction of the maintainer. No proof is claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    The cited paper has been obtained and its statement of the height and precision checked directly.
+    What the node asserts is a consequence of that computation, not the computation.
+
+limitations:
+- >-
+  The node understates what it supplies. The computation's real output is a table of zeros to a stated
+  precision; a conclusion is a Prop, so the network can state only the consequence that there are no zeros
+  off the critical line below that height. Any consumer needs more than the node says.
+- >-
+  The node understates what it supplies. Buthe's algorithm takes the tabulated zeros as input, to a stated
+  accuracy; a conclusion is a Prop, so the network can state only the consequence that there are no zeros
+  off the critical line below that height. Any consumer needs more than the node says.
+- >-
+  No novelty is claimed.
