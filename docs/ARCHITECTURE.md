@@ -497,12 +497,19 @@ python scripts/ieantn.py check-receipts   # every receipt names a real run of `v
 python scripts/ieantn.py gen-challenges   # Challenge.lean, Nodes.lean, Bridges.lean
 python scripts/ieantn.py fingerprint      # fingerprints.json  (needs a built `ieantn_hash`)
 python scripts/ieantn.py state            # STATE.md
+python scripts/ieantn.py graph            # GRAPH.md -- one box per node, then one per claim
+python scripts/ieantn.py pages            # docs/nodes/ -- a page per node
 
 # reports
 python scripts/ieantn.py status           # green / yellow / orange / BROKEN per conclusion
 python scripts/ieantn.py report           # what each conclusion rests on
 python scripts/ieantn.py diff             # what a branch degrades, and for whom
 python scripts/ieantn.py housekeeping     # the derived task queue
+
+# maintainer-only: dispatches `verify.yml` and follows it, saying plainly when the run is parked
+# at the `verification` gate waiting for a human. It cannot approve; approval is the one
+# privileged act here and the gate exists because someone is supposed to have looked at the branch.
+python scripts/ieantn.py verify <node> --branch <branch>
 
 # scaffolding
 python scripts/ieantn.py new-node         # scaffold a node

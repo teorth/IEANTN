@@ -86,8 +86,9 @@ the conclusion, so `python scripts/ieantn.py housekeeping` shows what is claimed
 
 ## Generated files
 
-`Challenge.lean`, `IEANTN/Nodes.lean`, `IEANTN/Bridges.lean`, `fingerprints.json`, `STATE.md` and
-`GRAPH.md` are generated *and* committed, and CI checks they are current.
+`Challenge.lean`, `IEANTN/Nodes.lean`, `IEANTN/Bridges.lean`, `fingerprints.json`, `STATE.md`,
+`GRAPH.md` and everything under `docs/nodes/` are generated *and* committed, and CI checks they are
+current.
 
 **If you hit a merge conflict in any of them, do not resolve it by hand.** Take either side, then
 regenerate:

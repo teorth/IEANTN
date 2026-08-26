@@ -81,5 +81,10 @@ published version — have no source to read.
 ## Adding to the library
 
 Put the PDF in the local library directory, add a row above, and — if it settles what a node
-assumes — set that conclusion's `imports_status` to `identified` and record the edges. The
-`housekeeping` queue lists every conclusion still `undetermined`.
+assumes — record the edges and set that conclusion's `imports_status`: `identified` if every
+input is now an edge, `traced` if the inputs are written down but at least one is not the sort of
+thing an arrow can carry. See [NODES.md](NODES.md) for the four values.
+
+The `housekeeping` queue lists conclusions that are still `undetermined`. It deliberately does not
+list `traced` ones — some of their missing edges are waiting on a paper someone could make a node
+of, and some on an algorithm nobody ever can, and nothing distinguishes those mechanically.

@@ -79,15 +79,29 @@ its own dispatch; there, the controls are cost visibility and keeping dispatch a
 **6. Staleness and the housekeeping queue's time-sensitive half.** Green / yellow / orange against
 the Mathlib cache window (CONTRIBUTING §8).
 
-**7. Unit tests for the tooling.** *Done* -- 97 tests in `tests/`, run against a fixture
+**7. Unit tests for the tooling.** *Done* -- 174 tests in `tests/`, run against a fixture
 repository the real functions are pointed at, and mutation-checked rather than merely passing.
 Several are regression tests for defects that shipped.
 
 Still absent: the substitutions inside `ieantn.py` do not assert that they changed anything, which
 is the silent-no-op class in the code audit below and the one unit tests would catch outright.
 
-**8. Visualisation.** A rendered graph over the receipts and metadata, computed rather than
-re-running any verification.
+**8. Visualisation.** *Done* -- `GRAPH.md` and `docs/nodes/`, both generated from the metadata
+and receipts without re-running any verification, and both checked by `ieantn.py check` so they
+cannot drift.
+
+`GRAPH.md` carries two Mermaid diagrams: one box per node, which stays readable as the network
+grows, and one box per claim below it. Colour is the kind of evidence and only green is Lean-
+checked. The border says how completely the arrows tell the story -- solid for `identified`, dotted
+for `traced`, dashed for `undetermined`. A bridge is drawn as a hexagon rather than an arrow,
+because `from:` may name several conclusions and an arrow cannot say which premises were needed
+together.
+
+`docs/nodes/<Node>.md` is a page per node: each conclusion's docstring, its Lean spelling as
+written, its evidence and note, what it assumes and what assumes it, and links to the source line,
+the solution directory and the receipt. Mermaid renders natively on GitHub, so none of this needs
+hosting -- which is also why doc-gen4 was considered and dropped; see the `ieantn` skill for the
+reasoning.
 
 **9. The Palomar spin-off generator.** *Partly done* -- `ieantn.py spinoff <conclusion> --out <dir>`
 emits a self-contained submission for the one-level case, where every transitive unjustified leaf is
