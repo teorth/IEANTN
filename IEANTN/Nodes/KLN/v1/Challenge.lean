@@ -15,3 +15,6 @@ import IEANTN.Nodes.KLN.v1.Conclusions
 Each `sorry` below is deliberate and permanent: a challenge *states*, it does not prove.
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
+
+theorem KLN.v1.challenge_subconvexity_bound : KLN.v1.subconvexity_bound := by
+  sorry

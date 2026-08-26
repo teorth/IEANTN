@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import IEANTN.Nodes.FKS.v1.Conclusions
+import IEANTN.Nodes.KLN.v1.Conclusions
 import IEANTN.Nodes.MT.v1.Conclusions
 import IEANTN.Nodes.PlattTrudgian.v1.Conclusions
 
@@ -19,12 +20,14 @@ How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
 
 theorem FKS.v1.challenge_psi_bound_all_x
+    (kln_v1_subconvexity_bound : KLN.v1.subconvexity_bound)
     (mt_v1_zero_free_region_sharpened : MT.v1.zero_free_region_sharpened)
     (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to) :
     FKS.v1.psi_bound_all_x := by
   sorry
 
 theorem FKS.v1.challenge_psi_classical_bound
+    (kln_v1_subconvexity_bound : KLN.v1.subconvexity_bound)
     (mt_v1_zero_free_region_sharpened : MT.v1.zero_free_region_sharpened)
     (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to) :
     FKS.v1.psi_classical_bound := by

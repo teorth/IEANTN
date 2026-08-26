@@ -34,6 +34,8 @@ conclusions:
   declaration: FKS.v1.psi_bound_all_x
   challenge: FKS.v1.challenge_psi_bound_all_x
   imports:
+  - node: KLN.v1
+    conclusion: subconvexity_bound
   - node: MT.v1
     conclusion: zero_free_region_sharpened
   - node: PlattTrudgian.v1
@@ -52,20 +54,21 @@ conclusions:
       height H0 = 3 x 10^12 from Platt and Trudgian, the zero-free region R = 5.5666305 from Mossinghoff
       and Trudgian, and a zero-density bound for N-tilde(sigma, T) of the shape (2.6) from Kadiri, Lumley
       and Ng [18], the published J. Math. Anal. Appl. 465 (2018) paper that KLN.v1 records. The first
-      two are recorded as edges. The third is not yet, for a reason worth stating: FKS says that the value
-      a1 = 0.63 used in [18, Theorem 1.1] rests on an erroneous explicit van der Corput second derivative
-      test of Cheng and Graham, that the corrected value is 0.77, and that the error 'would render many
-      results concerning the prime number theorem unreliable'. So KLN.v1's conclusion must be stated with
-      the corrected constant, or stated as printed and explicitly marked as superseded -- and that decision
-      should be made by someone reading KLN, not inferred from FKS's description of it. FKS's other Kadiri-Lumley-Ng
-      reference [19], the unpublished preprint 'Bounding psi(x) with zero-density', is NOT an input: Lemma
-      2.5, the sums-over-zeros estimate, is proved in FKS itself and the preprint is cited as attribution
-      -- 'a particular case of the studies done in [19]'. It is background, not an edge.
+      two are recorded as edges. The third is now recorded too, at the point where the error FKS reports
+      actually bites: KLN.v1 states the subconvexity bound of its Lemma 3.2 with FKS's corrected constant
+      0.77 rather than the printed 0.63, which is the value FKS itself uses. KLN's Theorem 1.1 and its
+      numerical density tables remain unstated, because their constants were computed with the erroneous
+      value and nobody has published recomputed ones. FKS's other Kadiri-Lumley-Ng reference [19], the
+      unpublished preprint 'Bounding psi(x) with zero-density', is NOT an input: Lemma 2.5, the sums-over-zeros
+      estimate, is proved in FKS itself and the preprint is cited as attribution. It is background, not
+      an edge.
   designated: fks-paper
 - id: psi_classical_bound
   declaration: FKS.v1.psi_classical_bound
   challenge: FKS.v1.challenge_psi_classical_bound
   imports:
+  - node: KLN.v1
+    conclusion: subconvexity_bound
   - node: MT.v1
     conclusion: zero_free_region_sharpened
   - node: PlattTrudgian.v1
@@ -85,16 +88,14 @@ conclusions:
       (2023) 127426). FKS names three inputs: the verification height H0 = 3 x 10^12 from Platt and Trudgian,
       the zero-free region R = 5.5666305 from Mossinghoff and Trudgian, and a zero-density bound for N-tilde(sigma,
       T) of the shape (2.6) from Kadiri, Lumley and Ng [18], the published J. Math. Anal. Appl. 465 (2018)
-      paper that KLN.v1 records. The first two are recorded as edges. The third is not yet, for a reason
-      worth stating: FKS says that the value a1 = 0.63 used in [18, Theorem 1.1] rests on an erroneous
-      explicit van der Corput second derivative test of Cheng and Graham, that the corrected value is
-      0.77, and that the error 'would render many results concerning the prime number theorem unreliable'.
-      So KLN.v1's conclusion must be stated with the corrected constant, or stated as printed and explicitly
-      marked as superseded -- and that decision should be made by someone reading KLN, not inferred from
-      FKS's description of it. FKS's other Kadiri-Lumley-Ng reference [19], the unpublished preprint 'Bounding
-      psi(x) with zero-density', is NOT an input: Lemma 2.5, the sums-over-zeros estimate, is proved in
-      FKS itself and the preprint is cited as attribution -- 'a particular case of the studies done in
-      [19]'. It is background, not an edge.
+      paper that KLN.v1 records. The first two are recorded as edges. The third is now recorded too, at
+      the point where the error FKS reports actually bites: KLN.v1 states the subconvexity bound of its
+      Lemma 3.2 with FKS's corrected constant 0.77 rather than the printed 0.63, which is the value FKS
+      itself uses. KLN's Theorem 1.1 and its numerical density tables remain unstated, because their constants
+      were computed with the erroneous value and nobody has published recomputed ones. FKS's other Kadiri-Lumley-Ng
+      reference [19], the unpublished preprint 'Bounding psi(x) with zero-density', is NOT an input: Lemma
+      2.5, the sums-over-zeros estimate, is proved in FKS itself and the preprint is cited as attribution.
+      It is background, not an edge.
   designated: fks-paper
 
 sources:

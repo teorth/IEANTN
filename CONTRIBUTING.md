@@ -86,8 +86,8 @@ the conclusion, so `python scripts/ieantn.py housekeeping` shows what is claimed
 
 ## Generated files
 
-`Challenge.lean`, `IEANTN/Nodes.lean`, `fingerprints.json` and `STATE.md` are generated *and*
-committed, and CI checks they are current.
+`Challenge.lean`, `IEANTN/Nodes.lean`, `IEANTN/Bridges.lean`, `fingerprints.json`, `STATE.md` and
+`GRAPH.md` are generated *and* committed, and CI checks they are current.
 
 **If you hit a merge conflict in any of them, do not resolve it by hand.** Take either side, then
 regenerate:
@@ -96,6 +96,7 @@ regenerate:
 python scripts/ieantn.py gen-challenges
 python scripts/ieantn.py fingerprint
 python scripts/ieantn.py state
+python scripts/ieantn.py graph
 ```
 
 They are committed rather than gitignored on purpose: a change of *meaning* then shows up as a diff
