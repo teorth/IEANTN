@@ -15,12 +15,23 @@ not a claim that the box rests on nothing; it is an admission that the question 
 been asked. A solid border means someone has traced it to its sources, and the arrows
 into it are the answer.
 
+A **hexagon** is a *bridge*, and the thick arrows around it are a different relation from
+the thin ones. A thin arrow into a box means the box **assumes** what the arrow comes
+from, and nothing here checks the step. A bridge is the step itself, proved in Lean and
+recompiled on every push. It is drawn as a box rather than an arrow because a bridge may
+have several premises at once, which an arrow cannot say. A bridge marked *spare* is a
+second ground for a claim that is currently justified some other way.
+
 ## The network at a glance
 
-One box per node, so this stays readable as the network grows. The number on an arrow is
-how many separate claims cross it. A node is coloured by its **weakest** conclusion,
+One box per node, so this stays readable as the network grows. The number on a thin arrow
+is how many separate claims cross it. A node is coloured by its **weakest** conclusion,
 since that is what someone importing the whole node is relying on, and dashed if any of
 its claims has not been traced to its own sources.
+
+A thick **bridge** arrow is a Lean-checked implication rather than an assumption. At this
+resolution it says only that some bridge crosses between the two nodes; which premises a
+bridge needed together is in the detailed picture below.
 
 ```mermaid
 graph LR
@@ -48,6 +59,7 @@ graph LR
   NMT_v1 -->|2| NFKS_v1
   NPlattTrudgian_v1 -->|2| NFKS_v1
   NPlattTrudgian_v1 --> NMT_v1
+  NLcm_v2 ==>|bridge| NLcm_v1
   style NBKLNW_v1 stroke-dasharray: 6 4;
   style NDusart2018_v1 stroke-dasharray: 6 4;
   style NFKBJ_v1 stroke-dasharray: 6 4;
@@ -139,6 +151,9 @@ graph LR
   Buthe_v1_theorem_2_li_gt_pi --> FKS2_v1_corollary_26
   Dusart2018_v1_proposition_5_4 --> Lcm_v1_lcmUpto_not_highlyAbundant
   PlattTrudgian_v1_rh_up_to --> MT_v1_zero_free_region_sharpened
+  BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2{{"<b>V2ToV1</b><br/><i>spare</i>"}}
+  Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap ==> BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2
+  BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2 ==> Lcm_v1_lcmUpto_not_highlyAbundant
   style BKLNW_v1_table8_psi_bound stroke-dasharray: 6 4;
   style BKLNW_v1_table8_psi_bound_above stroke-dasharray: 6 4;
   style BKLNW_v1_theta_error_le_one stroke-dasharray: 6 4;
@@ -152,6 +167,8 @@ graph LR
   classDef asserted fill:#fff1e5,stroke:#bc4c00,color:#1f2328;
   classDef bridged fill:#fbefff,stroke:#8250df,color:#1f2328;
   classDef none_yet fill:#ffebe9,stroke:#cf222e,color:#1f2328;
+  classDef bridge fill:#fbefff,stroke:#8250df,color:#1f2328,stroke-width:2px;
+  class BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2 bridge;
   class Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap lean_comparator;
   class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,FKS2_v1_corollary_14,FKS2_v1_corollary_23,FKS2_v1_corollary_26,KLN_v1_subconvexity_bound,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to literature;
   class FKBJ_v1_rh_up_to numerical;

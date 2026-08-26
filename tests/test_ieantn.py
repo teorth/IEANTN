@@ -493,6 +493,60 @@ class TestNodeOverview(FixtureRepo):
         self.assertIn('subgraph sgUpstream_v1["Upstream.v1"]', rendered)
 
 
+class TestBridgesInTheGraph(FixtureRepo):
+    """A bridge is drawn as a node, not an arrow.
+
+    Two reasons, and the second is the one that forces it. First, an import arrow and a bridge are
+    different relations -- one says "assumes, unchecked", the other says "proved in Lean, and
+    recompiled on every push" -- and drawing them alike would make the picture claim more or less
+    verification than there is. Second, `from` may name several conclusions, so a bridge is an
+    implication with several hypotheses; an arrow cannot say which premises were needed together,
+    and a node with several arrows into it can.
+    """
+
+    def _bridged(self, premises: list[str]) -> dict:
+        self.write_node("Up.v1", LITERATURE)
+        self.write_node("Up2.v1", LITERATURE)
+        body = LITERATURE.replace(
+            "  designated:",
+            "    - id: br" + chr(10)
+            + "      kind: bridged" + chr(10)
+            + "      from: [" + ", ".join(premises) + "]" + chr(10)
+            + "      bridge: IEANTN/Bridges/Fam/Sewn.lean" + chr(10)
+            + "  designated:")
+        self.write_node("A.v1", body)
+        return ieantn.load_nodes()
+
+    def test_a_many_premise_bridge_is_one_node_with_two_arrows_in(self) -> None:
+        nodes = self._bridged(["Up.v1.main", "Up2.v1.main"])
+        found = ieantn.bridges_in(nodes)
+        self.assertEqual(len(found), 1)
+        self.assertEqual(sorted(found[0]["premises"]), ["Up.v1.main", "Up2.v1.main"])
+        rendered = ieantn.render_graph(nodes)
+        self.assertIn("Up_v1_main ==> BR", rendered)
+        self.assertIn("Up2_v1_main ==> BR", rendered)
+
+    def test_the_bridge_node_is_a_hexagon_named_for_its_file(self) -> None:
+        rendered = ieantn.render_graph(self._bridged(["Up.v1.main"]))
+        self.assertIn('{{"<b>Sewn</b>', rendered)
+
+    def test_a_bridge_that_is_not_designated_says_so(self) -> None:
+        """A spare ground is still real evidence and still worth drawing, but a reader should not
+        mistake it for the one the claim currently rests on."""
+        rendered = ieantn.render_graph(self._bridged(["Up.v1.main"]))
+        self.assertIn("<i>spare</i>", rendered)
+
+    def test_the_overview_shows_a_bridge_between_the_nodes(self) -> None:
+        nodes = self._bridged(["Up.v1.main"])
+        rendered = chr(10).join(
+            ieantn.render_node_overview(nodes, ieantn.index_conclusions(nodes)))
+        self.assertIn("NUp_v1 ==>|bridge| NA_v1", rendered)
+
+    def test_mermaid_ids_survive_dots_dashes_and_colons(self) -> None:
+        """Every one of these appears in a real key, and each ends a Mermaid id early."""
+        self.assertEqual(ieantn.mermaid_id("Lcm.v1.main::br-2"), "Lcm_v1_main__br_2")
+
+
 class TestGraphPage(FixtureRepo):
     """`GRAPH.md`: the network as a page someone can read without cloning anything.
 
