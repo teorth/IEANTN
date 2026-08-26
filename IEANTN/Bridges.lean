@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import IEANTN.Bridges.Lcm.V2ToV1
+import IEANTN.Bridges.Platt.P2017ToP2015
 
 /-!
 # Bridges

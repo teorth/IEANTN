@@ -77,6 +77,7 @@ graph LR
   NPlattTrudgian_v1 -->|2| NPlattTrudgian2021_v1
   NPlattTrudgian2021_v1 -->|2| NBKLNW_v1
   NLcm_v2 ==>|bridge| NLcm_v1
+  NPlatt2017_v1 ==>|bridge| NPlatt2015_v1
   style NBKLNW_v1 stroke-dasharray: 6 4;
   style NDusart2018_v1 stroke-dasharray: 6 4;
   style NFKBJ_v1 stroke-dasharray: 6 4;
@@ -228,6 +229,9 @@ graph LR
   BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2{{"<b>V2ToV1</b><br/><i>spare</i>"}}
   Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap ==> BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2
   BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2 ==> Lcm_v1_lcmUpto_not_highlyAbundant
+  BRPlatt2015_v1_rh_up_to__bridge_from_platt2017{{"<b>P2017ToP2015</b><br/><i>spare</i>"}}
+  Platt2017_v1_rh_up_to ==> BRPlatt2015_v1_rh_up_to__bridge_from_platt2017
+  BRPlatt2015_v1_rh_up_to__bridge_from_platt2017 ==> Platt2015_v1_rh_up_to
   style BKLNW_v1_theta_error_le_one stroke-dasharray: 6 4;
   style Dusart2018_v1_proposition_5_4 stroke-dasharray: 6 4;
   style FKBJ_v1_rh_up_to stroke-dasharray: 6 4;
@@ -243,7 +247,7 @@ graph LR
   classDef bridged fill:#fbefff,stroke:#8250df,color:#1f2328;
   classDef none_yet fill:#ffebe9,stroke:#cf222e,color:#1f2328;
   classDef bridge fill:#fbefff,stroke:#8250df,color:#1f2328,stroke-width:2px;
-  class BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2 bridge;
+  class BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2,BRPlatt2015_v1_rh_up_to__bridge_from_platt2017 bridge;
   class Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap,ZeroFreeHeight_v1_classical_region_descends lean_comparator;
   class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,FKS2_v1_corollary_14,FKS2_v1_corollary_23,FKS2_v1_corollary_26,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical literature;
   class FKBJ_v1_rh_up_to,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to numerical;
