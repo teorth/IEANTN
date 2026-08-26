@@ -2004,7 +2004,7 @@ def click_lines(index: dict, prefix: str = "", key=None) -> list[str]:
         if box in seen:
             continue
         node_id, _, cid = conclusion_key.rpartition(".")
-        url = node_page_url(node_id, "" if key else cid, from_root=True)
+        url = node_page_url(node_id, "" if key else cid, absolute=True)
         seen.add(box)
         out.append(f'  click {prefix}{mermaid_id(box)} href "{url}" _blank')
     return out
@@ -2286,13 +2286,25 @@ def node_page_path(node_id: str) -> pathlib.Path:
     return PAGES / f"{node_id.replace('.', '-')}.md"
 
 
-def node_page_url(node_id: str, anchor: str = "", from_root: bool = False) -> str:
+def node_page_url(node_id: str, anchor: str = "", from_root: bool = False,
+                  absolute: bool = False) -> str:
     """A link to a node's page.
 
-    `from_root` because GRAPH.md sits at the repository root and the node pages link to each other
-    from inside `docs/nodes/`; a path that is right for one is broken for the other.
+    Three forms, and all three are needed.
+
+    `from_root` because GRAPH.md sits at the repository root while the node pages link to each
+    other from inside `docs/nodes/`; a path right for one is broken for the other.
+
+    `absolute` because GitHub renders Mermaid in a sandboxed iframe served from
+    `viewscreen.githubusercontent.com`, so a relative `click` href resolves against *that* origin
+    and 404s — `https://viewscreen.githubusercontent.com/markdown/docs/nodes/Lcm-v1.md` is what a
+    reader actually got. Ordinary Markdown links on the same page are fine, because they are
+    rendered in the repository's own context; only the diagram is sandboxed. This is invisible
+    locally and invisible in CI: it can only be caught by clicking a box on GitHub.
     """
     fragment = f"#{anchor}" if anchor else ""
+    if absolute:
+        return f"{REPOSITORY_URL}/blob/main/docs/nodes/{node_id.replace('.', '-')}.md{fragment}"
     prefix = "docs/nodes/" if from_root else ""
     return f"{prefix}{node_id.replace('.', '-')}.md{fragment}"
 

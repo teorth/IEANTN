@@ -79,20 +79,20 @@ graph LR
   class NBKLNW_v1,NButhe_v1,NDusart2018_v1,NFKS_v1,NFKS2_v1,NKLN_v1,NKadiri2005_v1,NMT_v1,NPlattTrudgian_v1 literature;
   class NFKBJ_v1,NPlatt2015_v1 numerical;
   class NLcm_v1,NLcm_v2 lean_comparator;
-  click NBKLNW_v1 href "docs/nodes/BKLNW-v1.md" _blank
-  click NButhe_v1 href "docs/nodes/Buthe-v1.md" _blank
-  click NDusart2018_v1 href "docs/nodes/Dusart2018-v1.md" _blank
-  click NFKBJ_v1 href "docs/nodes/FKBJ-v1.md" _blank
-  click NFKS_v1 href "docs/nodes/FKS-v1.md" _blank
-  click NFKS2_v1 href "docs/nodes/FKS2-v1.md" _blank
-  click NKLN_v1 href "docs/nodes/KLN-v1.md" _blank
-  click NKadiri2005_v1 href "docs/nodes/Kadiri2005-v1.md" _blank
-  click NLcm_v1 href "docs/nodes/Lcm-v1.md" _blank
-  click NLcm_v2 href "docs/nodes/Lcm-v2.md" _blank
-  click NMT_v1 href "docs/nodes/MT-v1.md" _blank
-  click NPlatt2015_v1 href "docs/nodes/Platt2015-v1.md" _blank
-  click NPlattTrudgian_v1 href "docs/nodes/PlattTrudgian-v1.md" _blank
-  click NZeroFreeHeight_v1 href "docs/nodes/ZeroFreeHeight-v1.md" _blank
+  click NBKLNW_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md" _blank
+  click NButhe_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md" _blank
+  click NDusart2018_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Dusart2018-v1.md" _blank
+  click NFKBJ_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKBJ-v1.md" _blank
+  click NFKS_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS-v1.md" _blank
+  click NFKS2_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md" _blank
+  click NKLN_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/KLN-v1.md" _blank
+  click NKadiri2005_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Kadiri2005-v1.md" _blank
+  click NLcm_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Lcm-v1.md" _blank
+  click NLcm_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Lcm-v2.md" _blank
+  click NMT_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v1.md" _blank
+  click NPlatt2015_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Platt2015-v1.md" _blank
+  click NPlattTrudgian_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian-v1.md" _blank
+  click NZeroFreeHeight_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZeroFreeHeight-v1.md" _blank
   classDef lean_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
   classDef numerical fill:#fff8c5,stroke:#9a6700,color:#1f2328;
   classDef literature fill:#ddf4ff,stroke:#0969da,color:#1f2328;
@@ -211,32 +211,32 @@ graph LR
   class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,FKS2_v1_corollary_14,FKS2_v1_corollary_23,FKS2_v1_corollary_26,KLN_v1_subconvexity_bound,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to literature;
   class ZeroFreeHeight_v1_classical_region_descends none_yet;
   class FKBJ_v1_rh_up_to,Platt2015_v1_rh_up_to numerical;
-  click BKLNW_v1_corollary_5_1 href "docs/nodes/BKLNW-v1.md#corollary_5_1" _blank
-  click BKLNW_v1_table8_psi_bound href "docs/nodes/BKLNW-v1.md#table8_psi_bound" _blank
-  click BKLNW_v1_table8_psi_bound_above href "docs/nodes/BKLNW-v1.md#table8_psi_bound_above" _blank
-  click BKLNW_v1_theta_error_le_one href "docs/nodes/BKLNW-v1.md#theta_error_le_one" _blank
-  click Buthe_v1_theorem_2_li_gt_pi href "docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi" _blank
-  click Buthe_v1_theorem_2_li_minus_pi href "docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi" _blank
-  click Buthe_v1_theorem_2_li_minus_riemann_pi href "docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi" _blank
-  click Buthe_v1_theorem_2_psi href "docs/nodes/Buthe-v1.md#theorem_2_psi" _blank
-  click Buthe_v1_theorem_2_theta href "docs/nodes/Buthe-v1.md#theorem_2_theta" _blank
-  click Buthe_v1_theorem_2_theta_lower href "docs/nodes/Buthe-v1.md#theorem_2_theta_lower" _blank
-  click Dusart2018_v1_proposition_5_4 href "docs/nodes/Dusart2018-v1.md#proposition_5_4" _blank
-  click FKBJ_v1_rh_up_to href "docs/nodes/FKBJ-v1.md#rh_up_to" _blank
-  click FKS_v1_psi_bound_all_x href "docs/nodes/FKS-v1.md#psi_bound_all_x" _blank
-  click FKS_v1_psi_classical_bound href "docs/nodes/FKS-v1.md#psi_classical_bound" _blank
-  click FKS2_v1_corollary_14 href "docs/nodes/FKS2-v1.md#corollary_14" _blank
-  click FKS2_v1_corollary_23 href "docs/nodes/FKS2-v1.md#corollary_23" _blank
-  click FKS2_v1_corollary_26 href "docs/nodes/FKS2-v1.md#corollary_26" _blank
-  click KLN_v1_subconvexity_bound href "docs/nodes/KLN-v1.md#subconvexity_bound" _blank
-  click Kadiri2005_v1_zero_free_region href "docs/nodes/Kadiri2005-v1.md#zero_free_region" _blank
-  click Lcm_v1_lcmUpto_not_highlyAbundant href "docs/nodes/Lcm-v1.md#lcmUpto_not_highlyAbundant" _blank
-  click Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap href "docs/nodes/Lcm-v2.md#lcmUpto_not_highlyAbundant_of_primeGap" _blank
-  click MT_v1_zero_free_region href "docs/nodes/MT-v1.md#zero_free_region" _blank
-  click MT_v1_zero_free_region_sharpened href "docs/nodes/MT-v1.md#zero_free_region_sharpened" _blank
-  click Platt2015_v1_rh_up_to href "docs/nodes/Platt2015-v1.md#rh_up_to" _blank
-  click PlattTrudgian_v1_rh_up_to href "docs/nodes/PlattTrudgian-v1.md#rh_up_to" _blank
-  click ZeroFreeHeight_v1_classical_region_descends href "docs/nodes/ZeroFreeHeight-v1.md#classical_region_descends" _blank
+  click BKLNW_v1_corollary_5_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#corollary_5_1" _blank
+  click BKLNW_v1_table8_psi_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound" _blank
+  click BKLNW_v1_table8_psi_bound_above href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound_above" _blank
+  click BKLNW_v1_theta_error_le_one href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#theta_error_le_one" _blank
+  click Buthe_v1_theorem_2_li_gt_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi" _blank
+  click Buthe_v1_theorem_2_li_minus_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi" _blank
+  click Buthe_v1_theorem_2_li_minus_riemann_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi" _blank
+  click Buthe_v1_theorem_2_psi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_psi" _blank
+  click Buthe_v1_theorem_2_theta href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_theta" _blank
+  click Buthe_v1_theorem_2_theta_lower href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_theta_lower" _blank
+  click Dusart2018_v1_proposition_5_4 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Dusart2018-v1.md#proposition_5_4" _blank
+  click FKBJ_v1_rh_up_to href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKBJ-v1.md#rh_up_to" _blank
+  click FKS_v1_psi_bound_all_x href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS-v1.md#psi_bound_all_x" _blank
+  click FKS_v1_psi_classical_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS-v1.md#psi_classical_bound" _blank
+  click FKS2_v1_corollary_14 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#corollary_14" _blank
+  click FKS2_v1_corollary_23 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#corollary_23" _blank
+  click FKS2_v1_corollary_26 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#corollary_26" _blank
+  click KLN_v1_subconvexity_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/KLN-v1.md#subconvexity_bound" _blank
+  click Kadiri2005_v1_zero_free_region href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Kadiri2005-v1.md#zero_free_region" _blank
+  click Lcm_v1_lcmUpto_not_highlyAbundant href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Lcm-v1.md#lcmUpto_not_highlyAbundant" _blank
+  click Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Lcm-v2.md#lcmUpto_not_highlyAbundant_of_primeGap" _blank
+  click MT_v1_zero_free_region href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v1.md#zero_free_region" _blank
+  click MT_v1_zero_free_region_sharpened href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v1.md#zero_free_region_sharpened" _blank
+  click Platt2015_v1_rh_up_to href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Platt2015-v1.md#rh_up_to" _blank
+  click PlattTrudgian_v1_rh_up_to href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian-v1.md#rh_up_to" _blank
+  click ZeroFreeHeight_v1_classical_region_descends href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZeroFreeHeight-v1.md#classical_region_descends" _blank
 ```
 
 ## What each result rests on
