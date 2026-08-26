@@ -1863,6 +1863,62 @@ EVIDENCE_STYLE = {
 }
 
 
+def declaration_url(key: str) -> str | None:
+    """Where a reader can go to read the claim itself.
+
+    A graph of claims whose boxes cannot be clicked makes the reader take the node id, guess the
+    path, and search the file. This resolves the id to the exact line of the exact file.
+
+    Source links rather than generated documentation, for now, deliberately: they need no hosting,
+    no Pages, and no second build, and they cannot go stale relative to a commit. When doc-gen is
+    published this is the one function to change -- the URL becomes
+    `<pages>/docs/IEANTN/Nodes/<Family>/<version>/Conclusions.html#<declaration>` -- and every
+    caller follows.
+    """
+    node_id, _, cid = key.rpartition(".")
+    relative = pathlib.PurePosixPath("IEANTN/Nodes") / node_id.replace(".", "/") / "Conclusions.lean"
+    path = ROOT / relative
+    if not path.is_file():
+        return None
+    for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        stripped = line.lstrip()
+        for prefix in ("def ", "noncomputable def ", "abbrev "):
+            if stripped.startswith(prefix) and stripped[len(prefix):].split()[:1] == [cid]:
+                return f"{REPOSITORY_URL}/blob/main/{relative}#L{number}"
+    return None
+
+
+#: The hexagon a bridge is drawn as, and the arrows into and out of it.
+BRIDGE_STYLE = ("#8250df", "#fbefff")
+
+
+def bridges_in(nodes: dict) -> list[dict]:
+    """Every bridge in the network, as premises -> conclusion.
+
+    A bridge is *not* an edge. `from` may name several conclusions, so a bridge is a many-to-one
+    relation -- an implication with more than one hypothesis -- and an edge cannot carry that
+    without lying about which premises were needed together. Drawing the bridge itself as a node,
+    with an arrow in from each premise and one arrow out, is the ordinary way to draw a hyperedge
+    and costs nothing when there is only one premise.
+    """
+    found = []
+    for node_id, node in sorted(nodes.items()):
+        for conclusion in conclusions_of(node):
+            target = f"{node_id}.{conclusion.get('id')}"
+            designated = conclusion.get("designated")
+            for justification in conclusion.get("justifications") or []:
+                if justification.get("kind") != "bridged":
+                    continue
+                found.append({
+                    "id": f"{target}::{justification.get('id')}",
+                    "file": str(justification.get("bridge") or ""),
+                    "premises": bridge_sources(justification),
+                    "conclusion": target,
+                    "designated": justification.get("id") == designated,
+                })
+    return found
+
+
 #: Evidence kinds from weakest to strongest. A node is summarised by its *weakest* conclusion,
 #: because that is what a reader of the whole node is actually relying on: a node with nine
 #: verified claims and one bare assertion is, for anyone importing all ten, an assertion.
@@ -1873,6 +1929,25 @@ def weakest_kind(conclusions: list[dict]) -> str:
     """The least-supported evidence kind among these conclusions."""
     kinds = [designated_kind(c) or "none-yet" for c in conclusions]
     return min(kinds, key=lambda k: EVIDENCE_ORDER.index(k) if k in EVIDENCE_ORDER else 0)
+
+
+def click_lines(index: dict, prefix: str = "", key=None) -> list[str]:
+    """`click` directives making the boxes navigable.
+
+    Mermaid renders these as links on GitHub. Emitted once per distinct target so the collapsed
+    view, whose boxes stand for whole nodes, links to the first claim in the node rather than
+    repeating a link per claim.
+    """
+    out, seen = [], set()
+    for conclusion_key in sorted(index):
+        box = (key(conclusion_key) if key else conclusion_key)
+        if box in seen:
+            continue
+        url = declaration_url(conclusion_key)
+        if url:
+            seen.add(box)
+            out.append(f'  click {prefix}{mermaid_id(box)} href "{url}" _blank')
+    return out
 
 
 def render_node_overview(nodes: dict[str, dict], index: dict) -> list[str]:
@@ -1907,6 +1982,15 @@ def render_node_overview(nodes: dict[str, dict], index: dict) -> list[str]:
         arrow = f"-->|{count}|" if count > 1 else "-->"
         lines.append(f"  N{mermaid_id(source_node)} {arrow} N{mermaid_id(target_node)}")
 
+    # Bridges are collapsed to node-to-node arrows here. The premises of one bridge may sit in
+    # different nodes, so this loses the "needed together" that the hexagon carries -- which is
+    # why the detailed picture keeps the hexagon and this one says only that a bridge exists.
+    crossings = {(premise.rsplit(".", 1)[0], bridge["conclusion"].rsplit(".", 1)[0])
+                 for bridge in bridges_in(nodes) for premise in bridge["premises"]}
+    for source_node, target_node in sorted(crossings):
+        if source_node != target_node and source_node in nodes and target_node in nodes:
+            lines.append(f"  N{mermaid_id(source_node)} ==>|bridge| N{mermaid_id(target_node)}")
+
     for node_id in sorted(nodes):
         cs = conclusions_of(nodes[node_id])
         if cs and any(import_status(c) == "undetermined" for c in cs):
@@ -1917,13 +2001,19 @@ def render_node_overview(nodes: dict[str, dict], index: dict) -> list[str]:
                        if conclusions_of(nodes[n]) else "none-yet") == kind]
         if members:
             lines.append(f"  class {','.join(members)} {mermaid_id(kind)};")
+    lines += click_lines(index, prefix="N", key=lambda k: k.rsplit(".", 1)[0])
     lines += ["```", ""]
     return lines
 
 
 def mermaid_id(key: str) -> str:
-    """Mermaid node ids may not contain dots."""
-    return key.replace(".", "_").replace("-", "_")
+    """A Mermaid node id: letters, digits and underscores only.
+
+    Dots, dashes and colons all appear in the keys this is called on -- `Lcm.v1.main`, the
+    `bridged` justification ids, the evidence kind `lean-comparator` -- and every one of them
+    ends a node id early in Mermaid, which fails at render time rather than here.
+    """
+    return re.sub(r"[^0-9A-Za-z_]", "_", key)
 
 
 def render_graph(nodes: dict[str, dict]) -> str:
@@ -1955,20 +2045,35 @@ def render_graph(nodes: dict[str, dict]) -> str:
         "been asked. A solid border means someone has traced it to its sources, and the arrows",
         "into it are the answer.",
         "",
+        "Every box and every claim named below links to the line of Lean that states it.",
+        "",
+        "A **hexagon** is a *bridge*, and the thick arrows around it are a different relation from",
+        "the thin ones. A thin arrow into a box means the box **assumes** what the arrow comes",
+        "from, and nothing here checks the step. A bridge is the step itself, proved in Lean and",
+        "recompiled on every push. It is drawn as a box rather than an arrow because a bridge may",
+        "have several premises at once, which an arrow cannot say. A bridge marked *spare* is a",
+        "second ground for a claim that is currently justified some other way.",
+        "",
     ]
 
     # --- the two pictures ----------------------------------------------------------------
     class_defs = [
         f"  classDef {mermaid_id(kind)} fill:{fill},stroke:{stroke},color:#1f2328;"
         for kind, (_, stroke, fill) in EVIDENCE_STYLE.items()]
+    bridge_class_def = (f"  classDef bridge fill:{BRIDGE_STYLE[1]},stroke:{BRIDGE_STYLE[0]},"
+                        "color:#1f2328,stroke-width:2px;")
 
     lines += [
         "## The network at a glance",
         "",
-        "One box per node, so this stays readable as the network grows. The number on an arrow is",
-        "how many separate claims cross it. A node is coloured by its **weakest** conclusion,",
+        "One box per node, so this stays readable as the network grows. The number on a thin arrow",
+        "is how many separate claims cross it. A node is coloured by its **weakest** conclusion,",
         "since that is what someone importing the whole node is relying on, and dashed if any of",
         "its claims has not been traced to its own sources.",
+        "",
+        "A thick **bridge** arrow is a Lean-checked implication rather than an assumption. At this",
+        "resolution it says only that some bridge crosses between the two nodes; which premises a",
+        "bridge needed together is in the detailed picture below.",
         "",
     ]
     overview = render_node_overview(nodes, index)
@@ -2000,16 +2105,33 @@ def render_graph(nodes: dict[str, dict]) -> str:
             source = f"{dependency.get('node')}.{dependency.get('conclusion')}"
             if source in index:
                 lines.append(f"  {mermaid_id(source)} --> {mermaid_id(key)}")
+    bridges = bridges_in(nodes)
+    for bridge in bridges:
+        if bridge["conclusion"] not in index:
+            continue
+        stem = pathlib.PurePosixPath(bridge["file"]).stem or "bridge"
+        role = "" if bridge["designated"] else "<br/><i>spare</i>"
+        bid = "BR" + mermaid_id(bridge["id"])
+        lines.append(f'  {bid}{{{{"<b>{stem}</b>{role}"}}}}')
+        for premise in bridge["premises"]:
+            if premise in index:
+                lines.append(f"  {mermaid_id(premise)} ==> {bid}")
+        lines.append(f"  {bid} ==> {mermaid_id(bridge['conclusion'])}")
+
     for key in sorted(index):
         if import_status(index[key][1]) == "undetermined":
             lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 6 4;")
     seen_kinds = {designated_kind(c) or "none-yet" for _, c in index.values()}
-    lines += class_defs
+    lines += class_defs + [bridge_class_def]
+    bridge_ids = ["BR" + mermaid_id(b["id"]) for b in bridges if b["conclusion"] in index]
+    if bridge_ids:
+        lines.append(f"  class {','.join(bridge_ids)} bridge;")
     for kind in sorted(seen_kinds):
         members = [mermaid_id(k) for k in sorted(index)
                    if (designated_kind(index[k][1]) or "none-yet") == kind]
         if members:
             lines.append(f"  class {','.join(members)} {mermaid_id(kind)};")
+    lines += click_lines(index)
     lines += ["```", ""]
 
     # --- what it rests on --------------------------------------------------------------
@@ -2030,7 +2152,9 @@ def render_graph(nodes: dict[str, dict]) -> str:
         repeated = " *(above)*" if key in seen else ""
         pending = (" — *sources not traced*"
                    if import_status(conclusion) == "undetermined" else "")
-        out.append(f"{mark}- `{key}` — {label}{repeated}{pending}")
+        url = declaration_url(key)
+        shown = f"[`{key}`]({url})" if url else f"`{key}`"
+        out.append(f"{mark}- {shown} — {label}{repeated}{pending}")
         if key in seen:
             return
         seen.add(key)
@@ -2065,8 +2189,10 @@ def render_graph(nodes: dict[str, dict]) -> str:
             label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
             traced = ("**not yet traced**"
                       if import_status(index[key][1]) == "undetermined" else "traced")
+            url = declaration_url(key)
+            shown = f"[`{key}`]({url})" if url else f"`{key}`"
             lines.append(
-                f"| `{key}` | {label} | {len(importers.get(key, []))} | {traced} |")
+                f"| {shown} | {label} | {len(importers.get(key, []))} | {traced} |")
         lines.append("")
 
     # --- nodes with nothing stated yet --------------------------------------------------

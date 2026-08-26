@@ -15,3 +15,6 @@ import IEANTN.Nodes.Kadiri2005.v1.Conclusions
 Each `sorry` below is deliberate and permanent: a challenge *states*, it does not prove.
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
+
+theorem Kadiri2005.v1.challenge_zero_free_region : Kadiri2005.v1.zero_free_region := by
+  sorry

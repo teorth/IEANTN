@@ -5,14 +5,14 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-14 node version(s), 23 conclusion(s).  3 state nothing yet.
+14 node version(s), 24 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
 | Designated justification | Conclusions |
 |---|---:|
 | `lean-comparator` | 2 |
-| `literature` | 20 |
+| `literature` | 21 |
 | `numerical` | 1 |
 
 ## Nodes
@@ -37,11 +37,11 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `FKS2.v1` | active | `corollary_23` | literature | 2 | - |
 | `FKS2.v1` | active | `corollary_26` | literature | 2 | - |
 | `KLN.v1` | active | `subconvexity_bound` | literature | 0 | - |
-| `Kadiri2005.v1` | stub | *(none yet)* | - | - | - |
+| `Kadiri2005.v1` | stub | `zero_free_region` | literature | 0 | - |
 | `Lcm.v1` | active | `lcmUpto_not_highlyAbundant` | lean-comparator | 1 | - |
 | `Lcm.v2` | active | `lcmUpto_not_highlyAbundant_of_primeGap` | lean-comparator | 0 | #10 |
-| `MT.v1` | active | `zero_free_region` | literature | 0 | - |
-| `MT.v1` | active | `zero_free_region_sharpened` | literature | 1 | - |
+| `MT.v1` | active | `zero_free_region` | literature | 1 | - |
+| `MT.v1` | active | `zero_free_region_sharpened` | literature | 2 | - |
 | `MTY.v1` | stub | *(none yet)* | - | - | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
 | `RosserSchoenfeld.v1` | stub | *(none yet)* | - | - | - |
@@ -56,6 +56,7 @@ downstream.
 | `FKBJ.v1.rh_up_to` | 6 |
 | `PlattTrudgian.v1.rh_up_to` | 3 |
 | `MT.v1.zero_free_region_sharpened` | 2 |
+| `Kadiri2005.v1.zero_free_region` | 2 |
 | `KLN.v1.subconvexity_bound` | 2 |
 | `FKS.v1.psi_classical_bound` | 2 |
 | `Buthe.v1.theorem_2_li_minus_pi` | 2 |

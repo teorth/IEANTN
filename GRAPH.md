@@ -15,12 +15,25 @@ not a claim that the box rests on nothing; it is an admission that the question 
 been asked. A solid border means someone has traced it to its sources, and the arrows
 into it are the answer.
 
+Every box and every claim named below links to the line of Lean that states it.
+
+A **hexagon** is a *bridge*, and the thick arrows around it are a different relation from
+the thin ones. A thin arrow into a box means the box **assumes** what the arrow comes
+from, and nothing here checks the step. A bridge is the step itself, proved in Lean and
+recompiled on every push. It is drawn as a box rather than an arrow because a bridge may
+have several premises at once, which an arrow cannot say. A bridge marked *spare* is a
+second ground for a claim that is currently justified some other way.
+
 ## The network at a glance
 
-One box per node, so this stays readable as the network grows. The number on an arrow is
-how many separate claims cross it. A node is coloured by its **weakest** conclusion,
+One box per node, so this stays readable as the network grows. The number on a thin arrow
+is how many separate claims cross it. A node is coloured by its **weakest** conclusion,
 since that is what someone importing the whole node is relying on, and dashed if any of
 its claims has not been traced to its own sources.
+
+A thick **bridge** arrow is a Lean-checked implication rather than an assumption. At this
+resolution it says only that some bridge crosses between the two nodes; which premises a
+bridge needed together is in the detailed picture below.
 
 ```mermaid
 graph LR
@@ -31,7 +44,7 @@ graph LR
   NFKS_v1["<b>FKS.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NFKS2_v1["<b>FKS2.v1</b><br/>3 claims<br/><i>weakest: cited</i>"]
   NKLN_v1["<b>KLN.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
-  NKadiri2005_v1["<b>Kadiri2005.v1</b><br/><i>nothing stated yet</i>"]
+  NKadiri2005_v1["<b>Kadiri2005.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NLcm_v1["<b>Lcm.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NLcm_v2["<b>Lcm.v2</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NMT_v1["<b>MT.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
@@ -45,18 +58,34 @@ graph LR
   NFKBJ_v1 -->|6| NButhe_v1
   NFKS_v1 -->|2| NFKS2_v1
   NKLN_v1 -->|2| NFKS_v1
+  NKadiri2005_v1 -->|2| NMT_v1
   NMT_v1 -->|2| NFKS_v1
   NPlattTrudgian_v1 -->|2| NFKS_v1
   NPlattTrudgian_v1 --> NMT_v1
+  NLcm_v2 ==>|bridge| NLcm_v1
   style NBKLNW_v1 stroke-dasharray: 6 4;
   style NDusart2018_v1 stroke-dasharray: 6 4;
   style NFKBJ_v1 stroke-dasharray: 6 4;
   style NKLN_v1 stroke-dasharray: 6 4;
+  style NKadiri2005_v1 stroke-dasharray: 6 4;
+  style NMT_v1 stroke-dasharray: 6 4;
   style NPlattTrudgian_v1 stroke-dasharray: 6 4;
-  class NKadiri2005_v1,NMTY_v1,NRosserSchoenfeld_v1 none_yet;
-  class NBKLNW_v1,NButhe_v1,NDusart2018_v1,NFKS_v1,NFKS2_v1,NKLN_v1,NMT_v1,NPlattTrudgian_v1 literature;
+  class NMTY_v1,NRosserSchoenfeld_v1 none_yet;
+  class NBKLNW_v1,NButhe_v1,NDusart2018_v1,NFKS_v1,NFKS2_v1,NKLN_v1,NKadiri2005_v1,NMT_v1,NPlattTrudgian_v1 literature;
   class NFKBJ_v1 numerical;
   class NLcm_v1,NLcm_v2 lean_comparator;
+  click NBKLNW_v1 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L63" _blank
+  click NButhe_v1 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L73" _blank
+  click NDusart2018_v1 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Dusart2018/v1/Conclusions.lean#L36" _blank
+  click NFKBJ_v1 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKBJ/v1/Conclusions.lean#L43" _blank
+  click NFKS_v1 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L44" _blank
+  click NFKS2_v1 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L65" _blank
+  click NKLN_v1 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/KLN/v1/Conclusions.lean#L65" _blank
+  click NKadiri2005_v1 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Kadiri2005/v1/Conclusions.lean#L42" _blank
+  click NLcm_v1 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Lcm/v1/Conclusions.lean#L42" _blank
+  click NLcm_v2 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Lcm/v2/Conclusions.lean#L71" _blank
+  click NMT_v1 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/MT/v1/Conclusions.lean#L33" _blank
+  click NPlattTrudgian_v1 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian/v1/Conclusions.lean#L35" _blank
   classDef lean_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
   classDef numerical fill:#fff8c5,stroke:#9a6700,color:#1f2328;
   classDef literature fill:#ddf4ff,stroke:#0969da,color:#1f2328;
@@ -104,6 +133,9 @@ graph LR
   subgraph sgKLN_v1["KLN.v1"]
     KLN_v1_subconvexity_bound["<b>subconvexity_bound</b><br/><i>cited</i>"]
   end
+  subgraph sgKadiri2005_v1["Kadiri2005.v1"]
+    Kadiri2005_v1_zero_free_region["<b>zero_free_region</b><br/><i>cited</i>"]
+  end
   subgraph sgLcm_v1["Lcm.v1"]
     Lcm_v1_lcmUpto_not_highlyAbundant["<b>lcmUpto_not_highlyAbundant</b><br/><i>verified</i>"]
   end
@@ -138,13 +170,20 @@ graph LR
   Buthe_v1_theorem_2_li_minus_pi --> FKS2_v1_corollary_26
   Buthe_v1_theorem_2_li_gt_pi --> FKS2_v1_corollary_26
   Dusart2018_v1_proposition_5_4 --> Lcm_v1_lcmUpto_not_highlyAbundant
+  Kadiri2005_v1_zero_free_region --> MT_v1_zero_free_region
+  Kadiri2005_v1_zero_free_region --> MT_v1_zero_free_region_sharpened
   PlattTrudgian_v1_rh_up_to --> MT_v1_zero_free_region_sharpened
+  BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2{{"<b>V2ToV1</b><br/><i>spare</i>"}}
+  Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap ==> BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2
+  BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2 ==> Lcm_v1_lcmUpto_not_highlyAbundant
   style BKLNW_v1_table8_psi_bound stroke-dasharray: 6 4;
   style BKLNW_v1_table8_psi_bound_above stroke-dasharray: 6 4;
   style BKLNW_v1_theta_error_le_one stroke-dasharray: 6 4;
   style Dusart2018_v1_proposition_5_4 stroke-dasharray: 6 4;
   style FKBJ_v1_rh_up_to stroke-dasharray: 6 4;
   style KLN_v1_subconvexity_bound stroke-dasharray: 6 4;
+  style Kadiri2005_v1_zero_free_region stroke-dasharray: 6 4;
+  style MT_v1_zero_free_region stroke-dasharray: 6 4;
   style PlattTrudgian_v1_rh_up_to stroke-dasharray: 6 4;
   classDef lean_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
   classDef numerical fill:#fff8c5,stroke:#9a6700,color:#1f2328;
@@ -152,9 +191,35 @@ graph LR
   classDef asserted fill:#fff1e5,stroke:#bc4c00,color:#1f2328;
   classDef bridged fill:#fbefff,stroke:#8250df,color:#1f2328;
   classDef none_yet fill:#ffebe9,stroke:#cf222e,color:#1f2328;
+  classDef bridge fill:#fbefff,stroke:#8250df,color:#1f2328,stroke-width:2px;
+  class BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2 bridge;
   class Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap lean_comparator;
-  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,FKS2_v1_corollary_14,FKS2_v1_corollary_23,FKS2_v1_corollary_26,KLN_v1_subconvexity_bound,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to literature;
+  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,FKS2_v1_corollary_14,FKS2_v1_corollary_23,FKS2_v1_corollary_26,KLN_v1_subconvexity_bound,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to literature;
   class FKBJ_v1_rh_up_to numerical;
+  click BKLNW_v1_corollary_5_1 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L63" _blank
+  click BKLNW_v1_table8_psi_bound href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L78" _blank
+  click BKLNW_v1_table8_psi_bound_above href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L94" _blank
+  click BKLNW_v1_theta_error_le_one href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L107" _blank
+  click Buthe_v1_theorem_2_li_gt_pi href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L73" _blank
+  click Buthe_v1_theorem_2_li_minus_pi href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L63" _blank
+  click Buthe_v1_theorem_2_li_minus_riemann_pi href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L53" _blank
+  click Buthe_v1_theorem_2_psi href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L31" _blank
+  click Buthe_v1_theorem_2_theta href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L38" _blank
+  click Buthe_v1_theorem_2_theta_lower href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L45" _blank
+  click Dusart2018_v1_proposition_5_4 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Dusart2018/v1/Conclusions.lean#L36" _blank
+  click FKBJ_v1_rh_up_to href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKBJ/v1/Conclusions.lean#L43" _blank
+  click FKS_v1_psi_bound_all_x href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L44" _blank
+  click FKS_v1_psi_classical_bound href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L63" _blank
+  click FKS2_v1_corollary_14 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L65" _blank
+  click FKS2_v1_corollary_23 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L78" _blank
+  click FKS2_v1_corollary_26 href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L91" _blank
+  click KLN_v1_subconvexity_bound href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/KLN/v1/Conclusions.lean#L65" _blank
+  click Kadiri2005_v1_zero_free_region href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Kadiri2005/v1/Conclusions.lean#L42" _blank
+  click Lcm_v1_lcmUpto_not_highlyAbundant href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Lcm/v1/Conclusions.lean#L42" _blank
+  click Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Lcm/v2/Conclusions.lean#L71" _blank
+  click MT_v1_zero_free_region href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/MT/v1/Conclusions.lean#L33" _blank
+  click MT_v1_zero_free_region_sharpened href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/MT/v1/Conclusions.lean#L48" _blank
+  click PlattTrudgian_v1_rh_up_to href "https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian/v1/Conclusions.lean#L35" _blank
 ```
 
 ## What each result rests on
@@ -162,57 +227,61 @@ graph LR
 Only the conclusions nothing else imports are listed; the rest appear inside them.
 A line is one claim, indented under whatever assumes it.
 
-- `BKLNW.v1.table8_psi_bound` — cited — *sources not traced*
+- [`BKLNW.v1.table8_psi_bound`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L78) — cited — *sources not traced*
 
-- `BKLNW.v1.table8_psi_bound_above` — cited — *sources not traced*
+- [`BKLNW.v1.table8_psi_bound_above`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L94) — cited — *sources not traced*
 
-- `Buthe.v1.theorem_2_li_minus_riemann_pi` — cited
-  - `FKBJ.v1.rh_up_to` — computation — *sources not traced*
+- [`Buthe.v1.theorem_2_li_minus_riemann_pi`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L53) — cited
+  - [`FKBJ.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKBJ/v1/Conclusions.lean#L43) — computation — *sources not traced*
 
-- `Buthe.v1.theorem_2_psi` — cited
-  - `FKBJ.v1.rh_up_to` — computation — *sources not traced*
+- [`Buthe.v1.theorem_2_psi`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L31) — cited
+  - [`FKBJ.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKBJ/v1/Conclusions.lean#L43) — computation — *sources not traced*
 
-- `Buthe.v1.theorem_2_theta` — cited
-  - `FKBJ.v1.rh_up_to` — computation — *sources not traced*
+- [`Buthe.v1.theorem_2_theta`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L38) — cited
+  - [`FKBJ.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKBJ/v1/Conclusions.lean#L43) — computation — *sources not traced*
 
-- `FKS.v1.psi_bound_all_x` — cited
-  - `KLN.v1.subconvexity_bound` — cited — *sources not traced*
-  - `MT.v1.zero_free_region_sharpened` — cited
-    - `PlattTrudgian.v1.rh_up_to` — cited — *sources not traced*
-  - `PlattTrudgian.v1.rh_up_to` — cited *(above)* — *sources not traced*
+- [`FKS.v1.psi_bound_all_x`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L44) — cited
+  - [`KLN.v1.subconvexity_bound`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/KLN/v1/Conclusions.lean#L65) — cited — *sources not traced*
+  - [`MT.v1.zero_free_region_sharpened`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/MT/v1/Conclusions.lean#L48) — cited
+    - [`Kadiri2005.v1.zero_free_region`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Kadiri2005/v1/Conclusions.lean#L42) — cited — *sources not traced*
+    - [`PlattTrudgian.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian/v1/Conclusions.lean#L35) — cited — *sources not traced*
+  - [`PlattTrudgian.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian/v1/Conclusions.lean#L35) — cited *(above)* — *sources not traced*
 
-- `FKS2.v1.corollary_14` — cited
-  - `FKS.v1.psi_classical_bound` — cited
-    - `KLN.v1.subconvexity_bound` — cited — *sources not traced*
-    - `MT.v1.zero_free_region_sharpened` — cited
-      - `PlattTrudgian.v1.rh_up_to` — cited — *sources not traced*
-    - `PlattTrudgian.v1.rh_up_to` — cited *(above)* — *sources not traced*
-  - `BKLNW.v1.corollary_5_1` — cited
-    - `Buthe.v1.theorem_2_theta_lower` — cited
-      - `FKBJ.v1.rh_up_to` — computation — *sources not traced*
-  - `BKLNW.v1.theta_error_le_one` — cited — *sources not traced*
+- [`FKS2.v1.corollary_14`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L65) — cited
+  - [`FKS.v1.psi_classical_bound`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L63) — cited
+    - [`KLN.v1.subconvexity_bound`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/KLN/v1/Conclusions.lean#L65) — cited — *sources not traced*
+    - [`MT.v1.zero_free_region_sharpened`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/MT/v1/Conclusions.lean#L48) — cited
+      - [`Kadiri2005.v1.zero_free_region`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Kadiri2005/v1/Conclusions.lean#L42) — cited — *sources not traced*
+      - [`PlattTrudgian.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian/v1/Conclusions.lean#L35) — cited — *sources not traced*
+    - [`PlattTrudgian.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian/v1/Conclusions.lean#L35) — cited *(above)* — *sources not traced*
+  - [`BKLNW.v1.corollary_5_1`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L63) — cited
+    - [`Buthe.v1.theorem_2_theta_lower`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L45) — cited
+      - [`FKBJ.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKBJ/v1/Conclusions.lean#L43) — computation — *sources not traced*
+  - [`BKLNW.v1.theta_error_le_one`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L107) — cited — *sources not traced*
 
-- `FKS2.v1.corollary_23` — cited
-  - `FKS.v1.psi_classical_bound` — cited
-    - `KLN.v1.subconvexity_bound` — cited — *sources not traced*
-    - `MT.v1.zero_free_region_sharpened` — cited
-      - `PlattTrudgian.v1.rh_up_to` — cited — *sources not traced*
-    - `PlattTrudgian.v1.rh_up_to` — cited *(above)* — *sources not traced*
-  - `Buthe.v1.theorem_2_li_minus_pi` — cited
-    - `FKBJ.v1.rh_up_to` — computation — *sources not traced*
+- [`FKS2.v1.corollary_23`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L78) — cited
+  - [`FKS.v1.psi_classical_bound`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L63) — cited
+    - [`KLN.v1.subconvexity_bound`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/KLN/v1/Conclusions.lean#L65) — cited — *sources not traced*
+    - [`MT.v1.zero_free_region_sharpened`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/MT/v1/Conclusions.lean#L48) — cited
+      - [`Kadiri2005.v1.zero_free_region`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Kadiri2005/v1/Conclusions.lean#L42) — cited — *sources not traced*
+      - [`PlattTrudgian.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian/v1/Conclusions.lean#L35) — cited — *sources not traced*
+    - [`PlattTrudgian.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian/v1/Conclusions.lean#L35) — cited *(above)* — *sources not traced*
+  - [`Buthe.v1.theorem_2_li_minus_pi`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L63) — cited
+    - [`FKBJ.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKBJ/v1/Conclusions.lean#L43) — computation — *sources not traced*
 
-- `FKS2.v1.corollary_26` — cited
-  - `Buthe.v1.theorem_2_li_minus_pi` — cited
-    - `FKBJ.v1.rh_up_to` — computation — *sources not traced*
-  - `Buthe.v1.theorem_2_li_gt_pi` — cited
-    - `FKBJ.v1.rh_up_to` — computation *(above)* — *sources not traced*
+- [`FKS2.v1.corollary_26`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L91) — cited
+  - [`Buthe.v1.theorem_2_li_minus_pi`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L63) — cited
+    - [`FKBJ.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKBJ/v1/Conclusions.lean#L43) — computation — *sources not traced*
+  - [`Buthe.v1.theorem_2_li_gt_pi`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L73) — cited
+    - [`FKBJ.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKBJ/v1/Conclusions.lean#L43) — computation *(above)* — *sources not traced*
 
-- `Lcm.v1.lcmUpto_not_highlyAbundant` — verified
-  - `Dusart2018.v1.proposition_5_4` — cited — *sources not traced*
+- [`Lcm.v1.lcmUpto_not_highlyAbundant`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Lcm/v1/Conclusions.lean#L42) — verified
+  - [`Dusart2018.v1.proposition_5_4`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Dusart2018/v1/Conclusions.lean#L36) — cited — *sources not traced*
 
-- `Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap` — verified
+- [`Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Lcm/v2/Conclusions.lean#L71) — verified
 
-- `MT.v1.zero_free_region` — cited
+- [`MT.v1.zero_free_region`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/MT/v1/Conclusions.lean#L33) — cited — *sources not traced*
+  - [`Kadiri2005.v1.zero_free_region`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Kadiri2005/v1/Conclusions.lean#L42) — cited — *sources not traced*
 
 ## What the network takes on trust
 
@@ -222,34 +291,34 @@ rather than maintained.
 
 | Claim | Evidence | Depended on by | Its own sources |
 |---|---|---:|---|
-| `FKBJ.v1.rh_up_to` | computation | 6 | **not yet traced** |
-| `PlattTrudgian.v1.rh_up_to` | cited | 3 | **not yet traced** |
-| `Buthe.v1.theorem_2_li_minus_pi` | cited | 2 | traced |
-| `FKS.v1.psi_classical_bound` | cited | 2 | traced |
-| `KLN.v1.subconvexity_bound` | cited | 2 | **not yet traced** |
-| `MT.v1.zero_free_region_sharpened` | cited | 2 | traced |
-| `BKLNW.v1.corollary_5_1` | cited | 1 | traced |
-| `BKLNW.v1.theta_error_le_one` | cited | 1 | **not yet traced** |
-| `Buthe.v1.theorem_2_li_gt_pi` | cited | 1 | traced |
-| `Buthe.v1.theorem_2_theta_lower` | cited | 1 | traced |
-| `Dusart2018.v1.proposition_5_4` | cited | 1 | **not yet traced** |
-| `BKLNW.v1.table8_psi_bound` | cited | 0 | **not yet traced** |
-| `BKLNW.v1.table8_psi_bound_above` | cited | 0 | **not yet traced** |
-| `Buthe.v1.theorem_2_li_minus_riemann_pi` | cited | 0 | traced |
-| `Buthe.v1.theorem_2_psi` | cited | 0 | traced |
-| `Buthe.v1.theorem_2_theta` | cited | 0 | traced |
-| `FKS.v1.psi_bound_all_x` | cited | 0 | traced |
-| `FKS2.v1.corollary_14` | cited | 0 | traced |
-| `FKS2.v1.corollary_23` | cited | 0 | traced |
-| `FKS2.v1.corollary_26` | cited | 0 | traced |
-| `MT.v1.zero_free_region` | cited | 0 | traced |
+| [`FKBJ.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKBJ/v1/Conclusions.lean#L43) | computation | 6 | **not yet traced** |
+| [`PlattTrudgian.v1.rh_up_to`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian/v1/Conclusions.lean#L35) | cited | 3 | **not yet traced** |
+| [`Buthe.v1.theorem_2_li_minus_pi`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L63) | cited | 2 | traced |
+| [`FKS.v1.psi_classical_bound`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L63) | cited | 2 | traced |
+| [`KLN.v1.subconvexity_bound`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/KLN/v1/Conclusions.lean#L65) | cited | 2 | **not yet traced** |
+| [`Kadiri2005.v1.zero_free_region`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Kadiri2005/v1/Conclusions.lean#L42) | cited | 2 | **not yet traced** |
+| [`MT.v1.zero_free_region_sharpened`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/MT/v1/Conclusions.lean#L48) | cited | 2 | traced |
+| [`BKLNW.v1.corollary_5_1`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L63) | cited | 1 | traced |
+| [`BKLNW.v1.theta_error_le_one`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L107) | cited | 1 | **not yet traced** |
+| [`Buthe.v1.theorem_2_li_gt_pi`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L73) | cited | 1 | traced |
+| [`Buthe.v1.theorem_2_theta_lower`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L45) | cited | 1 | traced |
+| [`Dusart2018.v1.proposition_5_4`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Dusart2018/v1/Conclusions.lean#L36) | cited | 1 | **not yet traced** |
+| [`BKLNW.v1.table8_psi_bound`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L78) | cited | 0 | **not yet traced** |
+| [`BKLNW.v1.table8_psi_bound_above`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v1/Conclusions.lean#L94) | cited | 0 | **not yet traced** |
+| [`Buthe.v1.theorem_2_li_minus_riemann_pi`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L53) | cited | 0 | traced |
+| [`Buthe.v1.theorem_2_psi`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L31) | cited | 0 | traced |
+| [`Buthe.v1.theorem_2_theta`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L38) | cited | 0 | traced |
+| [`FKS.v1.psi_bound_all_x`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L44) | cited | 0 | traced |
+| [`FKS2.v1.corollary_14`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L65) | cited | 0 | traced |
+| [`FKS2.v1.corollary_23`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L78) | cited | 0 | traced |
+| [`FKS2.v1.corollary_26`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L91) | cited | 0 | traced |
+| [`MT.v1.zero_free_region`](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/MT/v1/Conclusions.lean#L33) | cited | 0 | **not yet traced** |
 
 ## Nodes that state nothing yet
 
 A paper recorded as in scope, before anyone has transcribed a claim from it. These are
 the network's open invitations.
 
-- `Kadiri2005.v1`
 - `MTY.v1`
 - `RosserSchoenfeld.v1`
 
