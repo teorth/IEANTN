@@ -66,4 +66,36 @@ def subconvexity_bound : Prop :=
   ∀ t : ℝ, 3 ≤ t →
     ‖riemannZeta (1 / 2 + t * Complex.I)‖ ≤ 0.77 * t ^ ((1 : ℝ) / 6) * Real.log t
 
+/-- **The zero-density estimate**, in the shape `Platt–Trudgian` consume it.
+
+For every `σ ∈ [0.75, 1)` there are positive constants `C₁(σ)`, `C₂(σ)` with
+
+`N(σ, T) ≤ C₁ T^{8(1−σ)/3} (log T)^{5−2σ} + C₂ (log T)²`
+
+for every `T ≥ H₀ = 3.0610046 · 10¹⁰`.
+
+This is the result the paper is named for, and the reason it is stated in this form rather than
+the paper's own is worth recording. The paper's Theorem 1.1 carries nine parameters — `k`, `d`,
+`H`, `α`, `δ`, `η₀`, `μ`, `η`, `σ` — and asserts the existence of `C₁`, `C₂` given by explicit
+formulas several pages away. Nothing downstream uses that generality. `Platt–Trudgian`'s Lemma 5
+states exactly the consequence above and attributes it here, remarking that "Kadiri, Lumley, and
+Ng produce slightly superior versions of (8), but we have opted for the simpler version". So this
+is the simplified form, and a node wanting the sharper one should state Theorem 1.1 separately.
+
+The height `H₀` is the paper's own: it fixes `H₀ = 3.0610046 · 10¹⁰` throughout, citing Platt's
+verification, and its Theorem 1.1 concludes "for any `T ≥ H₀`". `Platt–Trudgian`'s Lemma 5 omits
+the condition; it is kept here because without it the bound would be asserted at heights the paper
+never considered, and because `log T` must stay positive for the real exponent `5 − 2σ` to mean
+what it should.
+
+Note the counting convention. `zetaN' σ T` counts zeroes with real part in the **open** `(σ, 1)`
+and imaginary part in the **open** `(0, T)`, while the paper counts `σ < β ≤ 1` and `0 ≤ γ ≤ T`.
+Ours therefore counts no more zeroes than the paper's, so this conclusion is implied by the
+paper's and does not overreach — but a consumer needing the closed box must close it itself. -/
+def zero_density : Prop :=
+  ∀ σ : ℝ, 0.75 ≤ σ → σ < 1 → ∃ C₁ C₂ : ℝ, 0 < C₁ ∧ 0 < C₂ ∧
+    ∀ T : ℝ, 3.0610046e10 ≤ T →
+      zetaN' σ T ≤ C₁ * T ^ (8 * (1 - σ) / 3) * (Real.log T) ^ (5 - 2 * σ)
+        + C₂ * (Real.log T) ^ (2 : ℕ)
+
 end KLN.v1

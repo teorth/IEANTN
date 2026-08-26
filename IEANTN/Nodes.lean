@@ -19,6 +19,7 @@ import IEANTN.Nodes.Lcm.v2.Challenge
 import IEANTN.Nodes.MT.v1.Challenge
 import IEANTN.Nodes.MTY.v1.Challenge
 import IEANTN.Nodes.Platt2015.v1.Challenge
+import IEANTN.Nodes.Platt2017.v1.Challenge
 import IEANTN.Nodes.PlattTrudgian.v1.Challenge
 import IEANTN.Nodes.PlattTrudgian2021.v1.Tables
 import IEANTN.Nodes.PlattTrudgian2021.v1.Challenge

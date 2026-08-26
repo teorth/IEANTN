@@ -50,6 +50,57 @@ def subconvexity_bound : Prop :=
 
 > The paper prints a1 = 0.63 and this node states 0.77. FKS (J. Math. Anal. Appl. 527 (2023) 127426) reports that 0.63 rests on an erroneous explicit version of the Cheng-Graham second derivative test, gives 0.77 as the corrected value, and says the error 'would render many results concerning the prime number theorem unreliable'; it then redoes its own work with 0.77. Stating the printed value would put a knowably false claim in the network, which nothing could soundly import -- so the correction is made in place rather than by keeping a faithful-to-print version that would have no valid consumer. The bound itself is Hiary's, quoted by KLN in the form its density argument uses. A later preprint of Hiary, Patel and Yang announces 0.618, which would be a strict improvement and is the natural content of a future version of this node. Audited against both sources 2026-08-26 and confirmed exact. KLN's Lemma 3.2 (3.2) is '\|zeta(1/2 + it)\| <= a1 t^(1/6) log t for all t >= 3' with a1 = 0.63; FKS Remark 1.5(2) gives the same shape and states 'after accounting for this correction, the constant, a1, changes to 0.77', and FKS's Tables 7 and 8 record that they are computed with a1 = 0.77. Shape, range and corrected constant therefore all check out.
 
+### `zero_density`
+
+**The zero-density estimate**, in the shape `Platt–Trudgian` consume it.
+
+For every `σ ∈ [0.75, 1)` there are positive constants `C₁(σ)`, `C₂(σ)` with
+
+`N(σ, T) ≤ C₁ T^{8(1−σ)/3} (log T)^{5−2σ} + C₂ (log T)²`
+
+for every `T ≥ H₀ = 3.0610046 · 10¹⁰`.
+
+This is the result the paper is named for, and the reason it is stated in this form rather than
+the paper's own is worth recording. The paper's Theorem 1.1 carries nine parameters — `k`, `d`,
+`H`, `α`, `δ`, `η₀`, `μ`, `η`, `σ` — and asserts the existence of `C₁`, `C₂` given by explicit
+formulas several pages away. Nothing downstream uses that generality. `Platt–Trudgian`'s Lemma 5
+states exactly the consequence above and attributes it here, remarking that "Kadiri, Lumley, and
+Ng produce slightly superior versions of (8), but we have opted for the simpler version". So this
+is the simplified form, and a node wanting the sharper one should state Theorem 1.1 separately.
+
+The height `H₀` is the paper's own: it fixes `H₀ = 3.0610046 · 10¹⁰` throughout, citing Platt's
+verification, and its Theorem 1.1 concludes "for any `T ≥ H₀`". `Platt–Trudgian`'s Lemma 5 omits
+the condition; it is kept here because without it the bound would be asserted at heights the paper
+never considered, and because `log T` must stay positive for the real exponent `5 − 2σ` to mean
+what it should.
+
+Note the counting convention. `zetaN' σ T` counts zeroes with real part in the **open** `(σ, 1)`
+and imaginary part in the **open** `(0, T)`, while the paper counts `σ < β ≤ 1` and `0 ≤ γ ≤ T`.
+Ours therefore counts no more zeroes than the paper's, so this conclusion is implied by the
+paper's and does not overreach — but a consumer needing the closed box must close it itself.
+
+```lean
+def zero_density : Prop :=
+  ∀ σ : ℝ, 0.75 ≤ σ → σ < 1 → ∃ C₁ C₂ : ℝ, 0 < C₁ ∧ 0 < C₂ ∧
+    ∀ T : ℝ, 3.0610046e10 ≤ T →
+      zetaN' σ T ≤ C₁ * T ^ (8 * (1 - σ) / 3) * (Real.log T) ^ (5 - 2 * σ)
+        + C₂ * (Real.log T) ^ (2 : ℕ)
+```
+
+| | |
+|---|---|
+| Lean name | `KLN.v1.zero_density` |
+| Challenge | `KLN.v1.challenge_zero_density` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/KLN/v1/Conclusions.lean#L95) |
+| Evidence | cited (`literature`) |
+| Sources traced | identified |
+| Assumes | [`Platt2017.v1.rh_up_to`](Platt2017-v1.md#rh_up_to) |
+| Assumed by | [`PlattTrudgian2021.v1.theorem_1_classical`](PlattTrudgian2021-v1.md#theorem_1_classical), [`PlattTrudgian2021.v1.theorem_1_numerical`](PlattTrudgian2021-v1.md#theorem_1_numerical) |
+
+**Justification `kln-paper`** — **designated** — literature, Theorem 1.1, in the simplified form of Platt-Trudgian's Lemma 5
+
+> Asserted on the authority of the paper. Stated in the shape Platt-Trudgian consume rather than the paper's own: KLN's Theorem 1.1 carries nine parameters and asserts the existence of constants given by formulas several pages away, and nothing downstream uses that generality. Platt-Trudgian's Lemma 5 states exactly the consequence recorded here and attributes it to this paper, remarking that 'Kadiri, Lumley, and Ng produce slightly superior versions of (8), but we have opted for the simpler version'. A node wanting the sharper form should state Theorem 1.1 separately. Imports: the paper fixes H_0 = 3.0610046e10 throughout and cites Platt's Isolating some non-trivial zeros of zeta for it, which is Platt2017.v1; Theorem 1.1 concludes 'for any T >= H_0'. That threshold is kept here, though Platt-Trudgian's Lemma 5 drops it, because without it the bound would be asserted at heights the paper never considered and log T would not be guaranteed positive for the real exponent 5 - 2 sigma. Note the counting convention: zetaN' counts real part in the OPEN (sigma, 1) and imaginary part in the OPEN (0, T), where the paper counts sigma < beta <= 1 and 0 <= gamma <= T. Ours counts no more zeroes, so the conclusion is implied by the paper's rather than overreaching.
+
 ## Limitations
 
 Recorded by the node itself, not derived.
@@ -57,7 +108,8 @@ Recorded by the node itself, not derived.
 - The stated constant is not the paper's. It is FKS's correction of an input the paper quotes from elsewhere; see the conclusion's note and the Conclusions module docstring.
 - The paper's Theorem 1.1 and its numerical density tables are deliberately not stated. Their constants are computed with the erroneous a1 = 0.63, and nobody has published recomputed values -- FKS redid its own estimates rather than reissuing this paper's tables. Correcting them is a recomputation, not a transcription, and wants someone with the method in hand.
 - The error is in an input, not in the method: a1 enters this paper quoted from Hiary, and the structure of Theorem 1.1 is unaffected by it.
-- Lemma 3.2 has a second part, (3.3): max over \|t\| <= T of \|zeta(1/2 + it)\| is at most a1 T^(1/6) log T + a2, with a2 = 2.851. It is not stated as a conclusion. If it is ever added, a1 needs the same 0.63 -> 0.77 correction, and whether a2 also moves has not been checked.
+- zero_density is the simplified form of Theorem 1.1, as Platt-Trudgian state it. The paper's own theorem is sharper and much more heavily parameterised; nothing consumes that generality yet.
+- Lemma 3.2 has a second part, (3.3): max over \|t\| <= T of \|zeta(1/2 + it)\| is at most a1 T^(1/6) log T + a2, with a2 = 2.851. It is not stated. If it is added, a1 needs the same 0.63 -> 0.77 correction, and whether a2 also moves has not been checked.
 - No novelty is claimed. The results are Kadiri, Lumley and Ng's, and the subconvexity bound is Hiary's.
 
 ## How this node was made
