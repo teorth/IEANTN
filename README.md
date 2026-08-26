@@ -44,6 +44,7 @@ defeat the purpose of the split.
 ## Reading order
 
 0. [GRAPH.md](GRAPH.md) — **the network itself**: what it contains, what each result rests
+Each node also has a generated summary page under [docs/nodes/](docs/nodes/README.md): what it claims, in Lean and in prose, and everything recorded about why it should be believed.
    on, and what is taken on trust. Generated, and the place to start if you only want to
    see the thing.
 1. [CONTRIBUTING.md](CONTRIBUTING.md) — the ten things people actually do, and how.

@@ -591,6 +591,82 @@ class TestDeclarationLinks(FixtureRepo):
         self.assertIn("[`A.v1.main`](", rendered)
 
 
+class TestNodePages(FixtureRepo):
+    """One page per node, for a reader who is not going to open the YAML.
+
+    A node's claim is only as good as what stands behind it, and that lives in
+    `formalization.yaml` in a shape built for machines. The page is the same content for a person,
+    with the Lean spelling next to each claim -- which is what a consumer has to write, and what
+    decides whether a transcription is faithful.
+    """
+
+    def _node(self, lean: str = "") -> None:
+        self.write_node("A.v1", LITERATURE)
+        path = self.root / "IEANTN" / "Nodes" / "A" / "v1" / "Conclusions.lean"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(lean, encoding="utf-8")
+
+    def _page(self) -> str:
+        ieantn.pages(False)
+        return (self.root / "docs" / "nodes" / "A-v1.md").read_text(encoding="utf-8")
+
+    def test_the_lean_spelling_is_on_the_page(self) -> None:
+        self._node("/-- The claim. -/" + chr(10)
+                   + "def main : Prop :=" + chr(10) + "  True" + chr(10))
+        page = self._page()
+        self.assertIn("def main : Prop :=", page)
+        self.assertIn("  True", page)
+
+    def test_the_docstring_is_on_the_page(self) -> None:
+        """It is where the informal statement lives -- there is no blueprint."""
+        self._node("/-- The **informal** statement. -/" + chr(10) + "def main : Prop := True" + chr(10))
+        self.assertIn("The **informal** statement.", self._page())
+
+    def test_the_body_stops_at_the_next_declaration(self) -> None:
+        self._node("def main : Prop := True" + chr(10) + chr(10)
+                   + "def later : Prop := False" + chr(10))
+        page = self._page()
+        self.assertIn("def main", page)
+        self.assertNotIn("def later", page)
+
+    def test_pages_link_to_each_other_relatively(self) -> None:
+        """They sit together in docs/nodes/, so a rooted path would be broken between them."""
+        self.write_node("Upstream.v1", LITERATURE)
+        self.write_node("A.v1", importing("Upstream.v1"))
+        ieantn.pages(False)
+        page = (self.root / "docs" / "nodes" / "A-v1.md").read_text(encoding="utf-8")
+        self.assertIn("](Upstream-v1.md#main)", page)
+
+    def test_the_graph_links_to_pages_from_the_repository_root(self) -> None:
+        """And GRAPH.md sits at the root, so the same link needs the prefix."""
+        self._node("def main : Prop := True" + chr(10))
+        self.assertIn("](docs/nodes/A-v1.md#main)", ieantn.render_graph(ieantn.load_nodes()))
+
+    def test_a_page_for_a_node_that_no_longer_exists_is_removed(self) -> None:
+        self._node("def main : Prop := True" + chr(10))
+        ieantn.pages(False)
+        stale = self.root / "docs" / "nodes" / "Gone-v1.md"
+        stale.write_text("leftover", encoding="utf-8")
+        ieantn.pages(False)
+        self.assertFalse(stale.exists())
+
+    def test_check_fails_when_a_page_is_stale(self) -> None:
+        self._node("def main : Prop := True" + chr(10))
+        ieantn.pages(False)
+        (self.root / "docs" / "nodes" / "A-v1.md").write_text("stale", encoding="utf-8")
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            passed = ieantn.pages(True)
+        self.assertFalse(passed)
+        self.assertIn("out of date", printed.getvalue())
+
+    def test_a_node_stating_nothing_still_gets_a_page(self) -> None:
+        self.write_node("Empty.v1", "[]" + chr(10))
+        ieantn.pages(False)
+        page = (self.root / "docs" / "nodes" / "Empty-v1.md").read_text(encoding="utf-8")
+        self.assertIn("states nothing yet", page)
+
+
 class TestGraphPage(FixtureRepo):
     """`GRAPH.md`: the network as a page someone can read without cloning anything.
 
