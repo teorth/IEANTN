@@ -547,6 +547,50 @@ class TestBridgesInTheGraph(FixtureRepo):
         self.assertEqual(ieantn.mermaid_id("Lcm.v1.main::br-2"), "Lcm_v1_main__br_2")
 
 
+class TestDeclarationLinks(FixtureRepo):
+    """Every claim in the graph links to the line of Lean that states it.
+
+    Without this a reader has the node id and nothing else: they must guess the path from the id
+    and then search the file. The link is to source rather than to generated documentation because
+    source needs no hosting and no second build; `declaration_url` is the single place to change
+    when doc-gen is published.
+    """
+
+    def _lean(self, body: str) -> None:
+        path = self.root / "IEANTN" / "Nodes" / "A" / "v1" / "Conclusions.lean"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(body, encoding="utf-8")
+
+    def test_it_finds_the_defining_line(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self._lean("import X" + chr(10) + chr(10) + "def other : Prop := True"
+                   + chr(10) + "def main : Prop := True" + chr(10))
+        self.assertTrue(ieantn.declaration_url("A.v1.main").endswith("Conclusions.lean#L4"))
+
+    def test_a_noncomputable_definition_is_found_too(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self._lean("noncomputable def main : Prop := True" + chr(10))
+        self.assertTrue(ieantn.declaration_url("A.v1.main").endswith("#L1"))
+
+    def test_a_name_that_merely_starts_the_same_is_not_matched(self) -> None:
+        """`main_lemma` must not answer for `main`, or the link lands on the wrong claim."""
+        self.write_node("A.v1", LITERATURE)
+        self._lean("def main_lemma : Prop := True" + chr(10) + "def main : Prop := True" + chr(10))
+        self.assertTrue(ieantn.declaration_url("A.v1.main").endswith("#L2"))
+
+    def test_a_missing_declaration_gives_no_link_rather_than_a_wrong_one(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self._lean("def something_else : Prop := True" + chr(10))
+        self.assertIsNone(ieantn.declaration_url("A.v1.main"))
+
+    def test_the_page_makes_the_boxes_clickable(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self._lean("def main : Prop := True" + chr(10))
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        self.assertIn("click A_v1_main href", rendered)
+        self.assertIn("[`A.v1.main`](", rendered)
+
+
 class TestGraphPage(FixtureRepo):
     """`GRAPH.md`: the network as a page someone can read without cloning anything.
 
@@ -578,9 +622,9 @@ class TestGraphPage(FixtureRepo):
         self._chain()
         rendered = ieantn.render_graph(ieantn.load_nodes())
         trees = rendered.split("## What each result rests on")[1].split("##")[0]
-        self.assertIn("- `A.v1.main`", trees)
-        self.assertNotIn("@- `Upstream.v1.main`", trees.replace("@", ""))
-        self.assertIn("  - `Upstream.v1.main`", trees)
+        self.assertIn("- [`A.v1.main`](", trees)
+        self.assertNotIn("@- [`Upstream.v1.main`](", trees.replace("@", ""))
+        self.assertIn("  - [`Upstream.v1.main`](", trees)
 
     def test_the_trust_table_ranks_by_dependants(self) -> None:
         """The honest answer to "how good is the evidence" is which unproved claims carry the most
