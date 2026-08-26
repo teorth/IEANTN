@@ -56,6 +56,26 @@ Not on arXiv, or not found there. Each blocks a specific piece of work.
 | Wedeniwski, *ZetaGrid* — the height `T₀ = 3 330 657 430.697` | Kadiri's verification height, per MT §2. A website rather than a paper, which is itself worth recording. | `Kadiri2005.v1`'s `imports_status` |
 | Kadiri–Lumley–Ng, *Bounding ψ(x) with zero-density*, preprint | Cited by FKS as [19]. Appears not to be publicly available, and not listed on the authors' pages. **Not** an input — the lemma attributed to it is proved in FKS itself — so this is for completeness rather than to unblock anything. | nothing |
 
+## LaTeX source, and why it is the primary surface
+
+`../IEANTN-papers/source/<name>/` holds the arXiv **LaTeX source** for fourteen of these papers,
+fetched from `https://arxiv.org/e-print/<id>`. **Read the source, not the PDF, whenever the paper is
+on arXiv.**
+
+PDF text extraction loses glyphs that carry meaning. The one that cost this project a wrong finding
+across five conclusions is the absolute-value bar around a displayed fraction:
+`|(ψ(x) − x)/x| ≤ ε` extracts as `ψ(x) −x x ≤ε`, which reads as a signed one-sided bound and is
+indistinguishable from one. In source it is `\left|rac{\psi(x) - x}{x}ight|` and there is
+nothing to misread. Source also turns tables into `&`-separated rows rather than a coordinate
+puzzle, and makes `\cite{}` keys resolve exactly — no more matching `[3]` against a bibliography
+and hoping the author name is unique.
+
+Two caveats. Source is the **arXiv** version, which is not always the published one: `Kadiri2005`
+gives `5.70176` on arXiv and `5.69693` in Acta Arith., and `FKS`'s tables differ between preprint
+and JMAA. Where a node cites the published version, the PDF is still the authority. And the papers
+with no arXiv entry — Rosser–Schoenfeld, Dusart 2018, Cheng–Graham, FKBJ, Platt 2015, Kadiri's
+published version — have no source to read.
+
 ## Adding to the library
 
 Put the PDF in the local library directory, add a row above, and — if it settles what a node
