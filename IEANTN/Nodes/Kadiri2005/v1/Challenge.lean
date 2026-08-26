@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import IEANTN.Nodes.Kadiri2005.v1.Conclusions
+import IEANTN.Nodes.RosserSchoenfeld.v1.Conclusions
+import IEANTN.Nodes.Wedeniwski.v1.Conclusions
 
 /-!
 # Challenge: `Kadiri2005.v1`
@@ -16,5 +18,8 @@ Each `sorry` below is deliberate and permanent: a challenge *states*, it does no
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
 
-theorem Kadiri2005.v1.challenge_zero_free_region : Kadiri2005.v1.zero_free_region := by
+theorem Kadiri2005.v1.challenge_zero_free_region
+    (rosserschoenfeld_v1_zero_free_region_classical : RosserSchoenfeld.v1.zero_free_region_classical)
+    (wedeniwski_v1_rh_up_to : Wedeniwski.v1.rh_up_to) :
+    Kadiri2005.v1.zero_free_region := by
   sorry

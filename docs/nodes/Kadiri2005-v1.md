@@ -15,7 +15,7 @@
 ## The source
 
 - **Une region explicite sans zeros pour la fonction zeta de Riemann** — Habiba Kadiri. Acta Arith. 117 (2005), no. 4, 303-339  
-  _PNT+'s bibliography records no DOI for this paper. The arXiv preprint math/0401238 (19 January 2004) is the same work and is used as the identifier; the journal reference above is the version of record. Confirm a publisher DOI before this node is used as the basis for any external submission. The title is in French and is transcribed here without diacritics._
+  _The published version, Acta Arith. 117.4 (2005), 303-339, is held and read; so is the arXiv preprint math/0401238, which gives the weaker 5.70176. They are not interchangeable -- see the conclusion's note._
 
 ## Conclusions
 
@@ -39,21 +39,21 @@ def zero_free_region : Prop :=
 | Challenge | `Kadiri2005.v1.challenge_zero_free_region` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Kadiri2005/v1/Conclusions.lean#L39) |
 | Evidence | cited (`literature`) |
-| Sources traced | traced |
-| Assumes | nothing recorded |
+| Sources traced | identified |
+| Assumes | [`RosserSchoenfeld.v1.zero_free_region_classical`](RosserSchoenfeld-v1.md#zero_free_region_classical), [`Wedeniwski.v1.rh_up_to`](Wedeniwski-v1.md#rh_up_to) |
 | Assumed by | [`MT.v1.zero_free_region`](MT-v1.md#zero_free_region), [`MT.v1.zero_free_region_sharpened`](MT-v1.md#zero_free_region_sharpened) |
 
 **Justification `kadiri-paper`** — **designated** — literature, the paper's main theorem, as reported by MT Table 1 and Section 2
 
-> Recorded at second hand. The arXiv preprint held in the library, math/0401238, states 5.70176; the published Acta Arith. version states 5.69693, which is what the subsequent literature cites and what is stated here, on the authority of MT, which gives it twice. Obtaining the published paper would move this to first hand. Imports: traced but not yet edges. MT Section 2 records that Kadiri started from Rosser and Schoenfeld's R = 9.645908801 and the height T0 = 3330657430.697 established by Wedeniwski's ZetaGrid computation. Rosser-Schoenfeld is a node but states nothing yet, and -- see that node -- its Theorem 1 is not of the shape ClassicalZeroFreeRegion, so the edge cannot be drawn by restating it; Wedeniwski is not a node at all. Traced 2026-08-26 from the arXiv LaTeX source, which settles both the inputs and something sharper about which version of the paper the network needs. Inputs, from the paper itself: Section 3 says 'Grace au resultat de Rosser, nous prenons tout d'abord R = 9.645908801', and the starting parameters are listed as T_0 = 3 330 657 430.697, R = 9.645908801, theta = 1.848, r = 5.97484. So the two external inputs are Rosser-Schoenfeld's zero-free region and Wedeniwski's verification height. Neither is an edge: RosserSchoenfeld.v1 exists but states nothing, and Wedeniwski's ZetaGrid is a website rather than a paper. Hence `traced`. Kadiri uses R in the plain 1/(R log t) form at heights past 3.3e9, so Rosser-Schoenfeld's Theorem 1 -- which is the wider 1/(R log\|t/17\|) shape for \|t\| >= 21 -- implies what she needs; stating that conclusion is the actionable step, and needs the log\|t/17\| shape added to Vocabulary rather than forced into ClassicalZeroFreeRegion. THE VERSION MATTERS, and more than was realised. The held arXiv source states R_0 = 5.70176 in both its abstract and its Theoreme Principal, at \|Im s\| >= 2 -- which confirms the threshold this node states, first hand. But 5.70176 > 5.7, and MT selects R = 5.7 as its already-established region. Since a smaller R is the stronger claim, the arXiv value does NOT imply MT's starting point; only the published 5.69693 does. So the published Acta Arith. version is load-bearing for the edge into MT, not a bibliographic nicety, and this node must keep stating 5.69693 at second hand until that version is obtained.
+> Asserted on the authority of the paper, now read FIRST HAND from the published version, Acta Arith. 117.4 (2005). Theoreme 1.1 (Principal): 'La fonction zeta de Riemann ne s'annule jamais dans la region suivante : Re s >= 1 - 1/(R_0 log(\|Im s\|)), \|Im s\| >= 2, avec R_0 = 5.69693.' Constant, threshold and the closed form all confirmed. The node previously recorded this at second hand from MT, and the arXiv preprint held alongside gives the weaker 5.70176, which -- since MT starts from R = 5.7 and a smaller R is the stronger claim -- could not have supported the edge into MT. The published version was therefore load-bearing, and now it is held. Imports, both now edges. The paper takes its starting region from Rosser-Schoenfeld: 'Grace au resultat de Rosser, nous prenons tout d'abord R = 9.645908801', which is RosserSchoenfeld.v1.zero_free_region_classical -- the plain-shaped form, since Kadiri uses 1/(R log t) at heights past 3.3e9, and that form is bridged from the paper's own log(t/17) shape. And its height: 'pour T_0, nous prendrons la valeur de S. Wedeniwski, c'est a dire tres exactement 3 330 657 430.697', which is Wedeniwski.v1. Note what the second edge costs. Wedeniwski is the weakest evidence in the network -- a website, unpublished, with documented doubts -- so this conclusion, and everything downstream of it as far as FKS2, rests on it. Discharging Wedeniwski by a bridge from Platt2017 would remove that without changing any statement, and is the obvious next move.
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
-- The conclusion rests on the cited paper, and on MT's report of the published version rather than on that version itself; it is not proved in Lean here.
-- The value stated is the published 5.69693. The arXiv preprint held locally gives 5.70176, and that value is too weak to support MT's use: MT starts from R = 5.7, and 5.70176 exceeds it. Obtaining the published version is therefore required to put the Kadiri-to-MT edge on first-hand evidence, not merely desirable.
-- Imports are traced but not drawn. Rosser-Schoenfeld is a node that states nothing yet; Wedeniwski's height comes from a website.
+- The conclusion rests on the cited paper; it is not proved in Lean here. It is now recorded first hand from the published Acta Arith. version.
+- The arXiv preprint held alongside gives 5.70176, which is too weak to support MT's use: MT starts from R = 5.7 and 5.70176 exceeds it. The two versions are not interchangeable.
+- Its verification height comes from Wedeniwski.v1, whose evidence is `asserted` -- a website, unpublished, with documented doubts about error control. Everything downstream of this node inherits that.
 - No novelty is claimed. The result is Kadiri's.
 
 ## How this node was made

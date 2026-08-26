@@ -33,5 +33,8 @@
   "PlattTrudgian.v1.rh_up_to": "73439a92990285f0e57e065923c3ab443344e83550d452c73fba5467776160eb",
   "PlattTrudgian2021.v1.theorem_1_classical": "aa668d9127fe2beb010afaa473b09c1a0fc83eec418e839fa158ceed7a616b49",
   "PlattTrudgian2021.v1.theorem_1_numerical": "38ae386be11b4f07ba0802bddb4e770582f8370b33513bcd4b6ca1cb34d11290",
+  "RosserSchoenfeld.v1.zero_free_region": "288ab7040c35be58a76b37373e37d990e7c27acc65159e7b4bf0afb7e9f3e099",
+  "RosserSchoenfeld.v1.zero_free_region_classical": "8dc9f36bfa5df58161b95f8fa625a60d2c68ddcf3f64b2367875bc7280fad569",
+  "Wedeniwski.v1.rh_up_to": "ac56bc4c0cdfa9e4c84b83620cbc570d70f70ac1b9bdbf09fd39d8bb35761ebf",
   "ZeroFreeHeight.v1.classical_region_descends": "796809d584f97568c9b74fbd219ee65b3a6a70a0b52a2660f08e8302be76a367"
 }

@@ -19,14 +19,81 @@
 
 ## Conclusions
 
-_This node states nothing yet._  It records that the source is in scope and carries its citation, so a conclusion can be added the moment something needs one.
+### `zero_free_region`
+
+**Theorem 1, equation (1.27).** `ζ` has no zeroes with `Re s ≥ 1 − 1/(R log|Im s / 17|)` and
+`Im s ≥ 21`, where `R = 9.645908801`.
+
+Stated in the paper's own shape rather than the network's. The `log(t/17)` denominator is what
+makes this region wider than the plain classical one, and the paper's introduction says so
+explicitly — the result "improves Stechkin's Theorem 2 not only by having a smaller value for `R`
+but also by the presence of the denominator 17".
+
+Only positive `Im s` is quantified over, as elsewhere in the network; the paper's `|t| ≥ 21` form
+follows by the symmetry of the zeroes about the real axis, which a consumer needing it must do.
+
+```lean
+def zero_free_region : Prop :=
+  ∀ σ t : ℝ, 21 ≤ t → 1 - 1 / (9.645908801 * Real.log (t / 17)) ≤ σ →
+    riemannZeta (σ + t * Complex.I) ≠ 0
+```
+
+| | |
+|---|---|
+| Lean name | `RosserSchoenfeld.v1.zero_free_region` |
+| Challenge | `RosserSchoenfeld.v1.challenge_zero_free_region` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/RosserSchoenfeld/v1/Conclusions.lean#L61) |
+| Evidence | cited (`literature`) |
+| Sources traced | undetermined |
+| Assumes | nothing recorded |
+| Assumed by | nothing yet |
+
+**Justification `rs-paper`** — **designated** — literature, Theorem 1, equation (1.27)
+
+> Asserted on the authority of the paper, read from the rendered page rather than from extracted text. Theorem 1: 'There are no zeros of zeta(s) in the region sigma >= 1 - 1/(R log\|t/17\|), \|t\| >= 21', with R = 9.645908801. The inequality is >= and not >. An earlier note on this node said >, taken from extraction; the rendered page shows the closed form. That is the second wrong transcription this failure mode has produced here. Stated in the paper's own shape rather than the network's: the log(t/17) denominator makes the region wider than the plain classical one, and forcing it into ClassicalZeroFreeRegion would assert something on 3 <= t < 21 that the paper does not prove. Imports are undetermined -- what Theorem 1 itself rests on has not been traced.
+
+### `zero_free_region_classical`
+
+**Theorem 1, weakened to the network's usual shape**: the classical zero-free region holds with
+`R = 9.645908801` above height `21`.
+
+This is what `Kadiri2005` actually consumes — it uses `R` in the plain `1/(R log t)` form, at
+heights past `3.3 · 10⁹`. It follows from `zero_free_region` because `log(t/17) ≤ log t`, so the
+paper's region contains the plain one; the bridge in `IEANTN/Bridges/RosserSchoenfeld/` discharges
+that, and it is why this conclusion is `bridged` rather than separately cited.
+
+Note the threshold stays `21`, not `3`. Nothing here recovers the band `3 ≤ t < 21`.
+
+```lean
+def zero_free_region_classical : Prop :=
+  ClassicalZeroFreeRegion 9.645908801 21
+```
+
+| | |
+|---|---|
+| Lean name | `RosserSchoenfeld.v1.zero_free_region_classical` |
+| Challenge | `RosserSchoenfeld.v1.challenge_zero_free_region_classical` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/RosserSchoenfeld/v1/Conclusions.lean#L74) |
+| Evidence | bridged (`bridged`) |
+| Sources traced | none |
+| Assumes | nothing recorded |
+| Assumed by | [`Kadiri2005.v1.zero_free_region`](Kadiri2005-v1.md#zero_free_region) |
+
+**Justification `bridge-from-shape`** — **designated** — bridged
+  
+  Bridged from RosserSchoenfeld.v1.zero_free_region via `IEANTN/Bridges/RosserSchoenfeld/ToClassical.lean`.
+
+> The weakening a consumer wants, obtained as a proof rather than as a second transcription. Kadiri2005 uses R in the plain 1/(R log t) form at heights past 3.3e9; Theorem 1's region contains that one because log(t/17) <= log t. The bridge is compiled by the core build, so the weakening cannot silently stop being valid. Designated, because there is nothing else here to designate: this conclusion is not separately stated by the paper, it is derived from the conclusion above. Imports `none` for the same reason -- its one input is a sibling conclusion, which the bridge records, not an import.
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
-- This node states nothing. It exists so that the network records the paper as in scope, and so that the housekeeping queue asks for conclusions.
-- No novelty is claimed. The results are the cited authors'.
+- Theorem 1 rests on the cited paper; it is not proved in Lean here. The bridge from it to the classical shape is.
+- Only positive imaginary part is quantified over. The paper's \|t\| >= 21 form follows by the symmetry of the zeroes about the real axis, which is not done here.
+- Nothing recovers the band 3 <= t < 21, where the network's usual threshold sits and this paper says nothing.
+- The paper contains a great many other inequalities. FKBJ's Theorem 2.1 attributes an N(T) formula to Rosser, which is the next one with a consumer waiting.
+- No novelty is claimed. The results are Rosser and Schoenfeld's.
 
 ## How this node was made
 

@@ -24,6 +24,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`Platt2017.v1`](Platt2017-v1.md) | computation | 1 | computation |
 | [`PlattTrudgian.v1`](PlattTrudgian-v1.md) | computation | 1 | cited |
 | [`PlattTrudgian2021.v1`](PlattTrudgian2021-v1.md) | paper | 2 | cited |
-| [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 0 | — |
+| [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 2 | cited |
+| [`Wedeniwski.v1`](Wedeniwski-v1.md) | computation | 1 | asserted |
 | [`ZeroFreeHeight.v1`](ZeroFreeHeight-v1.md) | folklore | 1 | verified |
 
