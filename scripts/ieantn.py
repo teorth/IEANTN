@@ -39,6 +39,7 @@ import os
 import pathlib
 import re
 import subprocess
+import time
 import sys
 
 try:
@@ -476,6 +477,89 @@ def check_receipts(online: bool = True) -> bool:
             )
 
     return problems.report("receipt provenance")
+
+
+def repository_slug() -> str | None:
+    """`owner/name` for `origin`, or None if there is no usable remote."""
+    remote = subprocess.run(
+        ["git", "remote", "get-url", "origin"],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+    ).stdout.strip()
+    return re.sub(r"^.*github\.com[:/]|\.git$", "", remote) if remote else None
+
+
+def _gh_json(args: list[str]) -> str:
+    finished = subprocess.run(["gh", *args], cwd=ROOT, capture_output=True, text=True,
+                              encoding="utf-8")
+    return finished.stdout.strip() if finished.returncode == 0 else ""
+
+
+def verify(node: str, branch: str, dispatch: bool) -> bool:
+    """Dispatch `verify.yml` and follow it, making the approval gate impossible to miss.
+
+    This exists because `gh run watch` draws a run that has not started identically to one that is
+    building: a spinner and a job name. A verification sits at the `verification` environment gate
+    until a maintainer approves it, and the difference is plainly visible in the API -- `status` is
+    `waiting` and no step has run -- but nothing surfaces it. Someone once waited thirty-two
+    minutes for a run that had executed nothing at all.
+
+    It cannot approve anything, and must not be able to. Approval is the one privileged act in this
+    repository, and the gate exists precisely because a human is supposed to have looked at the
+    branch. All this does is refuse to draw a progress spinner over a request for attention.
+    """
+    repository = repository_slug()
+    if not repository:
+        print("no `origin` remote; cannot find the run")
+        return False
+
+    if dispatch:
+        started = subprocess.run(
+            ["gh", "workflow", "run", "verify.yml", "-f", f"node={node}", "-f", f"branch={branch}"],
+            cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+        if started.returncode != 0:
+            print(f"dispatch failed: {started.stderr.strip()}")
+            return False
+        print(f"dispatched verify.yml for {node} on {branch}")
+        time.sleep(5)
+
+    run_id = _gh_json(["run", "list", "--workflow=verify.yml", "--limit", "1",
+                       "--json", "databaseId", "--jq", ".[0].databaseId"])
+    if not run_id:
+        print("no verification run found")
+        return False
+    url = f"https://github.com/{repository}/actions/runs/{run_id}"
+
+    announced = False
+    while True:
+        status = _gh_json(["api", f"repos/{repository}/actions/runs/{run_id}",
+                           "--jq", "[.status, .conclusion] | @tsv"]).split("\t")
+        state, conclusion = (status + ["", ""])[:2]
+
+        if state == "waiting":
+            if not announced:
+                print()
+                print("=" * 72)
+                print("  WAITING FOR YOUR APPROVAL -- nothing is running yet.")
+                print()
+                print(f"    {url}")
+                print("    Review deployments -> verification -> Approve and deploy")
+                print()
+                print("  Approving means vouching for this branch's core Lean, not its solution:")
+                print("  the receipt job runs `lake build` on it while holding a write token.")
+                print("=" * 72)
+                print()
+                announced = True
+        elif state == "completed":
+            print(f"run {run_id} completed: {conclusion}")
+            print(f"  {url}")
+            if conclusion == "success":
+                print("  the receipt is on the branch; open a pull request for it")
+            return conclusion == "success"
+        else:
+            jobs = _gh_json(["api", f"repos/{repository}/actions/runs/{run_id}/jobs",
+                             "--jq", r'.jobs[] | "\(.name): \(.status)"'])
+            print(f"[{state}] " + " | ".join(jobs.split("\n")) if jobs else f"[{state}]")
+        time.sleep(20)
 
 
 def check_closure() -> bool:
@@ -3211,6 +3295,11 @@ def main() -> int:
     picture.add_argument("--check", action="store_true", help="fail instead of rewriting")
     per_node = sub.add_parser("pages")
     per_node.add_argument("--check", action="store_true", help="fail instead of rewriting")
+    verification = sub.add_parser("verify")
+    verification.add_argument("node", help="e.g. Lcm.v1")
+    verification.add_argument("--branch", required=True, help="branch to record the receipt on")
+    verification.add_argument("--watch-only", action="store_true",
+                              help="follow the latest run instead of dispatching a new one")
     snapshot = sub.add_parser("state")
     snapshot.add_argument("--check", action="store_true", help="fail instead of rewriting")
     fresh = sub.add_parser("new-node")
@@ -3270,6 +3359,8 @@ def main() -> int:
         return 0 if graph(args.check) else 1
     if args.command == "pages":
         return 0 if pages(args.check) else 1
+    if args.command == "verify":
+        return 0 if verify(args.node, args.branch, not args.watch_only) else 1
     if args.command == "spinoff":
         return 0 if spinoff(args.conclusion, args.out, args.compile) else 1
     if args.command == "new-version":
