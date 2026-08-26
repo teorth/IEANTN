@@ -52,6 +52,9 @@ conclusions:
       Kleinjung, Buthe and Jost, recorded as FKBJ.v1. That is the only external input Theorem 2 has; the
       analytic method is the paper's own. The edge understates the dependency, because the algorithm consumes
       the tabulated zeros themselves and the network can only state their consequence; see FKBJ.v1's limitations.
+      Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact: all six equations of Theorem
+      2 match in constant, threshold and strictness, and the vocabulary matches the paper's own (1.4)
+      -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function.
   designated: buthe-paper
 - id: theorem_2_theta
   declaration: Buthe.v1.theorem_2_theta
@@ -72,6 +75,9 @@ conclusions:
       Kleinjung, Buthe and Jost, recorded as FKBJ.v1. That is the only external input Theorem 2 has; the
       analytic method is the paper's own. The edge understates the dependency, because the algorithm consumes
       the tabulated zeros themselves and the network can only state their consequence; see FKBJ.v1's limitations.
+      Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact: all six equations of Theorem
+      2 match in constant, threshold and strictness, and the vocabulary matches the paper's own (1.4)
+      -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function.
   designated: buthe-paper
 - id: theorem_2_theta_lower
   declaration: Buthe.v1.theorem_2_theta_lower
@@ -92,6 +98,9 @@ conclusions:
       Kleinjung, Buthe and Jost, recorded as FKBJ.v1. That is the only external input Theorem 2 has; the
       analytic method is the paper's own. The edge understates the dependency, because the algorithm consumes
       the tabulated zeros themselves and the network can only state their consequence; see FKBJ.v1's limitations.
+      Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact: all six equations of Theorem
+      2 match in constant, threshold and strictness, and the vocabulary matches the paper's own (1.4)
+      -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function.
   designated: buthe-paper
 - id: theorem_2_li_minus_riemann_pi
   declaration: Buthe.v1.theorem_2_li_minus_riemann_pi
@@ -116,7 +125,10 @@ conclusions:
       in [5]' -- Franke, Kleinjung, Buthe and Jost, recorded as FKBJ.v1. That is the only external input
       Theorem 2 has; the analytic method is the paper's own. The edge understates the dependency, because
       the algorithm consumes the tabulated zeros themselves and the network can only state their consequence;
-      see FKBJ.v1's limitations.
+      see FKBJ.v1's limitations. Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact:
+      all six equations of Theorem 2 match in constant, threshold and strictness, and the vocabulary matches
+      the paper's own (1.4) -- li is the principal-value integral from 0, pi* is the Riemann prime-counting
+      function.
   designated: buthe-paper
 - id: theorem_2_li_minus_pi
   declaration: Buthe.v1.theorem_2_li_minus_pi
@@ -138,7 +150,10 @@ conclusions:
       10^11, whose calculation has been reported in [5]' -- Franke, Kleinjung, Buthe and Jost, recorded
       as FKBJ.v1. That is the only external input Theorem 2 has; the analytic method is the paper's own.
       The edge understates the dependency, because the algorithm consumes the tabulated zeros themselves
-      and the network can only state their consequence; see FKBJ.v1's limitations.
+      and the network can only state their consequence; see FKBJ.v1's limitations. Audited against arXiv:1511.02032v2
+      on 2026-08-26 and confirmed exact: all six equations of Theorem 2 match in constant, threshold and
+      strictness, and the vocabulary matches the paper's own (1.4) -- li is the principal-value integral
+      from 0, pi* is the Riemann prime-counting function.
   designated: buthe-paper
 - id: theorem_2_li_gt_pi
   declaration: Buthe.v1.theorem_2_li_gt_pi
@@ -160,7 +175,10 @@ conclusions:
       10^11, whose calculation has been reported in [5]' -- Franke, Kleinjung, Buthe and Jost, recorded
       as FKBJ.v1. That is the only external input Theorem 2 has; the analytic method is the paper's own.
       The edge understates the dependency, because the algorithm consumes the tabulated zeros themselves
-      and the network can only state their consequence; see FKBJ.v1's limitations.
+      and the network can only state their consequence; see FKBJ.v1's limitations. Audited against arXiv:1511.02032v2
+      on 2026-08-26 and confirmed exact: all six equations of Theorem 2 match in constant, threshold and
+      strictness, and the vocabulary matches the paper's own (1.4) -- li is the principal-value integral
+      from 0, pi* is the Riemann prime-counting function.
   designated: buthe-paper
 sources:
 - title: An analytic method for bounding psi(x)

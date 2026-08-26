@@ -49,7 +49,11 @@ conclusions:
       is made in place rather than by keeping a faithful-to-print version that would have no valid consumer.
       The bound itself is Hiary's, quoted by KLN in the form its density argument uses. A later preprint
       of Hiary, Patel and Yang announces 0.618, which would be a strict improvement and is the natural
-      content of a future version of this node.
+      content of a future version of this node. Audited against both sources 2026-08-26 and confirmed
+      exact. KLN's Lemma 3.2 (3.2) is '|zeta(1/2 + it)| <= a1 t^(1/6) log t for all t >= 3' with a1 =
+      0.63; FKS Remark 1.5(2) gives the same shape and states 'after accounting for this correction, the
+      constant, a1, changes to 0.77', and FKS's Tables 7 and 8 record that they are computed with a1 =
+      0.77. Shape, range and corrected constant therefore all check out.
   designated: kln-paper
 
 sources:
@@ -90,5 +94,9 @@ limitations:
 - >-
   The error is in an input, not in the method: a1 enters this paper quoted from Hiary, and the structure
   of Theorem 1.1 is unaffected by it.
+- >-
+  Lemma 3.2 has a second part, (3.3): max over |t| <= T of |zeta(1/2 + it)| is at most a1 T^(1/6) log
+  T + a2, with a2 = 2.851. It is not stated as a conclusion. If it is ever added, a1 needs the same 0.63
+  -> 0.77 correction, and whether a2 also moves has not been checked.
 - >-
   No novelty is claimed. The results are Kadiri, Lumley and Ng's, and the subconvexity bound is Hiary's.

@@ -47,7 +47,7 @@ def proposition_5_4 : Prop := IEANTN.HasPrimeInInterval.logPower 89693 3
 
 **Justification `dusart-paper`** — **designated** — literature, Proposition 5.4
 
-> Asserted on the authority of the paper. Dusart assembles it from an analytic argument above 4e18 resting on his Theorem 4.2, a prime-gap table between 360653 and 4e18, and a direct verification on [89693, 360653]. None of those three pieces is formalized here. Formalizing this node would most naturally proceed by splitting it: the analytic branch and the prime-gap table are separate kinds of evidence and belong in separate nodes.
+> Asserted on the authority of the paper. Dusart assembles it from an analytic argument above 4e18 resting on his Theorem 4.2, a prime-gap table between 360653 and 4e18, and a direct verification on [89693, 360653]. None of those three pieces is formalized here. Formalizing this node would most naturally proceed by splitting it: the analytic branch and the prime-gap table are separate kinds of evidence and belong in separate nodes. Audited against the published version on 2026-08-26 and confirmed exact: 'For all x >= 89 693, there exists a prime p such that x < p <= x(1 + 1/ln^3 x)' -- threshold, power and the open-left, closed-right convention all match.
 
 ## Limitations
 

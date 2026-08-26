@@ -20,6 +20,7 @@ import IEANTN.Nodes.MTY.v1.Challenge
 import IEANTN.Nodes.Platt2015.v1.Challenge
 import IEANTN.Nodes.PlattTrudgian.v1.Challenge
 import IEANTN.Nodes.RosserSchoenfeld.v1.Challenge
+import IEANTN.Nodes.ZeroFreeHeight.v1.Challenge
 
 /-!
 # The node network

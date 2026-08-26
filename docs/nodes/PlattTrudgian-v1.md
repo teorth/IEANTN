@@ -46,7 +46,7 @@ def rh_up_to : Prop :=
 
 **Justification `platttrudgian-paper`** — **designated** — literature, the paper's main result
 
-> Asserted on the authority of the paper. This is a very large finite computation and the node is kind: computation accordingly -- it will not carry a Lean solution in any foreseeable sense, and what a formalization offers here is a statement of record with an honest citation rather than a proof. The paper's own framing is that the first 10^13 zeros lie on the critical line; the round 3 x 10^12 recorded here is the height downstream papers quote.
+> Asserted on the authority of the paper. This is a very large finite computation and the node is kind: computation accordingly -- it will not carry a Lean solution in any foreseeable sense, and what a formalization offers here is a statement of record with an honest citation rather than a proof. The paper's own framing is that the first 10^13 zeros lie on the critical line; the round 3 x 10^12 recorded here is the height downstream papers quote. Minor: the paper states 'all zeroes beta + i gamma with 0 < gamma <= 3e12 have beta = 1/2', so its range is open at zero, while RiemannHypothesisUpTo quantifies over Im s in [0, T]. Including gamma = 0 is harmless -- zeta has no real zero in (0,1) -- but that is a classical fact and not something this paper proves, so the conclusion is very slightly stronger than its source.
 
 ## Limitations
 

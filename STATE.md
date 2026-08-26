@@ -5,7 +5,7 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-15 node version(s), 25 conclusion(s).  2 state nothing yet.
+16 node version(s), 26 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
@@ -13,6 +13,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 |---|---:|
 | `lean-comparator` | 2 |
 | `literature` | 21 |
+| `none-yet` | 1 |
 | `numerical` | 2 |
 
 ## Nodes
@@ -46,6 +47,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
 | `RosserSchoenfeld.v1` | stub | *(none yet)* | - | - | - |
+| `ZeroFreeHeight.v1` | awaiting-verification | `classical_region_descends` | none-yet | 0 | #30 |
 
 ## Leverage
 

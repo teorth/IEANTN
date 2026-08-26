@@ -61,7 +61,19 @@ the shape produced by a classical zero-free region with parameter `R`.
 noncomputable def admissibleBound (A B C R x : ℝ) : ℝ :=
   A * (log x / R) ^ B * exp (-C * (log x / R) ^ ((1 : ℝ) / 2))
 
-/-- `HasClassicalBound E A B C R x₀`: the error term `E` obeys the classical admissible bound with
+/-- **A transcription trap.** The papers these error terms come from define them *signed* — FKS
+(1.1) has `Eψ(x) = (ψ(x) - x)/x`, FKS2 (1) and (2) the same for `Eπ` and `Eθ` — and then state
+their results as `E(x) ≤ …` with no absolute value. The definitions above use `|·|`, so a bound
+transcribed from such a corollary is *stronger* than the corollary as printed.
+
+That reading is right, and it is the papers' own: FKS's abstract gives `|ψ(x) - x| < …` and FKS2's
+gives `|π(x) - Li(x)| ≤ …`, both with explicit bars. But it does not follow from the corollary, so
+whoever adds a row from FKS2's Table 6 or Table 7 must confirm the two-sided form is stated
+somewhere rather than assume it. Neither paper ever writes `|E|`.
+
+`Eθ` is the weak case: FKS2 contains no `|θ(x) - x| ≤ …` statement at all.
+
+`HasClassicalBound E A B C R x₀`: the error term `E` obeys the classical admissible bound with
 parameters `A, B, C, R` for all `x ≥ x₀`. -/
 def HasClassicalBound (E : ℝ → ℝ) (A B C R x₀ : ℝ) : Prop :=
   ∀ x ≥ x₀, E x ≤ admissibleBound A B C R x
