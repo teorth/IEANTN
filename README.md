@@ -29,12 +29,14 @@ separate, auditable question.
 
 ```
 IEANTN/Vocabulary/               the shared language — definitions only, Mathlib-only
-IEANTN/Nodes/<Family>/<version>/ Conclusions.lean, Challenge.lean, formalization.yaml
+IEANTN/Nodes/<Family>/<version>/ Conclusions.lean, Challenge.lean, formalization.yaml,
+                                 and optionally Tables.lean for a paper's bulk data
 IEANTN/Bridges/<Family>/         proofs that one version's conclusions imply another's
 Solutions/<Family>.<version>/    proofs — separate Lake projects, not in the core build
 receipts/                        one JSON file per Lean-verified conclusion
-fingerprints.json, STATE.md      generated and committed, so a change of meaning is a diff line
-docs/                            ARCHITECTURE.md, NODES.md, ROADMAP.md
+fingerprints.json, STATE.md,     generated and committed, so a change of meaning is a diff line
+GRAPH.md, docs/nodes/
+docs/                            ARCHITECTURE.md, NODES.md, ROADMAP.md, SOURCES.md
 ```
 
 The core build is Vocabulary and Nodes only, and is deliberately fast. Solution verification is a

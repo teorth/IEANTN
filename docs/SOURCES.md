@@ -52,7 +52,7 @@ Not on arXiv, or not found there. Each blocks a specific piece of work.
 
 | Paper | Why it is needed | Blocks |
 |---|---|---|
-| Kadiri, *Une région explicite sans zéros pour ζ*, **published** Acta Arith. **117** (2005) 303–339 | We hold the arXiv preprint, which gives the weaker `5.70176`; the published version gives the `5.69693` everyone cites, and `Kadiri2005.v1` records it at second hand from MT. | moving `Kadiri2005.v1` to first hand |
+| Kadiri, *Une région explicite sans zéros pour ζ*, **published** Acta Arith. **117** (2005) 303–339 | **Load-bearing, not a nicety.** The held arXiv preprint gives `5.70176`; the published version gives `5.69693`. MT starts from `R = 5.7`, and since a smaller `R` is the stronger claim, `5.70176` is too weak to support it — only the published value does. So the `Kadiri2005 → MT` edge rests on a version we do not hold. | first-hand evidence for the `Kadiri2005 → MT` edge |
 | Wedeniwski, *ZetaGrid* — the height `T₀ = 3 330 657 430.697` | Kadiri's verification height, per MT §2. A website rather than a paper, which is itself worth recording. | `Kadiri2005.v1`'s `imports_status` |
 | Patel, *An Explicit Upper Bound for \|ζ(1 + it)\|*, Indag. Math. (N.S.) **33** (2022) no. 5, 1012–1032 | Its Footnote 3 is where the Cheng–Graham van der Corput error is documented, and so where `Hiary2016.v1`'s correction from `0.63` to `0.77` is actually argued. We take it from FKS at second hand. | verifying `Hiary2016.v1`'s correction |
 | Kadiri–Lumley–Ng, *Bounding ψ(x) with zero-density*, preprint | Cited by FKS as [19]. Appears not to be publicly available, and not listed on the authors' pages. **Not** an input — the lemma attributed to it is proved in FKS itself — so this is for completeness rather than to unblock anything. | nothing |
@@ -81,5 +81,10 @@ published version — have no source to read.
 ## Adding to the library
 
 Put the PDF in the local library directory, add a row above, and — if it settles what a node
-assumes — set that conclusion's `imports_status` to `identified` and record the edges. The
-`housekeeping` queue lists every conclusion still `undetermined`.
+assumes — record the edges and set that conclusion's `imports_status`: `identified` if every
+input is now an edge, `traced` if the inputs are written down but at least one is not the sort of
+thing an arrow can carry. See [NODES.md](NODES.md) for the four values.
+
+The `housekeeping` queue lists conclusions that are still `undetermined`. It deliberately does not
+list `traced` ones — some of their missing edges are waiting on a paper someone could make a node
+of, and some on an algorithm nobody ever can, and nothing distinguishes those mechanically.

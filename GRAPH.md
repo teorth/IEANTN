@@ -88,7 +88,7 @@ graph LR
   style NDusart2018_v1 stroke-dasharray: 6 4;
   style NFKBJ_v1 stroke-dasharray: 2 3;
   style NHiary2016_v1 stroke-dasharray: 2 3;
-  style NKadiri2005_v1 stroke-dasharray: 6 4;
+  style NKadiri2005_v1 stroke-dasharray: 2 3;
   style NPlatt2015_v1 stroke-dasharray: 2 3;
   style NPlatt2017_v1 stroke-dasharray: 2 3;
   style NPlattTrudgian_v1 stroke-dasharray: 2 3;
@@ -255,7 +255,7 @@ graph LR
   style Dusart2018_v1_proposition_5_4 stroke-dasharray: 6 4;
   style FKBJ_v1_rh_up_to stroke-dasharray: 2 3;
   style Hiary2016_v1_zeta_half_line_bound stroke-dasharray: 2 3;
-  style Kadiri2005_v1_zero_free_region stroke-dasharray: 6 4;
+  style Kadiri2005_v1_zero_free_region stroke-dasharray: 2 3;
   style Platt2015_v1_rh_up_to stroke-dasharray: 2 3;
   style Platt2017_v1_rh_up_to stroke-dasharray: 2 3;
   style PlattTrudgian_v1_rh_up_to stroke-dasharray: 2 3;
@@ -316,7 +316,7 @@ A line is one claim, indented under whatever assumes it.
   - [`Buthe2016.v1.theorem_2_psi`](docs/nodes/Buthe2016-v1.md#theorem_2_psi) — cited
   - [`PlattTrudgian2021.v1.theorem_1_numerical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_numerical) — cited
     - [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) — cited
-      - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources not traced*
+      - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources known, not all drawable*
       - [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) — computation — *sources known, not all drawable*
     - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
     - [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) — cited
@@ -326,7 +326,7 @@ A line is one claim, indented under whatever assumes it.
   - [`Buthe2016.v1.theorem_2_psi`](docs/nodes/Buthe2016-v1.md#theorem_2_psi) — cited
   - [`PlattTrudgian2021.v1.theorem_1_numerical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_numerical) — cited
     - [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) — cited
-      - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources not traced*
+      - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources known, not all drawable*
       - [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) — computation — *sources known, not all drawable*
     - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
     - [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) — cited
@@ -351,7 +351,7 @@ A line is one claim, indented under whatever assumes it.
   - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
     - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources known, not all drawable*
   - [`MT.v1.zero_free_region_sharpened`](docs/nodes/MT-v1.md#zero_free_region_sharpened) — cited
-    - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources not traced*
+    - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources known, not all drawable*
     - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
   - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited *(above)* — *sources known, not all drawable*
 
@@ -360,7 +360,7 @@ A line is one claim, indented under whatever assumes it.
     - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
       - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources known, not all drawable*
     - [`MT.v1.zero_free_region_sharpened`](docs/nodes/MT-v1.md#zero_free_region_sharpened) — cited
-      - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources not traced*
+      - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources known, not all drawable*
       - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
     - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited *(above)* — *sources known, not all drawable*
   - [`BKLNW.v1.corollary_5_1`](docs/nodes/BKLNW-v1.md#corollary_5_1) — cited
@@ -374,7 +374,7 @@ A line is one claim, indented under whatever assumes it.
     - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
       - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources known, not all drawable*
     - [`MT.v1.zero_free_region_sharpened`](docs/nodes/MT-v1.md#zero_free_region_sharpened) — cited
-      - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources not traced*
+      - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources known, not all drawable*
       - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
     - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited *(above)* — *sources known, not all drawable*
   - [`Buthe.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi) — cited — *sources known, not all drawable*
@@ -393,7 +393,7 @@ A line is one claim, indented under whatever assumes it.
 
 - [`PlattTrudgian2021.v1.theorem_1_classical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_classical) — cited
   - [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) — cited
-    - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources not traced*
+    - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited — *sources known, not all drawable*
     - [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) — computation — *sources known, not all drawable*
   - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
   - [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) — cited
@@ -417,7 +417,7 @@ rather than maintained.
 | [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) | cited | 2 | traced |
 | [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) | cited | 2 | traced |
 | [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) | cited | 2 | traced |
-| [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) | cited | 2 | **not yet traced** |
+| [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) | cited | 2 | known, not all drawable |
 | [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) | cited | 2 | traced |
 | [`MT.v1.zero_free_region_sharpened`](docs/nodes/MT-v1.md#zero_free_region_sharpened) | cited | 2 | traced |
 | [`PlattTrudgian2021.v1.theorem_1_numerical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_numerical) | cited | 2 | traced |
