@@ -30,7 +30,27 @@ classification:
   arxiv: [math.NT]
   msc2020: ["11M26"]
 
-conclusions: []
+conclusions:
+- id: zero_free_region
+  declaration: Kadiri2005.v1.zero_free_region
+  challenge: Kadiri2005.v1.challenge_zero_free_region
+  imports: []
+  imports_status: undetermined
+  justifications:
+  - id: kadiri-paper
+    kind: literature
+    source: Kadiri2005
+    locator: the paper's main theorem, as reported by MT Table 1 and Section 2
+    note: >-
+      Recorded at second hand. The arXiv preprint held in the library, math/0401238, states 5.70176; the
+      published Acta Arith. version states 5.69693, which is what the subsequent literature cites and
+      what is stated here, on the authority of MT, which gives it twice. Obtaining the published paper
+      would move this to first hand. Imports: traced but not yet edges. MT Section 2 records that Kadiri
+      started from Rosser and Schoenfeld's R = 9.645908801 and the height T0 = 3330657430.697 established
+      by Wedeniwski's ZetaGrid computation. Rosser-Schoenfeld is a node but states nothing yet, and --
+      see that node -- its Theorem 1 is not of the shape ClassicalZeroFreeRegion, so the edge cannot be
+      drawn by restating it; Wedeniwski is not a node at all.
+  designated: kadiri-paper
 
 sources:
 - title: "Une region explicite sans zeros pour la fonction zeta de Riemann"
@@ -65,7 +85,13 @@ review:
 
 limitations:
 - >-
-  This node states nothing. It exists so that the network records the paper as in scope,
-  and so that the housekeeping queue asks for conclusions.
+  The conclusion rests on the cited paper, and on MT's report of it rather than on the paper itself; it
+  is not proved in Lean here.
 - >-
-  No novelty is claimed. The results are the cited authors'.
+  The value stated is the published one, 5.69693. The version held locally is the arXiv preprint, which
+  gives the weaker 5.70176.
+- >-
+  Kadiri states the region for |Im s| >= 2 and the vocabulary requires Im s >= 3, so real content is discarded
+  on 2 <= |Im s| < 3.
+- >-
+  No novelty is claimed. The result is Kadiri's.

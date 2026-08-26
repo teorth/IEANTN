@@ -2,6 +2,19 @@
 Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
+
+## A trap for whoever states the zero-free region
+
+Theorem 1 of the paper is **not** of the shape `ClassicalZeroFreeRegion R`. It reads: there are no
+zeros of `ζ` in the region `σ > 1 − 1/(R log|t/17|)` for `|t| ≥ 21`, with
+`R = 9.645908801`. Two differences matter. The denominator is `log|t/17|`, not `log|t|`, which
+makes the region *wider*; and the threshold is `|t| ≥ 21`, not `3`.
+
+So restating it as `ClassicalZeroFreeRegion 9.645908801` would be an over-claim: it would assert
+something on `3 ≤ t < 21` that the paper does not prove. Whoever states this conclusion should add
+the `log|t/17|` shape to Vocabulary rather than force it into the existing one. `Kadiri2005.v1`
+consumes exactly this theorem, so the shape is load-bearing, not cosmetic.
+
 -/
 import IEANTN.Vocabulary
 

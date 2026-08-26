@@ -32,6 +32,7 @@ Mossinghoff–Trudgian's title, and BKLNW's own proof contradicts its displayed 
 | — | Johnston, *Improving bounds … by partial verification of RH* | [arXiv:2109.02249](https://arxiv.org/abs/2109.02249) | `Johnston2022-partial-verification.pdf` |
 | `FKBJ.v1` | Franke–Kleinjung–Büthe–Jost, *A practical analytic method for calculating π(x)* | Math. Comp. **86** (2017) no. 308, 2889–2909 | `FKBJ-practical-analytic-pi.pdf` |
 | — | Platt, *Isolating some non-trivial zeros of zeta* | Math. Comp. **86** (2017) 2449–2467 | `Platt2017-isolating-zeros.pdf` |
+| — | Platt–Trudgian, *The error term in the prime number theorem* | Math. Comp. **90** (2021) no. 328, 871–881 | `PlattTrudgian2021-error-term-PNT.pdf` |
 | `RosserSchoenfeld.v1` | Rosser–Schoenfeld, *Sharper bounds for θ(x) and ψ(x)* | Math. Comp. **29** (1975) 243–269 | `RosserSchoenfeld1975-sharper-bounds.pdf` |
 | `Dusart2018.v1` | Dusart, *Explicit estimates of some functions over primes* | [doi:10.1007/s11139-016-9839-4](https://doi.org/10.1007/s11139-016-9839-4) | `Dusart2018-explicit-estimates-published.pdf` |
 | — | Cheng–Graham, *Explicit estimates for the Riemann zeta function* | Rocky Mt. J. Math. **34** (2004) 1261–1280 | `ChengGraham2004-explicit-zeta.pdf` |
@@ -48,7 +49,9 @@ Not on arXiv, or not found there. Each blocks a specific piece of work.
 
 | Paper | Why it is needed | Blocks |
 |---|---|---|
-| Platt–Trudgian, *The error term in the prime number theorem*, Math. Comp. **90** (2021) no. 328, 871–881 | BKLNW's [37]. Supplies the `b ≥ 2500` half of BKLNW's Table 8. Distinct from BKLNW's [38], *The Riemann hypothesis is true up to 3·10¹²*, which is `PlattTrudgian.v1`. | `BKLNW.v1`'s Table 8 `imports_status` |
+| Platt, *Computing π(x) analytically*, Math. Comp. **84** (2015) | MT's [10]. The verification height `T₀ = 3.06·10¹⁰` that MT's Theorem 1 consumes. | `MT.v1.zero_free_region`'s `imports_status` |
+| Kadiri, *Une région explicite sans zéros pour ζ*, **published** Acta Arith. **117** (2005) 303–339 | We hold the arXiv preprint, which gives the weaker `5.70176`; the published version gives the `5.69693` everyone cites, and `Kadiri2005.v1` records it at second hand from MT. | moving `Kadiri2005.v1` to first hand |
+| Wedeniwski, *ZetaGrid* — the height `T₀ = 3 330 657 430.697` | Kadiri's verification height, per MT §2. A website rather than a paper, which is itself worth recording. | `Kadiri2005.v1`'s `imports_status` |
 | Kadiri–Lumley–Ng, *Bounding ψ(x) with zero-density*, preprint | Cited by FKS as [19]. Appears not to be publicly available, and not listed on the authors' pages. **Not** an input — the lemma attributed to it is proved in FKS itself — so this is for completeness rather than to unblock anything. | nothing |
 
 ## Adding to the library

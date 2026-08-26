@@ -33,23 +33,31 @@ conclusions:
 - id: zero_free_region
   declaration: MT.v1.zero_free_region
   challenge: MT.v1.challenge_zero_free_region
-  imports: []
+  imports:
+  - node: Kadiri2005.v1
+    conclusion: zero_free_region
   justifications:
   - id: mt-paper
     kind: literature
     source: MT
     locator: Theorem 1
     note: >-
-      Asserted on the authority of the paper. The unconditional headline value. Imports: none. Theorem
-      1 is the paper's unconditional value, established from nonnegative trigonometric polynomials without
-      a verification height -- unlike the Section 6.1 value below it, which is sharpened using one and
-      does import PlattTrudgian.v1.
+      Asserted on the authority of the paper. The unconditional headline value. Imports: this conclusion
+      previously recorded `none`, which was wrong -- an affirmative claim that Theorem 1 rests on nothing.
+      Section 3 says plainly: 'We select T0 = 3.06e10 as established in [10], t0 = 10^5, theta = 1.85573,
+      r = 5, and R = 5.7.' So Theorem 1 consumes both a height to which the Riemann hypothesis has been
+      verified and an already-established zero-free region, and then iterates. R = 5.7 is Kadiri's 5.69693
+      rounded off in the safe direction, so Kadiri2005.v1 is a genuine edge. The height is Platt, 'Computing
+      pi(x) analytically', the paper's [10], which is not held and not a node; that is why this is marked
+      undetermined rather than identified, one input of two being unrepresentable as an edge.
   designated: mt-paper
-  imports_status: none
+  imports_status: undetermined
 - id: zero_free_region_sharpened
   declaration: MT.v1.zero_free_region_sharpened
   challenge: MT.v1.challenge_zero_free_region_sharpened
   imports:
+  - node: Kadiri2005.v1
+    conclusion: zero_free_region
   - node: PlattTrudgian.v1
     conclusion: rh_up_to
   justifications:
@@ -58,12 +66,19 @@ conclusions:
     source: MT
     locator: Section 6.1
     note: >-
-      Asserted on the authority of the paper. FKS cites '[20, Theorem 1 and Section 6.1]' for R = 5.5666305
-      alongside the verification height H0 = 3 x 10^12, and Section 6.1 is where the constant is sharpened
-      using a partial verification of the Riemann hypothesis. Recorded separately from Theorem 1 because
-      it is a different claim resting on a different input. The dependence on the height is recorded as
-      an import rather than as a hypothesis in the statement; if the height ever changes this conclusion
-      should become a new version rather than be edited.
+      Asserted on the authority of the paper. Section 6.1 states: 'if T0 = 3e11, then by choosing theta
+      = 1.85567 with F16(phi), we obtain that R0 = 5.5666305 is permissible', and its footnote 1 reads
+      'The value T0 = 3e11 has been announced by Jan Buthe and Jens Franke in a personal communication.'
+      So the height this conclusion needs is 3e11, not the 3e12 that FKS quotes alongside it, and at the
+      time of publication that height rested on a personal communication -- the weakest provenance in
+      the network's vocabulary. The import of PlattTrudgian.v1 is therefore valid but not for the reason
+      previously recorded here: MT did not use Platt-Trudgian, which is six years later. What has happened
+      is that the hypothesis MT took on a private announcement is now implied by a published verification,
+      3e12 being comfortably past 3e11. Recording it this way is the point of the network: the claim's
+      real requirement is RiemannHypothesisUpTo 3e11, and any node meeting that discharges it. Kadiri2005.v1
+      is the second edge, as for Theorem 1. The dependence on the height is recorded as an import rather
+      than as a hypothesis in the statement; if the requirement ever changes this conclusion should become
+      a new version rather than be edited.
   designated: mt-paper
   imports_status: identified
 sources:
@@ -103,10 +118,21 @@ review:
 
 limitations:
 - >-
-  Both conclusions rest on the cited paper, which has not been read directly; the constants are transcribed
-  from FKS's citation of it.
+  Both conclusions rest on the cited paper; neither is proved in Lean here.
 - >-
-  The sharpened value of Section 6.1 is conditional on a verification height, recorded here as an import
-  of PlattTrudgian.v1. Whether the paper states it in exactly that form has not been checked.
+  The paper proves its region for |t| >= 2 and the vocabulary's ClassicalZeroFreeRegion requires Im s
+  >= 3, so real content is discarded on 2 <= |t| < 3. The same applies to MTY and Kadiri2005; 3 is the
+  common denominator, not any paper's own threshold.
 - >-
-  No novelty is claimed.
+  The paper is internally inconsistent about the boundary. Its abstract claims the closed region, 'no
+  zeros in the region sigma >= 1 - 1/(5.573412 log|t|)', while its Theorem 1 claims only the open one,
+  'sigma > 1 - ...'. The vocabulary states the closed form, which matches the abstract and matches both
+  Kadiri before it and MTY after it, each of which states >=. The strict inequality in Theorem 1 looks
+  like the anomaly, but it is the paper's own theorem statement, and a node that wanted to be certain
+  of the boundary case should not lean on this one.
+- >-
+  zero_free_region is marked undetermined although its inputs are known, because one of the two -- Platt,
+  'Computing pi(x) analytically' -- is not a node and so cannot be an edge. The vocabulary has no value
+  for 'traced, but not fully representable'.
+- >-
+  No novelty is claimed. The results are the paper's.
