@@ -6,7 +6,7 @@ node:
   family: ZeroFreeHeight
   version: v1
   kind: folklore
-  status: awaiting-verification # change this once the node is filled in
+  status: active                # change this once the node is filled in
 
 project:
   name: Lowering the height of a classical zero-free region
@@ -51,7 +51,10 @@ conclusions:
       Mathlib's riemannZeta_ne_zero_of_one_le_re and therefore not a network edge. A Lean solution exists
       in Solutions/ZeroFreeHeight.v1 and is awaiting Comparator; until a receipt is written this node
       is unjustified, and the justification must not be edited by hand.
-  designated: folklore-lean
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33003934956'
+  designated: comparator
   issue: 30
 sources:
 - title: Lowering the height threshold of a classical zero-free region
