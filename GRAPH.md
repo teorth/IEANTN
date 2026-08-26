@@ -18,6 +18,8 @@ into it are the answer.
 ```mermaid
 graph LR
   BKLNW_v1_corollary_5_1["BKLNW.v1<br/><b>corollary_5_1</b><br/><i>cited</i>"]
+  BKLNW_v1_table8_psi_bound["BKLNW.v1<br/><b>table8_psi_bound</b><br/><i>cited</i>"]
+  BKLNW_v1_table8_psi_bound_above["BKLNW.v1<br/><b>table8_psi_bound_above</b><br/><i>cited</i>"]
   BKLNW_v1_theta_error_le_one["BKLNW.v1<br/><b>theta_error_le_one</b><br/><i>cited</i>"]
   Buthe_v1_theorem_2_li_gt_pi["Buthe.v1<br/><b>theorem_2_li_gt_pi</b><br/><i>cited</i>"]
   Buthe_v1_theorem_2_li_minus_pi["Buthe.v1<br/><b>theorem_2_li_minus_pi</b><br/><i>cited</i>"]
@@ -38,6 +40,7 @@ graph LR
   MT_v1_zero_free_region["MT.v1<br/><b>zero_free_region</b><br/><i>cited</i>"]
   MT_v1_zero_free_region_sharpened["MT.v1<br/><b>zero_free_region_sharpened</b><br/><i>cited</i>"]
   PlattTrudgian_v1_rh_up_to["PlattTrudgian.v1<br/><b>rh_up_to</b><br/><i>cited</i>"]
+  Buthe_v1_theorem_2_theta_lower --> BKLNW_v1_corollary_5_1
   FKBJ_v1_rh_up_to --> Buthe_v1_theorem_2_li_gt_pi
   FKBJ_v1_rh_up_to --> Buthe_v1_theorem_2_li_minus_pi
   FKBJ_v1_rh_up_to --> Buthe_v1_theorem_2_li_minus_riemann_pi
@@ -59,7 +62,8 @@ graph LR
   Buthe_v1_theorem_2_li_gt_pi --> FKS2_v1_corollary_26
   Dusart2018_v1_proposition_5_4 --> Lcm_v1_lcmUpto_not_highlyAbundant
   PlattTrudgian_v1_rh_up_to --> MT_v1_zero_free_region_sharpened
-  style BKLNW_v1_corollary_5_1 stroke-dasharray: 6 4;
+  style BKLNW_v1_table8_psi_bound stroke-dasharray: 6 4;
+  style BKLNW_v1_table8_psi_bound_above stroke-dasharray: 6 4;
   style BKLNW_v1_theta_error_le_one stroke-dasharray: 6 4;
   style Dusart2018_v1_proposition_5_4 stroke-dasharray: 6 4;
   style FKBJ_v1_rh_up_to stroke-dasharray: 6 4;
@@ -69,7 +73,7 @@ graph LR
   classDef literature fill:#ddf4ff,stroke:#0969da,color:#1f2328;
   classDef numerical fill:#fff8c5,stroke:#9a6700,color:#1f2328;
   class Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap lean_comparator;
-  class BKLNW_v1_corollary_5_1,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,FKS2_v1_corollary_14,FKS2_v1_corollary_23,FKS2_v1_corollary_26,KLN_v1_subconvexity_bound,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to literature;
+  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,FKS2_v1_corollary_14,FKS2_v1_corollary_23,FKS2_v1_corollary_26,KLN_v1_subconvexity_bound,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to literature;
   class FKBJ_v1_rh_up_to numerical;
 ```
 
@@ -78,6 +82,10 @@ graph LR
 Only the conclusions nothing else imports are listed; the rest appear inside them.
 A line is one claim, indented under whatever assumes it.
 
+- `BKLNW.v1.table8_psi_bound` — cited — *sources not traced*
+
+- `BKLNW.v1.table8_psi_bound_above` — cited — *sources not traced*
+
 - `Buthe.v1.theorem_2_li_minus_riemann_pi` — cited
   - `FKBJ.v1.rh_up_to` — computation — *sources not traced*
 
@@ -85,9 +93,6 @@ A line is one claim, indented under whatever assumes it.
   - `FKBJ.v1.rh_up_to` — computation — *sources not traced*
 
 - `Buthe.v1.theorem_2_theta` — cited
-  - `FKBJ.v1.rh_up_to` — computation — *sources not traced*
-
-- `Buthe.v1.theorem_2_theta_lower` — cited
   - `FKBJ.v1.rh_up_to` — computation — *sources not traced*
 
 - `FKS.v1.psi_bound_all_x` — cited
@@ -102,7 +107,9 @@ A line is one claim, indented under whatever assumes it.
     - `MT.v1.zero_free_region_sharpened` — cited
       - `PlattTrudgian.v1.rh_up_to` — cited — *sources not traced*
     - `PlattTrudgian.v1.rh_up_to` — cited *(above)* — *sources not traced*
-  - `BKLNW.v1.corollary_5_1` — cited — *sources not traced*
+  - `BKLNW.v1.corollary_5_1` — cited
+    - `Buthe.v1.theorem_2_theta_lower` — cited
+      - `FKBJ.v1.rh_up_to` — computation — *sources not traced*
   - `BKLNW.v1.theta_error_le_one` — cited — *sources not traced*
 
 - `FKS2.v1.corollary_23` — cited
@@ -141,14 +148,16 @@ rather than maintained.
 | `FKS.v1.psi_classical_bound` | cited | 2 | traced |
 | `KLN.v1.subconvexity_bound` | cited | 2 | **not yet traced** |
 | `MT.v1.zero_free_region_sharpened` | cited | 2 | traced |
-| `BKLNW.v1.corollary_5_1` | cited | 1 | **not yet traced** |
+| `BKLNW.v1.corollary_5_1` | cited | 1 | traced |
 | `BKLNW.v1.theta_error_le_one` | cited | 1 | **not yet traced** |
 | `Buthe.v1.theorem_2_li_gt_pi` | cited | 1 | traced |
+| `Buthe.v1.theorem_2_theta_lower` | cited | 1 | traced |
 | `Dusart2018.v1.proposition_5_4` | cited | 1 | **not yet traced** |
+| `BKLNW.v1.table8_psi_bound` | cited | 0 | **not yet traced** |
+| `BKLNW.v1.table8_psi_bound_above` | cited | 0 | **not yet traced** |
 | `Buthe.v1.theorem_2_li_minus_riemann_pi` | cited | 0 | traced |
 | `Buthe.v1.theorem_2_psi` | cited | 0 | traced |
 | `Buthe.v1.theorem_2_theta` | cited | 0 | traced |
-| `Buthe.v1.theorem_2_theta_lower` | cited | 0 | traced |
 | `FKS.v1.psi_bound_all_x` | cited | 0 | traced |
 | `FKS2.v1.corollary_14` | cited | 0 | traced |
 | `FKS2.v1.corollary_23` | cited | 0 | traced |

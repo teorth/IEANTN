@@ -30,13 +30,17 @@ Mossinghoff–Trudgian's title, and BKLNW's own proof contradicts its displayed 
 | — | Hiary–Patel–Yang, *An improved explicit estimate for ζ(1/2+it)* | [arXiv:2207.02366](https://arxiv.org/abs/2207.02366) | `HiaryPatelYang2022-improved-zeta-half.pdf` |
 | — | Johnston–Yang, *Some explicit estimates for the error term in the PNT* | [arXiv:2204.01980](https://arxiv.org/abs/2204.01980) | `JohnstonYang2023-error-term-PNT.pdf` |
 | — | Johnston, *Improving bounds … by partial verification of RH* | [arXiv:2109.02249](https://arxiv.org/abs/2109.02249) | `Johnston2022-partial-verification.pdf` |
+| `FKBJ.v1` | Franke–Kleinjung–Büthe–Jost, *A practical analytic method for calculating π(x)* | Math. Comp. **86** (2017) no. 308, 2889–2909 | `FKBJ-practical-analytic-pi.pdf` |
+| — | Platt, *Isolating some non-trivial zeros of zeta* | Math. Comp. **86** (2017) 2449–2467 | `Platt2017-isolating-zeros.pdf` |
 | `RosserSchoenfeld.v1` | Rosser–Schoenfeld, *Sharper bounds for θ(x) and ψ(x)* | Math. Comp. **29** (1975) 243–269 | `RosserSchoenfeld1975-sharper-bounds.pdf` |
 | `Dusart2018.v1` | Dusart, *Explicit estimates of some functions over primes* | [doi:10.1007/s11139-016-9839-4](https://doi.org/10.1007/s11139-016-9839-4) | `Dusart2018-explicit-estimates-published.pdf` |
 | — | Cheng–Graham, *Explicit estimates for the Riemann zeta function* | Rocky Mt. J. Math. **34** (2004) 1261–1280 | `ChengGraham2004-explicit-zeta.pdf` |
 
-The last five have no node yet. They are held because they are the obvious next imports: Hiary is
-where `KLN.v1`'s subconvexity constant comes from, Hiary–Patel–Yang is the improvement that would
-sharpen it, and Büthe 2016 is what `Buthe.v1`'s Theorem 2 rests on.
+Several of these have no node yet. They are held because they are the obvious next imports: Hiary
+is where `KLN.v1`'s subconvexity constant comes from, Hiary–Patel–Yang is the improvement that
+would sharpen it, and Büthe 2016 — *Estimating π(x) … under partial RH assumptions*, Math. Comp.
+**85** (2016) 2483–2498 — is BKLNW's reference [3], the source of the `b ≤ 2000` half of its
+Table 8. Note that BKLNW's [3] and [4] are two different Büthe papers, and only [4] is `Buthe.v1`.
 
 ## Wanted
 
@@ -44,8 +48,7 @@ Not on arXiv, or not found there. Each blocks a specific piece of work.
 
 | Paper | Why it is needed | Blocks |
 |---|---|---|
-| Platt, *Isolating some non-trivial zeros of zeta*, Math. Comp. **86** (2017) 2449–2467 | FKS uses Platt's computed zeros, via LMFDB. A likely import of `PlattTrudgian.v1` or of `FKS.v1`. | `PlattTrudgian.v1`'s `imports_status` |
-| Franke–Kleinjung–Büthe–Jost, *A practical analytic method for calculating π(x)*, Math. Comp. | The zero computation to height 10¹¹ that Büthe's Theorem 2 consumes. `FKBJ.v1` states it at second hand, from Büthe's description; even its volume and pages are unconfirmed. | confirming `FKBJ.v1` |
+| Platt–Trudgian, *The error term in the prime number theorem*, Math. Comp. **90** (2021) no. 328, 871–881 | BKLNW's [37]. Supplies the `b ≥ 2500` half of BKLNW's Table 8. Distinct from BKLNW's [38], *The Riemann hypothesis is true up to 3·10¹²*, which is `PlattTrudgian.v1`. | `BKLNW.v1`'s Table 8 `imports_status` |
 | Kadiri–Lumley–Ng, *Bounding ψ(x) with zero-density*, preprint | Cited by FKS as [19]. Appears not to be publicly available, and not listed on the authors' pages. **Not** an input — the lemma attributed to it is proved in FKS itself — so this is for completeness rather than to unblock anything. | nothing |
 
 ## Adding to the library

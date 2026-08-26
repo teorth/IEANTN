@@ -46,9 +46,12 @@ conclusions:
     locator: the zero computation the paper reports
     note: >-
       A large finite computation, so `numerical` rather than `literature`: what stands behind it is a
-      program that ran, not an argument a referee read. Recorded at second hand -- Buthe describes this
-      computation as the input to his Theorem 2 and cites it as [5]; the paper itself has not been read
-      here, and its exact statement of the height and accuracy wants checking. See docs/SOURCES.md.
+      program that ran, not an argument a referee read. The height is now confirmed at first hand -- the
+      paper states that the authors 'determined all zeros of zeta(1/2 + it) with |t| < 10^11 to an absolute
+      precision of 2^-64', which agrees with Buthe's description of the input to his Theorem 2. Note the
+      node states only the consequence that no zero below that height lies off the critical line; the
+      algorithm consumes the tabulated zeros themselves, to the stated precision, and that is data rather
+      than a proposition.
   designated: fkbj-paper
 sources:
 - title: A practical analytic method for calculating pi(x)
@@ -58,12 +61,12 @@ sources:
   - Jan Buthe
   - Alexander Jost
   type: paper
-  id: Math. Comp., cited by Buthe (arXiv:1511.02032v2) as reference [5]
-  location: Math. Comp.; volume and pages not confirmed
+  id: Math. Comp. 86 (2017), no. 308, 2889-2909
+  location: Mathematics of Computation, November 2017, Vol. 86, No. 308, pp. 2889-2909
   relationship: formalizes
   note: >-
-    Bibliographic details taken from Buthe's reference list, which records it as 'to appear'. Volume,
-    pages and DOI are unconfirmed and the paper has not been read. Confirm before external use.
+    Bibliographic details confirmed against the paper itself, which is now held in the library. Buthe's
+    reference list records it as 'to appear', which is why earlier records here were provisional.
 automation:
   methods:
   - method: agent
@@ -78,13 +81,14 @@ review:
   reviewers:
   - Terence Tao
   notes: >-
-    Everything here is at second hand, from Buthe's description of what his computation consumed. The
-    cited paper has not been obtained.
+    The cited paper has been obtained and its statement of the height and precision checked directly.
+    What the node asserts is a consequence of that computation, not the computation.
 
 limitations:
 - >-
-  The cited paper has not been read. The height 10^11 is Buthe's description of the zeros he used, not
-  a quotation of this paper's own statement.
+  The node understates what it supplies. The computation's real output is a table of zeros to a stated
+  precision; a conclusion is a Prop, so the network can state only the consequence that there are no zeros
+  off the critical line below that height. Any consumer needs more than the node says.
 - >-
   The node understates what it supplies. Buthe's algorithm takes the tabulated zeros as input, to a stated
   accuracy; a conclusion is a Prop, so the network can state only the consequence that there are no zeros

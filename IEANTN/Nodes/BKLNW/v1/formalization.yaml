@@ -35,7 +35,9 @@ conclusions:
 - id: corollary_5_1
   declaration: BKLNW.v1.corollary_5_1
   challenge: BKLNW.v1.challenge_corollary_5_1
-  imports: []
+  imports:
+  - node: Buthe.v1
+    conclusion: theorem_2_theta_lower
   justifications:
   - id: bklnw-paper
     kind: literature
@@ -53,7 +55,71 @@ conclusions:
       a stray -- most likely a leftover from a draft with a different epsilon. It appears on page 9 of
       both arXiv:2002.11068v2 and the published Math. Comp. version, and never reached PNT+, whose formalization
       uses the correct value. The difference is lower order and harmless; it is recorded because a stray
-      constant that nobody writes down is the kind of thing that gets propagated later.
+      constant that nobody writes down is the kind of thing that gets propagated later. Imports: the proof
+      applies the paper's Theorem 5 with alpha = 1.93378e-8 from its Corollary 2.1, and its Proposition
+      4 with x1 = 10^19 'from the work of Buthe [4, Equation (1.7)]' -- that is Buthe.v1.theorem_2_theta_lower,
+      which is the same (1.7). The paper leans on it twice: Corollary 2.1 combines 'theta(x) < x for 0
+      < x <= 10^19 ([4, Theorem 2, (1.7)])' with M0 = eps(19 log 10) from Table 8, and equation (3.17)
+      quotes (1.7) in full. The other half of that, the Table 8 entry, is this node's own table8_psi_bound_above,
+      so it is not an import.
+  designated: bklnw-paper
+  imports_status: identified
+- id: table8_psi_bound
+  declaration: BKLNW.v1.table8_psi_bound
+  challenge: BKLNW.v1.challenge_table8_psi_bound
+  imports: []
+  imports_status: undetermined
+  justifications:
+  - id: bklnw-paper
+    kind: literature
+    source: BKLNW
+    locator: Table 8, read as its Corollary 8.1 reads it
+    note: >-
+      Asserted on the authority of the paper. The entries themselves are in Tables.lean, extracted from
+      the typeset table rather than retyped. What the table means is fixed by the paper's Corollary 8.1,
+      which reads the caption's b' as the next entry of column 1; see the Tables.lean docstring, which
+      also records the four cross-checks against the paper's prose. Imports: partly traced, but left undetermined
+      because only one of the three inputs is a node. The paper's Theorem 2 is attributed to 'Buthe, Platt-Trudgian'
+      and drawn from [3, Theorem 2], [4, Theorem 2] and [37]. Resolving those against the reference list:
+      [4] is Buthe, An analytic method for bounding psi(x), Math. Comp. 87 (2018), 1991-2009 -- that is
+      our Buthe.v1, so one edge does exist. [3] is Buthe, Estimating pi(x) and related functions under
+      partial RH assumptions, Math. Comp. 85 (2016), 2483-2498, a different paper, held in the library
+      but not yet a node; it supplies the rows with b <= 2000. [37] is Platt-Trudgian, The error term
+      in the prime number theorem, Math. Comp. 90 (2021), 871-881 -- distinct from the [38] that our PlattTrudgian.v1
+      records -- and supplies the rows with b >= 2500; not held. Recording one edge of three would read
+      as a complete tracing in every report, which would be worse than saying nothing, so this stays undetermined
+      until the other two are nodes.
+  designated: bklnw-paper
+- id: table8_psi_bound_above
+  declaration: BKLNW.v1.table8_psi_bound_above
+  challenge: BKLNW.v1.challenge_table8_psi_bound_above
+  imports: []
+  imports_status: undetermined
+  justifications:
+  - id: bklnw-paper
+    kind: literature
+    source: BKLNW
+    locator: Table 8 in the form used by Corollaries 2.1 and 15.1
+    note: >-
+      Asserted on the authority of the paper. The entries themselves are in Tables.lean, extracted from
+      the typeset table rather than retyped. What the table means is fixed by the paper's Corollary 8.1,
+      which reads the caption's b' as the next entry of column 1; see the Tables.lean docstring, which
+      also records the four cross-checks against the paper's prose. This is the unbounded reading the
+      paper actually applies: Corollary 2.1 takes M0 = eps(19 log 10) with no upper cutoff and Corollary
+      15.1 writes eps(19 log 10) as holding for all x >= e^b. It follows from table8_psi_bound plus the
+      fact that the tabulated eps strictly decrease, which was checked mechanically across all 57 consecutive
+      pairs, so a solution should derive it rather than reassert it. The cutoff at e^25000 is the last
+      tabulated b and is not removable from the table alone. Imports: partly traced, but left undetermined
+      because only one of the three inputs is a node. The paper's Theorem 2 is attributed to 'Buthe, Platt-Trudgian'
+      and drawn from [3, Theorem 2], [4, Theorem 2] and [37]. Resolving those against the reference list:
+      [4] is Buthe, An analytic method for bounding psi(x), Math. Comp. 87 (2018), 1991-2009 -- that is
+      our Buthe.v1, so one edge does exist. [3] is Buthe, Estimating pi(x) and related functions under
+      partial RH assumptions, Math. Comp. 85 (2016), 2483-2498, a different paper, held in the library
+      but not yet a node; it supplies the rows with b <= 2000. [37] is Platt-Trudgian, The error term
+      in the prime number theorem, Math. Comp. 90 (2021), 871-881 -- distinct from the [38] that our PlattTrudgian.v1
+      records -- and supplies the rows with b >= 2500; not held. Recording one edge of three would read
+      as a complete tracing in every report, which would be worse than saying nothing, so this stays undetermined
+      until the other two are nodes.
   designated: bklnw-paper
 - id: theta_error_le_one
   declaration: BKLNW.v1.theta_error_le_one
@@ -72,6 +138,7 @@ conclusions:
       for anything sharper.
   designated: bklnw-paper
 
+  imports_status: undetermined
 sources:
 - title: "Sharper bounds for the Chebyshev function theta(x)"
   authors: ["Samuel Broadbent", "Habiba Kadiri", "Allysa Lumley", "Nathan Ng", "Kirsten Wilk"]
@@ -100,13 +167,15 @@ review:
 
 limitations:
 - >-
-  Both conclusions rest on the cited paper; neither is proved in Lean here.
+  Every conclusion rests on the cited paper; none is proved in Lean here.
 - >-
-  Corollary 5.1 is stated only for 7 <= b <= 38 log 10, the range where its coefficients are explicit.
-  The branch above that threshold needs the paper's Table 8, which would go in a Tables.lean beside this
-  file; it is left until something needs it.
+  corollary_5_1 is stated on 7 <= b <= 38 log 10 only. Table 8 is now present, so the b > 38 log 10 branch
+  can be stated when something needs it.
 - >-
-  theta_error_le_one is transcribed from FKS2's use of Tables 13 and 14 rather than read off those tables,
-  so it records what a consumer needs rather than the tables' full strength.
+  The two Table 8 conclusions have no import edges yet, though one is known: the table rests on Buthe.v1
+  together with a second Buthe paper and Platt-Trudgian's error-term paper, neither of which is a node.
+  See the justification notes.
 - >-
-  No novelty is claimed. The results are Broadbent, Kadiri, Lumley, Ng and Wilk's.
+  theta_error_le_one is transcribed from FKS2's use of Tables 13 and 14, not read off those tables directly.
+- >-
+  No novelty is claimed. The results are the paper's.
