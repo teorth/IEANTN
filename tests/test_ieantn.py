@@ -642,6 +642,16 @@ class TestNodePages(FixtureRepo):
         self._node("def main : Prop := True" + chr(10))
         self.assertIn("](docs/nodes/A-v1.md#main)", ieantn.render_graph(ieantn.load_nodes()))
 
+    def test_mermaid_clicks_are_absolute(self) -> None:
+        """GitHub renders Mermaid in a sandbox on viewscreen.githubusercontent.com, so a relative
+        click href resolves against that origin and 404s. Markdown links on the same page are
+        fine. Nothing local or in CI can catch this, so it is pinned here."""
+        self._node("def main : Prop := True" + chr(10))
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        for line in rendered.splitlines():
+            if line.strip().startswith("click "):
+                self.assertIn('href "https://github.com/', line)
+
     def test_a_page_for_a_node_that_no_longer_exists_is_removed(self) -> None:
         self._node("def main : Prop := True" + chr(10))
         ieantn.pages(False)

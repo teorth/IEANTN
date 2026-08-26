@@ -159,8 +159,15 @@ jobs:
           fi
           git config user.name "ieantn-verifier[bot]"
           git config user.email "ieantn-verifier@users.noreply.github.com"
+          # Designating a `lean-comparator` justification changes the node's evidence kind, and
+          # three generated files depend on it, not one: STATE.md, GRAPH.md (box colour, and the
+          # conclusion leaves the "taken on trust" table) and docs/nodes/. `check` verifies all
+          # three, so regenerating only STATE.md would push a receipt whose own pull request fails
+          # CI -- with the one file nobody may edit by hand sitting in it.
           python3 scripts/ieantn.py state
-          git add receipts/ IEANTN/Nodes/ STATE.md
+          python3 scripts/ieantn.py graph
+          python3 scripts/ieantn.py pages
+          git add receipts/ IEANTN/Nodes/ STATE.md GRAPH.md docs/nodes/
           git diff --cached --quiet && { echo "nothing to record"; exit 0; }
           git commit -m "Record verification receipt for $NODE"
           git push origin HEAD:"refs/heads/$BRANCH"
