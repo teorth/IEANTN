@@ -39,7 +39,7 @@ conclusions:
   imports:
   - node: FKBJ.v1
     conclusion: rh_up_to
-  imports_status: identified
+  imports_status: traced
   justifications:
   - id: buthe-paper
     kind: literature
@@ -54,7 +54,11 @@ conclusions:
       the tabulated zeros themselves and the network can only state their consequence; see FKBJ.v1's limitations.
       Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact: all six equations of Theorem
       2 match in constant, threshold and strictness, and the vocabulary matches the paper's own (1.4)
-      -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function.
+      -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function. Reclassified
+      from `identified` to `traced`: the edge to FKBJ.v1 is real, but as the note above says it understates
+      the dependency -- the algorithm consumes the tabulated zeros themselves, and a table is not a proposition.
+      `traced` is the value for exactly that, so the understatement is now visible in the graph rather
+      than only in this note.
   designated: buthe-paper
 - id: theorem_2_theta
   declaration: Buthe.v1.theorem_2_theta
@@ -62,7 +66,7 @@ conclusions:
   imports:
   - node: FKBJ.v1
     conclusion: rh_up_to
-  imports_status: identified
+  imports_status: traced
   justifications:
   - id: buthe-paper
     kind: literature
@@ -77,7 +81,11 @@ conclusions:
       the tabulated zeros themselves and the network can only state their consequence; see FKBJ.v1's limitations.
       Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact: all six equations of Theorem
       2 match in constant, threshold and strictness, and the vocabulary matches the paper's own (1.4)
-      -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function.
+      -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function. Reclassified
+      from `identified` to `traced`: the edge to FKBJ.v1 is real, but as the note above says it understates
+      the dependency -- the algorithm consumes the tabulated zeros themselves, and a table is not a proposition.
+      `traced` is the value for exactly that, so the understatement is now visible in the graph rather
+      than only in this note.
   designated: buthe-paper
 - id: theorem_2_theta_lower
   declaration: Buthe.v1.theorem_2_theta_lower
@@ -85,7 +93,7 @@ conclusions:
   imports:
   - node: FKBJ.v1
     conclusion: rh_up_to
-  imports_status: identified
+  imports_status: traced
   justifications:
   - id: buthe-paper
     kind: literature
@@ -100,7 +108,11 @@ conclusions:
       the tabulated zeros themselves and the network can only state their consequence; see FKBJ.v1's limitations.
       Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact: all six equations of Theorem
       2 match in constant, threshold and strictness, and the vocabulary matches the paper's own (1.4)
-      -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function.
+      -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function. Reclassified
+      from `identified` to `traced`: the edge to FKBJ.v1 is real, but as the note above says it understates
+      the dependency -- the algorithm consumes the tabulated zeros themselves, and a table is not a proposition.
+      `traced` is the value for exactly that, so the understatement is now visible in the graph rather
+      than only in this note.
   designated: buthe-paper
 - id: theorem_2_li_minus_riemann_pi
   declaration: Buthe.v1.theorem_2_li_minus_riemann_pi
@@ -108,7 +120,7 @@ conclusions:
   imports:
   - node: FKBJ.v1
     conclusion: rh_up_to
-  imports_status: identified
+  imports_status: traced
   justifications:
   - id: buthe-paper
     kind: literature
@@ -128,7 +140,10 @@ conclusions:
       see FKBJ.v1's limitations. Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact:
       all six equations of Theorem 2 match in constant, threshold and strictness, and the vocabulary matches
       the paper's own (1.4) -- li is the principal-value integral from 0, pi* is the Riemann prime-counting
-      function.
+      function. Reclassified from `identified` to `traced`: the edge to FKBJ.v1 is real, but as the note
+      above says it understates the dependency -- the algorithm consumes the tabulated zeros themselves,
+      and a table is not a proposition. `traced` is the value for exactly that, so the understatement
+      is now visible in the graph rather than only in this note.
   designated: buthe-paper
 - id: theorem_2_li_minus_pi
   declaration: Buthe.v1.theorem_2_li_minus_pi
@@ -136,7 +151,7 @@ conclusions:
   imports:
   - node: FKBJ.v1
     conclusion: rh_up_to
-  imports_status: identified
+  imports_status: traced
   justifications:
   - id: buthe-paper
     kind: literature
@@ -153,7 +168,10 @@ conclusions:
       and the network can only state their consequence; see FKBJ.v1's limitations. Audited against arXiv:1511.02032v2
       on 2026-08-26 and confirmed exact: all six equations of Theorem 2 match in constant, threshold and
       strictness, and the vocabulary matches the paper's own (1.4) -- li is the principal-value integral
-      from 0, pi* is the Riemann prime-counting function.
+      from 0, pi* is the Riemann prime-counting function. Reclassified from `identified` to `traced`:
+      the edge to FKBJ.v1 is real, but as the note above says it understates the dependency -- the algorithm
+      consumes the tabulated zeros themselves, and a table is not a proposition. `traced` is the value
+      for exactly that, so the understatement is now visible in the graph rather than only in this note.
   designated: buthe-paper
 - id: theorem_2_li_gt_pi
   declaration: Buthe.v1.theorem_2_li_gt_pi
@@ -161,7 +179,7 @@ conclusions:
   imports:
   - node: FKBJ.v1
     conclusion: rh_up_to
-  imports_status: identified
+  imports_status: traced
   justifications:
   - id: buthe-paper
     kind: literature
@@ -178,7 +196,10 @@ conclusions:
       and the network can only state their consequence; see FKBJ.v1's limitations. Audited against arXiv:1511.02032v2
       on 2026-08-26 and confirmed exact: all six equations of Theorem 2 match in constant, threshold and
       strictness, and the vocabulary matches the paper's own (1.4) -- li is the principal-value integral
-      from 0, pi* is the Riemann prime-counting function.
+      from 0, pi* is the Riemann prime-counting function. Reclassified from `identified` to `traced`:
+      the edge to FKBJ.v1 is real, but as the note above says it understates the dependency -- the algorithm
+      consumes the tabulated zeros themselves, and a table is not a proposition. `traced` is the value
+      for exactly that, so the understatement is now visible in the graph rather than only in this note.
   designated: buthe-paper
 sources:
 - title: An analytic method for bounding psi(x)

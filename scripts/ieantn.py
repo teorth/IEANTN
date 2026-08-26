@@ -82,11 +82,29 @@ CACHE_WINDOW_RELEASES = 2
 #: a reader, and the second is the normal state of a freshly cited result. `undetermined` is the
 #: default precisely so that the honest state is the one you get without doing anything.
 #:
+#: The four values answer one question -- *has anyone worked out what this rests on, and could all
+#: of it be drawn?*
+#:
+#: * `undetermined` -- nobody has looked. The default.
+#: * `traced` -- the inputs are written down, and at least one of them is **not** an edge. Either
+#:   it is not a node yet, or it can never be one: an algorithm, a data set, a computation. The
+#:   justification note is where they are named.
+#: * `identified` -- every input is drawn as an edge. Nothing is missing from the picture.
+#: * `none` -- there are no inputs. A conditional whose hypotheses a consumer supplies, for
+#:   instance.
+#:
+#: `traced` exists because `undetermined` was doing two jobs. "Nobody has looked at Platt2017" and
+#: "Platt2017 rests on Theorem 4.2 of Trudgian, Whittaker-Shannon sampling, a subconvexity bound in
+#: Lemma A.10, and its own FFT, of which only the third could currently be an edge" are not the
+#: same state, and rendering them identically threw away the second one's work. It also lets
+#: `identified` mean exactly what it says, instead of "identified, apart from the bits that cannot
+#: be drawn, which are in a note".
+#:
 #: `none` is the third case and is not the same as `identified` with an empty list: it says someone
 #: looked and there is genuinely nothing upstream. Lcm.v2 assumes its prime-gap input internally by
 #: design; MT's Theorem 1 is unconditional. Having a word for that keeps the check from emitting a
 #: warning nobody can ever act on, which is how warnings stop being read.
-IMPORT_STATUSES = {"identified", "none", "undetermined"}
+IMPORT_STATUSES = {"identified", "traced", "none", "undetermined"}
 DEFAULT_IMPORT_STATUS = "undetermined"
 
 
@@ -954,8 +972,16 @@ def check_graph() -> bool:
                 problems.add(
                     where,
                     f"conclusion `{cid}`: `imports_status: identified` but no imports are listed. "
-                    "If someone looked and there are genuinely none, say `none`; if nobody has "
-                    "looked, drop the field and let it read as undetermined.",
+                    "If someone looked and there are genuinely none, say `none`; if the inputs are "
+                    "known but not all of them can be edges, say `traced`; if nobody has looked, "
+                    "drop the field and let it read as undetermined.",
+                )
+            if status == "traced" and not (conclusion.get("justifications") or []):
+                problems.add(
+                    where,
+                    f"conclusion `{cid}`: `imports_status: traced` means the inputs are written "
+                    "down somewhere, and the only place for them is a justification note. With no "
+                    "justification there is nowhere for the tracing to live.",
                 )
             if status == "none" and (conclusion.get("imports") or []):
                 problems.add(
@@ -1827,6 +1853,10 @@ def housekeeping() -> bool:
                 claim = f"#{issue} CLOSED -- reopen it, or drop the `issue` field"
             else:
                 claim = f"#{issue}"
+            # `traced` is deliberately not queued. Some of its missing edges are waiting on a
+            # node that could exist, and some are algorithms or data that never can; nothing here
+            # can tell those apart, and a queue full of items nobody can action is the failure
+            # mode this file has already been through once.
             if import_status(conclusion) == "undetermined":
                 tasks.append(
                     f"imports   {node_id}.{conclusion.get('id')}  (not yet traced to its sources)")
@@ -2139,6 +2169,8 @@ def render_node_overview(nodes: dict[str, dict], index: dict) -> list[str]:
         cs = conclusions_of(nodes[node_id])
         if cs and any(import_status(c) == "undetermined" for c in cs):
             lines.append(f"  style N{mermaid_id(node_id)} stroke-dasharray: 6 4;")
+        elif cs and any(import_status(c) == "traced" for c in cs):
+            lines.append(f"  style N{mermaid_id(node_id)} stroke-dasharray: 2 3;")
     for kind in EVIDENCE_ORDER:
         members = [f"N{mermaid_id(n)}" for n in sorted(nodes)
                    if (weakest_kind(conclusions_of(nodes[n]))
@@ -2184,10 +2216,13 @@ def render_graph(nodes: dict[str, dict]) -> str:
         "Everything else is a leaf of the trust graph -- something the network takes on faith,",
         "however reasonably -- and the point of drawing it is that you can see exactly which.",
         "",
-        "A **dashed** border means nobody has yet worked out what that claim itself assumes. It is",
-        "not a claim that the box rests on nothing; it is an admission that the question has not",
-        "been asked. A solid border means someone has traced it to its sources, and the arrows",
-        "into it are the answer.",
+        "The border says how completely the arrows into a box tell the story. **Solid** means they",
+        "tell all of it. **Dashed** (long) means nobody has yet worked out what that claim assumes",
+        "— an admission that the question has not been asked, not a claim that it rests on",
+        "nothing. **Dotted** (short) is in between, and is the usual state of a claim that rests on",
+        "a computation: the inputs are known and written down, but at least one of them is not the",
+        "sort of thing an arrow can carry — an algorithm, a data set, or a paper nobody has made a",
+        "node of yet.",
         "",
         "Every box and every claim named below links to that node's page, which carries the Lean",
         "spelling of the claim, its docstring, and everything recorded about why it should be",
@@ -2265,8 +2300,11 @@ def render_graph(nodes: dict[str, dict]) -> str:
         lines.append(f"  {bid} ==> {mermaid_id(bridge['conclusion'])}")
 
     for key in sorted(index):
-        if import_status(index[key][1]) == "undetermined":
+        status = import_status(index[key][1])
+        if status == "undetermined":
             lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 6 4;")
+        elif status == "traced":
+            lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 2 3;")
     seen_kinds = {designated_kind(c) or "none-yet" for _, c in index.values()}
     lines += class_defs + [bridge_class_def]
     bridge_ids = ["BR" + mermaid_id(b["id"]) for b in bridges if b["conclusion"] in index]
@@ -2296,8 +2334,9 @@ def render_graph(nodes: dict[str, dict]) -> str:
         label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
         mark = "  " * depth
         repeated = " *(above)*" if key in seen else ""
-        pending = (" — *sources not traced*"
-                   if import_status(conclusion) == "undetermined" else "")
+        pending = {"undetermined": " — *sources not traced*",
+                   "traced": " — *sources known, not all drawable*"}.get(
+                       import_status(conclusion), "")
         node_id, _, cid = key.rpartition(".")
         shown = f"[`{key}`]({node_page_url(node_id, cid, from_root=True)})"
         out.append(f"{mark}- {shown} — {label}{repeated}{pending}")
@@ -2333,8 +2372,10 @@ def render_graph(nodes: dict[str, dict]) -> str:
         for key in leaves:
             kind = designated_kind(index[key][1]) or "none-yet"
             label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
-            traced = ("**not yet traced**"
-                      if import_status(index[key][1]) == "undetermined" else "traced")
+            traced = {"undetermined": "**not yet traced**",
+                      "traced": "known, not all drawable",
+                      "none": "none",
+                      "identified": "traced"}.get(import_status(index[key][1]), "traced")
             node_id, _, cid = key.rpartition(".")
             shown = f"[`{key}`]({node_page_url(node_id, cid, from_root=True)})"
             lines.append(
