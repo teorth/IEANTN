@@ -15,31 +15,108 @@ not a claim that the box rests on nothing; it is an admission that the question 
 been asked. A solid border means someone has traced it to its sources, and the arrows
 into it are the answer.
 
+## The network at a glance
+
+One box per node, so this stays readable as the network grows. The number on an arrow is
+how many separate claims cross it. A node is coloured by its **weakest** conclusion,
+since that is what someone importing the whole node is relying on, and dashed if any of
+its claims has not been traced to its own sources.
+
 ```mermaid
 graph LR
-  BKLNW_v1_corollary_5_1["BKLNW.v1<br/><b>corollary_5_1</b><br/><i>cited</i>"]
-  BKLNW_v1_table8_psi_bound["BKLNW.v1<br/><b>table8_psi_bound</b><br/><i>cited</i>"]
-  BKLNW_v1_table8_psi_bound_above["BKLNW.v1<br/><b>table8_psi_bound_above</b><br/><i>cited</i>"]
-  BKLNW_v1_theta_error_le_one["BKLNW.v1<br/><b>theta_error_le_one</b><br/><i>cited</i>"]
-  Buthe_v1_theorem_2_li_gt_pi["Buthe.v1<br/><b>theorem_2_li_gt_pi</b><br/><i>cited</i>"]
-  Buthe_v1_theorem_2_li_minus_pi["Buthe.v1<br/><b>theorem_2_li_minus_pi</b><br/><i>cited</i>"]
-  Buthe_v1_theorem_2_li_minus_riemann_pi["Buthe.v1<br/><b>theorem_2_li_minus_riemann_pi</b><br/><i>cited</i>"]
-  Buthe_v1_theorem_2_psi["Buthe.v1<br/><b>theorem_2_psi</b><br/><i>cited</i>"]
-  Buthe_v1_theorem_2_theta["Buthe.v1<br/><b>theorem_2_theta</b><br/><i>cited</i>"]
-  Buthe_v1_theorem_2_theta_lower["Buthe.v1<br/><b>theorem_2_theta_lower</b><br/><i>cited</i>"]
-  Dusart2018_v1_proposition_5_4["Dusart2018.v1<br/><b>proposition_5_4</b><br/><i>cited</i>"]
-  FKBJ_v1_rh_up_to["FKBJ.v1<br/><b>rh_up_to</b><br/><i>computation</i>"]
-  FKS_v1_psi_bound_all_x["FKS.v1<br/><b>psi_bound_all_x</b><br/><i>cited</i>"]
-  FKS_v1_psi_classical_bound["FKS.v1<br/><b>psi_classical_bound</b><br/><i>cited</i>"]
-  FKS2_v1_corollary_14["FKS2.v1<br/><b>corollary_14</b><br/><i>cited</i>"]
-  FKS2_v1_corollary_23["FKS2.v1<br/><b>corollary_23</b><br/><i>cited</i>"]
-  FKS2_v1_corollary_26["FKS2.v1<br/><b>corollary_26</b><br/><i>cited</i>"]
-  KLN_v1_subconvexity_bound["KLN.v1<br/><b>subconvexity_bound</b><br/><i>cited</i>"]
-  Lcm_v1_lcmUpto_not_highlyAbundant["Lcm.v1<br/><b>lcmUpto_not_highlyAbundant</b><br/><i>verified</i>"]
-  Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap["Lcm.v2<br/><b>lcmUpto_not_highlyAbundant_of_primeGap</b><br/><i>verified</i>"]
-  MT_v1_zero_free_region["MT.v1<br/><b>zero_free_region</b><br/><i>cited</i>"]
-  MT_v1_zero_free_region_sharpened["MT.v1<br/><b>zero_free_region_sharpened</b><br/><i>cited</i>"]
-  PlattTrudgian_v1_rh_up_to["PlattTrudgian.v1<br/><b>rh_up_to</b><br/><i>cited</i>"]
+  NBKLNW_v1["<b>BKLNW.v1</b><br/>4 claims<br/><i>weakest: cited</i>"]
+  NButhe_v1["<b>Buthe.v1</b><br/>6 claims<br/><i>weakest: cited</i>"]
+  NDusart2018_v1["<b>Dusart2018.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
+  NFKBJ_v1["<b>FKBJ.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
+  NFKS_v1["<b>FKS.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
+  NFKS2_v1["<b>FKS2.v1</b><br/>3 claims<br/><i>weakest: cited</i>"]
+  NKLN_v1["<b>KLN.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
+  NKadiri2005_v1["<b>Kadiri2005.v1</b><br/><i>nothing stated yet</i>"]
+  NLcm_v1["<b>Lcm.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
+  NLcm_v2["<b>Lcm.v2</b><br/>1 claim<br/><i>weakest: verified</i>"]
+  NMT_v1["<b>MT.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
+  NMTY_v1["<b>MTY.v1</b><br/><i>nothing stated yet</i>"]
+  NPlattTrudgian_v1["<b>PlattTrudgian.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
+  NRosserSchoenfeld_v1["<b>RosserSchoenfeld.v1</b><br/><i>nothing stated yet</i>"]
+  NBKLNW_v1 -->|2| NFKS2_v1
+  NButhe_v1 --> NBKLNW_v1
+  NButhe_v1 -->|3| NFKS2_v1
+  NDusart2018_v1 --> NLcm_v1
+  NFKBJ_v1 -->|6| NButhe_v1
+  NFKS_v1 -->|2| NFKS2_v1
+  NKLN_v1 -->|2| NFKS_v1
+  NMT_v1 -->|2| NFKS_v1
+  NPlattTrudgian_v1 -->|2| NFKS_v1
+  NPlattTrudgian_v1 --> NMT_v1
+  style NBKLNW_v1 stroke-dasharray: 6 4;
+  style NDusart2018_v1 stroke-dasharray: 6 4;
+  style NFKBJ_v1 stroke-dasharray: 6 4;
+  style NKLN_v1 stroke-dasharray: 6 4;
+  style NPlattTrudgian_v1 stroke-dasharray: 6 4;
+  class NKadiri2005_v1,NMTY_v1,NRosserSchoenfeld_v1 none_yet;
+  class NBKLNW_v1,NButhe_v1,NDusart2018_v1,NFKS_v1,NFKS2_v1,NKLN_v1,NMT_v1,NPlattTrudgian_v1 literature;
+  class NFKBJ_v1 numerical;
+  class NLcm_v1,NLcm_v2 lean_comparator;
+  classDef lean_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
+  classDef numerical fill:#fff8c5,stroke:#9a6700,color:#1f2328;
+  classDef literature fill:#ddf4ff,stroke:#0969da,color:#1f2328;
+  classDef asserted fill:#fff1e5,stroke:#bc4c00,color:#1f2328;
+  classDef bridged fill:#fbefff,stroke:#8250df,color:#1f2328;
+  classDef none_yet fill:#ffebe9,stroke:#cf222e,color:#1f2328;
+```
+
+## Every claim
+
+The same graph at full resolution, grouped by node. This is the one that is true rather
+than the one that is legible; when they disagree, believe this one.
+
+```mermaid
+graph LR
+  subgraph sgBKLNW_v1["BKLNW.v1"]
+    BKLNW_v1_corollary_5_1["<b>corollary_5_1</b><br/><i>cited</i>"]
+    BKLNW_v1_table8_psi_bound["<b>table8_psi_bound</b><br/><i>cited</i>"]
+    BKLNW_v1_table8_psi_bound_above["<b>table8_psi_bound_above</b><br/><i>cited</i>"]
+    BKLNW_v1_theta_error_le_one["<b>theta_error_le_one</b><br/><i>cited</i>"]
+  end
+  subgraph sgButhe_v1["Buthe.v1"]
+    Buthe_v1_theorem_2_li_gt_pi["<b>theorem_2_li_gt_pi</b><br/><i>cited</i>"]
+    Buthe_v1_theorem_2_li_minus_pi["<b>theorem_2_li_minus_pi</b><br/><i>cited</i>"]
+    Buthe_v1_theorem_2_li_minus_riemann_pi["<b>theorem_2_li_minus_riemann_pi</b><br/><i>cited</i>"]
+    Buthe_v1_theorem_2_psi["<b>theorem_2_psi</b><br/><i>cited</i>"]
+    Buthe_v1_theorem_2_theta["<b>theorem_2_theta</b><br/><i>cited</i>"]
+    Buthe_v1_theorem_2_theta_lower["<b>theorem_2_theta_lower</b><br/><i>cited</i>"]
+  end
+  subgraph sgDusart2018_v1["Dusart2018.v1"]
+    Dusart2018_v1_proposition_5_4["<b>proposition_5_4</b><br/><i>cited</i>"]
+  end
+  subgraph sgFKBJ_v1["FKBJ.v1"]
+    FKBJ_v1_rh_up_to["<b>rh_up_to</b><br/><i>computation</i>"]
+  end
+  subgraph sgFKS_v1["FKS.v1"]
+    FKS_v1_psi_bound_all_x["<b>psi_bound_all_x</b><br/><i>cited</i>"]
+    FKS_v1_psi_classical_bound["<b>psi_classical_bound</b><br/><i>cited</i>"]
+  end
+  subgraph sgFKS2_v1["FKS2.v1"]
+    FKS2_v1_corollary_14["<b>corollary_14</b><br/><i>cited</i>"]
+    FKS2_v1_corollary_23["<b>corollary_23</b><br/><i>cited</i>"]
+    FKS2_v1_corollary_26["<b>corollary_26</b><br/><i>cited</i>"]
+  end
+  subgraph sgKLN_v1["KLN.v1"]
+    KLN_v1_subconvexity_bound["<b>subconvexity_bound</b><br/><i>cited</i>"]
+  end
+  subgraph sgLcm_v1["Lcm.v1"]
+    Lcm_v1_lcmUpto_not_highlyAbundant["<b>lcmUpto_not_highlyAbundant</b><br/><i>verified</i>"]
+  end
+  subgraph sgLcm_v2["Lcm.v2"]
+    Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap["<b>lcmUpto_not_highlyAbundant_of_primeGap</b><br/><i>verified</i>"]
+  end
+  subgraph sgMT_v1["MT.v1"]
+    MT_v1_zero_free_region["<b>zero_free_region</b><br/><i>cited</i>"]
+    MT_v1_zero_free_region_sharpened["<b>zero_free_region_sharpened</b><br/><i>cited</i>"]
+  end
+  subgraph sgPlattTrudgian_v1["PlattTrudgian.v1"]
+    PlattTrudgian_v1_rh_up_to["<b>rh_up_to</b><br/><i>cited</i>"]
+  end
   Buthe_v1_theorem_2_theta_lower --> BKLNW_v1_corollary_5_1
   FKBJ_v1_rh_up_to --> Buthe_v1_theorem_2_li_gt_pi
   FKBJ_v1_rh_up_to --> Buthe_v1_theorem_2_li_minus_pi
@@ -70,8 +147,11 @@ graph LR
   style KLN_v1_subconvexity_bound stroke-dasharray: 6 4;
   style PlattTrudgian_v1_rh_up_to stroke-dasharray: 6 4;
   classDef lean_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
-  classDef literature fill:#ddf4ff,stroke:#0969da,color:#1f2328;
   classDef numerical fill:#fff8c5,stroke:#9a6700,color:#1f2328;
+  classDef literature fill:#ddf4ff,stroke:#0969da,color:#1f2328;
+  classDef asserted fill:#fff1e5,stroke:#bc4c00,color:#1f2328;
+  classDef bridged fill:#fbefff,stroke:#8250df,color:#1f2328;
+  classDef none_yet fill:#ffebe9,stroke:#cf222e,color:#1f2328;
   class Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap lean_comparator;
   class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,FKS2_v1_corollary_14,FKS2_v1_corollary_23,FKS2_v1_corollary_26,KLN_v1_subconvexity_bound,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to literature;
   class FKBJ_v1_rh_up_to numerical;

@@ -1863,6 +1863,64 @@ EVIDENCE_STYLE = {
 }
 
 
+#: Evidence kinds from weakest to strongest. A node is summarised by its *weakest* conclusion,
+#: because that is what a reader of the whole node is actually relying on: a node with nine
+#: verified claims and one bare assertion is, for anyone importing all ten, an assertion.
+EVIDENCE_ORDER = ["none-yet", "asserted", "literature", "numerical", "bridged", "lean-comparator"]
+
+
+def weakest_kind(conclusions: list[dict]) -> str:
+    """The least-supported evidence kind among these conclusions."""
+    kinds = [designated_kind(c) or "none-yet" for c in conclusions]
+    return min(kinds, key=lambda k: EVIDENCE_ORDER.index(k) if k in EVIDENCE_ORDER else 0)
+
+
+def render_node_overview(nodes: dict[str, dict], index: dict) -> list[str]:
+    """One box per node, edges aggregated with a count.
+
+    The per-conclusion picture is the truth, but it grows with the network and stops being
+    readable well before the network stops being interesting. This one grows only with the number
+    of papers, which is the scale a reader can actually hold.
+    """
+    lines = ["```mermaid", "graph LR"]
+    for node_id in sorted(nodes):
+        cs = conclusions_of(nodes[node_id])
+        if cs:
+            kind = weakest_kind(cs)
+            label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "", ""))
+            count = f"{len(cs)} claim" + ("s" if len(cs) != 1 else "")
+            caption = f"{count}<br/><i>weakest: {label}</i>"
+        else:
+            caption = "<i>nothing stated yet</i>"
+        lines.append(f'  N{mermaid_id(node_id)}["<b>{node_id}</b><br/>{caption}"]')
+
+    tally: dict = {}
+    for key in sorted(index):
+        target_node = key.rsplit(".", 1)[0]
+        for dependency in index[key][1].get("imports") or []:
+            source = f"{dependency.get('node')}.{dependency.get('conclusion')}"
+            if source in index:
+                pair = (source.rsplit(".", 1)[0], target_node)
+                if pair[0] != pair[1]:
+                    tally[pair] = tally.get(pair, 0) + 1
+    for (source_node, target_node), count in sorted(tally.items()):
+        arrow = f"-->|{count}|" if count > 1 else "-->"
+        lines.append(f"  N{mermaid_id(source_node)} {arrow} N{mermaid_id(target_node)}")
+
+    for node_id in sorted(nodes):
+        cs = conclusions_of(nodes[node_id])
+        if cs and any(import_status(c) == "undetermined" for c in cs):
+            lines.append(f"  style N{mermaid_id(node_id)} stroke-dasharray: 6 4;")
+    for kind in EVIDENCE_ORDER:
+        members = [f"N{mermaid_id(n)}" for n in sorted(nodes)
+                   if (weakest_kind(conclusions_of(nodes[n]))
+                       if conclusions_of(nodes[n]) else "none-yet") == kind]
+        if members:
+            lines.append(f"  class {','.join(members)} {mermaid_id(kind)};")
+    lines += ["```", ""]
+    return lines
+
+
 def mermaid_id(key: str) -> str:
     """Mermaid node ids may not contain dots."""
     return key.replace(".", "_").replace("-", "_")
@@ -1899,14 +1957,43 @@ def render_graph(nodes: dict[str, dict]) -> str:
         "",
     ]
 
-    # --- the picture -------------------------------------------------------------------
+    # --- the two pictures ----------------------------------------------------------------
+    class_defs = [
+        f"  classDef {mermaid_id(kind)} fill:{fill},stroke:{stroke},color:#1f2328;"
+        for kind, (_, stroke, fill) in EVIDENCE_STYLE.items()]
+
+    lines += [
+        "## The network at a glance",
+        "",
+        "One box per node, so this stays readable as the network grows. The number on an arrow is",
+        "how many separate claims cross it. A node is coloured by its **weakest** conclusion,",
+        "since that is what someone importing the whole node is relying on, and dashed if any of",
+        "its claims has not been traced to its own sources.",
+        "",
+    ]
+    overview = render_node_overview(nodes, index)
+    lines += overview[:-2] + class_defs + overview[-2:]
+
+    lines += [
+        "## Every claim",
+        "",
+        "The same graph at full resolution, grouped by node. This is the one that is true rather",
+        "than the one that is legible; when they disagree, believe this one.",
+        "",
+    ]
     lines += ["```mermaid", "graph LR"]
-    for key in sorted(index):
-        _, conclusion = index[key]
-        kind = designated_kind(conclusion) or "none-yet"
-        label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
-        node_id, cid = key.rsplit(".", 1)
-        lines.append(f'  {mermaid_id(key)}["{node_id}<br/><b>{cid}</b><br/><i>{label}</i>"]')
+    for node_id in sorted(nodes):
+        keys = [k for k in sorted(index) if k.rsplit(".", 1)[0] == node_id]
+        if not keys:
+            continue
+        lines.append(f'  subgraph sg{mermaid_id(node_id)}["{node_id}"]')
+        for key in keys:
+            _, conclusion = index[key]
+            kind = designated_kind(conclusion) or "none-yet"
+            label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
+            cid = key.rsplit(".", 1)[1]
+            lines.append(f'    {mermaid_id(key)}["<b>{cid}</b><br/><i>{label}</i>"]')
+        lines.append("  end")
     for key in sorted(index):
         _, conclusion = index[key]
         for dependency in conclusion.get("imports") or []:
@@ -1917,9 +2004,7 @@ def render_graph(nodes: dict[str, dict]) -> str:
         if import_status(index[key][1]) == "undetermined":
             lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 6 4;")
     seen_kinds = {designated_kind(c) or "none-yet" for _, c in index.values()}
-    for kind in sorted(seen_kinds):
-        label, stroke, fill = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
-        lines.append(f"  classDef {mermaid_id(kind)} fill:{fill},stroke:{stroke},color:#1f2328;")
+    lines += class_defs
     for kind in sorted(seen_kinds):
         members = [mermaid_id(k) for k in sorted(index)
                    if (designated_kind(index[k][1]) or "none-yet") == kind]

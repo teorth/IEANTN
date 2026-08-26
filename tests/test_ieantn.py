@@ -451,6 +451,48 @@ class TestImportStatus(FixtureRepo):
         self.assertNotIn("style A_v1_main stroke-dasharray", rendered)
 
 
+class TestNodeOverview(FixtureRepo):
+    """The collapsed, one-box-per-node picture.
+
+    The per-conclusion graph is the true one, but it grows with the number of claims and stops
+    being legible long before the network stops being useful. This one grows with the number of
+    papers instead, which is the scale a reader can hold in their head.
+    """
+
+    def _overview(self) -> str:
+        nodes = ieantn.load_nodes()
+        return chr(10).join(ieantn.render_node_overview(nodes, ieantn.index_conclusions(nodes)))
+
+    def test_a_node_is_summarised_by_its_weakest_claim(self) -> None:
+        """Nine verified claims and one citation is, to anyone importing the node, a citation."""
+        self.assertEqual(
+            ieantn.weakest_kind([{"justifications": [{"id": "j", "kind": k}], "designated": "j"}
+                                 for k in ("lean-comparator", "literature")]),
+            "literature")
+
+    def test_an_edge_is_drawn_between_the_nodes_not_the_claims(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        self.write_node("A.v1", importing("Upstream.v1"))
+        self.assertIn("NUpstream_v1 --> NA_v1", self._overview())
+
+    def test_a_node_with_nothing_stated_still_appears(self) -> None:
+        """A recorded paper with no claim yet is an open invitation, not an absence."""
+        self.write_node("Upstream.v1", LITERATURE)
+        rendered = self._overview()
+        self.assertIn("NUpstream_v1", rendered)
+
+    def test_the_overview_dashes_a_node_with_any_untraced_claim(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        self.assertIn("style NUpstream_v1 stroke-dasharray", self._overview())
+
+    def test_both_pictures_are_in_the_page(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        self.assertIn("## The network at a glance", rendered)
+        self.assertIn("## Every claim", rendered)
+        self.assertIn('subgraph sgUpstream_v1["Upstream.v1"]', rendered)
+
+
 class TestGraphPage(FixtureRepo):
     """`GRAPH.md`: the network as a page someone can read without cloning anything.
 
