@@ -59,6 +59,27 @@ noncomputable def zetaN (T : ℝ) : ℝ := zetaZeroesSum Set.univ (Set.Ioo 0 T) 
 counted with multiplicity.  The quantity bounded by a zero-density estimate. -/
 noncomputable def zetaN' (σ T : ℝ) : ℝ := zetaZeroesSum (Set.Ioo σ 1) (Set.Ioo 0 T) fun _ ↦ 1
 
+/-- `zetaS t`, the function `S(t)` of Turing's method:
+`S(t) = (1/π) Im ∫_{1/2}^{∞} (ζ'/ζ)(σ + it) dσ`.
+
+The quantity whose integral Turing's method bounds, and the reason a zero count can be confirmed
+complete.  `Platt` defines it exactly this way, and `Trudgian`'s bound on its integral is what makes
+the method explicit.
+
+**Two traps, and both are about the same measure-zero set.**  The definition is stated for `t` that
+is not the ordinate of a zero or pole; the papers extend it by the right limit
+`S(t) := lim_{ε → 0⁺} S(t + ε)` there.  That convention is *not* reproduced here, and does not need
+to be for the statements the network makes about it: they bound `∫ S(t) dt` over an interval, and
+the exceptional `t` form a measure-zero set which cannot affect an integral.  A conclusion that
+evaluated `S` at a *point* would need the convention and must not use this definition as it stands.
+
+Second, `∫` of a non-integrable function is `0` in Mathlib, so at an exceptional `t` this returns
+whatever the junk value gives rather than diverging.  That is harmless for the same reason and
+dangerous for the same reason. -/
+noncomputable def zetaS (t : ℝ) : ℝ :=
+  (1 / Real.pi) * (∫ σ in Set.Ioi (1 / 2 : ℝ),
+    deriv riemannZeta (σ + t * Complex.I) / riemannZeta (σ + t * Complex.I)).im
+
 /-! ### The three headline predicates -/
 
 /-- `RiemannHypothesisUpTo T`: `ζ` has no zeroes with real part in `(1/2, 1)` and imaginary part in

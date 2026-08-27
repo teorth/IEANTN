@@ -5,7 +5,7 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-22 node version(s), 38 conclusion(s).  2 state nothing yet.
+24 node version(s), 39 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -14,7 +14,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `asserted` | 1 |
 | `bridged` | 1 |
 | `lean-comparator` | 3 |
-| `literature` | 30 |
+| `literature` | 31 |
 | `numerical` | 3 |
 
 ## Nodes
@@ -25,6 +25,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `BKLNW.v1` | active | `table8_psi_bound` | literature | 2 | - |
 | `BKLNW.v1` | active | `table8_psi_bound_above` | literature | 2 | - |
 | `BKLNW.v1` | active | `theta_error_le_one` | literature | 1 | - |
+| `Brown1967.v1` | stub | *(none yet)* | - | - | - |
 | `Buthe.v1` | active | `theorem_2_psi` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_theta` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_theta_lower` | literature | 1 | - |
@@ -53,12 +54,13 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `MT.v1` | active | `zero_free_region_sharpened` | literature | 2 | - |
 | `MTY.v1` | stub | *(none yet)* | - | - | - |
 | `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
-| `Platt2017.v1` | stub | `rh_up_to` | numerical | 0 | - |
+| `Platt2017.v1` | stub | `rh_up_to` | numerical | 1 | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
 | `PlattTrudgian2021.v1` | stub | `theorem_1_classical` | literature | 3 | - |
 | `PlattTrudgian2021.v1` | stub | `theorem_1_numerical` | literature | 3 | - |
 | `RosserSchoenfeld.v1` | stub | `zero_free_region` | literature | 0 | - |
 | `RosserSchoenfeld.v1` | stub | `zero_free_region_classical` | bridged | 0 | - |
+| `Trudgian2011.v1` | stub | `integral_S_bound` | literature | 0 | - |
 | `Wedeniwski.v1` | stub | `rh_up_to` | asserted | 0 | - |
 | `ZeroFreeHeight.v1` | active | `classical_region_descends` | lean-comparator | 0 | #30 |
 
@@ -82,6 +84,7 @@ downstream.
 | `Buthe.v1.theorem_2_theta_lower` | 2 |
 | `Buthe.v1.theorem_2_li_minus_pi` | 2 |
 | `Wedeniwski.v1.rh_up_to` | 1 |
+| `Trudgian2011.v1.integral_S_bound` | 1 |
 | `RosserSchoenfeld.v1.zero_free_region_classical` | 1 |
 | `Platt2017.v1.rh_up_to` | 1 |
 | `Platt2015.v1.rh_up_to` | 1 |

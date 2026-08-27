@@ -5,6 +5,7 @@ Authors: Terence Tao
 -/
 import IEANTN.Nodes.BKLNW.v1.Tables
 import IEANTN.Nodes.BKLNW.v1.Challenge
+import IEANTN.Nodes.Brown1967.v1.Challenge
 import IEANTN.Nodes.Buthe.v1.Challenge
 import IEANTN.Nodes.Buthe2016.v1.Challenge
 import IEANTN.Nodes.ChengGraham2004.v1.Challenge
@@ -26,6 +27,7 @@ import IEANTN.Nodes.PlattTrudgian.v1.Challenge
 import IEANTN.Nodes.PlattTrudgian2021.v1.Tables
 import IEANTN.Nodes.PlattTrudgian2021.v1.Challenge
 import IEANTN.Nodes.RosserSchoenfeld.v1.Challenge
+import IEANTN.Nodes.Trudgian2011.v1.Challenge
 import IEANTN.Nodes.Wedeniwski.v1.Challenge
 import IEANTN.Nodes.ZeroFreeHeight.v1.Challenge
 

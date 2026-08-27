@@ -15,7 +15,7 @@
 ## The source
 
 - **Explicit estimates for the Riemann zeta function** — Yuanyou F. Cheng, Sidney W. Graham. Rocky Mountain Journal of Mathematics 34 (2004), 1261-1280  
-  _Held. Cited by Hiary for Lemmas 3, 5 and 7; Lemma 3 is the one later found to be erroneous._
+  _Held. Cited by Hiary for Lemmas 3, 5 and 7. Patel's Section 2 records that the flaw is in LEMMAS 2 AND 3 -- not Lemma 3 alone -- that it was discovered by Kevin Ford and by Reyna, and that the leading term of the incorrect Lemma 3 is off by a factor of sqrt(2). Patel gives corrected versions of both._
 
 ## Conclusions
 
@@ -25,7 +25,7 @@ _This node states nothing yet._  It records that the source is in scope and carr
 
 Recorded by the node itself, not derived.
 
-- States nothing. The result its consumers need -- Lemma 3, the van der Corput second-derivative test -- is the erroneous one, and the corrected form is argued in a paper that is not held.
+- States nothing. The results its consumers need are Lemmas 2 and 3, both of which are erroneous -- the flaw was found by Ford and by Reyna, and Patel records that Lemma 3's leading term is off by a factor of sqrt(2). The corrected forms are in Patel, arXiv:2009.00769, Section 2, whose LaTeX source is now held; stating those on a Patel2022 node is the way to give Hiary2016 a drawable import, rather than stating anything here.
 - No novelty is claimed.
 
 ## How this node was made

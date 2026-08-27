@@ -34,6 +34,11 @@ Mossinghoff–Trudgian's title, and BKLNW's own proof contradicts its displayed 
 | `Platt2017.v1` | Platt, *Isolating some non-trivial zeros of zeta* | Math. Comp. **86** (2017) 2449–2467 | `Platt2017-isolating-zeros.pdf` |
 | `PlattTrudgian2021.v1` | Platt–Trudgian, *The error term in the prime number theorem* | Math. Comp. **90** (2021) no. 328, 871–881 | `PlattTrudgian2021-error-term-PNT.pdf` |
 | `Platt2015.v1` | Platt, *Computing π(x) Analytically* | [arXiv:1203.5712](https://arxiv.org/abs/1203.5712); Math. Comp. **84** (2015) 1521–1535 | LaTeX source only, under `source/` |
+| `Trudgian2011.v1` | Trudgian, *Improvements to Turing's method* | Math. Comp. **80** (2011) no. 276, 2259–2279 | `Trudgian2011-improvements-turing.pdf` |
+| `Brown1967.v1` | Brown, *On the error in reconstructing a non-bandlimited function…* | J. Math. Anal. Appl. **18** (1967) 75–84 | `Brown1967-bandpass-sampling-error.pdf` |
+| — | Patel, *An Explicit Upper Bound for \|ζ(1+it)\|* | [arXiv:2009.00769](https://arxiv.org/abs/2009.00769); Indag. Math. (N.S.) **33** (2022) 1012–1032 | LaTeX source; Footnote 3 verifies `Hiary2016.v1`'s correction |
+| — | Platt–Trudgian, *An improved explicit bound on \|ζ(1/2+it)\|* | J. Number Theory **147** (2015) 842–851 | `PlattTrudgian2015-improved-zeta-half.pdf` |
+| — | Rosser, *Explicit bounds for some functions of prime numbers* | Amer. J. Math. **63** (1941) 211–232 | `Rosser1941-explicit-bounds.pdf` — FKBJ's Theorem 2.1 |
 | `RosserSchoenfeld.v1` | Rosser–Schoenfeld, *Sharper bounds for θ(x) and ψ(x)* | Math. Comp. **29** (1975) 243–269 | `RosserSchoenfeld1975-sharper-bounds.pdf` |
 | `Dusart2018.v1` | Dusart, *Explicit estimates of some functions over primes* | [doi:10.1007/s11139-016-9839-4](https://doi.org/10.1007/s11139-016-9839-4) | `Dusart2018-explicit-estimates-published.pdf` |
 | `ChengGraham2004.v1` | Cheng–Graham, *Explicit estimates for the Riemann zeta function* | Rocky Mt. J. Math. **34** (2004) 1261–1280 | `ChengGraham2004-explicit-zeta.pdf` |
@@ -57,8 +62,6 @@ Not on arXiv, or not found there. Each blocks a specific piece of work.
 
 | Paper | Why it is needed | Blocks |
 |---|---|---|
-| Patel, *An Explicit Upper Bound for \|ζ(1 + it)\|*, Indag. Math. (N.S.) **33** (2022) no. 5, 1012–1032 | Its Footnote 3 is where the Cheng–Graham van der Corput error is documented, and so where `Hiary2016.v1`'s correction from `0.63` to `0.77` is actually argued. We take it from FKS at second hand. | verifying `Hiary2016.v1`'s correction |
-| Platt–Trudgian, *An improved explicit bound on \|ζ(1/2+it)\|*, J. Number Theory **147** (2015) 842–851 | Hiary's proof uses its Lemma 2 for a refinement, alongside Cheng–Graham's lemmas. Would complete `Hiary2016.v1`'s tracing together with the corrected second-derivative test. | `Hiary2016.v1`'s `imports_status` |
 | Kadiri–Lumley–Ng, *Bounding ψ(x) with zero-density*, preprint | Cited by FKS as [19]. Appears not to be publicly available, and not listed on the authors' pages. **Not** an input — the lemma attributed to it is proved in FKS itself — so this is for completeness rather than to unblock anything. | nothing |
 
 ## LaTeX source, and why it is the primary surface

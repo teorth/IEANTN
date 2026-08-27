@@ -61,7 +61,28 @@ conclusions:
       is why the constant moves from 0.63 to 0.77. ChengGraham2004.v1 now exists but states nothing, deliberately
       -- transcribing Lemma 3 as printed would put a knowably wrong statement into the network, and the
       corrected form is argued only in Patel's footnote, which is not held. Neither input is an edge,
-      so this stays `traced`.
+      so this stays `traced`. The correction is now verified FIRST HAND. Patel's paper is on arXiv as
+      2009.00769, which earlier searches by title missed; its Footnote 3 reads: 'This corrected version
+      of the explicit third derivative test in turn changes the explicit van der Corput bound derived
+      by Hiary in [Theorem 1.1]. In that paper, Hiary obtained |zeta(1/2+it)| <= 0.63 t^(1/6) log t at
+      the time. ... With the correction provided in Lemma [derivative3test], the estimate obtained by
+      Hiary now becomes |zeta(1/2+it)| <= 0.77 t^(1/6) log t.' So 0.77 is confirmed against the paper
+      that argues it, not merely against FKS's report of it. Patel's Section 2 also says more than FKS
+      did: the flaw is in Cheng-Graham's LEMMAS 2 AND 3, not Lemma 3 alone; it was found by Kevin Ford
+      and by Reyna; the leading term of the incorrect Lemma 3 is 'off by a factor of sqrt(2)'; and it
+      'affects many explicit estimates in the literature'. Patel gives corrected versions, so a Patel2022
+      node stating them would make this conclusion's imports drawable -- that is the next step here. The
+      correction is now verified FIRST HAND. Patel's paper is on arXiv as 2009.00769, which earlier searches
+      by title missed; its Footnote 3 reads: 'This corrected version of the explicit third derivative
+      test in turn changes the explicit van der Corput bound derived by Hiary in [Theorem 1.1]. In that
+      paper, Hiary obtained |zeta(1/2+it)| <= 0.63 t^(1/6) log t at the time. ... With the correction
+      provided in Lemma [derivative3test], the estimate obtained by Hiary now becomes |zeta(1/2+it)| <=
+      0.77 t^(1/6) log t.' So 0.77 is confirmed against the paper that argues it, not merely against FKS's
+      report of it. Patel's Section 2 also says more than FKS did: the flaw is in Cheng-Graham's LEMMAS
+      2 AND 3, not Lemma 3 alone; it was found by Kevin Ford and by Reyna; the leading term of the incorrect
+      Lemma 3 is 'off by a factor of sqrt(2)'; and it 'affects many explicit estimates in the literature'.
+      Patel gives corrected versions, so a Patel2022 node stating them would make this conclusion's imports
+      drawable -- that is the next step here.
   designated: hiary-paper
 sources:
 - title: An explicit van der Corput estimate for zeta(1/2 + it)
