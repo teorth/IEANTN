@@ -622,6 +622,19 @@ def solution_holes(node: str) -> tuple[bool, list[str], dict[str, bool]] | None:
         fresh = subprocess.run(["lake", "env", "lean", source.name], cwd=directory,
                                capture_output=True, text=True, encoding="utf-8", errors="replace")
         seen_output = (fresh.stdout or "") + (fresh.stderr or "")
+        # An elaboration that FAILED emits no `declaration uses` warnings, so scanning only for
+        # those reads a failure as "no holes" -- the same silent zero this whole routine exists to
+        # avoid, one level up. Seen in practice: a transient `failed to read file ...olean.private`
+        # on Windows turned four open goals into a clean bill of health, and `--write` would have
+        # recorded `remaining_holes: 0` on the node. Treat it as unbuildable instead.
+        if fresh.returncode != 0 or re.search(r"^error:|: error:", seen_output, re.MULTILINE):
+            print(f"  re-elaborating {source.name} failed, so its holes cannot be counted:")
+            for line in seen_output.splitlines()[:3]:
+                # Lean's output carries goal characters like U+22A2 that a cp1252 console cannot
+                # encode, and an uncaught UnicodeEncodeError here would replace a useful diagnostic
+                # with a traceback. Report is best-effort; the exit status is what matters.
+                print("    " + line.encode("ascii", "replace").decode("ascii"))
+            return (False, [], {})
         holes += [
             f"{pathlib.PurePosixPath(m.group(1)).name}:{m.group(2)}"
             for m in re.finditer(r"([^\s:]+):(\d+):\d+: warning: declaration uses", seen_output)
