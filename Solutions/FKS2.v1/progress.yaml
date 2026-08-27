@@ -237,7 +237,8 @@ file_layout:
   current:
     - Growth.lean        # lemma_10a/b/c, corollary_11 — the monotonicity toolkit. DONE, no holes.
     - Dawson.lean        # D₊(x) = e^{-x²}∫₀ˣe^{t²}dt. Mathlib has no Dawson function, and
-                         # Theorem 3 cannot be STATED without it. dawson_nonneg proved.
+                         # Theorem 3 cannot be STATED without it. Positivity and the
+                         # differential equation D₊' = 1 - 2x D₊ are proved; no holes.
     - PsiToTheta.lean    # proposition_13 and corollary_14. 2 holes.
     - ThetaToPi.lean     # lemma_12, theorem_3, corollary_23, corollary_26. 4 holes.
     - Solution.lean      # the three compared theorems, and nothing else
