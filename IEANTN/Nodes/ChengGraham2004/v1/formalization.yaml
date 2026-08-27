@@ -1,0 +1,67 @@
+# Node metadata for `KLN.v1`.  See docs/NODES.md.
+#
+# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
+# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+version: "v0.4"
+
+node:
+  id: ChengGraham2004.v1
+  family: ChengGraham2004
+  version: v1
+  kind: paper
+  status: stub
+project:
+  name: 'Cheng-Graham: explicit estimates for the Riemann zeta function'
+  description: >-
+    The exponential-sum machinery underneath Hiary2016, and so underneath KLN and the FKS chain. States
+    nothing yet, deliberately: the result Hiary depends on is Lemma 3, the van der Corput second-derivative
+    test, which is the erroneous one, and transcribing it as printed would put a knowably wrong statement
+    into the network.
+  authors:
+  - Terence Tao
+  license: Apache-2.0
+  responsible_maintainers:
+  - Terence Tao
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11M06
+  - 11L07
+conclusions: []
+sources:
+- title: Explicit estimates for the Riemann zeta function
+  authors:
+  - Yuanyou F. Cheng
+  - Sidney W. Graham
+  type: paper
+  id: Rocky Mountain J. Math. 34 (2004), no. 4, 1261-1280
+  location: Rocky Mountain Journal of Mathematics 34 (2004), 1261-1280
+  relationship: formalizes
+  note: >-
+    Held. Cited by Hiary for Lemmas 3, 5 and 7; Lemma 3 is the one later found to be erroneous.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Created this node to record a load-bearing paper the network cannot yet state, under the direction
+      of the maintainer. No claim is made.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    The dependency was read from Hiary's LaTeX source; the erroneousness of Lemma 3 is FKS's report, taken
+    at second hand.
+limitations:
+- >-
+  States nothing. The result its consumers need -- Lemma 3, the van der Corput second-derivative test
+  -- is the erroneous one, and the corrected form is argued in a paper that is not held.
+- >-
+  No novelty is claimed.

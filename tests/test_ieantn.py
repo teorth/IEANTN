@@ -446,7 +446,7 @@ class TestImportStatus(FixtureRepo):
     def test_the_graph_dashes_only_undetermined_boxes(self) -> None:
         self._with(None, imports=False)
         rendered = ieantn.render_graph(ieantn.load_nodes())
-        self.assertIn("style A_v1_main stroke-dasharray", rendered)
+        self.assertIn("style A_v1_main stroke-dasharray: 2 3", rendered)
         self._with("none", imports=False)
         rendered = ieantn.render_graph(ieantn.load_nodes())
         self.assertNotIn("style A_v1_main stroke-dasharray", rendered)
@@ -781,8 +781,8 @@ class TestTracedStatus(FixtureRepo):
         """Three states, three renderings; collapsing any two loses the distinction."""
         self._with("traced")
         rendered = ieantn.render_graph(ieantn.load_nodes())
-        self.assertIn("style A_v1_main stroke-dasharray: 2 3", rendered)
-        self.assertNotIn("style A_v1_main stroke-dasharray: 6 4", rendered)
+        self.assertIn("style A_v1_main stroke-dasharray: 8 4", rendered)
+        self.assertNotIn("style A_v1_main stroke-dasharray: 2 3", rendered)
 
     def test_traced_is_not_queued_by_housekeeping(self) -> None:
         """Some missing edges await a node that could exist and some await one that never can;
