@@ -6,7 +6,7 @@
 # `ieantn.py progress`; everything here is judgement and should read like it.
 
 solution: Solutions/FKS2.v1/
-state: in-progress   # Growth.lean proved outright; 6 holes, all statement-checked against the paper
+state: in-progress   # Growth + Dawson proved; Prop 13 assembled; 6 holes, all statement-checked
 source: PrimeNumberTheoremAnd @ ae881f2, PrimeNumberTheoremAnd/IEANTN/FKS2*.lean
 
 # --------------------------------------------------------------------------------------------
@@ -109,6 +109,31 @@ errata_in_the_source:
       admissibleBound_strictAntiOn requires `1 + C²/(16R) < B`. That is a STRONGER hypothesis than
       the paper's, so our lemma is weaker than the paper's claim; flagged here rather than passed
       over silently. Nothing downstream needs the boundary case.
+
+# --------------------------------------------------------------------------------------------
+# Not errors, but worth recording: places the paper is loose, and which direction the slack runs.
+# --------------------------------------------------------------------------------------------
+observations_in_the_source:
+  - what: nu_asymp carries a log(x₀) that (28) evaluated at x₀ does not
+    detail: >-
+      The paper's (nu_asymp) has `a₁ log(x₀) x₀^{-1/2} + a₂ log(x₀) x₀^{-2/3}`. Evaluating the
+      paper's own (28) at x₀ gives the same thing without the two log(x₀) factors, and BKLNW's
+      Corollary 5.1 — checked in the BKLNW source, not inferred — has no logarithm either: it is
+      `ψ(x) - θ(x) ≤ a₁x^{1/2} + a₂x^{1/3}` flat.
+    direction: >-
+      SAFE. A larger ν means a larger A_θ and so a weaker claim, by a factor of about 30 at
+      x₀ = e³⁰. Corollary 14's 121.0961 is unaffected, and our verbatim transcription stays
+      provable.
+    action: >-
+      Transcribed verbatim and flagged. Tightening a published constant on our own initiative is
+      precisely what this repository must not do.
+  - what: the paper drops a factor R^B when rewriting its integrands in terms of g
+    detail: >-
+      Both (theta_asymp_1) and decreasing_func_corollary equate expressions in (log x / R)^{±B}
+      with g(·,·,·,x), whose definition uses (log x)^b. The two differ by R^B.
+    direction: >-
+      HARMLESS. Both are used only for monotonicity, and a positive constant factor does not
+      affect whether a function decreases.
 
 # --------------------------------------------------------------------------------------------
 trusted_numerics:
