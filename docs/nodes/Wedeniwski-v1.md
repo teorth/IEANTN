@@ -46,13 +46,19 @@ def rh_up_to : Prop :=
 
 > `asserted` and not `numerical`, deliberately. A numerical justification records the outcome of a computation someone has described and stood behind in a paper; this is a claim on a website. Platt and Trudgian, superseding it, write that the earlier verifications 'have the disadvantage that neither has been published in a peer reviewed journal. Furthermore, it is not clear how the computations were set up to avoid problematic accumulation of rounding and truncation errors. This concern was noted in works by Tao and Helfgott.' They add that 'it is difficult to pinpoint the height claimed in these calculations', different slides from the project implying heights from 5.72e10 to 2.41e11. The figure recorded here is not one of those. It is Kadiri2005's, quoted as 'tres exactement 3 330 657 430.697' -- the 'first 10 billion zeros' of the project's title, far below anything contested. The useful next step is to make this node unnecessary rather than to shore it up: Platt2017.v1 verifies to 3.0610046e10, which exceeds this height, so a bridge would discharge this conclusion from a refereed computation without changing any statement.
 
+**Justification `bridge-from-platt2017`** — bridged
+  
+  Bridged from Platt2017.v1.rh_up_to via `IEANTN/Bridges/Platt/P2017ToWedeniwski.lean`.
+
+> A second and far better ground, and the reason this node need not stay the weakest thing in the network. Platt2017 verifies to 3.0610046e10, nearly ten times this height, with interval arithmetic and through peer review; RiemannHypothesisUpTo is antitone, so that claim implies this one outright. The bridge is compiled by the core build. NOT designated, deliberately. This node exists to record what Kadiri2005 actually cited, and Kadiri2005 cited ZetaGrid. Designating this would quietly rewrite that history -- the node would assert its evidence is Platt's computation, which is not what happened in 2005. Keeping the website designated and the bridge spare separates two questions that were previously tangled: what did the paper rely on, and is the claim true on better evidence today. The answers are 'a website' and 'yes'.
+
 ## Limitations
 
 Recorded by the node itself, not derived.
 
 - The weakest evidence in the network. A website, unpublished, not peer reviewed, with documented doubts about its error control and about what height it claims.
 - Recorded entirely at second hand: the source is not reachable, and the height is Kadiri's quotation.
-- Superseded in fact if not in citation. Platt2017 and PlattTrudgian both verify further with interval arithmetic and peer review; a bridge from Platt2017 would discharge this outright.
+- Superseded in fact, and now in Lean: IEANTN/Bridges/Platt/P2017ToWedeniwski.lean derives this conclusion from Platt2017.v1, which verifies nearly ten times further with interval arithmetic and peer review. The bridge is a spare ground rather than the designated one, because this node records what Kadiri2005 cited and Kadiri2005 cited the website.
 - Imports undetermined, and likely to stay so -- what a distributed computation rests on is not recoverable from a defunct website.
 - No novelty is claimed.
 

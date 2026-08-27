@@ -168,10 +168,13 @@ Notes:
 
   | value | meaning | border in `GRAPH.md` |
   |---|---|---|
-  | `undetermined` | Nobody has looked. The default when the field is absent. | dashed (long) |
-  | `traced` | The inputs are written down in a justification note, and at least one is **not** an edge — either not a node yet, or something an arrow can never carry: an algorithm, a data set, a computation. | dotted (short) |
+  | `undetermined` | Nobody has looked. The default when the field is absent. | finely dotted |
+  | `traced` | The inputs are written down in a justification note, and at least one is **not** an edge — either not a node yet, or something an arrow can never carry: an algorithm, a data set, a computation. | dashed |
   | `identified` | Every input is drawn as an edge. The arrows tell the whole story. | solid |
   | `none` | There are no inputs — a conditional whose hypotheses a consumer supplies, for instance. | solid |
+
+  The pattern tracks how much of the story the arrows tell: solid says all of it, a clear dash
+  says most, fine dots say none.
 
   An empty `imports` list on its own is ambiguous — it means either "rests on nothing" or "nobody
   looked" — and those are very different things to show a reader, so the honest one is what you get

@@ -5,6 +5,7 @@ Authors: Terence Tao
 -/
 import IEANTN.Bridges.Lcm.V2ToV1
 import IEANTN.Bridges.Platt.P2017ToP2015
+import IEANTN.Bridges.Platt.P2017ToWedeniwski
 import IEANTN.Bridges.RosserSchoenfeld.ToClassical
 
 /-!

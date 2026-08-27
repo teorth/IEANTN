@@ -5,7 +5,7 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-21 node version(s), 38 conclusion(s).  1 state nothing yet.
+22 node version(s), 38 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
@@ -35,6 +35,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `Buthe2016.v1` | stub | `theorem_2_theta` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_li_minus_riemann_pi` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_li_minus_pi` | literature | 0 | - |
+| `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
 | `FKBJ.v1` | active | `rh_up_to` | numerical | 0 | - |
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 3 | - |

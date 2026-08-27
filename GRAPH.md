@@ -10,13 +10,13 @@ The colour of a box is the kind of evidence, and only green is checked by Lean h
 Everything else is a leaf of the trust graph -- something the network takes on faith,
 however reasonably -- and the point of drawing it is that you can see exactly which.
 
-The border says how completely the arrows into a box tell the story. **Solid** means they
-tell all of it. **Dashed** (long) means nobody has yet worked out what that claim assumes
-— an admission that the question has not been asked, not a claim that it rests on
-nothing. **Dotted** (short) is in between, and is the usual state of a claim that rests on
-a computation: the inputs are known and written down, but at least one of them is not the
-sort of thing an arrow can carry — an algorithm, a data set, or a paper nobody has made a
-node of yet.
+The border says how completely the arrows into a box tell the story, and the more broken
+it is the less they say. **Solid**: they tell all of it. **Dashed**: the inputs are known
+and written down, but at least one is not the sort of thing an arrow can carry — an
+algorithm, a data set, or a paper nobody has made a node of yet. This is the usual state
+of a claim resting on a computation. **Finely dotted**: nobody has yet worked out what the
+claim assumes, which is an admission that the question has not been asked rather than a
+claim that it rests on nothing.
 
 Every box and every claim named below links to that node's page, which carries the Lean
 spelling of the claim, its docstring, and everything recorded about why it should be
@@ -45,6 +45,7 @@ graph LR
   NBKLNW_v1["<b>BKLNW.v1</b><br/>4 claims<br/><i>weakest: cited</i>"]
   NButhe_v1["<b>Buthe.v1</b><br/>6 claims<br/><i>weakest: cited</i>"]
   NButhe2016_v1["<b>Buthe2016.v1</b><br/>4 claims<br/><i>weakest: cited</i>"]
+  NChengGraham2004_v1["<b>ChengGraham2004.v1</b><br/><i>nothing stated yet</i>"]
   NDusart2018_v1["<b>Dusart2018.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NFKBJ_v1["<b>FKBJ.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NFKS_v1["<b>FKS.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
@@ -86,17 +87,18 @@ graph LR
   NWedeniwski_v1 --> NKadiri2005_v1
   NLcm_v2 ==>|bridge| NLcm_v1
   NPlatt2017_v1 ==>|bridge| NPlatt2015_v1
-  style NBKLNW_v1 stroke-dasharray: 2 3;
-  style NButhe_v1 stroke-dasharray: 2 3;
-  style NDusart2018_v1 stroke-dasharray: 6 4;
-  style NFKBJ_v1 stroke-dasharray: 2 3;
-  style NHiary2016_v1 stroke-dasharray: 2 3;
-  style NPlatt2015_v1 stroke-dasharray: 2 3;
-  style NPlatt2017_v1 stroke-dasharray: 2 3;
-  style NPlattTrudgian_v1 stroke-dasharray: 2 3;
-  style NRosserSchoenfeld_v1 stroke-dasharray: 6 4;
-  style NWedeniwski_v1 stroke-dasharray: 6 4;
-  class NMTY_v1 none_yet;
+  NPlatt2017_v1 ==>|bridge| NWedeniwski_v1
+  style NBKLNW_v1 stroke-dasharray: 8 4;
+  style NButhe_v1 stroke-dasharray: 8 4;
+  style NDusart2018_v1 stroke-dasharray: 2 3;
+  style NFKBJ_v1 stroke-dasharray: 8 4;
+  style NHiary2016_v1 stroke-dasharray: 8 4;
+  style NPlatt2015_v1 stroke-dasharray: 8 4;
+  style NPlatt2017_v1 stroke-dasharray: 8 4;
+  style NPlattTrudgian_v1 stroke-dasharray: 8 4;
+  style NRosserSchoenfeld_v1 stroke-dasharray: 2 3;
+  style NWedeniwski_v1 stroke-dasharray: 2 3;
+  class NChengGraham2004_v1,NMTY_v1 none_yet;
   class NWedeniwski_v1 asserted;
   class NBKLNW_v1,NButhe_v1,NButhe2016_v1,NDusart2018_v1,NFKS_v1,NFKS2_v1,NHiary2016_v1,NKLN_v1,NKadiri2005_v1,NMT_v1,NPlattTrudgian_v1,NPlattTrudgian2021_v1,NRosserSchoenfeld_v1 literature;
   class NFKBJ_v1,NPlatt2015_v1,NPlatt2017_v1 numerical;
@@ -263,22 +265,25 @@ graph LR
   BRRosserSchoenfeld_v1_zero_free_region_classical__bridge_from_shape{{"<b>ToClassical</b>"}}
   RosserSchoenfeld_v1_zero_free_region ==> BRRosserSchoenfeld_v1_zero_free_region_classical__bridge_from_shape
   BRRosserSchoenfeld_v1_zero_free_region_classical__bridge_from_shape ==> RosserSchoenfeld_v1_zero_free_region_classical
-  style BKLNW_v1_table8_psi_bound stroke-dasharray: 2 3;
-  style BKLNW_v1_table8_psi_bound_above stroke-dasharray: 2 3;
-  style Buthe_v1_theorem_2_li_gt_pi stroke-dasharray: 2 3;
-  style Buthe_v1_theorem_2_li_minus_pi stroke-dasharray: 2 3;
-  style Buthe_v1_theorem_2_li_minus_riemann_pi stroke-dasharray: 2 3;
-  style Buthe_v1_theorem_2_psi stroke-dasharray: 2 3;
-  style Buthe_v1_theorem_2_theta stroke-dasharray: 2 3;
-  style Buthe_v1_theorem_2_theta_lower stroke-dasharray: 2 3;
-  style Dusart2018_v1_proposition_5_4 stroke-dasharray: 6 4;
-  style FKBJ_v1_rh_up_to stroke-dasharray: 2 3;
-  style Hiary2016_v1_zeta_half_line_bound stroke-dasharray: 2 3;
-  style Platt2015_v1_rh_up_to stroke-dasharray: 2 3;
-  style Platt2017_v1_rh_up_to stroke-dasharray: 2 3;
-  style PlattTrudgian_v1_rh_up_to stroke-dasharray: 2 3;
-  style RosserSchoenfeld_v1_zero_free_region stroke-dasharray: 6 4;
-  style Wedeniwski_v1_rh_up_to stroke-dasharray: 6 4;
+  BRWedeniwski_v1_rh_up_to__bridge_from_platt2017{{"<b>P2017ToWedeniwski</b><br/><i>spare</i>"}}
+  Platt2017_v1_rh_up_to ==> BRWedeniwski_v1_rh_up_to__bridge_from_platt2017
+  BRWedeniwski_v1_rh_up_to__bridge_from_platt2017 ==> Wedeniwski_v1_rh_up_to
+  style BKLNW_v1_table8_psi_bound stroke-dasharray: 8 4;
+  style BKLNW_v1_table8_psi_bound_above stroke-dasharray: 8 4;
+  style Buthe_v1_theorem_2_li_gt_pi stroke-dasharray: 8 4;
+  style Buthe_v1_theorem_2_li_minus_pi stroke-dasharray: 8 4;
+  style Buthe_v1_theorem_2_li_minus_riemann_pi stroke-dasharray: 8 4;
+  style Buthe_v1_theorem_2_psi stroke-dasharray: 8 4;
+  style Buthe_v1_theorem_2_theta stroke-dasharray: 8 4;
+  style Buthe_v1_theorem_2_theta_lower stroke-dasharray: 8 4;
+  style Dusart2018_v1_proposition_5_4 stroke-dasharray: 2 3;
+  style FKBJ_v1_rh_up_to stroke-dasharray: 8 4;
+  style Hiary2016_v1_zeta_half_line_bound stroke-dasharray: 8 4;
+  style Platt2015_v1_rh_up_to stroke-dasharray: 8 4;
+  style Platt2017_v1_rh_up_to stroke-dasharray: 8 4;
+  style PlattTrudgian_v1_rh_up_to stroke-dasharray: 8 4;
+  style RosserSchoenfeld_v1_zero_free_region stroke-dasharray: 2 3;
+  style Wedeniwski_v1_rh_up_to stroke-dasharray: 2 3;
   classDef lean_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
   classDef numerical fill:#fff8c5,stroke:#9a6700,color:#1f2328;
   classDef literature fill:#ddf4ff,stroke:#0969da,color:#1f2328;
@@ -286,7 +291,7 @@ graph LR
   classDef bridged fill:#fbefff,stroke:#8250df,color:#1f2328;
   classDef none_yet fill:#ffebe9,stroke:#cf222e,color:#1f2328;
   classDef bridge fill:#fbefff,stroke:#8250df,color:#1f2328,stroke-width:2px;
-  class BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2,BRPlatt2015_v1_rh_up_to__bridge_from_platt2017,BRRosserSchoenfeld_v1_zero_free_region_classical__bridge_from_shape bridge;
+  class BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2,BRPlatt2015_v1_rh_up_to__bridge_from_platt2017,BRRosserSchoenfeld_v1_zero_free_region_classical__bridge_from_shape,BRWedeniwski_v1_rh_up_to__bridge_from_platt2017 bridge;
   class Wedeniwski_v1_rh_up_to asserted;
   class RosserSchoenfeld_v1_zero_free_region_classical bridged;
   class Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap,ZeroFreeHeight_v1_classical_region_descends lean_comparator;
@@ -489,6 +494,7 @@ rather than maintained.
 A paper recorded as in scope, before anyone has transcribed a claim from it. These are
 the network's open invitations.
 
+- [`ChengGraham2004.v1`](docs/nodes/ChengGraham2004-v1.md)
 - [`MTY.v1`](docs/nodes/MTY-v1.md)
 
 ---

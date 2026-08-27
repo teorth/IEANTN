@@ -2168,9 +2168,9 @@ def render_node_overview(nodes: dict[str, dict], index: dict) -> list[str]:
     for node_id in sorted(nodes):
         cs = conclusions_of(nodes[node_id])
         if cs and any(import_status(c) == "undetermined" for c in cs):
-            lines.append(f"  style N{mermaid_id(node_id)} stroke-dasharray: 6 4;")
-        elif cs and any(import_status(c) == "traced" for c in cs):
             lines.append(f"  style N{mermaid_id(node_id)} stroke-dasharray: 2 3;")
+        elif cs and any(import_status(c) == "traced" for c in cs):
+            lines.append(f"  style N{mermaid_id(node_id)} stroke-dasharray: 8 4;")
     for kind in EVIDENCE_ORDER:
         members = [f"N{mermaid_id(n)}" for n in sorted(nodes)
                    if (weakest_kind(conclusions_of(nodes[n]))
@@ -2216,13 +2216,13 @@ def render_graph(nodes: dict[str, dict]) -> str:
         "Everything else is a leaf of the trust graph -- something the network takes on faith,",
         "however reasonably -- and the point of drawing it is that you can see exactly which.",
         "",
-        "The border says how completely the arrows into a box tell the story. **Solid** means they",
-        "tell all of it. **Dashed** (long) means nobody has yet worked out what that claim assumes",
-        "— an admission that the question has not been asked, not a claim that it rests on",
-        "nothing. **Dotted** (short) is in between, and is the usual state of a claim that rests on",
-        "a computation: the inputs are known and written down, but at least one of them is not the",
-        "sort of thing an arrow can carry — an algorithm, a data set, or a paper nobody has made a",
-        "node of yet.",
+        "The border says how completely the arrows into a box tell the story, and the more broken",
+        "it is the less they say. **Solid**: they tell all of it. **Dashed**: the inputs are known",
+        "and written down, but at least one is not the sort of thing an arrow can carry — an",
+        "algorithm, a data set, or a paper nobody has made a node of yet. This is the usual state",
+        "of a claim resting on a computation. **Finely dotted**: nobody has yet worked out what the",
+        "claim assumes, which is an admission that the question has not been asked rather than a",
+        "claim that it rests on nothing.",
         "",
         "Every box and every claim named below links to that node's page, which carries the Lean",
         "spelling of the claim, its docstring, and everything recorded about why it should be",
@@ -2301,10 +2301,12 @@ def render_graph(nodes: dict[str, dict]) -> str:
 
     for key in sorted(index):
         status = import_status(index[key][1])
+        # The pattern tracks how much of the story the arrows tell: solid says all of it, a
+        # clear dash says most, fine dots say none. More uncertainty, more broken border.
         if status == "undetermined":
-            lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 6 4;")
-        elif status == "traced":
             lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 2 3;")
+        elif status == "traced":
+            lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 8 4;")
     seen_kinds = {designated_kind(c) or "none-yet" for _, c in index.values()}
     lines += class_defs + [bridge_class_def]
     bridge_ids = ["BR" + mermaid_id(b["id"]) for b in bridges if b["conclusion"] in index]
