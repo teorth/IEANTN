@@ -23,7 +23,7 @@ Mossinghoff–Trudgian's title, and BKLNW's own proof contradicts its displayed 
 | `Buthe.v1` | Büthe, *An analytic method for bounding ψ(x)* | [arXiv:1511.02032](https://arxiv.org/abs/1511.02032) | `Buthe2018-bounding-psi.pdf` |
 | `MT.v1` | Mossinghoff–Trudgian, *Nonnegative trigonometric polynomials and a zero-free region* | [arXiv:1410.3926](https://arxiv.org/abs/1410.3926) | `MT2015-zero-free-region.pdf` |
 | `MTY.v1` | Mossinghoff–Trudgian–Yang, *Explicit zero-free regions* | [arXiv:2212.06867](https://arxiv.org/abs/2212.06867) | `MTY2024-explicit-zero-free.pdf` |
-| `Kadiri2005.v1` | Kadiri, *Une région explicite sans zéros pour ζ* | [arXiv:math/0401238](https://arxiv.org/abs/math/0401238) | `Kadiri2005-region-sans-zeros.pdf` |
+| `Kadiri2005.v1` | Kadiri, *Une région explicite sans zéros pour ζ* | Acta Arith. **117**.4 (2005) 303–339; [arXiv:math/0401238](https://arxiv.org/abs/math/0401238) | `Kadiri2005-published-ActaArith.pdf` **and** `Kadiri2005-region-sans-zeros.pdf`. The two are **not** interchangeable: the preprint gives `5.70176`, the published version `5.69693`, and only the latter supports MT's `R = 5.7` |
 | `PlattTrudgian.v1` | Platt–Trudgian, *The Riemann hypothesis is true up to 3·10¹²* | [arXiv:2004.09765](https://arxiv.org/abs/2004.09765) | `PlattTrudgian2021-RH-to-3e12.pdf` |
 | `Buthe2016.v1` | Büthe, *Estimating π(x) … under partial RH assumptions* | [arXiv:1410.7015](https://arxiv.org/abs/1410.7015) | `Buthe2016-pi-under-partial-RH.pdf` |
 | `Hiary2016.v1` | Hiary, *An explicit van der Corput estimate for ζ(1/2+it)* | [arXiv:1507.01261](https://arxiv.org/abs/1507.01261) | `Hiary2016-van-der-Corput.pdf` |
@@ -46,14 +46,17 @@ Table 8, and is now `Buthe2016.v1`. Note that BKLNW's [3] and [4] are two differ
 and only [4] is `Buthe.v1`; likewise its [37] and [38] are two different Platt–Trudgian papers, and
 only [38] is `PlattTrudgian.v1`.
 
+`Wedeniwski.v1` has no row above and never will: its source is the ZetaGrid project website,
+`http://www.zetagrid.net`, which is no longer reachable. Everything that node records is at second
+hand from `Kadiri2005` and from Platt–Trudgian's account of the project, and its justification is
+`asserted` for exactly that reason.
+
 ## Wanted
 
 Not on arXiv, or not found there. Each blocks a specific piece of work.
 
 | Paper | Why it is needed | Blocks |
 |---|---|---|
-| Kadiri, *Une région explicite sans zéros pour ζ*, **published** Acta Arith. **117** (2005) 303–339 | **Load-bearing, not a nicety.** The held arXiv preprint gives `5.70176`; the published version gives `5.69693`. MT starts from `R = 5.7`, and since a smaller `R` is the stronger claim, `5.70176` is too weak to support it — only the published value does. So the `Kadiri2005 → MT` edge rests on a version we do not hold. | first-hand evidence for the `Kadiri2005 → MT` edge |
-| Wedeniwski, *ZetaGrid* — the height `T₀ = 3 330 657 430.697` | Kadiri's verification height, per MT §2. A website rather than a paper, which is itself worth recording. | `Kadiri2005.v1`'s `imports_status` |
 | Patel, *An Explicit Upper Bound for \|ζ(1 + it)\|*, Indag. Math. (N.S.) **33** (2022) no. 5, 1012–1032 | Its Footnote 3 is where the Cheng–Graham van der Corput error is documented, and so where `Hiary2016.v1`'s correction from `0.63` to `0.77` is actually argued. We take it from FKS at second hand. | verifying `Hiary2016.v1`'s correction |
 | Kadiri–Lumley–Ng, *Bounding ψ(x) with zero-density*, preprint | Cited by FKS as [19]. Appears not to be publicly available, and not listed on the authors' pages. **Not** an input — the lemma attributed to it is proved in FKS itself — so this is for completeness rather than to unblock anything. | nothing |
 

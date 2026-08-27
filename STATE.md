@@ -5,14 +5,16 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-20 node version(s), 35 conclusion(s).  2 state nothing yet.
+21 node version(s), 38 conclusion(s).  1 state nothing yet.
 
 ## Evidence
 
 | Designated justification | Conclusions |
 |---|---:|
+| `asserted` | 1 |
+| `bridged` | 1 |
 | `lean-comparator` | 3 |
-| `literature` | 29 |
+| `literature` | 30 |
 | `numerical` | 3 |
 
 ## Nodes
@@ -43,7 +45,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `Hiary2016.v1` | stub | `zeta_half_line_bound` | literature | 0 | - |
 | `KLN.v1` | active | `subconvexity_bound` | literature | 1 | - |
 | `KLN.v1` | active | `zero_density` | literature | 1 | - |
-| `Kadiri2005.v1` | stub | `zero_free_region` | literature | 0 | - |
+| `Kadiri2005.v1` | stub | `zero_free_region` | literature | 2 | - |
 | `Lcm.v1` | active | `lcmUpto_not_highlyAbundant` | lean-comparator | 1 | - |
 | `Lcm.v2` | active | `lcmUpto_not_highlyAbundant_of_primeGap` | lean-comparator | 0 | #10 |
 | `MT.v1` | active | `zero_free_region` | literature | 2 | - |
@@ -54,7 +56,9 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
 | `PlattTrudgian2021.v1` | stub | `theorem_1_classical` | literature | 3 | - |
 | `PlattTrudgian2021.v1` | stub | `theorem_1_numerical` | literature | 3 | - |
-| `RosserSchoenfeld.v1` | stub | *(none yet)* | - | - | - |
+| `RosserSchoenfeld.v1` | stub | `zero_free_region` | literature | 0 | - |
+| `RosserSchoenfeld.v1` | stub | `zero_free_region_classical` | bridged | 0 | - |
+| `Wedeniwski.v1` | stub | `rh_up_to` | asserted | 0 | - |
 | `ZeroFreeHeight.v1` | active | `classical_region_descends` | lean-comparator | 0 | #30 |
 
 ## Leverage
@@ -76,6 +80,8 @@ downstream.
 | `Buthe2016.v1.theorem_2_psi` | 2 |
 | `Buthe.v1.theorem_2_theta_lower` | 2 |
 | `Buthe.v1.theorem_2_li_minus_pi` | 2 |
+| `Wedeniwski.v1.rh_up_to` | 1 |
+| `RosserSchoenfeld.v1.zero_free_region_classical` | 1 |
 | `Platt2017.v1.rh_up_to` | 1 |
 | `Platt2015.v1.rh_up_to` | 1 |
 | `Hiary2016.v1.zeta_half_line_bound` | 1 |

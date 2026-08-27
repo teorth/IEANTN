@@ -29,28 +29,66 @@ classification:
   arxiv: [math.NT]
   msc2020: ["11N05"]
 
-conclusions: []
+conclusions:
+- id: zero_free_region
+  declaration: RosserSchoenfeld.v1.zero_free_region
+  challenge: RosserSchoenfeld.v1.challenge_zero_free_region
+  imports: []
+  imports_status: undetermined
+  justifications:
+  - id: rs-paper
+    kind: literature
+    source: RosserSchoenfeld
+    locator: Theorem 1, equation (1.27)
+    note: >-
+      Asserted on the authority of the paper, read from the rendered page rather than from extracted text.
+      Theorem 1: 'There are no zeros of zeta(s) in the region sigma >= 1 - 1/(R log|t/17|), |t| >= 21',
+      with R = 9.645908801. The inequality is >= and not >. An earlier note on this node said >, taken
+      from extraction; the rendered page shows the closed form. That is the second wrong transcription
+      this failure mode has produced here. Stated in the paper's own shape rather than the network's:
+      the log(t/17) denominator makes the region wider than the plain classical one, and forcing it into
+      ClassicalZeroFreeRegion would assert something on 3 <= t < 21 that the paper does not prove. Imports
+      are undetermined -- what Theorem 1 itself rests on has not been traced.
+  designated: rs-paper
+- id: zero_free_region_classical
+  declaration: RosserSchoenfeld.v1.zero_free_region_classical
+  challenge: RosserSchoenfeld.v1.challenge_zero_free_region_classical
+  imports: []
+  imports_status: none
+  justifications:
+  - id: bridge-from-shape
+    kind: bridged
+    from: RosserSchoenfeld.v1.zero_free_region
+    bridge: IEANTN/Bridges/RosserSchoenfeld/ToClassical.lean
+    note: >-
+      The weakening a consumer wants, obtained as a proof rather than as a second transcription. Kadiri2005
+      uses R in the plain 1/(R log t) form at heights past 3.3e9; Theorem 1's region contains that one
+      because log(t/17) <= log t. The bridge is compiled by the core build, so the weakening cannot silently
+      stop being valid. Designated, because there is nothing else here to designate: this conclusion is
+      not separately stated by the paper, it is derived from the conclusion above. Imports `none` for
+      the same reason -- its one input is a sibling conclusion, which the bridge records, not an import.
+  designated: bridge-from-shape
 
 sources:
-  - title: "Sharper bounds for the Chebyshev functions theta(x) and psi(x)"
-    authors: ["J. Barkley Rosser", "Lowell Schoenfeld"]
-    type: "paper"
-    id: "https://doi.org/10.2307/2005479"
-    location: "Math. Comp. 29 (1975), 243-269"
-    relationship: formalizes
-    note: >-
-      Classified under the 1970s scheme (MRCLASS 10H05) in the source bibliography; the MSC2020
-      code recorded here is the modern equivalent, chosen rather than transcribed.
+- title: "Sharper bounds for the Chebyshev functions theta(x) and psi(x)"
+  authors: ["J. Barkley Rosser", "Lowell Schoenfeld"]
+  type: "paper"
+  id: "https://doi.org/10.2307/2005479"
+  location: "Math. Comp. 29 (1975), 243-269"
+  relationship: formalizes
+  note: >-
+    Classified under the 1970s scheme (MRCLASS 10H05) in the source bibliography; the MSC2020
+    code recorded here is the modern equivalent, chosen rather than transcribed.
 
 automation:
   methods:
-    - method: agent
-      models: ["Claude Opus 5 (Anthropic)"]
-      framework: "Claude Code"
-      role: >-
-        Created this stub and transcribed its bibliographic record from the PNT+
-        bibliography, under the direction of the maintainer. No mathematical claim is
-        made and no statement has been transcribed from the paper.
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Created this stub and transcribed its bibliographic record from the PNT+
+      bibliography, under the direction of the maintainer. No mathematical claim is
+      made and no statement has been transcribed from the paper.
 
 review:
   status: self-assessed
@@ -61,8 +99,17 @@ review:
     cited externally or used as the basis for a submission.
 
 limitations:
-  - >-
-    This node states nothing. It exists so that the network records the paper as in scope,
-    and so that the housekeeping queue asks for conclusions.
-  - >-
-    No novelty is claimed. The results are the cited authors'.
+- >-
+  Theorem 1 rests on the cited paper; it is not proved in Lean here. The bridge from it to the classical
+  shape is.
+- >-
+  Only positive imaginary part is quantified over. The paper's |t| >= 21 form follows by the symmetry
+  of the zeroes about the real axis, which is not done here.
+- >-
+  Nothing recovers the band 3 <= t < 21, where the network's usual threshold sits and this paper says
+  nothing.
+- >-
+  The paper contains a great many other inequalities. FKBJ's Theorem 2.1 attributes an N(T) formula to
+  Rosser, which is the next one with a consumer waiting.
+- >-
+  No novelty is claimed. The results are Rosser and Schoenfeld's.

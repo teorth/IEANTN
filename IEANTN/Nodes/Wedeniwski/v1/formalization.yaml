@@ -1,0 +1,98 @@
+# Node metadata for `FKBJ.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: Wedeniwski.v1
+  family: Wedeniwski
+  version: v1
+  kind: computation
+  status: stub
+project:
+  name: 'Wedeniwski: the ZetaGrid distributed verification'
+  description: >-
+    The verification height Kadiri2005 takes for T_0, and therefore the root of the chain Wedeniwski ->
+    Kadiri2005 -> MT -> FKS -> FKS2. Its justification is `asserted` rather than `numerical`: this is
+    a claim on a website, not a computation someone described and stood behind in a paper, and Platt and
+    Trudgian record specific doubts about both its reliability and what height it actually claims.
+  authors:
+  - Terence Tao
+  license: Apache-2.0
+  responsible_maintainers:
+  - Terence Tao
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11M26
+  - 11Y35
+conclusions:
+- id: rh_up_to
+  declaration: Wedeniwski.v1.rh_up_to
+  challenge: Wedeniwski.v1.challenge_rh_up_to
+  imports: []
+  imports_status: undetermined
+  justifications:
+  - id: zetagrid
+    kind: asserted
+    source: Wedeniwski
+    locator: the ZetaGrid website, as quoted by Kadiri2005
+    note: >-
+      `asserted` and not `numerical`, deliberately. A numerical justification records the outcome of a
+      computation someone has described and stood behind in a paper; this is a claim on a website. Platt
+      and Trudgian, superseding it, write that the earlier verifications 'have the disadvantage that neither
+      has been published in a peer reviewed journal. Furthermore, it is not clear how the computations
+      were set up to avoid problematic accumulation of rounding and truncation errors. This concern was
+      noted in works by Tao and Helfgott.' They add that 'it is difficult to pinpoint the height claimed
+      in these calculations', different slides from the project implying heights from 5.72e10 to 2.41e11.
+      The figure recorded here is not one of those. It is Kadiri2005's, quoted as 'tres exactement 3 330
+      657 430.697' -- the 'first 10 billion zeros' of the project's title, far below anything contested.
+      The useful next step is to make this node unnecessary rather than to shore it up: Platt2017.v1 verifies
+      to 3.0610046e10, which exceeds this height, so a bridge would discharge this conclusion from a refereed
+      computation without changing any statement.
+  designated: zetagrid
+sources:
+- title: The first 10 billion zeros of the Riemann zeta function are calculated and satisfy the 
+    Riemann hypothesis
+  authors:
+  - Sebastian Wedeniwski
+  type: web discussion
+  id: http://www.zetagrid.net
+  location: the ZetaGrid project website, as cited by Kadiri2005 reference [21]
+  relationship: formalizes
+  note: >-
+    A website rather than a paper, and no longer reachable at that address. Everything recorded here is
+    at second hand from Kadiri2005 and from Platt-Trudgian's account of the project.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Created this node so that Kadiri2005's verification height could be an edge rather than a note,
+      and recorded the reasons its evidence is weak, under the direction of the maintainer. No proof is
+      claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    Everything is at second hand; the website is not reachable. The height is Kadiri's quotation of it,
+    and the doubts are Platt and Trudgian's.
+limitations:
+- >-
+  The weakest evidence in the network. A website, unpublished, not peer reviewed, with documented doubts
+  about its error control and about what height it claims.
+- >-
+  Recorded entirely at second hand: the source is not reachable, and the height is Kadiri's quotation.
+- >-
+  Superseded in fact if not in citation. Platt2017 and PlattTrudgian both verify further with interval
+  arithmetic and peer review; a bridge from Platt2017 would discharge this outright.
+- >-
+  Imports undetermined, and likely to stay so -- what a distributed computation rests on is not recoverable
+  from a defunct website.
+- >-
+  No novelty is claimed.

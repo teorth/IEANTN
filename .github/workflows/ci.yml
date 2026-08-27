@@ -113,14 +113,28 @@ jobs:
       - name: Fetch the current validator
         env:
           UPSTREAM: PalomarRegistry/PalomarSubmission
+          # Authenticated, because anonymous api.github.com is capped at 60 requests an
+          # hour per IP and Actions runners share IPs. An unauthenticated fetch failed in
+          # the wild and the step reported a JSON decode error -- indistinguishable, to
+          # anyone reading the log, from the contract rejecting our metadata. A check that
+          # cannot tell you which case you are in is the defect class this repository has
+          # been through before, so this one now says which.
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p /tmp/pal/scripts /tmp/pal/taxonomies
-          commit=$(curl -fsSL "https://api.github.com/repos/$UPSTREAM/commits/main" \
-                     | python3 -c 'import json,sys; print(json.load(sys.stdin)["sha"])')
+          auth=(-H "Authorization: Bearer $GH_TOKEN")
+          if ! head=$(curl -fsSL "${auth[@]}" "https://api.github.com/repos/$UPSTREAM/commits/main"); then
+            echo "::error::could not reach api.github.com for $UPSTREAM -- a FETCH failure, not a metadata failure. Nothing has been validated." >&2
+            exit 1
+          fi
+          commit=$(printf '%s' "$head" | python3 -c 'import json,sys; print(json.load(sys.stdin)["sha"])')
           for f in scripts/submission_contract.py scripts/verification_errors.py \
                    taxonomies/arxiv-categories.json taxonomies/msc2020-codes.json; do
-            curl -fsSL "https://raw.githubusercontent.com/$UPSTREAM/$commit/$f" -o "/tmp/pal/$f"
+            if ! curl -fsSL "${auth[@]}" "https://raw.githubusercontent.com/$UPSTREAM/$commit/$f" -o "/tmp/pal/$f"; then
+              echo "::error::could not fetch $f from $UPSTREAM at $commit -- a FETCH failure, not a metadata failure. Nothing has been validated." >&2
+              exit 1
+            fi
           done
           touch /tmp/pal/scripts/__init__.py
           echo "Validated against \`$UPSTREAM\` at \`$commit\`." >> "$GITHUB_STEP_SUMMARY"
