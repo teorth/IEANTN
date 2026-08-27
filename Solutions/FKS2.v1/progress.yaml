@@ -6,7 +6,7 @@
 # `ieantn.py progress`; everything here is judgement and should read like it.
 
 solution: Solutions/FKS2.v1/
-state: in-progress   # Growth + Dawson proved; Prop 13 assembled; 6 holes, all statement-checked
+state: in-progress   # Growth, Dawson and Proposition 13 proved outright; 5 holes remain
 source: PrimeNumberTheoremAnd @ ae881f2, PrimeNumberTheoremAnd/IEANTN/FKS2*.lean
 
 # --------------------------------------------------------------------------------------------
@@ -127,6 +127,18 @@ observations_in_the_source:
     action: >-
       Transcribed verbatim and flagged. Tightening a published constant on our own initiative is
       precisely what this repository must not do.
+  - what: Proposition 13 needs x₀ ≥ e, and the paper does not say so
+    detail: >-
+      Found by proving it, not by reading it. The log(x₀) in the printed ν_asymp is spare only
+      while log(x₀) ≥ 1; below e it becomes a deficit and the proposition is FALSE. Take x = x₀,
+      a₁ = 1, a₂ = 0 and the claim reduces to 1 ≤ log x₀.
+    direction: >-
+      Ours carries `exp 1 ≤ x₀` as an explicit hypothesis. Corollary 14 uses x₀ = e³⁰, so nothing
+      downstream is affected — but a later reuse of Proposition 13 at small x₀ would be unsound,
+      which is why it is a hypothesis rather than a remark.
+    lesson: >-
+      The statement audit against the paper did not catch this; only the proof did. Reading and
+      proving find different classes of error, and neither substitutes for the other.
   - what: the paper drops a factor R^B when rewriting its integrands in terms of g
     detail: >-
       Both (theta_asymp_1) and decreasing_func_corollary equate expressions in (log x / R)^{±B}

@@ -82,26 +82,139 @@ theorem Etheta_le_Epsi_add {x : ℝ} (hx : 0 < x) :
   rw [← add_div]
   gcongr
 
+/-- Peeling the common factor off `g`: `x^{-a} = g a (-B) c x · (log x)^B exp(-c√(log x))`.
+
+The two exponential/power factors cancel exactly, which is what lets an inequality about the
+admissible bound be turned into one about `g`, where `Growth.lean` applies. -/
+theorem rpow_neg_eq_g_mul {a B c x : ℝ} (hx : 1 < x) :
+    x ^ (-a) = g a (-B) c x * ((log x) ^ B * exp (-c * sqrt (log x))) := by
+  have hlog : 0 < log x := log_pos hx
+  have h1 : (log x) ^ (-B) * (log x) ^ B = 1 := by
+    rw [← rpow_add hlog]; simp
+  have h2 : exp (c * sqrt (log x)) * exp (-c * sqrt (log x)) = 1 := by
+    rw [← Real.exp_add]; ring_nf; simp
+  unfold g
+  have hre : x ^ (-a) * (log x) ^ (-B) * exp (c * sqrt (log x)) *
+      ((log x) ^ B * exp (-c * sqrt (log x)))
+      = x ^ (-a) * ((log x) ^ (-B) * (log x) ^ B) *
+        (exp (c * sqrt (log x)) * exp (-c * sqrt (log x))) := by ring
+  rw [hre, h1, h2, mul_one, mul_one]
+
+/-- The admissible bound in the same factored form, `A · R^{-B} · (log x)^B exp(-(C/√R)√(log x))`.
+
+`(log x / R)^B` splits as `(log x)^B R^{-B}`, and `(log x / R)^{1/2}` as `√(log x)/√R`, which is
+where the `C/√R` throughout `Growth.lean` comes from. -/
+theorem admissibleBound_eq_g_mul {A B C R x : ℝ} (hR : 0 < R) (hx : 1 < x) :
+    admissibleBound A B C R x
+      = A * R ^ (-B) * ((log x) ^ B * exp (-(C / sqrt R) * sqrt (log x))) := by
+  have hlog : 0 < log x := log_pos hx
+  unfold admissibleBound
+  rw [div_rpow hlog.le hR.le, ← sqrt_eq_rpow, sqrt_div hlog.le, rpow_neg hR.le]
+  have : -C * (sqrt (log x) / sqrt R) = -(C / sqrt R) * sqrt (log x) := by ring
+  rw [this]
+  field_simp
+
 /-- The one remaining piece of Proposition 13: the `ψ - θ` correction, divided by `x`, is absorbed
 by inflating `A` from `Aψ` to `Aψ(1 + nuAsymp …)`.
 
-**This is where `C²/(8R) < B` earns its place.** Dividing through by
-`(log x / R)^B exp(-C√(log x / R))`, the claim is that
+**This is where `C²/(8R) < B` earns its place.** Dividing through by the common positive factor,
+the claim is that
 
-`a₁ R^B g(1/2, -B, C/√R, x) + a₂ R^B g(2/3, -B, C/√R, x) ≤ Aψ · nuAsymp …`
+`a₁ g(1/2, -B, C/√R, x) + a₂ g(2/3, -B, C/√R, x) ≤ log x₀ · (the same at x₀)`
 
 with `g` as in `Growth.lean`. Both `g`s are decreasing — Lemma 10(a) at `a = 1/2` needs
-`-B < -C²/(8R)`, which is the hypothesis, and at `a = 2/3` it needs only `-B < -3C²/(32R)`, which
-is weaker — so each is largest at `x₀`, where the sum is `nuAsymp` by definition.
+`-B < -C²/(8R)`, which is exactly the hypothesis, and at `a = 2/3` it needs only `-B < -3C²/(32R)`,
+which is weaker — so each is largest at `x₀`.
 
-That the `x₀` evaluation is `nuAsymp` is where the paper's spare `log x₀` sits; see the module
-docstring. It makes the right-hand side larger, so it costs nothing here. -/
+**`exp 1 ≤ x₀` is required, and the paper does not say so.** The `log x₀` on the right is the spare
+factor discussed in the module docstring, and it is only spare when `log x₀ ≥ 1`. Below `e` it
+becomes a deficit and the statement is false: take `x = x₀`, `a₁ = 1`, `a₂ = 0`, and the claim
+reduces to `1 ≤ log x₀`. So Proposition 13, with the `ν_asymp` the paper prints, holds for
+`x₀ ≥ e` and not below. Corollary 14 uses `x₀ = e³⁰`, so nothing downstream is affected. -/
 theorem correction_le {Aψ B C R a₁ a₂ x₀ : ℝ} (hR : 0 < R) (hAψ : 0 < Aψ)
-    (hB : C ^ 2 / (8 * R) < B) (hx₀ : 1 < x₀) {x : ℝ} (hx : x₀ ≤ x) (ha₁ : 0 ≤ a₁) (ha₂ : 0 ≤ a₂) :
+    (hB : C ^ 2 / (8 * R) < B) (hx₀ : exp 1 ≤ x₀) {x : ℝ} (hx : x₀ ≤ x)
+    (ha₁ : 0 ≤ a₁) (ha₂ : 0 ≤ a₂) :
     (a₁ * x ^ ((1 : ℝ) / 2) + a₂ * x ^ ((1 : ℝ) / 3)) / x
       ≤ admissibleBound (Aψ * (1 + nuAsymp Aψ B C R a₁ a₂ x₀)) B C R x
         - admissibleBound Aψ B C R x := by
-  sorry
+  have he1 : (1 : ℝ) < exp 1 := by nlinarith [Real.add_one_le_exp (1 : ℝ)]
+  have hx₀1 : 1 < x₀ := lt_of_lt_of_le he1 hx₀
+  have hx1 : 1 < x := lt_of_lt_of_le hx₀1 hx
+  have hxpos : (0 : ℝ) < x := by linarith
+  have hx₀pos : (0 : ℝ) < x₀ := by linarith
+  have hlog₀ : 0 < log x₀ := log_pos hx₀1
+  have hlogx : 0 < log x := log_pos hx1
+  have hlog₀1 : 1 ≤ log x₀ := by
+    rw [show (1 : ℝ) = log (exp 1) from (log_exp 1).symm]
+    exact log_le_log (exp_pos 1) hx₀
+  set c := C / sqrt R with hc
+  have hc2 : c ^ 2 = C ^ 2 / R := by rw [hc, div_pow, sq_sqrt hR.le]
+  set K := (log x) ^ B * exp (-c * sqrt (log x)) with hK
+  have hKpos : 0 < K := by rw [hK]; positivity
+  -- the left-hand side, factored
+  have e1 : x ^ ((1 : ℝ) / 2) / x = x ^ (-((1 : ℝ) / 2)) := by
+    have h := rpow_sub hxpos ((1 : ℝ) / 2) 1
+    rw [rpow_one] at h
+    rw [← h]; norm_num
+  have e2 : x ^ ((1 : ℝ) / 3) / x = x ^ (-((2 : ℝ) / 3)) := by
+    have h := rpow_sub hxpos ((1 : ℝ) / 3) 1
+    rw [rpow_one] at h
+    rw [← h]; norm_num
+  have hLHS : (a₁ * x ^ ((1 : ℝ) / 2) + a₂ * x ^ ((1 : ℝ) / 3)) / x
+      = a₁ * (g (1/2) (-B) c x * K) + a₂ * (g (2/3) (-B) c x * K) := by
+    rw [add_div, mul_div_assoc, mul_div_assoc, e1, e2, hK,
+      ← rpow_neg_eq_g_mul (a := (1:ℝ)/2) (B := B) (c := c) hx1,
+      ← rpow_neg_eq_g_mul (a := (2:ℝ)/3) (B := B) (c := c) hx1]
+  -- the right-hand side, factored
+  have hRHS : admissibleBound (Aψ * (1 + nuAsymp Aψ B C R a₁ a₂ x₀)) B C R x
+      - admissibleBound Aψ B C R x
+      = (Aψ * nuAsymp Aψ B C R a₁ a₂ x₀ * R ^ (-B)) * K := by
+    rw [admissibleBound_eq_g_mul hR hx1, admissibleBound_eq_g_mul hR hx1, hK]; ring
+  rw [hLHS, hRHS]
+  -- `Aψ ν R^{-B}` is `log x₀` times the same combination evaluated at `x₀`
+  have hP : (0 : ℝ) < R ^ B := rpow_pos_of_pos hR B
+  have hQ : (0 : ℝ) < (log x₀) ^ B := rpow_pos_of_pos hlog₀ B
+  have hν : Aψ * nuAsymp Aψ B C R a₁ a₂ x₀ * R ^ (-B)
+      = log x₀ * (a₁ * g (1/2) (-B) c x₀ + a₂ * g (2/3) (-B) c x₀) := by
+    unfold nuAsymp g
+    rw [show (-(1:ℝ)/2) = -((1:ℝ)/2) by ring, show (-(2:ℝ)/3) = -((2:ℝ)/3) by ring,
+      div_rpow hR.le hlog₀.le, sqrt_div hlog₀.le,
+      show C * (sqrt (log x₀) / sqrt R) = c * sqrt (log x₀) by rw [hc]; ring,
+      rpow_neg hR.le, rpow_neg hlog₀.le]
+    field_simp
+  rw [hν]
+  -- both `g`s are decreasing, by Lemma 10(a)
+  have hanti : ∀ a : ℝ, 0 < a → -B < -(c ^ 2 / (16 * a)) →
+      g a (-B) c x ≤ g a (-B) c x₀ := by
+    intro a hapos hlt
+    have hstrict : StrictAntiOn (g a (-B) c) (Set.Ioi 1) :=
+      g_strictAntiOn_of_lt hapos (by rw [neg_div]; exact hlt)
+    rcases eq_or_lt_of_le hx with h | h
+    · rw [h]
+    · exact (hstrict (Set.mem_Ioi.mpr hx₀1) (Set.mem_Ioi.mpr hx1) h).le
+  have hm1 : g (1/2) (-B) c x ≤ g (1/2) (-B) c x₀ := by
+    refine hanti _ (by norm_num) ?_
+    rw [hc2]
+    have : C ^ 2 / R / (16 * (1/2)) = C ^ 2 / (8 * R) := by
+      field_simp; ring
+    rw [this]; linarith
+  have hm2 : g (2/3) (-B) c x ≤ g (2/3) (-B) c x₀ := by
+    refine hanti _ (by norm_num) ?_
+    rw [hc2]
+    have hkey : C ^ 2 / (8 * R) - C ^ 2 / R / (16 * (2/3)) = C ^ 2 / (32 * R) := by
+      field_simp; ring
+    have hpos : 0 ≤ C ^ 2 / (32 * R) := by positivity
+    linarith
+  have hg₁ : 0 ≤ g (1/2) (-B) c x₀ := by unfold g; positivity
+  have hg₂ : 0 ≤ g (2/3) (-B) c x₀ := by unfold g; positivity
+  have hsum : a₁ * g (1/2) (-B) c x + a₂ * g (2/3) (-B) c x
+      ≤ log x₀ * (a₁ * g (1/2) (-B) c x₀ + a₂ * g (2/3) (-B) c x₀) := by
+    nlinarith [mul_le_mul_of_nonneg_left hm1 ha₁, mul_le_mul_of_nonneg_left hm2 ha₂,
+      mul_nonneg ha₁ hg₁, mul_nonneg ha₂ hg₂]
+  calc a₁ * (g (1/2) (-B) c x * K) + a₂ * (g (2/3) (-B) c x * K)
+      = (a₁ * g (1/2) (-B) c x + a₂ * g (2/3) (-B) c x) * K := by ring
+    _ ≤ (log x₀ * (a₁ * g (1/2) (-B) c x₀ + a₂ * g (2/3) (-B) c x₀)) * K :=
+        mul_le_mul_of_nonneg_right hsum hKpos.le
 
 /-- **Proposition 13.** An admissible classical bound for `Eψ` gives one for `Eθ`, with `A`
 inflated to `Aψ (1 + nuAsymp …)` and `B`, `C`, `R`, `x₀` unchanged.
@@ -114,14 +227,15 @@ holds only above a threshold the paper would then have to chase.
 Note `C²/(8R)`, not `C²/(16R)`: the binding case is `g(1/2, …)`, where Lemma 10(a)'s
 `b < -c²/(16a)` at `a = 1/2`, `b = -B`, `c = C/√R` reads `-B < -C²/(8R)`. -/
 theorem classicalBound_theta_of_psi
-    {Aψ B C R a₁ a₂ x₀ : ℝ} (hR : 0 < R) (hAψ : 0 < Aψ) (hB : C ^ 2 / (8 * R) < B) (hx₀ : 1 < x₀)
-    (ha₁ : 0 ≤ a₁) (ha₂ : 0 ≤ a₂)
+    {Aψ B C R a₁ a₂ x₀ : ℝ} (hR : 0 < R) (hAψ : 0 < Aψ) (hB : C ^ 2 / (8 * R) < B)
+    (hx₀ : exp 1 ≤ x₀) (ha₁ : 0 ≤ a₁) (ha₂ : 0 ≤ a₂)
     (hcmp : ∀ x ≥ x₀, Chebyshev.psi x - Chebyshev.theta x ≤
       a₁ * x ^ ((1 : ℝ) / 2) + a₂ * x ^ ((1 : ℝ) / 3))
     (hpsi : HasClassicalBound Eψ Aψ B C R x₀) :
     HasClassicalBound Eθ (Aψ * (1 + nuAsymp Aψ B C R a₁ a₂ x₀)) B C R x₀ := by
   intro x hx
-  have hx0 : (0 : ℝ) < x := lt_of_lt_of_le (by linarith) hx
+  have he1 : (1 : ℝ) < exp 1 := by nlinarith [Real.add_one_le_exp (1 : ℝ)]
+  have hx0 : (0 : ℝ) < x := by linarith [he1.trans_le hx₀, hx₀.trans hx]
   calc Eθ x ≤ Eψ x + (Chebyshev.psi x - Chebyshev.theta x) / x := Etheta_le_Epsi_add hx0
     _ ≤ admissibleBound Aψ B C R x + (a₁ * x ^ ((1 : ℝ) / 2) + a₂ * x ^ ((1 : ℝ) / 3)) / x := by
         gcongr
