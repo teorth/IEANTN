@@ -69,7 +69,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 10
+    remaining_holes: 9
 - id: corollary_23
   declaration: FKS2.v1.corollary_23
   challenge: FKS2.v1.challenge_corollary_23
@@ -108,7 +108,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 10
+    remaining_holes: 9
 - id: corollary_26
   declaration: FKS2.v1.corollary_26
   challenge: FKS2.v1.challenge_corollary_26
@@ -143,7 +143,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 10
+    remaining_holes: 9
 sources:
 - title: "Sharper bounds for the error term in the prime number theorem"
   authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]
