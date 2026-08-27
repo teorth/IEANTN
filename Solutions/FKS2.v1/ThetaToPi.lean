@@ -51,11 +51,48 @@ neither endpoint dominates in general. -/
 noncomputable def mFactor (B x₀ x : ℝ) : ℝ :=
   max ((log x₀) ^ ((2 * B - 3) / 2)) ((log x) ^ ((2 * B - 3) / 2))
 
+/-- `∫₀^v e^{s²} ds = e^{v²} D₊(v)`: the Dawson function is exactly this integral, rescaled.
+
+This is the bridge that puts the substituted integral in terms of `D₊`. After `u = √(log t)` and
+completing the square in `u² - Cu/√R`, what is left is an integral of `e^{s²}`, and this turns it
+into the `D₊` the paper's bound is written with. -/
+theorem integral_exp_sq_eq (v : ℝ) :
+    (∫ s in (0 : ℝ)..v, exp (s ^ 2)) = exp (v ^ 2) * dawson v := by
+  unfold dawson
+  rw [← mul_assoc, ← Real.exp_add]
+  simp
+
+/-- `(log t)^{(2B-3)/2} ≤ mFactor B x₀ x` throughout `[x₀, x]`.
+
+This is why `mFactor` is a `max` rather than an evaluation: the exponent changes sign with `B`, so
+for `B > 3/2` the bound is attained at `x` and for `B < 3/2` at `x₀`, and neither endpoint dominates
+in general. It is the step where the paper says "note that `u^{2B-3} ≤ m(x₀,x)`". -/
+theorem rpow_log_le_mFactor {B x₀ x t : ℝ} (h₀ : 1 < x₀) (ht₀ : x₀ ≤ t) (htx : t ≤ x) :
+    (log t) ^ ((2 * B - 3) / 2) ≤ mFactor B x₀ x := by
+  have hl₀ : 0 < log x₀ := log_pos h₀
+  have hlt : log x₀ ≤ log t := log_le_log (by linarith) ht₀
+  have hltx : log t ≤ log x := log_le_log (by linarith) htx
+  unfold mFactor
+  rcases le_or_gt 0 ((2 * B - 3) / 2) with hr | hr
+  · exact le_max_of_le_right (rpow_le_rpow (by linarith) hltx hr)
+  · exact le_max_of_le_left (rpow_le_rpow_of_nonpos hl₀ hlt hr.le)
+
 /-- **Lemma 12.** The integral partial summation produces, bounded via the Dawson function.
 
 This is the analytic heart of the `θ → π` step. Substituting `u = √(log t)` turns the integral of
 the admissible bound into `∫ u^{2B-3} exp(u² - Cu/√R) du`; bounding `u^{2B-3}` by `mFactor` leaves
-a Dawson integral, which is where `D₊` enters. -/
+a Dawson integral, which is where `D₊` enters.
+
+The remaining argument, in the paper's order and with the two pieces above in place:
+
+1. bound the integrand by the admissible bound, giving `(Aθ/R^B) ∫ (log t)^{B-2} e^{-C√(log t/R)}`;
+2. substitute `t = e^{u²}`, `dt = 2u e^{u²} du`, giving `2(Aθ/R^B) ∫ u^{2B-3} e^{u² - Cu/√R} du`;
+3. replace `u^{2B-3}` by `mFactor` — `rpow_log_le_mFactor`;
+4. complete the square, `u² - Cu/√R = (u - C/(2√R))² - C²/(4R)`;
+5. evaluate with `integral_exp_sq_eq` and drop the lower endpoint, which is nonnegative.
+
+Step 5's exponentials collapse: `e^{-C²/(4R)} e^{(√(log x) - C/(2√R))²} = x e^{-C√(log x/R)}`, which
+is where the `x` in the statement comes from. Only step 2 needs machinery not already here. -/
 theorem integral_theta_bound {Aθ B C R x₀ : ℝ} (hR : 0 < R) (hx₀ : 1 < x₀)
     (h : HasClassicalBound Eθ Aθ B C R x₀) {x : ℝ} (hx : x₀ ≤ x) :
     (∫ t in x₀..x, |Chebyshev.theta t - t| / (t * (log t) ^ 2)) ≤
