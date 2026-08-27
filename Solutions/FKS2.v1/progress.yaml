@@ -6,7 +6,7 @@
 # `ieantn.py progress`; everything here is judgement and should read like it.
 
 solution: Solutions/FKS2.v1/
-state: in-progress   # Growth, Dawson and Proposition 13 proved outright; 5 holes remain
+state: in-progress   # corollary_14 PROVED (first compared theorem); 4 holes, all in ThetaToPi
 source: PrimeNumberTheoremAnd @ ae881f2, PrimeNumberTheoremAnd/IEANTN/FKS2*.lean
 
 # --------------------------------------------------------------------------------------------
@@ -146,6 +146,25 @@ observations_in_the_source:
     direction: >-
       HARMLESS. Both are used only for monotonicity, and a positive constant factor does not
       affect whether a function decreases.
+
+# --------------------------------------------------------------------------------------------
+# Dependencies the network did not know it had. This is the payoff the plan predicted.
+# --------------------------------------------------------------------------------------------
+imports_discovered:
+  - conclusion: FKS2.v1.corollary_14
+    recorded_before: 3
+    actual: 5
+    missing:
+      - FKS2Numerics.v1.nu_asymp_e30_le
+      - FKS2Numerics.v1.theta_asymp_ge_one_below_e30
+    how_found: >-
+      By proving it. Neither was an obstacle — each is a finite check the paper performs and states,
+      and the proof needs them as hypotheses. They were invisible dependencies of a conclusion this
+      network already carried.
+    note: >-
+      Both were added to FKS2Numerics.v1, which its own docstring invited: "Add them when something
+      does — the shape below is the pattern." No existing fingerprint changed, so nothing already in
+      the network changed meaning; `ieantn.py diff` reports the two as informational additions.
 
 # --------------------------------------------------------------------------------------------
 trusted_numerics:

@@ -52,6 +52,55 @@ conclusions:
       in its FKS2TrustedNumerics -- it has no import mechanism, so its FKS2 development reports sorryAx.
       Stating it here is what lets FKS2.v1's solution rest on the same computation without a hole.
   designated: fks2-computation
+- id: nu_asymp_e30_le
+  declaration: FKS2Numerics.v1.nu_asymp_e30_le
+  challenge: FKS2Numerics.v1.challenge_nu_asymp_e30_le
+  imports: []
+  imports_status: none
+  justifications:
+  - id: fks2-multiplier-computation
+    kind: numerical
+    source: FKS2
+    locator: the proof of Corollary 14, at the displayed bound nu_asymp(x0) <= 6.3376e-7
+    note: >-
+      A closed-form real number compared against a constant, so `numerical`. Evaluating it means
+      evaluating BKLNW's a2(30), hence the sums f(e^30) and f(2^44) -- about forty rpow terms each --
+      together with one exp and one rpow at the front. No analytic content.
+
+      Imports `none`, and that is a real none. The expression mentions BKLNW's `a2`, but `a2` is a
+      DEFINITION, not a theorem: nothing here rests on BKLNW's Corollary 5.1 being true, only on what
+      the symbol denotes. The dependency on that corollary lives where it belongs, on
+      FKS2.v1.corollary_14, which is what uses the bound it states.
+
+      Found by porting, not by reading. FKS2.v1.corollary_14 recorded three imports and needed five;
+      this is one of the two nobody had written down.
+  designated: fks2-multiplier-computation
+- id: theta_asymp_ge_one_below_e30
+  declaration: FKS2Numerics.v1.theta_asymp_ge_one_below_e30
+  challenge: FKS2Numerics.v1.challenge_theta_asymp_ge_one_below_e30
+  imports: []
+  imports_status: none
+  justifications:
+  - id: fks2-small-range-computation
+    kind: numerical
+    source: FKS2
+    locator: >-
+      the proof of Corollary 14, where the minimum of epsilon_theta,asymp on [2, e^30] is recorded as
+      roughly 2.6271 at x = 2
+    note: >-
+      What lets BKLNW's E_theta(x) <= 1 cover [2, e^30], the range below where FKS's bound starts.
+
+      Weaker in kind than the other two claims on this node, and the difference is worth stating.
+      table6_row2_floor and nu_asymp_e30_le are arithmetic that no amount of analysis will replace.
+      This one quantifies over a continuum and is PROVABLE OUTRIGHT: writing u = sqrt(log x / R), the
+      bound is A u^3 exp(-2u), which rises to its maximum at u = 3/2, so on any interval its minimum
+      is at an endpoint and only the endpoint evaluation is numerical. It is carried as an assertion
+      because that is how the paper carries it, and it is the first conclusion on this node that
+      should be promoted to a proof.
+
+      Found by porting, not by reading -- the second of the two missing imports of
+      FKS2.v1.corollary_14.
+  designated: fks2-small-range-computation
 sources:
 - title: Sharper bounds for the error term in the Prime Number Theorem
   authors:
@@ -84,6 +133,10 @@ limitations:
 - >-
   A finite computation asserted on the paper's authority. Nothing here is proved in Lean, and the check
   has not been re-run.
+- >-
+  `theta_asymp_ge_one_below_e30` is not a finite check at all: it quantifies over [2, e^30] and is
+  provable outright, only its endpoint evaluation being numerical. Asserting it is weaker than the node's
+  other two claims deserve to be read as, and it should be promoted to a proof.
 - >-
   Only Table 6's row 2 is stated, because it is the only floor a stated FKS2.v1 conclusion consumes. The
   paper's other rows, and its Table 7, have their own; upstream states ten and twenty-five respectively.

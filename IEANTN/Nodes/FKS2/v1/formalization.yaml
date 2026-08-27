@@ -42,6 +42,10 @@ conclusions:
     conclusion: corollary_5_1
   - node: BKLNW.v1
     conclusion: theta_error_le_one
+  - node: FKS2Numerics.v1
+    conclusion: nu_asymp_e30_le
+  - node: FKS2Numerics.v1
+    conclusion: theta_asymp_ge_one_below_e30
   justifications:
   - id: fks2-paper
     kind: literature
@@ -69,7 +73,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 9
+    remaining_holes: 4
 - id: corollary_23
   declaration: FKS2.v1.corollary_23
   challenge: FKS2.v1.challenge_corollary_23
@@ -108,7 +112,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 9
+    remaining_holes: 4
 - id: corollary_26
   declaration: FKS2.v1.corollary_26
   challenge: FKS2.v1.challenge_corollary_26
@@ -143,7 +147,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 9
+    remaining_holes: 4
 sources:
 - title: "Sharper bounds for the error term in the prime number theorem"
   authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]

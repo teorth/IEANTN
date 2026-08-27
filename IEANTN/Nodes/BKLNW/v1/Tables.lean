@@ -29,9 +29,9 @@ The paper also uses the entries in the unbounded form, and its own Theorem 2 sta
 outright: "Let `b > 0`. Then there exists a positive constant `eps(b)` such that
 `|psi(x) - x| / x <= eps(b)` for all `x >= e^b`." Corollary 2.1 and Corollary 15.1 both apply it
 that way. That is consistent with the piecewise reading
-because the tabulated values are strictly decreasing (checked mechanically: all 57 consecutive pairs), so a
-bound holding on each later interval holds on their union -- but only out to `e^25000`, the last
-entry. Past that the table says nothing and the paper's Theorem 13 takes over.
+because the tabulated values are strictly decreasing (checked mechanically: all 57 consecutive
+pairs), so a bound holding on each later interval holds on their union -- but only out to
+`e^25000`, the last entry. Past that the table says nothing and the paper's Theorem 13 takes over.
 
 Note also that `eps` is applied to arguments that are not tabulated: `eps(19 log 10)` with
 `19 log 10 = 43.7...` is quoted as the `b = 40` entry, i.e. rounded down to the previous row,

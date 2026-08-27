@@ -40,7 +40,7 @@ def corollary_14 : Prop :=
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
-| Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one) |
+| Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one), [`FKS2Numerics.v1.nu_asymp_e30_le`](FKS2Numerics-v1.md#nu_asymp_e30_le), [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30) |
 | Assumed by | nothing yet |
 
 **Justification `fks2-paper`** — **designated** — literature, Corollary 14

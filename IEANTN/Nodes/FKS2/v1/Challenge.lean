@@ -23,7 +23,9 @@ How each conclusion is justified is recorded in `formalization.yaml`, not here.
 theorem FKS2.v1.challenge_corollary_14
     (fks_v1_psi_classical_bound : FKS.v1.psi_classical_bound)
     (bklnw_v1_corollary_5_1 : BKLNW.v1.corollary_5_1)
-    (bklnw_v1_theta_error_le_one : BKLNW.v1.theta_error_le_one) :
+    (bklnw_v1_theta_error_le_one : BKLNW.v1.theta_error_le_one)
+    (fks2numerics_v1_nu_asymp_e30_le : FKS2Numerics.v1.nu_asymp_e30_le)
+    (fks2numerics_v1_theta_asymp_ge_one_below_e30 : FKS2Numerics.v1.theta_asymp_ge_one_below_e30) :
     FKS2.v1.corollary_14 := by
   sorry
 

@@ -7,6 +7,8 @@ import Growth
 import IEANTN.Nodes.FKS.v1.Conclusions
 import IEANTN.Nodes.BKLNW.v1.Conclusions
 import IEANTN.Nodes.FKS2.v1.Conclusions
+import IEANTN.Nodes.FKS2Numerics.v1.Conclusions
+import Mathlib.Analysis.Complex.ExponentialBounds
 
 /-!
 # From a bound on `Eψ` to one on `Eθ`
@@ -244,19 +246,73 @@ theorem classicalBound_theta_of_psi
     _ ≤ admissibleBound (Aψ * (1 + nuAsymp Aψ B C R a₁ a₂ x₀)) B C R x := by
         linarith [correction_le hR hAψ hB hx₀ hx ha₁ ha₂]
 
+/-- The admissible bound is monotone in `A`, the only place `A` appears being a positive factor. -/
+theorem admissibleBound_mono_A {A A' B C R x : ℝ} (hR : 0 < R) (hx : 1 < x) (h : A ≤ A') :
+    admissibleBound A B C R x ≤ admissibleBound A' B C R x := by
+  have hlog : 0 < log x := log_pos hx
+  unfold admissibleBound
+  gcongr
+
+/-- `1 ≤ log 10`, needed only to place `b = 30` inside `BKLNW`'s range `7 ≤ b ≤ 38 log 10`. -/
+theorem one_le_log_ten : (1 : ℝ) ≤ log 10 := by
+  rw [show (1 : ℝ) = log (exp 1) from (log_exp 1).symm]
+  exact log_le_log (exp_pos 1) (by nlinarith [Real.exp_one_lt_three])
+
+theorem BKLNW_f_nonneg {x : ℝ} (hx : 0 ≤ x) : 0 ≤ BKLNW.v1.f x :=
+  Finset.sum_nonneg fun _ _ ↦ rpow_nonneg hx _
+
+theorem BKLNW_a₂_nonneg {b : ℝ} : 0 ≤ BKLNW.v1.a₂ b := by
+  unfold BKLNW.v1.a₂
+  exact mul_nonneg (by norm_num) (le_max_of_le_left (BKLNW_f_nonneg (exp_pos _).le))
+
+/-- The multiplier this file computes with is the one `FKS2Numerics.v1` states a bound for.
+
+They differ only in that the node has `log(e³⁰)` already reduced to `30`, a conclusion not being
+allowed to mention anything defined in a solution. -/
+theorem nuAsymp_e30_eq :
+    nuAsymp 121.096 (3 / 2) 2 5.5666305 (1 + 1.93378e-8) (BKLNW.v1.a₂ 30) (exp 30)
+      = FKS2Numerics.v1.nuAsympE30 := by
+  unfold nuAsymp FKS2Numerics.v1.nuAsympE30
+  rw [Real.log_exp]
+
 /-- **Corollary 14**, the node's first conclusion: `Eθ` obeys the classical bound with
 `A = 121.0961`, `B = 3/2`, `C = 2`, `R = 5.5666305`, for all `x ≥ 2`.
 
-Two ranges. Above `e³⁰` this is Proposition 13 applied to `FKS`'s bound, with the multiplier
-computed to be at most `6.3376 · 10⁻⁷`. Below it the asymptotic bound exceeds `1` — its minimum on
-`[2, e³⁰]` is about `2.6271` at `x = 2` — so `BKLNW`'s `Eθ ≤ 1` covers the range outright.
+Two ranges. Above `e³⁰` this is Proposition 13 applied to `FKS`'s bound, with the multiplier at
+most `6.3376 · 10⁻⁷`, which is what carries `A` from `121.096` to `121.0961` and no further. Below
+`e³⁰` the asymptotic bound is at least `1` — its minimum there is about `2.6271`, at `x = 2` — so
+`BKLNW`'s `Eθ ≤ 1` covers the range outright.
 
-`BKLNW.v1.corollary_5_1` is applied at `b = 30`, which is in its range `7 ≤ b ≤ 38 log 10`. -/
+`BKLNW.v1.corollary_5_1` is applied at `b = 30`, inside its range `7 ≤ b ≤ 38 log 10`.
+
+**Two of these five hypotheses were not recorded as imports of this conclusion until this proof was
+written.** `FKS2Numerics.v1`'s two numerical claims are genuine dependencies of Corollary 14; the
+node listed three imports and has five. Neither was an obstacle to the port — they were invisible
+dependencies of a conclusion the network already carried, and writing the proof is what exposed
+them. -/
 theorem corollary_14
     (hpsi : FKS.v1.psi_classical_bound)
     (hconv : BKLNW.v1.corollary_5_1)
-    (hsmall : BKLNW.v1.theta_error_le_one) :
+    (hsmall : BKLNW.v1.theta_error_le_one)
+    (hnu : FKS2Numerics.v1.nu_asymp_e30_le)
+    (hfloor : FKS2Numerics.v1.theta_asymp_ge_one_below_e30) :
     FKS2.v1.corollary_14 := by
-  sorry
+  intro x hx
+  by_cases hle : x ≤ exp 30
+  · exact (hsmall x hx hle).trans (hfloor x ⟨hx, hle⟩)
+  · have hgt : exp 30 < x := lt_of_not_ge hle
+    have h13 := classicalBound_theta_of_psi (Aψ := 121.096) (B := 3 / 2) (C := 2)
+      (R := 5.5666305) (a₁ := 1 + 1.93378e-8) (a₂ := BKLNW.v1.a₂ 30) (x₀ := exp 30)
+      (by norm_num) (by norm_num) (by norm_num)
+      (exp_le_exp.mpr (by norm_num)) (by norm_num) BKLNW_a₂_nonneg
+      (fun y hy ↦ (hconv 30 (by norm_num) (by nlinarith [one_le_log_ten]) y hy).le)
+      hpsi
+    refine (h13 x hgt.le).trans ?_
+    have hx1 : (1 : ℝ) < x := lt_trans (by nlinarith [Real.add_one_le_exp (30 : ℝ)]) hgt
+    refine admissibleBound_mono_A (by norm_num) hx1 ?_
+    rw [nuAsymp_e30_eq]
+    have := hnu
+    unfold FKS2Numerics.v1.nu_asymp_e30_le at this
+    nlinarith [this]
 
 end FKS2Sol
