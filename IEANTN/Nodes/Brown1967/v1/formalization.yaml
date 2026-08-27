@@ -1,0 +1,75 @@
+# Node metadata for `KLN.v1`.  See docs/NODES.md.
+#
+# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
+# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+version: "v0.4"
+
+node:
+  id: Brown1967.v1
+  family: Brown1967
+  version: v1
+  kind: paper
+  status: stub
+project:
+  name: 'Brown: the aliasing error in the sampling theorem'
+  description: >-
+    The aliasing bound Platt2017 uses as its Theorem 4.4. States nothing yet: the result worth stating
+    is Brown's own Theorem 1, which is stronger than the form Platt uses, and encoding it correctly needs
+    Fourier vocabulary the network does not otherwise have and a symmetric limit rather than a tsum. Both
+    obstacles are recorded in the Lean file.
+  authors:
+  - Terence Tao
+  license: Apache-2.0
+  responsible_maintainers:
+  - Terence Tao
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.CA
+  msc2020:
+  - 94A20
+  - 42A38
+conclusions: []
+sources:
+- title: On the error in reconstructing a non-bandlimited function by means of the bandpass sampling
+    theorem
+  authors:
+  - J. L. Brown, Jr.
+  type: paper
+  id: J. Math. Anal. Appl. 18 (1967), 75-84
+  location: Journal of Mathematical Analysis and Applications 18 (1967), 75-84
+  relationship: formalizes
+  note: >-
+    Held and read. Brown states the result Platt uses as 'Weiss's theorem', citing P. Weiss, An estimate
+    of the error arising from misapplication of the sampling theorem, Amer. Math. Soc. Notices 10 (1963),
+    351, Abstract No. 601-54 -- an abstract with no proof. Brown's own Theorem 1 is stronger and is proved
+    here.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Transcribed from the source paper and recorded what it rests on, under the direction of the maintainer.
+      No proof is claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    The identification of Platt's Theorem 4.4 with Brown's equation (5) was checked hypothesis by hypothesis
+    and constant by constant, including the Fourier convention conversion. What has not been checked is
+    the Weiss abstract itself, which is not held.
+limitations:
+- >-
+  States nothing. The obstacles are recorded in the Lean file: Fourier vocabulary the network does not
+  otherwise use, and a sum that is a symmetric limit rather than a tsum -- writing `sum' n : ℤ` would
+  assert something Brown does not prove and, since tsum of a non-summable family is 0, would become a
+  different and probably false claim rather than a vacuous one.
+- >-
+  The attributed original, Weiss's 1963 Notices abstract, is not held and contains no proof.
+- >-
+  No novelty is claimed.

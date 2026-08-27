@@ -7,6 +7,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | Node | Kind | Claims | Weakest evidence |
 |---|---|---:|---|
 | [`BKLNW.v1`](BKLNW-v1.md) | paper | 4 | cited |
+| [`Brown1967.v1`](Brown1967-v1.md) | paper | 0 | — |
 | [`Buthe.v1`](Buthe-v1.md) | paper | 6 | cited |
 | [`Buthe2016.v1`](Buthe2016-v1.md) | paper | 4 | cited |
 | [`ChengGraham2004.v1`](ChengGraham2004-v1.md) | paper | 0 | — |
@@ -26,6 +27,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`PlattTrudgian.v1`](PlattTrudgian-v1.md) | computation | 1 | cited |
 | [`PlattTrudgian2021.v1`](PlattTrudgian2021-v1.md) | paper | 2 | cited |
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 2 | cited |
+| [`Trudgian2011.v1`](Trudgian2011-v1.md) | paper | 1 | cited |
 | [`Wedeniwski.v1`](Wedeniwski-v1.md) | computation | 1 | asserted |
 | [`ZeroFreeHeight.v1`](ZeroFreeHeight-v1.md) | folklore | 1 | verified |
 

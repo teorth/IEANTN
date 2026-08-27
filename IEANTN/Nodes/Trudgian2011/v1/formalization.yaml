@@ -1,0 +1,91 @@
+# Node metadata for `KLN.v1`.  See docs/NODES.md.
+#
+# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
+# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+version: "v0.4"
+
+node:
+  id: Trudgian2011.v1
+  family: Trudgian2011
+  version: v1
+  kind: paper
+  status: stub
+project:
+  name: "Trudgian: improvements to Turing's method"
+  description: >-
+    Turing's method confirms that a zero count is complete, and so that no zero has been missed in the
+    range checked. Making it explicit needs a bound on the integral of S(t), and this paper's Theorem
+    2.2 is the bound modern verifications use. Platt2017 states it as its own Theorem 4.2.
+  authors:
+  - Terence Tao
+  license: Apache-2.0
+  responsible_maintainers:
+  - Terence Tao
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11M26
+  - 11Y35
+conclusions:
+- id: integral_S_bound
+  declaration: Trudgian2011.v1.integral_S_bound
+  challenge: Trudgian2011.v1.challenge_integral_S_bound
+  imports: []
+  imports_status: undetermined
+  justifications:
+  - id: trudgian-paper
+    kind: literature
+    source: Trudgian2011
+    locator: Theorem 2.2
+    note: >-
+      Asserted on the authority of the paper, read from the rendered page. Theorem 2.2: for t_2 > t_1
+      > 168 pi, |integral from t_1 to t_2 of S(t) dt| <= 2.067 + 0.059 log t_2. Platt2017 restates it
+      as its Theorem 4.2 with the proof 'This is Theorem 2.2 of [27]'. The threshold is the paper's own,
+      and its footnote notes that '168 pi ... seems to be a misprint' inherited from Turing and Lehman,
+      kept anyway; the constants are stated as valid for all t_2 > t_1 > 168 pi while being optimal near
+      t_1 > 2 pi 10^12. S is the Vocabulary's zetaS. The papers extend S to the ordinates of zeroes by
+      a right limit and zetaS does not; that is harmless for this conclusion and only for this kind of
+      conclusion, because the exceptional t form a measure-zero set and the statement integrates over
+      t. Imports are undetermined -- what Theorem 2.2 itself rests on has not been traced.
+  designated: trudgian-paper
+sources:
+- title: Improvements to Turing's method
+  authors:
+  - Timothy S. Trudgian
+  type: paper
+  id: Math. Comp. 80 (2011), no. 276, 2259-2279
+  location: Mathematics of Computation 80 (2011), 2259-2279; doi:10.1090/S0025-5718-2011-02470-1
+  relationship: formalizes
+  note: >-
+    Held and read.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Transcribed from the source paper and recorded what it rests on, under the direction of the maintainer.
+      No proof is claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    The statement was read from the rendered page and cross-checked against Platt2017's restatement of
+    it, which agrees exactly.
+limitations:
+- >-
+  The conclusion rests on the cited paper; it is not proved in Lean here.
+- >-
+  It is stated with the Vocabulary's zetaS, which omits the right-limit convention the papers use at the
+  ordinates of zeroes. Harmless here because the statement integrates over t; not harmless for any conclusion
+  that would evaluate S at a point.
+- >-
+  Imports undetermined. What Turing's method itself rests on has not been traced.
+- >-
+  No novelty is claimed. The result is Trudgian's.

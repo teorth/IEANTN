@@ -31,7 +31,9 @@ conclusions:
 - id: rh_up_to
   declaration: Platt2017.v1.rh_up_to
   challenge: Platt2017.v1.challenge_rh_up_to
-  imports: []
+  imports:
+  - node: Trudgian2011.v1
+    conclusion: integral_S_bound
   imports_status: traced
   justifications:
   - id: platt2017-paper
@@ -64,7 +66,13 @@ conclusions:
       4.2 is Trudgian's, not this paper's; Theorem 4.4 is Weiss's; Whittaker-Shannon is classical; and
       Lemma A.10 uses an explicit subconvexity bound for zeta on the critical line -- the authors' own
       0.732, which Platt-Trudgian later note could have been Hiary's, now Hiary2016.v1. Any of these could
-      become a node; none is one yet, which is why this is `traced` and not `identified`.
+      become a node; none is one yet, which is why this is `traced` and not `identified`. One of those
+      inputs is now an edge. Theorem 4.2 is attributed to Trudgian with the proof 'This is Theorem 2.2
+      of [27]', and that is now Trudgian2011.v1.integral_S_bound. Theorem 4.4 is Weiss's aliasing bound;
+      Brown1967.v1 exists for it but states nothing, because the result worth stating is Brown's own stronger
+      Theorem 1 and encoding it correctly needs Fourier vocabulary the network lacks and a symmetric limit
+      rather than a tsum -- see that node. Whittaker-Shannon and the FFT computation itself remain undrawable,
+      so this stays `traced`.
   designated: platt2017-paper
 sources:
 - title: Isolating some non-trivial zeros of zeta

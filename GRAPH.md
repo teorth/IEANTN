@@ -43,6 +43,7 @@ bridge needed together is in the detailed picture below.
 ```mermaid
 graph LR
   NBKLNW_v1["<b>BKLNW.v1</b><br/>4 claims<br/><i>weakest: cited</i>"]
+  NBrown1967_v1["<b>Brown1967.v1</b><br/><i>nothing stated yet</i>"]
   NButhe_v1["<b>Buthe.v1</b><br/>6 claims<br/><i>weakest: cited</i>"]
   NButhe2016_v1["<b>Buthe2016.v1</b><br/>4 claims<br/><i>weakest: cited</i>"]
   NChengGraham2004_v1["<b>ChengGraham2004.v1</b><br/><i>nothing stated yet</i>"]
@@ -62,6 +63,7 @@ graph LR
   NPlattTrudgian_v1["<b>PlattTrudgian.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NPlattTrudgian2021_v1["<b>PlattTrudgian2021.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NRosserSchoenfeld_v1["<b>RosserSchoenfeld.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
+  NTrudgian2011_v1["<b>Trudgian2011.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NWedeniwski_v1["<b>Wedeniwski.v1</b><br/>1 claim<br/><i>weakest: asserted</i>"]
   NZeroFreeHeight_v1["<b>ZeroFreeHeight.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NBKLNW_v1 -->|2| NFKS2_v1
@@ -84,6 +86,7 @@ graph LR
   NPlattTrudgian_v1 -->|2| NPlattTrudgian2021_v1
   NPlattTrudgian2021_v1 -->|2| NBKLNW_v1
   NRosserSchoenfeld_v1 --> NKadiri2005_v1
+  NTrudgian2011_v1 --> NPlatt2017_v1
   NWedeniwski_v1 --> NKadiri2005_v1
   NLcm_v2 ==>|bridge| NLcm_v1
   NPlatt2017_v1 ==>|bridge| NPlatt2015_v1
@@ -97,10 +100,11 @@ graph LR
   style NPlatt2017_v1 stroke-dasharray: 8 4;
   style NPlattTrudgian_v1 stroke-dasharray: 8 4;
   style NRosserSchoenfeld_v1 stroke-dasharray: 2 3;
+  style NTrudgian2011_v1 stroke-dasharray: 2 3;
   style NWedeniwski_v1 stroke-dasharray: 2 3;
-  class NChengGraham2004_v1,NMTY_v1 none_yet;
+  class NBrown1967_v1,NChengGraham2004_v1,NMTY_v1 none_yet;
   class NWedeniwski_v1 asserted;
-  class NBKLNW_v1,NButhe_v1,NButhe2016_v1,NDusart2018_v1,NFKS_v1,NFKS2_v1,NHiary2016_v1,NKLN_v1,NKadiri2005_v1,NMT_v1,NPlattTrudgian_v1,NPlattTrudgian2021_v1,NRosserSchoenfeld_v1 literature;
+  class NBKLNW_v1,NButhe_v1,NButhe2016_v1,NDusart2018_v1,NFKS_v1,NFKS2_v1,NHiary2016_v1,NKLN_v1,NKadiri2005_v1,NMT_v1,NPlattTrudgian_v1,NPlattTrudgian2021_v1,NRosserSchoenfeld_v1,NTrudgian2011_v1 literature;
   class NFKBJ_v1,NPlatt2015_v1,NPlatt2017_v1 numerical;
   class NLcm_v1,NLcm_v2,NZeroFreeHeight_v1 lean_comparator;
   click NBKLNW_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md" _blank
@@ -121,6 +125,7 @@ graph LR
   click NPlattTrudgian_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian-v1.md" _blank
   click NPlattTrudgian2021_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian2021-v1.md" _blank
   click NRosserSchoenfeld_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v1.md" _blank
+  click NTrudgian2011_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Trudgian2011-v1.md" _blank
   click NWedeniwski_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Wedeniwski-v1.md" _blank
   click NZeroFreeHeight_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZeroFreeHeight-v1.md" _blank
   classDef lean_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
@@ -210,6 +215,9 @@ graph LR
     RosserSchoenfeld_v1_zero_free_region["<b>zero_free_region</b><br/><i>cited</i>"]
     RosserSchoenfeld_v1_zero_free_region_classical["<b>zero_free_region_classical</b><br/><i>bridged</i>"]
   end
+  subgraph sgTrudgian2011_v1["Trudgian2011.v1"]
+    Trudgian2011_v1_integral_S_bound["<b>integral_S_bound</b><br/><i>cited</i>"]
+  end
   subgraph sgWedeniwski_v1["Wedeniwski.v1"]
     Wedeniwski_v1_rh_up_to["<b>rh_up_to</b><br/><i>asserted</i>"]
   end
@@ -250,6 +258,7 @@ graph LR
   Platt2015_v1_rh_up_to --> MT_v1_zero_free_region
   Kadiri2005_v1_zero_free_region --> MT_v1_zero_free_region_sharpened
   PlattTrudgian_v1_rh_up_to --> MT_v1_zero_free_region_sharpened
+  Trudgian2011_v1_integral_S_bound --> Platt2017_v1_rh_up_to
   MT_v1_zero_free_region --> PlattTrudgian2021_v1_theorem_1_classical
   PlattTrudgian_v1_rh_up_to --> PlattTrudgian2021_v1_theorem_1_classical
   KLN_v1_zero_density --> PlattTrudgian2021_v1_theorem_1_classical
@@ -283,6 +292,7 @@ graph LR
   style Platt2017_v1_rh_up_to stroke-dasharray: 8 4;
   style PlattTrudgian_v1_rh_up_to stroke-dasharray: 8 4;
   style RosserSchoenfeld_v1_zero_free_region stroke-dasharray: 2 3;
+  style Trudgian2011_v1_integral_S_bound stroke-dasharray: 2 3;
   style Wedeniwski_v1_rh_up_to stroke-dasharray: 2 3;
   classDef lean_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
   classDef numerical fill:#fff8c5,stroke:#9a6700,color:#1f2328;
@@ -295,7 +305,7 @@ graph LR
   class Wedeniwski_v1_rh_up_to asserted;
   class RosserSchoenfeld_v1_zero_free_region_classical bridged;
   class Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap,ZeroFreeHeight_v1_classical_region_descends lean_comparator;
-  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,FKS2_v1_corollary_14,FKS2_v1_corollary_23,FKS2_v1_corollary_26,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,RosserSchoenfeld_v1_zero_free_region literature;
+  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,FKS2_v1_corollary_14,FKS2_v1_corollary_23,FKS2_v1_corollary_26,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,RosserSchoenfeld_v1_zero_free_region,Trudgian2011_v1_integral_S_bound literature;
   class FKBJ_v1_rh_up_to,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to numerical;
   click BKLNW_v1_corollary_5_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#corollary_5_1" _blank
   click BKLNW_v1_table8_psi_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound" _blank
@@ -333,6 +343,7 @@ graph LR
   click PlattTrudgian2021_v1_theorem_1_numerical href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian2021-v1.md#theorem_1_numerical" _blank
   click RosserSchoenfeld_v1_zero_free_region href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v1.md#zero_free_region" _blank
   click RosserSchoenfeld_v1_zero_free_region_classical href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v1.md#zero_free_region_classical" _blank
+  click Trudgian2011_v1_integral_S_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Trudgian2011-v1.md#integral_S_bound" _blank
   click Wedeniwski_v1_rh_up_to href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Wedeniwski-v1.md#rh_up_to" _blank
   click ZeroFreeHeight_v1_classical_region_descends href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZeroFreeHeight-v1.md#classical_region_descends" _blank
 ```
@@ -353,6 +364,7 @@ A line is one claim, indented under whatever assumes it.
     - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
     - [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) — cited
       - [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) — computation — *sources known, not all drawable*
+        - [`Trudgian2011.v1.integral_S_bound`](docs/nodes/Trudgian2011-v1.md#integral_S_bound) — cited — *sources not traced*
 
 - [`BKLNW.v1.table8_psi_bound_above`](docs/nodes/BKLNW-v1.md#table8_psi_bound_above) — cited — *sources known, not all drawable*
   - [`Buthe2016.v1.theorem_2_psi`](docs/nodes/Buthe2016-v1.md#theorem_2_psi) — cited
@@ -365,6 +377,7 @@ A line is one claim, indented under whatever assumes it.
     - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
     - [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) — cited
       - [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) — computation — *sources known, not all drawable*
+        - [`Trudgian2011.v1.integral_S_bound`](docs/nodes/Trudgian2011-v1.md#integral_S_bound) — cited — *sources not traced*
 
 - [`Buthe.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi) — cited — *sources known, not all drawable*
   - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
@@ -440,6 +453,7 @@ A line is one claim, indented under whatever assumes it.
   - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
   - [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) — cited
     - [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) — computation — *sources known, not all drawable*
+      - [`Trudgian2011.v1.integral_S_bound`](docs/nodes/Trudgian2011-v1.md#integral_S_bound) — cited — *sources not traced*
 
 - [`RosserSchoenfeld.v1.zero_free_region`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region) — cited — *sources not traced*
 
@@ -473,6 +487,7 @@ rather than maintained.
 | [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) | computation | 1 | known, not all drawable |
 | [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) | computation | 1 | known, not all drawable |
 | [`RosserSchoenfeld.v1.zero_free_region_classical`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region_classical) | bridged | 1 | none |
+| [`Trudgian2011.v1.integral_S_bound`](docs/nodes/Trudgian2011-v1.md#integral_S_bound) | cited | 1 | **not yet traced** |
 | [`Wedeniwski.v1.rh_up_to`](docs/nodes/Wedeniwski-v1.md#rh_up_to) | asserted | 1 | **not yet traced** |
 | [`BKLNW.v1.table8_psi_bound`](docs/nodes/BKLNW-v1.md#table8_psi_bound) | cited | 0 | known, not all drawable |
 | [`BKLNW.v1.table8_psi_bound_above`](docs/nodes/BKLNW-v1.md#table8_psi_bound_above) | cited | 0 | known, not all drawable |
@@ -494,6 +509,7 @@ rather than maintained.
 A paper recorded as in scope, before anyone has transcribed a claim from it. These are
 the network's open invitations.
 
+- [`Brown1967.v1`](docs/nodes/Brown1967-v1.md)
 - [`ChengGraham2004.v1`](docs/nodes/ChengGraham2004-v1.md)
 - [`MTY.v1`](docs/nodes/MTY-v1.md)
 
