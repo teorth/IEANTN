@@ -70,14 +70,32 @@ theorem deriv_g {a b c x : ℝ} (hx : 1 < x) :
     unfold g
     exact (h1.mul h2).mul h4
   rw [hg.deriv]
-  -- What remains is algebra, not analysis. Peeling one factor off each power,
-  --   `x ^ (-a) = x * x ^ (-a - 1)` and `(log x) ^ b = log x * (log x) ^ (b - 1)`,
-  -- makes both sides `x ^ (-a-1) * (log x) ^ (b-1) * exp (…)` times a bracket, and the brackets
-  -- agree once `log x / √(log x)` is rewritten as `√(log x)`. `field_simp; ring` does not close
-  -- it as written: rewriting `log x = √(log x) ^ 2` fires inside `(log x) ^ (b - 1)` and inside
-  -- `√(log x)` itself, so the powers stop matching. Generalising `(log x) ^ (b - 1)` and
-  -- `x ^ (-a - 1)` to opaque variables first is the way through.
-  sorry
+  have hs : sqrt (log x) ≠ 0 := (sqrt_pos.mpr hlog).ne'
+  have e1 : x ^ (-a) = x * x ^ (-a - 1) := by
+    rw [show (-a : ℝ) = 1 + (-a - 1) by ring, rpow_add hx0]; simp
+  have e2 : (log x) ^ b = log x * (log x) ^ (b - 1) := by
+    rw [show (b : ℝ) = 1 + (b - 1) by ring, rpow_add hlog]; simp
+  rw [e1, e2]
+  -- Peeling one factor off each power leaves `x ^ (-a-1) * (log x) ^ (b-1) * exp …` times a
+  -- bracket on both sides. Make those two powers opaque before touching `log x`: rewriting
+  -- `log x = √(log x) * √(log x)` otherwise fires inside `(log x) ^ (b - 1)` and inside
+  -- `√(log x)` itself, and the powers stop matching.
+  set P := x ^ (-a - 1) with hP
+  set Q := (log x) ^ (b - 1) with hQ
+  set t := sqrt (log x) with ht
+  have htt : t * t = log x := mul_self_sqrt hlog.le
+  rw [← htt]
+  field_simp
+
+/-- `g` is continuous above `1`. Extracted because all three cases of Lemma 10 need it, and it
+is the hypothesis `strictAntiOn_of_deriv_neg` wants on the closure. -/
+theorem continuousAt_g {a b c : ℝ} {x : ℝ} (hx : 1 < x) : ContinuousAt (g a b c) x := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  unfold g
+  exact ((continuousAt_id.rpow continuousAt_const (Or.inl hx0.ne')).mul
+    ((continuousAt_log hx0.ne').rpow continuousAt_const (Or.inl (log_pos hx).ne'))).mul
+    (continuous_exp.continuousAt.comp (continuousAt_const.mul
+      (continuous_sqrt.continuousAt.comp (continuousAt_log hx0.ne'))))
 
 /-- `g` is decreasing exactly where a quadratic in `√(log x)` is negative.
 
@@ -103,13 +121,8 @@ quadratic has no real root and `g` decreases on the whole of `(1, ∞)`.
 This is the case the conversions actually use, through `admissibleBound_strictAntiOn`. -/
 theorem g_strictAntiOn_of_lt {a b c : ℝ} (ha : 0 < a) (hb : b < -c ^ 2 / (16 * a)) :
     StrictAntiOn (g a b c) (Set.Ioi 1) := by
-  refine strictAntiOn_of_deriv_neg (convex_Ioi 1) (fun x hx ↦ ?_) (fun x hx ↦ ?_)
-  · have hx0 : (0 : ℝ) < x := by linarith [hx.out]
-    exact (((continuousAt_id.rpow continuousAt_const (Or.inl hx0.ne')).mul
-      ((continuousAt_log hx0.ne').rpow continuousAt_const
-        (Or.inl (log_pos hx.out).ne'))).mul
-      (continuous_exp.continuousAt.comp (continuousAt_const.mul
-        (continuous_sqrt.continuousAt.comp (continuousAt_log hx0.ne'))))).continuousWithinAt
+  refine strictAntiOn_of_deriv_neg (convex_Ioi 1) (fun x hx ↦ (continuousAt_g hx.out).continuousWithinAt)
+    (fun x hx ↦ ?_)
   · rw [interior_Ioi] at hx
     rw [deriv_g_neg_iff hx]
     -- complete the square: the quadratic in `√(log x)` has no root when `b + c²/(16a) < 0`
@@ -133,7 +146,44 @@ theorem g_strictAntiOn_of_ge {a b c : ℝ} (ha : 0 < a) (hc : 0 < c)
     (hb : -c ^ 2 / (16 * a) ≤ b) :
     StrictAntiOn (g a b c)
       (Set.Ioi (exp ((c / (4 * a) + (1 / (2 * a)) * sqrt (c ^ 2 / 4 + 4 * a * b)) ^ 2))) := by
-  sorry
+  -- `hb` says exactly that the discriminant is nonnegative, so the larger root `tPlus` is real.
+  have hD : 0 ≤ c ^ 2 / 4 + 4 * a * b := by
+    rw [div_le_iff₀ (by linarith : (0 : ℝ) < 16 * a)] at hb
+    nlinarith
+  set s := sqrt (c ^ 2 / 4 + 4 * a * b) with hs
+  have hs0 : 0 ≤ s := sqrt_nonneg _
+  have hs2 : s ^ 2 = c ^ 2 / 4 + 4 * a * b := sq_sqrt hD
+  set tPlus := c / (4 * a) + (1 / (2 * a)) * s with htPlus
+  have htPluspos : 0 < tPlus := by positivity
+  -- `tPlus` really is a root: this is what turns `t > tPlus` into the sign of the quadratic.
+  have hroot : a * tPlus ^ 2 - (c / 2) * tPlus - b = 0 := by
+    rw [htPlus]; field_simp; nlinarith [hs2]
+  have h1 : (1 : ℝ) < exp (tPlus ^ 2) := by
+    rw [show (1 : ℝ) = exp 0 from (exp_zero).symm]
+    exact exp_lt_exp.mpr (by positivity)
+  refine strictAntiOn_of_deriv_neg (convex_Ioi _)
+    (fun x hx ↦ (continuousAt_g (h1.trans hx.out)).continuousWithinAt) (fun x hx ↦ ?_)
+  rw [interior_Ioi] at hx
+  have hx1 : 1 < x := h1.trans hx
+  rw [deriv_g_neg_iff hx1]
+  -- `x > exp (tPlus²)` gives `√(log x) > tPlus`, and beyond the larger root the quadratic is negative.
+  have hlogx : tPlus ^ 2 < log x := by
+    rw [← log_exp (tPlus ^ 2)]; exact log_lt_log (exp_pos _) hx
+  have ht : tPlus < sqrt (log x) := by
+    rw [show tPlus = sqrt (tPlus ^ 2) from (sqrt_sq htPluspos.le).symm]
+    exact sqrt_lt_sqrt (sq_nonneg _) hlogx
+  set t := sqrt (log x) with htdef
+  -- `a t² - (c/2) t - b = (t - tPlus)(a(t + tPlus) - c/2)`, and both factors are positive:
+  -- `t > tPlus` for the first, and `t + tPlus > 2 tPlus ≥ c/(2a)` for the second.
+  have hfac : c / 2 < a * (t + tPlus) := by
+    have : c / (4 * a) ≤ tPlus := by
+      rw [htPlus]
+      have : 0 ≤ 1 / (2 * a) * s := by positivity
+      linarith
+    have h4a : (0 : ℝ) < 4 * a := by linarith
+    rw [div_le_iff₀ h4a] at this
+    nlinarith
+  nlinarith [hroot, mul_pos (sub_pos.mpr ht) (sub_pos.mpr hfac)]
 
 /-- **Lemma 10(c), corrected.** With `a = 0` and `b < 0`, `g` decreases on `(1, exp((-2b/c)²))`.
 
@@ -141,7 +191,24 @@ The paper writes this window's condition as `√(log x) > -2b/c`; the argument g
 statement here is the corrected one. See the module docstring. -/
 theorem g_strictAntiOn_of_a_zero {b c : ℝ} (hb : b < 0) (hc : 0 < c) :
     StrictAntiOn (g 0 b c) (Set.Ioo 1 (exp ((-2 * b / c) ^ 2))) := by
-  sorry
+  have hc0 : c ≠ 0 := hc.ne'
+  have hu : 0 < -2 * b / c := div_pos (by linarith) hc
+  refine strictAntiOn_of_deriv_neg (convex_Ioo _ _)
+    (fun x hx ↦ (continuousAt_g hx.1).continuousWithinAt) (fun x hx ↦ ?_)
+  rw [interior_Ioo] at hx
+  rw [deriv_g_neg_iff hx.1]
+  -- With `a = 0` the quadratic degenerates to the line `(c/2) t + b`, negative exactly for
+  -- `t < -2b/c` — the corrected direction; the paper prints `>`.
+  have hlogx : log x < (-2 * b / c) ^ 2 := by
+    rw [← log_exp ((-2 * b / c) ^ 2)]
+    exact log_lt_log (by linarith [hx.1]) hx.2
+  have ht : sqrt (log x) < -2 * b / c := by
+    have h := sqrt_lt_sqrt (log_nonneg hx.1.le) hlogx
+    rwa [sqrt_sq hu.le] at h
+  have hkey : c / 2 * sqrt (log x) < -b := by
+    have h := mul_lt_mul_of_pos_left ht (by linarith : (0 : ℝ) < c / 2)
+    rwa [show c / 2 * (-2 * b / c) = -b by field_simp] at h
+  linarith
 
 /-- **Corollary 11.** For `B > 1 + C²/(16R)`, the function `g 1 (1 - B) (C/√R)` decreases on
 `(1, ∞)`.

@@ -6,7 +6,7 @@
 # `ieantn.py progress`; everything here is judgement and should read like it.
 
 solution: Solutions/FKS2.v1/
-state: in-progress   # skeleton complete, 10 holes, no proofs yet
+state: in-progress   # Growth.lean proved outright; 6 holes remain, all with primes in them
 source: PrimeNumberTheoremAnd @ ae881f2, PrimeNumberTheoremAnd/IEANTN/FKS2*.lean
 
 # --------------------------------------------------------------------------------------------
@@ -110,20 +110,28 @@ file_layout:
     build time is.
   precedent: Solutions/Lcm.v2 already splits LcmDev.lean (development) from Solution.lean (the
     compared theorems), and Comparator only ever sees the latter.
-  proposed:
-    - Support.lean       # vocabulary adapters: PNT+'s Eθ.classicalBound ↔ our HasClassicalBound
-    - Dawson.lean        # the Dawson-function development, FKS2.lean:219–660, self-contained
-    - Decreasing.lean    # lemma_10a/b/c, corollary_11 — the monotonicity toolkit
-    - PsiToTheta.lean    # proposition_13 and corollary_14
-    - Tables.lean        # table6 and the row lookups
-    - ThetaToPi.lean     # integral_asymp_bound, corollary_23
+  current:
+    - Growth.lean        # lemma_10a/b/c, corollary_11 — the monotonicity toolkit. DONE, no holes.
+    - PsiToTheta.lean    # proposition_13 and corollary_14. 2 holes.
+    - ThetaToPi.lean     # integral bound, theorem_3, corollary_23, corollary_26. 4 holes.
     - Solution.lean      # the three compared theorems, and nothing else
+  still_expected:
+    - Support.lean       # vocabulary adapters, if the two spellings turn out to disagree anywhere
+    - Dawson.lean        # the Dawson-function development, FKS2.lean:219–660, self-contained
+    - Tables.lean        # table6 and the row lookups, once corollary_23 needs more than one row
   note: >-
     Mirror upstream's own split where it is already sensible: its per-row Cor23Row*.lean files
     exist for the same build-time reason and are worth keeping as separate files.
 
 # --------------------------------------------------------------------------------------------
 order:
+  - DONE — Growth.lean. Taken first because it mentions no primes and both conversions rest on it,
+    so a wrong statement there would surface only after everything above it was built. That
+    instinct paid: the sketched statements were wrong in shape. Lemma 10(b) gives an EXPLICIT
+    threshold, `exp((c/(4a) + √(c²/4+4ab)/(2a))²)`, where the sketch had `∃ X` — and that explicit
+    value is precisely where FKS2's `x₀`s come from, so the existential would have discarded the
+    thing the paper needs. The rest wanted `StrictAntiOn`, which is both what
+    `strictAntiOn_of_deriv_neg` produces and what the consumers want, not a hand-rolled `∀ x y`.
   - Support.lean and the adapters, proving the two vocabularies agree. Cheap, and it fails fast if
     the statements are not the match they appear to be.
   - corollary_14, which is self-contained upstream and touches no trusted numerics.
