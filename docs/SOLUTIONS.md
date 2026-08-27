@@ -10,9 +10,15 @@ large: knowing its shape before you start.
 
 ## `progress.yaml` — a best practice, not a schema
 
-A solution directory may carry a `progress.yaml`. **Nothing enforces it and nothing parses it.**
-It is prose with structure, the way a good commit message is, and it exists because a port that
-takes weeks needs somewhere to record what was decided before the deciding is forgotten.
+A solution directory may carry a `progress.yaml`. **No schema is enforced.** It is prose with
+structure, the way a good commit message is, and it exists because a port that takes weeks needs
+somewhere to record what was decided before the deciding is forgotten.
+
+One check does run: `ieantn.py progress` warns if the file is not valid YAML. That is a parse
+check, not a schema — no field is required and none is inspected. It exists because
+`Solutions/FKS2.v1/progress.yaml` did not parse from the day it was written and nobody noticed for
+weeks: unconstrained is not the same as unreadable. The usual cause is a multi-line plain scalar
+that contains `: `, or one indented level with its own key; write those as `>-` block scalars.
 
 The one number that *is* enforced lives elsewhere: `remaining_holes`, on the node's
 `formalization.yaml`, derived from the build by `ieantn.py progress --write`. Do not duplicate it
@@ -29,8 +35,17 @@ Suggested fields, all optional:
 | `upstream_closure` | how much comes along transitively, and what should be pruned |
 | `file_layout` | the decision about how to split, and why |
 | `order` | what to do first, and what that de-risks |
+| `statement_audit` | statements checked against the source *before* proving, and what was wrong |
+| `errata_in_the_source` | where the paper is wrong, and what evidence settles it |
 
 `Solutions/FKS2.v1/progress.yaml` is the worked example.
+
+**Audit the statements against the source before proving any of them.** On FKS2 this took under an
+hour and found four wrong statements — including one that claimed *more* than the paper proves — in
+files that compiled cleanly. A Lean file building is no evidence whatever that it says what the
+paper says, and every hour spent proving a wrong statement is an hour thrown away plus a wrong
+result if it succeeds. Record what you checked, not just what you changed: `confirmed_correct` is
+as useful to the next reader as `found`.
 
 ## Two things worth deciding before writing any Lean
 

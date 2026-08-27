@@ -81,11 +81,14 @@ statement_audit:
         `m(x₀,x)` factor. Nothing resembling the sketch appears in the paper.
       status: fixed; Dawson.lean added because the statement needs D₊
   confirmed_correct:
-    - Proposition 13's hypothesis `B > C²/(8R)` — the paper's, and note it is /(8R), not /(16R):
-      the binding case is g(1/2,·) where Lemma 10(a) at a=1/2 reads -B < -C²/(8R).
-    - nuAsymp matches (nu_asymp) exactly, including the x₀^{-1/2} and x₀^{-2/3} exponents, which
+    - >-
+      Proposition 13's hypothesis `B > C²/(8R)` is the paper's, and note the 8 rather than 16: the
+      binding case is g(1/2,·), where Lemma 10(a) at a=1/2, b=-B, c=C/√R reads -B < -C²/(8R).
+    - >-
+      nuAsymp matches (nu_asymp) exactly, including the x₀^{-1/2} and x₀^{-2/3} exponents, which
       come from BKLNW's x^{1/2}, x^{1/3} divided by x. The 2/3 is not a typo for 1/3.
-    - g, and all three cases of Lemma 10, match (def-g) and the lemma verbatim.
+    - >-
+      g, and all three cases of Lemma 10, match (def-g) and the lemma verbatim.
 
 # --------------------------------------------------------------------------------------------
 errata_in_the_source:
@@ -140,12 +143,18 @@ upstream_closure:
     RosserSchoenfeldPrime → MediumPNT → ZetaBounds. Cutting those two edges should remove most of
     the closure. Establish what FKS2 genuinely needs from SecondaryDefinitions before copying it.
   decisions_taken:
-    - Architect: stripped. It carries blueprint metadata and no proof content.
-    - LeanCert: deferred to the numerical side. The analytic files here need no interval
-      arithmetic; the finite checks that do are now FKS2Numerics.v1's problem, and its eventual
-      solution can take the dependency without this one carrying it.
-    - numerical claims: spun off into FKS2Numerics.v1, so that what upstream must leave as a hole
-      arrives here as a hypothesis.
+    - what: Architect
+      decision: >-
+        Stripped. It carries blueprint metadata and no proof content.
+    - what: LeanCert
+      decision: >-
+        Deferred to the numerical side. The analytic files here need no interval arithmetic; the
+        finite checks that do are now FKS2Numerics.v1's problem, and its eventual solution can
+        take the dependency without this one carrying it.
+    - what: numerical claims
+      decision: >-
+        Spun off into FKS2Numerics.v1, so that what upstream must leave as a hole arrives here as
+        a hypothesis.
   external_dependencies:
     - name: Architect
       role: LeanArchitect blueprint metadata (`@[blueprint ...]`)
@@ -185,15 +194,18 @@ file_layout:
 
 # --------------------------------------------------------------------------------------------
 order:
-  - DONE — Growth.lean. Taken first because it mentions no primes and both conversions rest on it,
+  - >-
+    DONE — Growth.lean. Taken first because it mentions no primes and both conversions rest on it,
     so a wrong statement there would surface only after everything above it was built. That
-    instinct paid: the sketched statements were wrong in shape. Lemma 10(b) gives an EXPLICIT
-    threshold, `exp((c/(4a) + √(c²/4+4ab)/(2a))²)`, where the sketch had `∃ X` — and that explicit
-    value is precisely where FKS2's `x₀`s come from, so the existential would have discarded the
-    thing the paper needs. The rest wanted `StrictAntiOn`, which is both what
-    `strictAntiOn_of_deriv_neg` produces and what the consumers want, not a hand-rolled `∀ x y`.
-  - Support.lean and the adapters, proving the two vocabularies agree. Cheap, and it fails fast if
-    the statements are not the match they appear to be.
-  - corollary_14, which is self-contained upstream and touches no trusted numerics.
-  - corollary_23, where the trusted numerics appear. Expect the import list to grow here.
-  - corollary_26, which is short once corollary_23 is in place.
+    instinct paid off; see statement_audit above.
+  - >-
+    DONE — the statement audit. Read the paper against every sketched statement BEFORE proving.
+    Four were wrong, in files that compiled. Cheapest hour in the port.
+  - >-
+    Proposition 13, which needs the two g-decreasing facts from Growth.lean and nothing else
+    analytic. The first real use of the monotonicity toolkit.
+  - >-
+    Lemma 12 and Theorem 3, which need the Dawson development. This is the bulk of the analysis.
+  - >-
+    corollary_14, then corollary_23 where the trusted numerics appear, then corollary_26, which is
+    short once corollary_23 is in place.

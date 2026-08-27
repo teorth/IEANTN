@@ -670,6 +670,23 @@ def progress(node: str, write: bool) -> bool:
         print("  can be trusted until it builds. Run `lake build` in the solution to see why.")
         return False
 
+    # A `progress.yaml` is prose for humans and deliberately unconstrained -- see docs/SOLUTIONS.md,
+    # which says so. But one that is not valid YAML is one nobody and nothing can read, and it fails
+    # silently precisely because nothing enforces it. This checks that it parses and nothing more:
+    # no schema, no required fields. (Found the hard way: FKS2.v1's plan never parsed from the day
+    # it was written.)
+    plan = SOLUTIONS / node / "progress.yaml"
+    if plan.exists():
+        try:
+            yaml.safe_load(plan.read_text(encoding="utf-8"))
+        except yaml.YAMLError as exc:
+            mark = getattr(exc, "problem_mark", None)
+            where = f" at line {mark.line + 1}" if mark else ""
+            print(f"  WARNING: {rel(plan)} is not valid YAML{where} -- {getattr(exc, 'problem', exc)}")
+            print("    The plan is unconstrained by design, but an unparseable one is unreadable.")
+            print("    Usual cause: a multi-line plain scalar containing `: `, or one indented level")
+            print("    with its own key. Use a `>-` block scalar.")
+
     complete = proved and all(proved.values())
     print(f"{node}: typechecks, {len(holes)} declaration(s) using `sorry`")
     for hole in holes:
