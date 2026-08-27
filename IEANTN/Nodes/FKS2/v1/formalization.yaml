@@ -117,7 +117,17 @@ conclusions:
       says the B >= 3/2 restriction can be lifted but the generalised theorem is never stated. So this
       conclusion rests on a derivation the source deliberately declines to write down, plus numerics --
       which is a materially weaker footing than Corollary 14 has, and the reason its solution will need
-      FKS2Numerics conclusions rather than more analysis.
+      FKS2Numerics conclusions rather than more analysis. REFINEMENT of that correction, after reading
+      PrimeNumberTheoremAnd. Saying the row follows from nothing the paper states was itself an over-correction.
+      Corollary 22 does not dominate row 2 on all of [e, inf) -- the ratio in s = sqrt(log x) is about
+      17.1 s^{5/2} e^{-0.42385 s}, peaking near 118.9 at x = e^34.8 -- but it DOES dominate from about
+      x = e^671 onward. PNT+ proves the row by splitting there: Corollary 22 on [e^20000, inf), a numerical
+      quarter transport over extended Table 4 cells on [e^10, e^20000], a Buthe assembler on [e^6, e^10],
+      and one trusted numerical floor on [e, e^6] -- which is exactly the FKS2Numerics.v1.table6_row2_floor
+      already imported here. So the generalised Theorem 3 is not needed; what is needed is numerical inputs
+      and range bookkeeping. Note also that PNT+'s own corollary_26 is proved from the `:= sorry` stub
+      of corollary_23 inside FKS2.lean, not from the proved corollary_23_all downstream, so it takes no
+      benefit from that per-row work.
   designated: fks2-paper
   imports_status: identified
   progress:

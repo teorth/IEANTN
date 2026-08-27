@@ -188,20 +188,25 @@ imports_discovered:
 # --------------------------------------------------------------------------------------------
 remaining:
   - hole: ThetaToPi.corollary_23
-    blocked_by: >-
-      NOT more analysis. Found by trying to prove it: this conclusion does not follow from anything
-      the paper states. Theorem 3 preserves B and C and needs B >= max(3/2, 1 + C^2/(16R));
-      Corollary 14 gives B = 3/2, C = 2, and this row is B = 1/4, C = 1. Nor does it follow from
-      Corollary 22 (A = 121.107, B = 3/2, C = 2): the ratio of the two admissible bounds is
-      121.107 u^{5/2} e^{-u} in u = sqrt(log x / R), peaking at u = 5/2 -- inside the claimed range,
-      x = e^34.8 -- at about 98.24, not <= 0.826. The paper fits Table 6's rows numerically, and its
-      Remark rem-pi2theta says the B >= 3/2 restriction can be lifted but never states the
-      generalisation. Recorded on the node's justification note as a correction.
+    not_from: >-
+      Theorem 3. It preserves B and C and needs B >= max(3/2, 1 + C^2/(16R)); Corollary 14 gives
+      B = 3/2, C = 2 and this row is B = 1/4, C = 1. The paper's Remark rem-pi2theta says the
+      restriction could be lifted but never states the generalisation.
+    route: >-
+      Split the range. Corollary 22 (9.2211 (log x)^{3/2} e^{-0.84768 sqrt(log x)}) does not dominate
+      row 2 on all of [e, inf) -- the ratio in s = sqrt(log x) is about 17.1 s^{5/2} e^{-0.42385 s},
+      peaking near 118.9 at x = e^34.8 -- but it does from about x = e^671. PrimeNumberTheoremAnd
+      proves the row in four pieces: Cor 22 on [e^20000, inf), a numerical quarter transport over
+      extended Table 4 cells on [e^10, e^20000], a Buthe assembler on [e^6, e^10], and one trusted
+      floor on [e, e^6] -- exactly our FKS2Numerics.v1.table6_row2_floor.
     so: >-
-      Either state and prove the generalised Theorem 3 that the paper's remark gestures at (a real
-      piece of mathematics -- the difference is a different bound for m(x0,x)), or carry the row as
-      an FKS2Numerics conclusion. The second is honest and cheap; the first is what a pipelined
-      FKS2.v2 would want.
+      Numerical inputs and range bookkeeping, not new analysis. The generalised Theorem 3 is NOT
+      needed. Expect new FKS2Numerics conclusions for the Table 4 transport and the Buthe range.
+    my_error: >-
+      I first wrote that this followed from Theorem 3 (wrong), then that it followed from nothing the
+      paper states (an over-correction -- the peak figure is right, but it only rules out domination
+      on the WHOLE range). Reading PNT+ settled it. Both are recorded on the node's justification
+      note.
   - hole: ThetaToPi.corollary_26
     needs: >-
       Two routes, and they differ. PrimeNumberTheoremAnd derives it from Corollary 23 (sup of the
