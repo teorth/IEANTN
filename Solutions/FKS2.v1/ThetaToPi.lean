@@ -51,25 +51,100 @@ noncomputable def muAsymp (Aθ B C R x₀ x₁ : ℝ) : ℝ :=
       |(primeCounting x₀ - Li x₀) / (x₀ / log x₀) - (Chebyshev.theta x₀ - x₀) / x₀|
     + 2 * dawson (sqrt (log x₁) - C / (2 * sqrt R)) / sqrt (log x₁)
 
+/-- **The boundary estimate.** The `x₀` boundary term, normalised, is bounded by the first
+summand of `μ_asymp` times the admissible bound at `x`.
+
+After cancelling the constant `|…|`, which appears on both sides, this reduces to
+
+`log x / (x · ε_θ(x)) ≤ log x₁ / (x₁ · ε_θ(x₁))`,
+
+and `log x / (x · ε_θ(x)) = (R^B / Aθ) · g(1, 1-B, C/√R, x)` is exactly the function `Growth.lean`'s
+Corollary 11 shows to be decreasing. The `B ≥ 1 + C²/(16R)` hypothesis is there for this and
+nothing else.
+
+One wrinkle, already recorded as an erratum: `admissibleBound_strictAntiOn` needs that inequality
+*strict*, while the paper's Theorem 3 states `≥`. At equality Lemma 10(b) applies instead, and its
+threshold `exp((C/(4√R))²)` is below `x₁`, so the boundary case is covered — but by a different
+lemma, which is why this is not a one-line appeal to Corollary 11. -/
+theorem boundary_le {Aθ B C R x₀ x₁ x : ℝ} (hR : 0 < R)
+    (hB : max (3 / 2) (1 + C ^ 2 / (16 * R)) ≤ B) (hx₀ : 2 ≤ x₀)
+    (hx₁ : max x₀ (exp ((1 + C / (2 * sqrt R)) ^ 2)) ≤ x₁) (hx : x₁ ≤ x) (hA : 0 < Aθ) :
+    (log x / x) * |primeCounting x₀ - Li x₀ - (Chebyshev.theta x₀ - x₀) / log x₀|
+      ≤ ((x₀ * log x₁) / (admissibleBound Aθ B C R x₁ * x₁ * log x₀)
+          * |(primeCounting x₀ - Li x₀) / (x₀ / log x₀) - (Chebyshev.theta x₀ - x₀) / x₀|)
+        * admissibleBound Aθ B C R x := by
+  sorry
+
+/-- **The integral estimate.** Lemma 12's bound, normalised, is at most the second summand of
+`μ_asymp` times the admissible bound at `x`.
+
+Dividing Lemma 12's conclusion by `x / log x` and then by `ε_θ(x) = Aθ R^{-B}(log x)^B e^{…}`, the
+`Aθ`, `R^{-B}` and exponential factors all cancel and what is left is
+
+`2 · mFactor · (log x)^{1-B} · D₊(√(log x) − C/(2√R))`.
+
+For `B ≥ 3/2` the exponent `(2B-3)/2` is nonnegative, so `mFactor = (log x)^{(2B-3)/2}`, and
+`(2B-3)/2 + 1 - B = -1/2`. The whole thing collapses to
+
+`2 · D₊(√(log x) − C/(2√R)) / √(log x)`,
+
+which `Dawson.dawson_shift_div_antitoneOn` bounds by its value at `x₁`. That is the second summand
+of `μ_asymp`, and the `B ≥ 3/2` hypothesis exists exactly to make `mFactor` resolve this way. -/
+theorem integral_term_le {Aθ B C R x₀ x₁ x : ℝ} (hR : 0 < R)
+    (hB : max (3 / 2) (1 + C ^ 2 / (16 * R)) ≤ B) (hx₀ : 2 ≤ x₀)
+    (hC : C / (2 * sqrt R) ≤ sqrt (log x₀)) (hCpos : 0 ≤ C)
+    (hx₁ : max x₀ (exp ((1 + C / (2 * sqrt R)) ^ 2)) ≤ x₁) (hx : x₁ ≤ x)
+    (h : HasClassicalBound Eθ Aθ B C R x₀) :
+    (log x / x) * |∫ t in x₀..x, (Chebyshev.theta t - t) / (t * (log t) ^ 2)|
+      ≤ (2 * dawson (sqrt (log x₁) - C / (2 * sqrt R)) / sqrt (log x₁))
+        * admissibleBound Aθ B C R x := by
+  sorry
+
 /-- **Theorem 3**, the general `θ → π` conversion, stated as the paper does.
 
 Three things are load-bearing and easy to lose:
 
 * the conclusion starts at `x₁`, not `x₀` — see the module docstring;
 * `A_π` is explicit, `(1 + μ_asymp(x₀, x₁)) A_θ`;
-* `B ≥ max(3/2, 1 + C²/(16R))` is `Growth.lean`'s Corollary 11 hypothesis, which makes the
-  resulting bound decreasing and so lets a single evaluation at `x₁` extend upward.
+* `B ≥ max(3/2, 1 + C²/(16R))` is used twice, once per estimate above.
 
 `hC` is the hypothesis `Integral.lean` documents as missing from the paper's Lemma 12. It is
 implied by the `x₁` threshold but not by anything stated about `x₀`, and Lemma 12 is applied on
-`[x₀, x]`, so it has to be assumed here too. -/
+`[x₀, x]`, so it has to be assumed here too.
+
+Given the two estimates, the rest is `Epi_le` plus the observation that `admissibleBound` is linear
+in `A`. -/
 theorem classicalBound_pi_of_theta
-    {Aθ B C R x₀ x₁ : ℝ} (hR : 0 < R) (hB : max (3 / 2) (1 + C ^ 2 / (16 * R)) ≤ B) (hx₀ : 1 < x₀)
+    {Aθ B C R x₀ x₁ : ℝ} (hR : 0 < R) (hB : max (3 / 2) (1 + C ^ 2 / (16 * R)) ≤ B)
+    (hx₀ : 2 ≤ x₀) (hA : 0 < Aθ) (hCpos : 0 ≤ C)
     (hC : C / (2 * sqrt R) ≤ sqrt (log x₀))
     (hx₁ : max x₀ (exp ((1 + C / (2 * sqrt R)) ^ 2)) ≤ x₁)
     (h : HasClassicalBound Eθ Aθ B C R x₀) :
     HasClassicalBound Eπ ((1 + muAsymp Aθ B C R x₀ x₁) * Aθ) B C R x₁ := by
-  sorry
+  intro x hx
+  have hx₀x₁ : x₀ ≤ x₁ := le_trans (le_max_left _ _) hx₁
+  have hx₀x : x₀ ≤ x := le_trans hx₀x₁ hx
+  have hdecomp := Epi_le hx₀ hx₀x
+  have hθ : Eθ x ≤ admissibleBound Aθ B C R x := h x hx₀x
+  have hbdry := boundary_le hR hB hx₀ hx₁ hx hA
+  have hint := integral_term_le hR hB hx₀ hC hCpos hx₁ hx h
+  have hlin : admissibleBound ((1 + muAsymp Aθ B C R x₀ x₁) * Aθ) B C R x
+      = admissibleBound Aθ B C R x
+        + muAsymp Aθ B C R x₀ x₁ * admissibleBound Aθ B C R x := by
+    unfold admissibleBound; ring
+  rw [hlin]
+  unfold muAsymp
+  have hspread : (((x₀ * log x₁) / (admissibleBound Aθ B C R x₁ * x₁ * log x₀)
+        * |(primeCounting x₀ - Li x₀) / (x₀ / log x₀) - (Chebyshev.theta x₀ - x₀) / x₀|)
+      + 2 * dawson (sqrt (log x₁) - C / (2 * sqrt R)) / sqrt (log x₁))
+        * admissibleBound Aθ B C R x
+      = ((x₀ * log x₁) / (admissibleBound Aθ B C R x₁ * x₁ * log x₀)
+          * |(primeCounting x₀ - Li x₀) / (x₀ / log x₀) - (Chebyshev.theta x₀ - x₀) / x₀|)
+          * admissibleBound Aθ B C R x
+        + (2 * dawson (sqrt (log x₁) - C / (2 * sqrt R)) / sqrt (log x₁))
+          * admissibleBound Aθ B C R x := by ring
+  rw [hspread]
+  linarith
 
 /-- **Corollary 23**, at the row this node states: `Eπ` obeys the classical bound with
 `A = 0.826`, `B = 1/4`, `C = 1`, `R = 5.5666305`, for all `x ≥ e`.

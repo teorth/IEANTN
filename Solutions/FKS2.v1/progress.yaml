@@ -6,7 +6,7 @@
 # `ieantn.py progress`; everything here is judgement and should read like it.
 
 solution: Solutions/FKS2.v1/
-state: in-progress   # corollary_14 and Lemma 12 proved; 3 holes (Thm 3, cor 23, cor 26)
+state: in-progress   # cor_14, Lemma 12, Stieltjes, Dawson monotonicity proved; 4 holes
 source: PrimeNumberTheoremAnd @ ae881f2, PrimeNumberTheoremAnd/IEANTN/FKS2*.lean
 
 # --------------------------------------------------------------------------------------------
@@ -183,6 +183,37 @@ imports_discovered:
       the network changed meaning; `ieantn.py diff` reports the two as informational additions.
 
 # --------------------------------------------------------------------------------------------
+# What is left, and what each piece needs. Written down because the remaining work is well
+# understood rather than blocked -- nothing here is an obstacle in principle.
+# --------------------------------------------------------------------------------------------
+remaining:
+  - hole: ThetaToPi.boundary_le
+    needs: >-
+      log x / (x·ε_θ(x)) is decreasing. It equals (R^B/Aθ)·g(1, 1-B, C/√R, x), which is exactly
+      Growth.lean's Corollary 11. The wrinkle is that admissibleBound_strictAntiOn requires the
+      inequality B > 1 + C²/(16R) STRICT, while Theorem 3 states ≥; at equality Lemma 10(b) applies
+      instead and its threshold exp((C/(4√R))²) sits below x₁, so the boundary case is covered but
+      by a different lemma. A combined "10(a) or 10(b)" wrapper in Growth.lean would make this
+      short.
+  - hole: ThetaToPi.integral_term_le
+    needs: >-
+      Divide Lemma 12 by x/log x and by ε_θ(x); Aθ, R^{-B} and the exponentials cancel, leaving
+      2·mFactor·(log x)^{1-B}·D₊(√(log x) - C/(2√R)). For B ≥ 3/2 the exponent (2B-3)/2 is
+      nonnegative so mFactor = (log x)^{(2B-3)/2}, and (2B-3)/2 + 1 - B = -1/2, collapsing the whole
+      thing to 2·D₊(√(log x) - C/(2√R))/√(log x). dawson_shift_div_antitoneOn then bounds it by its
+      value at x₁. Every ingredient is proved; this is bookkeeping with rpow arithmetic.
+  - hole: ThetaToPi.corollary_23
+    needs: >-
+      Theorem 3 at the Table 6 row, plus Buthe on [e⁶, 10¹⁹] and the finite check on [e, e⁶].
+      Expect new FKS2Numerics conclusions, as corollary_14 needed: at minimum the value of
+      μ_asymp at the relevant x₀, x₁, and a floor for the small range.
+  - hole: ThetaToPi.corollary_26
+    needs: >-
+      Corollary 23 above e, where sup of the admissible bound is ~0.3543 < 0.4298 (the bound is
+      A·u^{2B}e^{-Cu} in u = √(log x/R), peaking at u = 1/2 for B = 1/4), and a direct argument on
+      [2, e) where π(x) = 1. Both look like numerical claims for FKS2Numerics.
+
+# --------------------------------------------------------------------------------------------
 trusted_numerics:
   finding: >-
     PNT+ does not prove FKS2 outright and does not claim to. It threads finite numerical data —
@@ -258,7 +289,11 @@ file_layout:
     - PsiToTheta.lean    # proposition_13 and corollary_14. 2 holes.
     - Integral.lean      # Lemma 12: the u = e^{u²} substitution, the Dawson evaluation, the
                          # integral bound. PROVED, no holes. The heaviest analysis in the port.
-    - ThetaToPi.lean     # theorem_3, corollary_23, corollary_26. 3 holes.
+    - Stieltjes.lean     # partial summation: pi - Li in terms of theta, and the Epi
+                         # decomposition. PROVED, no holes.
+    - ThetaToPi.lean     # theorem_3 (PROVED from two named estimates), corollary_23,
+                         # corollary_26. 4 holes: boundary_le, integral_term_le, and the two
+                         # corollaries.
     - Solution.lean      # the three compared theorems, and nothing else
   still_expected:
     - Support.lean       # vocabulary adapters, if the two spellings turn out to disagree anywhere
