@@ -42,6 +42,10 @@ conclusions:
     conclusion: corollary_5_1
   - node: BKLNW.v1
     conclusion: theta_error_le_one
+  - node: FKS2Numerics.v1
+    conclusion: nu_asymp_e30_le
+  - node: FKS2Numerics.v1
+    conclusion: theta_asymp_ge_one_below_e30
   justifications:
   - id: fks2-paper
     kind: literature
@@ -66,6 +70,10 @@ conclusions:
       change.
   designated: fks2-paper
   imports_status: identified
+  progress:
+    solution: Solutions/FKS2.v1/
+    state: in-progress
+    remaining_holes: 2
 - id: corollary_23
   declaration: FKS2.v1.corollary_23
   challenge: FKS2.v1.challenge_corollary_23
@@ -74,6 +82,8 @@ conclusions:
     conclusion: psi_classical_bound
   - node: Buthe.v1
     conclusion: theorem_2_li_minus_pi
+  - node: FKS2Numerics.v1
+    conclusion: table6_row2_floor
   justifications:
   - id: fks2-paper
     kind: literature
@@ -92,9 +102,38 @@ conclusions:
       the printed corollaries; that was wrong. PDF text extraction silently drops absolute-value bars
       around a displayed fraction, and the definitions were read from extracted text. They have since
       been read from the rendered page, where the bars are plainly there. Nothing about the statements
-      needed to change.
+      needed to change. Imports the paper's own small-x check as FKS2Numerics.v1.table6_row2_floor. That
+      datum pins the x_0 = e threshold this row states: on [e, e^6] the bound is a finite arithmetic check,
+      and only above the window does the asymptotic argument carry it. Upstream threads the same datum
+      as a deliberate `sorry`; separating it into a computational node is what lets a solution here be
+      free of sorryAx while resting on exactly the same computation. CORRECTION, from attempting the proof.
+      The sentence above saying this rests on Corollary 22 is wrong, and so is any reading on which Theorem
+      3 produces it. Theorem 3 preserves B and C and requires B >= max(3/2, 1 + C^2/(16R)); Corollary
+      14 supplies B = 3/2, C = 2, while this row is B = 1/4, C = 1, so Theorem 3 can neither change the
+      parameters nor accept B = 1/4. Nor is the row implied by Corollary 22 (A = 121.107, B = 3/2, C =
+      2): the ratio of the two admissible bounds is 121.107 u^{5/2} e^{-u} in u = sqrt(log x / R), which
+      peaks at u = 5/2 -- inside the claimed range, at x = e^34.8 -- with value about 98.24, not <= 0.826.
+      What the paper does is fit Table 6's rows to numerical data and verify them; its Remark rem-pi2theta
+      says the B >= 3/2 restriction can be lifted but the generalised theorem is never stated. So this
+      conclusion rests on a derivation the source deliberately declines to write down, plus numerics --
+      which is a materially weaker footing than Corollary 14 has, and the reason its solution will need
+      FKS2Numerics conclusions rather than more analysis. REFINEMENT of that correction, after reading
+      PrimeNumberTheoremAnd. Saying the row follows from nothing the paper states was itself an over-correction.
+      Corollary 22 does not dominate row 2 on all of [e, inf) -- the ratio in s = sqrt(log x) is about
+      17.1 s^{5/2} e^{-0.42385 s}, peaking near 118.9 at x = e^34.8 -- but it DOES dominate from about
+      x = e^671 onward. PNT+ proves the row by splitting there: Corollary 22 on [e^20000, inf), a numerical
+      quarter transport over extended Table 4 cells on [e^10, e^20000], a Buthe assembler on [e^6, e^10],
+      and one trusted numerical floor on [e, e^6] -- which is exactly the FKS2Numerics.v1.table6_row2_floor
+      already imported here. So the generalised Theorem 3 is not needed; what is needed is numerical inputs
+      and range bookkeeping. Note also that PNT+'s own corollary_26 is proved from the `:= sorry` stub
+      of corollary_23 inside FKS2.lean, not from the proved corollary_23_all downstream, so it takes no
+      benefit from that per-row work.
   designated: fks2-paper
   imports_status: identified
+  progress:
+    solution: Solutions/FKS2.v1/
+    state: in-progress
+    remaining_holes: 2
 - id: corollary_26
   declaration: FKS2.v1.corollary_26
   challenge: FKS2.v1.challenge_corollary_26
@@ -126,6 +165,10 @@ conclusions:
   designated: fks2-paper
 
   imports_status: identified
+  progress:
+    solution: Solutions/FKS2.v1/
+    state: in-progress
+    remaining_holes: 2
 sources:
 - title: "Sharper bounds for the error term in the prime number theorem"
   authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]

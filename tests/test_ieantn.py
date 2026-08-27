@@ -801,6 +801,65 @@ class TestTracedStatus(FixtureRepo):
         self.assertIn("not yet traced to its sources", printed.getvalue())
 
 
+class TestProgressMarker(FixtureRepo):
+    """A partial solution is tracked, and is never mistaken for evidence.
+
+    `justification` records what a claim rests on; `progress` records what someone is doing. A
+    partial proof with seven holes supports nothing, and conflating the two would corrupt the one
+    report this repository exists to produce.
+    """
+
+    def _with_progress(self, marker: str) -> None:
+        self.write_node("A.v1", LITERATURE.replace(
+            "  designated: paper", "  designated: paper" + chr(10) + marker))
+
+    def test_a_well_formed_marker_passes(self) -> None:
+        self._with_progress("  progress:" + chr(10)
+                            + "    solution: Solutions/A.v1/" + chr(10)
+                            + "    state: in-progress" + chr(10)
+                            + "    remaining_holes: 7")
+        self.assertTrue(ieantn.check_graph())
+
+    def test_an_unknown_state_is_refused(self) -> None:
+        self._with_progress("  progress:" + chr(10) + "    state: nearly-there")
+        self.assertFalse(ieantn.check_graph())
+
+    def test_a_hand_written_hole_count_must_be_a_number(self) -> None:
+        """It is derived by `progress --write`; a string here means someone typed a guess."""
+        self._with_progress("  progress:" + chr(10)
+                            + "    state: in-progress" + chr(10)
+                            + '    remaining_holes: "about seven"')
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            passed = ieantn.check_graph()
+        self.assertFalse(passed)
+        self.assertIn("derive it", printed.getvalue())
+
+    def test_a_marker_left_on_a_verified_conclusion_is_refused(self) -> None:
+        """`record-receipt` clears it; one left behind says work is outstanding on something
+        already done."""
+        self.write_node("A.v1", LITERATURE.replace(
+            "      kind: literature", "      kind: lean-comparator").replace(
+            "  designated: paper",
+            "  designated: paper" + chr(10) + "  progress:" + chr(10) + "    state: in-progress"))
+        (self.root / "receipts").mkdir(exist_ok=True)
+        (self.root / "receipts" / "A.v1.main.json").write_text(
+            json.dumps({"conclusion": "A.v1.main"}), encoding="utf-8")
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            passed = ieantn.check_graph()
+        self.assertFalse(passed)
+        self.assertIn("already done", printed.getvalue())
+
+    def test_a_missing_solution_is_reported_not_crashed(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            passed = ieantn.progress("A.v1", write=False)
+        self.assertFalse(passed)
+        self.assertIn("no solution", printed.getvalue())
+
+
 class TestGraphPage(FixtureRepo):
     """`GRAPH.md`: the network as a page someone can read without cloning anything.
 

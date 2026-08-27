@@ -36,7 +36,8 @@ Solutions/<Family>.<version>/    proofs — separate Lake projects, not in the c
 receipts/                        one JSON file per Lean-verified conclusion
 fingerprints.json, STATE.md,     generated and committed, so a change of meaning is a diff line
 GRAPH.md, docs/nodes/
-docs/                            ARCHITECTURE.md, NODES.md, ROADMAP.md, SOURCES.md
+docs/                            ARCHITECTURE.md, NODES.md, ROADMAP.md, SOURCES.md,
+                                 SOLUTIONS.md
 ```
 
 The core build is Vocabulary and Nodes only, and is deliberately fast. Solution verification is a

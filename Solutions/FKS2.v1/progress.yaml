@@ -1,0 +1,323 @@
+# Port plan for FKS2.v1, mapped against PrimeNumberTheoremAnd.
+#
+# Best-practice file, not a schema CI enforces — see docs/SOLUTIONS.md. Its job is to make the
+# shape of a long port visible before anyone starts, so the work can be split, resumed, and
+# audited. `remaining_holes` on the node's formalization.yaml is derived from the build by
+# `ieantn.py progress`; everything here is judgement and should read like it.
+
+solution: Solutions/FKS2.v1/
+state: in-progress   # ALL the analysis is proved; 2 holes, both needing numerical inputs
+source: PrimeNumberTheoremAnd @ ae881f2, PrimeNumberTheoremAnd/IEANTN/FKS2*.lean
+
+# --------------------------------------------------------------------------------------------
+# What has to be proved, and what already exists upstream.
+# --------------------------------------------------------------------------------------------
+targets:
+  - conclusion: corollary_14
+    upstream: PrimeNumberTheoremAnd.IEANTN.FKS2.corollary_14      # FKS2.lean:1645
+    upstream_state: proved
+    statement_match: >-
+      Exact. Upstream is `Eθ.classicalBound 121.0961 (3/2) 2 5.5666305 2`; ours is
+      `HasClassicalBound Eθ 121.0961 (3/2) 2 5.5666305 2`. PNT+'s Defs.lean has
+      `Eθ.classicalBound A B C R x₀ := ∀ x ≥ x₀, Eθ x ≤ admissible_bound A B C R x`, which is our
+      `HasClassicalBound` with the error term as a parameter rather than a namespace. A thin
+      adapter, not a restatement.
+    depends_on: [proposition_13, corollary_11, lemma_10a, lemma_10b, lemma_10c]
+
+  - conclusion: corollary_23
+    upstream: PrimeNumberTheoremAnd.IEANTN.FKS2Cor23All.corollary_23_all
+    upstream_state: proved-modulo-trusted-numerics
+    statement_match: >-
+      Ours is one row of Table 6; upstream quantifies over the whole table
+      (`[Aπ, B, C, x₀] ∈ table6`). Ours follows by membership, so the port is upstream's theorem
+      plus a row lookup — and upstream's stronger form is worth keeping as a second conclusion
+      later.
+    depends_on: [corollary_14, integral_asymp_bound, table6]
+
+  - conclusion: corollary_26
+    upstream: PrimeNumberTheoremAnd.IEANTN.FKS2.corollary_26      # FKS2.lean:4798
+    upstream_state: proved-but-on-a-stub
+    statement_match: >-
+      Exact: upstream `Eπ.bound 0.4298 2`, ours `HasNumericalBound Eπ 0.4298 2`, and
+      `Eπ.bound ε x₀ := ∀ x ≥ x₀, Eπ x ≤ ε` matches `HasNumericalBound`.
+    note: >-
+      Upstream's proof is complete, but it applies `corollary_23`, which inside FKS2.lean is a
+      forward declaration `:= sorry` — the real proof lives in FKS2Cor23All. So porting this one
+      requires porting corollary_23 first, or reproducing that layering.
+    depends_on: [corollary_23]
+
+# --------------------------------------------------------------------------------------------
+# The thing that actually decides this port.
+# --------------------------------------------------------------------------------------------
+# Statement errors found by checking the sketch against the paper, not by failing to prove it.
+# --------------------------------------------------------------------------------------------
+statement_audit:
+  method: >-
+    Read the paper's own statements (source/FKS2-2023-error-term-PNT/FKS2.tex) against each
+    sketched Lean statement before attempting any proof. Every error below was in a file that
+    compiled: a statement can be wrong in shape and still typecheck, so "it builds" is no evidence
+    at all about faithfulness. This pass is cheap and belongs BEFORE the proving, not after.
+  found:
+    - where: Growth.lean, lemma 10(b)
+      error: sketched as `∃ X, ...`; the paper gives the threshold EXPLICITLY
+      why_it_matters: >-
+        `exp((c/(4a) + √(c²/4+4ab)/(2a))²)` is precisely where FKS2's `x₀`s come from. The
+        existential discards the one thing the paper needs downstream.
+      status: fixed and proved
+    - where: ThetaToPi.lean, Theorem 3
+      error: conclusion stated from `x₀`; the paper concludes only from a SECOND threshold `x₁`
+      why_it_matters: >-
+        `x₁ ≥ max{x₀, exp((1 + C/(2√R))²)}` (the paper's def-x1). Stating it at `x₀` claims
+        strictly MORE than the source proves — the dangerous direction, and invisible to the
+        compiler.
+      status: fixed
+    - where: ThetaToPi.lean, Theorem 3
+      error: sketched as `∃ Aπ`; the paper gives `A_π = (1 + μ_asymp(x₀,x₁)) A_θ`
+      status: fixed
+    - where: ThetaToPi.lean, the integral lemma
+      error: sketched conclusion was invented, not the paper's Lemma 12
+      why_it_matters: >-
+        The real lemma bounds ∫|(θ(t)-t)/(t log²t)|dt by an explicit Dawson expression with the
+        `m(x₀,x)` factor. Nothing resembling the sketch appears in the paper.
+      status: fixed; Dawson.lean added because the statement needs D₊
+  confirmed_correct:
+    - >-
+      Proposition 13's hypothesis `B > C²/(8R)` is the paper's, and note the 8 rather than 16: the
+      binding case is g(1/2,·), where Lemma 10(a) at a=1/2, b=-B, c=C/√R reads -B < -C²/(8R).
+    - >-
+      nuAsymp matches (nu_asymp) exactly, including the x₀^{-1/2} and x₀^{-2/3} exponents, which
+      come from BKLNW's x^{1/2}, x^{1/3} divided by x. The 2/3 is not a typo for 1/3.
+    - >-
+      g, and all three cases of Lemma 10, match (def-g) and the lemma verbatim.
+
+# --------------------------------------------------------------------------------------------
+errata_in_the_source:
+  - lemma: 10(c)
+    published: "decreases for all √(log x) > -2b/c"
+    correct: "<, not >"
+    evidence: >-
+      The paper CONTRADICTS ITSELF: its own proof of the lemma says "If a=0, it is negative when
+      u < -2b/c". So this is not a judgement call about what the authors meant — the proof settles
+      it. PrimeNumberTheoremAnd also flags it. Our g_strictAntiOn_of_a_zero states the corrected
+      form.
+  - lemma: Corollary 11 (decreasing_func_corollary)
+    published: "If B ≥ 1 + C²/(16R) then g(1, 1-B, C/√R, x) is decreasing for all x"
+    correct: >-
+      The inequality must be strict. At equality b = -c²/(16a) exactly, so Lemma 10(a) does not
+      apply and 10(b) gives decrease only beyond exp((c/(4a))²) — not "for all x".
+    ours: >-
+      admissibleBound_strictAntiOn requires `1 + C²/(16R) < B`. That is a STRONGER hypothesis than
+      the paper's, so our lemma is weaker than the paper's claim; flagged here rather than passed
+      over silently. Nothing downstream needs the boundary case.
+
+# --------------------------------------------------------------------------------------------
+# Not errors, but worth recording: places the paper is loose, and which direction the slack runs.
+# --------------------------------------------------------------------------------------------
+observations_in_the_source:
+  - what: nu_asymp carries a log(x₀) that (28) evaluated at x₀ does not
+    detail: >-
+      The paper's (nu_asymp) has `a₁ log(x₀) x₀^{-1/2} + a₂ log(x₀) x₀^{-2/3}`. Evaluating the
+      paper's own (28) at x₀ gives the same thing without the two log(x₀) factors, and BKLNW's
+      Corollary 5.1 — checked in the BKLNW source, not inferred — has no logarithm either: it is
+      `ψ(x) - θ(x) ≤ a₁x^{1/2} + a₂x^{1/3}` flat.
+    direction: >-
+      SAFE. A larger ν means a larger A_θ and so a weaker claim, by a factor of about 30 at
+      x₀ = e³⁰. Corollary 14's 121.0961 is unaffected, and our verbatim transcription stays
+      provable.
+    action: >-
+      Transcribed verbatim and flagged. Tightening a published constant on our own initiative is
+      precisely what this repository must not do.
+  - what: Lemma 12 needs C/(2√R) ≤ √(log x₀), and the paper does not say so
+    detail: >-
+      Its last step drops the lower endpoint, `∫_{a-d}^{b-d} e^{v²} ≤ ∫_0^{b-d} e^{v²}` with
+      a = √(log x₀), d = C/(2√R). That holds only if a ≥ d; when a < d the left integral is
+      strictly LARGER, since the integrand is positive and the extra stretch is traversed forwards.
+      So Lemma 12 as printed is false without it.
+    direction: >-
+      Ours carries `hC` as an explicit hypothesis, and Theorem 3 has to assume it too, because
+      Lemma 12 is applied on [x₀, x] while the paper's own second threshold constrains only x₁.
+    harmless_in_practice: >-
+      Corollary 23 has C = 1, R = 5.5666305, so the requirement is x₀ ≥ 1.046. Presumably why it
+      was never noticed. Note the paper's x₁ ≥ exp((1 + C/(2√R))²) is a strictly stronger condition
+      of the same shape, so the authors had the issue in view at Theorem 3 and not at Lemma 12.
+    lesson: >-
+      Found by formalizing. The statement audit did not flag it and neither did the first draft of
+      the file; only working through the proof did.
+  - what: Proposition 13 needs x₀ ≥ e, and the paper does not say so
+    detail: >-
+      Found by proving it, not by reading it. The log(x₀) in the printed ν_asymp is spare only
+      while log(x₀) ≥ 1; below e it becomes a deficit and the proposition is FALSE. Take x = x₀,
+      a₁ = 1, a₂ = 0 and the claim reduces to 1 ≤ log x₀.
+    direction: >-
+      Ours carries `exp 1 ≤ x₀` as an explicit hypothesis. Corollary 14 uses x₀ = e³⁰, so nothing
+      downstream is affected — but a later reuse of Proposition 13 at small x₀ would be unsound,
+      which is why it is a hypothesis rather than a remark.
+    lesson: >-
+      The statement audit against the paper did not catch this; only the proof did. Reading and
+      proving find different classes of error, and neither substitutes for the other.
+  - what: the paper drops a factor R^B when rewriting its integrands in terms of g
+    detail: >-
+      Both (theta_asymp_1) and decreasing_func_corollary equate expressions in (log x / R)^{±B}
+      with g(·,·,·,x), whose definition uses (log x)^b. The two differ by R^B.
+    direction: >-
+      HARMLESS. Both are used only for monotonicity, and a positive constant factor does not
+      affect whether a function decreases.
+
+# --------------------------------------------------------------------------------------------
+# Dependencies the network did not know it had. This is the payoff the plan predicted.
+# --------------------------------------------------------------------------------------------
+imports_discovered:
+  - conclusion: FKS2.v1.corollary_14
+    recorded_before: 3
+    actual: 5
+    missing:
+      - FKS2Numerics.v1.nu_asymp_e30_le
+      - FKS2Numerics.v1.theta_asymp_ge_one_below_e30
+    how_found: >-
+      By proving it. Neither was an obstacle — each is a finite check the paper performs and states,
+      and the proof needs them as hypotheses. They were invisible dependencies of a conclusion this
+      network already carried.
+    note: >-
+      Both were added to FKS2Numerics.v1, which its own docstring invited: "Add them when something
+      does — the shape below is the pattern." No existing fingerprint changed, so nothing already in
+      the network changed meaning; `ieantn.py diff` reports the two as informational additions.
+
+# --------------------------------------------------------------------------------------------
+# What is left, and what each piece needs. Written down because the remaining work is well
+# understood rather than blocked -- nothing here is an obstacle in principle.
+# --------------------------------------------------------------------------------------------
+remaining:
+  - hole: ThetaToPi.corollary_23
+    not_from: >-
+      Theorem 3. It preserves B and C and needs B >= max(3/2, 1 + C^2/(16R)); Corollary 14 gives
+      B = 3/2, C = 2 and this row is B = 1/4, C = 1. The paper's Remark rem-pi2theta says the
+      restriction could be lifted but never states the generalisation.
+    route: >-
+      Split the range. Corollary 22 (9.2211 (log x)^{3/2} e^{-0.84768 sqrt(log x)}) does not dominate
+      row 2 on all of [e, inf) -- the ratio in s = sqrt(log x) is about 17.1 s^{5/2} e^{-0.42385 s},
+      peaking near 118.9 at x = e^34.8 -- but it does from about x = e^671. PrimeNumberTheoremAnd
+      proves the row in four pieces: Cor 22 on [e^20000, inf), a numerical quarter transport over
+      extended Table 4 cells on [e^10, e^20000], a Buthe assembler on [e^6, e^10], and one trusted
+      floor on [e, e^6] -- exactly our FKS2Numerics.v1.table6_row2_floor.
+    so: >-
+      Numerical inputs and range bookkeeping, not new analysis. The generalised Theorem 3 is NOT
+      needed. Expect new FKS2Numerics conclusions for the Table 4 transport and the Buthe range.
+    my_error: >-
+      I first wrote that this followed from Theorem 3 (wrong), then that it followed from nothing the
+      paper states (an over-correction -- the peak figure is right, but it only rules out domination
+      on the WHOLE range). Reading PNT+ settled it. Both are recorded on the node's justification
+      note.
+  - hole: ThetaToPi.corollary_26
+    needs: >-
+      Two routes, and they differ. PrimeNumberTheoremAnd derives it from Corollary 23 (sup of the
+      admissible bound on [e, inf) is about 0.3543 < 0.4298, plus a direct argument on [2, e) where
+      pi(x) = 1); that inherits Corollary 23's problem above. THE PAPER DOES NOT GO THAT WAY: its
+      proof of cor:weak is numerical throughout -- the 25 prime intervals below 97, Buthe's Theorem 2
+      on [97, 10^19], and its own numerical proposition with Table 4 above 10^19. The node's recorded
+      imports follow the paper, not upstream.
+
+# --------------------------------------------------------------------------------------------
+trusted_numerics:
+  finding: >-
+    PNT+ does not prove FKS2 outright and does not claim to. It threads finite numerical data —
+    prime counts, quadratures, table rows — as deliberate `sorry`s: 13 in FKS2TrustedNumerics,
+    25 in FKS2Cor24TrustedNumerics, 2 in FKS2.lean, and 2–4 in most Cor24 rows. Its own docstring
+    says `#print axioms corollary_23_all` reports `sorryAx`.
+  consequence: >-
+    A wholesale copy could never pass Comparator, which permits only propext, Classical.choice
+    and Quot.sound. This is not a "finish the proof" problem; it is structural.
+  opportunity: >-
+    It is also exactly what this network is for. PNT+ threads those data as `sorry` because it has
+    no import mechanism; IEANTN threads them as HYPOTHESES of a conditional theorem, which is what
+    `new-solution` already scaffolded. So the port is: replace each trusted-numeric `sorry` with
+    an import hypothesis. Every one that has no node yet is a real, previously-invisible dependency
+    of FKS2 — and finding them is worth as much as the proof.
+  expectation: >-
+    FKS2.v1 currently records three imports. Expect that to grow. Treat each new one as a finding
+    to record, not an obstacle.
+
+# --------------------------------------------------------------------------------------------
+# Scale, and what not to copy.
+# --------------------------------------------------------------------------------------------
+upstream_closure:
+  modules: 76
+  lines: 63394
+  warning: >-
+    Most of that must NOT be ported. The analytic PNT machinery — Wiener (4382), MediumPNT (4282),
+    ZetaBounds (3668), MellinCalculus (1535) — is not used by FKS2's explicit arguments; it arrives
+    through two wide imports only: SecondaryDefinitions → Consequences → Wiener, and
+    RosserSchoenfeldPrime → MediumPNT → ZetaBounds. Cutting those two edges should remove most of
+    the closure. Establish what FKS2 genuinely needs from SecondaryDefinitions before copying it.
+  decisions_taken:
+    - what: Architect
+      decision: >-
+        Stripped. It carries blueprint metadata and no proof content.
+    - what: LeanCert
+      decision: >-
+        Deferred to the numerical side. The analytic files here need no interval arithmetic; the
+        finite checks that do are now FKS2Numerics.v1's problem, and its eventual solution can
+        take the dependency without this one carrying it.
+    - what: numerical claims
+      decision: >-
+        Spun off into FKS2Numerics.v1, so that what upstream must leave as a hole arrives here as
+        a hypothesis.
+  external_dependencies:
+    - name: Architect
+      role: LeanArchitect blueprint metadata (`@[blueprint ...]`)
+      action: strip — CLAUDE.md's porting guidance already says so, and it carries no proof content
+    - name: LeanCert.Tactic.IntervalAuto
+      role: interval-arithmetic tactic, load-bearing for the numerical steps
+      action: >-
+        decide deliberately. Vendoring it means a Git dependency in the solution's lakefile, which
+        solutions may have; but a node that is ever spun off for Palomar puts every such dependency
+        through preservation forking. Re-proving the numerics without it is the alternative.
+
+# --------------------------------------------------------------------------------------------
+# One file or many.
+# --------------------------------------------------------------------------------------------
+file_layout:
+  decision: multi-file
+  rationale: >-
+    Lake elaborates files in parallel and rebuilds only what changed. A single 10,000-line file
+    re-elaborates in full on every edit and cannot parallelise, which is the wrong trade for a port
+    that will be iterated on heavily. Readability is not the argument — solutions are not read —
+    build time is.
+  precedent: Solutions/Lcm.v2 already splits LcmDev.lean (development) from Solution.lean (the
+    compared theorems), and Comparator only ever sees the latter.
+  current:
+    - Growth.lean        # lemma_10a/b/c, corollary_11 — the monotonicity toolkit. DONE, no holes.
+    - Dawson.lean        # D₊(x) = e^{-x²}∫₀ˣe^{t²}dt. Mathlib has no Dawson function, and
+                         # Theorem 3 cannot be STATED without it. Positivity and the
+                         # differential equation D₊' = 1 - 2x D₊ are proved; no holes.
+    - PsiToTheta.lean    # proposition_13 and corollary_14. 2 holes.
+    - Integral.lean      # Lemma 12: the u = e^{u²} substitution, the Dawson evaluation, the
+                         # integral bound. PROVED, no holes. The heaviest analysis in the port.
+    - Stieltjes.lean     # partial summation: pi - Li in terms of theta, and the Epi
+                         # decomposition. PROVED, no holes.
+    - ThetaToPi.lean     # theorem_3 PROVED outright, with both its estimates. 2 holes:
+                         # corollary_23 and corollary_26.
+    - Solution.lean      # the three compared theorems, and nothing else
+  still_expected:
+    - Support.lean       # vocabulary adapters, if the two spellings turn out to disagree anywhere
+    - Tables.lean        # table6 and the row lookups, once corollary_23 needs more than one row
+  note: >-
+    Mirror upstream's own split where it is already sensible: its per-row Cor23Row*.lean files
+    exist for the same build-time reason and are worth keeping as separate files.
+
+# --------------------------------------------------------------------------------------------
+order:
+  - >-
+    DONE — Growth.lean. Taken first because it mentions no primes and both conversions rest on it,
+    so a wrong statement there would surface only after everything above it was built. That
+    instinct paid off; see statement_audit above.
+  - >-
+    DONE — the statement audit. Read the paper against every sketched statement BEFORE proving.
+    Four were wrong, in files that compiled. Cheapest hour in the port.
+  - >-
+    Proposition 13, which needs the two g-decreasing facts from Growth.lean and nothing else
+    analytic. The first real use of the monotonicity toolkit.
+  - >-
+    Lemma 12 and Theorem 3, which need the Dawson development. This is the bulk of the analysis.
+  - >-
+    corollary_14, then corollary_23 where the trusted numerics appear, then corollary_26, which is
+    short once corollary_23 is in place.

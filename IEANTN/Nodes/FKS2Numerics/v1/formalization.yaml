@@ -1,0 +1,146 @@
+# Node metadata for `FKS2.v1`.  See docs/NODES.md.
+#
+# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
+# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+version: "v0.4"
+
+node:
+  id: FKS2Numerics.v1
+  family: FKS2Numerics
+  version: v1
+  kind: computation
+  status: stub
+project:
+  name: FKS2's finite numerical checks
+  description: >-
+    The bounded-range arithmetic that FKS2's corollaries rest on, separated from the analysis that consumes
+    it. Same paper as FKS2.v1, different kind of claim: this is a computation someone ran, not an argument
+    a referee read, and keeping the two apart lets a consumer see which half of its trust is which.
+  authors:
+  - Terence Tao
+  license: Apache-2.0
+  responsible_maintainers:
+  - Terence Tao
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11N05
+  - 11Y70
+
+conclusions:
+- id: table6_row2_floor
+  declaration: FKS2Numerics.v1.table6_row2_floor
+  challenge: FKS2Numerics.v1.challenge_table6_row2_floor
+  imports: []
+  imports_status: none
+  justifications:
+  - id: fks2-computation
+    kind: numerical
+    source: FKS2
+    locator: Sections 5.2-5.3, the direct check for small x behind Table 6's row 2
+    note: >-
+      A finite check rather than an argument, so `numerical`. On the window [e, e^6] -- x between 2.72
+      and 403 -- pi(x) is an exact prime count and Li(x) a certified quadrature, so the claim is bounded
+      arithmetic with no analytic content. The paper describes it as checking directly for particularly
+      small x. Imports `none`, and that is a real none: a finite computation on a bounded range consumes
+      no other result in the network. PrimeNumberTheoremAnd carries the same datum as a deliberate `sorry`
+      in its FKS2TrustedNumerics -- it has no import mechanism, so its FKS2 development reports sorryAx.
+      Stating it here is what lets FKS2.v1's solution rest on the same computation without a hole.
+  designated: fks2-computation
+- id: nu_asymp_e30_le
+  declaration: FKS2Numerics.v1.nu_asymp_e30_le
+  challenge: FKS2Numerics.v1.challenge_nu_asymp_e30_le
+  imports: []
+  imports_status: none
+  justifications:
+  - id: fks2-multiplier-computation
+    kind: numerical
+    source: FKS2
+    locator: the proof of Corollary 14, at the displayed bound nu_asymp(x0) <= 6.3376e-7
+    note: >-
+      A closed-form real number compared against a constant, so `numerical`. Evaluating it means
+      evaluating BKLNW's a2(30), hence the sums f(e^30) and f(2^44) -- about forty rpow terms each --
+      together with one exp and one rpow at the front. No analytic content.
+
+      Imports `none`, and that is a real none. The expression mentions BKLNW's `a2`, but `a2` is a
+      DEFINITION, not a theorem: nothing here rests on BKLNW's Corollary 5.1 being true, only on what
+      the symbol denotes. The dependency on that corollary lives where it belongs, on
+      FKS2.v1.corollary_14, which is what uses the bound it states.
+
+      Found by porting, not by reading. FKS2.v1.corollary_14 recorded three imports and needed five;
+      this is one of the two nobody had written down.
+  designated: fks2-multiplier-computation
+- id: theta_asymp_ge_one_below_e30
+  declaration: FKS2Numerics.v1.theta_asymp_ge_one_below_e30
+  challenge: FKS2Numerics.v1.challenge_theta_asymp_ge_one_below_e30
+  imports: []
+  imports_status: none
+  justifications:
+  - id: fks2-small-range-computation
+    kind: numerical
+    source: FKS2
+    locator: >-
+      the proof of Corollary 14, where the minimum of epsilon_theta,asymp on [2, e^30] is recorded as
+      roughly 2.6271 at x = 2
+    note: >-
+      What lets BKLNW's E_theta(x) <= 1 cover [2, e^30], the range below where FKS's bound starts.
+
+      Weaker in kind than the other two claims on this node, and the difference is worth stating.
+      table6_row2_floor and nu_asymp_e30_le are arithmetic that no amount of analysis will replace.
+      This one quantifies over a continuum and is PROVABLE OUTRIGHT: writing u = sqrt(log x / R), the
+      bound is A u^3 exp(-2u), which rises to its maximum at u = 3/2, so on any interval its minimum
+      is at an endpoint and only the endpoint evaluation is numerical. It is carried as an assertion
+      because that is how the paper carries it, and it is the first conclusion on this node that
+      should be promoted to a proof.
+
+      Found by porting, not by reading -- the second of the two missing imports of
+      FKS2.v1.corollary_14.
+  designated: fks2-small-range-computation
+sources:
+- title: Sharper bounds for the error term in the Prime Number Theorem
+  authors:
+  - Andrew Fiori
+  - Habiba Kadiri
+  - Joshua Swidinsky
+  type: paper
+  id: arXiv:2206.12557
+  location: arXiv:2206.12557; the numerical checks behind Table 6
+  relationship: formalizes
+  note: >-
+    The same paper as FKS2.v1. Split by the kind of claim, not by the source.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Separated the paper's finite numerical checks from its analysis so that the FKS2 port can take them
+      as hypotheses rather than holes, under the direction of the maintainer. No proof is claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    The statement and its window were read from upstream's FKS2TrustedNumerics, which documents the datum
+    and its provenance; the paper's own sections were not re-read for this.
+limitations:
+- >-
+  A finite computation asserted on the paper's authority. Nothing here is proved in Lean, and the check
+  has not been re-run.
+- >-
+  `theta_asymp_ge_one_below_e30` is not a finite check at all: it quantifies over [2, e^30] and is
+  provable outright, only its endpoint evaluation being numerical. Asserting it is weaker than the node's
+  other two claims deserve to be read as, and it should be promoted to a proof.
+- >-
+  Only Table 6's row 2 is stated, because it is the only floor a stated FKS2.v1 conclusion consumes. The
+  paper's other rows, and its Table 7, have their own; upstream states ten and twenty-five respectively.
+- >-
+  A floor, not a tail bound. It says nothing above e^6 and does not compose upward by monotonicity.
+- >-
+  No novelty is claimed. The computation is the paper's.

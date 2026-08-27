@@ -580,6 +580,157 @@ def verify(node: str, branch: str, dispatch: bool) -> bool:
         time.sleep(20)
 
 
+PROGRESS_STATES = {"in-progress", "stalled", "abandoned"}
+
+
+def solution_holes(node: str) -> tuple[bool, list[str], dict[str, bool]] | None:
+    """Build `Solutions/<node>` and report where it is incomplete.
+
+    Returns `(built, holes, proved)` — whether it typechecks at all, the `file:line` of every
+    declaration that uses `sorry`, and for each compared theorem whether it is genuinely proved.
+
+    The last of those is the one that matters, and it is why this does not simply grep for the word
+    `sorry`. A declaration can contain no `sorry` and still not be proved, because something it
+    depends on has one; `#print axioms` sees that and a text search does not. It is also what
+    Comparator will check, so this is a cheap local preview of the verdict — minus the sandbox, the
+    second kernel, and the receipt, none of which this can or should substitute for.
+    """
+    directory = SOLUTIONS / node
+    if not (directory / "lakefile.toml").is_file() and not (directory / "lakefile.lean").is_file():
+        return None
+
+    built = subprocess.run(["lake", "build"], cwd=directory, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace")
+    if built.returncode != 0:
+        # It does not typecheck at all, which is a different and worse state than having holes.
+        return (False, [], {})
+
+    config = directory / "comparator.json"
+    settings = json.loads(config.read_text(encoding="utf-8"))
+    names = settings.get("theorem_names") or []
+
+    # The holes are counted by re-elaborating, NOT from the `lake build` above. Lean emits
+    # `declaration uses 'sorry'` only when it actually compiles a file, so on an up-to-date build
+    # the warnings are simply absent and a count taken from them silently reads zero -- which is
+    # exactly what this reported the first time it was run against a scaffolded solution with three
+    # open goals. `lake env lean` re-elaborates and always emits them.
+    # Every top-level file, not just the compared one. A solution is split across files for build
+    # time -- see docs/SOLUTIONS.md -- so the holes are usually in a sibling, and elaborating only
+    # the root reports zero while three theorems are plainly open. That is what this did first.
+    holes: list[str] = []
+    for source in sorted(directory.glob("*.lean")):
+        fresh = subprocess.run(["lake", "env", "lean", source.name], cwd=directory,
+                               capture_output=True, text=True, encoding="utf-8", errors="replace")
+        seen_output = (fresh.stdout or "") + (fresh.stderr or "")
+        # An elaboration that FAILED emits no `declaration uses` warnings, so scanning only for
+        # those reads a failure as "no holes" -- the same silent zero this whole routine exists to
+        # avoid, one level up. Seen in practice: a transient `failed to read file ...olean.private`
+        # on Windows turned four open goals into a clean bill of health, and `--write` would have
+        # recorded `remaining_holes: 0` on the node. Treat it as unbuildable instead.
+        if fresh.returncode != 0 or re.search(r"^error:|: error:", seen_output, re.MULTILINE):
+            print(f"  re-elaborating {source.name} failed, so its holes cannot be counted:")
+            for line in seen_output.splitlines()[:3]:
+                # Lean's output carries goal characters like U+22A2 that a cp1252 console cannot
+                # encode, and an uncaught UnicodeEncodeError here would replace a useful diagnostic
+                # with a traceback. Report is best-effort; the exit status is what matters.
+                print("    " + line.encode("ascii", "replace").decode("ascii"))
+            return (False, [], {})
+        holes += [
+            f"{pathlib.PurePosixPath(m.group(1)).name}:{m.group(2)}"
+            for m in re.finditer(r"([^\s:]+):(\d+):\d+: warning: declaration uses", seen_output)
+        ]
+    holes = sorted(set(holes))
+    if not names:
+        return (True, holes, {})
+
+    probe = directory / "_ieantn_axioms.lean"
+    probe.write_text("import Solution\n"
+                     + "".join(f"#print axioms {name}\n" for name in names),
+                     encoding="utf-8", newline="\n")
+    try:
+        checked = subprocess.run(["lake", "env", "lean", probe.name], cwd=directory,
+                                 capture_output=True, text=True, encoding="utf-8",
+                                 errors="replace")
+    finally:
+        probe.unlink(missing_ok=True)
+    seen = (checked.stdout or "") + (checked.stderr or "")
+    proved = {}
+    for name in names:
+        line = next((l for l in seen.splitlines() if l.startswith(f"'{name}'")), "")
+        proved[name] = bool(line) and "sorryAx" not in line
+    return (True, holes, proved)
+
+
+def progress(node: str, write: bool) -> bool:
+    """Report how far a solution has got, and optionally record it.
+
+    `CONTRIBUTING.md` asks for a `progress` block carrying `remaining_holes`. Hand-maintaining that
+    number is the silent-drift defect this repository keeps meeting, so `--write` derives it from
+    the build instead.
+    """
+    nodes = load_nodes()
+    if node not in nodes:
+        print(f"no such node: {node}")
+        return False
+    result = solution_holes(node)
+    if result is None:
+        print(f"{node}: no solution under {rel(SOLUTIONS / node)}")
+        return False
+    built, holes, proved = result
+
+    if not built:
+        print(f"{node}: does NOT typecheck -- this is worse than having holes, and nothing below")
+        print("  can be trusted until it builds. Run `lake build` in the solution to see why.")
+        return False
+
+    # A `progress.yaml` is prose for humans and deliberately unconstrained -- see docs/SOLUTIONS.md,
+    # which says so. But one that is not valid YAML is one nobody and nothing can read, and it fails
+    # silently precisely because nothing enforces it. This checks that it parses and nothing more:
+    # no schema, no required fields. (Found the hard way: FKS2.v1's plan never parsed from the day
+    # it was written.)
+    plan = SOLUTIONS / node / "progress.yaml"
+    if plan.exists():
+        try:
+            yaml.safe_load(plan.read_text(encoding="utf-8"))
+        except yaml.YAMLError as exc:
+            mark = getattr(exc, "problem_mark", None)
+            where = f" at line {mark.line + 1}" if mark else ""
+            print(f"  WARNING: {rel(plan)} is not valid YAML{where} -- {getattr(exc, 'problem', exc)}")
+            print("    The plan is unconstrained by design, but an unparseable one is unreadable.")
+            print("    Usual cause: a multi-line plain scalar containing `: `, or one indented level")
+            print("    with its own key. Use a `>-` block scalar.")
+
+    complete = proved and all(proved.values())
+    print(f"{node}: typechecks, {len(holes)} declaration(s) using `sorry`")
+    for hole in holes:
+        print(f"  hole   {hole}")
+    for name, ok in sorted(proved.items()):
+        print(f"  {'proved' if ok else 'OPEN  '} {name}")
+    if complete:
+        print("  every compared theorem is free of `sorryAx`. Comparator is the next step;")
+        print("  this is a preview of its verdict, not a substitute for it, and justifies nothing.")
+
+    if not write:
+        return True
+
+    path = NODES_DIR / node.replace(".", "/") / "formalization.yaml"
+    writer, data = edit_yaml(path)
+    touched = 0
+    for conclusion in conclusions_of(data):
+        if conclusion.get("declaration") and not any(
+                j.get("kind") in VERIFIED_KINDS for j in conclusion.get("justifications") or []):
+            conclusion["progress"] = {
+                "solution": f"Solutions/{node}/",
+                "state": "in-progress",
+                "remaining_holes": len(holes),
+            }
+            touched += 1
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        writer.dump(data, handle)
+    print(f"  recorded remaining_holes: {len(holes)} on {touched} conclusion(s)")
+    return True
+
+
 def check_closure() -> bool:
     """Vocabulary and Conclusions may not reach outside Mathlib.
 
@@ -988,6 +1139,30 @@ def check_graph() -> bool:
                     where,
                     f"conclusion `{cid}`: `imports_status: none` but imports are listed.",
                 )
+
+            marker = conclusion.get("progress")
+            if marker is not None:
+                if not isinstance(marker, dict):
+                    problems.add(where, f"conclusion `{cid}`: `progress` must be a mapping")
+                else:
+                    state = marker.get("state")
+                    if state not in PROGRESS_STATES:
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`: progress state `{state}` is not one of "
+                            + ", ".join(sorted(PROGRESS_STATES)))
+                    holes = marker.get("remaining_holes")
+                    if holes is not None and not isinstance(holes, int):
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`: `remaining_holes` must be a number -- derive it "
+                            "with `ieantn.py progress <node> --write` rather than counting by hand")
+                if designated_kind(conclusion) in VERIFIED_KINDS:
+                    problems.add(
+                        where,
+                        f"conclusion `{cid}` carries both a `progress` marker and a verified "
+                        "justification. `record-receipt` clears the marker; one left behind says "
+                        "work is outstanding on something already done.")
 
             issue = conclusion.get("issue")
             if issue is not None and not isinstance(issue, int):
@@ -3349,6 +3524,10 @@ def main() -> int:
     picture.add_argument("--check", action="store_true", help="fail instead of rewriting")
     per_node = sub.add_parser("pages")
     per_node.add_argument("--check", action="store_true", help="fail instead of rewriting")
+    partial = sub.add_parser("progress")
+    partial.add_argument("node", help="e.g. FKS2.v1")
+    partial.add_argument("--write", action="store_true",
+                         help="record the derived hole count in formalization.yaml")
     verification = sub.add_parser("verify")
     verification.add_argument("node", help="e.g. Lcm.v1")
     verification.add_argument("--branch", required=True, help="branch to record the receipt on")
@@ -3413,6 +3592,8 @@ def main() -> int:
         return 0 if graph(args.check) else 1
     if args.command == "pages":
         return 0 if pages(args.check) else 1
+    if args.command == "progress":
+        return 0 if progress(args.node, args.write) else 1
     if args.command == "verify":
         return 0 if verify(args.node, args.branch, not args.watch_only) else 1
     if args.command == "spinoff":

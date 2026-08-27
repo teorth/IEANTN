@@ -1,0 +1,42 @@
+name = "solution_FKS2_v1"
+defaultTargets = ["Solution", "Growth", "Dawson", "PsiToTheta", "Integral", "Stieltjes", "ThetaToPi"]
+
+# The core library, for the node's `Conclusions`. Add whatever else the proof needs --
+# PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+# The monotonicity toolkit. A separate root so it builds on its own while iterating --
+# Lake elaborates files in parallel and rebuilds only what changed, which is the whole reason
+# this port is many files rather than one.
+[[lean_lib]]
+name = "Growth"
+roots = ["Growth"]
+
+# The Dawson function, which Mathlib lacks and Theorem 3 cannot be stated without.
+[[lean_lib]]
+name = "Dawson"
+roots = ["Dawson"]
+
+[[lean_lib]]
+name = "PsiToTheta"
+roots = ["PsiToTheta"]
+
+# Lemma 12's development: the substitution, the Dawson evaluation, and the integral bound.
+[[lean_lib]]
+name = "Integral"
+roots = ["Integral"]
+
+# Partial summation: pi - Li in terms of theta.
+[[lean_lib]]
+name = "Stieltjes"
+roots = ["Stieltjes"]
+
+[[lean_lib]]
+name = "ThetaToPi"
+roots = ["ThetaToPi"]
