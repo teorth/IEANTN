@@ -133,6 +133,21 @@ can.
       remaining_holes: 7
 ```
 
+**Do not count the holes by hand.** Derive them:
+
+```bash
+python scripts/ieantn.py progress Lcm.v1           # report
+python scripts/ieantn.py progress Lcm.v1 --write   # report and record
+```
+
+It builds the solution, re-elaborates it to find every `sorry` with a line number, and then runs
+`#print axioms` on each compared theorem. That last step is the one that matters, and it is why
+this does not simply search for the word: a declaration can contain no `sorry` and still not be
+proved, because something it depends on has one. It is also what Comparator checks, so this is a
+cheap preview of the verdict — without the sandbox, the second kernel, or a receipt, none of which
+it substitutes for. A solution that reports every theorem proved is ready to verify and still
+justifies nothing until it is.
+
 (`justifications` is a list and `designated` names the one that counts — see
 [docs/NODES.md](docs/NODES.md). A conclusion may carry several grounds; exactly one carries trust.)
 

@@ -64,6 +64,7 @@ python scripts/ieantn.py pages          # one summary page per node, under docs/
 python scripts/ieantn.py status         # green / yellow / orange / BROKEN per conclusion
 python scripts/ieantn.py diff           # what your branch degrades, and for whom
 python scripts/ieantn.py housekeeping   # the derived task queue
+python scripts/ieantn.py progress <node> [--write]   # where a partial solution's holes are
 python scripts/ieantn.py state          # STATE.md
 python scripts/ieantn.py graph          # GRAPH.md, two Mermaid diagrams
 python scripts/ieantn.py verify <node> --branch <branch>   # dispatch a verification and follow it

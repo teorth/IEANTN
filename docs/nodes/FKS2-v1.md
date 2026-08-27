@@ -37,6 +37,7 @@ def corollary_14 : Prop :=
 | Lean name | `FKS2.v1.corollary_14` |
 | Challenge | `FKS2.v1.challenge_corollary_14` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L65) |
+| Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one) |
@@ -69,6 +70,7 @@ def corollary_23 : Prop :=
 | Lean name | `FKS2.v1.corollary_23` |
 | Challenge | `FKS2.v1.challenge_corollary_23` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L78) |
+| Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`Buthe.v1.theorem_2_li_minus_pi`](Buthe-v1.md#theorem_2_li_minus_pi) |
@@ -101,6 +103,7 @@ def corollary_26 : Prop :=
 | Lean name | `FKS2.v1.corollary_26` |
 | Challenge | `FKS2.v1.challenge_corollary_26` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L91) |
+| Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`Buthe.v1.theorem_2_li_minus_pi`](Buthe-v1.md#theorem_2_li_minus_pi), [`Buthe.v1.theorem_2_li_gt_pi`](Buthe-v1.md#theorem_2_li_gt_pi) |
