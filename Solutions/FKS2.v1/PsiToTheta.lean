@@ -11,16 +11,30 @@ import IEANTN.Nodes.FKS2.v1.Conclusions
 /-!
 # From a bound on `Eψ` to one on `Eθ`
 
-The paper's Proposition 13 and Corollary 14. The step is arithmetic once the growth results of
-`Growth.lean` are in hand: `ψ(x) − θ(x)` is bounded by `BKLNW`'s Corollary 5.1, so an admissible
-bound for `Eψ` becomes one for `Eθ` at the cost of a multiplier that tends to `1`.
+The paper's Proposition 13 and Corollary 14.
 
-The multiplier is `nuAsymp` below, and the whole content of Proposition 13 is that it is small —
-`6.3376 · 10⁻⁷` at `x₀ = e³⁰`, which is why `A` moves only from `121.096` to `121.0961`.
+`ψ(x) - θ(x)` is bounded by `BKLNW`'s Corollary 5.1, so an admissible bound for `Eψ` becomes one
+for `Eθ` at the cost of a multiplier that tends to `1`. The multiplier is `nuAsymp` below, and the
+whole content of Proposition 13 is that it is small — `6.3376 · 10⁻⁷` at `x₀ = e³⁰`, which is why
+`A` moves only from `121.096` to `121.0961`.
 
-Imports arrive as hypotheses, not as `sorry`s: `FKS.v1.psi_classical_bound` for the `ψ` bound and
-the two `BKLNW.v1` conclusions for the conversion and the small range. That is the difference
-between this port and the upstream one.
+## The conclusion is explicit, and that is the point
+
+Proposition 13 concludes with a *named* constant, `A_θ = A_ψ(1 + ν_asymp(x₀))`, not merely that
+some constant works. Corollary 14 needs the actual number — an existential would not let it get
+from `121.096` to `121.0961`. Compare `Growth.lean`'s Lemma 10(b), where the same issue arises
+around the threshold.
+
+## Why the `ψ - θ` comparison is a hypothesis rather than a `BKLNW` import here
+
+The paper says only that "`a₁, a₂` are defined in [BKLNW, Corollary 5.1]". Proposition 13 is a
+general conversion, so it takes the comparison abstractly and `corollary_14` supplies `BKLNW`'s
+instance. That keeps the analytic content separable from the particular pair of constants, which
+is what a later pipelined version will want.
+
+Note the exponents. `BKLNW` bounds `ψ(x) - θ(x)` by `a₁ x^{1/2} + a₂ x^{1/3}`; dividing by `x` —
+which is what the normalised error terms do — gives the `x^{-1/2}` and `x^{-2/3}` appearing in
+`nuAsymp`. The `2/3` is not a typo for `1/3`.
 -/
 
 namespace FKS2Sol
@@ -28,24 +42,27 @@ namespace FKS2Sol
 open Real IEANTN
 
 /-- The conversion multiplier of the paper's (27): how much an admissible bound for `Eψ` must be
-inflated to serve for `Eθ`, given the `ψ − θ` comparison at `x₀`.
-
-`a₁` and `a₂` are `BKLNW`'s Corollary 5.1 coefficients. Kept as explicit arguments rather than
-baked in, so that the statement says what it depends on. -/
+inflated to serve for `Eθ`, given the `ψ - θ` comparison constants `a₁`, `a₂` at `x₀`. -/
 noncomputable def nuAsymp (Aψ B C R a₁ a₂ x₀ : ℝ) : ℝ :=
   (1 / Aψ) * (R / log x₀) ^ B * exp (C * sqrt (log x₀ / R)) *
     (a₁ * log x₀ * x₀ ^ (-(1 : ℝ) / 2) + a₂ * log x₀ * x₀ ^ (-(2 : ℝ) / 3))
 
 /-- **Proposition 13.** An admissible classical bound for `Eψ` gives one for `Eθ`, with `A`
-inflated by `1 + nuAsymp` and everything else unchanged.
+inflated to `Aψ (1 + nuAsymp …)` and `B`, `C`, `R`, `x₀` unchanged.
 
-The hypothesis `C² / (8R) < B` is what `Growth.lean` needs to know the bound is decreasing; without
-it the conversion holds only above a threshold the paper then has to chase. -/
+The hypothesis `C² / (8R) < B` is the paper's, and it is what `Growth.lean` needs: it makes the
+two functions `g(1/2, -B, C/√R, ·)` and `g(2/3, -B, C/√R, ·)` of the paper's (28) decreasing, so
+that evaluating the correction at `x₀` bounds it everywhere above `x₀`. Without it the conversion
+holds only above a threshold the paper would then have to chase.
+
+Note `C²/(8R)`, not `C²/(16R)`: the binding case is `g(1/2, …)`, where Lemma 10(a)'s
+`b < -c²/(16a)` at `a = 1/2`, `b = -B`, `c = C/√R` reads `-B < -C²/(8R)`. -/
 theorem classicalBound_theta_of_psi
-    {Aψ B C R x₀ : ℝ} (hR : 0 < R) (hB : C ^ 2 / (8 * R) < B) (hx₀ : 1 < x₀)
-    (hpsi : HasClassicalBound Eψ Aψ B C R x₀)
-    (hconv : BKLNW.v1.corollary_5_1) :
-    ∃ Aθ : ℝ, HasClassicalBound Eθ Aθ B C R x₀ := by
+    {Aψ B C R a₁ a₂ x₀ : ℝ} (hR : 0 < R) (hAψ : 0 < Aψ) (hB : C ^ 2 / (8 * R) < B) (hx₀ : 1 < x₀)
+    (hcmp : ∀ x ≥ x₀, Chebyshev.psi x - Chebyshev.theta x ≤
+      a₁ * x ^ ((1 : ℝ) / 2) + a₂ * x ^ ((1 : ℝ) / 3))
+    (hpsi : HasClassicalBound Eψ Aψ B C R x₀) :
+    HasClassicalBound Eθ (Aψ * (1 + nuAsymp Aψ B C R a₁ a₂ x₀)) B C R x₀ := by
   sorry
 
 /-- **Corollary 14**, the node's first conclusion: `Eθ` obeys the classical bound with
@@ -53,7 +70,9 @@ theorem classicalBound_theta_of_psi
 
 Two ranges. Above `e³⁰` this is Proposition 13 applied to `FKS`'s bound, with the multiplier
 computed to be at most `6.3376 · 10⁻⁷`. Below it the asymptotic bound exceeds `1` — its minimum on
-`[2, e³⁰]` is about `2.6271` at `x = 2` — so `BKLNW`'s `Eθ ≤ 1` covers the range outright. -/
+`[2, e³⁰]` is about `2.6271` at `x = 2` — so `BKLNW`'s `Eθ ≤ 1` covers the range outright.
+
+`BKLNW.v1.corollary_5_1` is applied at `b = 30`, which is in its range `7 ≤ b ≤ 38 log 10`. -/
 theorem corollary_14
     (hpsi : FKS.v1.psi_classical_bound)
     (hconv : BKLNW.v1.corollary_5_1)

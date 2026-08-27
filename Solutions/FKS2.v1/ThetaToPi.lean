@@ -4,17 +4,30 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import PsiToTheta
+import Dawson
 import IEANTN.Nodes.Buthe.v1.Conclusions
 import IEANTN.Nodes.FKS2Numerics.v1.Conclusions
 
 /-!
 # From a bound on `Eθ` to one on `Eπ`, and the headline estimate
 
-The paper's Theorem 3, Corollary 23 and Corollary 26.
+The paper's Lemma 12, Theorem 3, Corollary 23 and Corollary 26.
 
-The conversion is partial summation: `π(x) − Li(x)` is an integral of `(θ(t) − t)/(t log² t)` plus
+The conversion is partial summation: `π(x) - Li(x)` is an integral of `(θ(t) - t)/(t log² t)` plus
 a boundary term, so an admissible bound for `Eθ` integrates to one for `Eπ`. The work is in
-bounding that integral without losing the shape, which is `integral_admissibleBound_le` below.
+bounding that integral without losing the shape, which is `integral_theta_bound`.
+
+## Theorem 3 needs a second threshold, and an earlier draft of this file got that wrong
+
+The conclusion is **not** an admissible bound from `x₀` onwards. The paper's (def-x1) introduces
+
+`x₁ ≥ max{x₀, exp((1 + C/(2√R))²)}`
+
+and concludes for `x ≥ x₁` only. An earlier version of this file stated the conclusion at `x₀`,
+which claims strictly more than the paper proves. The same draft replaced the paper's explicit
+`A_π = (1 + μ_asymp(x₀, x₁)) A_θ` with `∃ Aπ`, which throws away the constant the corollaries need.
+Both are recorded here because the file typechecked in that state: a statement can be wrong in
+shape and still compile.
 
 ## Where the two kinds of input enter
 
@@ -30,25 +43,44 @@ namespace FKS2Sol
 
 open Real IEANTN
 
-/-- The integral that partial summation produces, bounded in the same admissible shape.
+/-- `m(x₀, x) = max((log x₀)^{(2B-3)/2}, (log x)^{(2B-3)/2})`, the paper's (alpha_def).
 
-This is the analytic heart of the `θ → π` step: `∫ dt / log² t` against an admissible bound has to
-come back out as an admissible bound with the exponent shifted, and the constant it costs is what
-turns `A = 121.0961` into Table 6's rows. -/
-theorem integral_admissibleBound_le {A B C R x₀ : ℝ} (hR : 0 < R) (hx₀ : 1 < x₀)
-    (h : HasClassicalBound Eθ A B C R x₀) :
-    ∃ A' : ℝ, HasClassicalBound Eπ A' (B - 1) C R x₀ := by
+It is a `max` rather than an evaluation because the exponent `(2B-3)/2` changes sign with `B`: the
+substituted integrand `u^{2B-3}` is increasing for `B > 3/2` and decreasing for `B < 3/2`, so
+neither endpoint dominates in general. -/
+noncomputable def mFactor (B x₀ x : ℝ) : ℝ :=
+  max ((log x₀) ^ ((2 * B - 3) / 2)) ((log x) ^ ((2 * B - 3) / 2))
+
+/-- **Lemma 12.** The integral partial summation produces, bounded via the Dawson function.
+
+This is the analytic heart of the `θ → π` step. Substituting `u = √(log t)` turns the integral of
+the admissible bound into `∫ u^{2B-3} exp(u² - Cu/√R) du`; bounding `u^{2B-3}` by `mFactor` leaves
+a Dawson integral, which is where `D₊` enters. -/
+theorem integral_theta_bound {Aθ B C R x₀ : ℝ} (hR : 0 < R) (hx₀ : 1 < x₀)
+    (h : HasClassicalBound Eθ Aθ B C R x₀) {x : ℝ} (hx : x₀ ≤ x) :
+    (∫ t in x₀..x, |Chebyshev.theta t - t| / (t * (log t) ^ 2)) ≤
+      2 * Aθ / R ^ B * x * mFactor B x₀ x * exp (-C * sqrt (log x / R)) *
+        dawson (sqrt (log x) - C / (2 * sqrt R)) := by
   sorry
 
-/-- **Theorem 3**, the general `θ → π` conversion, stated as the paper does: given an admissible
-bound for `Eθ` above `x₀`, and a `π`/`θ` comparison at `x₀`, one gets an admissible bound for `Eπ`.
+/-- **Theorem 3**, the general `θ → π` conversion, stated as the paper does.
 
-The `B ≥ max(3/2, 1 + C²/(16R))` hypothesis is `Growth.lean`'s again — it is what makes the
-resulting bound decreasing, and so what lets a single evaluation at `x₀` extend upward. -/
+Three things are load-bearing and easy to lose:
+
+* the conclusion starts at `x₁`, not `x₀` — see the module docstring;
+* `A_π` is explicit, `(1 + μ_asymp(x₀, x₁)) A_θ`;
+* `B ≥ max(3/2, 1 + C²/(16R))` is `Growth.lean`'s Corollary 11 hypothesis, which is what makes the
+  resulting bound decreasing and so lets a single evaluation at `x₁` extend upward. -/
+noncomputable def muAsymp (Aθ B C R x₀ x₁ : ℝ) : ℝ :=
+  (x₀ * log x₁) / (admissibleBound Aθ B C R x₁ * x₁ * log x₀) *
+      |(primeCounting x₀ - Li x₀) / (x₀ / log x₀) - (Chebyshev.theta x₀ - x₀) / x₀|
+    + 2 * dawson (sqrt (log x₁) - C / (2 * sqrt R)) / sqrt (log x₁)
+
 theorem classicalBound_pi_of_theta
-    {A B C R x₀ : ℝ} (hR : 0 < R) (hB : max (3 / 2) (1 + C ^ 2 / (16 * R)) ≤ B) (hx₀ : 1 < x₀)
-    (h : HasClassicalBound Eθ A B C R x₀) :
-    ∃ Aπ : ℝ, HasClassicalBound Eπ Aπ B C R x₀ := by
+    {Aθ B C R x₀ x₁ : ℝ} (hR : 0 < R) (hB : max (3 / 2) (1 + C ^ 2 / (16 * R)) ≤ B) (hx₀ : 1 < x₀)
+    (hx₁ : max x₀ (exp ((1 + C / (2 * sqrt R)) ^ 2)) ≤ x₁)
+    (h : HasClassicalBound Eθ Aθ B C R x₀) :
+    HasClassicalBound Eπ ((1 + muAsymp Aθ B C R x₀ x₁) * Aθ) B C R x₁ := by
   sorry
 
 /-- **Corollary 23**, at the row this node states: `Eπ` obeys the classical bound with
@@ -64,7 +96,7 @@ theorem corollary_23
     FKS2.v1.corollary_23 := by
   sorry
 
-/-- **Corollary 26**, the paper's headline: `|π(x) − Li(x)| ≤ 0.4298 x / log x` for all `x ≥ 2`.
+/-- **Corollary 26**, the paper's headline: `|π(x) - Li(x)| ≤ 0.4298 x / log x` for all `x ≥ 2`.
 
 Split at `e`. For `x ≥ e` this is Corollary 23 with the admissible bound compared against the
 constant — the bound's maximum on `[e, ∞)` is below `0.4298`. For `2 ≤ x < e` it is direct:

@@ -1,5 +1,5 @@
 name = "solution_FKS2_v1"
-defaultTargets = ["Solution", "Growth", "PsiToTheta", "ThetaToPi"]
+defaultTargets = ["Solution", "Growth", "Dawson", "PsiToTheta", "ThetaToPi"]
 
 # The core library, for the node's `Conclusions`. Add whatever else the proof needs --
 # PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
@@ -17,6 +17,11 @@ roots = ["Solution"]
 [[lean_lib]]
 name = "Growth"
 roots = ["Growth"]
+
+# The Dawson function, which Mathlib lacks and Theorem 3 cannot be stated without.
+[[lean_lib]]
+name = "Dawson"
+roots = ["Dawson"]
 
 [[lean_lib]]
 name = "PsiToTheta"
