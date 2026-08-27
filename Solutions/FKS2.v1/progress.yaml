@@ -188,15 +188,28 @@ imports_discovered:
 # --------------------------------------------------------------------------------------------
 remaining:
   - hole: ThetaToPi.corollary_23
-    needs: >-
-      Theorem 3 at the Table 6 row, plus Buthe on [e⁶, 10¹⁹] and the finite check on [e, e⁶].
-      Expect new FKS2Numerics conclusions, as corollary_14 needed: at minimum the value of
-      μ_asymp at the relevant x₀, x₁, and a floor for the small range.
+    blocked_by: >-
+      NOT more analysis. Found by trying to prove it: this conclusion does not follow from anything
+      the paper states. Theorem 3 preserves B and C and needs B >= max(3/2, 1 + C^2/(16R));
+      Corollary 14 gives B = 3/2, C = 2, and this row is B = 1/4, C = 1. Nor does it follow from
+      Corollary 22 (A = 121.107, B = 3/2, C = 2): the ratio of the two admissible bounds is
+      121.107 u^{5/2} e^{-u} in u = sqrt(log x / R), peaking at u = 5/2 -- inside the claimed range,
+      x = e^34.8 -- at about 98.24, not <= 0.826. The paper fits Table 6's rows numerically, and its
+      Remark rem-pi2theta says the B >= 3/2 restriction can be lifted but never states the
+      generalisation. Recorded on the node's justification note as a correction.
+    so: >-
+      Either state and prove the generalised Theorem 3 that the paper's remark gestures at (a real
+      piece of mathematics -- the difference is a different bound for m(x0,x)), or carry the row as
+      an FKS2Numerics conclusion. The second is honest and cheap; the first is what a pipelined
+      FKS2.v2 would want.
   - hole: ThetaToPi.corollary_26
     needs: >-
-      Corollary 23 above e, where sup of the admissible bound is ~0.3543 < 0.4298 (the bound is
-      A·u^{2B}e^{-Cu} in u = √(log x/R), peaking at u = 1/2 for B = 1/4), and a direct argument on
-      [2, e) where π(x) = 1. Both look like numerical claims for FKS2Numerics.
+      Two routes, and they differ. PrimeNumberTheoremAnd derives it from Corollary 23 (sup of the
+      admissible bound on [e, inf) is about 0.3543 < 0.4298, plus a direct argument on [2, e) where
+      pi(x) = 1); that inherits Corollary 23's problem above. THE PAPER DOES NOT GO THAT WAY: its
+      proof of cor:weak is numerical throughout -- the 25 prime intervals below 97, Buthe's Theorem 2
+      on [97, 10^19], and its own numerical proposition with Table 4 above 10^19. The node's recorded
+      imports follow the paper, not upstream.
 
 # --------------------------------------------------------------------------------------------
 trusted_numerics:

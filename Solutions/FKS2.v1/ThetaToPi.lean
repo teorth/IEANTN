@@ -305,9 +305,25 @@ theorem classicalBound_pi_of_theta
 /-- **Corollary 23**, at the row this node states: `Eπ` obeys the classical bound with
 `A = 0.826`, `B = 1/4`, `C = 1`, `R = 5.5666305`, for all `x ≥ e`.
 
-Three ranges, and only the first is analysis. Above `10¹⁹` the conversion of Theorem 3 applied to
-Corollary 14. Between `e⁶` and `10¹⁹`, Büthe's estimate. On `[e, e⁶]`, the finite check — the
-threshold `x₀ = e` is exactly where that check runs out. -/
+**This does not follow from Theorem 3, and an earlier version of this docstring wrongly said it
+did.** Two independent reasons, both checked:
+
+* Theorem 3 preserves `B` and `C`, and requires `B ≥ max(3/2, 1 + C²/(16R))`. Corollary 14 supplies
+  `B = 3/2, C = 2`; this row is `B = 1/4, C = 1`. Theorem 3 can neither change the parameters nor
+  accept `B = 1/4`.
+* Nor does it follow from Corollary 22, the paper's headline asymptotic bound
+  (`A = 121.107, B = 3/2, C = 2`). Dividing one admissible bound by the other leaves
+  `121.107 · u^{5/2} e^{-u}` in `u = √(log x / R)`, which peaks at `u = 5/2` — inside the claimed
+  range, at `x ≈ e^34.8` — with value about `98.24`, not `≤ 0.826`.
+
+What the paper actually does: Table 6's rows are fitted to numerical data and verified, by the
+interpolation method of its Corollary 22's proof. Its Remark `rem-pi2theta` says the `B ≥ 3/2`
+restriction *can* be lifted — "we have chosen to limit our study to only those admissible
+asymptotic bounds on `θ` with a satisfactory `B`" — but the generalised theorem is never stated.
+
+So this conclusion rests on a derivation the source deliberately declines to write down, plus
+numerics. It is a much more numerical claim than Corollary 14 was, and proving it here will need
+`FKS2Numerics` conclusions rather than more analysis. -/
 theorem corollary_23
     (hpsi : FKS.v1.psi_classical_bound)
     (hbuthe : Buthe.v1.theorem_2_li_minus_pi)
@@ -317,10 +333,16 @@ theorem corollary_23
 
 /-- **Corollary 26**, the paper's headline: `|π(x) - Li(x)| ≤ 0.4298 x / log x` for all `x ≥ 2`.
 
-Split at `e`. For `x ≥ e` this is Corollary 23 with the admissible bound compared against the
-constant — the bound's maximum on `[e, ∞)` is below `0.4298`. For `2 ≤ x < e` it is direct:
-`π(x) = 1`, `0 ≤ Li(x) ≤ 2`, and `log x / x ≤ 1/e`. No new input is needed for the small piece,
-which is why this conclusion imports nothing that Corollary 23 does not. -/
+Two routes, and they are not the same.
+
+`PrimeNumberTheoremAnd` derives it from Corollary 23: for `x ≥ e` the admissible bound's maximum
+on `[e, ∞)` is about `0.3543 < 0.4298`, and `2 ≤ x < e` is direct because `π(x) = 1` there. That
+route is valid and is the one this file would take, but it inherits Corollary 23's difficulty.
+
+**The paper does not go that way at all.** Its proof of `cor:weak` is numerical throughout: the 25
+prime intervals below `97`, then Büthe's Theorem 2 on `[97, 10¹⁹]` verifying
+`(1/√x)(1.95 + 3.9/log x + 19.5/log²x) ≤ 0.4298`, then its own numerical proposition with Table 4
+above `10¹⁹`. The node's recorded imports follow the paper's route, not upstream's. -/
 theorem corollary_26
     (hpsi : FKS.v1.psi_classical_bound)
     (hbuthe : Buthe.v1.theorem_2_li_minus_pi) :

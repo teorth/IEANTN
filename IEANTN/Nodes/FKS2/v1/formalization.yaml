@@ -106,7 +106,18 @@ conclusions:
       datum pins the x_0 = e threshold this row states: on [e, e^6] the bound is a finite arithmetic check,
       and only above the window does the asymptotic argument carry it. Upstream threads the same datum
       as a deliberate `sorry`; separating it into a computational node is what lets a solution here be
-      free of sorryAx while resting on exactly the same computation.
+      free of sorryAx while resting on exactly the same computation. CORRECTION, from attempting the proof.
+      The sentence above saying this rests on Corollary 22 is wrong, and so is any reading on which Theorem
+      3 produces it. Theorem 3 preserves B and C and requires B >= max(3/2, 1 + C^2/(16R)); Corollary
+      14 supplies B = 3/2, C = 2, while this row is B = 1/4, C = 1, so Theorem 3 can neither change the
+      parameters nor accept B = 1/4. Nor is the row implied by Corollary 22 (A = 121.107, B = 3/2, C =
+      2): the ratio of the two admissible bounds is 121.107 u^{5/2} e^{-u} in u = sqrt(log x / R), which
+      peaks at u = 5/2 -- inside the claimed range, at x = e^34.8 -- with value about 98.24, not <= 0.826.
+      What the paper does is fit Table 6's rows to numerical data and verify them; its Remark rem-pi2theta
+      says the B >= 3/2 restriction can be lifted but the generalised theorem is never stated. So this
+      conclusion rests on a derivation the source deliberately declines to write down, plus numerics --
+      which is a materially weaker footing than Corollary 14 has, and the reason its solution will need
+      FKS2Numerics conclusions rather than more analysis.
   designated: fks2-paper
   imports_status: identified
   progress:
