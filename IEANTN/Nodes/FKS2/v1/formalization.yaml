@@ -69,7 +69,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 3
+    remaining_holes: 10
 - id: corollary_23
   declaration: FKS2.v1.corollary_23
   challenge: FKS2.v1.challenge_corollary_23
@@ -78,6 +78,8 @@ conclusions:
     conclusion: psi_classical_bound
   - node: Buthe.v1
     conclusion: theorem_2_li_minus_pi
+  - node: FKS2Numerics.v1
+    conclusion: table6_row2_floor
   justifications:
   - id: fks2-paper
     kind: literature
@@ -96,13 +98,17 @@ conclusions:
       the printed corollaries; that was wrong. PDF text extraction silently drops absolute-value bars
       around a displayed fraction, and the definitions were read from extracted text. They have since
       been read from the rendered page, where the bars are plainly there. Nothing about the statements
-      needed to change.
+      needed to change. Imports the paper's own small-x check as FKS2Numerics.v1.table6_row2_floor. That
+      datum pins the x_0 = e threshold this row states: on [e, e^6] the bound is a finite arithmetic check,
+      and only above the window does the asymptotic argument carry it. Upstream threads the same datum
+      as a deliberate `sorry`; separating it into a computational node is what lets a solution here be
+      free of sorryAx while resting on exactly the same computation.
   designated: fks2-paper
   imports_status: identified
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 3
+    remaining_holes: 10
 - id: corollary_26
   declaration: FKS2.v1.corollary_26
   challenge: FKS2.v1.challenge_corollary_26
@@ -137,7 +143,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 3
+    remaining_holes: 10
 sources:
 - title: "Sharper bounds for the error term in the prime number theorem"
   authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]

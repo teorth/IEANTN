@@ -6,7 +6,7 @@
 # `ieantn.py progress`; everything here is judgement and should read like it.
 
 solution: Solutions/FKS2.v1/
-state: in-progress
+state: in-progress   # skeleton complete, 10 holes, no proofs yet
 source: PrimeNumberTheoremAnd @ ae881f2, PrimeNumberTheoremAnd/IEANTN/FKS2*.lean
 
 # --------------------------------------------------------------------------------------------
@@ -80,6 +80,13 @@ upstream_closure:
     through two wide imports only: SecondaryDefinitions → Consequences → Wiener, and
     RosserSchoenfeldPrime → MediumPNT → ZetaBounds. Cutting those two edges should remove most of
     the closure. Establish what FKS2 genuinely needs from SecondaryDefinitions before copying it.
+  decisions_taken:
+    - Architect: stripped. It carries blueprint metadata and no proof content.
+    - LeanCert: deferred to the numerical side. The analytic files here need no interval
+      arithmetic; the finite checks that do are now FKS2Numerics.v1's problem, and its eventual
+      solution can take the dependency without this one carrying it.
+    - numerical claims: spun off into FKS2Numerics.v1, so that what upstream must leave as a hole
+      arrives here as a hypothesis.
   external_dependencies:
     - name: Architect
       role: LeanArchitect blueprint metadata (`@[blueprint ...]`)

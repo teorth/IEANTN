@@ -5,7 +5,7 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-24 node version(s), 39 conclusion(s).  3 state nothing yet.
+25 node version(s), 40 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -15,7 +15,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `bridged` | 1 |
 | `lean-comparator` | 3 |
 | `literature` | 31 |
-| `numerical` | 3 |
+| `numerical` | 4 |
 
 ## Nodes
 
@@ -42,8 +42,9 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 3 | - |
 | `FKS.v1` | active | `psi_classical_bound` | literature | 3 | - |
 | `FKS2.v1` | active | `corollary_14` | literature | 3 | - |
-| `FKS2.v1` | active | `corollary_23` | literature | 2 | - |
+| `FKS2.v1` | active | `corollary_23` | literature | 3 | - |
 | `FKS2.v1` | active | `corollary_26` | literature | 2 | - |
+| `FKS2Numerics.v1` | stub | `table6_row2_floor` | numerical | 0 | - |
 | `Hiary2016.v1` | stub | `zeta_half_line_bound` | literature | 0 | - |
 | `KLN.v1` | active | `subconvexity_bound` | literature | 1 | - |
 | `KLN.v1` | active | `zero_density` | literature | 1 | - |
@@ -89,6 +90,7 @@ downstream.
 | `Platt2017.v1.rh_up_to` | 1 |
 | `Platt2015.v1.rh_up_to` | 1 |
 | `Hiary2016.v1.zeta_half_line_bound` | 1 |
+| `FKS2Numerics.v1.table6_row2_floor` | 1 |
 | `Dusart2018.v1.proposition_5_4` | 1 |
 | `Buthe.v1.theorem_2_li_gt_pi` | 1 |
 | `BKLNW.v1.theta_error_le_one` | 1 |

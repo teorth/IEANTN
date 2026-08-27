@@ -1,5 +1,5 @@
 name = "solution_FKS2_v1"
-defaultTargets = ["Solution"]
+defaultTargets = ["Solution", "Growth", "PsiToTheta", "ThetaToPi"]
 
 # The core library, for the node's `Conclusions`. Add whatever else the proof needs --
 # PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
@@ -10,3 +10,18 @@ path = "../.."
 [[lean_lib]]
 name = "Solution"
 roots = ["Solution"]
+
+# The monotonicity toolkit. A separate root so it builds on its own while iterating --
+# Lake elaborates files in parallel and rebuilds only what changed, which is the whole reason
+# this port is many files rather than one.
+[[lean_lib]]
+name = "Growth"
+roots = ["Growth"]
+
+[[lean_lib]]
+name = "PsiToTheta"
+roots = ["PsiToTheta"]
+
+[[lean_lib]]
+name = "ThetaToPi"
+roots = ["ThetaToPi"]

@@ -1,0 +1,93 @@
+# Node metadata for `FKS2.v1`.  See docs/NODES.md.
+#
+# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
+# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+version: "v0.4"
+
+node:
+  id: FKS2Numerics.v1
+  family: FKS2Numerics
+  version: v1
+  kind: computation
+  status: stub
+project:
+  name: FKS2's finite numerical checks
+  description: >-
+    The bounded-range arithmetic that FKS2's corollaries rest on, separated from the analysis that consumes
+    it. Same paper as FKS2.v1, different kind of claim: this is a computation someone ran, not an argument
+    a referee read, and keeping the two apart lets a consumer see which half of its trust is which.
+  authors:
+  - Terence Tao
+  license: Apache-2.0
+  responsible_maintainers:
+  - Terence Tao
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11N05
+  - 11Y70
+
+conclusions:
+- id: table6_row2_floor
+  declaration: FKS2Numerics.v1.table6_row2_floor
+  challenge: FKS2Numerics.v1.challenge_table6_row2_floor
+  imports: []
+  imports_status: none
+  justifications:
+  - id: fks2-computation
+    kind: numerical
+    source: FKS2
+    locator: Sections 5.2-5.3, the direct check for small x behind Table 6's row 2
+    note: >-
+      A finite check rather than an argument, so `numerical`. On the window [e, e^6] -- x between 2.72
+      and 403 -- pi(x) is an exact prime count and Li(x) a certified quadrature, so the claim is bounded
+      arithmetic with no analytic content. The paper describes it as checking directly for particularly
+      small x. Imports `none`, and that is a real none: a finite computation on a bounded range consumes
+      no other result in the network. PrimeNumberTheoremAnd carries the same datum as a deliberate `sorry`
+      in its FKS2TrustedNumerics -- it has no import mechanism, so its FKS2 development reports sorryAx.
+      Stating it here is what lets FKS2.v1's solution rest on the same computation without a hole.
+  designated: fks2-computation
+sources:
+- title: Sharper bounds for the error term in the Prime Number Theorem
+  authors:
+  - Andrew Fiori
+  - Habiba Kadiri
+  - Joshua Swidinsky
+  type: paper
+  id: arXiv:2206.12557
+  location: arXiv:2206.12557; the numerical checks behind Table 6
+  relationship: formalizes
+  note: >-
+    The same paper as FKS2.v1. Split by the kind of claim, not by the source.
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude Opus 5 (Anthropic)
+    framework: Claude Code
+    role: >-
+      Separated the paper's finite numerical checks from its analysis so that the FKS2 port can take them
+      as hypotheses rather than holes, under the direction of the maintainer. No proof is claimed.
+review:
+  status: self-assessed
+  reviewers:
+  - Terence Tao
+  notes: >-
+    The statement and its window were read from upstream's FKS2TrustedNumerics, which documents the datum
+    and its provenance; the paper's own sections were not re-read for this.
+limitations:
+- >-
+  A finite computation asserted on the paper's authority. Nothing here is proved in Lean, and the check
+  has not been re-run.
+- >-
+  Only Table 6's row 2 is stated, because it is the only floor a stated FKS2.v1 conclusion consumes. The
+  paper's other rows, and its Table 7, have their own; upstream states ten and twenty-five respectively.
+- >-
+  A floor, not a tail bound. It says nothing above e^6 and does not compose upward by monotonicity.
+- >-
+  No novelty is claimed. The computation is the paper's.

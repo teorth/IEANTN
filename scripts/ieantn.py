@@ -614,16 +614,19 @@ def solution_holes(node: str) -> tuple[bool, list[str], dict[str, bool]] | None:
     # the warnings are simply absent and a count taken from them silently reads zero -- which is
     # exactly what this reported the first time it was run against a scaffolded solution with three
     # open goals. `lake env lean` re-elaborates and always emits them.
+    # Every top-level file, not just the compared one. A solution is split across files for build
+    # time -- see docs/SOLUTIONS.md -- so the holes are usually in a sibling, and elaborating only
+    # the root reports zero while three theorems are plainly open. That is what this did first.
     holes: list[str] = []
-    root = f"{settings.get('solution_module', 'Solution')}.lean"
-    if (directory / root).is_file():
-        fresh = subprocess.run(["lake", "env", "lean", root], cwd=directory, capture_output=True,
-                               text=True, encoding="utf-8", errors="replace")
+    for source in sorted(directory.glob("*.lean")):
+        fresh = subprocess.run(["lake", "env", "lean", source.name], cwd=directory,
+                               capture_output=True, text=True, encoding="utf-8", errors="replace")
         seen_output = (fresh.stdout or "") + (fresh.stderr or "")
-        holes = sorted({
+        holes += [
             f"{pathlib.PurePosixPath(m.group(1)).name}:{m.group(2)}"
             for m in re.finditer(r"([^\s:]+):(\d+):\d+: warning: declaration uses", seen_output)
-        })
+        ]
+    holes = sorted(set(holes))
     if not names:
         return (True, holes, {})
 
