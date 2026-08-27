@@ -162,6 +162,11 @@ justifies nothing until it is.
 > conclusion*. It is a **justification-in-waiting whose missing pieces have not been named yet** —
 > which is what workflow 6 is about.
 
+For a port long enough to need planning, write a `progress.yaml` in the solution directory first
+— what the upstream actually proves, how much comes along transitively, and how to split the
+files. It is a best practice rather than a schema; see [docs/SOLUTIONS.md](docs/SOLUTIONS.md), with
+`Solutions/FKS2.v1/progress.yaml` as the worked example.
+
 ## 2. Continue an incomplete solution
 
 You closed some holes but not all.

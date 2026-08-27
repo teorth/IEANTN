@@ -1,0 +1,124 @@
+# Port plan for FKS2.v1, mapped against PrimeNumberTheoremAnd.
+#
+# Best-practice file, not a schema CI enforces — see docs/SOLUTIONS.md. Its job is to make the
+# shape of a long port visible before anyone starts, so the work can be split, resumed, and
+# audited. `remaining_holes` on the node's formalization.yaml is derived from the build by
+# `ieantn.py progress`; everything here is judgement and should read like it.
+
+solution: Solutions/FKS2.v1/
+state: in-progress
+source: PrimeNumberTheoremAnd @ ae881f2, PrimeNumberTheoremAnd/IEANTN/FKS2*.lean
+
+# --------------------------------------------------------------------------------------------
+# What has to be proved, and what already exists upstream.
+# --------------------------------------------------------------------------------------------
+targets:
+  - conclusion: corollary_14
+    upstream: PrimeNumberTheoremAnd.IEANTN.FKS2.corollary_14      # FKS2.lean:1645
+    upstream_state: proved
+    statement_match: >-
+      Exact. Upstream is `Eθ.classicalBound 121.0961 (3/2) 2 5.5666305 2`; ours is
+      `HasClassicalBound Eθ 121.0961 (3/2) 2 5.5666305 2`. PNT+'s Defs.lean has
+      `Eθ.classicalBound A B C R x₀ := ∀ x ≥ x₀, Eθ x ≤ admissible_bound A B C R x`, which is our
+      `HasClassicalBound` with the error term as a parameter rather than a namespace. A thin
+      adapter, not a restatement.
+    depends_on: [proposition_13, corollary_11, lemma_10a, lemma_10b, lemma_10c]
+
+  - conclusion: corollary_23
+    upstream: PrimeNumberTheoremAnd.IEANTN.FKS2Cor23All.corollary_23_all
+    upstream_state: proved-modulo-trusted-numerics
+    statement_match: >-
+      Ours is one row of Table 6; upstream quantifies over the whole table
+      (`[Aπ, B, C, x₀] ∈ table6`). Ours follows by membership, so the port is upstream's theorem
+      plus a row lookup — and upstream's stronger form is worth keeping as a second conclusion
+      later.
+    depends_on: [corollary_14, integral_asymp_bound, table6]
+
+  - conclusion: corollary_26
+    upstream: PrimeNumberTheoremAnd.IEANTN.FKS2.corollary_26      # FKS2.lean:4798
+    upstream_state: proved-but-on-a-stub
+    statement_match: >-
+      Exact: upstream `Eπ.bound 0.4298 2`, ours `HasNumericalBound Eπ 0.4298 2`, and
+      `Eπ.bound ε x₀ := ∀ x ≥ x₀, Eπ x ≤ ε` matches `HasNumericalBound`.
+    note: >-
+      Upstream's proof is complete, but it applies `corollary_23`, which inside FKS2.lean is a
+      forward declaration `:= sorry` — the real proof lives in FKS2Cor23All. So porting this one
+      requires porting corollary_23 first, or reproducing that layering.
+    depends_on: [corollary_23]
+
+# --------------------------------------------------------------------------------------------
+# The thing that actually decides this port.
+# --------------------------------------------------------------------------------------------
+trusted_numerics:
+  finding: >-
+    PNT+ does not prove FKS2 outright and does not claim to. It threads finite numerical data —
+    prime counts, quadratures, table rows — as deliberate `sorry`s: 13 in FKS2TrustedNumerics,
+    25 in FKS2Cor24TrustedNumerics, 2 in FKS2.lean, and 2–4 in most Cor24 rows. Its own docstring
+    says `#print axioms corollary_23_all` reports `sorryAx`.
+  consequence: >-
+    A wholesale copy could never pass Comparator, which permits only propext, Classical.choice
+    and Quot.sound. This is not a "finish the proof" problem; it is structural.
+  opportunity: >-
+    It is also exactly what this network is for. PNT+ threads those data as `sorry` because it has
+    no import mechanism; IEANTN threads them as HYPOTHESES of a conditional theorem, which is what
+    `new-solution` already scaffolded. So the port is: replace each trusted-numeric `sorry` with
+    an import hypothesis. Every one that has no node yet is a real, previously-invisible dependency
+    of FKS2 — and finding them is worth as much as the proof.
+  expectation: >-
+    FKS2.v1 currently records three imports. Expect that to grow. Treat each new one as a finding
+    to record, not an obstacle.
+
+# --------------------------------------------------------------------------------------------
+# Scale, and what not to copy.
+# --------------------------------------------------------------------------------------------
+upstream_closure:
+  modules: 76
+  lines: 63394
+  warning: >-
+    Most of that must NOT be ported. The analytic PNT machinery — Wiener (4382), MediumPNT (4282),
+    ZetaBounds (3668), MellinCalculus (1535) — is not used by FKS2's explicit arguments; it arrives
+    through two wide imports only: SecondaryDefinitions → Consequences → Wiener, and
+    RosserSchoenfeldPrime → MediumPNT → ZetaBounds. Cutting those two edges should remove most of
+    the closure. Establish what FKS2 genuinely needs from SecondaryDefinitions before copying it.
+  external_dependencies:
+    - name: Architect
+      role: LeanArchitect blueprint metadata (`@[blueprint ...]`)
+      action: strip — CLAUDE.md's porting guidance already says so, and it carries no proof content
+    - name: LeanCert.Tactic.IntervalAuto
+      role: interval-arithmetic tactic, load-bearing for the numerical steps
+      action: >-
+        decide deliberately. Vendoring it means a Git dependency in the solution's lakefile, which
+        solutions may have; but a node that is ever spun off for Palomar puts every such dependency
+        through preservation forking. Re-proving the numerics without it is the alternative.
+
+# --------------------------------------------------------------------------------------------
+# One file or many.
+# --------------------------------------------------------------------------------------------
+file_layout:
+  decision: multi-file
+  rationale: >-
+    Lake elaborates files in parallel and rebuilds only what changed. A single 10,000-line file
+    re-elaborates in full on every edit and cannot parallelise, which is the wrong trade for a port
+    that will be iterated on heavily. Readability is not the argument — solutions are not read —
+    build time is.
+  precedent: Solutions/Lcm.v2 already splits LcmDev.lean (development) from Solution.lean (the
+    compared theorems), and Comparator only ever sees the latter.
+  proposed:
+    - Support.lean       # vocabulary adapters: PNT+'s Eθ.classicalBound ↔ our HasClassicalBound
+    - Dawson.lean        # the Dawson-function development, FKS2.lean:219–660, self-contained
+    - Decreasing.lean    # lemma_10a/b/c, corollary_11 — the monotonicity toolkit
+    - PsiToTheta.lean    # proposition_13 and corollary_14
+    - Tables.lean        # table6 and the row lookups
+    - ThetaToPi.lean     # integral_asymp_bound, corollary_23
+    - Solution.lean      # the three compared theorems, and nothing else
+  note: >-
+    Mirror upstream's own split where it is already sensible: its per-row Cor23Row*.lean files
+    exist for the same build-time reason and are worth keeping as separate files.
+
+# --------------------------------------------------------------------------------------------
+order:
+  - Support.lean and the adapters, proving the two vocabularies agree. Cheap, and it fails fast if
+    the statements are not the match they appear to be.
+  - corollary_14, which is self-contained upstream and touches no trusted numerics.
+  - corollary_23, where the trusted numerics appear. Expect the import list to grow here.
+  - corollary_26, which is short once corollary_23 is in place.
