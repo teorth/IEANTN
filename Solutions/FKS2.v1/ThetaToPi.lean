@@ -51,29 +51,108 @@ noncomputable def muAsymp (Aθ B C R x₀ x₁ : ℝ) : ℝ :=
       |(primeCounting x₀ - Li x₀) / (x₀ / log x₀) - (Chebyshev.theta x₀ - x₀) / x₀|
     + 2 * dawson (sqrt (log x₁) - C / (2 * sqrt R)) / sqrt (log x₁)
 
-/-- **The boundary estimate.** The `x₀` boundary term, normalised, is bounded by the first
-summand of `μ_asymp` times the admissible bound at `x`.
+/-- `log y / (y · ε_θ(y)) = (R^B/Aθ) · g(1, 1−B, C/√R, y)`, the function Corollary 11 governs.
 
-After cancelling the constant `|…|`, which appears on both sides, this reduces to
+This identity is the whole reason `Growth.lean` exists in the shape it does. -/
+theorem log_div_admissibleBound {Aθ B C R : ℝ} (hR : 0 < R) (hA : 0 < Aθ) {y : ℝ} (hy : 1 < y) :
+    log y / (y * admissibleBound Aθ B C R y) = (R ^ B / Aθ) * g 1 (1 - B) (C / sqrt R) y := by
+  have hly : 0 < log y := log_pos hy
+  have hypos : (0 : ℝ) < y := by linarith
+  have hRB : (0 : ℝ) < R ^ B := rpow_pos_of_pos hR B
+  have hLB : (0 : ℝ) < (log y) ^ B := rpow_pos_of_pos hly B
+  have hpow : log y = (log y) ^ (1 - B) * (log y) ^ B := by
+    rw [← rpow_add hly, show (1 - B) + B = (1 : ℝ) by ring, rpow_one]
+  have hyinv : y ^ (-(1 : ℝ)) = y⁻¹ := by rw [rpow_neg hypos.le, rpow_one]
+  have hEeq : exp (-(C / sqrt R) * sqrt (log y)) = (exp (C / sqrt R * sqrt (log y)))⁻¹ := by
+    rw [← Real.exp_neg]; congr 1; ring
+  have hEp : (0 : ℝ) < exp (C / sqrt R * sqrt (log y)) := exp_pos _
+  have key : ∀ L LB L1B E : ℝ, LB ≠ 0 → E ≠ 0 → L = L1B * LB →
+      L / (y * (Aθ * (R ^ B)⁻¹ * (LB * E⁻¹))) = R ^ B / Aθ * (y⁻¹ * L1B * E) := by
+    intro L LB L1B E hLB' hE' hrel
+    rw [hrel]
+    field_simp
+  rw [admissibleBound_eq_g_mul hR hy, rpow_neg hR.le, hEeq]
+  unfold g
+  rw [hyinv]
+  exact key _ _ _ _ hLB.ne' hEp.ne' hpow
 
-`log x / (x · ε_θ(x)) ≤ log x₁ / (x₁ · ε_θ(x₁))`,
-
-and `log x / (x · ε_θ(x)) = (R^B / Aθ) · g(1, 1-B, C/√R, x)` is exactly the function `Growth.lean`'s
-Corollary 11 shows to be decreasing. The `B ≥ 1 + C²/(16R)` hypothesis is there for this and
-nothing else.
-
-One wrinkle, already recorded as an erratum: `admissibleBound_strictAntiOn` needs that inequality
-*strict*, while the paper's Theorem 3 states `≥`. At equality Lemma 10(b) applies instead, and its
-threshold `exp((C/(4√R))²)` is below `x₁`, so the boundary case is covered — but by a different
-lemma, which is why this is not a one-line appeal to Corollary 11. -/
 theorem boundary_le {Aθ B C R x₀ x₁ x : ℝ} (hR : 0 < R)
-    (hB : max (3 / 2) (1 + C ^ 2 / (16 * R)) ≤ B) (hx₀ : 2 ≤ x₀)
+    (hB : max (3 / 2) (1 + C ^ 2 / (16 * R)) ≤ B) (hx₀ : 2 ≤ x₀) (hCpos : 0 < C)
     (hx₁ : max x₀ (exp ((1 + C / (2 * sqrt R)) ^ 2)) ≤ x₁) (hx : x₁ ≤ x) (hA : 0 < Aθ) :
     (log x / x) * |primeCounting x₀ - Li x₀ - (Chebyshev.theta x₀ - x₀) / log x₀|
       ≤ ((x₀ * log x₁) / (admissibleBound Aθ B C R x₁ * x₁ * log x₀)
           * |(primeCounting x₀ - Li x₀) / (x₀ / log x₀) - (Chebyshev.theta x₀ - x₀) / x₀|)
         * admissibleBound Aθ B C R x := by
-  sorry
+  have hx₀1 : (1 : ℝ) < x₀ := by linarith
+  have hx₀x₁ : x₀ ≤ x₁ := le_trans (le_max_left _ _) hx₁
+  have hx₁1 : (1 : ℝ) < x₁ := lt_of_lt_of_le hx₀1 hx₀x₁
+  have hx1 : (1 : ℝ) < x := lt_of_lt_of_le hx₁1 hx
+  have hx₀pos : (0 : ℝ) < x₀ := by linarith
+  have hx₁pos : (0 : ℝ) < x₁ := by linarith
+  have hxpos : (0 : ℝ) < x := by linarith
+  have hl₀ : 0 < log x₀ := log_pos hx₀1
+  have hl₁ : 0 < log x₁ := log_pos hx₁1
+  have hlx : 0 < log x := log_pos hx1
+  have hsr : (0 : ℝ) < sqrt R := sqrt_pos.mpr hR
+  have hc : (0 : ℝ) < C / sqrt R := by positivity
+  have hKrel : |(primeCounting x₀ - Li x₀) / (x₀ / log x₀) - (Chebyshev.theta x₀ - x₀) / x₀|
+      = (log x₀ / x₀) * |primeCounting x₀ - Li x₀ - (Chebyshev.theta x₀ - x₀) / log x₀| := by
+    rw [← abs_of_pos (show (0 : ℝ) < log x₀ / x₀ by positivity), ← abs_mul]
+    congr 1
+    field_simp
+  have hbb : 1 - B ≤ -(C / sqrt R) ^ 2 / (16 * 1) := by
+    have hsq : (C / sqrt R) ^ 2 = C ^ 2 / R := by rw [div_pow, sq_sqrt hR.le]
+    have hle : 1 + C ^ 2 / (16 * R) ≤ B := le_trans (le_max_right _ _) hB
+    have h16 : C ^ 2 / R / (16 * 1) = C ^ 2 / (16 * R) := by field_simp
+    rw [hsq, neg_div, h16]
+    linarith
+  set X := exp ((C / sqrt R / (4 * 1)) ^ 2) with hXdef
+  have hX1 : 1 < X := by
+    rw [hXdef, show (1 : ℝ) = exp 0 from Real.exp_zero.symm]
+    exact exp_lt_exp.mpr (by positivity)
+  have hXlt : X < x₁ := by
+    refine lt_of_lt_of_le ?_ (le_trans (le_max_right _ _) hx₁)
+    have hd2 : C / (2 * sqrt R) = C / sqrt R / 2 := by field_simp
+    rw [hXdef, hd2]
+    exact exp_lt_exp.mpr (by nlinarith [hc])
+  have hanti := g_strictAntiOn_of_le (a := 1) (b := 1 - B) (c := C / sqrt R)
+    one_pos hc hbb hX1 (le_refl X)
+  have hgle : g 1 (1 - B) (C / sqrt R) x ≤ g 1 (1 - B) (C / sqrt R) x₁ := by
+    rcases eq_or_lt_of_le hx with heq | hlt
+    · rw [heq]
+    · exact (hanti (Set.mem_Ioi.mpr hXlt) (Set.mem_Ioi.mpr (lt_trans hXlt hlt)) hlt).le
+  have hε₁ : (0 : ℝ) < admissibleBound Aθ B C R x₁ := by
+    rw [admissibleBound_eq_g_mul hR hx₁1]
+    exact mul_pos (mul_pos hA (rpow_pos_of_pos hR _))
+      (mul_pos (rpow_pos_of_pos hl₁ _) (exp_pos _))
+  have hεx : (0 : ℝ) < admissibleBound Aθ B C R x := by
+    rw [admissibleBound_eq_g_mul hR hx1]
+    exact mul_pos (mul_pos hA (rpow_pos_of_pos hR _))
+      (mul_pos (rpow_pos_of_pos hlx _) (exp_pos _))
+  have hratio : log x / (x * admissibleBound Aθ B C R x)
+      ≤ log x₁ / (x₁ * admissibleBound Aθ B C R x₁) := by
+    rw [log_div_admissibleBound hR hA hx1, log_div_admissibleBound hR hA hx₁1]
+    exact mul_le_mul_of_nonneg_left hgle (by positivity)
+  rw [hKrel]
+  have hK0 : (0 : ℝ) ≤ |primeCounting x₀ - Li x₀ - (Chebyshev.theta x₀ - x₀) / log x₀| :=
+    abs_nonneg _
+  have hfinal : log x / x ≤ (log x₁ / (admissibleBound Aθ B C R x₁ * x₁))
+      * admissibleBound Aθ B C R x := by
+    calc log x / x
+        = log x / (x * admissibleBound Aθ B C R x) * admissibleBound Aθ B C R x := by
+          field_simp
+      _ ≤ log x₁ / (x₁ * admissibleBound Aθ B C R x₁) * admissibleBound Aθ B C R x :=
+          mul_le_mul_of_nonneg_right hratio hεx.le
+      _ = (log x₁ / (admissibleBound Aθ B C R x₁ * x₁)) * admissibleBound Aθ B C R x := by
+          rw [mul_comm x₁ (admissibleBound Aθ B C R x₁)]
+  have hexpand : ((x₀ * log x₁) / (admissibleBound Aθ B C R x₁ * x₁ * log x₀)
+      * ((log x₀ / x₀) * |primeCounting x₀ - Li x₀ - (Chebyshev.theta x₀ - x₀) / log x₀|))
+      * admissibleBound Aθ B C R x
+      = ((log x₁ / (admissibleBound Aθ B C R x₁ * x₁)) * admissibleBound Aθ B C R x)
+        * |primeCounting x₀ - Li x₀ - (Chebyshev.theta x₀ - x₀) / log x₀| := by
+    field_simp
+  rw [hexpand]
+  exact mul_le_mul_of_nonneg_right hfinal hK0
 
 /-- **The integral estimate.** Lemma 12's bound, normalised, is at most the second summand of
 `μ_asymp` times the admissible bound at `x`.
@@ -98,7 +177,84 @@ theorem integral_term_le {Aθ B C R x₀ x₁ x : ℝ} (hR : 0 < R)
     (log x / x) * |∫ t in x₀..x, (Chebyshev.theta t - t) / (t * (log t) ^ 2)|
       ≤ (2 * dawson (sqrt (log x₁) - C / (2 * sqrt R)) / sqrt (log x₁))
         * admissibleBound Aθ B C R x := by
-  sorry
+  have hx₀1 : (1 : ℝ) < x₀ := by linarith
+  have hx₀x₁ : x₀ ≤ x₁ := le_trans (le_max_left _ _) hx₁
+  have hx₀x : x₀ ≤ x := le_trans hx₀x₁ hx
+  have hx1 : (1 : ℝ) < x := lt_of_lt_of_le hx₀1 hx₀x
+  have hxpos : (0 : ℝ) < x := by linarith
+  have hL : 0 < log x := log_pos hx1
+  have hL₁ : 0 < log x₁ := log_pos (lt_of_lt_of_le hx₀1 hx₀x₁)
+  have hsr : (0 : ℝ) < sqrt R := sqrt_pos.mpr hR
+  have hsne : sqrt (log x) ≠ 0 := (sqrt_pos.mpr hL).ne'
+  have hRne : (R : ℝ) ^ B ≠ 0 := (rpow_pos_of_pos hR B).ne'
+  have hA : 0 ≤ Aθ := by
+    have h0 := h x₀ (le_refl x₀)
+    have hE : 0 ≤ Eθ x₀ := by unfold Eθ; positivity
+    have hq : 0 < log x₀ / R := div_pos (log_pos hx₀1) hR
+    have hpos : 0 < (log x₀ / R) ^ B * exp (-C * (log x₀ / R) ^ ((1 : ℝ) / 2)) :=
+      mul_pos (rpow_pos_of_pos hq B) (exp_pos _)
+    unfold admissibleBound at h0
+    nlinarith [h0, hE, hpos]
+  have hc0 : (0 : ℝ) ≤ C / (2 * sqrt R) := div_nonneg hCpos (by positivity)
+  have habs : |∫ t in x₀..x, (Chebyshev.theta t - t) / (t * (log t) ^ 2)|
+      ≤ ∫ t in x₀..x, |Chebyshev.theta t - t| / (t * (log t) ^ 2) := by
+    refine le_trans (intervalIntegral.abs_integral_le_integral_abs hx₀x) (le_of_eq ?_)
+    refine intervalIntegral.integral_congr fun t ht ↦ ?_
+    rw [Set.uIcc_of_le hx₀x] at ht
+    have ht1 : (1 : ℝ) < t := lt_of_lt_of_le hx₀1 ht.1
+    have hp : (0 : ℝ) < t * (log t) ^ 2 := by have := log_pos ht1; positivity
+    rw [abs_div, abs_of_pos hp]
+  have h12 := integral_theta_bound hR hx₀1 hC h hx₀x
+  have hmB : (0 : ℝ) ≤ (2 * B - 3) / 2 := by
+    have : (3 : ℝ) / 2 ≤ B := le_trans (le_max_left _ _) hB
+    linarith
+  have hmax : mFactor B x₀ x = (log x) ^ ((2 * B - 3) / 2) :=
+    max_eq_right (rpow_le_rpow (log_pos hx₀1).le (log_le_log (by linarith) hx₀x) hmB)
+  -- `(log x)^{(2B-3)/2} · log x · √(log x) = (log x)^B`: the whole rpow content.
+  have hpow3 : (log x) ^ ((2 * B - 3) / 2) * log x * sqrt (log x) = (log x) ^ B := by
+    have e1 : log x = (log x) ^ (1 : ℝ) := (rpow_one _).symm
+    have e2 : sqrt (log x) = (log x) ^ ((1 : ℝ) / 2) := sqrt_eq_rpow _
+    calc (log x) ^ ((2 * B - 3) / 2) * log x * sqrt (log x)
+        = (log x) ^ ((2 * B - 3) / 2) * (log x) ^ (1 : ℝ) * (log x) ^ ((1 : ℝ) / 2) := by
+          rw [← e1, ← e2]
+      _ = (log x) ^ ((2 * B - 3) / 2 + 1 + (1 : ℝ) / 2) := by
+          rw [← rpow_add hL, ← rpow_add hL]
+      _ = (log x) ^ B := by congr 1; ring
+  have hadm : admissibleBound Aθ B C R x
+      = Aθ * (R ^ B)⁻¹ * ((log x) ^ B * exp (-C * sqrt (log x / R))) := by
+    have hs : (log x / R) ^ ((1 : ℝ) / 2) = sqrt (log x / R) := (sqrt_eq_rpow _).symm
+    unfold admissibleBound
+    rw [hs, div_rpow hL.le hR.le]
+    field_simp
+  -- Pure algebra, with the transcendental parts held as variables.
+  have key : ∀ D E : ℝ,
+      (log x / x) * (2 * Aθ / R ^ B * x * (log x) ^ ((2 * B - 3) / 2) * E * D)
+        = (2 * D / sqrt (log x)) * (Aθ * (R ^ B)⁻¹ * ((log x) ^ B * E)) := by
+    intro D E
+    rw [← hpow3]
+    field_simp
+  have hstep : (log x / x) * |∫ t in x₀..x, (Chebyshev.theta t - t) / (t * (log t) ^ 2)|
+      ≤ (2 * dawson (sqrt (log x) - C / (2 * sqrt R)) / sqrt (log x))
+        * admissibleBound Aθ B C R x := by
+    refine le_trans (mul_le_mul_of_nonneg_left (le_trans habs h12)
+      (by positivity : (0 : ℝ) ≤ log x / x)) (le_of_eq ?_)
+    rw [hmax, hadm]
+    exact key _ _
+  refine le_trans hstep ?_
+  -- Dawson monotonicity: this is what the `x₁` threshold buys.
+  have hs₁ : 1 + C / (2 * sqrt R) ≤ sqrt (log x₁) := by
+    have hge : exp ((1 + C / (2 * sqrt R)) ^ 2) ≤ x₁ := le_trans (le_max_right _ _) hx₁
+    have hlog : (1 + C / (2 * sqrt R)) ^ 2 ≤ log x₁ := by
+      rw [← Real.log_exp ((1 + C / (2 * sqrt R)) ^ 2)]
+      exact log_le_log (exp_pos _) hge
+    calc 1 + C / (2 * sqrt R) = sqrt ((1 + C / (2 * sqrt R)) ^ 2) := (sqrt_sq (by linarith)).symm
+      _ ≤ sqrt (log x₁) := sqrt_le_sqrt hlog
+  have hss : sqrt (log x₁) ≤ sqrt (log x) := sqrt_le_sqrt (log_le_log (by linarith) hx)
+  have hdaw := dawson_shift_div_antitoneOn hc0 hs₁ hss
+  have hpos : (0 : ℝ) ≤ admissibleBound Aθ B C R x := by rw [hadm]; positivity
+  refine mul_le_mul_of_nonneg_right ?_ hpos
+  rw [mul_div_assoc, mul_div_assoc]
+  linarith [hdaw]
 
 /-- **Theorem 3**, the general `θ → π` conversion, stated as the paper does.
 
@@ -116,7 +272,7 @@ Given the two estimates, the rest is `Epi_le` plus the observation that `admissi
 in `A`. -/
 theorem classicalBound_pi_of_theta
     {Aθ B C R x₀ x₁ : ℝ} (hR : 0 < R) (hB : max (3 / 2) (1 + C ^ 2 / (16 * R)) ≤ B)
-    (hx₀ : 2 ≤ x₀) (hA : 0 < Aθ) (hCpos : 0 ≤ C)
+    (hx₀ : 2 ≤ x₀) (hA : 0 < Aθ) (hCpos : 0 < C)
     (hC : C / (2 * sqrt R) ≤ sqrt (log x₀))
     (hx₁ : max x₀ (exp ((1 + C / (2 * sqrt R)) ^ 2)) ≤ x₁)
     (h : HasClassicalBound Eθ Aθ B C R x₀) :
@@ -126,8 +282,8 @@ theorem classicalBound_pi_of_theta
   have hx₀x : x₀ ≤ x := le_trans hx₀x₁ hx
   have hdecomp := Epi_le hx₀ hx₀x
   have hθ : Eθ x ≤ admissibleBound Aθ B C R x := h x hx₀x
-  have hbdry := boundary_le hR hB hx₀ hx₁ hx hA
-  have hint := integral_term_le hR hB hx₀ hC hCpos hx₁ hx h
+  have hbdry := boundary_le hR hB hx₀ hCpos hx₁ hx hA
+  have hint := integral_term_le hR hB hx₀ hC hCpos.le hx₁ hx h
   have hlin : admissibleBound ((1 + muAsymp Aθ B C R x₀ x₁) * Aθ) B C R x
       = admissibleBound Aθ B C R x
         + muAsymp Aθ B C R x₀ x₁ * admissibleBound Aθ B C R x := by

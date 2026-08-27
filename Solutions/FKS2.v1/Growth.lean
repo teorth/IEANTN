@@ -210,6 +210,28 @@ theorem g_strictAntiOn_of_a_zero {b c : ℝ} (hb : b < 0) (hc : 0 < c) :
     rwa [show c / 2 * (-2 * b / c) = -b by field_simp] at h
   linarith
 
+/-- Lemma 10(a) and 10(b) combined: for `b ≤ -c²/(16a)`, `g` decreases beyond `exp((c/(4a))²)`.
+
+The two cases of Lemma 10 meet exactly here. When the inequality is strict the discriminant
+`c²/4 + 4ab` is negative, 10(a) applies and `g` decreases everywhere; at equality the discriminant
+vanishes, 10(b) applies and its threshold is `exp((c/(4a))²)`. Either way that threshold works,
+because `Real.sqrt` of a nonpositive number is `0`, so the two thresholds coincide. -/
+theorem g_strictAntiOn_of_le {a b c X : ℝ} (ha : 0 < a) (hc : 0 < c)
+    (hb : b ≤ -c ^ 2 / (16 * a)) (h1 : 1 < X) (hX : exp ((c / (4 * a)) ^ 2) ≤ X) :
+    StrictAntiOn (g a b c) (Set.Ioi X) := by
+  have hdisc : c ^ 2 / 4 + 4 * a * b ≤ 0 := by
+    rw [neg_div, le_neg, div_le_iff₀ (by positivity : (0 : ℝ) < 16 * a)] at hb
+    linarith
+  have hsqrt : sqrt (c ^ 2 / 4 + 4 * a * b) = 0 := sqrt_eq_zero_of_nonpos hdisc
+  rcases eq_or_lt_of_le hb with heq | hlt
+  · have hge := g_strictAntiOn_of_ge ha hc (le_of_eq heq.symm)
+    rw [hsqrt] at hge
+    refine hge.mono fun y hy ↦ ?_
+    have : exp ((c / (4 * a) + 1 / (2 * a) * 0) ^ 2) ≤ X := by simpa using hX
+    exact Set.mem_Ioi.mpr (lt_of_le_of_lt this hy)
+  · exact (g_strictAntiOn_of_lt ha hlt).mono fun y hy ↦
+      Set.mem_Ioi.mpr (lt_trans h1 hy)
+
 /-- **Corollary 11.** For `B > 1 + C²/(16R)`, the function `g 1 (1 - B) (C/√R)` decreases on
 `(1, ∞)`.
 
