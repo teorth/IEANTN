@@ -1,5 +1,5 @@
 name = "solution_FKS2_v1"
-defaultTargets = ["Solution", "Growth", "Dawson", "PsiToTheta", "Integral", "ThetaToPi"]
+defaultTargets = ["Solution", "Growth", "Dawson", "PsiToTheta", "Integral", "Stieltjes", "ThetaToPi"]
 
 # The core library, for the node's `Conclusions`. Add whatever else the proof needs --
 # PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
@@ -31,6 +31,11 @@ roots = ["PsiToTheta"]
 [[lean_lib]]
 name = "Integral"
 roots = ["Integral"]
+
+# Partial summation: pi - Li in terms of theta.
+[[lean_lib]]
+name = "Stieltjes"
+roots = ["Stieltjes"]
 
 [[lean_lib]]
 name = "ThetaToPi"
