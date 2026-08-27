@@ -1,5 +1,5 @@
 name = "solution_FKS2_v1"
-defaultTargets = ["Solution", "Growth", "Dawson", "PsiToTheta", "ThetaToPi"]
+defaultTargets = ["Solution", "Growth", "Dawson", "PsiToTheta", "Integral", "ThetaToPi"]
 
 # The core library, for the node's `Conclusions`. Add whatever else the proof needs --
 # PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
@@ -26,6 +26,11 @@ roots = ["Dawson"]
 [[lean_lib]]
 name = "PsiToTheta"
 roots = ["PsiToTheta"]
+
+# Lemma 12's development: the substitution, the Dawson evaluation, and the integral bound.
+[[lean_lib]]
+name = "Integral"
+roots = ["Integral"]
 
 [[lean_lib]]
 name = "ThetaToPi"
