@@ -37,8 +37,11 @@ without restating anything. It also means both pipelines import *nothing* — th
 theorems about arbitrary parameters, so a Lean proof is their whole justification, and they can be
 verified without waiting on any numerical input. The corollaries below are then instantiations.
 
-The pipelines also carry three hypotheses the paper does not state, each found by formalizing
-rather than by reading; they are documented at the statements.
+The pipelines also carry three hypotheses the paper does not state; they are documented at the
+statements. They were found here by formalizing, but they were **not new**:
+`PrimeNumberTheoremAnd` already carries the same conditions, and for its `theorem_3` an explicit
+note that they "are not present in the source material [FKS2]". The gap in the published paper is
+real and independently confirmed; the credit for noticing it is not ours.
 
 **Tables 6 and 7** are data. Corollary 23 asserts an admissible classical bound for every row of
 Table 6 and Corollary 24 a bound for every row of Table 7; this node states the single row of
@@ -71,7 +74,10 @@ Three hypotheses below are **not in the paper**, and are not tidying:
   bound go the wrong way.
 * `0 < C`, which the monotonicity lemmas behind both need.
 
-Each was found by formalizing, and each is recorded on this node's page.
+Each is recorded on this node's page. All three are also present in `PrimeNumberTheoremAnd`, which
+found them first — see the attribution notes there. Where this node does differ is that
+Proposition 13 needs only `exp 1 ≤ x₀` where upstream requires `7 ≤ log x₀`, so this statement is
+the stronger one.
 -/
 
 /-- The Dawson function `D₊(x) = e^{-x²} ∫₀ˣ e^{t²} dt`.

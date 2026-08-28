@@ -100,6 +100,9 @@ errata_in_the_source:
       u < -2b/c". So this is not a judgement call about what the authors meant — the proof settles
       it. PrimeNumberTheoremAnd also flags it. Our g_strictAntiOn_of_a_zero states the corrected
       form.
+  # Of the errata below, the Corollary 11 one is where this port genuinely goes beyond upstream:
+  # PrimeNumberTheoremAnd's corollary_11 silently strengthens the paper's `>=` to `>` and so does
+  # not cover B = 1 + C^2/(16R); g_strictAntiOn_of_le covers it via Lemma 10(b).
   - lemma: Corollary 11 (decreasing_func_corollary)
     published: "If B ≥ 1 + C²/(16R) then g(1, 1-B, C/√R, x) is decreasing for all x"
     correct: >-
@@ -141,8 +144,11 @@ observations_in_the_source:
       was never noticed. Note the paper's x₁ ≥ exp((1 + C/(2√R))²) is a strictly stronger condition
       of the same shape, so the authors had the issue in view at Theorem 3 and not at Lemma 12.
     lesson: >-
-      Found by formalizing. The statement audit did not flag it and neither did the first draft of
-      the file; only working through the proof did.
+      Found here by formalizing; the statement audit did not flag it and neither did the first draft
+      of the file. NOT a new observation, though: PrimeNumberTheoremAnd's lemma_12 already carries
+      it, and its theorem_3 says in terms that these conditions are not present in the source. Two
+      lessons, then -- reading and proving find different classes of error, AND check the existing
+      formalization before recording something as a find.
   - what: Proposition 13 needs x₀ ≥ e, and the paper does not say so
     detail: >-
       Found by proving it, not by reading it. The log(x₀) in the printed ν_asymp is spare only
@@ -153,8 +159,10 @@ observations_in_the_source:
       downstream is affected — but a later reuse of Proposition 13 at small x₀ would be unsound,
       which is why it is a hypothesis rather than a remark.
     lesson: >-
-      The statement audit against the paper did not catch this; only the proof did. Reading and
-      proving find different classes of error, and neither substitutes for the other.
+      The statement audit did not catch this; only the proof did. Also not new --
+      PrimeNumberTheoremAnd's proposition_13 already requires 7 <= log x0. Ours needs only
+      exp 1 <= x0, which is weaker, so our statement is the stronger one; that difference is a
+      modest improvement rather than a discovery.
   - what: the paper drops a factor R^B when rewriting its integrands in terms of g
     detail: >-
       Both (theta_asymp_1) and decreasing_func_corollary equate expressions in (log x / R)^{±B}
