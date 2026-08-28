@@ -81,7 +81,7 @@ def psi_classical_bound : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`KLN.v1.subconvexity_bound`](KLN-v1.md#subconvexity_bound), [`MT.v1.zero_free_region_sharpened`](MT-v1.md#zero_free_region_sharpened), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to) |
-| Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14), [`FKS2.v1.corollary_23`](FKS2-v1.md#corollary_23) |
+| Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14), [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22), [`FKS2.v1.corollary_23`](FKS2-v1.md#corollary_23) |
 
 **Justification `fks-paper`** — **designated** — literature, published version, Corollary 1.3 (numbering unconfirmed)
 

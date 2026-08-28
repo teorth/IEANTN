@@ -152,6 +152,22 @@ a different `R`, which is why the pipelines above are the more valuable export. 
 def corollary_14 : Prop :=
   HasClassicalBound Eθ 121.0961 (3 / 2) 2 5.5666305 2
 
+/-- **Corollary 22**, the paper's headline asymptotic bound:
+`|π(x) − Li(x)| ≤ 9.2211 x √(log x) exp(−0.84768363 √(log x))` for all `x ≥ 2`.
+
+Stated in the network's vocabulary at `R = 1`, which is the same claim:
+`HasClassicalBound Eπ A B C 1` unwinds to `Eπ(x) ≤ A (log x)^B exp(−C √(log x))`, and multiplying by
+`x / log x` gives the paper's displayed form exactly, with `B = 3/2` supplying the `√(log x)`.
+
+`R` is folded into the constants rather than carried: the paper's own proof runs at
+`R = 5.5666305`, and `121.107 / R^{3/2} = 9.22106…` and `2 / √R = 0.84768363…` are where the two
+printed constants come from. Note the printed `C` is very slightly *below* `2/√R`, which is the
+safe direction — a smaller `C` is a weaker bound.
+
+This is what dominates Table 6's rows far out, and so what `corollary_23`'s tail rests on. -/
+def corollary_22 : Prop :=
+  HasClassicalBound Eπ 9.2211 (3 / 2) 0.84768363 1 2
+
 /-- **Corollary 23, at the row `[0.826, 0.25, 1.00, 1.000]` of Table 6.** The prime-counting error
 term obeys the admissible classical bound with `A = 0.826`, `B = 0.25`, `C = 1`, `R = 5.5666305`,
 for all `x ≥ e`.

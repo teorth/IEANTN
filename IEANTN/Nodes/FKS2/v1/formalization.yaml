@@ -66,6 +66,10 @@ conclusions:
       <= log x0, which is weaker -- so this conclusion is stronger than upstream's on that axis. A modest
       improvement, not a find.
   designated: fks2-paper-proposition-13
+  progress:
+    solution: Solutions/FKS2.v1/
+    state: in-progress
+    remaining_holes: 3
 - id: theorem_3
   declaration: FKS2.v1.theorem_3
   challenge: FKS2.v1.challenge_theorem_3
@@ -105,6 +109,10 @@ conclusions:
       theorem_3 and lemma_12). So the gap in the published paper is real and independently confirmed,
       but the credit for noticing it is not ours.
   designated: fks2-paper-theorem-3
+  progress:
+    solution: Solutions/FKS2.v1/
+    state: in-progress
+    remaining_holes: 3
 - id: corollary_14
   declaration: FKS2.v1.corollary_14
   challenge: FKS2.v1.challenge_corollary_14
@@ -146,7 +154,52 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 2
+    remaining_holes: 3
+- id: corollary_22
+  declaration: FKS2.v1.corollary_22
+  challenge: FKS2.v1.challenge_corollary_22
+  imports:
+  - node: FKS.v1
+    conclusion: psi_classical_bound
+  - node: BKLNW.v1
+    conclusion: corollary_5_1
+  - node: BKLNW.v1
+    conclusion: theta_error_le_one
+  - node: FKS2Numerics.v1
+    conclusion: nu_asymp_e30_le
+  - node: FKS2Numerics.v1
+    conclusion: theta_asymp_ge_one_below_e30
+  - node: FKS2Numerics.v1
+    conclusion: corollary_22_mid_range
+  imports_status: identified
+  justifications:
+  - id: fks2-paper-corollary-22
+    kind: literature
+    source: FKS2
+    locator: Corollary 22 (epsilon_asymp_pi_explicit)
+    note: >-
+      The paper's headline asymptotic bound for pi. Stated at R = 1, with R folded into the
+      constants: 121.107 / R^{3/2} = 9.22106 and 2 / sqrt R = 0.8476836337 are where the printed
+      9.2211 and 0.84768363 come from. Checked, and note the printed C is very slightly BELOW
+      2/sqrt R, which is the safe direction since a smaller C is a weaker bound.
+
+      Imports: everything corollary_14 needs, because the proof runs Theorem 3 on it, plus the
+      mid-range interpolation. Above e^20000 the claim is analysis and is proved in
+      Solutions/FKS2.v1; below it the paper interpolates numerically, which is
+      FKS2Numerics.v1.corollary_22_mid_range.
+
+      The arithmetic hangs together with room: 121.0961 / R^{3/2} = 9.220226, and multiplying by
+      (1 + mu) with mu <= 5.015e-5 gives 9.220688, comfortably under 9.2211. The mu estimate is
+      dominated by its Dawson summand, 2 D+(v)/sqrt(log x1) with v = 140.9975, and the upper bound
+      dawson_le proved in the solution covers it -- 4.05e-3 against a requirement of 6.70e-3.
+
+      This is what dominates Table 6's rows far out, so it is also what corollary_23's tail will
+      rest on. PrimeNumberTheoremAnd has only the tail (corollary_22_tail), not the full corollary.
+  designated: fks2-paper-corollary-22
+  progress:
+    solution: Solutions/FKS2.v1/
+    state: in-progress
+    remaining_holes: 3
 - id: corollary_23
   declaration: FKS2.v1.corollary_23
   challenge: FKS2.v1.challenge_corollary_23
@@ -206,7 +259,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 2
+    remaining_holes: 3
 - id: corollary_26
   declaration: FKS2.v1.corollary_26
   challenge: FKS2.v1.challenge_corollary_26
@@ -241,7 +294,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 2
+    remaining_holes: 3
 sources:
 - title: "Sharper bounds for the error term in the prime number theorem"
   authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]

@@ -6,7 +6,7 @@
 # `ieantn.py progress`; everything here is judgement and should read like it.
 
 solution: Solutions/FKS2.v1/
-state: in-progress   # pipelines stated AND proved; 2 holes, both needing numerical inputs
+state: in-progress   # pipelines proved; Corollary 22 stated, tail half-built; 3 holes
 source: PrimeNumberTheoremAnd @ ae881f2, PrimeNumberTheoremAnd/IEANTN/FKS2*.lean
 
 # --------------------------------------------------------------------------------------------
@@ -229,6 +229,21 @@ pipelines:
 
 # --------------------------------------------------------------------------------------------
 remaining:
+  - hole: Corollary22.corollary_22
+    done: >-
+      corollary_14_normalized (R folded into the constants, including the tight
+      0.84768363 <= 2/sqrt R with a 4.8e-8 margin once squared), sqrt20000_bounds, and
+      muAsymp_dawson_term_le -- the Dawson summand of mu_asymp is <= 5.9e-5, using dawson_le.
+    left: >-
+      The boundary summand of mu_asymp, and the arithmetic putting 9.2203 (1 + mu) <= 9.2211.
+      The summand is (2*20000)/(eps(x1) * e^20000 * log 2) * |K| with |K| = 1 EXACTLY, since
+      pi(2) = 1, Li(2) = 0 and theta(2) = log 2 give K = log2/2 - (log2 - 2)/2 = 1. All three of
+      those values were checked computable in Lean. e^20000 sits in the denominator, so a crude
+      bound closes it: eps(x1) >= 9.2203 * 20000 * e^{-120} makes the summand at most
+      0.313 * e^{-19880}, and e^{19880} >= e^{10} >= 20000 finishes with vast room.
+    then: >-
+      theorem_3 at A = 9.2203, B = 3/2, C = 0.84768363, R = 1, x0 = 2, x1 = e^20000, and splice with
+      FKS2Numerics.v1.corollary_22_mid_range below e^20000.
   - hole: ThetaToPi.corollary_23
     not_from: >-
       Theorem 3. It preserves B and C and needs B >= max(3/2, 1 + C^2/(16R)); Corollary 14 gives
@@ -338,6 +353,8 @@ file_layout:
                          # decomposition. PROVED, no holes.
     - ThetaToPi.lean     # theorem_3 PROVED outright, with both its estimates. 2 holes:
                          # corollary_23 and corollary_26.
+    - Corollary22.lean   # the headline bound. Normalisation to R = 1 and the Dawson summand of
+                         # mu_asymp are PROVED; 1 hole, the assembly.
     - Solution.lean      # the three compared theorems, and nothing else
   still_expected:
     - Support.lean       # vocabulary adapters, if the two spellings turn out to disagree anywhere

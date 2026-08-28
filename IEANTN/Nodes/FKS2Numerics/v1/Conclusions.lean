@@ -123,4 +123,19 @@ def theta_asymp_ge_one_below_e30 : Prop :=
   ∀ x ∈ Set.Icc (2 : ℝ) (Real.exp 30),
     1 ≤ admissibleBound 121.0961 (3 / 2) 2 5.5666305 x
 
+/-- **The mid-range behind Corollary 22**: the headline bound already holds on `[2, e²⁰⁰⁰⁰]`.
+
+Above `e²⁰⁰⁰⁰` Corollary 22 is analysis — Theorem 3 applied to Corollary 14, with the multiplier
+controlled by the Dawson estimate. Below it the paper proceeds differently: "the numerical results
+obtainable from Theorem [prop_num_pi] may be interpolated as a step function to give a bound on
+`E_π(x)` of the shape `ε_{π,asymp}(x)`", using the subdivisions of FKS's Lemmas 5.2 and 5.3. That
+interpolation is a computation over a table, not an argument, so it is stated here.
+
+`PrimeNumberTheoremAnd` does not have this either — it formalizes only the tail
+(`corollary_22_tail`, from `exp 20000` onward). So this is the genuinely missing piece, in both
+developments. -/
+def corollary_22_mid_range : Prop :=
+  ∀ x ∈ Set.Icc (2 : ℝ) (Real.exp 20000),
+    Eπ x ≤ admissibleBound 9.2211 (3 / 2) 0.84768363 1 x
+
 end FKS2Numerics.v1
