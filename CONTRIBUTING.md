@@ -183,17 +183,48 @@ builds just that project *(planned)*. It is not in core CI because a solution ca
 
 All holes closed and you believe Comparator will accept it.
 
-**Do:** push, then ask a maintainer to dispatch the verification workflow for your branch. Until
-the `/verify` comment trigger exists *(planned)*, that is a `workflow_dispatch`, which needs write
-access — so requesting one means saying so on the pull request. A maintainer runs:
+### The order, and why it is this order
 
-```bash
-gh workflow run verify.yml -f node=Lcm.v1 -f branch=<your-branch>
-```
+1. **Push the branch and open the pull request.** Core CI triggers on `pull_request` and on pushes
+   to `main` only — so until the PR exists, nothing runs on your branch at all.
+2. **A maintainer dispatches the verification** for that branch:
 
-Then approves the `verification` environment when GitHub asks. The gate is on the *run*, not the
-request: verification is hour-scale compute, so it is not self-serve, but neither should asking for
-one require write access.
+   ```bash
+   python scripts/ieantn.py verify Lcm.v1 --branch <your-branch>
+   ```
+
+   Prefer this over `gh workflow run verify.yml` directly. A run waiting at the approval gate looks
+   exactly like one that is building — a spinner and a job name — and `ieantn.py verify` is the
+   only thing that says so out loud. It cannot approve anything, and must not be able to.
+3. **Approve the `verification` environment.** The gate is on the *run*, not the request:
+   verification is hour-scale compute, so it is not self-serve, but neither should asking for one
+   require write access. Approving means vouching for the branch's *core* Lean, not its solution —
+   the receipt job runs `lake build` on it while holding a write token.
+4. **Wait.** Comparator, then the receipt job.
+5. **Pull.** The receipt lands on *your branch* — see below — so your local copy is now behind.
+6. **Merge**, once the CI run triggered by the receipt commit is green.
+
+**Verify last.** A receipt records the statement fingerprint of its conclusion *and of every
+conclusion it imports*. Move any of them afterwards, however slightly, and `ieantn.py status`
+grades the receipt `BROKEN`: the verified implication no longer connects to what is now claimed.
+Editing metadata, notes or the solution is fine; editing a *statement* throws the verification away.
+So make the branch's statements final before step 2.
+
+**Expect a commit you did not write.** The receipt job commits `receipts/`, `IEANTN/Nodes/`,
+`STATE.md`, `GRAPH.md` and `docs/nodes/` as `ieantn-verifier[bot]`. It regenerates all three derived
+files because designating a `lean-comparator` justification changes the node's evidence kind, and a
+receipt whose own pull request failed CI would be self-defeating. Push without pulling first and you
+will be rejected.
+
+**A receipt never goes straight to `main`.** The job refuses if the branch being verified is the
+default branch: the one file the network trusts most goes through review like anything else.
+
+**A node is verified all at once, or not at all.** `record-receipt` refuses unless the solution's
+`comparator.json` lists a challenge for *every* conclusion of the node — the guard that stops a
+conclusion added to an already-verified node from inheriting its receipt. So a node with one open
+hole cannot be verified at all, and trimming `comparator.json` to the finished ones does not help.
+If part of a node is provable now and part waits on inputs that may be a long time coming, that is a
+reason to split it across two versions, not to wait. See `docs/NODES.md` on versions as variants.
 
 Comparator executes against the generated challenge; on success the workflow commits the receipt to
 your branch and designates the `lean-comparator` justification.
