@@ -33,6 +33,20 @@ verified solution resting on exactly the same computations.
 of `π` against `Li` on `[e, e⁶]`, left open there and imported here.
 -/
 
+/-! ### The two pipelines
+
+Both are proved outright. They take no import hypotheses, because a conditional theorem quantified
+over all admissible parameters consumes nothing from the network — which is exactly what makes them
+verifiable now, ahead of the corollaries that need numerical inputs. -/
+
+theorem FKS2.v1.challenge_proposition_13 : FKS2.v1.proposition_13 :=
+  fun _ _ _ _ _ _ _ hR hA hB hx₀ ha₁ ha₂ hcmp hpsi ↦
+    FKS2Sol.classicalBound_theta_of_psi hR hA hB hx₀ ha₁ ha₂ hcmp hpsi
+
+theorem FKS2.v1.challenge_theorem_3 : FKS2.v1.theorem_3 :=
+  fun _ _ _ _ _ _ hR hB hx₀ hA hC hCs hx₁ h ↦
+    FKS2Sol.classicalBound_pi_of_theta hR hB hx₀ hA hC hCs hx₁ h
+
 theorem FKS2.v1.challenge_corollary_14
     (fks_v1_psi_classical_bound : FKS.v1.psi_classical_bound)
     (bklnw_v1_corollary_5_1 : BKLNW.v1.corollary_5_1)

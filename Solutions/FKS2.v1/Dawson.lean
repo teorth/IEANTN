@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import IEANTN.Vocabulary.ErrorTerms
+import IEANTN.Nodes.FKS2.v1.Conclusions
 import Mathlib.Analysis.Complex.ExponentialBounds
 
 /-!
@@ -16,7 +17,9 @@ It appears because the substitution `u = √(log t)` turns the integral of an ad
 integral. So `D₊` is not decoration: it is what the `θ → π` conversion's constant is made of, and
 Theorem 3 cannot even be *stated* without it.
 
-Mathlib has no Dawson function, so it is defined here.
+Mathlib has no Dawson function. It is defined on the node, as `FKS2.v1.dawson`, because
+`FKS2.v1.theorem_3` cannot be stated without it; this file proves things about that definition
+rather than introducing a second one.
 
 ## What is needed of it, and what is not
 
@@ -43,10 +46,7 @@ maximum.
 namespace FKS2Sol
 
 open Real
-
-/-- `dawson x = e^{-x²} ∫₀ˣ e^{t²} dt`, the Dawson function `D₊` of the paper's (Dawson). -/
-noncomputable def dawson (x : ℝ) : ℝ :=
-  exp (-x ^ 2) * ∫ t in (0 : ℝ)..x, exp (t ^ 2)
+open FKS2.v1 (dawson)
 
 /-- `D₊` is nonnegative on `[0, ∞)`, which is the only range the conversion evaluates it on. -/
 theorem dawson_nonneg {x : ℝ} (hx : 0 ≤ x) : 0 ≤ dawson x :=

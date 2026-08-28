@@ -55,12 +55,7 @@ on our own initiative is exactly what this repository must not do.
 namespace FKS2Sol
 
 open Real IEANTN
-
-/-- The conversion multiplier of the paper's (27): how much an admissible bound for `Eψ` must be
-inflated to serve for `Eθ`, given the `ψ - θ` comparison constants `a₁`, `a₂` at `x₀`. -/
-noncomputable def nuAsymp (Aψ B C R a₁ a₂ x₀ : ℝ) : ℝ :=
-  (1 / Aψ) * (R / log x₀) ^ B * exp (C * sqrt (log x₀ / R)) *
-    (a₁ * log x₀ * x₀ ^ (-(1 : ℝ) / 2) + a₂ * log x₀ * x₀ ^ (-(2 : ℝ) / 3))
+open FKS2.v1 (nuAsymp)
 
 /-- `Eθ ≤ Eψ + (ψ - θ)/x`: the whole `ψ → θ` transfer, before any estimation.
 
