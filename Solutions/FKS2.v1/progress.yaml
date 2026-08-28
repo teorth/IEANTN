@@ -6,7 +6,7 @@
 # `ieantn.py progress`; everything here is judgement and should read like it.
 
 solution: Solutions/FKS2.v1/
-state: in-progress   # ALL the analysis is proved; 2 holes, both needing numerical inputs
+state: in-progress   # pipelines stated AND proved; 2 holes, both needing numerical inputs
 source: PrimeNumberTheoremAnd @ ae881f2, PrimeNumberTheoremAnd/IEANTN/FKS2*.lean
 
 # --------------------------------------------------------------------------------------------
@@ -185,6 +185,40 @@ imports_discovered:
 # --------------------------------------------------------------------------------------------
 # What is left, and what each piece needs. Written down because the remaining work is well
 # understood rather than blocked -- nothing here is an obstacle in principle.
+# --------------------------------------------------------------------------------------------
+# The pipelines: the paper's reusable content, now stated as conclusions and proved.
+# --------------------------------------------------------------------------------------------
+pipelines:
+  added:
+    - FKS2.v1.proposition_13
+    - FKS2.v1.theorem_3
+  why: >-
+    These are the transformations, and the corollaries are instantiations of them. Pipelining FKS2
+    means making the transformations reusable, not reclassifying the outputs -- so promoting these
+    to conclusions is the move that a later FKS2.v2 actually needs, and it was available because
+    both were already proved.
+  route: >-
+    Stated with the psi - theta comparison as an internal hypothesis (route 2 of the two this
+    node's module docstring set out) rather than by importing BKLNW's coefficients. A pipeline that
+    stands alone can be re-pointed at a better input without restating anything.
+  imports: >-
+    NONE, for both. A conditional theorem quantified over all admissible parameters consumes
+    nothing from the network. That is what lets them be verified NOW, ahead of the corollaries.
+  status: >-
+    Both proved in the solution and free of sorryAx; challenge and solution types are identical
+    under pp.all, checked locally. Ready for `ieantn.py verify`, which would make them the first
+    lean-comparator-justified analytic conclusions in the network.
+  carried_errata: >-
+    The stated hypotheses include the three the paper omits -- exp 1 <= x0 on Proposition 13,
+    C/(2 sqrt R) <= sqrt(log x0) and 0 < C on Theorem 3 -- so the node states something more careful
+    than the source, with the findings visible in the statement rather than only in prose.
+  known_duplication: >-
+    FKS2Numerics.v1.nuAsympE30 spells out the same formula as FKS2.v1.nuAsymp at fixed arguments
+    instead of applying it. Left alone deliberately: fingerprints are a Merkle hash over IEANTN's
+    definition graph, so refactoring it would move nu_asymp_e30_le's fingerprint, and corollary_14
+    depends on that conclusion -- which would force a version bump for a cosmetic change. Unify at
+    the next FKS2Numerics version.
+
 # --------------------------------------------------------------------------------------------
 remaining:
   - hole: ThetaToPi.corollary_23

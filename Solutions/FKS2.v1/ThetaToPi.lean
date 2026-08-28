@@ -41,15 +41,7 @@ is the whole reason the numerical content was split into its own node.
 namespace FKS2Sol
 
 open Real IEANTN
-
-/-- The correction `μ_asymp(x₀, x₁)` of the paper's (mu_asymp_def).
-
-The first summand is the boundary term at `x₀`, normalised; the second is what the integral of
-Lemma 12 contributes, and it is where the Dawson function reaches the final constant. -/
-noncomputable def muAsymp (Aθ B C R x₀ x₁ : ℝ) : ℝ :=
-  (x₀ * log x₁) / (admissibleBound Aθ B C R x₁ * x₁ * log x₀) *
-      |(primeCounting x₀ - Li x₀) / (x₀ / log x₀) - (Chebyshev.theta x₀ - x₀) / x₀|
-    + 2 * dawson (sqrt (log x₁) - C / (2 * sqrt R)) / sqrt (log x₁)
+open FKS2.v1 (muAsymp dawson)
 
 /-- `log y / (y · ε_θ(y)) = (R^B/Aθ) · g(1, 1−B, C/√R, y)`, the function Corollary 11 governs.
 

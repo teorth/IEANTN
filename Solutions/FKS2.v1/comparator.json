@@ -2,6 +2,8 @@
   "challenge_module": "IEANTN.Nodes.FKS2.v1.Challenge",
   "solution_module": "Solution",
   "theorem_names": [
+    "FKS2.v1.challenge_proposition_13",
+    "FKS2.v1.challenge_theorem_3",
     "FKS2.v1.challenge_corollary_14",
     "FKS2.v1.challenge_corollary_23",
     "FKS2.v1.challenge_corollary_26"

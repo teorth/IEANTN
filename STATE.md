@@ -5,7 +5,7 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-25 node version(s), 42 conclusion(s).  3 state nothing yet.
+25 node version(s), 44 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -14,7 +14,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `asserted` | 1 |
 | `bridged` | 1 |
 | `lean-comparator` | 3 |
-| `literature` | 31 |
+| `literature` | 33 |
 | `numerical` | 6 |
 
 ## Nodes
@@ -41,6 +41,8 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `FKBJ.v1` | active | `rh_up_to` | numerical | 0 | - |
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 3 | - |
 | `FKS.v1` | active | `psi_classical_bound` | literature | 3 | - |
+| `FKS2.v1` | active | `proposition_13` | literature | 0 | - |
+| `FKS2.v1` | active | `theorem_3` | literature | 0 | - |
 | `FKS2.v1` | active | `corollary_14` | literature | 5 | - |
 | `FKS2.v1` | active | `corollary_23` | literature | 3 | - |
 | `FKS2.v1` | active | `corollary_26` | literature | 2 | - |

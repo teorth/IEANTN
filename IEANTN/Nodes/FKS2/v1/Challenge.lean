@@ -20,6 +20,12 @@ Each `sorry` below is deliberate and permanent: a challenge *states*, it does no
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
 
+theorem FKS2.v1.challenge_proposition_13 : FKS2.v1.proposition_13 := by
+  sorry
+
+theorem FKS2.v1.challenge_theorem_3 : FKS2.v1.theorem_3 := by
+  sorry
+
 theorem FKS2.v1.challenge_corollary_14
     (fks_v1_psi_classical_bound : FKS.v1.psi_classical_bound)
     (bklnw_v1_corollary_5_1 : BKLNW.v1.corollary_5_1)

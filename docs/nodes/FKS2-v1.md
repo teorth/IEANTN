@@ -18,6 +18,77 @@
 
 ## Conclusions
 
+### `proposition_13`
+
+**Proposition 13**, the `Eψ → Eθ` pipeline: an admissible bound for `Eψ` gives one for `Eθ`
+with `A` inflated to `Aψ(1 + ν_asymp)` and `B`, `C`, `R`, `x₀` unchanged.
+
+The conclusion names the constant. An existentially quantified version would typecheck and be
+useless: Corollary 14 needs the actual number to get from `121.096` to `121.0961`.
+
+`C²/(8R) < B` is the paper's, and the `8` is not a slip for `16`: the binding case is the
+`g(1/2, …)` of its (28), where Lemma 10(a) at `a = 1/2` reads `-B < -C²/(8R)`.
+
+```lean
+def proposition_13 : Prop :=
+  ∀ Aψ B C R a₁ a₂ x₀ : ℝ, 0 < R → 0 < Aψ → C ^ 2 / (8 * R) < B → Real.exp 1 ≤ x₀ →
+    0 ≤ a₁ → 0 ≤ a₂ →
+    (∀ x ≥ x₀, Chebyshev.psi x - Chebyshev.theta x
+      ≤ a₁ * x ^ ((1 : ℝ) / 2) + a₂ * x ^ ((1 : ℝ) / 3)) →
+    HasClassicalBound Eψ Aψ B C R x₀ →
+    HasClassicalBound Eθ (Aψ * (1 + nuAsymp Aψ B C R a₁ a₂ x₀)) B C R x₀
+```
+
+| | |
+|---|---|
+| Lean name | `FKS2.v1.proposition_13` |
+| Challenge | `FKS2.v1.challenge_proposition_13` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L117) |
+| Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
+| Evidence | cited (`literature`) |
+| Sources traced | none |
+| Assumes | nothing recorded |
+| Assumed by | nothing yet |
+
+**Justification `fks2-paper-proposition-13`** — **designated** — literature, Proposition 13 (epsilon_asymp_theta_prop)
+
+> The paper's E_psi -> E_theta pipeline, stated for arbitrary parameters with the psi - theta comparison as an internal hypothesis rather than by importing BKLNW's coefficients. That is route 2 of the two this node's module docstring set out, chosen for the reason it gave: a pipeline that stands alone can be re-pointed at a better input by a later version without restating anything. Imports NONE, and that is a real none rather than an unexamined one. A conditional theorem quantified over all admissible parameters consumes no other result in the network; everything it needs arrives as a hypothesis. Its justification is therefore a Lean proof and nothing else, which is why it can be verified without waiting on any numerical input. Carries two hypotheses the paper does not state, both found by formalizing. `exp 1 <= x0`: the log(x0) factors in the printed nu_asymp are spare only when log x0 >= 1, and below e the proposition is FALSE -- take x = x0, a1 = 1, a2 = 0 and it reduces to 1 <= log x0. `0 < Apsi`, which the multiplier needs to be meaningful. Note also C^2/(8R) < B, with an 8 rather than a 16: the binding case is the g(1/2, .) of the paper's (28). A complete proof exists at Solutions/FKS2.v1 (FKS2Sol.classicalBound_theta_of_psi), free of sorryAx and within the three permitted axioms. This conclusion is ready to verify.
+
+### `theorem_3`
+
+**Theorem 3**, the `Eθ → Eπ` pipeline.
+
+Two things are easy to lose and both are load-bearing. The conclusion holds from a **second**
+threshold `x₁`, not from `x₀`; stating it at `x₀` claims more than the paper proves. And `A_π` is
+explicit, `(1 + μ_asymp(x₀, x₁)) A_θ`.
+
+The `x₁` threshold is not arbitrary: `√(log x₁) ≥ 1 + C/(2√R)` is what puts
+`√(log x) - C/(2√R)` past the maximum of `D₊`, so that the Dawson factor is decreasing.
+
+```lean
+def theorem_3 : Prop :=
+  ∀ Aθ B C R x₀ x₁ : ℝ, 0 < R → max (3 / 2) (1 + C ^ 2 / (16 * R)) ≤ B → 2 ≤ x₀ → 0 < Aθ →
+    0 < C → C / (2 * Real.sqrt R) ≤ Real.sqrt (Real.log x₀) →
+    max x₀ (Real.exp ((1 + C / (2 * Real.sqrt R)) ^ 2)) ≤ x₁ →
+    HasClassicalBound Eθ Aθ B C R x₀ →
+    HasClassicalBound Eπ ((1 + muAsymp Aθ B C R x₀ x₁) * Aθ) B C R x₁
+```
+
+| | |
+|---|---|
+| Lean name | `FKS2.v1.theorem_3` |
+| Challenge | `FKS2.v1.challenge_theorem_3` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L133) |
+| Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
+| Evidence | cited (`literature`) |
+| Sources traced | none |
+| Assumes | nothing recorded |
+| Assumed by | nothing yet |
+
+**Justification `fks2-paper-theorem-3`** — **designated** — literature, Theorem 3 (prop_asym_pi)
+
+> The paper's E_theta -> E_pi pipeline. Two features of the statement are load-bearing and easy to lose: the conclusion holds from a SECOND threshold x1, not from x0 -- stating it at x0 claims strictly more than the paper proves -- and A_pi is explicit, (1 + mu_asymp(x0, x1)) A_theta, not existentially quantified. Imports NONE, for the same reason as proposition_13. Carries two hypotheses the paper does not state, both found by formalizing. C/(2 sqrt R) <= sqrt(log x0): the paper's Lemma 12, which Theorem 3 applies on [x0, x], discards the lower endpoint of an integral of e^{v^2}, and that is valid only when the endpoint is nonnegative; when it is negative the discarded piece makes the left side strictly larger, so the lemma as printed is false without it. And 0 < C, which the monotonicity lemmas behind both estimates need. The paper's own x1 threshold is a strictly stronger condition of the same shape, which suggests the issue was in view one lemma later but not at Lemma 12. The x1 threshold is not arbitrary: sqrt(log x1) >= 1 + C/(2 sqrt R) is exactly what puts sqrt(log x) - C/(2 sqrt R) past the maximum of the Dawson function, near 0.9241, so that the Dawson factor is decreasing. That is why the 1 is there. A complete proof exists at Solutions/FKS2.v1 (FKS2Sol.classicalBound_pi_of_theta), free of sorryAx and within the three permitted axioms. This conclusion is ready to verify.
+
 ### `corollary_14`
 
 **Corollary 14.** The first Chebyshev error term obeys the admissible classical bound with
@@ -36,7 +107,7 @@ def corollary_14 : Prop :=
 |---|---|
 | Lean name | `FKS2.v1.corollary_14` |
 | Challenge | `FKS2.v1.challenge_corollary_14` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L65) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L146) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
@@ -69,7 +140,7 @@ def corollary_23 : Prop :=
 |---|---|
 | Lean name | `FKS2.v1.corollary_23` |
 | Challenge | `FKS2.v1.challenge_corollary_23` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L78) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L159) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
@@ -102,7 +173,7 @@ def corollary_26 : Prop :=
 |---|---|
 | Lean name | `FKS2.v1.corollary_26` |
 | Challenge | `FKS2.v1.challenge_corollary_26` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L91) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L172) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
