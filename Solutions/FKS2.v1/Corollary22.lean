@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import ThetaToPi
+import Mathlib.Analysis.Complex.ExponentialBounds
 
 /-!
 # Corollary 22: the headline asymptotic bound for `π`
@@ -129,6 +130,116 @@ theorem muAsymp_dawson_term_le :
   have hDnn : (0:ℝ) ≤ dawson v := dawson_nonneg (by linarith)
   rw [div_le_iff₀ (by linarith : (0:ℝ) < sqrt 20000)]
   nlinarith [hDle, hlo, hDnn]
+
+/-- The Table 6 row-2 curve never exceeds `0.4298`.
+
+Elementary, with no numerical input. Writing `u = √(log x / R)`, the bound is `0.826 √u e^{-u}`;
+then `e^{-u} ≤ 1/(1+u)` and `2√u ≤ 1 + u` give `0.826/2 = 0.413`. The true supremum is `0.3543`,
+at `u = 1/2`, so there is room to spare. -/
+theorem admissibleBound_row2_le {x : ℝ} (hx : 1 < x) :
+    admissibleBound 0.826 0.25 1 5.5666305 x ≤ 0.4298 := by
+  have hL : 0 < log x := log_pos hx
+  have hw0 : (0:ℝ) ≤ log x / 5.5666305 := by positivity
+  have hq : (log x / 5.5666305) ^ ((1:ℝ)/2) = sqrt (log x / 5.5666305) :=
+    (sqrt_eq_rpow _).symm
+  have hq4 : (log x / 5.5666305) ^ (0.25:ℝ) = sqrt (sqrt (log x / 5.5666305)) := by
+    rw [show (0.25:ℝ) = (1/2) * (1/2) by norm_num, rpow_mul hw0, ← sqrt_eq_rpow, ← sqrt_eq_rpow]
+  unfold admissibleBound
+  rw [hq, hq4]
+  set u := sqrt (log x / 5.5666305) with hu
+  have hu0 : (0:ℝ) ≤ u := sqrt_nonneg _
+  have hsu : (0:ℝ) ≤ sqrt u := sqrt_nonneg _
+  have hsu2 : sqrt u ^ 2 = u := Real.sq_sqrt hu0
+  -- e^{-u} ≤ 1/(1+u)
+  have hexp : exp (-1 * u) ≤ 1 / (1 + u) := by
+    rw [show (-1:ℝ) * u = -u by ring, Real.exp_neg]
+    rw [inv_le_iff_one_le_mul₀ (exp_pos _)]
+    have := Real.add_one_le_exp u
+    have h1u : (0:ℝ) < 1 + u := by linarith
+    rw [div_mul_eq_mul_div, le_div_iff₀ h1u]
+    linarith
+  -- 2√u ≤ 1 + u
+  have hAM : 2 * sqrt u ≤ 1 + u := by nlinarith [sq_nonneg (sqrt u - 1), hsu2]
+  have h1u : (0:ℝ) < 1 + u := by linarith
+  calc 0.826 * sqrt u * exp (-1 * u)
+      ≤ 0.826 * sqrt u * (1 / (1 + u)) := by
+        apply mul_le_mul_of_nonneg_left hexp (by positivity)
+    _ ≤ 0.4298 := by
+        rw [mul_one_div, div_le_iff₀ h1u]
+        nlinarith [hAM]
+
+/-- `log x / x ≤ 1/e`, from `log (x/e) ≤ x/e - 1`. -/
+theorem log_div_self_le {x : ℝ} (hx : 0 < x) : log x / x ≤ 1 / exp 1 := by
+  have he : (0:ℝ) < exp 1 := exp_pos 1
+  have h := Real.log_le_sub_one_of_pos (show (0:ℝ) < x / exp 1 by positivity)
+  rw [Real.log_div hx.ne' he.ne', Real.log_exp] at h
+  -- `h : log x - 1 ≤ x / exp 1 - 1`; clear the division before comparing.
+  have h' : log x ≤ x / exp 1 := by linarith
+  rw [le_div_iff₀ he] at h'
+  rw [div_le_div_iff₀ hx he]
+  linarith
+
+/-- On `[2, e)` the estimate is direct, with no numerical input.
+
+`π(x) = 1` there, `0 ≤ Li(x) ≤ 2`, so `|π(x) − Li(x)| ≤ 1`; and `Eπ(x) = |π − Li|·(log x/x)` with
+`log x/x ≤ 1/e`. So `Eπ(x) ≤ 1/e ≈ 0.3679`. -/
+theorem Epi_le_on_two_e {x : ℝ} (hx : 2 ≤ x) (hlt : x < exp 1) : Eπ x ≤ 0.4298 := by
+  have hxpos : (0 : ℝ) < x := by linarith
+  have hx1 : (1 : ℝ) < x := by linarith
+  have hL : 0 < log x := log_pos hx1
+  have hl2 : 0 < log 2 := log_pos (by norm_num)
+  have he3 : exp 1 < 3 := Real.exp_one_lt_three
+  -- π(x) = 1
+  have hfl : ⌊x⌋₊ = 2 := by
+    rw [Nat.floor_eq_iff (by linarith)]
+    constructor
+    · exact_mod_cast hx
+    · push_cast; linarith
+  have hpi : primeCounting x = 1 := by
+    unfold primeCounting
+    rw [hfl]
+    norm_num
+    decide +kernel
+  -- 0 ≤ Li x ≤ 2
+  have hint : IntervalIntegrable (fun t : ℝ => 1 / log t) MeasureTheory.volume 2 x := by
+    have := (continuousOn_inv_log hx 1).intervalIntegrable (μ := MeasureTheory.volume)
+    simpa using this
+  have hLi0 : 0 ≤ Li x := by
+    unfold Li
+    refine intervalIntegral.integral_nonneg hx fun t ht ↦ ?_
+    have : 0 < log t := log_pos (by linarith [ht.1])
+    positivity
+  have hLi2 : Li x ≤ 2 := by
+    unfold Li
+    have hmono : (∫ t in (2:ℝ)..x, 1 / log t) ≤ ∫ _t in (2:ℝ)..x, 1 / log 2 := by
+      refine intervalIntegral.integral_mono_on hx hint
+        (continuous_const.intervalIntegrable (μ := MeasureTheory.volume) _ _) fun t ht ↦ ?_
+      have h2t : (2:ℝ) ≤ t := ht.1
+      have hlt2 : 0 < log t := log_pos (by linarith)
+      apply one_div_le_one_div_of_le hl2
+      exact log_le_log (by norm_num) h2t
+    rw [intervalIntegral.integral_const] at hmono
+    have hlog2 : (0.6931471803 : ℝ) < log 2 := Real.log_two_gt_d9
+    have hxb : x - 2 < 1 := by linarith
+    have : (x - 2) • (1 / log 2) ≤ 2 := by
+      rw [smul_eq_mul, mul_one_div, div_le_iff₀ hl2]
+      nlinarith [hxb, hlog2]
+    linarith
+  have habs : |primeCounting x - Li x| ≤ 1 := by
+    rw [hpi, abs_le]; constructor <;> linarith
+  -- assemble
+  have hkey : Eπ x = |primeCounting x - Li x| * (log x / x) := by
+    unfold Eπ; field_simp
+  rw [hkey]
+  have hlx : log x / x ≤ 1 / exp 1 := log_div_self_le hxpos
+  have hepos : (0:ℝ) < exp 1 := exp_pos 1
+  have hnn : (0:ℝ) ≤ log x / x := by positivity
+  calc |primeCounting x - Li x| * (log x / x) ≤ 1 * (log x / x) := by
+        apply mul_le_mul_of_nonneg_right habs hnn
+    _ ≤ 1 * (1 / exp 1) := by apply mul_le_mul_of_nonneg_left hlx (by norm_num)
+    _ ≤ 0.4298 := by
+        rw [one_mul, div_le_iff₀ hepos]
+        nlinarith [Real.exp_one_gt_d9]
 
 /-- **Corollary 22.**
 

@@ -3,7 +3,7 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
-import Corollary22
+import Corollary26
 
 /-!
 # Solution: `FKS2.v1`
@@ -82,6 +82,8 @@ theorem FKS2.v1.challenge_corollary_23
 
 theorem FKS2.v1.challenge_corollary_26
     (fks_v1_psi_classical_bound : FKS.v1.psi_classical_bound)
-    (buthe_v1_theorem_2_li_minus_pi : Buthe.v1.theorem_2_li_minus_pi) :
+    (buthe_v1_theorem_2_li_minus_pi : Buthe.v1.theorem_2_li_minus_pi)
+    (fks2numerics_v1_table6_row2_floor : FKS2Numerics.v1.table6_row2_floor) :
     FKS2.v1.corollary_26 :=
   FKS2Sol.corollary_26 fks_v1_psi_classical_bound buthe_v1_theorem_2_li_minus_pi
+    fks2numerics_v1_table6_row2_floor

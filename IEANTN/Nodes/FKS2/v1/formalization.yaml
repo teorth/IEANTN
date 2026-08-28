@@ -264,10 +264,12 @@ conclusions:
   declaration: FKS2.v1.corollary_26
   challenge: FKS2.v1.challenge_corollary_26
   imports:
+  - node: FKS.v1
+    conclusion: psi_classical_bound
   - node: Buthe.v1
     conclusion: theorem_2_li_minus_pi
-  - node: Buthe.v1
-    conclusion: theorem_2_li_gt_pi
+  - node: FKS2Numerics.v1
+    conclusion: table6_row2_floor
   justifications:
   - id: fks2-paper
     kind: literature
@@ -287,7 +289,17 @@ conclusions:
       and that the conclusions were therefore stronger than the printed corollaries; that was wrong. PDF
       text extraction silently drops absolute-value bars around a displayed fraction, and the definitions
       were read from extracted text. They have since been read from the rendered page, where the bars
-      are plainly there. Nothing about the statements needed to change.
+      are plainly there. Nothing about the statements needed to change. ROUTE CHANGE, and the imports
+      above follow it. This conclusion is now derived from Corollary 23 rather than the paper's own route,
+      so its imports are exactly Corollary 23's; the previous list (Buthe's two conclusions) followed
+      the paper, which proves cor:weak numerically throughout -- 25 prime intervals below 97, Buthe on
+      [97, 10^19], a numerical table above. Going via Corollary 23 is what PrimeNumberTheoremAnd does
+      and is far cheaper here, because we need Corollary 23 anyway and the residual is then ENTIRELY ELEMENTARY:
+      above e the row-2 curve 0.826 sqrt(u) e^{-u} never exceeds 0.413 (by e^{-u} <= 1/(1+u) and 2 sqrt(u)
+      <= 1+u; true supremum 0.3543 at u = 1/2), and below e one has pi(x) = 1, 0 <= Li(x) <= 2 and log
+      x / x <= 1/e, giving E_pi <= 1/e = 0.3679. Both halves are proved in Solutions/FKS2.v1/Corollary22.lean,
+      so this conclusion needs no numerical claim of its own. Buthe's second conclusion (theorem_2_li_gt_pi)
+      is no longer needed and has been dropped.
   designated: fks2-paper
 
   imports_status: identified

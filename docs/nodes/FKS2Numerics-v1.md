@@ -48,7 +48,7 @@ def table6_row2_floor : Prop :=
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | [`FKS2.v1.corollary_23`](FKS2-v1.md#corollary_23) |
+| Assumed by | [`FKS2.v1.corollary_23`](FKS2-v1.md#corollary_23), [`FKS2.v1.corollary_26`](FKS2-v1.md#corollary_26) |
 
 **Justification `fks2-computation`** — **designated** — numerical, Sections 5.2-5.3, the direct check for small x behind Table 6's row 2
 

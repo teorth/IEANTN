@@ -46,7 +46,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `FKS2.v1` | active | `corollary_14` | literature | 5 | - |
 | `FKS2.v1` | active | `corollary_22` | literature | 6 | - |
 | `FKS2.v1` | active | `corollary_23` | literature | 3 | - |
-| `FKS2.v1` | active | `corollary_26` | literature | 2 | - |
+| `FKS2.v1` | active | `corollary_26` | literature | 3 | - |
 | `FKS2Numerics.v1` | stub | `table6_row2_floor` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `nu_asymp_e30_le` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `theta_asymp_ge_one_below_e30` | numerical | 0 | - |
@@ -80,7 +80,7 @@ downstream.
 |---|---:|
 | `FKBJ.v1.rh_up_to` | 6 |
 | `PlattTrudgian.v1.rh_up_to` | 5 |
-| `FKS.v1.psi_classical_bound` | 3 |
+| `FKS.v1.psi_classical_bound` | 4 |
 | `PlattTrudgian2021.v1.theorem_1_numerical` | 2 |
 | `MT.v1.zero_free_region_sharpened` | 2 |
 | `MT.v1.zero_free_region` | 2 |
@@ -88,6 +88,7 @@ downstream.
 | `KLN.v1.zero_density` | 2 |
 | `KLN.v1.subconvexity_bound` | 2 |
 | `FKS2Numerics.v1.theta_asymp_ge_one_below_e30` | 2 |
+| `FKS2Numerics.v1.table6_row2_floor` | 2 |
 | `FKS2Numerics.v1.nu_asymp_e30_le` | 2 |
 | `Buthe2016.v1.theorem_2_psi` | 2 |
 | `Buthe.v1.theorem_2_theta_lower` | 2 |
@@ -100,7 +101,5 @@ downstream.
 | `Platt2017.v1.rh_up_to` | 1 |
 | `Platt2015.v1.rh_up_to` | 1 |
 | `Hiary2016.v1.zeta_half_line_bound` | 1 |
-| `FKS2Numerics.v1.table6_row2_floor` | 1 |
 | `FKS2Numerics.v1.corollary_22_mid_range` | 1 |
 | `Dusart2018.v1.proposition_5_4` | 1 |
-| `Buthe.v1.theorem_2_li_gt_pi` | 1 |
