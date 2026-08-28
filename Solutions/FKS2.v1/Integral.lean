@@ -37,8 +37,12 @@ margin is enormous — Corollary 23 has `C = 1`, `R = 5.5666305`, so the require
 `x₁ ≥ exp((1 + C/(2√R))²)` is a strictly stronger condition of the same shape, which suggests the
 authors had the issue in view at that point and not at this one.
 
-Found by formalizing, not by reading: the statement audit against the paper did not flag it, and
-neither did the earlier draft of this file.
+Found here by formalizing rather than by reading — the statement audit did not flag it, and neither
+did the earlier draft of this file. But it was **not a new observation**:
+`PrimeNumberTheoremAnd`'s `lemma_12` already carries `2 ≤ x₀` and `0 ≤ √(log x₀) − C/(2√R)`, and its
+`theorem_3` a note saying those conditions "are not present in the source material [FKS2]". The gap
+in the published paper is real and now independently confirmed; the credit for noticing it is not
+ours.
 -/
 
 namespace FKS2Sol

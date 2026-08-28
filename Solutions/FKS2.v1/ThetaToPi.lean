@@ -324,22 +324,4 @@ theorem corollary_23
     FKS2.v1.corollary_23 := by
   sorry
 
-/-- **Corollary 26**, the paper's headline: `|π(x) - Li(x)| ≤ 0.4298 x / log x` for all `x ≥ 2`.
-
-Two routes, and they are not the same.
-
-`PrimeNumberTheoremAnd` derives it from Corollary 23: for `x ≥ e` the admissible bound's maximum
-on `[e, ∞)` is about `0.3543 < 0.4298`, and `2 ≤ x < e` is direct because `π(x) = 1` there. That
-route is valid and is the one this file would take, but it inherits Corollary 23's difficulty.
-
-**The paper does not go that way at all.** Its proof of `cor:weak` is numerical throughout: the 25
-prime intervals below `97`, then Büthe's Theorem 2 on `[97, 10¹⁹]` verifying
-`(1/√x)(1.95 + 3.9/log x + 19.5/log²x) ≤ 0.4298`, then its own numerical proposition with Table 4
-above `10¹⁹`. The node's recorded imports follow the paper's route, not upstream's. -/
-theorem corollary_26
-    (hpsi : FKS.v1.psi_classical_bound)
-    (hbuthe : Buthe.v1.theorem_2_li_minus_pi) :
-    FKS2.v1.corollary_26 := by
-  sorry
-
 end FKS2Sol

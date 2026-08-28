@@ -1,5 +1,5 @@
 name = "solution_FKS2_v1"
-defaultTargets = ["Solution", "Growth", "Dawson", "PsiToTheta", "Integral", "Stieltjes", "ThetaToPi"]
+defaultTargets = ["Solution", "Growth", "Dawson", "PsiToTheta", "Integral", "Stieltjes", "ThetaToPi", "Corollary22", "Corollary26"]
 
 # The core library, for the node's `Conclusions`. Add whatever else the proof needs --
 # PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
@@ -40,3 +40,13 @@ roots = ["Stieltjes"]
 [[lean_lib]]
 name = "ThetaToPi"
 roots = ["ThetaToPi"]
+
+# Corollary 22: the headline asymptotic bound.
+[[lean_lib]]
+name = "Corollary22"
+roots = ["Corollary22"]
+
+# Corollary 26: the headline numerical bound.
+[[lean_lib]]
+name = "Corollary26"
+roots = ["Corollary26"]

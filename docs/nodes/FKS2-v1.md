@@ -43,7 +43,7 @@ def proposition_13 : Prop :=
 |---|---|
 | Lean name | `FKS2.v1.proposition_13` |
 | Challenge | `FKS2.v1.challenge_proposition_13` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L117) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L123) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | none |
@@ -52,7 +52,7 @@ def proposition_13 : Prop :=
 
 **Justification `fks2-paper-proposition-13`** — **designated** — literature, Proposition 13 (epsilon_asymp_theta_prop)
 
-> The paper's E_psi -> E_theta pipeline, stated for arbitrary parameters with the psi - theta comparison as an internal hypothesis rather than by importing BKLNW's coefficients. That is route 2 of the two this node's module docstring set out, chosen for the reason it gave: a pipeline that stands alone can be re-pointed at a better input by a later version without restating anything. Imports NONE, and that is a real none rather than an unexamined one. A conditional theorem quantified over all admissible parameters consumes no other result in the network; everything it needs arrives as a hypothesis. Its justification is therefore a Lean proof and nothing else, which is why it can be verified without waiting on any numerical input. Carries two hypotheses the paper does not state, both found by formalizing. `exp 1 <= x0`: the log(x0) factors in the printed nu_asymp are spare only when log x0 >= 1, and below e the proposition is FALSE -- take x = x0, a1 = 1, a2 = 0 and it reduces to 1 <= log x0. `0 < Apsi`, which the multiplier needs to be meaningful. Note also C^2/(8R) < B, with an 8 rather than a 16: the binding case is the g(1/2, .) of the paper's (28). A complete proof exists at Solutions/FKS2.v1 (FKS2Sol.classicalBound_theta_of_psi), free of sorryAx and within the three permitted axioms. This conclusion is ready to verify.
+> The paper's E_psi -> E_theta pipeline, stated for arbitrary parameters with the psi - theta comparison as an internal hypothesis rather than by importing BKLNW's coefficients. That is route 2 of the two this node's module docstring set out, chosen for the reason it gave: a pipeline that stands alone can be re-pointed at a better input by a later version without restating anything. Imports NONE, and that is a real none rather than an unexamined one. A conditional theorem quantified over all admissible parameters consumes no other result in the network; everything it needs arrives as a hypothesis. Its justification is therefore a Lean proof and nothing else, which is why it can be verified without waiting on any numerical input. Carries two hypotheses the paper does not state, both found by formalizing. `exp 1 <= x0`: the log(x0) factors in the printed nu_asymp are spare only when log x0 >= 1, and below e the proposition is FALSE -- take x = x0, a1 = 1, a2 = 0 and it reduces to 1 <= log x0. `0 < Apsi`, which the multiplier needs to be meaningful. Note also C^2/(8R) < B, with an 8 rather than a 16: the binding case is the g(1/2, .) of the paper's (28). A complete proof exists at Solutions/FKS2.v1 (FKS2Sol.classicalBound_theta_of_psi), free of sorryAx and within the three permitted axioms. This conclusion is ready to verify. ATTRIBUTION CORRECTION. The lower bound on x0 was likewise not a new discovery: PrimeNumberTheoremAnd's proposition_13 already requires 7 <= log x0. What IS a difference is that this statement needs only exp 1 <= x0, i.e. 1 <= log x0, which is weaker -- so this conclusion is stronger than upstream's on that axis. A modest improvement, not a find.
 
 ### `theorem_3`
 
@@ -78,7 +78,7 @@ def theorem_3 : Prop :=
 |---|---|
 | Lean name | `FKS2.v1.theorem_3` |
 | Challenge | `FKS2.v1.challenge_theorem_3` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L133) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L139) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | none |
@@ -87,7 +87,7 @@ def theorem_3 : Prop :=
 
 **Justification `fks2-paper-theorem-3`** — **designated** — literature, Theorem 3 (prop_asym_pi)
 
-> The paper's E_theta -> E_pi pipeline. Two features of the statement are load-bearing and easy to lose: the conclusion holds from a SECOND threshold x1, not from x0 -- stating it at x0 claims strictly more than the paper proves -- and A_pi is explicit, (1 + mu_asymp(x0, x1)) A_theta, not existentially quantified. Imports NONE, for the same reason as proposition_13. Carries two hypotheses the paper does not state, both found by formalizing. C/(2 sqrt R) <= sqrt(log x0): the paper's Lemma 12, which Theorem 3 applies on [x0, x], discards the lower endpoint of an integral of e^{v^2}, and that is valid only when the endpoint is nonnegative; when it is negative the discarded piece makes the left side strictly larger, so the lemma as printed is false without it. And 0 < C, which the monotonicity lemmas behind both estimates need. The paper's own x1 threshold is a strictly stronger condition of the same shape, which suggests the issue was in view one lemma later but not at Lemma 12. The x1 threshold is not arbitrary: sqrt(log x1) >= 1 + C/(2 sqrt R) is exactly what puts sqrt(log x) - C/(2 sqrt R) past the maximum of the Dawson function, near 0.9241, so that the Dawson factor is decreasing. That is why the 1 is there. A complete proof exists at Solutions/FKS2.v1 (FKS2Sol.classicalBound_pi_of_theta), free of sorryAx and within the three permitted axioms. This conclusion is ready to verify.
+> The paper's E_theta -> E_pi pipeline. Two features of the statement are load-bearing and easy to lose: the conclusion holds from a SECOND threshold x1, not from x0 -- stating it at x0 claims strictly more than the paper proves -- and A_pi is explicit, (1 + mu_asymp(x0, x1)) A_theta, not existentially quantified. Imports NONE, for the same reason as proposition_13. Carries two hypotheses the paper does not state, both found by formalizing. C/(2 sqrt R) <= sqrt(log x0): the paper's Lemma 12, which Theorem 3 applies on [x0, x], discards the lower endpoint of an integral of e^{v^2}, and that is valid only when the endpoint is nonnegative; when it is negative the discarded piece makes the left side strictly larger, so the lemma as printed is false without it. And 0 < C, which the monotonicity lemmas behind both estimates need. The paper's own x1 threshold is a strictly stronger condition of the same shape, which suggests the issue was in view one lemma later but not at Lemma 12. The x1 threshold is not arbitrary: sqrt(log x1) >= 1 + C/(2 sqrt R) is exactly what puts sqrt(log x) - C/(2 sqrt R) past the maximum of the Dawson function, near 0.9241, so that the Dawson factor is decreasing. That is why the 1 is there. A complete proof exists at Solutions/FKS2.v1 (FKS2Sol.classicalBound_pi_of_theta), free of sorryAx and within the three permitted axioms. This conclusion is ready to verify. ATTRIBUTION CORRECTION. Calling this hypothesis something found by formalizing overstates it: it was found independently here, but it was NOT new. PrimeNumberTheoremAnd already carries the same condition, and for its theorem_3 an explicit note saying the conditions x0 >= 2 and 0 <= sqrt(log x0) - C/(2 sqrt R) 'are not present in the source material [FKS2]' and are added to support its lemma_12 (PrimeNumberTheoremAnd/IEANTN/FKS2.lean, theorem_3 and lemma_12). So the gap in the published paper is real and independently confirmed, but the credit for noticing it is not ours.
 
 ### `corollary_14`
 
@@ -107,7 +107,7 @@ def corollary_14 : Prop :=
 |---|---|
 | Lean name | `FKS2.v1.corollary_14` |
 | Challenge | `FKS2.v1.challenge_corollary_14` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L146) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L152) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
@@ -117,6 +117,42 @@ def corollary_14 : Prop :=
 **Justification `fks2-paper`** — **designated** — literature, Corollary 14
 
 > Asserted on the authority of the paper. The parameters are transcribed from PNT+'s formalization of the same corollary (PrimeNumberTheoremAnd/IEANTN/FKS2.lean, `corollary_14`), which proves it in Lean from the paper's Proposition 13 and its numerical inputs; that proof is complete there, so this is a conclusion a port could justify rather than a bare citation. Imports: FKS supplies the E_psi bound that Proposition 13 converts. The other input the paper names is BKLNW -- Corollary 5.1 for the coefficients a1, a2 in Proposition 13's multiplier, and Tables 13 and 14 to cover 2 <= x <= e^30 -- both of which are now recorded. Corollary 5.1 is stated on 7 <= b <= 38 log 10, which covers the x0 = e^30 this proof uses; Tables 13 and 14 enter as the single inequality E_theta(x) <= 1 on [2, e^30] that the proof actually consumes. Absolute values, checked against the rendered page. FKS (1.1) defines E_psi(x) = \|(psi(x) - x)/x\| and FKS2 (1) and (2) define E_pi, E_theta and E_psi the same way, all with bars, exactly as this network's Vocabulary does. An earlier note here claimed the papers defined these signed and that the conclusions were therefore stronger than the printed corollaries; that was wrong. PDF text extraction silently drops absolute-value bars around a displayed fraction, and the definitions were read from extracted text. They have since been read from the rendered page, where the bars are plainly there. Nothing about the statements needed to change.
+
+### `corollary_22`
+
+**Corollary 22**, the paper's headline asymptotic bound:
+`|π(x) − Li(x)| ≤ 9.2211 x √(log x) exp(−0.84768363 √(log x))` for all `x ≥ 2`.
+
+Stated in the network's vocabulary at `R = 1`, which is the same claim:
+`HasClassicalBound Eπ A B C 1` unwinds to `Eπ(x) ≤ A (log x)^B exp(−C √(log x))`, and multiplying by
+`x / log x` gives the paper's displayed form exactly, with `B = 3/2` supplying the `√(log x)`.
+
+`R` is folded into the constants rather than carried: the paper's own proof runs at
+`R = 5.5666305`, and `121.107 / R^{3/2} = 9.22106…` and `2 / √R = 0.84768363…` are where the two
+printed constants come from. Note the printed `C` is very slightly *below* `2/√R`, which is the
+safe direction — a smaller `C` is a weaker bound.
+
+This is what dominates Table 6's rows far out, and so what `corollary_23`'s tail rests on.
+
+```lean
+def corollary_22 : Prop :=
+  HasClassicalBound Eπ 9.2211 (3 / 2) 0.84768363 1 2
+```
+
+| | |
+|---|---|
+| Lean name | `FKS2.v1.corollary_22` |
+| Challenge | `FKS2.v1.challenge_corollary_22` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L168) |
+| Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
+| Evidence | cited (`literature`) |
+| Sources traced | identified |
+| Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one), [`FKS2Numerics.v1.nu_asymp_e30_le`](FKS2Numerics-v1.md#nu_asymp_e30_le), [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30), [`FKS2Numerics.v1.corollary_22_mid_range`](FKS2Numerics-v1.md#corollary_22_mid_range) |
+| Assumed by | nothing yet |
+
+**Justification `fks2-paper-corollary-22`** — **designated** — literature, Corollary 22 (epsilon_asymp_pi_explicit)
+
+> The paper's headline asymptotic bound for pi. Stated at R = 1, with R folded into the constants: 121.107 / R^{3/2} = 9.22106 and 2 / sqrt R = 0.8476836337 are where the printed 9.2211 and 0.84768363 come from. Checked, and note the printed C is very slightly BELOW 2/sqrt R, which is the safe direction since a smaller C is a weaker bound. Imports: everything corollary_14 needs, because the proof runs Theorem 3 on it, plus the mid-range interpolation. Above e^20000 the claim is analysis and is proved in Solutions/FKS2.v1; below it the paper interpolates numerically, which is FKS2Numerics.v1.corollary_22_mid_range. The arithmetic hangs together with room: 121.0961 / R^{3/2} = 9.220226, and multiplying by (1 + mu) with mu <= 5.015e-5 gives 9.220688, comfortably under 9.2211. The mu estimate is dominated by its Dawson summand, 2 D+(v)/sqrt(log x1) with v = 140.9975, and the upper bound dawson_le proved in the solution covers it -- 4.05e-3 against a requirement of 6.70e-3. This is what dominates Table 6's rows far out, so it is also what corollary_23's tail will rest on. PrimeNumberTheoremAnd has only the tail (corollary_22_tail), not the full corollary.
 
 ### `corollary_23`
 
@@ -140,7 +176,7 @@ def corollary_23 : Prop :=
 |---|---|
 | Lean name | `FKS2.v1.corollary_23` |
 | Challenge | `FKS2.v1.challenge_corollary_23` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L159) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L181) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
@@ -173,16 +209,16 @@ def corollary_26 : Prop :=
 |---|---|
 | Lean name | `FKS2.v1.corollary_26` |
 | Challenge | `FKS2.v1.challenge_corollary_26` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L172) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L194) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
-| Assumes | [`Buthe.v1.theorem_2_li_minus_pi`](Buthe-v1.md#theorem_2_li_minus_pi), [`Buthe.v1.theorem_2_li_gt_pi`](Buthe-v1.md#theorem_2_li_gt_pi) |
+| Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`Buthe.v1.theorem_2_li_minus_pi`](Buthe-v1.md#theorem_2_li_minus_pi), [`FKS2Numerics.v1.table6_row2_floor`](FKS2Numerics-v1.md#table6_row2_floor) |
 | Assumed by | nothing yet |
 
 **Justification `fks2-paper`** — **designated** — literature, Corollary 26
 
-> Asserted on the authority of the paper. PNT+ proves it in Lean from Corollary 23 together with a direct argument on [2, e); since Corollary 23 is `sorry` there, that proof is conditional in PNT+ and porting it here would need Corollary 23 first. The paper itself obtains the estimate by combining Corollary 23 above 10^19 with Buthe's estimates below it and explicit checks on small x. Imports: Buthe's Theorem 2 covers 97 <= x <= 10^19 -- (1.9) for the bound and (1.10) for its sign, which together give the two-sided estimate. Below 97 the paper checks the 25 relevant prime intervals directly and above 10^19 it uses its own Theorem 6 with Table 4; both are internal and neither is an import. Absolute values, checked against the rendered page. FKS (1.1) defines E_psi(x) = \|(psi(x) - x)/x\| and FKS2 (1) and (2) define E_pi, E_theta and E_psi the same way, all with bars, exactly as this network's Vocabulary does. An earlier note here claimed the papers defined these signed and that the conclusions were therefore stronger than the printed corollaries; that was wrong. PDF text extraction silently drops absolute-value bars around a displayed fraction, and the definitions were read from extracted text. They have since been read from the rendered page, where the bars are plainly there. Nothing about the statements needed to change.
+> Asserted on the authority of the paper. PNT+ proves it in Lean from Corollary 23 together with a direct argument on [2, e); since Corollary 23 is `sorry` there, that proof is conditional in PNT+ and porting it here would need Corollary 23 first. The paper itself obtains the estimate by combining Corollary 23 above 10^19 with Buthe's estimates below it and explicit checks on small x. Imports: Buthe's Theorem 2 covers 97 <= x <= 10^19 -- (1.9) for the bound and (1.10) for its sign, which together give the two-sided estimate. Below 97 the paper checks the 25 relevant prime intervals directly and above 10^19 it uses its own Theorem 6 with Table 4; both are internal and neither is an import. Absolute values, checked against the rendered page. FKS (1.1) defines E_psi(x) = \|(psi(x) - x)/x\| and FKS2 (1) and (2) define E_pi, E_theta and E_psi the same way, all with bars, exactly as this network's Vocabulary does. An earlier note here claimed the papers defined these signed and that the conclusions were therefore stronger than the printed corollaries; that was wrong. PDF text extraction silently drops absolute-value bars around a displayed fraction, and the definitions were read from extracted text. They have since been read from the rendered page, where the bars are plainly there. Nothing about the statements needed to change. ROUTE CHANGE, and the imports above follow it. This conclusion is now derived from Corollary 23 rather than the paper's own route, so its imports are exactly Corollary 23's; the previous list (Buthe's two conclusions) followed the paper, which proves cor:weak numerically throughout -- 25 prime intervals below 97, Buthe on [97, 10^19], a numerical table above. Going via Corollary 23 is what PrimeNumberTheoremAnd does and is far cheaper here, because we need Corollary 23 anyway and the residual is then ENTIRELY ELEMENTARY: above e the row-2 curve 0.826 sqrt(u) e^{-u} never exceeds 0.413 (by e^{-u} <= 1/(1+u) and 2 sqrt(u) <= 1+u; true supremum 0.3543 at u = 1/2), and below e one has pi(x) = 1, 0 <= Li(x) <= 2 and log x / x <= 1/e, giving E_pi <= 1/e = 0.3679. Both halves are proved in Solutions/FKS2.v1/Corollary22.lean, so this conclusion needs no numerical claim of its own. Buthe's second conclusion (theorem_2_li_gt_pi) is no longer needed and has been dropped.
 
 ## Limitations
 

@@ -41,6 +41,18 @@ equation *is* `D₊'(v) < 0`. The proof is that `∫₀ᵛ e^{t²} dt - e^{v²}/
 `dawson_shift_div_antitoneOn` is the combination Theorem 3 actually consumes, and it is where the
 paper's threshold `x₁ ≥ exp((1 + C/(2√R))²)` comes from: the `1` is exactly what clears the Dawson
 maximum.
+
+## An upper bound too
+
+`inv_lt_dawson` says `D₊(v) > 1/(2v)`; `dawson_le` is the companion, `D₊(v) ≤ 2e^{4-v²} + 4/(7v)`
+for `v ≥ 2`. Corollary 22 needs it, because `μ_asymp`'s second summand is essentially `2D₊(v)/v` and
+the whole estimate turns on that being small. Same technique as the lower bound: `e^{t²}` is at most
+`8/7` times the derivative of `e^{t²}/(2t)` once `t ≥ 2`, so the fundamental theorem bounds the
+tail, and the head `[0,2]` is crushed by the `e^{-v²}` in front.
+
+The `8/7` is where the threshold `2` is spent. Taking `t ≥ 1` instead gives a factor `2` and a bound
+of `1/v`, which is *not* enough for Corollary 22 — it misses by about 6%. Taking `t ≥ 2` gives
+`4/(7v)` and clears it with room.
 -/
 
 namespace FKS2Sol
@@ -187,5 +199,87 @@ theorem dawson_shift_div_antitoneOn {c : ℝ} (hc : 0 ≤ c) {s₁ s : ℝ}
   have hpos : 0 ≤ dawson (s - c) := dawson_nonneg (by linarith)
   gcongr
   exact dawson_nonneg (by linarith)
+
+/-- `∫₂ᵛ e^{t²} dt ≤ 4e^{v²}/(7v)`.
+
+`d/dt (e^{t²}/(2t)) = e^{t²}(1 - 1/(2t²))`, and for `t ≥ 2` the bracket is at least `7/8`, so the
+integrand is at most `8/7` times a derivative and the fundamental theorem does the rest. -/
+theorem integral_exp_sq_tail_le {v : ℝ} (hv : 2 ≤ v) :
+    (∫ t in (2 : ℝ)..v, exp (t ^ 2)) ≤ 4 * exp (v ^ 2) / (7 * v) := by
+  have hvpos : (0 : ℝ) < v := by linarith
+  have hderiv : ∀ t ∈ Set.uIcc (2 : ℝ) v,
+      HasDerivAt (fun s : ℝ => exp (s ^ 2) / (2 * s)) (exp (t ^ 2) * (1 - 1 / (2 * t ^ 2))) t := by
+    intro t ht
+    rw [Set.uIcc_of_le hv] at ht
+    have ht2 : (2 : ℝ) ≤ t := ht.1
+    have htne : t ≠ 0 := by linarith
+    have hsq : HasDerivAt (fun s : ℝ => s ^ 2) (2 * t) t := by simpa using hasDerivAt_pow 2 t
+    have hE : HasDerivAt (fun s : ℝ => exp (s ^ 2)) (exp (t ^ 2) * (2 * t)) t := hsq.exp
+    have hlin : HasDerivAt (fun s : ℝ => 2 * s) 2 t := by
+      simpa using (hasDerivAt_id t).const_mul (2 : ℝ)
+    refine (hE.div hlin (by positivity)).congr_deriv ?_
+    field_simp
+  have hcont : ContinuousOn (fun t : ℝ => exp (t ^ 2) * (1 - 1 / (2 * t ^ 2))) (Set.uIcc 2 v) := by
+    rw [Set.uIcc_of_le hv]
+    intro t ht
+    have htne : t ≠ 0 := by have := ht.1; linarith
+    have hne2 : (2 : ℝ) * t ^ 2 ≠ 0 := by positivity
+    exact (((Real.continuous_exp.comp (continuous_pow 2)).continuousAt).mul
+      ((continuousAt_const.sub (continuousAt_const.div
+        (continuousAt_const.mul ((continuousAt_id).pow 2)) hne2)))).continuousWithinAt
+  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hcont.intervalIntegrable
+  have hpt : ∀ t ∈ Set.Icc (2 : ℝ) v,
+      exp (t ^ 2) ≤ 8 / 7 * (exp (t ^ 2) * (1 - 1 / (2 * t ^ 2))) := by
+    intro t ht
+    have ht2 : (2 : ℝ) ≤ t := ht.1
+    have hb : (7 : ℝ) / 8 ≤ 1 - 1 / (2 * t ^ 2) := by
+      have h4 : (4 : ℝ) ≤ t ^ 2 := by nlinarith
+      have : 1 / (2 * t ^ 2) ≤ 1 / 8 := by
+        rw [div_le_div_iff₀ (by positivity) (by norm_num)]
+        linarith
+      linarith
+    nlinarith [exp_pos (t ^ 2), hb]
+  have hmono : (∫ t in (2 : ℝ)..v, exp (t ^ 2))
+      ≤ ∫ t in (2 : ℝ)..v, 8 / 7 * (exp (t ^ 2) * (1 - 1 / (2 * t ^ 2))) :=
+    intervalIntegral.integral_mono_on hv (continuous_exp_sq.intervalIntegrable _ _)
+      ((continuousOn_const.mul hcont).intervalIntegrable) hpt
+  rw [intervalIntegral.integral_const_mul, hFTC] at hmono
+  have hF2 : (0 : ℝ) ≤ exp ((2 : ℝ) ^ 2) / (2 * 2) := by positivity
+  have hid : 8 / 7 * (exp (v ^ 2) / (2 * v)) = 4 * exp (v ^ 2) / (7 * v) := by
+    field_simp
+    ring
+  linarith [hmono, hF2, hid]
+
+/-- `D₊(v) ≤ 2e^{4-v²} + 4/(7v)` for `v ≥ 2`, the companion upper bound to `inv_lt_dawson`. -/
+theorem dawson_le {v : ℝ} (hv : 2 ≤ v) : dawson v ≤ 2 * exp (4 - v ^ 2) + 4 / (7 * v) := by
+  have hvpos : (0 : ℝ) < v := by linarith
+  have hsplit : (∫ t in (0 : ℝ)..v, exp (t ^ 2))
+      = (∫ t in (0 : ℝ)..(2 : ℝ), exp (t ^ 2)) + ∫ t in (2 : ℝ)..v, exp (t ^ 2) :=
+    (intervalIntegral.integral_add_adjacent_intervals
+      (continuous_exp_sq.intervalIntegrable _ _) (continuous_exp_sq.intervalIntegrable _ _)).symm
+  have hhead : (∫ t in (0 : ℝ)..(2 : ℝ), exp (t ^ 2)) ≤ 2 * exp 4 := by
+    have hb : ∀ t ∈ Set.Icc (0 : ℝ) 2, exp (t ^ 2) ≤ exp 4 := by
+      intro t ht
+      exact exp_le_exp.mpr (by nlinarith [ht.1, ht.2])
+    have := intervalIntegral.integral_mono_on (by norm_num : (0:ℝ) ≤ 2)
+      (continuous_exp_sq.intervalIntegrable _ _) (continuous_const.intervalIntegrable (μ := MeasureTheory.volume) _ _) hb
+    simpa using this
+  have htail := integral_exp_sq_tail_le hv
+  have hexp : (0 : ℝ) < exp (-v ^ 2) := exp_pos _
+  unfold dawson
+  rw [hsplit, mul_add]
+  have h1 : exp (-v ^ 2) * (∫ t in (0 : ℝ)..(2 : ℝ), exp (t ^ 2)) ≤ 2 * exp (4 - v ^ 2) := by
+    have := mul_le_mul_of_nonneg_left hhead hexp.le
+    calc exp (-v ^ 2) * (∫ t in (0 : ℝ)..(2 : ℝ), exp (t ^ 2))
+        ≤ exp (-v ^ 2) * (2 * exp 4) := this
+      _ = 2 * exp (4 - v ^ 2) := by rw [show (4 : ℝ) - v ^ 2 = 4 + -v ^ 2 by ring, Real.exp_add]; ring
+  have h2 : exp (-v ^ 2) * (∫ t in (2 : ℝ)..v, exp (t ^ 2)) ≤ 4 / (7 * v) := by
+    have := mul_le_mul_of_nonneg_left htail hexp.le
+    have hcancel : exp (-v ^ 2) * exp (v ^ 2) = 1 := by rw [← Real.exp_add]; simp
+    have hc : exp (-v ^ 2) * (4 * exp (v ^ 2) / (7 * v)) = 4 / (7 * v) := by
+      rw [show exp (-v ^ 2) * (4 * exp (v ^ 2) / (7 * v))
+            = (exp (-v ^ 2) * exp (v ^ 2)) * (4 / (7 * v)) by ring, hcancel, one_mul]
+    linarith [hc ▸ this]
+  linarith
 
 end FKS2Sol

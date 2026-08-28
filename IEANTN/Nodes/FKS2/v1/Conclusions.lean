@@ -37,8 +37,11 @@ without restating anything. It also means both pipelines import *nothing* — th
 theorems about arbitrary parameters, so a Lean proof is their whole justification, and they can be
 verified without waiting on any numerical input. The corollaries below are then instantiations.
 
-The pipelines also carry three hypotheses the paper does not state, each found by formalizing
-rather than by reading; they are documented at the statements.
+The pipelines also carry three hypotheses the paper does not state; they are documented at the
+statements. They were found here by formalizing, but they were **not new**:
+`PrimeNumberTheoremAnd` already carries the same conditions, and for its `theorem_3` an explicit
+note that they "are not present in the source material [FKS2]". The gap in the published paper is
+real and independently confirmed; the credit for noticing it is not ours.
 
 **Tables 6 and 7** are data. Corollary 23 asserts an admissible classical bound for every row of
 Table 6 and Corollary 24 a bound for every row of Table 7; this node states the single row of
@@ -71,7 +74,10 @@ Three hypotheses below are **not in the paper**, and are not tidying:
   bound go the wrong way.
 * `0 < C`, which the monotonicity lemmas behind both need.
 
-Each was found by formalizing, and each is recorded on this node's page.
+Each is recorded on this node's page. All three are also present in `PrimeNumberTheoremAnd`, which
+found them first — see the attribution notes there. Where this node does differ is that
+Proposition 13 needs only `exp 1 ≤ x₀` where upstream requires `7 ≤ log x₀`, so this statement is
+the stronger one.
 -/
 
 /-- The Dawson function `D₊(x) = e^{-x²} ∫₀ˣ e^{t²} dt`.
@@ -145,6 +151,22 @@ the region it takes as input, not from this corollary. A node supplying a differ
 a different `R`, which is why the pipelines above are the more valuable export. -/
 def corollary_14 : Prop :=
   HasClassicalBound Eθ 121.0961 (3 / 2) 2 5.5666305 2
+
+/-- **Corollary 22**, the paper's headline asymptotic bound:
+`|π(x) − Li(x)| ≤ 9.2211 x √(log x) exp(−0.84768363 √(log x))` for all `x ≥ 2`.
+
+Stated in the network's vocabulary at `R = 1`, which is the same claim:
+`HasClassicalBound Eπ A B C 1` unwinds to `Eπ(x) ≤ A (log x)^B exp(−C √(log x))`, and multiplying by
+`x / log x` gives the paper's displayed form exactly, with `B = 3/2` supplying the `√(log x)`.
+
+`R` is folded into the constants rather than carried: the paper's own proof runs at
+`R = 5.5666305`, and `121.107 / R^{3/2} = 9.22106…` and `2 / √R = 0.84768363…` are where the two
+printed constants come from. Note the printed `C` is very slightly *below* `2/√R`, which is the
+safe direction — a smaller `C` is a weaker bound.
+
+This is what dominates Table 6's rows far out, and so what `corollary_23`'s tail rests on. -/
+def corollary_22 : Prop :=
+  HasClassicalBound Eπ 9.2211 (3 / 2) 0.84768363 1 2
 
 /-- **Corollary 23, at the row `[0.826, 0.25, 1.00, 1.000]` of Table 6.** The prime-counting error
 term obeys the admissible classical bound with `A = 0.826`, `B = 0.25`, `C = 1`, `R = 5.5666305`,

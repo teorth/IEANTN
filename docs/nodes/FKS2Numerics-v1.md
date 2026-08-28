@@ -48,7 +48,7 @@ def table6_row2_floor : Prop :=
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | [`FKS2.v1.corollary_23`](FKS2-v1.md#corollary_23) |
+| Assumed by | [`FKS2.v1.corollary_23`](FKS2-v1.md#corollary_23), [`FKS2.v1.corollary_26`](FKS2-v1.md#corollary_26) |
 
 **Justification `fks2-computation`** — **designated** — numerical, Sections 5.2-5.3, the direct check for small x behind Table 6's row 2
 
@@ -77,7 +77,7 @@ def nu_asymp_e30_le : Prop :=
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14) |
+| Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14), [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22) |
 
 **Justification `fks2-multiplier-computation`** — **designated** — numerical, the proof of Corollary 14, at the displayed bound nu_asymp(x0) <= 6.3376e-7
 
@@ -108,11 +108,45 @@ def theta_asymp_ge_one_below_e30 : Prop :=
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14) |
+| Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14), [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22) |
 
 **Justification `fks2-small-range-computation`** — **designated** — numerical, the proof of Corollary 14, where the minimum of epsilon_theta,asymp on [2, e^30] is recorded as roughly 2.6271 at x = 2
 
 > What lets BKLNW's E_theta(x) <= 1 cover [2, e^30], the range below where FKS's bound starts. Weaker in kind than the other two claims on this node, and the difference is worth stating. table6_row2_floor and nu_asymp_e30_le are arithmetic that no amount of analysis will replace. This one quantifies over a continuum and is PROVABLE OUTRIGHT: writing u = sqrt(log x / R), the bound is A u^3 exp(-2u), which rises to its maximum at u = 3/2, so on any interval its minimum is at an endpoint and only the endpoint evaluation is numerical. It is carried as an assertion because that is how the paper carries it, and it is the first conclusion on this node that should be promoted to a proof. Found by porting, not by reading -- the second of the two missing imports of FKS2.v1.corollary_14.
+
+### `corollary_22_mid_range`
+
+**The mid-range behind Corollary 22**: the headline bound already holds on `[2, e²⁰⁰⁰⁰]`.
+
+Above `e²⁰⁰⁰⁰` Corollary 22 is analysis — Theorem 3 applied to Corollary 14, with the multiplier
+controlled by the Dawson estimate. Below it the paper proceeds differently: "the numerical results
+obtainable from Theorem [prop_num_pi] may be interpolated as a step function to give a bound on
+`E_π(x)` of the shape `ε_{π,asymp}(x)`", using the subdivisions of FKS's Lemmas 5.2 and 5.3. That
+interpolation is a computation over a table, not an argument, so it is stated here.
+
+`PrimeNumberTheoremAnd` does not have this either — it formalizes only the tail
+(`corollary_22_tail`, from `exp 20000` onward). So this is the genuinely missing piece, in both
+developments.
+
+```lean
+def corollary_22_mid_range : Prop :=
+  ∀ x ∈ Set.Icc (2 : ℝ) (Real.exp 20000),
+    Eπ x ≤ admissibleBound 9.2211 (3 / 2) 0.84768363 1 x
+```
+
+| | |
+|---|---|
+| Lean name | `FKS2Numerics.v1.corollary_22_mid_range` |
+| Challenge | `FKS2Numerics.v1.challenge_corollary_22_mid_range` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L137) |
+| Evidence | computation (`numerical`) |
+| Sources traced | none |
+| Assumes | nothing recorded |
+| Assumed by | [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22) |
+
+**Justification `fks2-corollary-22-interpolation`** — **designated** — numerical, the proof of Corollary 22, the step-function interpolation below e^20000
+
+> Corollary 22 splits at e^20000. Above it the claim is analysis -- Theorem 3 applied to Corollary 14, with the multiplier controlled by a Dawson estimate -- and that half is proved in Solutions/FKS2.v1. Below it the paper interpolates numerical results as a step function, using the subdivisions of FKS's Lemmas 5.2 and 5.3. A computation over a table, not an argument, so it is stated here. Imports none: a bounded-range numerical claim consumes nothing from the network. Worth recording that PrimeNumberTheoremAnd does not have this either. It formalizes only corollary_22_tail, from exp 20000 onward, and has no full Corollary 22. So this is the missing piece in both developments, and stating it here is what lets FKS2.v1.corollary_22 be assembled at all.
 
 ## Limitations
 

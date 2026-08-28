@@ -50,8 +50,8 @@ graph LR
   NDusart2018_v1["<b>Dusart2018.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NFKBJ_v1["<b>FKBJ.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NFKS_v1["<b>FKS.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
-  NFKS2_v1["<b>FKS2.v1</b><br/>5 claims<br/><i>weakest: cited</i>"]
-  NFKS2Numerics_v1["<b>FKS2Numerics.v1</b><br/>3 claims<br/><i>weakest: computation</i>"]
+  NFKS2_v1["<b>FKS2.v1</b><br/>6 claims<br/><i>weakest: cited</i>"]
+  NFKS2Numerics_v1["<b>FKS2Numerics.v1</b><br/>4 claims<br/><i>weakest: computation</i>"]
   NHiary2016_v1["<b>Hiary2016.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NKLN_v1["<b>KLN.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NKadiri2005_v1["<b>Kadiri2005.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
@@ -67,14 +67,14 @@ graph LR
   NTrudgian2011_v1["<b>Trudgian2011.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NWedeniwski_v1["<b>Wedeniwski.v1</b><br/>1 claim<br/><i>weakest: asserted</i>"]
   NZeroFreeHeight_v1["<b>ZeroFreeHeight.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
-  NBKLNW_v1 -->|2| NFKS2_v1
+  NBKLNW_v1 -->|4| NFKS2_v1
   NButhe_v1 -->|2| NBKLNW_v1
-  NButhe_v1 -->|3| NFKS2_v1
+  NButhe_v1 -->|2| NFKS2_v1
   NButhe2016_v1 -->|2| NBKLNW_v1
   NDusart2018_v1 --> NLcm_v1
   NFKBJ_v1 -->|6| NButhe_v1
-  NFKS_v1 -->|2| NFKS2_v1
-  NFKS2Numerics_v1 -->|3| NFKS2_v1
+  NFKS_v1 -->|4| NFKS2_v1
+  NFKS2Numerics_v1 -->|7| NFKS2_v1
   NHiary2016_v1 --> NKLN_v1
   NKLN_v1 -->|2| NFKS_v1
   NKLN_v1 -->|2| NPlattTrudgian2021_v1
@@ -178,12 +178,14 @@ graph LR
   end
   subgraph sgFKS2_v1["FKS2.v1"]
     FKS2_v1_corollary_14["<b>corollary_14</b><br/><i>cited</i>"]
+    FKS2_v1_corollary_22["<b>corollary_22</b><br/><i>cited</i>"]
     FKS2_v1_corollary_23["<b>corollary_23</b><br/><i>cited</i>"]
     FKS2_v1_corollary_26["<b>corollary_26</b><br/><i>cited</i>"]
     FKS2_v1_proposition_13["<b>proposition_13</b><br/><i>cited</i>"]
     FKS2_v1_theorem_3["<b>theorem_3</b><br/><i>cited</i>"]
   end
   subgraph sgFKS2Numerics_v1["FKS2Numerics.v1"]
+    FKS2Numerics_v1_corollary_22_mid_range["<b>corollary_22_mid_range</b><br/><i>computation</i>"]
     FKS2Numerics_v1_nu_asymp_e30_le["<b>nu_asymp_e30_le</b><br/><i>computation</i>"]
     FKS2Numerics_v1_table6_row2_floor["<b>table6_row2_floor</b><br/><i>computation</i>"]
     FKS2Numerics_v1_theta_asymp_ge_one_below_e30["<b>theta_asymp_ge_one_below_e30</b><br/><i>computation</i>"]
@@ -257,11 +259,18 @@ graph LR
   BKLNW_v1_theta_error_le_one --> FKS2_v1_corollary_14
   FKS2Numerics_v1_nu_asymp_e30_le --> FKS2_v1_corollary_14
   FKS2Numerics_v1_theta_asymp_ge_one_below_e30 --> FKS2_v1_corollary_14
+  FKS_v1_psi_classical_bound --> FKS2_v1_corollary_22
+  BKLNW_v1_corollary_5_1 --> FKS2_v1_corollary_22
+  BKLNW_v1_theta_error_le_one --> FKS2_v1_corollary_22
+  FKS2Numerics_v1_nu_asymp_e30_le --> FKS2_v1_corollary_22
+  FKS2Numerics_v1_theta_asymp_ge_one_below_e30 --> FKS2_v1_corollary_22
+  FKS2Numerics_v1_corollary_22_mid_range --> FKS2_v1_corollary_22
   FKS_v1_psi_classical_bound --> FKS2_v1_corollary_23
   Buthe_v1_theorem_2_li_minus_pi --> FKS2_v1_corollary_23
   FKS2Numerics_v1_table6_row2_floor --> FKS2_v1_corollary_23
+  FKS_v1_psi_classical_bound --> FKS2_v1_corollary_26
   Buthe_v1_theorem_2_li_minus_pi --> FKS2_v1_corollary_26
-  Buthe_v1_theorem_2_li_gt_pi --> FKS2_v1_corollary_26
+  FKS2Numerics_v1_table6_row2_floor --> FKS2_v1_corollary_26
   Hiary2016_v1_zeta_half_line_bound --> KLN_v1_subconvexity_bound
   Platt2017_v1_rh_up_to --> KLN_v1_zero_density
   RosserSchoenfeld_v1_zero_free_region_classical --> Kadiri2005_v1_zero_free_region
@@ -318,8 +327,8 @@ graph LR
   class Wedeniwski_v1_rh_up_to asserted;
   class RosserSchoenfeld_v1_zero_free_region_classical bridged;
   class Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap,ZeroFreeHeight_v1_classical_region_descends lean_comparator;
-  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,FKS2_v1_corollary_14,FKS2_v1_corollary_23,FKS2_v1_corollary_26,FKS2_v1_proposition_13,FKS2_v1_theorem_3,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,RosserSchoenfeld_v1_zero_free_region,Trudgian2011_v1_integral_S_bound literature;
-  class FKBJ_v1_rh_up_to,FKS2Numerics_v1_nu_asymp_e30_le,FKS2Numerics_v1_table6_row2_floor,FKS2Numerics_v1_theta_asymp_ge_one_below_e30,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to numerical;
+  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,FKS2_v1_corollary_14,FKS2_v1_corollary_22,FKS2_v1_corollary_23,FKS2_v1_corollary_26,FKS2_v1_proposition_13,FKS2_v1_theorem_3,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,RosserSchoenfeld_v1_zero_free_region,Trudgian2011_v1_integral_S_bound literature;
+  class FKBJ_v1_rh_up_to,FKS2Numerics_v1_corollary_22_mid_range,FKS2Numerics_v1_nu_asymp_e30_le,FKS2Numerics_v1_table6_row2_floor,FKS2Numerics_v1_theta_asymp_ge_one_below_e30,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to numerical;
   click BKLNW_v1_corollary_5_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#corollary_5_1" _blank
   click BKLNW_v1_table8_psi_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound" _blank
   click BKLNW_v1_table8_psi_bound_above href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound_above" _blank
@@ -339,10 +348,12 @@ graph LR
   click FKS_v1_psi_bound_all_x href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS-v1.md#psi_bound_all_x" _blank
   click FKS_v1_psi_classical_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS-v1.md#psi_classical_bound" _blank
   click FKS2_v1_corollary_14 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#corollary_14" _blank
+  click FKS2_v1_corollary_22 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#corollary_22" _blank
   click FKS2_v1_corollary_23 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#corollary_23" _blank
   click FKS2_v1_corollary_26 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#corollary_26" _blank
   click FKS2_v1_proposition_13 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#proposition_13" _blank
   click FKS2_v1_theorem_3 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#theorem_3" _blank
+  click FKS2Numerics_v1_corollary_22_mid_range href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md#corollary_22_mid_range" _blank
   click FKS2Numerics_v1_nu_asymp_e30_le href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le" _blank
   click FKS2Numerics_v1_table6_row2_floor href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md#table6_row2_floor" _blank
   click FKS2Numerics_v1_theta_asymp_ge_one_below_e30 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30" _blank
@@ -397,6 +408,9 @@ A line is one claim, indented under whatever assumes it.
       - [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) — computation — *sources known, not all drawable*
         - [`Trudgian2011.v1.integral_S_bound`](docs/nodes/Trudgian2011-v1.md#integral_S_bound) — cited — *sources not traced*
 
+- [`Buthe.v1.theorem_2_li_gt_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi) — cited — *sources known, not all drawable*
+  - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
+
 - [`Buthe.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi) — cited — *sources known, not all drawable*
   - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
 
@@ -440,6 +454,25 @@ A line is one claim, indented under whatever assumes it.
   - [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) — computation
   - [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30) — computation
 
+- [`FKS2.v1.corollary_22`](docs/nodes/FKS2-v1.md#corollary_22) — cited
+  - [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) — cited
+    - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
+      - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources known, not all drawable*
+    - [`MT.v1.zero_free_region_sharpened`](docs/nodes/MT-v1.md#zero_free_region_sharpened) — cited
+      - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited
+        - [`RosserSchoenfeld.v1.zero_free_region_classical`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region_classical) — bridged
+        - [`Wedeniwski.v1.rh_up_to`](docs/nodes/Wedeniwski-v1.md#rh_up_to) — asserted — *sources not traced*
+      - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
+    - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited *(above)* — *sources known, not all drawable*
+  - [`BKLNW.v1.corollary_5_1`](docs/nodes/BKLNW-v1.md#corollary_5_1) — cited
+    - [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) — cited — *sources known, not all drawable*
+      - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
+  - [`BKLNW.v1.theta_error_le_one`](docs/nodes/BKLNW-v1.md#theta_error_le_one) — cited
+    - [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) — cited *(above)* — *sources known, not all drawable*
+  - [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) — computation
+  - [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30) — computation
+  - [`FKS2Numerics.v1.corollary_22_mid_range`](docs/nodes/FKS2Numerics-v1.md#corollary_22_mid_range) — computation
+
 - [`FKS2.v1.corollary_23`](docs/nodes/FKS2-v1.md#corollary_23) — cited
   - [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) — cited
     - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
@@ -455,10 +488,18 @@ A line is one claim, indented under whatever assumes it.
   - [`FKS2Numerics.v1.table6_row2_floor`](docs/nodes/FKS2Numerics-v1.md#table6_row2_floor) — computation
 
 - [`FKS2.v1.corollary_26`](docs/nodes/FKS2-v1.md#corollary_26) — cited
+  - [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) — cited
+    - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
+      - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources known, not all drawable*
+    - [`MT.v1.zero_free_region_sharpened`](docs/nodes/MT-v1.md#zero_free_region_sharpened) — cited
+      - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited
+        - [`RosserSchoenfeld.v1.zero_free_region_classical`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region_classical) — bridged
+        - [`Wedeniwski.v1.rh_up_to`](docs/nodes/Wedeniwski-v1.md#rh_up_to) — asserted — *sources not traced*
+      - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
+    - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited *(above)* — *sources known, not all drawable*
   - [`Buthe.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi) — cited — *sources known, not all drawable*
     - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
-  - [`Buthe.v1.theorem_2_li_gt_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi) — cited — *sources known, not all drawable*
-    - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation *(above)* — *sources known, not all drawable*
+  - [`FKS2Numerics.v1.table6_row2_floor`](docs/nodes/FKS2Numerics-v1.md#table6_row2_floor) — computation
 
 - [`FKS2.v1.proposition_13`](docs/nodes/FKS2-v1.md#proposition_13) — cited
 
@@ -494,23 +535,23 @@ rather than maintained.
 |---|---|---:|---|
 | [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) | computation | 6 | known, not all drawable |
 | [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) | cited | 5 | known, not all drawable |
+| [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) | cited | 4 | traced |
+| [`BKLNW.v1.corollary_5_1`](docs/nodes/BKLNW-v1.md#corollary_5_1) | cited | 2 | traced |
+| [`BKLNW.v1.theta_error_le_one`](docs/nodes/BKLNW-v1.md#theta_error_le_one) | cited | 2 | traced |
 | [`Buthe.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi) | cited | 2 | known, not all drawable |
 | [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) | cited | 2 | known, not all drawable |
 | [`Buthe2016.v1.theorem_2_psi`](docs/nodes/Buthe2016-v1.md#theorem_2_psi) | cited | 2 | none |
-| [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) | cited | 2 | traced |
+| [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) | computation | 2 | none |
+| [`FKS2Numerics.v1.table6_row2_floor`](docs/nodes/FKS2Numerics-v1.md#table6_row2_floor) | computation | 2 | none |
+| [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30) | computation | 2 | none |
 | [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) | cited | 2 | traced |
 | [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) | cited | 2 | traced |
 | [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) | cited | 2 | traced |
 | [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) | cited | 2 | traced |
 | [`MT.v1.zero_free_region_sharpened`](docs/nodes/MT-v1.md#zero_free_region_sharpened) | cited | 2 | traced |
 | [`PlattTrudgian2021.v1.theorem_1_numerical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_numerical) | cited | 2 | traced |
-| [`BKLNW.v1.corollary_5_1`](docs/nodes/BKLNW-v1.md#corollary_5_1) | cited | 1 | traced |
-| [`BKLNW.v1.theta_error_le_one`](docs/nodes/BKLNW-v1.md#theta_error_le_one) | cited | 1 | traced |
-| [`Buthe.v1.theorem_2_li_gt_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi) | cited | 1 | known, not all drawable |
 | [`Dusart2018.v1.proposition_5_4`](docs/nodes/Dusart2018-v1.md#proposition_5_4) | cited | 1 | **not yet traced** |
-| [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) | computation | 1 | none |
-| [`FKS2Numerics.v1.table6_row2_floor`](docs/nodes/FKS2Numerics-v1.md#table6_row2_floor) | computation | 1 | none |
-| [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30) | computation | 1 | none |
+| [`FKS2Numerics.v1.corollary_22_mid_range`](docs/nodes/FKS2Numerics-v1.md#corollary_22_mid_range) | computation | 1 | none |
 | [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) | cited | 1 | known, not all drawable |
 | [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) | computation | 1 | known, not all drawable |
 | [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) | computation | 1 | known, not all drawable |
@@ -519,6 +560,7 @@ rather than maintained.
 | [`Wedeniwski.v1.rh_up_to`](docs/nodes/Wedeniwski-v1.md#rh_up_to) | asserted | 1 | **not yet traced** |
 | [`BKLNW.v1.table8_psi_bound`](docs/nodes/BKLNW-v1.md#table8_psi_bound) | cited | 0 | known, not all drawable |
 | [`BKLNW.v1.table8_psi_bound_above`](docs/nodes/BKLNW-v1.md#table8_psi_bound_above) | cited | 0 | known, not all drawable |
+| [`Buthe.v1.theorem_2_li_gt_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi) | cited | 0 | known, not all drawable |
 | [`Buthe.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi) | cited | 0 | known, not all drawable |
 | [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) | cited | 0 | known, not all drawable |
 | [`Buthe.v1.theorem_2_theta`](docs/nodes/Buthe-v1.md#theorem_2_theta) | cited | 0 | known, not all drawable |
@@ -527,6 +569,7 @@ rather than maintained.
 | [`Buthe2016.v1.theorem_2_theta`](docs/nodes/Buthe2016-v1.md#theorem_2_theta) | cited | 0 | none |
 | [`FKS.v1.psi_bound_all_x`](docs/nodes/FKS-v1.md#psi_bound_all_x) | cited | 0 | traced |
 | [`FKS2.v1.corollary_14`](docs/nodes/FKS2-v1.md#corollary_14) | cited | 0 | traced |
+| [`FKS2.v1.corollary_22`](docs/nodes/FKS2-v1.md#corollary_22) | cited | 0 | traced |
 | [`FKS2.v1.corollary_23`](docs/nodes/FKS2-v1.md#corollary_23) | cited | 0 | traced |
 | [`FKS2.v1.corollary_26`](docs/nodes/FKS2-v1.md#corollary_26) | cited | 0 | traced |
 | [`FKS2.v1.proposition_13`](docs/nodes/FKS2-v1.md#proposition_13) | cited | 0 | none |
