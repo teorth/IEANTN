@@ -9,7 +9,7 @@ node:
   family: FKS2
   version: v2
   kind: pipeline
-  status: awaiting-solution
+  status: active
 
 project:
   name: "FKS2's conversion pipelines"
@@ -63,11 +63,10 @@ conclusions:
       refuses unless comparator.json covers every conclusion, so leaving the pipelines on v1 would hold
       them hostage to numerical inputs they have nothing to do with -- and which neither this project
       nor PrimeNumberTheoremAnd has formalized."
-  designated: fks2-paper-proposition-13
-  progress:
-    solution: Solutions/FKS2.v2/
-    state: in-progress
-    remaining_holes: 0
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33185962172'
+  designated: comparator
 - id: theorem_3
   declaration: FKS2.v2.theorem_3
   challenge: FKS2.v2.challenge_theorem_3
@@ -102,11 +101,10 @@ conclusions:
       since record-receipt refuses unless comparator.json covers every conclusion, so leaving the pipelines
       on v1 would hold them hostage to numerical inputs they have nothing to do with -- and which neither
       this project nor PrimeNumberTheoremAnd has formalized."
-  designated: fks2-paper-theorem-3
-  progress:
-    solution: Solutions/FKS2.v2/
-    state: in-progress
-    remaining_holes: 0
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33185962172'
+  designated: comparator
 sources:
 - title: "Sharper bounds for the error term in the prime number theorem"
   authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]

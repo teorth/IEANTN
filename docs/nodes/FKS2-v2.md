@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | pipeline |
-| Status | awaiting-solution |
+| Status | active |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -45,14 +45,19 @@ def proposition_13 : Prop :=
 | Challenge | `FKS2.v2.challenge_proposition_13` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v2/Conclusions.lean#L96) |
 | Solution | [`Solutions/FKS2.v2`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v2) |
-| Evidence | cited (`literature`) |
+| Receipt | [`FKS2.v2.proposition_13.json`](https://github.com/teorth/IEANTN/blob/main/receipts/FKS2.v2.proposition_13.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14) |
 
-**Justification `fks2-paper-proposition-13`** — **designated** — literature, Proposition 13 (epsilon_asymp_theta_prop)
+**Justification `fks2-paper-proposition-13`** — literature, Proposition 13 (epsilon_asymp_theta_prop)
 
 > The paper's E_psi -> E_theta pipeline, stated for arbitrary parameters with the psi - theta comparison as an internal hypothesis rather than by importing BKLNW's coefficients. That is route 2 of the two this node's module docstring set out, chosen for the reason it gave: a pipeline that stands alone can be re-pointed at a better input by a later version without restating anything. Imports NONE, and that is a real none rather than an unexamined one. A conditional theorem quantified over all admissible parameters consumes no other result in the network; everything it needs arrives as a hypothesis. Its justification is therefore a Lean proof and nothing else, which is why it can be verified without waiting on any numerical input. Carries two hypotheses the paper does not state, both found by formalizing. `exp 1 <= x0`: the log(x0) factors in the printed nu_asymp are spare only when log x0 >= 1, and below e the proposition is FALSE -- take x = x0, a1 = 1, a2 = 0 and it reduces to 1 <= log x0. `0 < Apsi`, which the multiplier needs to be meaningful. Note also C^2/(8R) < B, with an 8 rather than a 16: the binding case is the g(1/2, .) of the paper's (28). A complete proof exists at Solutions/FKS2.v1 (FKS2Sol.classicalBound_theta_of_psi), free of sorryAx and within the three permitted axioms. This conclusion is ready to verify. ATTRIBUTION CORRECTION. The lower bound on x0 was likewise not a new discovery: PrimeNumberTheoremAnd's proposition_13 already requires 7 <= log x0. What IS a difference is that this statement needs only exp 1 <= x0, i.e. 1 <= log x0, which is weaker -- so this conclusion is stronger than upstream's on that axis. A modest improvement, not a find. This conclusion now lives on FKS2.v2, the pipeline variant, rather than on FKS2.v1. The move is not cosmetic: verification here is per node and all-or-nothing, since record-receipt refuses unless comparator.json covers every conclusion, so leaving the pipelines on v1 would hold them hostage to numerical inputs they have nothing to do with -- and which neither this project nor PrimeNumberTheoremAnd has formalized.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33185962172
 
 ### `theorem_3`
 
@@ -80,14 +85,19 @@ def theorem_3 : Prop :=
 | Challenge | `FKS2.v2.challenge_theorem_3` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v2/Conclusions.lean#L112) |
 | Solution | [`Solutions/FKS2.v2`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v2) |
-| Evidence | cited (`literature`) |
+| Receipt | [`FKS2.v2.theorem_3.json`](https://github.com/teorth/IEANTN/blob/main/receipts/FKS2.v2.theorem_3.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22) |
 
-**Justification `fks2-paper-theorem-3`** — **designated** — literature, Theorem 3 (prop_asym_pi)
+**Justification `fks2-paper-theorem-3`** — literature, Theorem 3 (prop_asym_pi)
 
 > The paper's E_theta -> E_pi pipeline. Two features of the statement are load-bearing and easy to lose: the conclusion holds from a SECOND threshold x1, not from x0 -- stating it at x0 claims strictly more than the paper proves -- and A_pi is explicit, (1 + mu_asymp(x0, x1)) A_theta, not existentially quantified. Imports NONE, for the same reason as proposition_13. Carries two hypotheses the paper does not state, both found by formalizing. C/(2 sqrt R) <= sqrt(log x0): the paper's Lemma 12, which Theorem 3 applies on [x0, x], discards the lower endpoint of an integral of e^{v^2}, and that is valid only when the endpoint is nonnegative; when it is negative the discarded piece makes the left side strictly larger, so the lemma as printed is false without it. And 0 < C, which the monotonicity lemmas behind both estimates need. The paper's own x1 threshold is a strictly stronger condition of the same shape, which suggests the issue was in view one lemma later but not at Lemma 12. The x1 threshold is not arbitrary: sqrt(log x1) >= 1 + C/(2 sqrt R) is exactly what puts sqrt(log x) - C/(2 sqrt R) past the maximum of the Dawson function, near 0.9241, so that the Dawson factor is decreasing. That is why the 1 is there. A complete proof exists at Solutions/FKS2.v1 (FKS2Sol.classicalBound_pi_of_theta), free of sorryAx and within the three permitted axioms. This conclusion is ready to verify. ATTRIBUTION CORRECTION. Calling this hypothesis something found by formalizing overstates it: it was found independently here, but it was NOT new. PrimeNumberTheoremAnd already carries the same condition, and for its theorem_3 an explicit note saying the conditions x0 >= 2 and 0 <= sqrt(log x0) - C/(2 sqrt R) 'are not present in the source material [FKS2]' and are added to support its lemma_12 (PrimeNumberTheoremAnd/IEANTN/FKS2.lean, theorem_3 and lemma_12). So the gap in the published paper is real and independently confirmed, but the credit for noticing it is not ours. This conclusion now lives on FKS2.v2, the pipeline variant, rather than on FKS2.v1. The move is not cosmetic: verification here is per node and all-or-nothing, since record-receipt refuses unless comparator.json covers every conclusion, so leaving the pipelines on v1 would hold them hostage to numerical inputs they have nothing to do with -- and which neither this project nor PrimeNumberTheoremAnd has formalized.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33185962172
 
 ## Limitations
 

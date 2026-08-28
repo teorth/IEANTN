@@ -13,8 +13,8 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 1 |
-| `lean-comparator` | 3 |
-| `literature` | 34 |
+| `lean-comparator` | 5 |
+| `literature` | 32 |
 | `numerical` | 7 |
 
 ## Nodes
@@ -45,8 +45,8 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `FKS2.v1` | active | `corollary_22` | literature | 7 | - |
 | `FKS2.v1` | active | `corollary_23` | literature | 3 | - |
 | `FKS2.v1` | active | `corollary_26` | literature | 3 | - |
-| `FKS2.v2` | awaiting-solution | `proposition_13` | literature | 0 | - |
-| `FKS2.v2` | awaiting-solution | `theorem_3` | literature | 0 | - |
+| `FKS2.v2` | active | `proposition_13` | lean-comparator | 0 | - |
+| `FKS2.v2` | active | `theorem_3` | lean-comparator | 0 | - |
 | `FKS2Numerics.v1` | stub | `table6_row2_floor` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `nu_asymp_e30_le` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `theta_asymp_ge_one_below_e30` | numerical | 0 | - |
