@@ -1,0 +1,40 @@
+# Port plan for FKS2.v2 -- the pipeline variant.
+#
+# Best-practice file, not a schema CI enforces; see docs/SOLUTIONS.md.
+
+solution: Solutions/FKS2.v2/
+state: complete   # both conclusions proved, free of sorryAx; ready for Comparator
+source: PrimeNumberTheoremAnd @ ae881f2, and FKS2 itself (source/FKS2-2023-error-term-PNT)
+
+what_this_is: >-
+  The two transformations FKS2's corollaries are instances of: Proposition 13 (E_psi -> E_theta)
+  and Theorem 3 (E_theta -> E_pi), quantified over all admissible parameters. FKS2.v1 states the
+  paper's named corollaries; this states the machinery.
+
+why_a_separate_version: >-
+  Verification in this network is per node and all-or-nothing -- record-receipt refuses unless
+  comparator.json covers every conclusion, precisely so that adding a conclusion to a verified node
+  cannot inherit its receipt. These two import nothing and are proved, so they can be verified now;
+  FKS2.v1's corollaries wait on numerical inputs that neither this project nor
+  PrimeNumberTheoremAnd has formalized. Keeping them together would hold the analysis hostage to
+  the numerics. docs/NODES.md sanctions exactly this: versions are variants, not a succession.
+
+contents:
+  - Growth.lean      # Lemma 10 and Corollary 11, the monotonicity toolkit
+  - Dawson.lean      # D+, its differential equation, and two-sided bounds
+  - Integral.lean    # Lemma 12
+  - Stieltjes.lean   # partial summation, pi - Li in terms of theta
+  - PsiToTheta.lean  # Proposition 13
+  - ThetaToPi.lean   # Theorem 3, via boundary_le and integral_term_le
+  - Solution.lean    # the two compared theorems
+
+checked_locally: >-
+  lake build clean; both compared theorems free of sorryAx on propext, Classical.choice and
+  Quot.sound; challenge and solution types identical under pp.all. Comparator does not run on
+  Windows, so that is a preview of its verdict and not a substitute for it.
+
+build_note: >-
+  Each solution is a separate Lake project with its own Mathlib build. Creating this one started
+  building Mathlib from source (3.3 GB in and far from done) before it was stopped; the manifests
+  are byte-identical to Solutions/FKS2.v1, so copying that project's .lake/packages was the fast
+  path. Worth knowing before the next node split. CI is unaffected -- it builds from scratch.

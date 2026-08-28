@@ -6,7 +6,18 @@
 # `ieantn.py progress`; everything here is judgement and should read like it.
 
 solution: Solutions/FKS2.v1/
-state: in-progress   # corollary_26 PROVED with no numerics; 2 holes (cor 22, cor 23)
+
+# --------------------------------------------------------------------------------------------
+split: >-
+  The analysis moved to Solutions/FKS2.v2 along with the conclusions it proves. Proposition 13 and
+  Theorem 3 are conclusions of FKS2.v2 now, so this solution takes them as HYPOTHESES -- which is
+  what corollary_14 importing FKS2.v2.proposition_13 and corollary_22 importing FKS2.v2.theorem_3
+  means. What remains here is instantiation and the numerical ranges.
+
+  Dawson.lean is duplicated between the two solutions: corollary_22's mu bound needs dawson_le, and
+  solutions cannot import one another. About 250 lines, in files this project treats as write-once
+  and never read, so the duplication was judged cheaper than contorting the node structure.
+state: in-progress   # pipelines moved to FKS2.v2; 2 holes here (cor 22, cor 23)
 source: PrimeNumberTheoremAnd @ ae881f2, PrimeNumberTheoremAnd/IEANTN/FKS2*.lean
 
 # --------------------------------------------------------------------------------------------

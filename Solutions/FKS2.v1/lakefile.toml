@@ -1,8 +1,8 @@
 name = "solution_FKS2_v1"
-defaultTargets = ["Solution", "Growth", "Dawson", "PsiToTheta", "Integral", "Stieltjes", "ThetaToPi", "Corollary22", "Corollary26"]
+defaultTargets = ["Solution", "Support", "Dawson", "Corollary14", "Corollary22", "Corollary23", "Corollary26"]
 
-# The core library, for the node's `Conclusions`. Add whatever else the proof needs --
-# PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
+# The core library. The analysis that used to live here moved to Solutions/FKS2.v2 along with the
+# conclusions it proves; this solution takes those two pipelines as hypotheses instead.
 [[require]]
 name = "IEANTN"
 path = "../.."
@@ -11,42 +11,26 @@ path = "../.."
 name = "Solution"
 roots = ["Solution"]
 
-# The monotonicity toolkit. A separate root so it builds on its own while iterating --
-# Lake elaborates files in parallel and rebuilds only what changed, which is the whole reason
-# this port is many files rather than one.
 [[lean_lib]]
-name = "Growth"
-roots = ["Growth"]
+name = "Support"
+roots = ["Support"]
 
-# The Dawson function, which Mathlib lacks and Theorem 3 cannot be stated without.
 [[lean_lib]]
 name = "Dawson"
 roots = ["Dawson"]
 
 [[lean_lib]]
-name = "PsiToTheta"
-roots = ["PsiToTheta"]
+name = "Corollary14"
+roots = ["Corollary14"]
 
-# Lemma 12's development: the substitution, the Dawson evaluation, and the integral bound.
-[[lean_lib]]
-name = "Integral"
-roots = ["Integral"]
-
-# Partial summation: pi - Li in terms of theta.
-[[lean_lib]]
-name = "Stieltjes"
-roots = ["Stieltjes"]
-
-[[lean_lib]]
-name = "ThetaToPi"
-roots = ["ThetaToPi"]
-
-# Corollary 22: the headline asymptotic bound.
 [[lean_lib]]
 name = "Corollary22"
 roots = ["Corollary22"]
 
-# Corollary 26: the headline numerical bound.
+[[lean_lib]]
+name = "Corollary23"
+roots = ["Corollary23"]
+
 [[lean_lib]]
 name = "Corollary26"
 roots = ["Corollary26"]

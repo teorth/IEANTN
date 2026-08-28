@@ -20,28 +20,20 @@ This node currently exports three of the outputs. They are the results a downstr
 without knowing anything about how the paper works, which is what makes them the obvious things to
 state first.
 
-## The two pipelines, now stated
+## The two pipelines live on `FKS2.v2`
 
 **Proposition 13** (`Eψ → Eθ`) and **Theorem 3** (`Eθ → Eπ`) are the paper's reusable content, and
-the reason this node's `kind` is `paper` rather than something narrower. They are now stated, below.
+the corollaries below are instances of them. They were briefly stated here and have moved to
+`FKS2.v2`, the pipeline variant — see `docs/NODES.md` on versions as variants rather than a
+succession.
 
-An earlier version of this docstring said they could not yet be stated faithfully, because
-Proposition 13's conclusion names a multiplier built from Broadbent–Kadiri–Lumley–Ng–Wilk's `a₁`
-and `a₂`, and writing that here would mean either duplicating BKLNW's definitions or inventing
-them. It set out two routes: import BKLNW's coefficients, or carry the `ψ − θ` bound as an internal
-hypothesis in the manner of `Lcm.v2`.
+The move is not cosmetic. Those two conclusions import nothing and are proved, so they can be
+verified today; the corollaries below cannot, because they wait on numerical inputs that neither
+this project nor `PrimeNumberTheoremAnd` has formalized. Verification here is per node and
+all-or-nothing — `record-receipt` refuses unless `comparator.json` covers every conclusion — so
+keeping the pipelines here would have held them hostage to numerics they have nothing to do with.
 
-**Route 2 was taken**, and the reason is the one that docstring gave for preferring it: a pipeline
-that stands alone is reusable, and a later `FKS2.v2` can re-point it at a better `ψ − θ` bound
-without restating anything. It also means both pipelines import *nothing* — they are conditional
-theorems about arbitrary parameters, so a Lean proof is their whole justification, and they can be
-verified without waiting on any numerical input. The corollaries below are then instantiations.
-
-The pipelines also carry three hypotheses the paper does not state; they are documented at the
-statements. They were found here by formalizing, but they were **not new**:
-`PrimeNumberTheoremAnd` already carries the same conditions, and for its `theorem_3` an explicit
-note that they "are not present in the source material [FKS2]". The gap in the published paper is
-real and independently confirmed; the credit for noticing it is not ours.
+The corollaries now **import** them, which is what the network is for.
 
 **Tables 6 and 7** are data. Corollary 23 asserts an admissible classical bound for every row of
 Table 6 and Corollary 24 a bound for every row of Table 7; this node states the single row of
@@ -53,95 +45,6 @@ data structure, since a table is a different kind of object from a `Prop` and
 namespace FKS2.v1
 
 open IEANTN
-
-/-! ### The two pipelines
-
-Proposition 13 and Theorem 3 are the paper's reusable content: they convert an admissible bound on
-one error term into one on the next, for *any* parameters, and the corollaries are instantiations.
-They are stated here with the `ψ − θ` comparison as an internal hypothesis rather than by importing
-`BKLNW`'s coefficients — route 2 of the two the module docstring above sets out, chosen because a
-pipeline that stands alone is what a later `FKS2.v2` can re-point at a better input.
-
-Consequently **both import nothing.** They are conditional theorems about arbitrary parameters, so
-their justification is a Lean proof and nothing else.
-
-Three hypotheses below are **not in the paper**, and are not tidying:
-
-* `exp 1 ≤ x₀` in Proposition 13. The `log x₀` factors in `ν_asymp` are spare only when
-  `log x₀ ≥ 1`; below `e` the proposition is false. Take `x = x₀`, `a₁ = 1`, `a₂ = 0`.
-* `C / (2√R) ≤ √(log x₀)` in Theorem 3. Its Lemma 12 discards the lower endpoint of an integral of
-  `e^{v²}`, valid only when that endpoint is nonnegative; below it the discarded piece makes the
-  bound go the wrong way.
-* `0 < C`, which the monotonicity lemmas behind both need.
-
-Each is recorded on this node's page. All three are also present in `PrimeNumberTheoremAnd`, which
-found them first — see the attribution notes there. Where this node does differ is that
-Proposition 13 needs only `exp 1 ≤ x₀` where upstream requires `7 ≤ log x₀`, so this statement is
-the stronger one.
--/
-
-/-- The Dawson function `D₊(x) = e^{-x²} ∫₀ˣ e^{t²} dt`.
-
-Mathlib has no Dawson function, and Theorem 3 cannot be *stated* without one: substituting
-`u = √(log t)` in the integral of an admissible bound and completing the square leaves an integral
-of `e^{s²}`, and `D₊` is exactly that, rescaled. So `D₊` is what the `θ → π` constant is made of.
-
-Lives here rather than in Vocabulary because only this node's conclusions mention it; promote it
-when a second node needs it, as Vocabulary's own rule says. -/
-noncomputable def dawson (x : ℝ) : ℝ :=
-  Real.exp (-x ^ 2) * ∫ t in (0 : ℝ)..x, Real.exp (t ^ 2)
-
-/-- The multiplier `ν_asymp` of the paper's (nu_asymp): how much an admissible bound for `Eψ` must
-be inflated to serve for `Eθ`, given `ψ − θ ≤ a₁√x + a₂x^{1/3}`.
-
-Transcribed verbatim, including the `log x₀` in each summand. Evaluating the paper's own (28) at
-`x₀` gives the same expression *without* those factors, and `BKLNW`'s Corollary 5.1 has no
-logarithm in it either, so this appears to be about `log x₀` times larger than the argument needs.
-That is the safe direction — a larger `ν` is a weaker claim — so it is kept as printed and flagged
-rather than tightened. It is also exactly why `exp 1 ≤ x₀` is needed. -/
-noncomputable def nuAsymp (Aψ B C R a₁ a₂ x₀ : ℝ) : ℝ :=
-  (1 / Aψ) * (R / Real.log x₀) ^ B * Real.exp (C * Real.sqrt (Real.log x₀ / R)) *
-    (a₁ * Real.log x₀ * x₀ ^ (-(1 : ℝ) / 2) + a₂ * Real.log x₀ * x₀ ^ (-(2 : ℝ) / 3))
-
-/-- The correction `μ_asymp` of the paper's (mu_asymp_def).
-
-First summand: the boundary term at `x₀`, normalised — which is why `π(x₀)` and `θ(x₀)` have to be
-computable. Second: what the integral contributes, and where `D₊` reaches the final constant. -/
-noncomputable def muAsymp (Aθ B C R x₀ x₁ : ℝ) : ℝ :=
-  (x₀ * Real.log x₁) / (admissibleBound Aθ B C R x₁ * x₁ * Real.log x₀) *
-      |(primeCounting x₀ - Li x₀) / (x₀ / Real.log x₀) - (Chebyshev.theta x₀ - x₀) / x₀|
-    + 2 * dawson (Real.sqrt (Real.log x₁) - C / (2 * Real.sqrt R)) / Real.sqrt (Real.log x₁)
-
-/-- **Proposition 13**, the `Eψ → Eθ` pipeline: an admissible bound for `Eψ` gives one for `Eθ`
-with `A` inflated to `Aψ(1 + ν_asymp)` and `B`, `C`, `R`, `x₀` unchanged.
-
-The conclusion names the constant. An existentially quantified version would typecheck and be
-useless: Corollary 14 needs the actual number to get from `121.096` to `121.0961`.
-
-`C²/(8R) < B` is the paper's, and the `8` is not a slip for `16`: the binding case is the
-`g(1/2, …)` of its (28), where Lemma 10(a) at `a = 1/2` reads `-B < -C²/(8R)`. -/
-def proposition_13 : Prop :=
-  ∀ Aψ B C R a₁ a₂ x₀ : ℝ, 0 < R → 0 < Aψ → C ^ 2 / (8 * R) < B → Real.exp 1 ≤ x₀ →
-    0 ≤ a₁ → 0 ≤ a₂ →
-    (∀ x ≥ x₀, Chebyshev.psi x - Chebyshev.theta x
-      ≤ a₁ * x ^ ((1 : ℝ) / 2) + a₂ * x ^ ((1 : ℝ) / 3)) →
-    HasClassicalBound Eψ Aψ B C R x₀ →
-    HasClassicalBound Eθ (Aψ * (1 + nuAsymp Aψ B C R a₁ a₂ x₀)) B C R x₀
-
-/-- **Theorem 3**, the `Eθ → Eπ` pipeline.
-
-Two things are easy to lose and both are load-bearing. The conclusion holds from a **second**
-threshold `x₁`, not from `x₀`; stating it at `x₀` claims more than the paper proves. And `A_π` is
-explicit, `(1 + μ_asymp(x₀, x₁)) A_θ`.
-
-The `x₁` threshold is not arbitrary: `√(log x₁) ≥ 1 + C/(2√R)` is what puts
-`√(log x) - C/(2√R)` past the maximum of `D₊`, so that the Dawson factor is decreasing. -/
-def theorem_3 : Prop :=
-  ∀ Aθ B C R x₀ x₁ : ℝ, 0 < R → max (3 / 2) (1 + C ^ 2 / (16 * R)) ≤ B → 2 ≤ x₀ → 0 < Aθ →
-    0 < C → C / (2 * Real.sqrt R) ≤ Real.sqrt (Real.log x₀) →
-    max x₀ (Real.exp ((1 + C / (2 * Real.sqrt R)) ^ 2)) ≤ x₁ →
-    HasClassicalBound Eθ Aθ B C R x₀ →
-    HasClassicalBound Eπ ((1 + muAsymp Aθ B C R x₀ x₁) * Aθ) B C R x₁
 
 /-- **Corollary 14.** The first Chebyshev error term obeys the admissible classical bound with
 parameters `A = 121.0961`, `B = 3/2`, `C = 2`, `R = 5.5666305`, for all `x ≥ 2`.

@@ -48,7 +48,7 @@ ours.
 namespace FKS2Sol
 
 open Real IEANTN intervalIntegral
-open FKS2.v1 (dawson)
+open FKS2.v2 (dawson)
 
 /-- `m(x₀, x) = max((log x₀)^{(2B-3)/2}, (log x)^{(2B-3)/2})`, the paper's (alpha_def).
 
