@@ -6,7 +6,7 @@ Authors: Terence Tao
 import Growth
 import IEANTN.Nodes.FKS.v1.Conclusions
 import IEANTN.Nodes.BKLNW.v1.Conclusions
-import IEANTN.Nodes.FKS2.v1.Conclusions
+import IEANTN.Nodes.FKS2.v2.Conclusions
 import IEANTN.Nodes.FKS2Numerics.v1.Conclusions
 import Mathlib.Analysis.Complex.ExponentialBounds
 
@@ -55,7 +55,7 @@ on our own initiative is exactly what this repository must not do.
 namespace FKS2Sol
 
 open Real IEANTN
-open FKS2.v1 (nuAsymp)
+open FKS2.v2 (nuAsymp)
 
 /-- `Eθ ≤ Eψ + (ψ - θ)/x`: the whole `ψ → θ` transfer, before any estimation.
 
@@ -269,45 +269,5 @@ theorem nuAsymp_e30_eq :
       = FKS2Numerics.v1.nuAsympE30 := by
   unfold nuAsymp FKS2Numerics.v1.nuAsympE30
   rw [Real.log_exp]
-
-/-- **Corollary 14**, the node's first conclusion: `Eθ` obeys the classical bound with
-`A = 121.0961`, `B = 3/2`, `C = 2`, `R = 5.5666305`, for all `x ≥ 2`.
-
-Two ranges. Above `e³⁰` this is Proposition 13 applied to `FKS`'s bound, with the multiplier at
-most `6.3376 · 10⁻⁷`, which is what carries `A` from `121.096` to `121.0961` and no further. Below
-`e³⁰` the asymptotic bound is at least `1` — its minimum there is about `2.6271`, at `x = 2` — so
-`BKLNW`'s `Eθ ≤ 1` covers the range outright.
-
-`BKLNW.v1.corollary_5_1` is applied at `b = 30`, inside its range `7 ≤ b ≤ 38 log 10`.
-
-**Two of these five hypotheses were not recorded as imports of this conclusion until this proof was
-written.** `FKS2Numerics.v1`'s two numerical claims are genuine dependencies of Corollary 14; the
-node listed three imports and has five. Neither was an obstacle to the port — they were invisible
-dependencies of a conclusion the network already carried, and writing the proof is what exposed
-them. -/
-theorem corollary_14
-    (hpsi : FKS.v1.psi_classical_bound)
-    (hconv : BKLNW.v1.corollary_5_1)
-    (hsmall : BKLNW.v1.theta_error_le_one)
-    (hnu : FKS2Numerics.v1.nu_asymp_e30_le)
-    (hfloor : FKS2Numerics.v1.theta_asymp_ge_one_below_e30) :
-    FKS2.v1.corollary_14 := by
-  intro x hx
-  by_cases hle : x ≤ exp 30
-  · exact (hsmall x hx hle).trans (hfloor x ⟨hx, hle⟩)
-  · have hgt : exp 30 < x := lt_of_not_ge hle
-    have h13 := classicalBound_theta_of_psi (Aψ := 121.096) (B := 3 / 2) (C := 2)
-      (R := 5.5666305) (a₁ := 1 + 1.93378e-8) (a₂ := BKLNW.v1.a₂ 30) (x₀ := exp 30)
-      (by norm_num) (by norm_num) (by norm_num)
-      (exp_le_exp.mpr (by norm_num)) (by norm_num) BKLNW_a₂_nonneg
-      (fun y hy ↦ (hconv 30 (by norm_num) (by nlinarith [one_le_log_ten]) y hy).le)
-      hpsi
-    refine (h13 x hgt.le).trans ?_
-    have hx1 : (1 : ℝ) < x := lt_trans (by nlinarith [Real.add_one_le_exp (30 : ℝ)]) hgt
-    refine admissibleBound_mono_A (by norm_num) hx1 ?_
-    rw [nuAsymp_e30_eq]
-    have := hnu
-    unfold FKS2Numerics.v1.nu_asymp_e30_le at this
-    nlinarith [this]
 
 end FKS2Sol

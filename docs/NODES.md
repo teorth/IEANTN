@@ -286,6 +286,13 @@ Landlock and `systemd-run`, so it does not run on Windows or macOS; WSL2 works f
 (Landlock ABI 3 and `systemd-run` are both present), but keep the clone inside the WSL filesystem —
 Lake builds over `/mnt/c` are pathologically slow.
 
+Dispatch it with `python scripts/ieantn.py verify <node> --branch <branch>` rather than
+`gh workflow run verify.yml` directly: a run waiting at the approval gate is drawn exactly like one
+that is building, and that command is the only thing that says so. It cannot approve anything.
+[../CONTRIBUTING.md](../CONTRIBUTING.md) §3 has the full ordering and the three things that catch
+people out — verify *after* the statements are final, pull afterwards because the receipt lands on
+your branch, and the fact that a node is verified all at once or not at all.
+
 Before requesting verification, check the two guarantees locally:
 
 Comparator checks that the challenge and solution declare the *same type* and that the solution

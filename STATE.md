@@ -5,7 +5,7 @@
 Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 `python scripts/ieantn.py status`.
 
-25 node version(s), 46 conclusion(s).  3 state nothing yet.
+26 node version(s), 46 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -13,8 +13,8 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 1 |
-| `lean-comparator` | 3 |
-| `literature` | 34 |
+| `lean-comparator` | 5 |
+| `literature` | 32 |
 | `numerical` | 7 |
 
 ## Nodes
@@ -41,12 +41,12 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `FKBJ.v1` | active | `rh_up_to` | numerical | 0 | - |
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 3 | - |
 | `FKS.v1` | active | `psi_classical_bound` | literature | 3 | - |
-| `FKS2.v1` | active | `proposition_13` | literature | 0 | - |
-| `FKS2.v1` | active | `theorem_3` | literature | 0 | - |
-| `FKS2.v1` | active | `corollary_14` | literature | 5 | - |
-| `FKS2.v1` | active | `corollary_22` | literature | 6 | - |
+| `FKS2.v1` | active | `corollary_14` | literature | 6 | - |
+| `FKS2.v1` | active | `corollary_22` | literature | 7 | - |
 | `FKS2.v1` | active | `corollary_23` | literature | 3 | - |
 | `FKS2.v1` | active | `corollary_26` | literature | 3 | - |
+| `FKS2.v2` | active | `proposition_13` | lean-comparator | 0 | - |
+| `FKS2.v2` | active | `theorem_3` | lean-comparator | 0 | - |
 | `FKS2Numerics.v1` | stub | `table6_row2_floor` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `nu_asymp_e30_le` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `theta_asymp_ge_one_below_e30` | numerical | 0 | - |
@@ -102,4 +102,6 @@ downstream.
 | `Platt2015.v1.rh_up_to` | 1 |
 | `Hiary2016.v1.zeta_half_line_bound` | 1 |
 | `FKS2Numerics.v1.corollary_22_mid_range` | 1 |
+| `FKS2.v2.theorem_3` | 1 |
+| `FKS2.v2.proposition_13` | 1 |
 | `Dusart2018.v1.proposition_5_4` | 1 |

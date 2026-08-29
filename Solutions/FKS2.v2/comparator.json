@@ -1,0 +1,14 @@
+{
+  "challenge_module": "IEANTN.Nodes.FKS2.v2.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "FKS2.v2.challenge_proposition_13",
+    "FKS2.v2.challenge_theorem_3"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

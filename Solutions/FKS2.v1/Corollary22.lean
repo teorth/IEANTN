@@ -3,8 +3,8 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
-import ThetaToPi
-import Mathlib.Analysis.Complex.ExponentialBounds
+import Corollary14
+import Dawson
 
 /-!
 # Corollary 22: the headline asymptotic bound for `π`
@@ -37,7 +37,8 @@ large as `8.68·10⁻⁵`. The Dawson summand, bounded below, contributes about 
 namespace FKS2Sol
 
 open Real IEANTN
-open FKS2.v1 (muAsymp dawson)
+open FKS2.v2 (muAsymp dawson)
+open FKS2.v2 (muAsymp dawson)
 
 /-- `√R ≥ 2.35937` and `√R ≤ 2/0.84768363`, the two bounds the normalisation needs.
 The second is tight — the margin on the squared form is about `4.8·10⁻⁸`. -/
@@ -260,7 +261,8 @@ theorem corollary_22
     (hsmall : BKLNW.v1.theta_error_le_one)
     (hnu : FKS2Numerics.v1.nu_asymp_e30_le)
     (hfloor : FKS2Numerics.v1.theta_asymp_ge_one_below_e30)
-    (hmid : FKS2Numerics.v1.corollary_22_mid_range) :
+    (hmid : FKS2Numerics.v1.corollary_22_mid_range)
+    (hthm3 : FKS2.v2.theorem_3) :
     FKS2.v1.corollary_22 := by
   sorry
 

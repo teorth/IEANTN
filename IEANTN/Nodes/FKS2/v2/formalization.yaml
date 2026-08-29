@@ -1,0 +1,147 @@
+# Node metadata for `FKS2.v2`.  See docs/NODES.md.
+#
+# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
+# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+version: "v0.4"
+
+node:
+  id: FKS2.v2
+  family: FKS2
+  version: v2
+  kind: pipeline
+  status: active
+
+project:
+  name: "FKS2's conversion pipelines"
+  description: >-
+    The two transformations underlying Fiori-Kadiri-Swidinsky's explicit prime number theorem bounds,
+    stated for arbitrary admissible parameters rather than at the paper's named constants: Proposition
+    13 converting a classical bound on E_psi into one on E_theta, and Theorem 3 converting one on E_theta
+    into one on E_pi. Both are conditional theorems importing nothing, so a Lean proof is their whole
+    justification. FKS2.v1 states the same paper's corollaries, which are instances of these.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M06", "11M26", "11N56"]
+
+conclusions:
+- id: proposition_13
+  declaration: FKS2.v2.proposition_13
+  challenge: FKS2.v2.challenge_proposition_13
+  imports: []
+  imports_status: none
+  justifications:
+  - id: fks2-paper-proposition-13
+    kind: literature
+    source: FKS2
+    locator: Proposition 13 (epsilon_asymp_theta_prop)
+    note: "The paper's E_psi -> E_theta pipeline, stated for arbitrary parameters with the psi - theta
+      comparison as an internal hypothesis rather than by importing BKLNW's coefficients. That is route
+      2 of the two this node's module docstring set out, chosen for the reason it gave: a pipeline that
+      stands alone can be re-pointed at a better input by a later version without restating anything.\n\
+      Imports NONE, and that is a real none rather than an unexamined one. A conditional theorem quantified
+      over all admissible parameters consumes no other result in the network; everything it needs arrives
+      as a hypothesis. Its justification is therefore a Lean proof and nothing else, which is why it can
+      be verified without waiting on any numerical input.\nCarries two hypotheses the paper does not state,
+      both found by formalizing. `exp 1 <= x0`: the log(x0) factors in the printed nu_asymp are spare
+      only when log x0 >= 1, and below e the proposition is FALSE -- take x = x0, a1 = 1, a2 = 0 and it
+      reduces to 1 <= log x0. `0 < Apsi`, which the multiplier needs to be meaningful. Note also C^2/(8R)
+      < B, with an 8 rather than a 16: the binding case is the g(1/2, .) of the paper's (28).\nA complete
+      proof exists at Solutions/FKS2.v1 (FKS2Sol.classicalBound_theta_of_psi), free of sorryAx and within
+      the three permitted axioms. This conclusion is ready to verify. ATTRIBUTION CORRECTION. The lower
+      bound on x0 was likewise not a new discovery: PrimeNumberTheoremAnd's proposition_13 already requires
+      7 <= log x0. What IS a difference is that this statement needs only exp 1 <= x0, i.e. 1 <= log x0,
+      which is weaker -- so this conclusion is stronger than upstream's on that axis. A modest improvement,
+      not a find. This conclusion now lives on FKS2.v2, the pipeline variant, rather than on FKS2.v1.
+      The move is not cosmetic: verification here is per node and all-or-nothing, since record-receipt
+      refuses unless comparator.json covers every conclusion, so leaving the pipelines on v1 would hold
+      them hostage to numerical inputs they have nothing to do with -- and which neither this project
+      nor PrimeNumberTheoremAnd has formalized."
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33185962172'
+  designated: comparator
+- id: theorem_3
+  declaration: FKS2.v2.theorem_3
+  challenge: FKS2.v2.challenge_theorem_3
+  imports: []
+  imports_status: none
+  justifications:
+  - id: fks2-paper-theorem-3
+    kind: literature
+    source: FKS2
+    locator: Theorem 3 (prop_asym_pi)
+    note: "The paper's E_theta -> E_pi pipeline. Two features of the statement are load-bearing and easy
+      to lose: the conclusion holds from a SECOND threshold x1, not from x0 -- stating it at x0 claims
+      strictly more than the paper proves -- and A_pi is explicit, (1 + mu_asymp(x0, x1)) A_theta, not
+      existentially quantified.\nImports NONE, for the same reason as proposition_13.\nCarries two hypotheses
+      the paper does not state, both found by formalizing. C/(2 sqrt R) <= sqrt(log x0): the paper's Lemma
+      12, which Theorem 3 applies on [x0, x], discards the lower endpoint of an integral of e^{v^2}, and
+      that is valid only when the endpoint is nonnegative; when it is negative the discarded piece makes
+      the left side strictly larger, so the lemma as printed is false without it. And 0 < C, which the
+      monotonicity lemmas behind both estimates need. The paper's own x1 threshold is a strictly stronger
+      condition of the same shape, which suggests the issue was in view one lemma later but not at Lemma
+      12.\nThe x1 threshold is not arbitrary: sqrt(log x1) >= 1 + C/(2 sqrt R) is exactly what puts sqrt(log
+      x) - C/(2 sqrt R) past the maximum of the Dawson function, near 0.9241, so that the Dawson factor
+      is decreasing. That is why the 1 is there.\nA complete proof exists at Solutions/FKS2.v1 (FKS2Sol.classicalBound_pi_of_theta),
+      free of sorryAx and within the three permitted axioms. This conclusion is ready to verify. ATTRIBUTION
+      CORRECTION. Calling this hypothesis something found by formalizing overstates it: it was found independently
+      here, but it was NOT new. PrimeNumberTheoremAnd already carries the same condition, and for its
+      theorem_3 an explicit note saying the conditions x0 >= 2 and 0 <= sqrt(log x0) - C/(2 sqrt R) 'are
+      not present in the source material [FKS2]' and are added to support its lemma_12 (PrimeNumberTheoremAnd/IEANTN/FKS2.lean,
+      theorem_3 and lemma_12). So the gap in the published paper is real and independently confirmed,
+      but the credit for noticing it is not ours. This conclusion now lives on FKS2.v2, the pipeline variant,
+      rather than on FKS2.v1. The move is not cosmetic: verification here is per node and all-or-nothing,
+      since record-receipt refuses unless comparator.json covers every conclusion, so leaving the pipelines
+      on v1 would hold them hostage to numerical inputs they have nothing to do with -- and which neither
+      this project nor PrimeNumberTheoremAnd has formalized."
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33185962172'
+  designated: comparator
+sources:
+- title: "Sharper bounds for the error term in the prime number theorem"
+  authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]
+  type: "paper"
+  id: "https://doi.org/10.1007/s40993-023-00454-w"
+  location: "Res. Number Theory 9 (2023), no. 3, Paper No. 63, 19 pp."
+  relationship: formalizes
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Created this stub and transcribed its bibliographic record from the PNT+
+      bibliography, under the direction of the maintainer. No mathematical claim is
+      made and no statement has been transcribed from the paper.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    Statements transcribed from PNT+'s formalization of the same paper, whose definitions of E_psi, E_theta,
+    E_pi and the admissible bound were checked line by line against this repository's Vocabulary and agree,
+    including the use of the offset Li rather than li. They have not been checked against the printed
+    paper directly.
+
+limitations:
+- >-
+  Every conclusion here rests on the cited paper. None is proved in Lean in this repository, and anything
+  downstream inherits that.
+- >-
+  The paper's two conversion pipelines -- Proposition 13 and Corollary 21 -- are its reusable content
+  and are deliberately not stated yet: doing so faithfully needs BKLNW's bounds on psi - theta, which
+  no node yet provides. The Conclusions module docstring sets out the two routes and which is preferable.
+- >-
+  Tables 6 and 7 are exported one row deep. Corollary 23 holds for every row of Table 6 and Corollary
+  24 for every row of Table 7; stating them in full wants the tables as a data structure in Vocabulary.
+- >-
+  No novelty is claimed. The results are Fiori, Kadiri and Swidinsky's.

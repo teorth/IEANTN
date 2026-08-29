@@ -1,0 +1,34 @@
+name = "solution_FKS2_v2"
+defaultTargets = ["Solution", "Growth", "Dawson", "PsiToTheta", "Integral", "Stieltjes", "ThetaToPi"]
+
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+[[lean_lib]]
+name = "Growth"
+roots = ["Growth"]
+
+[[lean_lib]]
+name = "Dawson"
+roots = ["Dawson"]
+
+[[lean_lib]]
+name = "PsiToTheta"
+roots = ["PsiToTheta"]
+
+[[lean_lib]]
+name = "Integral"
+roots = ["Integral"]
+
+[[lean_lib]]
+name = "Stieltjes"
+roots = ["Stieltjes"]
+
+[[lean_lib]]
+name = "ThetaToPi"
+roots = ["ThetaToPi"]
