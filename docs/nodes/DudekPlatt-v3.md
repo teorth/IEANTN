@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | pipeline |
-| Status | awaiting-solution |
+| Status | awaiting-verification |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -68,6 +68,7 @@ noncomputable def criterion : Prop :=
 | Lean name | `DudekPlatt.v3.criterion` |
 | Challenge | `DudekPlatt.v3.challenge_criterion` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/DudekPlatt/v3/Conclusions.lean#L129) |
+| Solution | [`Solutions/DudekPlatt.v3`](https://github.com/teorth/IEANTN/tree/main/Solutions/DudekPlatt.v3) |
 | Evidence | unjustified (`none-yet`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -75,13 +76,13 @@ noncomputable def criterion : Prop :=
 
 **Justification `unjustified`** — **designated** — none-yet
 
-> No proof yet, but the route is known and short. Imports `none`, and that is a real none: a conditional theorem quantified over all admissible parameters consumes no other result in the network, because everything it needs arrives as a hypothesis. So its justification can only be a Lean proof, and it can be verified without waiting on any numerical input. PrimeNumberTheoremAnd already carries this statement as `Ramanujan.criterion`, with the repair as `εlower` (a case split on the sign of m) and `shift_m_lower_of_nonpos`. Whether that development meets this repository's axiom bound is a separate question -- its wider closure uses native_decide -- but `criterion` itself is ordinary real analysis and there is no reason to expect a problem. Checking `#print axioms Ramanujan.criterion` against a built PrimeNumberTheoremAnd would settle it and is the cheapest next step.
+> A COMPLETE SOLUTION EXISTS at Solutions/DudekPlatt.v3, awaiting verification. It is free of sorryAx and its axioms are exactly propext, Classical.choice and Quot.sound; its type matches the challenge under `set_option pp.all true`. The justification stays `none-yet` until a receipt is recorded by the verification workflow -- a justification one can write by hand attests nothing. Imports `none`, and that is a real none: a conditional theorem quantified over all admissible parameters consumes no other result in the network, because everything it needs arrives as a hypothesis. So its justification can only be a Lean proof, and it can be verified without waiting on any numerical input. The proof follows PrimeNumberTheoremAnd's `Ramanujan.criterion`, which carries the same repair as `εlower` (a case split on the sign of m) and `shift_m_lower_of_nonpos`. The question of whether PNT+'s wider development meets this repository's axiom bound does not arise here: this chain was ported into a standalone solution and checked directly, and it uses no native_decide and touches none of PNT+'s numerical machinery.
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
-- Not proved. Stated so that it CAN be proved: it imports nothing, so a Lean solution is its whole justification, and nothing numerical stands in the way.
+- Proved, but not yet verified: a receipt requires a Comparator run, and until one exists the designated justification is `none-yet` regardless of the solution's state.
 - It is NOT what the paper states. The paper's Lemma 2.1 uses the equivalent of εPos unconditionally, and applies it only ever with negative m, where εNeg is required. A node faithfully transcribing the paper's lemma would be stating a false implication. That is why `relationship` is `adapts`, and why this is a separate version rather than an edit to anything.
 - The repair changes only seventh-order terms, so the thresholds move slightly and the paper's conclusions are believed to stand. "Believed" is doing work in that sentence: nobody has recomputed the thresholds under the corrected criterion, and until someone does, the exact constants on DudekPlatt.v1 and DudekPlatt.v2 rest on the flawed derivation.
 - Proving this does not by itself justify either threshold. Each instance also needs its two-sided pi estimate -- DudekPlattNumerics.v1.pi_two_sided_paper for v1, and something not yet stated for v2 -- and the threshold condition verified at those parameters, which is a numerical check in its own right.
