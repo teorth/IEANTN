@@ -68,6 +68,7 @@ noncomputable def criterion : Prop :=
 | Lean name | `DudekPlatt.v3.criterion` |
 | Challenge | `DudekPlatt.v3.challenge_criterion` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/DudekPlatt/v3/Conclusions.lean#L129) |
+| Solution | [`Solutions/DudekPlatt.v3`](https://github.com/teorth/IEANTN/tree/main/Solutions/DudekPlatt.v3) |
 | Evidence | unjustified (`none-yet`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -83,8 +84,8 @@ Recorded by the node itself, not derived.
 
 - Not proved. Stated so that it CAN be proved: it imports nothing, so a Lean solution is its whole justification, and nothing numerical stands in the way.
 - It is NOT what the paper states. The paper's Lemma 2.1 uses the equivalent of εPos unconditionally, and applies it only ever with negative m, where εNeg is required. A node faithfully transcribing the paper's lemma would be stating a false implication. That is why `relationship` is `adapts`, and why this is a separate version rather than an edit to anything.
-- The repair changes only seventh-order terms, so the thresholds move slightly and the paper's conclusions are believed to stand. "Believed" is doing work in that sentence: nobody has recomputed the thresholds under the corrected criterion, and until someone does, the exact constants on DudekPlatt.v1 and DudekPlatt.v2 rest on the flawed derivation.
-- Proving this does not by itself justify either threshold. Each instance also needs its two-sided pi estimate -- DudekPlattNumerics.v1.pi_two_sided_paper for v1, and something not yet stated for v2 -- and the threshold condition verified at those parameters, which is a numerical check in its own right.
+- The repair changes only seventh-order terms, but "only" is not "not at all". Recomputing at DudekPlatt.v1's parameters -- M_a = 3343.48, m_a = -3103.33, x_a = exp(9656.8) -- the threshold condition this criterion assumes FAILS at log x = 9658 and holds at log x = 9659, checked in Lean by norm_num on exact rationals. The repair costs 1.9287 in the gap and the paper had 0.84 of margin. So the paper's printed exp(9658) is not reachable through this criterion at its own parameters, and exp(9659) is. See DudekPlatt.v1's limitations. DudekPlatt.v2's exp(3915) has NOT been rechecked the same way, because PNT+'s constants there are functions rather than literals; doing so is part of the work of justifying v2.
+- Proving this does not by itself justify either threshold. Each instance also needs its two-sided pi estimate -- DudekPlattNumerics.v1.pi_two_sided_paper for v1, and something not yet stated for v2 -- and the threshold condition discharged at those parameters. That condition deliberately does NOT live on a numerics node. It is not a finite check, quantifying over all x above the threshold; it is provable outright from literal constants, so asserting it would put something provable on the asserted side; and at v1's parameters it is FALSE at the printed threshold, which asserting it would have concealed. It belongs inside whichever solution proves an instance, as a lemma.
 - No novelty is claimed. The criterion is Dudek and Platt's; the correction is theirs to make, and the form used here follows PrimeNumberTheoremAnd's.
 
 ## How this node was made
