@@ -1,0 +1,128 @@
+# Node metadata for `ButheNumerics.v1`.  See docs/NODES.md.
+#
+# The auxiliary finite checks inside Buthe 2018's Theorem 2, separated from the analysis that
+# consumes them. `status: stub` is correct: conclusions stated, no Lean solution intended.
+version: "v0.4"
+
+node:
+  id: ButheNumerics.v1
+  family: ButheNumerics
+  version: v1
+  kind: computation
+  status: stub
+
+project:
+  name: "Buthe's finite numerical checks"
+  description: >-
+    The auxiliary finite computations inside Jan Buthe's analytic method for bounding psi(x), separated
+    from the analysis that consumes them. Same paper as Buthe.v1, different kind of claim. Buthe.v1
+    states the paper's Theorem 2, equations (1.5) to (1.10); this node holds two checks that Theorem 2's
+    own proof uses and the paper does not display -- the sign of the constant A in its Lemma 3 at
+    a = 1500, and equation (1.9) on the range below 10^7 where the paper checks directly rather than
+    deriving. Stating them is what turns (1.9) from a bare assertion into a claim whose inputs are all
+    written down.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11Y70", "11M26"]
+
+conclusions:
+- id: lemma_3_constant_nonpos
+  declaration: ButheNumerics.v1.lemma_3_constant_nonpos
+  challenge: ButheNumerics.v1.challenge_lemma_3_constant_nonpos
+  imports: []
+  imports_status: none
+  justifications:
+  - id: buthe-computation
+    kind: numerical
+    source: Buthe
+    locator: Lemma 3 and the proof of Theorem 2, equation (1.9); the choice a = 1500
+    note: >-
+      A finite check rather than an argument, so `numerical`. Buthe's Lemma 3 concludes
+      (li(x) - pi(x))/(sqrt x / log x) <= (x - theta(x))/sqrt x + (2C/log x)(1 + 5/log x)
+      + A log x / sqrt x, where A = pi(a) - li(a) + (a - theta(a))/log a. Multiplying through by
+      sqrt x / log x turns the last term into the constant A. With C = 1.95 from (1.6) the first three
+      terms are exactly (1.9)'s 1.95 + 3.9/log x + 19.5/(log x)^2 -- note 3.9 = 2C and 19.5 = 10C, which
+      is the tell that (1.9) is (1.6) pushed through Lemma 3. So (1.9) as printed, which carries no
+      additive constant, holds only if this A is not positive. The paper chooses a = 1500 and does not
+      display the evaluation. Three evaluations at a single point, so imports `none` and that is a real
+      none. Unlike the bounds on [2, 10^19] this is small enough that a Lean proof could discharge it
+      outright, which is worth recording as a target rather than a permanent assertion.
+  designated: buthe-computation
+- id: li_minus_pi_below_1e7
+  declaration: ButheNumerics.v1.li_minus_pi_below_1e7
+  challenge: ButheNumerics.v1.challenge_li_minus_pi_below_1e7
+  imports: []
+  imports_status: none
+  justifications:
+  - id: buthe-computation
+    kind: numerical
+    source: Buthe
+    locator: Proof of Theorem 2, equation (1.9) -- "the remaining values have again been checked directly"
+    note: >-
+      A finite check rather than an argument, so `numerical`. Buthe derives (1.9) from (1.6) by Lemma 3
+      at a = 1500 only for 10^7 <= x <= 10^19, and says of the rest that "the remaining values have again
+      been checked directly". That direct check is a separate claim from the analysis and is stated here.
+      Imports `none`: a bounded-range computation consumes no other result in the network.
+      PrimeNumberTheoremAnd does not carry this datum at all -- its Buthe.lean sorries the six equations
+      of Theorem 2 whole, so the split between what is computed and what is derived does not appear there.
+  designated: buthe-computation
+
+sources:
+- title: "An analytic method for bounding psi(x)"
+  authors: ["Jan Buthe"]
+  type: "paper"
+  id: "https://doi.org/10.1090/mcom/3264"
+  location: "Math. Comp. 87 (2018), no. 312, 1991-2009"
+  relationship: formalizes
+  note: >-
+    The published version is held in the library, and both conclusions here were read from it. The
+    derivation structure of Theorem 2 -- which equations are computed and which are derived -- is stated
+    explicitly in the paper's own proof and is what this node's existence rests on.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Read the paper's proof of Theorem 2 to separate its computed equations from its derived ones,
+      identified the two auxiliary checks that (1.9) needs and that the paper does not display, and
+      stated them, under the direction of the maintainer. No proof is claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    Both conclusions were read from the published Math. Comp. version. The constant A and the shape of
+    Lemma 3 were transcribed from the lemma as printed; the identification 3.9 = 2C and 19.5 = 10C with
+    C = 1.95 from (1.6) is a consistency check on that transcription and it holds. The value of A at
+    a = 1500 has NOT been computed independently -- the claim is that the paper's use of Lemma 3 requires
+    A <= 0, not that this has been verified numerically here.
+
+limitations:
+- >-
+  Both are finite computations asserted on the paper's authority. Neither is proved in Lean here and
+  neither check has been re-run.
+- >-
+  `lemma_3_constant_nonpos` is inferred from the paper's use of Lemma 3 rather than displayed by the
+  paper. If Buthe's proof of (1.9) turns out to handle the A term some other way, this conclusion is
+  still true but stops being the right hypothesis, and the derivation recorded on
+  Buthe.v1.theorem_2_li_minus_pi would need revising.
+- >-
+  `li_minus_pi_below_1e7` carries an `IEANTN.margin` factor at index 0, where the factor is 1. It says
+  exactly what it says without it; the site marks a number whose provenance is a computation.
+  `lemma_3_constant_nonpos` deliberately carries no such site, because its bound is 0 and a
+  multiplicative margin cannot loosen 0.
+- >-
+  The paper's Table 2, and the direct checks behind (1.5), (1.6), (1.7) and (1.8), are not stated. They
+  are equally computational, but nothing yet needs them separated: those four equations are consumed as
+  stated on Buthe.v1 rather than derived from anything.
+- >-
+  No novelty is claimed. The results are Buthe's.

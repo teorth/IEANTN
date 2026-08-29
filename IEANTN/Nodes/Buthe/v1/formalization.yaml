@@ -151,6 +151,12 @@ conclusions:
   imports:
   - node: FKBJ.v1
     conclusion: rh_up_to
+  - node: Buthe.v1
+    conclusion: theorem_2_theta
+  - node: ButheNumerics.v1
+    conclusion: lemma_3_constant_nonpos
+  - node: ButheNumerics.v1
+    conclusion: li_minus_pi_below_1e7
   imports_status: traced
   justifications:
   - id: buthe-paper
@@ -172,6 +178,18 @@ conclusions:
       the edge to FKBJ.v1 is real, but as the note above says it understates the dependency -- the algorithm
       consumes the tabulated zeros themselves, and a table is not a proposition. `traced` is the value
       for exactly that, so the understatement is now visible in the graph rather than only in this note.
+
+      DERIVATION, read from the paper's own proof. This equation is NOT computed: "Choosing a = 1,500
+      in Lemma 3 and using (1.6) gives (1.9) for 10^7 <= x <= 10^19 and the remaining values have again
+      been checked directly." Its inputs are therefore (1.6), which supplies C = 1.95; the paper's
+      Lemma 3, which is analysis and has no node yet; ButheNumerics.v1.lemma_3_constant_nonpos, the sign
+      of the additive constant A that Lemma 3 carries and (1.9) as printed does not; and
+      ButheNumerics.v1.li_minus_pi_below_1e7, the range the paper checks directly. The arithmetic
+      corroborates the reading: Lemma 3 bounds (li x - pi x)/(sqrt x / log x) by
+      (x - theta x)/sqrt x + (2C/log x)(1 + 5/log x) + A log x / sqrt x, and with C = 1.95 the middle
+      term is 3.9/log x + 19.5/(log x)^2 exactly, since 3.9 = 2C and 19.5 = 10C. `traced` rather than
+      `identified` because Lemma 3 itself is not yet a node; making it one is the pipeline half of this
+      work, after which this conclusion becomes provable rather than asserted.
   designated: buthe-paper
 - id: theorem_2_li_gt_pi
   declaration: Buthe.v1.theorem_2_li_gt_pi
@@ -179,6 +197,8 @@ conclusions:
   imports:
   - node: FKBJ.v1
     conclusion: rh_up_to
+  - node: Buthe.v1
+    conclusion: theorem_2_theta_lower
   imports_status: traced
   justifications:
   - id: buthe-paper
@@ -200,6 +220,15 @@ conclusions:
       the edge to FKBJ.v1 is real, but as the note above says it understates the dependency -- the algorithm
       consumes the tabulated zeros themselves, and a table is not a proposition. `traced` is the value
       for exactly that, so the understatement is now visible in the graph rather than only in this note.
+
+      DERIVATION, read from the paper's own proof: "The bound (1.10) follows from (1.7) and
+      [14, Theorem 19]." Not computed either. (1.7) is recorded as an import. Reference [14] is Rosser
+      and Schoenfeld, Approximate formulas for some functions of prime numbers, Illinois J. Math. 6
+      (1962), 64-94 -- which is NOT the Rosser-Schoenfeld paper this network holds: RosserSchoenfeld.v1
+      is Sharper bounds for the Chebyshev functions, Math. Comp. 29 (1975). Two different papers by the
+      same pair, which is the same trap BKLNW's two Buthe references set in the other direction. Until
+      the 1962 paper has a node this import cannot be drawn, which is what keeps `imports_status` at
+      `traced`.
   designated: buthe-paper
 sources:
 - title: An analytic method for bounding psi(x)

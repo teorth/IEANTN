@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-26 node version(s), 47 conclusion(s).  3 state nothing yet.
+27 node version(s), 49 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -17,7 +17,7 @@ adds the environment detail.
 | `bridged` | 1 |
 | `lean-comparator` | 9 |
 | `literature` | 28 |
-| `numerical` | 8 |
+| `numerical` | 10 |
 
 ## Nodes
 
@@ -32,12 +32,14 @@ adds the environment detail.
 | `Buthe.v1` | active | `theorem_2_theta` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_theta_lower` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_li_minus_riemann_pi` | literature | 1 | - |
-| `Buthe.v1` | active | `theorem_2_li_minus_pi` | literature | 1 | - |
-| `Buthe.v1` | active | `theorem_2_li_gt_pi` | literature | 1 | - |
+| `Buthe.v1` | active | `theorem_2_li_minus_pi` | literature | 4 | - |
+| `Buthe.v1` | active | `theorem_2_li_gt_pi` | literature | 2 | - |
 | `Buthe2016.v1` | stub | `theorem_2_psi` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_theta` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_li_minus_riemann_pi` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_li_minus_pi` | literature | 0 | - |
+| `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
+| `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
 | `FKBJ.v1` | active | `rh_up_to` | numerical | 0 | - |
@@ -91,6 +93,7 @@ downstream.
 | `BKLNW.v1.corollary_5_1` | 4 |
 | `FKS2Numerics.v1.corollary_22_mid_range` | 3 |
 | `FKS2.v2.theorem_3` | 3 |
+| `Buthe.v1.theorem_2_theta_lower` | 3 |
 | `PlattTrudgian2021.v1.theorem_1_numerical` | 2 |
 | `MT.v1.zero_free_region_sharpened` | 2 |
 | `MT.v1.zero_free_region` | 2 |
@@ -100,7 +103,6 @@ downstream.
 | `FKS2Numerics.v1.table6_row2_floor` | 2 |
 | `FKS2Numerics.v1.corollary_23_mid_range` | 2 |
 | `Buthe2016.v1.theorem_2_psi` | 2 |
-| `Buthe.v1.theorem_2_theta_lower` | 2 |
 | `Wedeniwski.v1.rh_up_to` | 1 |
 | `Trudgian2011.v1.integral_S_bound` | 1 |
 | `RosserSchoenfeld.v1.zero_free_region_classical` | 1 |
@@ -108,3 +110,6 @@ downstream.
 | `Platt2015.v1.rh_up_to` | 1 |
 | `Hiary2016.v1.zeta_half_line_bound` | 1 |
 | `Dusart2018.v1.proposition_5_4` | 1 |
+| `ButheNumerics.v1.li_minus_pi_below_1e7` | 1 |
+| `ButheNumerics.v1.lemma_3_constant_nonpos` | 1 |
+| `Buthe.v1.theorem_2_theta` | 1 |
