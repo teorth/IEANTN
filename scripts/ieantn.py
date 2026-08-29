@@ -3709,10 +3709,15 @@ def main() -> int:
     # a tooling failure. The encoding is left alone so redirected output stays byte-faithful;
     # only the reaction to an unencodable character changes.
     for stream in (sys.stdout, sys.stderr):
-        try:
-            stream.reconfigure(errors="replace")
-        except (AttributeError, ValueError):  # not a reconfigurable text stream
-            pass
+        # `getattr` rather than a direct call: these are typed `TextIO`, which does not declare
+        # `reconfigure` even though the concrete `TextIOWrapper` has it, and pyright rejects the
+        # direct form. A redirected or wrapped stream may genuinely lack it.
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            try:
+                reconfigure(errors="replace")
+            except ValueError:  # detached, or already closed
+                pass
 
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
