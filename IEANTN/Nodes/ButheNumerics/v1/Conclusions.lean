@@ -97,4 +97,25 @@ noncomputable def li_minus_pi_below_1e7 : Prop :=
       margin 0 * (Real.sqrt x / Real.log x *
         (1.95 + 3.9 / Real.log x + 19.5 / (Real.log x) ^ (2 : ℕ)))
 
+/-- **The constant in Büthe's Lemma 3 at `a = 10` exceeds `0.1`.**
+
+`π(10) − li(10) + (10 − θ(10)) / log 10 > 0.1`.
+
+The second hidden numerical input, and the one behind Theorem 2's equation (1.10). Büthe proves the
+positivity clause of Lemma 3 — that `t − θ(t) > 0` throughout `[2, T]` forces `li(t) − π(t) > 0`
+there — by "taking `a = 10` in (6.17) since `π(10) − li(10) + (10 − θ(10))/log 10 > 0.1`". That
+inequality is displayed in the proof but is not a stated result, and nothing else in the network
+carries it.
+
+Note the sign differs from `lemma_3_constant_nonpos`: the same functional `A(a)` is asserted
+positive at `a = 10` and non-positive at `a = 1500`. That is not a contradiction — `A` varies with
+`a` — but it is worth seeing side by side, because a solution that conflates the two points will
+prove nothing.
+
+A finite check: three evaluations at a single point. No `margin` site — the bound `0.1` is a
+strict lower bound on a quantity, and a multiplicative margin loosens an upper bound, so a site
+here would point the wrong way. -/
+noncomputable def lemma_3_constant_gt_at_10 : Prop :=
+  0.1 < primeCounting 10 - li 10 + (10 - Chebyshev.theta 10) / Real.log 10
+
 end ButheNumerics.v1

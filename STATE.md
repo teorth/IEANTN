@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-27 node version(s), 49 conclusion(s).  3 state nothing yet.
+28 node version(s), 52 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -17,7 +17,8 @@ adds the environment detail.
 | `bridged` | 1 |
 | `lean-comparator` | 9 |
 | `literature` | 28 |
-| `numerical` | 10 |
+| `none-yet` | 2 |
+| `numerical` | 11 |
 
 ## Nodes
 
@@ -32,14 +33,17 @@ adds the environment detail.
 | `Buthe.v1` | active | `theorem_2_theta` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_theta_lower` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_li_minus_riemann_pi` | literature | 1 | - |
-| `Buthe.v1` | active | `theorem_2_li_minus_pi` | literature | 4 | - |
-| `Buthe.v1` | active | `theorem_2_li_gt_pi` | literature | 2 | - |
+| `Buthe.v1` | active | `theorem_2_li_minus_pi` | literature | 5 | - |
+| `Buthe.v1` | active | `theorem_2_li_gt_pi` | literature | 4 | - |
+| `Buthe.v2` | awaiting-solution | `lemma_3_bounds` | none-yet | 0 | #56 |
+| `Buthe.v2` | awaiting-solution | `lemma_3_positivity` | none-yet | 0 | #56 |
 | `Buthe2016.v1` | stub | `theorem_2_psi` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_theta` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_li_minus_riemann_pi` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_li_minus_pi` | literature | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
+| `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
 | `FKBJ.v1` | active | `rh_up_to` | numerical | 0 | - |
@@ -112,4 +116,7 @@ downstream.
 | `Dusart2018.v1.proposition_5_4` | 1 |
 | `ButheNumerics.v1.li_minus_pi_below_1e7` | 1 |
 | `ButheNumerics.v1.lemma_3_constant_nonpos` | 1 |
+| `ButheNumerics.v1.lemma_3_constant_gt_at_10` | 1 |
+| `Buthe.v2.lemma_3_positivity` | 1 |
+| `Buthe.v2.lemma_3_bounds` | 1 |
 | `Buthe.v1.theorem_2_theta` | 1 |
