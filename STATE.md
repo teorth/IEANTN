@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-28 node version(s), 52 conclusion(s).  3 state nothing yet.
+31 node version(s), 56 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -16,9 +16,9 @@ adds the environment detail.
 | `asserted` | 1 |
 | `bridged` | 1 |
 | `lean-comparator` | 9 |
-| `literature` | 28 |
-| `none-yet` | 2 |
-| `numerical` | 11 |
+| `literature` | 30 |
+| `none-yet` | 3 |
+| `numerical` | 12 |
 
 ## Nodes
 
@@ -45,6 +45,10 @@ adds the environment detail.
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
+| `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 1 | - |
+| `DudekPlatt.v1` | stub | `largest_counterexample_on_rh` | literature | 0 | - |
+| `DudekPlatt.v2` | awaiting-solution | `ramanujan_inequality_3915` | none-yet | 0 | #54 |
+| `DudekPlattNumerics.v1` | stub | `pi_two_sided_paper` | numerical | 0 | - |
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
 | `FKBJ.v1` | active | `rh_up_to` | numerical | 0 | - |
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 3 | - |
@@ -114,6 +118,7 @@ downstream.
 | `Platt2015.v1.rh_up_to` | 1 |
 | `Hiary2016.v1.zeta_half_line_bound` | 1 |
 | `Dusart2018.v1.proposition_5_4` | 1 |
+| `DudekPlattNumerics.v1.pi_two_sided_paper` | 1 |
 | `ButheNumerics.v1.li_minus_pi_below_1e7` | 1 |
 | `ButheNumerics.v1.lemma_3_constant_nonpos` | 1 |
 | `ButheNumerics.v1.lemma_3_constant_gt_at_10` | 1 |

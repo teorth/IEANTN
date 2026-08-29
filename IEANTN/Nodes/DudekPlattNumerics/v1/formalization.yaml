@@ -1,0 +1,109 @@
+# Node metadata for `DudekPlattNumerics.v1`.  See docs/NODES.md.
+#
+# The two-sided pi estimate Dudek-Platt feed into their Lemma 2.1, separated from the analysis
+# that consumes it. `status: stub` is correct: conclusion stated, no Lean solution intended.
+version: "v0.4"
+
+node:
+  id: DudekPlattNumerics.v1
+  family: DudekPlattNumerics
+  version: v1
+  kind: computation
+  status: stub
+
+project:
+  name: "The explicit pi estimate behind Dudek-Platt's threshold"
+  description: >-
+    The explicit two-sided bound on pi(x) that Dudek and Platt feed into their Lemma 2.1 to obtain an
+    unconditional threshold for Ramanujan's inequality, separated from the analysis that consumes it.
+    Same paper as DudekPlatt.v1, different kind of claim. The paper's route is a pipeline fed by a
+    numerical input, and this node is the input: pi(x) lies within m x/(log x)^6 and M x/(log x)^6 of
+    the fifth partial sum of li's asymptotic expansion, for all x above exp(9656.8), with
+    m = -3103.33 and M = 3343.48 obtained at the paper's choice a = 3223.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11Y70"]
+
+conclusions:
+- id: pi_two_sided_paper
+  declaration: DudekPlattNumerics.v1.pi_two_sided_paper
+  challenge: DudekPlattNumerics.v1.challenge_pi_two_sided_paper
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: dudek-platt-computation
+    kind: numerical
+    source: DudekPlatt
+    locator: "Section 2, the paragraph choosing a = 3223"
+    note: >-
+      The constants come from evaluating an explicit formula at a chosen a rather than from an argument,
+      so `numerical`. From the paper: "It can be verified that choosing a = 3223 gives x_a = exp(9656.8)
+      with the values m_a = -3103.33, M_a = 3343.48. One then computes, using Lemma 2.1, that
+      x_a = exp(9657.8) will work." The second value is e times the first, which is what confirms Lemma
+      2.1's threshold is e*x_a rather than e^(x_a), and exp(9657.8) rounded up is the exp(9658) of
+      Theorem 1.2. NOT a bounded-range check like ButheNumerics.v1's: this quantifies over all
+      x > exp(9656.8) and rests on Trudgian's explicit theta error term, the paper's Lemma 2.2 with
+      R = 6.455, which the network does not hold. `traced` rather than `none` for exactly that reason --
+      the input is known and written down but is not yet a node. If it becomes one, this conclusion
+      gains an edge and may become derivable rather than asserted.
+  designated: dudek-platt-computation
+
+sources:
+- title: "On solving a curious inequality of Ramanujan"
+  authors: ["Adrian W. Dudek", "David J. Platt"]
+  type: "paper"
+  id: "https://doi.org/10.1080/10586458.2014.990118"
+  location: "Exp. Math. 24 (2015), no. 3, 289-294"
+  relationship: formalizes
+  note: >-
+    The published version is held in the library and the constants were read from it. The paper's
+    numbering of its own results is stable between the version held and its citations elsewhere.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Read the paper to separate its numerical input from the pipeline that consumes it, and stated the
+      input at the parameters the paper chooses, under the direction of the maintainer. No proof is
+      claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    Read from the published Exp. Math. version. The transcription has one independent check: the paper
+    reports x_a = exp(9656.8) and then exp(9657.8) as the working threshold, and exp(9657.8) is exactly
+    e times exp(9656.8), which is what Lemma 2.1's conclusion predicts. So the parameters and the
+    lemma's threshold shape corroborate each other. The constants themselves have NOT been recomputed.
+
+limitations:
+- >-
+  A computation asserted on the paper's authority. Nothing here is proved in Lean and the check has not
+  been re-run.
+- >-
+  It quantifies over an unbounded range and rests on Trudgian's explicit theta error term, so it is not
+  purely finite arithmetic the way ButheNumerics.v1's conclusions are. Calling it `numerical` records
+  where its constants came from, not that the claim is a bounded check.
+- >-
+  The paper's footnote 1 records that Mossinghoff-Trudgian's improved R = 6.315 "can be used with
+  a = 3130 to prove Theorem 1.2 for all x >= exp(9394)" -- a better threshold on the paper's own
+  authority, with different m and M. Those parameters are not stated here because the paper does not
+  print them. The network holds MT.v1 and MTY.v1; whether either supplies that R has not been checked.
+- >-
+  PrimeNumberTheoremAnd reaches exp(3915) with sharper inputs still. Its constants are functions
+  evaluated at exp(3914) rather than literals, and are not transcribed here; that is what stands
+  between DudekPlatt.v2 and a stated numerical input of its own.
+- >-
+  Carries `IEANTN.margin` sites at index 0 on both constants, where the factor is 1. They say exactly
+  what they say without them; the sites mark numbers that are the output of an optimisation over a.
+- >-
+  No novelty is claimed. The results are Dudek and Platt's.

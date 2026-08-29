@@ -1,0 +1,129 @@
+# Node metadata for `DudekPlatt.v1`.  See docs/NODES.md.
+#
+# Ramanujan's inequality with the explicit thresholds Dudek and Platt prove. The paper node:
+# it claims what the paper claims and no more. `status: stub` -- conclusions stated, no solution
+# intended here.
+version: "v0.4"
+
+node:
+  id: DudekPlatt.v1
+  family: DudekPlatt
+  version: v1
+  kind: paper
+  status: stub
+
+project:
+  name: "Dudek-Platt: explicit thresholds for Ramanujan's inequality"
+  description: >-
+    Ramanujan asserted in his notebooks that pi(x)^2 < (e x / log x) pi(x/e) for sufficiently large x.
+    Dudek and Platt make "sufficiently large" explicit twice over: unconditionally the inequality holds
+    for x >= exp(9658), and on the Riemann hypothesis the largest integer counterexample is exactly
+    38358837682. This node states both, on the paper's authority. The unconditional threshold is the
+    paper's own; better ones exist, including one the paper itself names in a footnote and one that
+    PrimeNumberTheoremAnd reaches, and those live on DudekPlatt.v2 rather than here.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M26", "11A41"]
+
+conclusions:
+- id: ramanujan_inequality
+  declaration: DudekPlatt.v1.ramanujan_inequality
+  challenge: DudekPlatt.v1.challenge_ramanujan_inequality
+  imports:
+  - node: DudekPlattNumerics.v1
+    conclusion: pi_two_sided_paper
+  imports_status: traced
+  justifications:
+  - id: dudek-platt-paper
+    kind: literature
+    source: DudekPlatt
+    locator: Theorem 1.2
+    note: >-
+      Asserted on the authority of the paper, read from the published Exp. Math. version. "Inequality
+      (1.1) holds unconditionally for all x >= exp(9658)." The route is the paper's Lemma 2.1 applied to
+      the two-sided pi estimate recorded as DudekPlattNumerics.v1.pi_two_sided_paper: at a = 3223 that
+      estimate holds above x_a = exp(9656.8), and Lemma 2.1's threshold e*x_a = exp(9657.8) rounds up to
+      the exp(9658) printed here. So this conclusion is the composite of a pipeline and a numerical
+      input. The numerical input is an edge; Lemma 2.1 is not yet a node, which is what keeps this
+      `traced` rather than `identified`. THE THRESHOLD IS THE PAPER'S AND MUST STAY SO. PNT+ proves
+      exp(3915) and the paper's own footnote 1 names exp(9394); stating either here would attribute to
+      Dudek and Platt a result they did not prove. That is what DudekPlatt.v2 is for.
+  designated: dudek-platt-paper
+- id: largest_counterexample_on_rh
+  declaration: DudekPlatt.v1.largest_counterexample_on_rh
+  challenge: DudekPlatt.v1.challenge_largest_counterexample_on_rh
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: dudek-platt-paper
+    kind: literature
+    source: DudekPlatt
+    locator: Theorem 1.3
+    note: >-
+      Asserted on the authority of the paper. "Assuming the Riemann hypothesis, the largest integer
+      counterexample to inequality (1.1) is at x = 38358837682." Stated SHARPLY, as the paper states it:
+      the inequality fails there and holds at every larger integer. Weakening it to "holds for
+      x > 38358837682" would discard the paper's actual result, which is that this is the last failure.
+      The hypothesis is RiemannHypothesis itself, not RiemannHypothesisUpTo: the paper leans on
+      Schoenfeld's conditional bound |pi(x) - li(x)| < sqrt(x) log(x) / (8 pi) for x >= 2657, which needs
+      the full hypothesis, so a verification node supplying a finite height does NOT discharge this.
+      `traced` because that Schoenfeld bound, and the numerical search over the remaining range, are
+      known inputs that are not yet nodes.
+  designated: dudek-platt-paper
+
+sources:
+- title: "On solving a curious inequality of Ramanujan"
+  authors: ["Adrian W. Dudek", "David J. Platt"]
+  type: "paper"
+  id: "https://doi.org/10.1080/10586458.2014.990118"
+  location: "Exp. Math. 24 (2015), no. 3, 289-294"
+  relationship: formalizes
+  note: >-
+    The published version is held in the library and both theorems were read from it. The inequality
+    itself is Ramanujan's, from the notebooks; this paper supplies the explicit thresholds.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Read the paper, transcribed its two theorems, and separated its numerical input from the pipeline
+      that consumes it, under the direction of the maintainer. No proof is claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    Both theorems read from the published Exp. Math. version. Checking them mattered: PrimeNumberTheoremAnd
+    proves the inequality above exp(3915), and a node citing Dudek and Platt for that would have been
+    wrong -- their Theorem 1.2 gives exp(9658). The two thresholds are now separate nodes for that
+    reason. The sharpness of Theorem 1.3 was likewise read from the paper rather than inferred.
+
+limitations:
+- >-
+  Both conclusions rest on the cited paper; neither is proved in Lean here, and anything downstream
+  inherits that.
+- >-
+  The unconditional threshold exp(9658) is not the best known and is not meant to be. The paper's own
+  footnote 1 names exp(9394) using Mossinghoff-Trudgian's improved R, and PrimeNumberTheoremAnd reaches
+  exp(3915). Neither belongs on this node.
+- >-
+  The paper's Lemma 2.1 -- the pipeline that carries a two-sided pi estimate to Ramanujan's inequality
+  -- is not stated anywhere yet. It is the natural third version of this family and the thing that would
+  let both thresholds be derived rather than asserted. Its conclusion as printed determines the
+  threshold only implicitly ("a value for x_a can be obtained in the proof"), so stating it usefully
+  needs the explicit comparison from inside the proof, between the two seventh-order terms displayed at
+  the paper's (2.1) and (2.2). That transcription has not been done.
+- >-
+  Theorem 1.3 needs the full Riemann hypothesis, not a partial verification. This is the first
+  conclusion in the network with that hypothesis, and it does not compose with the verification nodes.
+- >-
+  No novelty is claimed. The results are Dudek and Platt's, and the inequality is Ramanujan's.

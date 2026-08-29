@@ -1,0 +1,110 @@
+# Node metadata for `DudekPlatt.v2`.  See docs/NODES.md.
+#
+# Ramanujan's inequality at the threshold PrimeNumberTheoremAnd reaches, exp(3915), rather than
+# the exp(9658) Dudek and Platt prove. A variant of v1, not a successor -- both stay.
+version: "v0.4"
+
+node:
+  id: DudekPlatt.v2
+  family: DudekPlatt
+  version: v2
+  kind: paper
+  status: awaiting-solution
+
+project:
+  name: "Ramanujan's inequality at the PrimeNumberTheoremAnd threshold"
+  description: >-
+    Ramanujan's inequality pi(x)^2 < (e x / log x) pi(x/e) above exp(3915), which is the threshold
+    PrimeNumberTheoremAnd reaches rather than the exp(9658) Dudek and Platt prove. The argument is the
+    same -- Dudek-Platt's Lemma 2.1 is a pipeline, and feeding it a sharper two-sided estimate for pi
+    lowers the threshold -- so this is the same statement at a better constant, not a different result.
+    It is separated from DudekPlatt.v1 because a citation may only claim what its source claims, and
+    Dudek and Platt do not claim this.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M26", "11A41"]
+
+conclusions:
+- id: ramanujan_inequality_3915
+  issue: 54
+  declaration: DudekPlatt.v2.ramanujan_inequality_3915
+  challenge: DudekPlatt.v2.challenge_ramanujan_inequality_3915
+  imports: []
+  imports_status: undetermined
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      Deliberately `none-yet` rather than `literature`. There is no paper to cite for exp(3915): Dudek
+      and Platt prove exp(9658), and their footnote 1 names exp(9394) using Mossinghoff-Trudgian's
+      improved R. The threshold here is PrimeNumberTheoremAnd's, whose ramanujan_final has xa = exp 3914
+      and concludes above exa = e*xa. That development contains no `sorry` in its own file, but its
+      transitive import closure spans 72 modules of which 14 carry sorries -- including TMEEMT (80),
+      Dusart (33) and FioriKadiriSwidinsky (29) -- and 19 use `native_decide`, among them Ramanujan.lean
+      itself at lines 500 and 505. `native_decide` introduces Lean.ofReduceBool, which Comparator
+      forbids. Module-level closure is an upper bound on what a theorem actually depends on, so the
+      decisive test is `#print axioms ramanujan_final` against a built PrimeNumberTheoremAnd; that has
+      not been run, and running it would be a useful contribution on its own. Until then there is
+      neither a citation nor a qualifying proof, and saying so is more useful than dressing an
+      unverified development as evidence. `undetermined` imports because the numerical input behind
+      exp(3915) has not been identified: PNT+'s constants are functions evaluated at exp(3914) rather
+      than literals, so nothing is written down for the network to point at.
+  designated: unjustified
+
+sources:
+- title: "On solving a curious inequality of Ramanujan"
+  authors: ["Adrian W. Dudek", "David J. Platt"]
+  type: "paper"
+  id: "https://doi.org/10.1080/10586458.2014.990118"
+  location: "Exp. Math. 24 (2015), no. 3, 289-294"
+  relationship: adapts
+  note: >-
+    `adapts` rather than `formalizes`: the statement is the paper's inequality and the argument is the
+    paper's Lemma 2.1, but the threshold is not the paper's and this node must not be read as citing
+    them for it. DudekPlatt.v1 is the node that formalizes what they prove.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Compared the paper's threshold with PrimeNumberTheoremAnd's, found they disagree, and stated the
+      stronger one as a separate version so that neither miscites the other, under the direction of the
+      maintainer. No proof is claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    The threshold exp(3915) was read from PrimeNumberTheoremAnd's Ramanujan.lean, where xa is exp 3914
+    and exa is exp 1 * xa; the statement shape was matched to this repository's Vocabulary rather than
+    transcribed from PNT+'s. The claim that exp(3915) is not Dudek and Platt's was checked against the
+    published paper directly: their Theorem 1.2 reads exp(9658).
+
+limitations:
+- >-
+  Unjustified. There is no evidence behind this conclusion in the network today -- not a citation, not
+  a proof. It is a target, and the note on the conclusion says exactly what stands between it and being
+  justified.
+- >-
+  Its numerical input is not identified. PrimeNumberTheoremAnd's constants are functions evaluated at
+  exp(3914) rather than literals, so unlike DudekPlattNumerics.v1.pi_two_sided_paper there is nothing
+  written down for an edge to point at. Extracting them is the first step toward justifying this node.
+- >-
+  This conclusion is strictly stronger than DudekPlatt.v1.ramanujan_inequality and implies it, since
+  exp(3915) < exp(9658) and the claim is monotone in the threshold. A bridge recording that implication
+  is worth writing once either node is justified -- but note the endpoint conventions differ, strict
+  here and non-strict there, so it is not quite a one-liner.
+- >-
+  The paper's Lemma 2.1, the pipeline both thresholds come from, is not stated anywhere yet. Stating it
+  usefully needs the explicit comparison from inside its proof; see DudekPlatt.v1's limitations.
+- >-
+  No novelty is claimed. The inequality is Ramanujan's and the argument is Dudek and Platt's.
