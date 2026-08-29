@@ -92,7 +92,10 @@ cannot drift.
 
 `GRAPH.md` carries two Mermaid diagrams: one box per node, which stays readable as the network
 grows, and one box per claim below it. Colour is the kind of evidence and only green is Lean-
-checked. The border says how completely the arrows tell the story -- solid for `identified`, dotted
+checked. Green has three shades, because the two axes of §4 look different to a reader:
+solid for a receipt that still stands, pale for one whose environment has moved (the proof
+still connects the same statements), and faded grey-green for one whose statement has drifted,
+which is an absent verification rather than a weak one and is ranked below an assertion. The border says how completely the arrows tell the story -- solid for `identified`, dotted
 for `traced`, dashed for `undetermined`. A bridge is drawn as a hexagon rather than an arrow,
 because `from:` may name several conclusions and an arrow cannot say which premises were needed
 together.

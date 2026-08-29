@@ -220,6 +220,14 @@ matching receipt, and `record-receipt` refuses to receipt any conclusion absent 
 
 `python scripts/ieantn.py status` grades every receipt against the world as it is now.
 
+So do the generated views. `STATE.md`, `GRAPH.md` and `docs/nodes/` read the committed
+`fingerprints.json` and manifest rather than rebuilding, so they can say what a receipt is
+presently worth without a Lean run — and they say it, rather than reporting the *designated*
+kind and leaving a severed implication looking verified. Because `check` regenerates and
+diffs those files, a pull request that voids a receipt has to carry the voiding in its own
+diff before it can merge. That is a reporting requirement, not a gate on the change itself:
+what decides whether a breaking change may land is `diff` and its `changes/` acknowledgements.
+
 ### Two axes, deliberately not collapsed
 
 - **Broken edge.** An imported conclusion's elaborated statement changed. This is not staleness: the
