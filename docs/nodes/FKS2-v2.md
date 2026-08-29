@@ -103,14 +103,13 @@ def theorem_3 : Prop :=
 
 Recorded by the node itself, not derived.
 
-- Every conclusion here rests on the cited paper. None is proved in Lean in this repository, and anything downstream inherits that.
-- The paper's two conversion pipelines -- Proposition 13 and Corollary 21 -- are its reusable content and are deliberately not stated yet: doing so faithfully needs BKLNW's bounds on psi - theta, which no node yet provides. The Conclusions module docstring sets out the two routes and which is preferable.
-- Tables 6 and 7 are exported one row deep. Corollary 23 holds for every row of Table 6 and Corollary 24 for every row of Table 7; stating them in full wants the tables as a data structure in Vocabulary.
+- Both conclusions import nothing, so a Lean proof is their whole justification and there is no conditionality to inherit. What they do carry is hypotheses the paper does not state, each recorded on its conclusion: proposition_13 needs exp 1 <= x0 and 0 < Apsi, and theorem_3 needs C/(2 sqrt R) <= sqrt(log x0) and 0 < C. PrimeNumberTheoremAnd carries the same conditions, with an explicit note that they are not present in the source material, so the gap in the published paper is real and independently confirmed.
+- Proposition 13 is stated with the psi - theta comparison as an internal hypothesis rather than by importing BKLNW's coefficients. That is deliberate -- a pipeline that stands alone can be re-pointed at a better input by a later version without restating anything -- but it does mean a consumer must supply that comparison itself.
 - No novelty is claimed. The results are Fiori, Kadiri and Swidinsky's.
 
 ## How this node was made
 
-- **agent** (Claude Opus 5 (Anthropic)) — Created this stub and transcribed its bibliographic record from the PNT+ bibliography, under the direction of the maintainer. No mathematical claim is made and no statement has been transcribed from the paper.
+- **agent** (Claude Opus 5 (Anthropic)) — Stated the two pipelines for arbitrary admissible parameters and wrote the Lean solution proving them, under the direction of the maintainer. Two hypotheses absent from the paper were needed and are recorded on the conclusions. Comparator accepted the solution.
 
 ---
 

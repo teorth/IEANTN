@@ -16,9 +16,10 @@ admissible classical bound on `Eψ` to one on `Eθ`, and one carrying a bound on
 Its **output** is a set of explicit numerical bounds obtained by feeding the best available inputs
 through those pipelines.
 
-This node currently exports three of the outputs. They are the results a downstream node can use
-without knowing anything about how the paper works, which is what makes them the obvious things to
-state first.
+This node exports four of the outputs. They are the results a downstream node can use without
+knowing anything about how the paper works, which is what makes them the obvious things to state
+first. All four are `lean-comparator` verified: the step from their imports to their statements is
+proved in Lean at `Solutions/FKS2.v1` and was accepted by Comparator.
 
 ## The two pipelines live on `FKS2.v2`
 
@@ -27,11 +28,12 @@ the corollaries below are instances of them. They were briefly stated here and h
 `FKS2.v2`, the pipeline variant — see `docs/NODES.md` on versions as variants rather than a
 succession.
 
-The move is not cosmetic. Those two conclusions import nothing and are proved, so they can be
-verified today; the corollaries below cannot, because they wait on numerical inputs that neither
-this project nor `PrimeNumberTheoremAnd` has formalized. Verification here is per node and
-all-or-nothing — `record-receipt` refuses unless `comparator.json` covers every conclusion — so
-keeping the pipelines here would have held them hostage to numerics they have nothing to do with.
+The move is not cosmetic. Verification here is per node and all-or-nothing — `record-receipt`
+refuses unless `comparator.json` covers every conclusion — so keeping the pipelines here would have
+held them hostage to the numerical inputs below, which they have nothing to do with and which
+neither this project nor `PrimeNumberTheoremAnd` has formalized. Those inputs are now imported from
+`FKS2Numerics.v1`, where they are asserted rather than proved, which is what lets the corollaries
+below be verified as *conditional* theorems.
 
 The corollaries now **import** them, which is what the network is for.
 

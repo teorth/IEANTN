@@ -1,7 +1,7 @@
-# Node metadata for `FKS2.v1`.  See docs/NODES.md.
+# Node metadata for `FKS2Numerics.v1`.  See docs/NODES.md.
 #
-# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
-# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+# The paper's finite numerical checks, asserted. `status: stub` is correct here: the
+# conclusions are stated and imported, and no Lean solution is intended.
 version: "v0.4"
 
 node:
@@ -170,8 +170,10 @@ review:
   reviewers:
   - Terence Tao
   notes: >-
-    The statement and its window were read from upstream's FKS2TrustedNumerics, which documents the datum
-    and its provenance; the paper's own sections were not re-read for this.
+    The statements and their windows were first read from upstream's FKS2TrustedNumerics, which documents
+    each datum and its provenance. They have since been read against the paper itself, and the published
+    version -- Res. Number Theory 9 (2023), Paper No. 63 -- is now held alongside the arXiv preprint. The
+    two agree on every constant; see docs/SOURCES.md.
 limitations:
 - >-
   A finite computation asserted on the paper's authority. Nothing here is proved in Lean, and the check
@@ -179,10 +181,15 @@ limitations:
 - >-
   `theta_asymp_ge_one_below_e30` is not a finite check at all: it quantifies over [2, e^30] and is
   provable outright, only its endpoint evaluation being numerical. Asserting it is weaker than the node's
-  other two claims deserve to be read as, and it should be promoted to a proof.
+  other four claims deserve to be read as, and it should be promoted to a proof.
 - >-
   Only Table 6's row 2 is stated, because it is the only floor a stated FKS2.v1 conclusion consumes. The
   paper's other rows, and its Table 7, have their own; upstream states ten and twenty-five respectively.
+- >-
+  Every conclusion here carries an explicit `IEANTN.margin n` factor, currently at n = 0. Since
+  margin 0 = 1 they say exactly what they said without it: the factor marks a number whose provenance is
+  a computation, so that loosening one later is a change of one numeral rather than a change of shape.
+  A reader comparing these statements to the paper should read past the margin factor.
 - >-
   A floor, not a tail bound. It says nothing above e^6 and does not compose upward by monotonicity.
 - >-
