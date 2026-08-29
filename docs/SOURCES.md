@@ -45,6 +45,7 @@ Mossinghoff–Trudgian's title, and BKLNW's own proof contradicts its displayed 
 | — | Platt–Trudgian, *An improved explicit bound on \|ζ(1/2+it)\|* | J. Number Theory **147** (2015) 842–851 | `PlattTrudgian2015-improved-zeta-half.pdf` |
 | — | Rosser, *Explicit bounds for some functions of prime numbers* | Amer. J. Math. **63** (1941) 211–232 | `Rosser1941-explicit-bounds.pdf` — FKBJ's Theorem 2.1 |
 | `RosserSchoenfeld.v1` | Rosser–Schoenfeld, *Sharper bounds for θ(x) and ψ(x)* | Math. Comp. **29** (1975) 243–269 | `RosserSchoenfeld1975-sharper-bounds.pdf` |
+| — | Dudek–Platt, *On solving a curious inequality of Ramanujan* | [doi:10.1080/10586458.2014.990118](https://doi.org/10.1080/10586458.2014.990118), *Exp. Math.* **24** (2015) no. 3, 289–294 | `DudekPlatt2015-ramanujan-inequality.pdf`. Held ahead of the node in [#54](https://github.com/teorth/IEANTN/issues/54). **Theorem 1.2 gives `x ≥ exp(9658)` unconditionally**, where `PrimeNumberTheoremAnd` proves `exp(3915)` — the paper is the authority for a `literature` conclusion, so a node citing it must state `exp(9658)` |
 | `Dusart2018.v1` | Dusart, *Explicit estimates of some functions over primes* | [doi:10.1007/s11139-016-9839-4](https://doi.org/10.1007/s11139-016-9839-4) | `Dusart2018-explicit-estimates-published.pdf` |
 | `ChengGraham2004.v1` | Cheng–Graham, *Explicit estimates for the Riemann zeta function* | Rocky Mt. J. Math. **34** (2004) 1261–1280 | `ChengGraham2004-explicit-zeta.pdf` |
 
