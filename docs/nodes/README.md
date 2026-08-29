@@ -13,6 +13,10 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`Buthe2016.v1`](Buthe2016-v1.md) | paper | 4 | cited |
 | [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 3 | computation |
 | [`ChengGraham2004.v1`](ChengGraham2004-v1.md) | paper | 0 | — |
+| [`DudekPlatt.v1`](DudekPlatt-v1.md) | paper | 2 | cited |
+| [`DudekPlatt.v2`](DudekPlatt-v2.md) | paper | 1 | unjustified |
+| [`DudekPlatt.v3`](DudekPlatt-v3.md) | pipeline | 1 | unjustified |
+| [`DudekPlattNumerics.v1`](DudekPlattNumerics-v1.md) | computation | 1 | computation |
 | [`Dusart2018.v1`](Dusart2018-v1.md) | paper | 1 | cited |
 | [`FKBJ.v1`](FKBJ-v1.md) | computation | 1 | computation |
 | [`FKS.v1`](FKS-v1.md) | paper | 2 | cited |
