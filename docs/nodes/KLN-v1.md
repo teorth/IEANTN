@@ -114,7 +114,7 @@ Recorded by the node itself, not derived.
 
 ## How this node was made
 
-- **agent** (Claude Opus 5 (Anthropic)) — Created this stub and transcribed its bibliographic record from the PNT+ bibliography, under the direction of the maintainer. No mathematical claim is made and no statement has been transcribed from the paper.
+- **agent** (Claude Opus 5 (Anthropic)) — Transcribed Lemma 3.2 from the arXiv preprint 2101.12263v1, applied FKS's correction to the constant it quotes from Hiary, and stated Platt-Trudgian's simplified form of Theorem 1.1, under the direction of the maintainer. No proof is claimed.
 
 ---
 

@@ -1,7 +1,4 @@
 # Node metadata for `FKS.v1`.  See docs/NODES.md.
-#
-# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
-# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
 version: "v0.4"
 
 node:
@@ -126,17 +123,18 @@ automation:
     models: ["Claude Opus 5 (Anthropic)"]
     framework: "Claude Code"
     role: >-
-      Created this stub and transcribed its bibliographic record from the PNT+
-      bibliography, under the direction of the maintainer. No mathematical claim is
-      made and no statement has been transcribed from the paper.
+      Transcribed two statements from the paper and recorded what they rest on, under the
+      direction of the maintainer. The bibliographic record came from PrimeNumberTheoremAnd's
+      references.bib rather than the paper; see the review notes. No proof is claimed.
 
 review:
   status: self-assessed
   reviewers: ["Terence Tao"]
   notes: >-
     Bibliographic details taken from blueprint/src/references.bib in PrimeNumberTheoremAnd
-    rather than from the printed paper. Verify them against the paper before this node is
-    cited externally or used as the basis for a submission.
+    rather than from the printed paper. The published JMAA version is now held in the library;
+    verify them against it before this node is cited externally or used as the basis for a
+    submission. That check would also settle the numbering discrepancy noted below.
 
 limitations:
 - >-

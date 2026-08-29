@@ -161,7 +161,7 @@ Recorded by the node itself, not derived.
 
 ## How this node was made
 
-- **agent** (Claude Opus 5 (Anthropic)) — Created this stub and transcribed its bibliographic record from the PNT+ bibliography, under the direction of the maintainer. No mathematical claim is made and no statement has been transcribed from the paper.
+- **agent** (Claude Opus 5 (Anthropic)) — Transcribed four statements from the arXiv preprint 2002.11068v2 -- including the definition of f at its equation (2.4), read off the rendered page because the plain-text extraction was unusable -- and recorded what each rests on, under the direction of the maintainer. No proof is claimed.
 
 ---
 

@@ -97,7 +97,7 @@ Recorded by the node itself, not derived.
 
 ## How this node was made
 
-- **agent** (Claude Opus 5 (Anthropic)) — Created this stub and transcribed its bibliographic record from the PNT+ bibliography, under the direction of the maintainer. No mathematical claim is made and no statement has been transcribed from the paper.
+- **agent** (Claude Opus 5 (Anthropic)) — Transcribed Theorem 1 from the paper, stated the classical shape it bridges to, and recorded what each rests on, under the direction of the maintainer. The bridge between the two is proved in Lean and recompiled on every push.
 
 ---
 
