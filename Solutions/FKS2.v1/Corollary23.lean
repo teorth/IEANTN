@@ -140,10 +140,14 @@ theorem corollary_23
     FKS2.v1.corollary_23 := by
   intro x hx
   by_cases h6 : x ≤ exp 6
-  · exact hfloor x ⟨hx, h6⟩
+  · have hf := hfloor x ⟨hx, h6⟩
+    simp only [IEANTN.margin, pow_zero, one_mul] at hf
+    exact hf
   · have h6' : exp 6 ≤ x := le_of_not_ge h6
     by_cases h20k : x ≤ exp 20000
-    · exact hmid23 x ⟨h6', h20k⟩
+    · have hm := hmid23 x ⟨h6', h20k⟩
+      simp only [IEANTN.margin, pow_zero, one_mul] at hm
+      exact hm
     · have h20k' : exp 20000 ≤ x := le_of_not_ge h20k
       have h22 := corollary_22 hpsi hconv hsmall hnu hthfloor hmid22 hprop13 hthm3
       exact le_trans (h22 x (by

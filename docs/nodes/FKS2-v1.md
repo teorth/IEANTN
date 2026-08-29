@@ -39,7 +39,8 @@ def corollary_14 : Prop :=
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L55) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Receipt | [`FKS2.v1.corollary_14.json`](https://github.com/teorth/IEANTN/blob/main/receipts/FKS2.v1.corollary_14.json) |
-| Evidence | verified (`lean-comparator`) |
+| Evidence | verified, drifted (`lean-comparator`) |
+| Receipt state | `FKS2Numerics.v1.nu_asymp_e30_le` changed since verification |
 | Sources traced | identified |
 | Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one), [`FKS2Numerics.v1.nu_asymp_e30_le`](FKS2Numerics-v1.md#nu_asymp_e30_le), [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30), [`FKS2.v2.proposition_13`](FKS2-v2.md#proposition_13) |
 | Assumed by | nothing yet |
@@ -80,7 +81,8 @@ def corollary_22 : Prop :=
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L71) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Receipt | [`FKS2.v1.corollary_22.json`](https://github.com/teorth/IEANTN/blob/main/receipts/FKS2.v1.corollary_22.json) |
-| Evidence | verified (`lean-comparator`) |
+| Evidence | verified, drifted (`lean-comparator`) |
+| Receipt state | `FKS2Numerics.v1.corollary_22_mid_range` changed since verification |
 | Sources traced | identified |
 | Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one), [`FKS2Numerics.v1.nu_asymp_e30_le`](FKS2Numerics-v1.md#nu_asymp_e30_le), [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30), [`FKS2Numerics.v1.corollary_22_mid_range`](FKS2Numerics-v1.md#corollary_22_mid_range), [`FKS2.v2.proposition_13`](FKS2-v2.md#proposition_13), [`FKS2.v2.theorem_3`](FKS2-v2.md#theorem_3) |
 | Assumed by | nothing yet |
@@ -118,7 +120,8 @@ def corollary_23 : Prop :=
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L84) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Receipt | [`FKS2.v1.corollary_23.json`](https://github.com/teorth/IEANTN/blob/main/receipts/FKS2.v1.corollary_23.json) |
-| Evidence | verified (`lean-comparator`) |
+| Evidence | verified, drifted (`lean-comparator`) |
+| Receipt state | `FKS2Numerics.v1.corollary_22_mid_range` changed since verification |
 | Sources traced | identified |
 | Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one), [`FKS2Numerics.v1.nu_asymp_e30_le`](FKS2Numerics-v1.md#nu_asymp_e30_le), [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30), [`FKS2Numerics.v1.corollary_22_mid_range`](FKS2Numerics-v1.md#corollary_22_mid_range), [`FKS2Numerics.v1.table6_row2_floor`](FKS2Numerics-v1.md#table6_row2_floor), [`FKS2Numerics.v1.corollary_23_mid_range`](FKS2Numerics-v1.md#corollary_23_mid_range), [`FKS2.v2.proposition_13`](FKS2-v2.md#proposition_13), [`FKS2.v2.theorem_3`](FKS2-v2.md#theorem_3) |
 | Assumed by | nothing yet |
@@ -156,7 +159,8 @@ def corollary_26 : Prop :=
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L97) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
 | Receipt | [`FKS2.v1.corollary_26.json`](https://github.com/teorth/IEANTN/blob/main/receipts/FKS2.v1.corollary_26.json) |
-| Evidence | verified (`lean-comparator`) |
+| Evidence | verified, drifted (`lean-comparator`) |
+| Receipt state | `FKS2Numerics.v1.corollary_22_mid_range` changed since verification |
 | Sources traced | identified |
 | Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one), [`FKS2Numerics.v1.nu_asymp_e30_le`](FKS2Numerics-v1.md#nu_asymp_e30_le), [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30), [`FKS2Numerics.v1.corollary_22_mid_range`](FKS2Numerics-v1.md#corollary_22_mid_range), [`FKS2Numerics.v1.table6_row2_floor`](FKS2Numerics-v1.md#table6_row2_floor), [`FKS2Numerics.v1.corollary_23_mid_range`](FKS2Numerics-v1.md#corollary_23_mid_range), [`FKS2.v2.proposition_13`](FKS2-v2.md#proposition_13), [`FKS2.v2.theorem_3`](FKS2-v2.md#theorem_3) |
 | Assumed by | nothing yet |

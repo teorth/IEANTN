@@ -10,6 +10,16 @@ The colour of a box is the kind of evidence, and only green is checked by Lean h
 Everything else is a leaf of the trust graph -- something the network takes on faith,
 however reasonably -- and the point of drawing it is that you can see exactly which.
 
+Green comes in three shades, because a verification can stop being current in two quite
+different ways. **Solid green** is a receipt that still stands: the statement is byte for
+byte the one Comparator saw, in the environment it saw it in. **Pale green** — *stale* —
+means only the environment has moved on; the proof still connects exactly the same two
+statements, and re-running it is bookkeeping. **Faded grey-green** — *drifted* — means the
+statement itself has changed since verification, so the checked implication no longer
+reaches what the node now claims. That is not a weaker verification but an absent one, and
+it is ranked below an assertion accordingly: nothing short of a fresh Comparator run
+brings it back. `python scripts/ieantn.py status` says which claim moved.
+
 The border says how completely the arrows into a box tell the story, and the more broken
 it is the less they say. **Solid**: they tell all of it. **Dashed**: the inputs are known
 and written down, but at least one is not the sort of thing an arrow can carry — an
@@ -50,7 +60,7 @@ graph LR
   NDusart2018_v1["<b>Dusart2018.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NFKBJ_v1["<b>FKBJ.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NFKS_v1["<b>FKS.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
-  NFKS2_v1["<b>FKS2.v1</b><br/>4 claims<br/><i>weakest: verified</i>"]
+  NFKS2_v1["<b>FKS2.v1</b><br/>4 claims<br/><i>weakest: verified, drifted</i>"]
   NFKS2_v2["<b>FKS2.v2</b><br/>2 claims<br/><i>weakest: verified</i>"]
   NFKS2Numerics_v1["<b>FKS2Numerics.v1</b><br/>5 claims<br/><i>weakest: computation</i>"]
   NHiary2016_v1["<b>Hiary2016.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
@@ -106,10 +116,11 @@ graph LR
   style NTrudgian2011_v1 stroke-dasharray: 2 3;
   style NWedeniwski_v1 stroke-dasharray: 2 3;
   class NBrown1967_v1,NChengGraham2004_v1,NMTY_v1 none_yet;
+  class NFKS2_v1 lean_comparator_drifted;
   class NWedeniwski_v1 asserted;
   class NBKLNW_v1,NButhe_v1,NButhe2016_v1,NDusart2018_v1,NFKS_v1,NHiary2016_v1,NKLN_v1,NKadiri2005_v1,NMT_v1,NPlattTrudgian_v1,NPlattTrudgian2021_v1,NRosserSchoenfeld_v1,NTrudgian2011_v1 literature;
   class NFKBJ_v1,NFKS2Numerics_v1,NPlatt2015_v1,NPlatt2017_v1 numerical;
-  class NFKS2_v1,NFKS2_v2,NLcm_v1,NLcm_v2,NZeroFreeHeight_v1 lean_comparator;
+  class NFKS2_v2,NLcm_v1,NLcm_v2,NZeroFreeHeight_v1 lean_comparator;
   click NBKLNW_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md" _blank
   click NButhe_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md" _blank
   click NButhe2016_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md" _blank
@@ -134,6 +145,8 @@ graph LR
   click NWedeniwski_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Wedeniwski-v1.md" _blank
   click NZeroFreeHeight_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZeroFreeHeight-v1.md" _blank
   classDef lean_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
+  classDef lean_comparator_stale fill:#e9f7ec,stroke:#2da44e,color:#1f2328;
+  classDef lean_comparator_drifted fill:#eef2ef,stroke:#8b949e,color:#1f2328;
   classDef numerical fill:#fff8c5,stroke:#9a6700,color:#1f2328;
   classDef literature fill:#ddf4ff,stroke:#0969da,color:#1f2328;
   classDef asserted fill:#fff1e5,stroke:#bc4c00,color:#1f2328;
@@ -179,10 +192,10 @@ graph LR
     FKS_v1_psi_classical_bound["<b>psi_classical_bound</b><br/><i>cited</i>"]
   end
   subgraph sgFKS2_v1["FKS2.v1"]
-    FKS2_v1_corollary_14["<b>corollary_14</b><br/><i>verified</i>"]
-    FKS2_v1_corollary_22["<b>corollary_22</b><br/><i>verified</i>"]
-    FKS2_v1_corollary_23["<b>corollary_23</b><br/><i>verified</i>"]
-    FKS2_v1_corollary_26["<b>corollary_26</b><br/><i>verified</i>"]
+    FKS2_v1_corollary_14["<b>corollary_14</b><br/><i>verified, drifted</i>"]
+    FKS2_v1_corollary_22["<b>corollary_22</b><br/><i>verified, drifted</i>"]
+    FKS2_v1_corollary_23["<b>corollary_23</b><br/><i>verified, drifted</i>"]
+    FKS2_v1_corollary_26["<b>corollary_26</b><br/><i>verified, drifted</i>"]
   end
   subgraph sgFKS2_v2["FKS2.v2"]
     FKS2_v2_proposition_13["<b>proposition_13</b><br/><i>verified</i>"]
@@ -339,6 +352,8 @@ graph LR
   style Trudgian2011_v1_integral_S_bound stroke-dasharray: 2 3;
   style Wedeniwski_v1_rh_up_to stroke-dasharray: 2 3;
   classDef lean_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
+  classDef lean_comparator_stale fill:#e9f7ec,stroke:#2da44e,color:#1f2328;
+  classDef lean_comparator_drifted fill:#eef2ef,stroke:#8b949e,color:#1f2328;
   classDef numerical fill:#fff8c5,stroke:#9a6700,color:#1f2328;
   classDef literature fill:#ddf4ff,stroke:#0969da,color:#1f2328;
   classDef asserted fill:#fff1e5,stroke:#bc4c00,color:#1f2328;
@@ -348,7 +363,8 @@ graph LR
   class BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2,BRPlatt2015_v1_rh_up_to__bridge_from_platt2017,BRRosserSchoenfeld_v1_zero_free_region_classical__bridge_from_shape,BRWedeniwski_v1_rh_up_to__bridge_from_platt2017 bridge;
   class Wedeniwski_v1_rh_up_to asserted;
   class RosserSchoenfeld_v1_zero_free_region_classical bridged;
-  class FKS2_v1_corollary_14,FKS2_v1_corollary_22,FKS2_v1_corollary_23,FKS2_v1_corollary_26,FKS2_v2_proposition_13,FKS2_v2_theorem_3,Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap,ZeroFreeHeight_v1_classical_region_descends lean_comparator;
+  class FKS2_v2_proposition_13,FKS2_v2_theorem_3,Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap,ZeroFreeHeight_v1_classical_region_descends lean_comparator;
+  class FKS2_v1_corollary_14,FKS2_v1_corollary_22,FKS2_v1_corollary_23,FKS2_v1_corollary_26 lean_comparator_drifted;
   class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,RosserSchoenfeld_v1_zero_free_region,Trudgian2011_v1_integral_S_bound literature;
   class FKBJ_v1_rh_up_to,FKS2Numerics_v1_corollary_22_mid_range,FKS2Numerics_v1_corollary_23_mid_range,FKS2Numerics_v1_nu_asymp_e30_le,FKS2Numerics_v1_table6_row2_floor,FKS2Numerics_v1_theta_asymp_ge_one_below_e30,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to numerical;
   click BKLNW_v1_corollary_5_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#corollary_5_1" _blank
@@ -462,7 +478,7 @@ A line is one claim, indented under whatever assumes it.
     - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
   - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited *(above)* — *sources known, not all drawable*
 
-- [`FKS2.v1.corollary_14`](docs/nodes/FKS2-v1.md#corollary_14) — verified
+- [`FKS2.v1.corollary_14`](docs/nodes/FKS2-v1.md#corollary_14) — verified, drifted
   - [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) — cited
     - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
       - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources known, not all drawable*
@@ -481,7 +497,7 @@ A line is one claim, indented under whatever assumes it.
   - [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30) — computation
   - [`FKS2.v2.proposition_13`](docs/nodes/FKS2-v2.md#proposition_13) — verified
 
-- [`FKS2.v1.corollary_22`](docs/nodes/FKS2-v1.md#corollary_22) — verified
+- [`FKS2.v1.corollary_22`](docs/nodes/FKS2-v1.md#corollary_22) — verified, drifted
   - [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) — cited
     - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
       - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources known, not all drawable*
@@ -502,7 +518,7 @@ A line is one claim, indented under whatever assumes it.
   - [`FKS2.v2.proposition_13`](docs/nodes/FKS2-v2.md#proposition_13) — verified
   - [`FKS2.v2.theorem_3`](docs/nodes/FKS2-v2.md#theorem_3) — verified
 
-- [`FKS2.v1.corollary_23`](docs/nodes/FKS2-v1.md#corollary_23) — verified
+- [`FKS2.v1.corollary_23`](docs/nodes/FKS2-v1.md#corollary_23) — verified, drifted
   - [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) — cited
     - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
       - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources known, not all drawable*
@@ -525,7 +541,7 @@ A line is one claim, indented under whatever assumes it.
   - [`FKS2.v2.proposition_13`](docs/nodes/FKS2-v2.md#proposition_13) — verified
   - [`FKS2.v2.theorem_3`](docs/nodes/FKS2-v2.md#theorem_3) — verified
 
-- [`FKS2.v1.corollary_26`](docs/nodes/FKS2-v1.md#corollary_26) — verified
+- [`FKS2.v1.corollary_26`](docs/nodes/FKS2-v1.md#corollary_26) — verified, drifted
   - [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) — cited
     - [`KLN.v1.subconvexity_bound`](docs/nodes/KLN-v1.md#subconvexity_bound) — cited
       - [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) — cited — *sources known, not all drawable*

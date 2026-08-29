@@ -35,7 +35,9 @@ theorem corollary_14
     FKS2.v1.corollary_14 := by
   intro x hx
   by_cases hle : x ≤ exp 30
-  · exact (hsmall x hx hle).trans (hfloor x ⟨hx, hle⟩)
+  · have hf := hfloor x ⟨hx, hle⟩
+    simp only [IEANTN.margin, pow_zero, one_mul] at hf
+    exact (hsmall x hx hle).trans hf
   · have hgt : exp 30 < x := lt_of_not_ge hle
     have h13 := hprop13 121.096 (3 / 2) 2 5.5666305 (1 + 1.93378e-8) (BKLNW.v1.a₂ 30) (exp 30)
       (by norm_num) (by norm_num) (by norm_num)
@@ -48,6 +50,7 @@ theorem corollary_14
     rw [nuAsymp_e30_eq]
     have := hnu
     unfold FKS2Numerics.v1.nu_asymp_e30_le at this
+    simp only [IEANTN.margin, pow_zero, one_mul] at this
     nlinarith [this]
 
 end FKS2Sol

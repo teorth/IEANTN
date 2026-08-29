@@ -37,14 +37,14 @@ a consumer must not assume it does.
 ```lean
 def table6_row2_floor : Prop :=
   ∀ x ∈ Set.Icc (Real.exp 1) (Real.exp 6),
-    Eπ x ≤ admissibleBound 0.826 0.25 1 5.5666305 x
+    Eπ x ≤ margin 0 * admissibleBound 0.826 0.25 1 5.5666305 x
 ```
 
 | | |
 |---|---|
 | Lean name | `FKS2Numerics.v1.table6_row2_floor` |
 | Challenge | `FKS2Numerics.v1.challenge_table6_row2_floor` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L85) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L102) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -66,14 +66,14 @@ Evaluating it means evaluating `BKLNW.v1.a₂ 30`, hence `f(e³⁰)` and `f(2⁴
 
 ```lean
 def nu_asymp_e30_le : Prop :=
-  nuAsympE30 ≤ 6.3376e-7
+  nuAsympE30 ≤ margin 0 * 6.3376e-7
 ```
 
 | | |
 |---|---|
 | Lean name | `FKS2Numerics.v1.nu_asymp_e30_le` |
 | Challenge | `FKS2Numerics.v1.challenge_nu_asymp_e30_le` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L111) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L128) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -97,14 +97,14 @@ See the module docstring: unlike the other two, this one is provable outright wi
 ```lean
 def theta_asymp_ge_one_below_e30 : Prop :=
   ∀ x ∈ Set.Icc (2 : ℝ) (Real.exp 30),
-    1 ≤ admissibleBound 121.0961 (3 / 2) 2 5.5666305 x
+    1 ≤ margin 0 * admissibleBound 121.0961 (3 / 2) 2 5.5666305 x
 ```
 
 | | |
 |---|---|
 | Lean name | `FKS2Numerics.v1.theta_asymp_ge_one_below_e30` |
 | Challenge | `FKS2Numerics.v1.challenge_theta_asymp_ge_one_below_e30` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L122) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L139) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -131,14 +131,14 @@ developments.
 ```lean
 def corollary_22_mid_range : Prop :=
   ∀ x ∈ Set.Icc (2 : ℝ) (Real.exp 20000),
-    Eπ x ≤ admissibleBound 9.2211 (3 / 2) 0.84768363 1 x
+    Eπ x ≤ margin 0 * admissibleBound 9.2211 (3 / 2) 0.84768363 1 x
 ```
 
 | | |
 |---|---|
 | Lean name | `FKS2Numerics.v1.corollary_22_mid_range` |
 | Challenge | `FKS2Numerics.v1.challenge_corollary_22_mid_range` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L137) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L154) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -164,14 +164,14 @@ and nothing in this network consumes the halves separately.
 ```lean
 def corollary_23_mid_range : Prop :=
   ∀ x ∈ Set.Icc (Real.exp 6) (Real.exp 20000),
-    Eπ x ≤ admissibleBound 0.826 0.25 1 5.5666305 x
+    Eπ x ≤ margin 0 * admissibleBound 0.826 0.25 1 5.5666305 x
 ```
 
 | | |
 |---|---|
 | Lean name | `FKS2Numerics.v1.corollary_23_mid_range` |
 | Challenge | `FKS2Numerics.v1.challenge_corollary_23_mid_range` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L151) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L168) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
