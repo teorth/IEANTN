@@ -512,7 +512,44 @@ def _gh_json(args: list[str]) -> str:
     return finished.stdout.strip() if finished.returncode == 0 else ""
 
 
-def verify(node: str, branch: str, dispatch: bool) -> bool:
+def remote_branch_sha(branch: str) -> str | None:
+    """The tip of `branch` on `origin`, or `None` if `origin` has no such branch."""
+    finished = subprocess.run(
+        ["git", "ls-remote", "--heads", "origin", branch],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+    if finished.returncode != 0:
+        return None
+    for line in (finished.stdout or "").splitlines():
+        sha, _, ref = line.partition("	")
+        if ref.strip() == f"refs/heads/{branch}":
+            return sha.strip()
+    return None
+
+
+def similar_branches(branch: str) -> list[str]:
+    """Remote branches whose names contain, or are contained in, `branch`.
+
+    A dropped path prefix -- `foo` for `node/foo` -- is the failure this is for, and it is not
+    hypothetical: a verification was dispatched for `fks2-corollary-22` when the branch was
+    `node/fks2-corollary-22`, and the run burned an approval to die at checkout.
+    """
+    finished = subprocess.run(
+        ["git", "ls-remote", "--heads", "origin"],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+    if finished.returncode != 0:
+        return []
+    names = [line.partition("	")[2].strip().removeprefix("refs/heads/")
+             for line in (finished.stdout or "").splitlines()]
+    return [n for n in names if n and (branch in n or n in branch) and n != branch]
+
+
+def local_head_sha() -> str | None:
+    finished = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT,
+                              capture_output=True, text=True, encoding="utf-8")
+    return (finished.stdout or "").strip() if finished.returncode == 0 else None
+
+
+def verify(node: str, branch: str, dispatch: bool, precheck: bool = True) -> bool:
     """Dispatch `verify.yml` and follow it, making the approval gate impossible to miss.
 
     This exists because `gh run watch` draws a run that has not started identically to one that is
@@ -531,6 +568,48 @@ def verify(node: str, branch: str, dispatch: bool) -> bool:
         return False
 
     if dispatch:
+        # Two guards before spending someone's approval. A dispatch that cannot succeed is not
+        # free: the gate exists so that a human looks at the branch, and an hour of compute follows.
+        sha = remote_branch_sha(branch)
+        if sha is None:
+            print(f"error: `origin` has no branch `{branch}`, so the workflow would fail at")
+            print("       checkout -- after the approval had already been given.")
+            near = similar_branches(branch)
+            if near:
+                print("       Did you mean:")
+                for name in near[:5]:
+                    print(f"         {name}")
+            return False
+
+        if precheck:
+            head = local_head_sha()
+            if head != sha:
+                print(f"warning: local HEAD is not the tip of `{branch}` on origin, so the")
+                print("         solution cannot be checked from here. Dispatching unchecked;")
+                print("         if Comparator rejects it, that is the first you will hear.")
+            else:
+                result = solution_holes(node)
+                if result is None:
+                    print(f"error: no solution under {rel(SOLUTIONS / node)} to verify")
+                    return False
+                built, holes, proved = result
+                if not built:
+                    print(f"error: {node}'s solution does not typecheck; Comparator would reject it")
+                    return False
+                unproved = sorted(name for name, ok in (proved or {}).items() if not ok)
+                if holes or unproved:
+                    print(f"error: {node} is not ready. Comparator would reject it, and the run")
+                    print("       costs an approval and up to an hour of compute.")
+                    for hole in holes:
+                        print(f"         hole   {hole}")
+                    for name in unproved:
+                        print(f"         OPEN   {name}")
+                    print("       A node is verified all at once or not at all -- `record-receipt`")
+                    print("       refuses unless `comparator.json` covers every conclusion. Close")
+                    print("       the holes, or split the node across versions (docs/NODES.md).")
+                    print("       Re-run with --skip-precheck to dispatch anyway.")
+                    return False
+
         started = subprocess.run(
             ["gh", "workflow", "run", "verify.yml", "-f", f"node={node}", "-f", f"branch={branch}"],
             cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
@@ -3533,6 +3612,8 @@ def main() -> int:
     verification.add_argument("--branch", required=True, help="branch to record the receipt on")
     verification.add_argument("--watch-only", action="store_true",
                               help="follow the latest run instead of dispatching a new one")
+    verification.add_argument("--skip-precheck", action="store_true",
+                              help="dispatch without first checking the solution is complete")
     snapshot = sub.add_parser("state")
     snapshot.add_argument("--check", action="store_true", help="fail instead of rewriting")
     fresh = sub.add_parser("new-node")
@@ -3595,7 +3676,8 @@ def main() -> int:
     if args.command == "progress":
         return 0 if progress(args.node, args.write) else 1
     if args.command == "verify":
-        return 0 if verify(args.node, args.branch, not args.watch_only) else 1
+        return 0 if verify(args.node, args.branch, not args.watch_only,
+                           precheck=not args.skip_precheck) else 1
     if args.command == "spinoff":
         return 0 if spinoff(args.conclusion, args.out, args.compile) else 1
     if args.command == "new-version":

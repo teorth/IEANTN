@@ -193,9 +193,17 @@ All holes closed and you believe Comparator will accept it.
    python scripts/ieantn.py verify Lcm.v1 --branch <your-branch>
    ```
 
-   Prefer this over `gh workflow run verify.yml` directly. A run waiting at the approval gate looks
-   exactly like one that is building — a spinner and a job name — and `ieantn.py verify` is the
-   only thing that says so out loud. It cannot approve anything, and must not be able to.
+   Prefer this over `gh workflow run verify.yml` directly, for three reasons. A run waiting at the
+   approval gate looks exactly like one that is building — a spinner and a job name — and
+   `ieantn.py verify` is the only thing that says so out loud. It also refuses to dispatch when
+   `origin` has no such branch, suggesting near misses, because a dropped path prefix costs an
+   approval and dies at checkout. And it refuses when the node's solution still has holes, since
+   Comparator would reject it after an hour of compute. It cannot approve anything, and must not be
+   able to.
+
+   Both refusals are pre-flight only, and the second is skipped with `--skip-precheck` or when your
+   local `HEAD` is not the tip of the branch being verified — in that case the local tree is not the
+   code that will be checked, and the command says so rather than checking the wrong thing.
 3. **Approve the `verification` environment.** The gate is on the *run*, not the request:
    verification is hour-scale compute, so it is not self-serve, but neither should asking for one
    require write access. Approving means vouching for the branch's *core* Lean, not its solution —
