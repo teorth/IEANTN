@@ -58,7 +58,7 @@ Recorded by the node itself, not derived.
 
 ## How this node was made
 
-- **agent** (Claude Opus 5 (Anthropic)) — Created this stub and transcribed its bibliographic record from the PNT+ bibliography, under the direction of the maintainer. No mathematical claim is made and no statement has been transcribed from the paper.
+- **agent** (Claude Opus 5 (Anthropic)) — Transcribed Theoreme 1.1 first hand from the published Acta Arith. version and recorded what it rests on, under the direction of the maintainer. No proof is claimed.
 
 ---
 

@@ -234,6 +234,45 @@ class TestFixture(FixtureRepo):
 
 
 class TestGraphChecks(FixtureRepo):
+    def _prepend_header(self, node_id: str, header: str) -> None:
+        path = (self.root / "IEANTN" / "Nodes" / node_id.replace(".", "/")
+                / "formalization.yaml")
+        path.write_text(header + path.read_text(encoding="utf-8"), encoding="utf-8")
+
+    def test_a_header_naming_another_node_fails(self) -> None:
+        """Observed across nine nodes: a metadata file copied from a sibling and edited
+        everywhere except its own first line, so it introduced itself as the node it came from."""
+        self.write_node("A.v1", LITERATURE)
+        self._prepend_header("A.v1", "# Node metadata for `B.v2`.  See docs/NODES.md.\n")
+        self.assertFalse(ieantn.check_graph())
+
+    def test_a_header_naming_this_node_passes(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self._prepend_header("A.v1", "# Node metadata for `A.v1`.  See docs/NODES.md.\n")
+        self.assertTrue(ieantn.check_graph())
+
+    def test_claiming_no_conclusions_while_stating_some_fails(self) -> None:
+        """The other half of the same drift: prose written when the node was a stub, left in
+        place as conclusions were added under it. These files are the Palomar submission surface,
+        so this is a false statement to a registry rather than an untidy comment."""
+        self.write_node("A.v1", LITERATURE)
+        self._prepend_header(
+            "A.v1", "# `conclusions` is deliberately empty -- see Conclusions.lean.\n")
+        self.assertFalse(ieantn.check_graph())
+
+    def test_a_genuine_stub_may_say_its_conclusions_are_empty(self) -> None:
+        """The check must fire on the contradiction, not on the phrase: a node that really has
+        stated nothing is entitled to say so, and several do."""
+        directory = self.root / "IEANTN" / "Nodes" / "Paper" / "v1"
+        directory.mkdir(parents=True)
+        (directory / "formalization.yaml").write_text(
+            "# `conclusions` is deliberately empty -- see Conclusions.lean.\n"
+            + node_yaml("Paper.v1", "", status="stub"),
+            encoding="utf-8")
+        (directory / "Conclusions.lean").write_text(
+            "import IEANTN.Vocabulary\n", encoding="utf-8")
+        self.assertTrue(ieantn.check_graph())
+
     def test_wellformed_graph_passes(self) -> None:
         self.write_node("Upstream.v1", LITERATURE)
         self.write_node("Downstream.v1", IMPORTING)

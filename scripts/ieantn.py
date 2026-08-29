@@ -1042,6 +1042,27 @@ def check_graph() -> bool:
 
         if meta.get("id") != node_id:
             problems.add(where, f"node.id `{meta.get('id')}` != path-derived id `{node_id}`")
+
+        # Two self-contradictions, both observed. Every FKS2-family node carried prose written
+        # when it was a stub and never revisited -- one still said "no statement has been
+        # transcribed from the paper" over four Comparator-verified conclusions, and one named
+        # the wrong node in its own header. These files are the Palomar submission surface, so
+        # stale prose here is a false statement to a registry rather than an untidy comment.
+        # Neither check is a heuristic: each fires only when the file contradicts itself.
+        text = (node["_dir"] / "formalization.yaml").read_text(encoding="utf-8")
+        first = text.split("\n", 1)[0]
+        if first.startswith("#") and node_id not in first:
+            named = re.findall(r"`([A-Za-z0-9]+\.v[0-9]+)`", first)
+            if named and node_id not in named:
+                problems.add(where, f"the header comment says `{named[0]}`, not `{node_id}`")
+        if conclusions_of(node) and "deliberately empty" in text:
+            problems.add(
+                where,
+                f"still says `conclusions` is deliberately empty, with "
+                f"{len(conclusions_of(node))} stated. Prose written for a stub has outlived it; "
+                "read the whole file rather than only deleting the phrase.",
+            )
+
         status = meta.get("status")
         if status is not None and status not in NODE_STATUSES:
             problems.add(where, f"node.status `{status}` is not one of {sorted(NODE_STATUSES)}")
