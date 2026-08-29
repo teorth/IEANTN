@@ -62,7 +62,7 @@ def theorem_2_theta : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to) |
-| Assumed by | nothing yet |
+| Assumed by | [`Buthe.v1.theorem_2_li_minus_pi`](Buthe-v1.md#theorem_2_li_minus_pi) |
 
 **Justification `buthe-paper`** — **designated** — literature, Theorem 2, equation (1.6)
 
@@ -88,7 +88,7 @@ def theorem_2_theta_lower : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to) |
-| Assumed by | [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one) |
+| Assumed by | [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one), [`Buthe.v1.theorem_2_li_gt_pi`](Buthe-v1.md#theorem_2_li_gt_pi) |
 
 **Justification `buthe-paper`** — **designated** — literature, Theorem 2, equation (1.7)
 
@@ -146,12 +146,12 @@ def theorem_2_li_minus_pi : Prop :=
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L63) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
-| Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to) |
+| Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to), [`Buthe.v1.theorem_2_theta`](Buthe-v1.md#theorem_2_theta), [`ButheNumerics.v1.lemma_3_constant_nonpos`](ButheNumerics-v1.md#lemma_3_constant_nonpos), [`ButheNumerics.v1.li_minus_pi_below_1e7`](ButheNumerics-v1.md#li_minus_pi_below_1e7) |
 | Assumed by | nothing yet |
 
 **Justification `buthe-paper`** — **designated** — literature, Theorem 2, equation (1.9)
 
-> Asserted on the authority of the paper, transcribed from arXiv:1511.02032v2. Note the estimate is against li, the un-offset logarithmic integral, not Li; the two differ by li(2) = 1.045..., which is far from negligible at this precision. Imports: Buthe states that the algorithm 'has been implemented and used to calculate analytic bounds for x <= 10^19, using the zeros with imaginary part up to 10^11, whose calculation has been reported in [5]' -- Franke, Kleinjung, Buthe and Jost, recorded as FKBJ.v1. That is the only external input Theorem 2 has; the analytic method is the paper's own. The edge understates the dependency, because the algorithm consumes the tabulated zeros themselves and the network can only state their consequence; see FKBJ.v1's limitations. Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact: all six equations of Theorem 2 match in constant, threshold and strictness, and the vocabulary matches the paper's own (1.4) -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function. Reclassified from `identified` to `traced`: the edge to FKBJ.v1 is real, but as the note above says it understates the dependency -- the algorithm consumes the tabulated zeros themselves, and a table is not a proposition. `traced` is the value for exactly that, so the understatement is now visible in the graph rather than only in this note.
+> Asserted on the authority of the paper, transcribed from arXiv:1511.02032v2. Note the estimate is against li, the un-offset logarithmic integral, not Li; the two differ by li(2) = 1.045..., which is far from negligible at this precision. Imports: Buthe states that the algorithm 'has been implemented and used to calculate analytic bounds for x <= 10^19, using the zeros with imaginary part up to 10^11, whose calculation has been reported in [5]' -- Franke, Kleinjung, Buthe and Jost, recorded as FKBJ.v1. That is the only external input Theorem 2 has; the analytic method is the paper's own. The edge understates the dependency, because the algorithm consumes the tabulated zeros themselves and the network can only state their consequence; see FKBJ.v1's limitations. Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact: all six equations of Theorem 2 match in constant, threshold and strictness, and the vocabulary matches the paper's own (1.4) -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function. Reclassified from `identified` to `traced`: the edge to FKBJ.v1 is real, but as the note above says it understates the dependency -- the algorithm consumes the tabulated zeros themselves, and a table is not a proposition. `traced` is the value for exactly that, so the understatement is now visible in the graph rather than only in this note. DERIVATION, read from the paper's own proof. This equation is NOT computed: "Choosing a = 1,500 in Lemma 3 and using (1.6) gives (1.9) for 10^7 <= x <= 10^19 and the remaining values have again been checked directly." Its inputs are therefore (1.6), which supplies C = 1.95; the paper's Lemma 3, which is analysis and has no node yet; ButheNumerics.v1.lemma_3_constant_nonpos, the sign of the additive constant A that Lemma 3 carries and (1.9) as printed does not; and ButheNumerics.v1.li_minus_pi_below_1e7, the range the paper checks directly. The arithmetic corroborates the reading: Lemma 3 bounds (li x - pi x)/(sqrt x / log x) by (x - theta x)/sqrt x + (2C/log x)(1 + 5/log x) + A log x / sqrt x, and with C = 1.95 the middle term is 3.9/log x + 19.5/(log x)^2 exactly, since 3.9 = 2C and 19.5 = 10C. `traced` rather than `identified` because Lemma 3 itself is not yet a node; making it one is the pipeline half of this work, after which this conclusion becomes provable rather than asserted.
 
 ### `theorem_2_li_gt_pi`
 
@@ -172,12 +172,12 @@ def theorem_2_li_gt_pi : Prop :=
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L73) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
-| Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to) |
+| Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to), [`Buthe.v1.theorem_2_theta_lower`](Buthe-v1.md#theorem_2_theta_lower) |
 | Assumed by | nothing yet |
 
 **Justification `buthe-paper`** — **designated** — literature, Theorem 2, equation (1.10)
 
-> Asserted on the authority of the paper, transcribed from arXiv:1511.02032v2. Note the estimate is against li, the un-offset logarithmic integral, not Li; the two differ by li(2) = 1.045..., which is far from negligible at this precision. Imports: Buthe states that the algorithm 'has been implemented and used to calculate analytic bounds for x <= 10^19, using the zeros with imaginary part up to 10^11, whose calculation has been reported in [5]' -- Franke, Kleinjung, Buthe and Jost, recorded as FKBJ.v1. That is the only external input Theorem 2 has; the analytic method is the paper's own. The edge understates the dependency, because the algorithm consumes the tabulated zeros themselves and the network can only state their consequence; see FKBJ.v1's limitations. Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact: all six equations of Theorem 2 match in constant, threshold and strictness, and the vocabulary matches the paper's own (1.4) -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function. Reclassified from `identified` to `traced`: the edge to FKBJ.v1 is real, but as the note above says it understates the dependency -- the algorithm consumes the tabulated zeros themselves, and a table is not a proposition. `traced` is the value for exactly that, so the understatement is now visible in the graph rather than only in this note.
+> Asserted on the authority of the paper, transcribed from arXiv:1511.02032v2. Note the estimate is against li, the un-offset logarithmic integral, not Li; the two differ by li(2) = 1.045..., which is far from negligible at this precision. Imports: Buthe states that the algorithm 'has been implemented and used to calculate analytic bounds for x <= 10^19, using the zeros with imaginary part up to 10^11, whose calculation has been reported in [5]' -- Franke, Kleinjung, Buthe and Jost, recorded as FKBJ.v1. That is the only external input Theorem 2 has; the analytic method is the paper's own. The edge understates the dependency, because the algorithm consumes the tabulated zeros themselves and the network can only state their consequence; see FKBJ.v1's limitations. Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact: all six equations of Theorem 2 match in constant, threshold and strictness, and the vocabulary matches the paper's own (1.4) -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function. Reclassified from `identified` to `traced`: the edge to FKBJ.v1 is real, but as the note above says it understates the dependency -- the algorithm consumes the tabulated zeros themselves, and a table is not a proposition. `traced` is the value for exactly that, so the understatement is now visible in the graph rather than only in this note. DERIVATION, read from the paper's own proof: "The bound (1.10) follows from (1.7) and [14, Theorem 19]." Not computed either. (1.7) is recorded as an import. Reference [14] is Rosser and Schoenfeld, Approximate formulas for some functions of prime numbers, Illinois J. Math. 6 (1962), 64-94 -- which is NOT the Rosser-Schoenfeld paper this network holds: RosserSchoenfeld.v1 is Sharper bounds for the Chebyshev functions, Math. Comp. 29 (1975). Two different papers by the same pair, which is the same trap BKLNW's two Buthe references set in the other direction. Until the 1962 paper has a node this import cannot be drawn, which is what keeps `imports_status` at `traced`.
 
 ## Limitations
 

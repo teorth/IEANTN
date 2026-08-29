@@ -27,10 +27,11 @@ says `0.826` — hides it, and hides it exactly where a later reader is most lik
 transcription against the source. `margin 2 * …` says both that a margin is present and how far
 down the stack it accumulated.
 
-**`margin 0 = 1`, by `pow_zero`.** A claim carrying `margin 0` says the same thing as one carrying no margin at
-all; the factor is a *site*, marking a number whose provenance is a computation, so that raising it
-later is a change of one numeral rather than a change of shape. Statements should be written with
-the site from the start and the index raised only when something downstream turns out to need it.
+**`margin 0 = 1`, by `pow_zero`.** A claim carrying `margin 0` says the same thing as one carrying
+no margin at all; the factor is a *site*, marking a number whose provenance is a computation, so
+that raising it later is a change of one numeral rather than a change of shape. Statements should
+be written with the site from the start and the index raised only when something downstream turns
+out to need it.
 
 **It is not free.** Every margin weakens a claim, and one that grows without bound eventually
 weakens it past usefulness. Depth is what to keep small: prefer one table covering a wider range to
