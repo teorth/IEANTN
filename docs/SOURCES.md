@@ -16,7 +16,7 @@ Mossinghoff–Trudgian's title, and BKLNW's own proof contradicts its displayed 
 
 | Node | Paper | Identifier | Local file |
 |---|---|---|---|
-| `FKS2.v1` | Fiori–Kadiri–Swidinsky, *Sharper bounds for the error term in the PNT* | [arXiv:2206.12557](https://arxiv.org/abs/2206.12557) | `FKS2-2023-error-term-PNT.pdf` |
+| `FKS2.v1`, `FKS2.v2`, `FKS2Numerics.v1` | Fiori–Kadiri–Swidinsky, *Sharper bounds for the error term in the prime number theorem* | [arXiv:2206.12557](https://arxiv.org/abs/2206.12557); published as [doi:10.1007/s40993-023-00454-w](https://doi.org/10.1007/s40993-023-00454-w), *Research in Number Theory* **9** (2023) | `FKS2-2023-error-term-PNT.pdf`, and `source/FKS2-2023-error-term-PNT/FKS2.tex` (the transcription surface). Preprint only — see *Cited but not held* |
 | `FKS.v1` | Fiori–Kadiri–Swidinsky, *Sharper bounds for the Chebyshev function ψ(x)* | [arXiv:2204.02588](https://arxiv.org/abs/2204.02588) | `FKS2023-chebyshev-psi.pdf`, and the published JMAA version |
 | `BKLNW.v1` | Broadbent–Kadiri–Lumley–Ng–Wilk, *Sharper bounds for θ(x)* | [arXiv:2002.11068](https://arxiv.org/abs/2002.11068) | `BKLNW2021-chebyshev-theta.pdf`, and the published Math. Comp. version |
 | `KLN.v1` | Kadiri–Lumley–Ng, *Explicit zero density for the Riemann zeta function* | [arXiv:2101.12263](https://arxiv.org/abs/2101.12263) | `KLN2018-explicit-zero-density.pdf` |
@@ -55,6 +55,32 @@ only [38] is `PlattTrudgian.v1`.
 `http://www.zetagrid.net`, which is no longer reachable. Everything that node records is at second
 hand from `Kadiri2005` and from Platt–Trudgian's account of the project, and its justification is
 `asserted` for exactly that reason.
+
+### Cited but not held
+
+Five entries above name a **published** DOI in the node's `sources[].id` while the *Local file*
+column records only a **preprint**. Nobody here has read the version being cited.
+
+| Node(s) | Cited | Held |
+|---|---|---|
+| `FKS2.v1`, `FKS2.v2`, `FKS2Numerics.v1` | Research in Number Theory 9 (2023) | arXiv:2206.12557 + LaTeX source |
+| `KLN.v1` | J. Math. Anal. Appl. (2018) | arXiv:2101.12263 |
+| `Buthe.v1` | Math. Comp. (2018) | arXiv:1511.02032 |
+| `MT.v1` | J. Number Theory (2015) | arXiv:1410.3926 |
+| `PlattTrudgian.v1` | Bull. LMS (2020) | arXiv:2004.09765 |
+
+This is not pedantry, and the `Kadiri2005.v1` row is the proof: its preprint gives `5.70176` and
+its published version `5.69693`, and **only the latter supports the `R = 5.7` that MT relies on**.
+A node whose constants came from a preprint while its citation points at the published paper is
+making an unchecked claim, and the network cannot see the difference — a fingerprint pins the
+statement, not the provenance of the numbers in it.
+
+`FKS.v1` and `BKLNW.v1` show the fix: hold both, and say so in the *Local file* column.
+
+The FKS2 case is the live one. Six conclusions across `FKS2.v1` and `FKS2.v2` are now
+`lean-comparator` verified, and every constant in them — `121.0961`, `9.2211`, `0.84768363`,
+`0.826` — was read from the arXiv LaTeX. If the published version moved any of them, the
+verification is of the wrong statement, and it is the citation rather than the proof that is wrong.
 
 ## Wanted
 
