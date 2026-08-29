@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | pipeline |
-| Status | awaiting-solution |
+| Status | active |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -69,20 +69,25 @@ noncomputable def criterion : Prop :=
 | Challenge | `DudekPlatt.v3.challenge_criterion` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/DudekPlatt/v3/Conclusions.lean#L129) |
 | Solution | [`Solutions/DudekPlatt.v3`](https://github.com/teorth/IEANTN/tree/main/Solutions/DudekPlatt.v3) |
-| Evidence | unjustified (`none-yet`) |
+| Receipt | [`DudekPlatt.v3.criterion.json`](https://github.com/teorth/IEANTN/blob/main/receipts/DudekPlatt.v3.criterion.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | [`DudekPlatt.v1.ramanujan_inequality`](DudekPlatt-v1.md#ramanujan_inequality), [`DudekPlatt.v2.ramanujan_inequality_3915`](DudekPlatt-v2.md#ramanujan_inequality_3915) |
 
-**Justification `unjustified`** — **designated** — none-yet
+**Justification `unjustified`** — none-yet
 
-> No proof yet, but the route is known and short. Imports `none`, and that is a real none: a conditional theorem quantified over all admissible parameters consumes no other result in the network, because everything it needs arrives as a hypothesis. So its justification can only be a Lean proof, and it can be verified without waiting on any numerical input. PrimeNumberTheoremAnd already carries this statement as `Ramanujan.criterion`, with the repair as `εlower` (a case split on the sign of m) and `shift_m_lower_of_nonpos`. Whether that development meets this repository's axiom bound is a separate question -- its wider closure uses native_decide -- but `criterion` itself is ordinary real analysis and there is no reason to expect a problem. Checking `#print axioms Ramanujan.criterion` against a built PrimeNumberTheoremAnd would settle it and is the cheapest next step.
+> A COMPLETE SOLUTION EXISTS at Solutions/DudekPlatt.v3, awaiting verification. It is free of sorryAx and its axioms are exactly propext, Classical.choice and Quot.sound; its type matches the challenge under `set_option pp.all true`. The justification stays `none-yet` until a receipt is recorded by the verification workflow -- a justification one can write by hand attests nothing. Imports `none`, and that is a real none: a conditional theorem quantified over all admissible parameters consumes no other result in the network, because everything it needs arrives as a hypothesis. So its justification can only be a Lean proof, and it can be verified without waiting on any numerical input. The proof follows PrimeNumberTheoremAnd's `Ramanujan.criterion`, which carries the same repair as `εlower` (a case split on the sign of m) and `shift_m_lower_of_nonpos`. The question of whether PNT+'s wider development meets this repository's axiom bound does not arise here: this chain was ported into a standalone solution and checked directly, and it uses no native_decide and touches none of PNT+'s numerical machinery.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33279819834
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
-- Not proved. Stated so that it CAN be proved: it imports nothing, so a Lean solution is its whole justification, and nothing numerical stands in the way.
+- Proved, but not yet verified: a receipt requires a Comparator run, and until one exists the designated justification is `none-yet` regardless of the solution's state.
 - It is NOT what the paper states. The paper's Lemma 2.1 uses the equivalent of εPos unconditionally, and applies it only ever with negative m, where εNeg is required. A node faithfully transcribing the paper's lemma would be stating a false implication. That is why `relationship` is `adapts`, and why this is a separate version rather than an edit to anything.
 - The repair changes only seventh-order terms, but "only" is not "not at all". Recomputing at DudekPlatt.v1's parameters -- M_a = 3343.48, m_a = -3103.33, x_a = exp(9656.8) -- the threshold condition this criterion assumes FAILS at log x = 9658 and holds at log x = 9659, checked in Lean by norm_num on exact rationals. The repair costs 1.9287 in the gap and the paper had 0.84 of margin. So the paper's printed exp(9658) is not reachable through this criterion at its own parameters, and exp(9659) is. See DudekPlatt.v1's limitations. DudekPlatt.v2's exp(3915) has NOT been rechecked the same way, because PNT+'s constants there are functions rather than literals; doing so is part of the work of justifying v2.
 - Proving this does not by itself justify either threshold. Each instance also needs its two-sided pi estimate -- DudekPlattNumerics.v1.pi_two_sided_paper for v1, and something not yet stated for v2 -- and the threshold condition discharged at those parameters. That condition deliberately does NOT live on a numerics node. It is not a finite check, quantifying over all x above the threshold; it is provable outright from literal constants, so asserting it would put something provable on the asserted side; and at v1's parameters it is FALSE at the printed threshold, which asserting it would have concealed. It belongs inside whichever solution proves an instance, as a lemma.
