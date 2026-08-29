@@ -70,12 +70,11 @@ conclusions:
       a displayed fraction, and the definitions were read from extracted text. They have since been read
       from the rendered page, where the bars are plainly there. Nothing about the statements needed to
       change.
-  designated: fks2-paper
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610'
+  designated: comparator
   imports_status: identified
-  progress:
-    solution: Solutions/FKS2.v1/
-    state: in-progress
-    remaining_holes: 0
 - id: corollary_22
   declaration: FKS2.v1.corollary_22
   challenge: FKS2.v1.challenge_corollary_22
@@ -122,11 +121,10 @@ conclusions:
       ADDED, found by proving. The tail applies Theorem 3 to Corollary 14, so this conclusion rests on
       FKS2.v2.proposition_13 as well as FKS2.v2.theorem_3 -- Corollary 14 is what Theorem 3 is applied
       TO. The list previously named only theorem_3.
-  designated: fks2-paper-corollary-22
-  progress:
-    solution: Solutions/FKS2.v1/
-    state: in-progress
-    remaining_holes: 0
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610'
+  designated: comparator
 - id: corollary_23
   declaration: FKS2.v1.corollary_23
   challenge: FKS2.v1.challenge_corollary_23
@@ -195,12 +193,11 @@ conclusions:
       and range bookkeeping. Note also that PNT+'s own corollary_26 is proved from the `:= sorry` stub
       of corollary_23 inside FKS2.lean, not from the proved corollary_23_all downstream, so it takes no
       benefit from that per-row work.
-  designated: fks2-paper
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610'
+  designated: comparator
   imports_status: identified
-  progress:
-    solution: Solutions/FKS2.v1/
-    state: in-progress
-    remaining_holes: 0
 - id: corollary_26
   declaration: FKS2.v1.corollary_26
   challenge: FKS2.v1.challenge_corollary_26
@@ -255,13 +252,12 @@ conclusions:
       x / x <= 1/e, giving E_pi <= 1/e = 0.3679. Both halves are proved in Solutions/FKS2.v1/Corollary22.lean,
       so this conclusion needs no numerical claim of its own. Buthe's second conclusion (theorem_2_li_gt_pi)
       is no longer needed and has been dropped.
-  designated: fks2-paper
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610'
+  designated: comparator
 
   imports_status: identified
-  progress:
-    solution: Solutions/FKS2.v1/
-    state: in-progress
-    remaining_holes: 0
 sources:
 - title: "Sharper bounds for the error term in the prime number theorem"
   authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]

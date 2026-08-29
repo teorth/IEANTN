@@ -1,0 +1,34 @@
+{
+  "challenge": "FKS2.v1.challenge_corollary_14",
+  "conclusion": "FKS2.v1.corollary_14",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "5b1c3618759375e0ef0033d39000b1338e99f133"
+  },
+  "repository": {
+    "commit": "b19c3d757c1303c81c1ead0a9c683457b2176e9f"
+  },
+  "run": {
+    "recorded_at": "2026-08-29T03:48:14Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/33231361610"
+  },
+  "schema": 2,
+  "solution": {
+    "project": "Solutions/FKS2.v1"
+  },
+  "statement": {
+    "BKLNW.v1.corollary_5_1": "67e16d3cc5e1529c76d9543d30897c7db3c57b729b1387e6d7750a8fec1f185b",
+    "BKLNW.v1.theta_error_le_one": "947d9d2967ba9f67230b81001b5f1cbab75e675e6b90aac697b953eb2a9b3e4d",
+    "FKS.v1.psi_classical_bound": "d42b43ed3148a6b9108804a3b64ca7cb37c4f909dd06606428700d7f32f39d54",
+    "FKS2.v1.corollary_14": "16fe74e035b77aff8ccd9a02ecd9092d834b22b239894a2d0c10cb8455360a0b",
+    "FKS2.v2.proposition_13": "27141570586026979433c0a2bbc7ba601dd5dd914132419ab5a91bc400111aa6",
+    "FKS2Numerics.v1.nu_asymp_e30_le": "c0114549f902e55c6ae03fb5f11a003bfb4e7707de50f64711a16bf23dff3b7a",
+    "FKS2Numerics.v1.theta_asymp_ge_one_below_e30": "4d17c213e9c11663865b5faa869f09f5fe28255d5107d7e487949e43c03f3368"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}

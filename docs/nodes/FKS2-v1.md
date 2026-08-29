@@ -38,14 +38,19 @@ def corollary_14 : Prop :=
 | Challenge | `FKS2.v1.challenge_corollary_14` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L55) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
-| Evidence | cited (`literature`) |
+| Receipt | [`FKS2.v1.corollary_14.json`](https://github.com/teorth/IEANTN/blob/main/receipts/FKS2.v1.corollary_14.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | identified |
 | Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one), [`FKS2Numerics.v1.nu_asymp_e30_le`](FKS2Numerics-v1.md#nu_asymp_e30_le), [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30), [`FKS2.v2.proposition_13`](FKS2-v2.md#proposition_13) |
 | Assumed by | nothing yet |
 
-**Justification `fks2-paper`** — **designated** — literature, Corollary 14
+**Justification `fks2-paper`** — literature, Corollary 14
 
 > Asserted on the authority of the paper. The parameters are transcribed from PNT+'s formalization of the same corollary (PrimeNumberTheoremAnd/IEANTN/FKS2.lean, `corollary_14`), which proves it in Lean from the paper's Proposition 13 and its numerical inputs; that proof is complete there, so this is a conclusion a port could justify rather than a bare citation. Imports: FKS supplies the E_psi bound that Proposition 13 converts. The other input the paper names is BKLNW -- Corollary 5.1 for the coefficients a1, a2 in Proposition 13's multiplier, and Tables 13 and 14 to cover 2 <= x <= e^30 -- both of which are now recorded. Corollary 5.1 is stated on 7 <= b <= 38 log 10, which covers the x0 = e^30 this proof uses; Tables 13 and 14 enter as the single inequality E_theta(x) <= 1 on [2, e^30] that the proof actually consumes. Absolute values, checked against the rendered page. FKS (1.1) defines E_psi(x) = \|(psi(x) - x)/x\| and FKS2 (1) and (2) define E_pi, E_theta and E_psi the same way, all with bars, exactly as this network's Vocabulary does. An earlier note here claimed the papers defined these signed and that the conclusions were therefore stronger than the printed corollaries; that was wrong. PDF text extraction silently drops absolute-value bars around a displayed fraction, and the definitions were read from extracted text. They have since been read from the rendered page, where the bars are plainly there. Nothing about the statements needed to change.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610
 
 ### `corollary_22`
 
@@ -74,14 +79,19 @@ def corollary_22 : Prop :=
 | Challenge | `FKS2.v1.challenge_corollary_22` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L71) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
-| Evidence | cited (`literature`) |
+| Receipt | [`FKS2.v1.corollary_22.json`](https://github.com/teorth/IEANTN/blob/main/receipts/FKS2.v1.corollary_22.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | identified |
 | Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one), [`FKS2Numerics.v1.nu_asymp_e30_le`](FKS2Numerics-v1.md#nu_asymp_e30_le), [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30), [`FKS2Numerics.v1.corollary_22_mid_range`](FKS2Numerics-v1.md#corollary_22_mid_range), [`FKS2.v2.proposition_13`](FKS2-v2.md#proposition_13), [`FKS2.v2.theorem_3`](FKS2-v2.md#theorem_3) |
 | Assumed by | nothing yet |
 
-**Justification `fks2-paper-corollary-22`** — **designated** — literature, Corollary 22 (epsilon_asymp_pi_explicit)
+**Justification `fks2-paper-corollary-22`** — literature, Corollary 22 (epsilon_asymp_pi_explicit)
 
 > The paper's headline asymptotic bound for pi. Stated at R = 1, with R folded into the constants: 121.107 / R^{3/2} = 9.22106 and 2 / sqrt R = 0.8476836337 are where the printed 9.2211 and 0.84768363 come from. Checked, and note the printed C is very slightly BELOW 2/sqrt R, which is the safe direction since a smaller C is a weaker bound. Imports: everything corollary_14 needs, because the proof runs Theorem 3 on it, plus the mid-range interpolation. Above e^20000 the claim is analysis and is proved in Solutions/FKS2.v1; below it the paper interpolates numerically, which is FKS2Numerics.v1.corollary_22_mid_range. The arithmetic hangs together with room: 121.0961 / R^{3/2} = 9.220226, and multiplying by (1 + mu) with mu <= 5.015e-5 gives 9.220688, comfortably under 9.2211. The mu estimate is dominated by its Dawson summand, 2 D+(v)/sqrt(log x1) with v = 140.9975, and the upper bound dawson_le proved in the solution covers it -- 4.05e-3 against a requirement of 6.70e-3. This is what dominates Table 6's rows far out, so it is also what corollary_23's tail will rest on. PrimeNumberTheoremAnd has only the tail (corollary_22_tail), not the full corollary. IMPORT ADDED, found by proving. The tail applies Theorem 3 to Corollary 14, so this conclusion rests on FKS2.v2.proposition_13 as well as FKS2.v2.theorem_3 -- Corollary 14 is what Theorem 3 is applied TO. The list previously named only theorem_3.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610
 
 ### `corollary_23`
 
@@ -107,14 +117,19 @@ def corollary_23 : Prop :=
 | Challenge | `FKS2.v1.challenge_corollary_23` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L84) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
-| Evidence | cited (`literature`) |
+| Receipt | [`FKS2.v1.corollary_23.json`](https://github.com/teorth/IEANTN/blob/main/receipts/FKS2.v1.corollary_23.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | identified |
 | Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one), [`FKS2Numerics.v1.nu_asymp_e30_le`](FKS2Numerics-v1.md#nu_asymp_e30_le), [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30), [`FKS2Numerics.v1.corollary_22_mid_range`](FKS2Numerics-v1.md#corollary_22_mid_range), [`FKS2Numerics.v1.table6_row2_floor`](FKS2Numerics-v1.md#table6_row2_floor), [`FKS2Numerics.v1.corollary_23_mid_range`](FKS2Numerics-v1.md#corollary_23_mid_range), [`FKS2.v2.proposition_13`](FKS2-v2.md#proposition_13), [`FKS2.v2.theorem_3`](FKS2-v2.md#theorem_3) |
 | Assumed by | nothing yet |
 
-**Justification `fks2-paper`** — **designated** — literature, Corollary 23, Table 6, row [0.826, 0.25, 1.00, 1.000]
+**Justification `fks2-paper`** — literature, Corollary 23, Table 6, row [0.826, 0.25, 1.00, 1.000]
 
 > Asserted on the authority of the paper. PNT+ states this corollary for every row of Table 6 and leaves it `sorry`, so unlike Corollary 14 there is no existing Lean proof to port. Note the fourth column of Table 6 is log x0, not x0; the threshold recorded here is exp 1. Imports: Rests on Corollary 22, hence on the same FKS input, and on Buthe's Theorem 2 to verify the range x < 10^19. FKS's Table 6 and its Lemmas 5.2 and 5.3 are also cited, the former as data and the latter as a method of interpolation rather than as a claim consumed; neither is an import edge. Absolute values, checked against the rendered page. FKS (1.1) defines E_psi(x) = \|(psi(x) - x)/x\| and FKS2 (1) and (2) define E_pi, E_theta and E_psi the same way, all with bars, exactly as this network's Vocabulary does. An earlier note here claimed the papers defined these signed and that the conclusions were therefore stronger than the printed corollaries; that was wrong. PDF text extraction silently drops absolute-value bars around a displayed fraction, and the definitions were read from extracted text. They have since been read from the rendered page, where the bars are plainly there. Nothing about the statements needed to change. Imports the paper's own small-x check as FKS2Numerics.v1.table6_row2_floor. That datum pins the x_0 = e threshold this row states: on [e, e^6] the bound is a finite arithmetic check, and only above the window does the asymptotic argument carry it. Upstream threads the same datum as a deliberate `sorry`; separating it into a computational node is what lets a solution here be free of sorryAx while resting on exactly the same computation. CORRECTION, from attempting the proof. The sentence above saying this rests on Corollary 22 is wrong, and so is any reading on which Theorem 3 produces it. Theorem 3 preserves B and C and requires B >= max(3/2, 1 + C^2/(16R)); Corollary 14 supplies B = 3/2, C = 2, while this row is B = 1/4, C = 1, so Theorem 3 can neither change the parameters nor accept B = 1/4. Nor is the row implied by Corollary 22 (A = 121.107, B = 3/2, C = 2): the ratio of the two admissible bounds is 121.107 u^{5/2} e^{-u} in u = sqrt(log x / R), which peaks at u = 5/2 -- inside the claimed range, at x = e^34.8 -- with value about 98.24, not <= 0.826. What the paper does is fit Table 6's rows to numerical data and verify them; its Remark rem-pi2theta says the B >= 3/2 restriction can be lifted but the generalised theorem is never stated. So this conclusion rests on a derivation the source deliberately declines to write down, plus numerics -- which is a materially weaker footing than Corollary 14 has, and the reason its solution will need FKS2Numerics conclusions rather than more analysis. REFINEMENT of that correction, after reading PrimeNumberTheoremAnd. Saying the row follows from nothing the paper states was itself an over-correction. Corollary 22 does not dominate row 2 on all of [e, inf) -- the ratio in s = sqrt(log x) is about 17.1 s^{5/2} e^{-0.42385 s}, peaking near 118.9 at x = e^34.8 -- but it DOES dominate from about x = e^671 onward. PNT+ proves the row by splitting there: Corollary 22 on [e^20000, inf), a numerical quarter transport over extended Table 4 cells on [e^10, e^20000], a Buthe assembler on [e^6, e^10], and one trusted numerical floor on [e, e^6] -- which is exactly the FKS2Numerics.v1.table6_row2_floor already imported here. So the generalised Theorem 3 is not needed; what is needed is numerical inputs and range bookkeeping. Note also that PNT+'s own corollary_26 is proved from the `:= sorry` stub of corollary_23 inside FKS2.lean, not from the proved corollary_23_all downstream, so it takes no benefit from that per-row work.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610
 
 ### `corollary_26`
 
@@ -140,14 +155,19 @@ def corollary_26 : Prop :=
 | Challenge | `FKS2.v1.challenge_corollary_26` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2/v1/Conclusions.lean#L97) |
 | Solution | [`Solutions/FKS2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/FKS2.v1) |
-| Evidence | cited (`literature`) |
+| Receipt | [`FKS2.v1.corollary_26.json`](https://github.com/teorth/IEANTN/blob/main/receipts/FKS2.v1.corollary_26.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | identified |
 | Assumes | [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`BKLNW.v1.corollary_5_1`](BKLNW-v1.md#corollary_5_1), [`BKLNW.v1.theta_error_le_one`](BKLNW-v1.md#theta_error_le_one), [`FKS2Numerics.v1.nu_asymp_e30_le`](FKS2Numerics-v1.md#nu_asymp_e30_le), [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30), [`FKS2Numerics.v1.corollary_22_mid_range`](FKS2Numerics-v1.md#corollary_22_mid_range), [`FKS2Numerics.v1.table6_row2_floor`](FKS2Numerics-v1.md#table6_row2_floor), [`FKS2Numerics.v1.corollary_23_mid_range`](FKS2Numerics-v1.md#corollary_23_mid_range), [`FKS2.v2.proposition_13`](FKS2-v2.md#proposition_13), [`FKS2.v2.theorem_3`](FKS2-v2.md#theorem_3) |
 | Assumed by | nothing yet |
 
-**Justification `fks2-paper`** — **designated** — literature, Corollary 26
+**Justification `fks2-paper`** — literature, Corollary 26
 
 > Asserted on the authority of the paper. PNT+ proves it in Lean from Corollary 23 together with a direct argument on [2, e); since Corollary 23 is `sorry` there, that proof is conditional in PNT+ and porting it here would need Corollary 23 first. The paper itself obtains the estimate by combining Corollary 23 above 10^19 with Buthe's estimates below it and explicit checks on small x. Imports: Buthe's Theorem 2 covers 97 <= x <= 10^19 -- (1.9) for the bound and (1.10) for its sign, which together give the two-sided estimate. Below 97 the paper checks the 25 relevant prime intervals directly and above 10^19 it uses its own Theorem 6 with Table 4; both are internal and neither is an import. Absolute values, checked against the rendered page. FKS (1.1) defines E_psi(x) = \|(psi(x) - x)/x\| and FKS2 (1) and (2) define E_pi, E_theta and E_psi the same way, all with bars, exactly as this network's Vocabulary does. An earlier note here claimed the papers defined these signed and that the conclusions were therefore stronger than the printed corollaries; that was wrong. PDF text extraction silently drops absolute-value bars around a displayed fraction, and the definitions were read from extracted text. They have since been read from the rendered page, where the bars are plainly there. Nothing about the statements needed to change. ROUTE CHANGE, and the imports above follow it. This conclusion is now derived from Corollary 23 rather than the paper's own route, so its imports are exactly Corollary 23's; the previous list (Buthe's two conclusions) followed the paper, which proves cor:weak numerically throughout -- 25 prime intervals below 97, Buthe on [97, 10^19], a numerical table above. Going via Corollary 23 is what PrimeNumberTheoremAnd does and is far cheaper here, because we need Corollary 23 anyway and the residual is then ENTIRELY ELEMENTARY: above e the row-2 curve 0.826 sqrt(u) e^{-u} never exceeds 0.413 (by e^{-u} <= 1/(1+u) and 2 sqrt(u) <= 1+u; true supremum 0.3543 at u = 1/2), and below e one has pi(x) = 1, 0 <= Li(x) <= 2 and log x / x <= 1/e, giving E_pi <= 1/e = 0.3679. Both halves are proved in Solutions/FKS2.v1/Corollary22.lean, so this conclusion needs no numerical claim of its own. Buthe's second conclusion (theorem_2_li_gt_pi) is no longer needed and has been dropped.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610
 
 ## Limitations
 

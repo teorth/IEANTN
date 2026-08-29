@@ -13,8 +13,8 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 1 |
-| `lean-comparator` | 5 |
-| `literature` | 32 |
+| `lean-comparator` | 9 |
+| `literature` | 28 |
 | `numerical` | 8 |
 
 ## Nodes
@@ -41,10 +41,10 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `FKBJ.v1` | active | `rh_up_to` | numerical | 0 | - |
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 3 | - |
 | `FKS.v1` | active | `psi_classical_bound` | literature | 3 | - |
-| `FKS2.v1` | active | `corollary_14` | literature | 6 | - |
-| `FKS2.v1` | active | `corollary_22` | literature | 8 | - |
-| `FKS2.v1` | active | `corollary_23` | literature | 10 | - |
-| `FKS2.v1` | active | `corollary_26` | literature | 10 | - |
+| `FKS2.v1` | active | `corollary_14` | lean-comparator | 6 | - |
+| `FKS2.v1` | active | `corollary_22` | lean-comparator | 8 | - |
+| `FKS2.v1` | active | `corollary_23` | lean-comparator | 10 | - |
+| `FKS2.v1` | active | `corollary_26` | lean-comparator | 10 | - |
 | `FKS2.v2` | active | `proposition_13` | lean-comparator | 0 | - |
 | `FKS2.v2` | active | `theorem_3` | lean-comparator | 0 | - |
 | `FKS2Numerics.v1` | stub | `table6_row2_floor` | numerical | 0 | - |
