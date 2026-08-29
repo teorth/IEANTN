@@ -138,4 +138,18 @@ def corollary_22_mid_range : Prop :=
   ∀ x ∈ Set.Icc (2 : ℝ) (Real.exp 20000),
     Eπ x ≤ admissibleBound 9.2211 (3 / 2) 0.84768363 1 x
 
+/-- **The mid-range behind Corollary 23**: Table 6's row 2 already holds on `[e⁶, e²⁰⁰⁰⁰]`.
+
+Corollary 23 splits three ways. On `[e, e⁶]` it is `table6_row2_floor`. Above `e²⁰⁰⁰⁰` it is
+analysis: Corollary 22 dominates the row-2 curve there, by a comfortable margin. Between them the
+paper works numerically — Büthe's estimate up to `10¹⁹`, then the Table 4 transport — and that is
+what this states.
+
+Both of the paper's numerical stretches are folded into one claim rather than two. The split point
+between them is an artefact of which numerical method is cheapest where, not of the mathematics,
+and nothing in this network consumes the halves separately. -/
+def corollary_23_mid_range : Prop :=
+  ∀ x ∈ Set.Icc (Real.exp 6) (Real.exp 20000),
+    Eπ x ≤ admissibleBound 0.826 0.25 1 5.5666305 x
+
 end FKS2Numerics.v1
