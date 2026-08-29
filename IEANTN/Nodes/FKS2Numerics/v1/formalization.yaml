@@ -125,6 +125,25 @@ conclusions:
       piece in both developments, and stating it here is what lets FKS2.v1.corollary_22 be assembled
       at all.
   designated: fks2-corollary-22-interpolation
+- id: corollary_23_mid_range
+  declaration: FKS2Numerics.v1.corollary_23_mid_range
+  challenge: FKS2Numerics.v1.challenge_corollary_23_mid_range
+  imports: []
+  imports_status: none
+  justifications:
+  - id: fks2-corollary-23-mid-range
+    kind: numerical
+    source: FKS2
+    locator: the numerical inputs behind Table 6's row 2, between e^6 and e^20000
+    note: "Corollary 23 splits three ways. On [e, e^6] it is table6_row2_floor; above e^20000 it is analysis,
+      since Corollary 22 dominates the row-2 curve there. This is the middle, where the paper works numerically
+      -- Buthe's estimate up to 10^19, then the Table 4 transport.\n\nBoth numerical stretches are folded
+      into one claim rather than two: the split between them is an artefact of which method is cheapest
+      where, not of the mathematics, and nothing in this network consumes the halves separately. PrimeNumberTheoremAnd
+      keeps them apart (floor_buthe2 on [e^6, e^10], then a quarter transport over extended Table 4 cells
+      to e^20000) because it proves them; here they are asserted together.\n\nImports none: a bounded-range
+      numerical claim consumes nothing from the network."
+  designated: fks2-corollary-23-mid-range
 sources:
 - title: Sharper bounds for the error term in the Prime Number Theorem
   authors:

@@ -43,25 +43,48 @@ theorem FKS2.v1.challenge_corollary_22
     (fks2numerics_v1_theta_asymp_ge_one_below_e30 :
       FKS2Numerics.v1.theta_asymp_ge_one_below_e30)
     (fks2numerics_v1_corollary_22_mid_range : FKS2Numerics.v1.corollary_22_mid_range)
+    (fks2_v2_proposition_13 : FKS2.v2.proposition_13)
     (fks2_v2_theorem_3 : FKS2.v2.theorem_3) :
     FKS2.v1.corollary_22 :=
   FKS2Sol.corollary_22 fks_v1_psi_classical_bound bklnw_v1_corollary_5_1
     bklnw_v1_theta_error_le_one fks2numerics_v1_nu_asymp_e30_le
     fks2numerics_v1_theta_asymp_ge_one_below_e30 fks2numerics_v1_corollary_22_mid_range
-    fks2_v2_theorem_3
+    fks2_v2_proposition_13 fks2_v2_theorem_3
 
 theorem FKS2.v1.challenge_corollary_23
     (fks_v1_psi_classical_bound : FKS.v1.psi_classical_bound)
-    (buthe_v1_theorem_2_li_minus_pi : Buthe.v1.theorem_2_li_minus_pi)
-    (fks2numerics_v1_table6_row2_floor : FKS2Numerics.v1.table6_row2_floor) :
+    (bklnw_v1_corollary_5_1 : BKLNW.v1.corollary_5_1)
+    (bklnw_v1_theta_error_le_one : BKLNW.v1.theta_error_le_one)
+    (fks2numerics_v1_nu_asymp_e30_le : FKS2Numerics.v1.nu_asymp_e30_le)
+    (fks2numerics_v1_theta_asymp_ge_one_below_e30 :
+      FKS2Numerics.v1.theta_asymp_ge_one_below_e30)
+    (fks2numerics_v1_corollary_22_mid_range : FKS2Numerics.v1.corollary_22_mid_range)
+    (fks2numerics_v1_table6_row2_floor : FKS2Numerics.v1.table6_row2_floor)
+    (fks2numerics_v1_corollary_23_mid_range : FKS2Numerics.v1.corollary_23_mid_range)
+    (fks2_v2_proposition_13 : FKS2.v2.proposition_13)
+    (fks2_v2_theorem_3 : FKS2.v2.theorem_3) :
     FKS2.v1.corollary_23 :=
-  FKS2Sol.corollary_23 fks_v1_psi_classical_bound buthe_v1_theorem_2_li_minus_pi
-    fks2numerics_v1_table6_row2_floor
+  FKS2Sol.corollary_23 fks_v1_psi_classical_bound bklnw_v1_corollary_5_1
+    bklnw_v1_theta_error_le_one fks2numerics_v1_nu_asymp_e30_le
+    fks2numerics_v1_theta_asymp_ge_one_below_e30 fks2numerics_v1_corollary_22_mid_range
+    fks2numerics_v1_table6_row2_floor fks2numerics_v1_corollary_23_mid_range
+    fks2_v2_proposition_13 fks2_v2_theorem_3
 
 theorem FKS2.v1.challenge_corollary_26
     (fks_v1_psi_classical_bound : FKS.v1.psi_classical_bound)
-    (buthe_v1_theorem_2_li_minus_pi : Buthe.v1.theorem_2_li_minus_pi)
-    (fks2numerics_v1_table6_row2_floor : FKS2Numerics.v1.table6_row2_floor) :
+    (bklnw_v1_corollary_5_1 : BKLNW.v1.corollary_5_1)
+    (bklnw_v1_theta_error_le_one : BKLNW.v1.theta_error_le_one)
+    (fks2numerics_v1_nu_asymp_e30_le : FKS2Numerics.v1.nu_asymp_e30_le)
+    (fks2numerics_v1_theta_asymp_ge_one_below_e30 :
+      FKS2Numerics.v1.theta_asymp_ge_one_below_e30)
+    (fks2numerics_v1_corollary_22_mid_range : FKS2Numerics.v1.corollary_22_mid_range)
+    (fks2numerics_v1_table6_row2_floor : FKS2Numerics.v1.table6_row2_floor)
+    (fks2numerics_v1_corollary_23_mid_range : FKS2Numerics.v1.corollary_23_mid_range)
+    (fks2_v2_proposition_13 : FKS2.v2.proposition_13)
+    (fks2_v2_theorem_3 : FKS2.v2.theorem_3) :
     FKS2.v1.corollary_26 :=
-  FKS2Sol.corollary_26 fks_v1_psi_classical_bound buthe_v1_theorem_2_li_minus_pi
-    fks2numerics_v1_table6_row2_floor
+  FKS2Sol.corollary_26 fks_v1_psi_classical_bound bklnw_v1_corollary_5_1
+    bklnw_v1_theta_error_le_one fks2numerics_v1_nu_asymp_e30_le
+    fks2numerics_v1_theta_asymp_ge_one_below_e30 fks2numerics_v1_corollary_22_mid_range
+    fks2numerics_v1_table6_row2_floor fks2numerics_v1_corollary_23_mid_range
+    fks2_v2_proposition_13 fks2_v2_theorem_3

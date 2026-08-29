@@ -147,7 +147,7 @@ def theorem_2_li_minus_pi : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to) |
-| Assumed by | [`FKS2.v1.corollary_23`](FKS2-v1.md#corollary_23), [`FKS2.v1.corollary_26`](FKS2-v1.md#corollary_26) |
+| Assumed by | nothing yet |
 
 **Justification `buthe-paper`** — **designated** — literature, Theorem 2, equation (1.9)
 

@@ -27,3 +27,6 @@ theorem FKS2Numerics.v1.challenge_theta_asymp_ge_one_below_e30 : FKS2Numerics.v1
 
 theorem FKS2Numerics.v1.challenge_corollary_22_mid_range : FKS2Numerics.v1.corollary_22_mid_range := by
   sorry
+
+theorem FKS2Numerics.v1.challenge_corollary_23_mid_range : FKS2Numerics.v1.corollary_23_mid_range := by
+  sorry

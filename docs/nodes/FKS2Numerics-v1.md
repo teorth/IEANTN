@@ -77,7 +77,7 @@ def nu_asymp_e30_le : Prop :=
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14), [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22) |
+| Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14), [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22), [`FKS2.v1.corollary_23`](FKS2-v1.md#corollary_23), [`FKS2.v1.corollary_26`](FKS2-v1.md#corollary_26) |
 
 **Justification `fks2-multiplier-computation`** — **designated** — numerical, the proof of Corollary 14, at the displayed bound nu_asymp(x0) <= 6.3376e-7
 
@@ -108,7 +108,7 @@ def theta_asymp_ge_one_below_e30 : Prop :=
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14), [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22) |
+| Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14), [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22), [`FKS2.v1.corollary_23`](FKS2-v1.md#corollary_23), [`FKS2.v1.corollary_26`](FKS2-v1.md#corollary_26) |
 
 **Justification `fks2-small-range-computation`** — **designated** — numerical, the proof of Corollary 14, where the minimum of epsilon_theta,asymp on [2, e^30] is recorded as roughly 2.6271 at x = 2
 
@@ -142,11 +142,44 @@ def corollary_22_mid_range : Prop :=
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22) |
+| Assumed by | [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22), [`FKS2.v1.corollary_23`](FKS2-v1.md#corollary_23), [`FKS2.v1.corollary_26`](FKS2-v1.md#corollary_26) |
 
 **Justification `fks2-corollary-22-interpolation`** — **designated** — numerical, the proof of Corollary 22, the step-function interpolation below e^20000
 
 > Corollary 22 splits at e^20000. Above it the claim is analysis -- Theorem 3 applied to Corollary 14, with the multiplier controlled by a Dawson estimate -- and that half is proved in Solutions/FKS2.v1. Below it the paper interpolates numerical results as a step function, using the subdivisions of FKS's Lemmas 5.2 and 5.3. A computation over a table, not an argument, so it is stated here. Imports none: a bounded-range numerical claim consumes nothing from the network. Worth recording that PrimeNumberTheoremAnd does not have this either. It formalizes only corollary_22_tail, from exp 20000 onward, and has no full Corollary 22. So this is the missing piece in both developments, and stating it here is what lets FKS2.v1.corollary_22 be assembled at all.
+
+### `corollary_23_mid_range`
+
+**The mid-range behind Corollary 23**: Table 6's row 2 already holds on `[e⁶, e²⁰⁰⁰⁰]`.
+
+Corollary 23 splits three ways. On `[e, e⁶]` it is `table6_row2_floor`. Above `e²⁰⁰⁰⁰` it is
+analysis: Corollary 22 dominates the row-2 curve there, by a comfortable margin. Between them the
+paper works numerically — Büthe's estimate up to `10¹⁹`, then the Table 4 transport — and that is
+what this states.
+
+Both of the paper's numerical stretches are folded into one claim rather than two. The split point
+between them is an artefact of which numerical method is cheapest where, not of the mathematics,
+and nothing in this network consumes the halves separately.
+
+```lean
+def corollary_23_mid_range : Prop :=
+  ∀ x ∈ Set.Icc (Real.exp 6) (Real.exp 20000),
+    Eπ x ≤ admissibleBound 0.826 0.25 1 5.5666305 x
+```
+
+| | |
+|---|---|
+| Lean name | `FKS2Numerics.v1.corollary_23_mid_range` |
+| Challenge | `FKS2Numerics.v1.challenge_corollary_23_mid_range` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L151) |
+| Evidence | computation (`numerical`) |
+| Sources traced | none |
+| Assumes | nothing recorded |
+| Assumed by | [`FKS2.v1.corollary_23`](FKS2-v1.md#corollary_23), [`FKS2.v1.corollary_26`](FKS2-v1.md#corollary_26) |
+
+**Justification `fks2-corollary-23-mid-range`** — **designated** — numerical, the numerical inputs behind Table 6's row 2, between e^6 and e^20000
+
+> Corollary 23 splits three ways. On [e, e^6] it is table6_row2_floor; above e^20000 it is analysis, since Corollary 22 dominates the row-2 curve there. This is the middle, where the paper works numerically -- Buthe's estimate up to 10^19, then the Table 4 transport. Both numerical stretches are folded into one claim rather than two: the split between them is an artefact of which method is cheapest where, not of the mathematics, and nothing in this network consumes the halves separately. PrimeNumberTheoremAnd keeps them apart (floor_buthe2 on [e^6, e^10], then a quarter transport over extended Table 4 cells to e^20000) because it proves them; here they are asserted together. Imports none: a bounded-range numerical claim consumes nothing from the network.
 
 ## Limitations
 

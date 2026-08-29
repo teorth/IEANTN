@@ -38,10 +38,17 @@ Split at `e`, and neither half needs a numerical input — the whole of the arit
 `0.413 ≤ 0.4298` and `1/e ≤ 0.4298`. -/
 theorem corollary_26
     (hpsi : FKS.v1.psi_classical_bound)
-    (hbuthe : Buthe.v1.theorem_2_li_minus_pi)
-    (hfloor : FKS2Numerics.v1.table6_row2_floor) :
+    (hconv : BKLNW.v1.corollary_5_1)
+    (hsmall : BKLNW.v1.theta_error_le_one)
+    (hnu : FKS2Numerics.v1.nu_asymp_e30_le)
+    (hthfloor : FKS2Numerics.v1.theta_asymp_ge_one_below_e30)
+    (hmid22 : FKS2Numerics.v1.corollary_22_mid_range)
+    (hfloor : FKS2Numerics.v1.table6_row2_floor)
+    (hmid23 : FKS2Numerics.v1.corollary_23_mid_range)
+    (hprop13 : FKS2.v2.proposition_13)
+    (hthm3 : FKS2.v2.theorem_3) :
     FKS2.v1.corollary_26 := by
-  have h23 := corollary_23 hpsi hbuthe hfloor
+  have h23 := corollary_23 hpsi hconv hsmall hnu hthfloor hmid22 hfloor hmid23 hprop13 hthm3
   intro x hx
   by_cases hle : Real.exp 1 ≤ x
   · have h1e : (1 : ℝ) < Real.exp 1 := by nlinarith [Real.add_one_le_exp (1 : ℝ)]
