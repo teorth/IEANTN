@@ -7,6 +7,11 @@ redistribute them. What is committed is this list, so that anyone filling in a n
 what they need and what has already been found. A local copy lives outside the repository — on the
 maintainer's machine at `../IEANTN-papers/` — and the filenames below are that copy's.
 
+So the **identifier column is the record**: a DOI or arXiv id is a durable pointer anyone can
+follow, where a filename is one machine's convenience. When a paper is held in both preprint
+and published form, name both identifiers — the two are not always the same paper, and the
+`Kadiri2005.v1` row below is the standing proof of it.
+
 **Why this exists.** Tracing what a result assumes needs the paper, not a citation. Twice already a
 secondary source has been wrong in a way only the paper settled: FKS2 and FKS both misattribute
 Mossinghoff–Trudgian's title, and BKLNW's own proof contradicts its displayed statement. A node's
@@ -19,12 +24,12 @@ Mossinghoff–Trudgian's title, and BKLNW's own proof contradicts its displayed 
 | `FKS2.v1`, `FKS2.v2`, `FKS2Numerics.v1` | Fiori–Kadiri–Swidinsky, *Sharper bounds for the error term in the prime number theorem* | [arXiv:2206.12557](https://arxiv.org/abs/2206.12557); published as [doi:10.1007/s40993-023-00454-w](https://doi.org/10.1007/s40993-023-00454-w), *Research in Number Theory* **9** (2023) | `FKS2-2023-published-ResNumberTheory.pdf` **and** `FKS2-2023-error-term-PNT.pdf`, with `source/FKS2-2023-error-term-PNT/FKS2.tex` as the transcription surface. The two agree on every constant — see below |
 | `FKS.v1` | Fiori–Kadiri–Swidinsky, *Sharper bounds for the Chebyshev function ψ(x)* | [arXiv:2204.02588](https://arxiv.org/abs/2204.02588) | `FKS2023-chebyshev-psi.pdf`, and the published JMAA version |
 | `BKLNW.v1` | Broadbent–Kadiri–Lumley–Ng–Wilk, *Sharper bounds for θ(x)* | [arXiv:2002.11068](https://arxiv.org/abs/2002.11068) | `BKLNW2021-chebyshev-theta.pdf`, and the published Math. Comp. version |
-| `KLN.v1` | Kadiri–Lumley–Ng, *Explicit zero density for the Riemann zeta function* | [arXiv:2101.12263](https://arxiv.org/abs/2101.12263) | `KLN2018-published-JMAA.pdf` **and** `KLN2018-explicit-zero-density.pdf` |
-| `Buthe.v1` | Büthe, *An analytic method for bounding ψ(x)* | [arXiv:1511.02032](https://arxiv.org/abs/1511.02032) | `Buthe2018-published-MathComp.pdf` **and** `Buthe2018-bounding-psi.pdf` |
-| `MT.v1` | Mossinghoff–Trudgian, *Nonnegative trigonometric polynomials and a zero-free region* | [arXiv:1410.3926](https://arxiv.org/abs/1410.3926) | `MT2015-published-JNT.pdf` **and** `MT2015-zero-free-region.pdf` |
+| `KLN.v1` | Kadiri–Lumley–Ng, *Explicit zero density for the Riemann zeta function* | [arXiv:2101.12263](https://arxiv.org/abs/2101.12263); published as [doi:10.1016/j.jmaa.2018.04.071](https://doi.org/10.1016/j.jmaa.2018.04.071), *J. Math. Anal. Appl.* **465** (2018) 22–46 | `KLN2018-published-JMAA.pdf` **and** `KLN2018-explicit-zero-density.pdf` |
+| `Buthe.v1` | Büthe, *An analytic method for bounding ψ(x)* | [arXiv:1511.02032](https://arxiv.org/abs/1511.02032); published as [doi:10.1090/mcom/3264](https://doi.org/10.1090/mcom/3264), *Math. Comp.* **87** (2018) 1991–2009 | `Buthe2018-published-MathComp.pdf` **and** `Buthe2018-bounding-psi.pdf` |
+| `MT.v1` | Mossinghoff–Trudgian, *Nonnegative trigonometric polynomials and a zero-free region* | [arXiv:1410.3926](https://arxiv.org/abs/1410.3926); published as [doi:10.1016/j.jnt.2015.05.010](https://doi.org/10.1016/j.jnt.2015.05.010), *J. Number Theory* **157** (2015) 329–349 | `MT2015-published-JNT.pdf` **and** `MT2015-zero-free-region.pdf` |
 | `MTY.v1` | Mossinghoff–Trudgian–Yang, *Explicit zero-free regions* | [arXiv:2212.06867](https://arxiv.org/abs/2212.06867) | `MTY2024-explicit-zero-free.pdf` |
 | `Kadiri2005.v1` | Kadiri, *Une région explicite sans zéros pour ζ* | Acta Arith. **117**.4 (2005) 303–339; [arXiv:math/0401238](https://arxiv.org/abs/math/0401238) | `Kadiri2005-published-ActaArith.pdf` **and** `Kadiri2005-region-sans-zeros.pdf`. The two are **not** interchangeable: the preprint gives `5.70176`, the published version `5.69693`, and only the latter supports MT's `R = 5.7` |
-| `PlattTrudgian.v1` | Platt–Trudgian, *The Riemann hypothesis is true up to 3·10¹²* | [arXiv:2004.09765](https://arxiv.org/abs/2004.09765) | `PlattTrudgian2021-RH-to-3e12-published-BLMS.pdf` **and** `PlattTrudgian2021-RH-to-3e12.pdf` |
+| `PlattTrudgian.v1` | Platt–Trudgian, *The Riemann hypothesis is true up to 3·10¹²* | [arXiv:2004.09765](https://arxiv.org/abs/2004.09765); published as [doi:10.1112/blms.12460](https://doi.org/10.1112/blms.12460), *Bull. London Math. Soc.* **53** (2021) 792–797 | `PlattTrudgian2021-RH-to-3e12-published-BLMS.pdf` **and** `PlattTrudgian2021-RH-to-3e12.pdf` |
 | `Buthe2016.v1` | Büthe, *Estimating π(x) … under partial RH assumptions* | [arXiv:1410.7015](https://arxiv.org/abs/1410.7015) | `Buthe2016-pi-under-partial-RH.pdf` |
 | `Hiary2016.v1` | Hiary, *An explicit van der Corput estimate for ζ(1/2+it)* | [arXiv:1507.01261](https://arxiv.org/abs/1507.01261) | `Hiary2016-van-der-Corput.pdf` |
 | — | Hiary–Patel–Yang, *An improved explicit estimate for ζ(1/2+it)* | [arXiv:2207.02366](https://arxiv.org/abs/2207.02366) | `HiaryPatelYang2022-improved-zeta-half.pdf` |
