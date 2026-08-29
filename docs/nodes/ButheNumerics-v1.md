@@ -95,6 +95,46 @@ noncomputable def li_minus_pi_below_1e7 : Prop :=
 
 > A finite check rather than an argument, so `numerical`. Buthe derives (1.9) from (1.6) by Lemma 3 at a = 1500 only for 10^7 <= x <= 10^19, and says of the rest that "the remaining values have again been checked directly". That direct check is a separate claim from the analysis and is stated here. Imports `none`: a bounded-range computation consumes no other result in the network. PrimeNumberTheoremAnd does not carry this datum at all -- its Buthe.lean sorries the six equations of Theorem 2 whole, so the split between what is computed and what is derived does not appear there.
 
+### `lemma_3_constant_gt_at_10`
+
+**The constant in Büthe's Lemma 3 at `a = 10` exceeds `0.1`.**
+
+`π(10) − li(10) + (10 − θ(10)) / log 10 > 0.1`.
+
+The second hidden numerical input, and the one behind Theorem 2's equation (1.10). Büthe proves the
+positivity clause of Lemma 3 — that `t − θ(t) > 0` throughout `[2, T]` forces `li(t) − π(t) > 0`
+there — by "taking `a = 10` in (6.17) since `π(10) − li(10) + (10 − θ(10))/log 10 > 0.1`". That
+inequality is displayed in the proof but is not a stated result, and nothing else in the network
+carries it.
+
+Note the sign differs from `lemma_3_constant_nonpos`: the same functional `A(a)` is asserted
+positive at `a = 10` and non-positive at `a = 1500`. That is not a contradiction — `A` varies with
+`a` — but it is worth seeing side by side, because a solution that conflates the two points will
+prove nothing.
+
+A finite check: three evaluations at a single point. No `margin` site — the bound `0.1` is a
+strict lower bound on a quantity, and a multiplicative margin loosens an upper bound, so a site
+here would point the wrong way.
+
+```lean
+noncomputable def lemma_3_constant_gt_at_10 : Prop :=
+  0.1 < primeCounting 10 - li 10 + (10 - Chebyshev.theta 10) / Real.log 10
+```
+
+| | |
+|---|---|
+| Lean name | `ButheNumerics.v1.lemma_3_constant_gt_at_10` |
+| Challenge | `ButheNumerics.v1.challenge_lemma_3_constant_gt_at_10` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L118) |
+| Evidence | computation (`numerical`) |
+| Sources traced | none |
+| Assumes | nothing recorded |
+| Assumed by | [`Buthe.v1.theorem_2_li_gt_pi`](Buthe-v1.md#theorem_2_li_gt_pi) |
+
+**Justification `buthe-computation`** — **designated** — numerical, Proof of Lemma 3, the positivity clause -- the choice a = 10
+
+> A finite check rather than an argument, so `numerical`. Buthe proves Lemma 3's positivity clause -- that x - theta(x) > 0 throughout [2, T] forces li(x) - pi(x) > 0 there -- by "taking a = 10 in (6.17) since pi(10) - li(10) + (10 - theta(10))/log 10 > 0.1". That inequality is displayed inside the proof but is not a stated result, and nothing else in the network carries it. It is the second hidden numerical input in this paper, the first being the sign of the same functional at a = 1500. Note the signs differ: A(10) > 0.1 and A(1500) <= 0. Not a contradiction -- A varies with a -- but a solution that conflates the two points proves nothing. Imports `none`: three evaluations at a single point consume no other result in the network.
+
 ## Limitations
 
 Recorded by the node itself, not derived.
@@ -102,6 +142,7 @@ Recorded by the node itself, not derived.
 - Both are finite computations asserted on the paper's authority. Neither is proved in Lean here and neither check has been re-run.
 - `lemma_3_constant_nonpos` is inferred from the paper's use of Lemma 3 rather than displayed by the paper. If Buthe's proof of (1.9) turns out to handle the A term some other way, this conclusion is still true but stops being the right hypothesis, and the derivation recorded on Buthe.v1.theorem_2_li_minus_pi would need revising.
 - `li_minus_pi_below_1e7` carries an `IEANTN.margin` factor at index 0, where the factor is 1. It says exactly what it says without it; the site marks a number whose provenance is a computation. `lemma_3_constant_nonpos` deliberately carries no such site, because its bound is 0 and a multiplicative margin cannot loosen 0.
+- Both `lemma_3_constant_nonpos` and `lemma_3_constant_gt_at_10` are the same functional A(a) = pi(a) - li(a) + (a - theta(a))/log a at two different points, asserted with opposite signs. That is correct -- A varies with a -- but it is the kind of pair that invites a misreading, so they are stated separately rather than as one parameterised claim.
 - The paper's Table 2, and the direct checks behind (1.5), (1.6), (1.7) and (1.8), are not stated. They are equally computational, but nothing yet needs them separated: those four equations are consumed as stated on Buthe.v1 rather than derived from anything.
 - No novelty is claimed. The results are Buthe's.
 

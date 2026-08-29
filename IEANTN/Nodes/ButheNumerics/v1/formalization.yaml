@@ -73,6 +73,26 @@ conclusions:
       PrimeNumberTheoremAnd does not carry this datum at all -- its Buthe.lean sorries the six equations
       of Theorem 2 whole, so the split between what is computed and what is derived does not appear there.
   designated: buthe-computation
+- id: lemma_3_constant_gt_at_10
+  declaration: ButheNumerics.v1.lemma_3_constant_gt_at_10
+  challenge: ButheNumerics.v1.challenge_lemma_3_constant_gt_at_10
+  imports: []
+  imports_status: none
+  justifications:
+  - id: buthe-computation
+    kind: numerical
+    source: Buthe
+    locator: Proof of Lemma 3, the positivity clause -- the choice a = 10
+    note: >-
+      A finite check rather than an argument, so `numerical`. Buthe proves Lemma 3's positivity clause
+      -- that x - theta(x) > 0 throughout [2, T] forces li(x) - pi(x) > 0 there -- by "taking a = 10 in
+      (6.17) since pi(10) - li(10) + (10 - theta(10))/log 10 > 0.1". That inequality is displayed inside
+      the proof but is not a stated result, and nothing else in the network carries it. It is the second
+      hidden numerical input in this paper, the first being the sign of the same functional at a = 1500.
+      Note the signs differ: A(10) > 0.1 and A(1500) <= 0. Not a contradiction -- A varies with a -- but
+      a solution that conflates the two points proves nothing. Imports `none`: three evaluations at a
+      single point consume no other result in the network.
+  designated: buthe-computation
 
 sources:
 - title: "An analytic method for bounding psi(x)"
@@ -120,6 +140,11 @@ limitations:
   exactly what it says without it; the site marks a number whose provenance is a computation.
   `lemma_3_constant_nonpos` deliberately carries no such site, because its bound is 0 and a
   multiplicative margin cannot loosen 0.
+- >-
+  Both `lemma_3_constant_nonpos` and `lemma_3_constant_gt_at_10` are the same functional
+  A(a) = pi(a) - li(a) + (a - theta(a))/log a at two different points, asserted with opposite signs.
+  That is correct -- A varies with a -- but it is the kind of pair that invites a misreading, so they
+  are stated separately rather than as one parameterised claim.
 - >-
   The paper's Table 2, and the direct checks behind (1.5), (1.6), (1.7) and (1.8), are not stated. They
   are equally computational, but nothing yet needs them separated: those four equations are consumed as

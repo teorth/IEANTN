@@ -1,0 +1,123 @@
+# Node metadata for `Buthe.v2`.  See docs/NODES.md.
+#
+# The pipeline variant of Buthe.v1: the paper's Lemma 3, stated for arbitrary parameters. A
+# variant, not a successor -- both nodes stay.
+version: "v0.4"
+
+node:
+  id: Buthe.v2
+  family: Buthe
+  version: v2
+  kind: pipeline
+  status: awaiting-solution
+
+project:
+  name: "Buthe's Lemma 3, the theta-to-pi transfer"
+  description: >-
+    The analytic transfer underlying Jan Buthe's analytic method for bounding psi(x): his Lemma 3,
+    which carries a two-sided bound on x - theta(x) to one on li(x) - pi(x), stated for arbitrary
+    parameters rather than at the paper's own. Two conclusions, matching the lemma's two parts -- a
+    two-sided estimate valid above 10^7, and the implication that positivity of x - theta(x) on an
+    interval forces positivity of li(x) - pi(x) there. Both import nothing, so a Lean proof is their
+    whole justification. Buthe.v1 states the same paper's Theorem 2, two of whose six equations are
+    instances of these.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M26", "11A41"]
+
+conclusions:
+- id: lemma_3_bounds
+  issue: 56
+  declaration: Buthe.v2.lemma_3_bounds
+  challenge: Buthe.v2.challenge_lemma_3_bounds
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      No proof yet. Imports `none`, and that is a real none rather than an untraced `undetermined`: a
+      conditional theorem quantified over all admissible parameters consumes no other result in the
+      network, because everything it needs arrives as a hypothesis. So its justification can only ever
+      be a Lean proof, and it can be verified without waiting on any numerical input. The paper proves
+      it from the partial-summation identity it labels (6.17), which is the same species of argument as
+      Solutions/FKS2.v2/Stieltjes.lean. Note what this conclusion does NOT carry: Buthe's use of it at
+      a = 1500 additionally needs A(1500) <= 0, which is ButheNumerics.v1.lemma_3_constant_nonpos and is
+      not part of the lemma.
+  designated: unjustified
+- id: lemma_3_positivity
+  issue: 56
+  declaration: Buthe.v2.lemma_3_positivity
+  challenge: Buthe.v2.challenge_lemma_3_positivity
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      No proof yet. Imports `none`, for the same reason as the estimate above. This is the lemma's
+      "Furthermore" clause and it is the vehicle for Theorem 2's (1.10): Buthe's (1.7) gives
+      x - theta(x) > 0.05 sqrt x > 0 on [1, 10^19], and this converts that into li(x) - pi(x) > 0 there,
+      which is the new Skewes lower bound the paper advertises. Buthe proves it by taking a = 10 in
+      (6.17), using pi(10) - li(10) + (10 - theta(10))/log 10 > 0.1 -- stated as
+      ButheNumerics.v1.lemma_3_constant_gt_at_10, and needed as a hypothesis or established en route.
+      The proof of Theorem 2 attributes (1.10) to "(1.7) and [14, Theorem 19]", where [14] is
+      Rosser-Schoenfeld's Approximate formulas, Illinois J. Math. 6 (1962) -- NOT the Rosser-Schoenfeld
+      paper this network holds, which is Sharper bounds, Math. Comp. 29 (1975). Whether that citation is
+      an alternative route or a step inside this clause has not been determined here.
+  designated: unjustified
+
+sources:
+- title: "An analytic method for bounding psi(x)"
+  authors: ["Jan Buthe"]
+  type: "paper"
+  id: "https://doi.org/10.1090/mcom/3264"
+  location: "Math. Comp. 87 (2018), no. 312, 1991-2009"
+  relationship: formalizes
+  note: >-
+    The published version is held in the library and both conclusions were read from it. Lemma 3 is
+    stated on page 2008; its hypotheses b > 10^7, 12 < a < b, c <= 0 <= C and the lower endpoint
+    max{a, 10^7} of its conclusion are the lemma's own and are transcribed as printed.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Read the paper's proof of Theorem 2 to find which of its equations are derived rather than
+      computed, identified Lemma 3 as the vehicle for both, and stated the lemma's two parts for
+      arbitrary parameters, under the direction of the maintainer. No proof is claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    Both parts were transcribed from the published Math. Comp. version, Lemma 3 as printed. The
+    transcription of the two-sided estimate has an independent consistency check: at C = 1.95, the
+    lemma's middle term 2C/log x (1 + 5/log x) is 3.9/log x + 19.5/(log x)^2, which are exactly the
+    constants printed in the paper's (1.9) -- so the lemma as transcribed does specialise to the
+    equation the paper says it gives. The positivity clause has no such check and was read directly.
+
+limitations:
+- >-
+  Neither conclusion is proved. Both are stated so that they CAN be proved: they import nothing, so a
+  Lean solution is their whole justification, and nothing numerical stands in the way.
+- >-
+  Proving these does not by itself discharge Buthe.v1's (1.9) and (1.10). Each also needs a finite
+  check from ButheNumerics.v1 -- A(1500) <= 0 for (1.9), A(10) > 0.1 for (1.10) -- and (1.9) needs the
+  range below 10^7, which Lemma 3 does not cover and the paper checks directly.
+- >-
+  The lemma is stated at the paper's own generality, with a and b as parameters. It is NOT stated in
+  the more useful form "given an admissible classical bound on E_theta, conclude one on E_pi", which is
+  what FKS2.v2's pipelines do. Converting between the two shapes is real work and is deliberately not
+  attempted here.
+- >-
+  No novelty is claimed. The results are Buthe's.
