@@ -36,8 +36,10 @@ conclusions:
   issue: 54
   declaration: DudekPlatt.v2.ramanujan_inequality_3915
   challenge: DudekPlatt.v2.challenge_ramanujan_inequality_3915
-  imports: []
-  imports_status: undetermined
+  imports:
+  - node: DudekPlatt.v3
+    conclusion: criterion
+  imports_status: traced
   justifications:
   - id: unjustified
     kind: none-yet
@@ -53,9 +55,15 @@ conclusions:
       decisive test is `#print axioms ramanujan_final` against a built PrimeNumberTheoremAnd; that has
       not been run, and running it would be a useful contribution on its own. Until then there is
       neither a citation nor a qualifying proof, and saying so is more useful than dressing an
-      unverified development as evidence. `undetermined` imports because the numerical input behind
-      exp(3915) has not been identified: PNT+'s constants are functions evaluated at exp(3914) rather
-      than literals, so nothing is written down for the network to point at.
+      unverified development as evidence. The pipeline it goes through is DudekPlatt.v3, the REPAIRED
+      criterion, and that is now an import. PNT+ carries that repair too -- as `εlower`, a case split on
+      the sign of m, and `shift_m_lower_of_nonpos` -- so its route to exp(3915) does not inherit the
+      defect in the paper's Lemma 2.1 that DudekPlatt.v1's note records. `traced` rather than
+      `identified` because the other input is still missing: the numerical two-sided pi estimate behind
+      exp(3915) has not been stated, PNT+'s constants being functions evaluated at exp(3914) rather than
+      literals. Extracting them, and stating them as a companion to
+      DudekPlattNumerics.v1.pi_two_sided_paper, is what stands between this node and a full set of
+      edges.
   designated: unjustified
 
 sources:
@@ -104,7 +112,9 @@ limitations:
   is worth writing once either node is justified -- but note the endpoint conventions differ, strict
   here and non-strict there, so it is not quite a one-liner.
 - >-
-  The paper's Lemma 2.1, the pipeline both thresholds come from, is not stated anywhere yet. Stating it
-  usefully needs the explicit comparison from inside its proof; see DudekPlatt.v1's limitations.
+  This node is the better place to attach evidence than DudekPlatt.v1, and deliberately so. The paper's
+  proof of its own Theorem 1.2 has a defect -- see DudekPlatt.v1's note -- whereas PNT+'s route to
+  exp(3915) goes through the repaired criterion. So the sound order of work is to justify THIS node and
+  bridge down to v1, rather than the reverse.
 - >-
   No novelty is claimed. The inequality is Ramanujan's and the argument is Dudek and Platt's.

@@ -39,7 +39,9 @@ conclusions:
   imports:
   - node: DudekPlattNumerics.v1
     conclusion: pi_two_sided_paper
-  imports_status: traced
+  - node: DudekPlatt.v3
+    conclusion: criterion
+  imports_status: identified
   justifications:
   - id: dudek-platt-paper
     kind: literature
@@ -51,10 +53,30 @@ conclusions:
       the two-sided pi estimate recorded as DudekPlattNumerics.v1.pi_two_sided_paper: at a = 3223 that
       estimate holds above x_a = exp(9656.8), and Lemma 2.1's threshold e*x_a = exp(9657.8) rounds up to
       the exp(9658) printed here. So this conclusion is the composite of a pipeline and a numerical
-      input. The numerical input is an edge; Lemma 2.1 is not yet a node, which is what keeps this
-      `traced` rather than `identified`. THE THRESHOLD IS THE PAPER'S AND MUST STAY SO. PNT+ proves
+      input, and both are now edges -- see DudekPlatt.v3 for the pipeline. THE THRESHOLD IS THE PAPER'S
+      AND MUST STAY SO. PNT+ proves
       exp(3915) and the paper's own footnote 1 names exp(9394); stating either here would attribute to
       Dudek and Platt a result they did not prove. That is what DudekPlatt.v2 is for.
+
+      ERRATUM IN THE SOURCE, AND IT IS IN THE PROOF OF THIS. Lemma 2.1 as printed does not prove what
+      it claims. The paper lower-bounds the left side of Ramanujan's inequality by replacing each
+      1/(log x - 1)^(k+1) with the lower bound obtained from truncating
+      (1/log^(k+1) x)(1 + 1/log x + 1/log^2 x + ...)^(k+1). For the factorial terms, whose coefficients
+      k! are positive, that is valid. For the term carrying m_a it is valid only when m_a >= 0 --
+      lower-bounding 1/(log x - 1)^6 and multiplying by a negative m_a bounds that term from ABOVE,
+      which is the wrong direction. And m_a is negative in every application; this paper uses
+      -3103.33. So the argument as written never uses the branch in which its step is justified. The
+      same defect is in the authors' earlier arXiv:1407.1901, where the step is displayed at the end of
+      page 3. Reported to the maintainer by David Platt, after a student formalizing a related result
+      flagged it.
+
+      The effect is confined to seventh-order terms, so the threshold moves only slightly and this
+      statement is believed to stand -- but its stated proof does not establish it. The import of
+      DudekPlatt.v3 is the REPAIRED criterion, not the paper's lemma, which is why this conclusion is
+      now `identified`: its inputs are all nodes, and one of them is a corrected version of a step the
+      source got wrong. Nobody has recomputed exp(9658) under the corrected criterion, so that constant
+      still rests on the flawed derivation. Justifying this node means either continuing to cite the
+      paper, or bridging from DudekPlatt.v2, which is strictly stronger.
   designated: dudek-platt-paper
 - id: largest_counterexample_on_rh
   declaration: DudekPlatt.v1.largest_counterexample_on_rh
@@ -116,12 +138,12 @@ limitations:
   footnote 1 names exp(9394) using Mossinghoff-Trudgian's improved R, and PrimeNumberTheoremAnd reaches
   exp(3915). Neither belongs on this node.
 - >-
-  The paper's Lemma 2.1 -- the pipeline that carries a two-sided pi estimate to Ramanujan's inequality
-  -- is not stated anywhere yet. It is the natural third version of this family and the thing that would
-  let both thresholds be derived rather than asserted. Its conclusion as printed determines the
-  threshold only implicitly ("a value for x_a can be obtained in the proof"), so stating it usefully
-  needs the explicit comparison from inside the proof, between the two seventh-order terms displayed at
-  the paper's (2.1) and (2.2). That transcription has not been done.
+  THE PAPER'S PROOF OF THEOREM 1.2 HAS A DEFECT. Its Lemma 2.1 bounds the term carrying the lower-bound
+  constant m_a in the wrong direction whenever m_a is negative, which it always is in practice. See the
+  conclusion's note, and DudekPlatt.v3, which states the repaired criterion. The statement is believed
+  to stand -- the repair touches only seventh-order terms -- but nobody has recomputed exp(9658) under
+  the corrected criterion, so this constant rests on the flawed derivation. Anything downstream inherits
+  that, and this limitation should not be removed until someone redoes the computation.
 - >-
   Theorem 1.3 needs the full Riemann hypothesis, not a partial verification. This is the first
   conclusion in the network with that hypothesis, and it does not compose with the verification nodes.
