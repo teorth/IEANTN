@@ -36,11 +36,24 @@ open IEANTN
 
 `Eψ(x) < 9.22022 (log x)^{3/2} exp(−0.8476836 √(log x))` for every `x > 2`.
 
-Stated in the paper's own normalisation rather than converted, because the conversion is not free:
-in the `admissibleBound` shape with `R = 5.5666305` this is `A = 9.22022 · R^{3/2} ≈ 121.0916` and
-`C = 0.8476836 · √R = 2.0000…`, and the rounding in that arithmetic is the difference between this
-constant and the `121.096` that `FKS2` quotes. Keeping the printed form means the transcription can
-be checked against the paper by eye. -/
+Stated in the paper's own normalisation rather than converted, because **the conversion does not
+close**. Rescaling to the `admissibleBound` shape with `R = 5.5666305` gives
+
+* `A = 9.22022 · R^{3/2} = 121.09602174…`, where `psi_classical_bound` below states `121.096`;
+* `C = 0.8476836 · √R = 1.99999992…`, where it states `2`.
+
+Both roundings go the strengthening way — a smaller `A` and a larger `C` are each a *stronger*
+claim — so `psi_classical_bound` is **not** derivable from this conclusion by rescaling, and a
+solution that tries will fail by `2.2·10⁻⁵` in `A` and `8·10⁻⁸` in `C`. The two are transcribed
+from different places in the paper and neither is claimed to follow from the other; see the note
+there. This is the shape of gap `IEANTN.margin` exists for, and a margin index on whichever
+conclusion is eventually proved is the likely resolution.
+
+A note here once put the rescaled `A` at `≈ 121.0916` and called the discrepancy rounding. The
+figure was wrong — it is `121.09602` — and so was the gloss: the difference is not a benign
+rounding but a gap in the direction that breaks the derivation.
+
+Keeping the printed form means the transcription can be checked against the paper by eye. -/
 def psi_bound_all_x : Prop :=
   ∀ x > (2 : ℝ), Eψ x < 9.22022 * (Real.log x) ^ ((3 : ℝ) / 2) *
     Real.exp (-0.8476836 * Real.sqrt (Real.log x))
