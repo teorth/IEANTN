@@ -42,7 +42,7 @@ Derived from node metadata alone. Receipt freshness needs Lean, and lives in
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 3 | - |
 | `FKS.v1` | active | `psi_classical_bound` | literature | 3 | - |
 | `FKS2.v1` | active | `corollary_14` | literature | 6 | - |
-| `FKS2.v1` | active | `corollary_22` | literature | 7 | - |
+| `FKS2.v1` | active | `corollary_22` | literature | 8 | - |
 | `FKS2.v1` | active | `corollary_23` | literature | 3 | - |
 | `FKS2.v1` | active | `corollary_26` | literature | 3 | - |
 | `FKS2.v2` | active | `proposition_13` | lean-comparator | 0 | - |
@@ -90,6 +90,7 @@ downstream.
 | `FKS2Numerics.v1.theta_asymp_ge_one_below_e30` | 2 |
 | `FKS2Numerics.v1.table6_row2_floor` | 2 |
 | `FKS2Numerics.v1.nu_asymp_e30_le` | 2 |
+| `FKS2.v2.proposition_13` | 2 |
 | `Buthe2016.v1.theorem_2_psi` | 2 |
 | `Buthe.v1.theorem_2_theta_lower` | 2 |
 | `Buthe.v1.theorem_2_li_minus_pi` | 2 |
@@ -103,5 +104,4 @@ downstream.
 | `Hiary2016.v1.zeta_half_line_bound` | 1 |
 | `FKS2Numerics.v1.corollary_22_mid_range` | 1 |
 | `FKS2.v2.theorem_3` | 1 |
-| `FKS2.v2.proposition_13` | 1 |
 | `Dusart2018.v1.proposition_5_4` | 1 |

@@ -49,7 +49,7 @@ def proposition_13 : Prop :=
 | Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14) |
+| Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14), [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22) |
 
 **Justification `fks2-paper-proposition-13`** — literature, Proposition 13 (epsilon_asymp_theta_prop)
 

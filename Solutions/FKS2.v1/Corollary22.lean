@@ -242,6 +242,91 @@ theorem Epi_le_on_two_e {x : ℝ} (hx : 2 ≤ x) (hlt : x < exp 1) : Eπ x ≤ 0
         rw [one_mul, div_le_iff₀ hepos]
         nlinarith [Real.exp_one_gt_d9]
 
+/-- `K = 1` exactly at `x₀ = 2`: `π(2) = 1`, `Li(2) = 0` and `θ(2) = log 2`, so
+`K = log 2/2 − (log 2 − 2)/2 = 1`. -/
+theorem boundary_constant_eq_one :
+    |(primeCounting 2 - Li 2) / (2 / log 2) - (Chebyshev.theta 2 - 2) / 2| = 1 := by
+  have hpi : primeCounting 2 = 1 := by
+    unfold primeCounting
+    norm_num
+    decide +kernel
+  have hli : Li 2 = 0 := by unfold Li; simp
+  have hth : Chebyshev.theta 2 = log 2 := by
+    rw [Chebyshev.theta_eq_sum_primesLE]
+    norm_num [Nat.primesLE]
+    rw [show Nat.primesBelow 3 = {2} from by decide]
+    simp
+  have hl2 : (0 : ℝ) < log 2 := log_pos (by norm_num)
+  rw [hpi, hli, hth]
+  rw [show ((1 : ℝ) - 0) / (2 / log 2) - (log 2 - 2) / 2 = 1 by field_simp; ring]
+  norm_num
+
+/-- The whole of `μ_asymp` at `x₀ = 2`, `x₁ = e²⁰⁰⁰⁰`, bounded below `8.67·10⁻⁵`.
+
+The boundary summand carries `e²⁰⁰⁰⁰` in its denominator and is crushed to nothing; the Dawson
+summand is what the estimate actually costs, at about `5.7·10⁻⁵`. -/
+theorem muAsymp_boundary_and_dawson_le :
+    FKS2.v2.muAsymp 9.2203 (3 / 2) 0.84768363 1 2 (exp 20000) ≤ 8.67e-5 := by
+  have hl2 : (0 : ℝ) < log 2 := log_pos (by norm_num)
+  have hlog2 : (0.6931471803 : ℝ) < log 2 := Real.log_two_gt_d9
+  obtain ⟨hs20lo, hs20hi⟩ := sqrt20000_bounds
+  unfold FKS2.v2.muAsymp
+  rw [Real.log_exp, boundary_constant_eq_one, mul_one]
+  -- the Dawson summand
+  have hdaw : 2 * dawson (sqrt 20000 - 0.84768363 / (2 * sqrt 1)) / sqrt 20000 ≤ 5.9e-5 :=
+    muAsymp_dawson_term_le
+  -- the boundary summand: bound the admissible bound below, then the whole quotient above
+  have hR1 : (0 : ℝ) < 1 := one_pos
+  have hpow : (20000 : ℝ) ≤ (20000 : ℝ) ^ ((3 : ℝ) / 2) := by
+    nth_rewrite 1 [show (20000 : ℝ) = (20000 : ℝ) ^ (1 : ℝ) from (rpow_one _).symm]
+    exact rpow_le_rpow_of_exponent_le (by norm_num) (by norm_num)
+  have hexpge : exp (-120 : ℝ) ≤ exp (-0.84768363 * (20000 / 1) ^ ((1 : ℝ) / 2)) := by
+    refine exp_le_exp.mpr ?_
+    rw [show ((20000 : ℝ) / 1) = 20000 by norm_num, ← Real.sqrt_eq_rpow]
+    nlinarith [hs20hi]
+  have hlow : (184406 : ℝ) * exp (-120) ≤ admissibleBound 9.2203 (3 / 2) 0.84768363 1 (exp 20000) := by
+    unfold admissibleBound
+    rw [Real.log_exp, show ((20000 : ℝ) / 1) = 20000 by norm_num]
+    have h1 : (0 : ℝ) < exp (-0.84768363 * (20000 : ℝ) ^ ((1 : ℝ) / 2)) := exp_pos _
+    have h2 : (0 : ℝ) < (20000 : ℝ) ^ ((3 : ℝ) / 2) := rpow_pos_of_pos (by norm_num) _
+    have hexpge' : exp (-120 : ℝ) ≤ exp (-0.84768363 * (20000 : ℝ) ^ ((1 : ℝ) / 2)) := by
+      simpa [show ((20000 : ℝ) / 1) = 20000 by norm_num] using hexpge
+    nlinarith [hpow, hexpge', exp_pos (-120 : ℝ)]
+  have hepos : (0 : ℝ) < admissibleBound 9.2203 (3 / 2) 0.84768363 1 (exp 20000) := by
+    have : (0 : ℝ) < 184406 * exp (-120) := by positivity
+    linarith
+  -- exp 19880 is enormous; that is all the boundary summand needs
+  have he10 : (20000 : ℝ) ≤ exp 10 := by
+    have hone : (2.7182818283 : ℝ) < exp 1 := Real.exp_one_gt_d9
+    calc (20000 : ℝ) ≤ (2.7182818283 : ℝ) ^ (10 : ℕ) := by norm_num
+      _ ≤ (exp 1) ^ (10 : ℕ) := by gcongr
+      _ = exp 10 := by rw [← Real.exp_nat_mul]; norm_num
+  have hbig : (20000 : ℝ) ≤ exp 19880 := le_trans he10 (exp_le_exp.mpr (by norm_num))
+  have hprod : (127794 : ℝ) * exp 19880 ≤
+      admissibleBound 9.2203 (3 / 2) 0.84768363 1 (exp 20000) * exp 20000 * log 2 := by
+    -- Do not rewrite `exp 20000` in the goal: it also occurs as the ARGUMENT of `admissibleBound`,
+    -- and rewriting there turns the two sides into different atoms.
+    have hE : (0 : ℝ) < exp 19880 := exp_pos _
+    have hcancel : exp (-120 : ℝ) * exp 20000 = exp 19880 := by
+      rw [← Real.exp_add]; norm_num
+    have hpos : (0 : ℝ) < exp 20000 * log 2 := by positivity
+    have hmul := mul_le_mul_of_nonneg_right hlow hpos.le
+    have hlhs : (184406 : ℝ) * exp (-120) * (exp 20000 * log 2)
+        = 184406 * exp 19880 * log 2 := by
+      rw [show (184406 : ℝ) * exp (-120) * (exp 20000 * log 2)
+            = 184406 * (exp (-120) * exp 20000) * log 2 by ring, hcancel]
+    rw [hlhs] at hmul
+    nlinarith [hmul, hE, hlog2]
+  have hterm1 : (2 * 20000) / (admissibleBound 9.2203 (3 / 2) 0.84768363 1 (exp 20000)
+      * exp 20000 * log 2) ≤ 2.7e-5 := by
+    rw [div_le_iff₀ (by positivity)]
+    calc (2 : ℝ) * 20000 = 40000 := by norm_num
+      _ ≤ 2.7e-5 * (127794 * exp 19880) := by nlinarith [hbig]
+      _ ≤ 2.7e-5 * (admissibleBound 9.2203 (3 / 2) 0.84768363 1 (exp 20000) * exp 20000 * log 2) :=
+          mul_le_mul_of_nonneg_left hprod (by norm_num)
+  rw [Real.sqrt_one] at hdaw ⊢
+  linarith [hterm1, hdaw]
+
 /-- **Corollary 22.**
 
 Assembled from two halves. `corollary_22_mid_range` is the numerical interpolation on
@@ -262,8 +347,33 @@ theorem corollary_22
     (hnu : FKS2Numerics.v1.nu_asymp_e30_le)
     (hfloor : FKS2Numerics.v1.theta_asymp_ge_one_below_e30)
     (hmid : FKS2Numerics.v1.corollary_22_mid_range)
+    (hprop13 : FKS2.v2.proposition_13)
     (hthm3 : FKS2.v2.theorem_3) :
     FKS2.v1.corollary_22 := by
-  sorry
+  intro x hx
+  by_cases hle : x ≤ exp 20000
+  · exact hmid x ⟨hx, hle⟩
+  · have hgt : exp 20000 < x := lt_of_not_ge hle
+    have hx1 : (1 : ℝ) < x := by linarith
+    have hlog2 : (0.6931471803 : ℝ) < log 2 := Real.log_two_gt_d9
+    have hsq2 : (0.8325 : ℝ) ≤ sqrt (log 2) := by
+      have h := Real.sqrt_le_sqrt (show ((0.8325 : ℝ)) ^ 2 ≤ log 2 by nlinarith [hlog2])
+      rwa [Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 0.8325)] at h
+    have h14 : FKS2.v1.corollary_14 := corollary_14 hprop13 hpsi hconv hsmall hnu hfloor
+    have htail := hthm3 9.2203 (3 / 2) 0.84768363 1 2 (exp 20000)
+      (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+      (by rw [Real.sqrt_one]; linarith)
+      (by
+        rw [Real.sqrt_one, max_le_iff]
+        constructor
+        · nlinarith [Real.add_one_le_exp (20000 : ℝ)]
+        · exact Real.exp_le_exp.mpr (by norm_num))
+      (corollary_14_normalized h14)
+    refine (htail x hgt.le).trans ?_
+    refine admissibleBound_mono_A (by norm_num) hx1 ?_
+    -- `(1 + μ) · 9.2203 ≤ 9.2211`, i.e. `μ ≤ 8.67e-5`.
+    have hmu := muAsymp_boundary_and_dawson_le
+    unfold FKS2.v2.muAsymp at hmu ⊢
+    nlinarith [hmu]
 
 end FKS2Sol

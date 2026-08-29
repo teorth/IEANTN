@@ -75,7 +75,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 2
+    remaining_holes: 1
 - id: corollary_22
   declaration: FKS2.v1.corollary_22
   challenge: FKS2.v1.challenge_corollary_22
@@ -93,6 +93,8 @@ conclusions:
   - node: FKS2Numerics.v1
     conclusion: corollary_22_mid_range
   - node: FKS2.v2
+    conclusion: proposition_13
+  - node: FKS2.v2
     conclusion: theorem_3
   imports_status: identified
   justifications:
@@ -101,28 +103,30 @@ conclusions:
     source: FKS2
     locator: Corollary 22 (epsilon_asymp_pi_explicit)
     note: >-
-      The paper's headline asymptotic bound for pi. Stated at R = 1, with R folded into the
-      constants: 121.107 / R^{3/2} = 9.22106 and 2 / sqrt R = 0.8476836337 are where the printed
-      9.2211 and 0.84768363 come from. Checked, and note the printed C is very slightly BELOW
-      2/sqrt R, which is the safe direction since a smaller C is a weaker bound.
+      The paper's headline asymptotic bound for pi. Stated at R = 1, with R folded into the constants:
+      121.107 / R^{3/2} = 9.22106 and 2 / sqrt R = 0.8476836337 are where the printed 9.2211 and 0.84768363
+      come from. Checked, and note the printed C is very slightly BELOW 2/sqrt R, which is the safe direction
+      since a smaller C is a weaker bound.
 
-      Imports: everything corollary_14 needs, because the proof runs Theorem 3 on it, plus the
-      mid-range interpolation. Above e^20000 the claim is analysis and is proved in
-      Solutions/FKS2.v1; below it the paper interpolates numerically, which is
-      FKS2Numerics.v1.corollary_22_mid_range.
+      Imports: everything corollary_14 needs, because the proof runs Theorem 3 on it, plus the mid-range
+      interpolation. Above e^20000 the claim is analysis and is proved in Solutions/FKS2.v1; below it
+      the paper interpolates numerically, which is FKS2Numerics.v1.corollary_22_mid_range.
 
-      The arithmetic hangs together with room: 121.0961 / R^{3/2} = 9.220226, and multiplying by
-      (1 + mu) with mu <= 5.015e-5 gives 9.220688, comfortably under 9.2211. The mu estimate is
-      dominated by its Dawson summand, 2 D+(v)/sqrt(log x1) with v = 140.9975, and the upper bound
-      dawson_le proved in the solution covers it -- 4.05e-3 against a requirement of 6.70e-3.
+      The arithmetic hangs together with room: 121.0961 / R^{3/2} = 9.220226, and multiplying by (1 +
+      mu) with mu <= 5.015e-5 gives 9.220688, comfortably under 9.2211. The mu estimate is dominated by
+      its Dawson summand, 2 D+(v)/sqrt(log x1) with v = 140.9975, and the upper bound dawson_le proved
+      in the solution covers it -- 4.05e-3 against a requirement of 6.70e-3.
 
-      This is what dominates Table 6's rows far out, so it is also what corollary_23's tail will
-      rest on. PrimeNumberTheoremAnd has only the tail (corollary_22_tail), not the full corollary.
+      This is what dominates Table 6's rows far out, so it is also what corollary_23's tail will rest
+      on. PrimeNumberTheoremAnd has only the tail (corollary_22_tail), not the full corollary. IMPORT
+      ADDED, found by proving. The tail applies Theorem 3 to Corollary 14, so this conclusion rests on
+      FKS2.v2.proposition_13 as well as FKS2.v2.theorem_3 -- Corollary 14 is what Theorem 3 is applied
+      TO. The list previously named only theorem_3.
   designated: fks2-paper-corollary-22
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 2
+    remaining_holes: 1
 - id: corollary_23
   declaration: FKS2.v1.corollary_23
   challenge: FKS2.v1.challenge_corollary_23
@@ -182,7 +186,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 2
+    remaining_holes: 1
 - id: corollary_26
   declaration: FKS2.v1.corollary_26
   challenge: FKS2.v1.challenge_corollary_26
@@ -229,7 +233,7 @@ conclusions:
   progress:
     solution: Solutions/FKS2.v1/
     state: in-progress
-    remaining_holes: 2
+    remaining_holes: 1
 sources:
 - title: "Sharper bounds for the error term in the prime number theorem"
   authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]

@@ -75,7 +75,7 @@ graph LR
   NDusart2018_v1 --> NLcm_v1
   NFKBJ_v1 -->|6| NButhe_v1
   NFKS_v1 -->|4| NFKS2_v1
-  NFKS2_v2 -->|2| NFKS2_v1
+  NFKS2_v2 -->|3| NFKS2_v1
   NFKS2Numerics_v1 -->|7| NFKS2_v1
   NHiary2016_v1 --> NKLN_v1
   NKLN_v1 -->|2| NFKS_v1
@@ -271,6 +271,7 @@ graph LR
   FKS2Numerics_v1_nu_asymp_e30_le --> FKS2_v1_corollary_22
   FKS2Numerics_v1_theta_asymp_ge_one_below_e30 --> FKS2_v1_corollary_22
   FKS2Numerics_v1_corollary_22_mid_range --> FKS2_v1_corollary_22
+  FKS2_v2_proposition_13 --> FKS2_v1_corollary_22
   FKS2_v2_theorem_3 --> FKS2_v1_corollary_22
   FKS_v1_psi_classical_bound --> FKS2_v1_corollary_23
   Buthe_v1_theorem_2_li_minus_pi --> FKS2_v1_corollary_23
@@ -480,6 +481,7 @@ A line is one claim, indented under whatever assumes it.
   - [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) — computation
   - [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30) — computation
   - [`FKS2Numerics.v1.corollary_22_mid_range`](docs/nodes/FKS2Numerics-v1.md#corollary_22_mid_range) — computation
+  - [`FKS2.v2.proposition_13`](docs/nodes/FKS2-v2.md#proposition_13) — verified
   - [`FKS2.v2.theorem_3`](docs/nodes/FKS2-v2.md#theorem_3) — verified
 
 - [`FKS2.v1.corollary_23`](docs/nodes/FKS2-v1.md#corollary_23) — cited
