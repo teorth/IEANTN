@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import IEANTN.Vocabulary.ErrorTerms
+import IEANTN.Vocabulary.Numerics
 import IEANTN.Nodes.BKLNW.v1.Conclusions
 
 /-!
@@ -53,6 +54,22 @@ that it rests on two finite checks nobody had recorded: the size of Proposition 
 obstacle — they were previously invisible dependencies of a conclusion this network already
 carried, and the port is what made them visible.
 
+## Margins
+
+Every conclusion below carries a `margin n` factor from Vocabulary, at `n = 0`. `margin 0 = 1`, so
+each says exactly what it said before — the factor is a **site**, not yet a weakening. It marks a
+number whose provenance is a computation, so that raising the index later is a change of one
+numeral rather than a change of shape, and so that a reader can see at a glance which claims are
+computational and how deep the compounding has gone.
+
+The index is raised only when something downstream turns out to need it. Nothing does yet.
+
+Note what does *not* get a margin: `Platt2015.v1.rh_up_to` and its siblings are `numerical` too, but
+they assert `RiemannHypothesisUpTo H` — a discrete fact about where zeros are, not an inequality
+with a rounded constant on one side. Multiplying it by anything would be meaningless. A margin
+belongs on a *bound*, and the analogue for a verification height would be lowering `H`, not scaling
+it.
+
 ## One of these is not like the others
 
 `table6_row2_floor` is arithmetic on a finite set: `π(x)` is a prime count. `nu_asymp_e30_le` is
@@ -84,7 +101,7 @@ small `x` — not a tail bound, so it does not compose with anything above `e⁶
 a consumer must not assume it does. -/
 def table6_row2_floor : Prop :=
   ∀ x ∈ Set.Icc (Real.exp 1) (Real.exp 6),
-    Eπ x ≤ admissibleBound 0.826 0.25 1 5.5666305 x
+    Eπ x ≤ margin 0 * admissibleBound 0.826 0.25 1 5.5666305 x
 
 /-- Proposition 13's multiplier `ν_asymp` at `x₀ = e³⁰`, with the parameters `FKS2`'s Corollary 14
 uses: `Aψ = 121.096`, `B = 3/2`, `C = 2`, `R = 5.5666305`, and the `ψ − θ` comparison coefficients
@@ -109,7 +126,7 @@ and no further: `121.096 · (1 + 6.3376·10⁻⁷) < 121.0961`.
 Evaluating it means evaluating `BKLNW.v1.a₂ 30`, hence `f(e³⁰)` and `f(2⁴⁴)` — sums of about forty
 `rpow` terms each. A computation, not an argument. -/
 def nu_asymp_e30_le : Prop :=
-  nuAsympE30 ≤ 6.3376e-7
+  nuAsympE30 ≤ margin 0 * 6.3376e-7
 
 /-- **The small-range floor behind Corollary 14**: the asymptotic bound for `Eθ` is at least `1`
 throughout `[2, e³⁰]`.
@@ -121,7 +138,7 @@ nothing to say because `FKS`'s bound starts at `e³⁰`. The paper records the m
 See the module docstring: unlike the other two, this one is provable outright with more work. -/
 def theta_asymp_ge_one_below_e30 : Prop :=
   ∀ x ∈ Set.Icc (2 : ℝ) (Real.exp 30),
-    1 ≤ admissibleBound 121.0961 (3 / 2) 2 5.5666305 x
+    1 ≤ margin 0 * admissibleBound 121.0961 (3 / 2) 2 5.5666305 x
 
 /-- **The mid-range behind Corollary 22**: the headline bound already holds on `[2, e²⁰⁰⁰⁰]`.
 
@@ -136,7 +153,7 @@ interpolation is a computation over a table, not an argument, so it is stated he
 developments. -/
 def corollary_22_mid_range : Prop :=
   ∀ x ∈ Set.Icc (2 : ℝ) (Real.exp 20000),
-    Eπ x ≤ admissibleBound 9.2211 (3 / 2) 0.84768363 1 x
+    Eπ x ≤ margin 0 * admissibleBound 9.2211 (3 / 2) 0.84768363 1 x
 
 /-- **The mid-range behind Corollary 23**: Table 6's row 2 already holds on `[e⁶, e²⁰⁰⁰⁰]`.
 
@@ -150,6 +167,6 @@ between them is an artefact of which numerical method is cheapest where, not of 
 and nothing in this network consumes the halves separately. -/
 def corollary_23_mid_range : Prop :=
   ∀ x ∈ Set.Icc (Real.exp 6) (Real.exp 20000),
-    Eπ x ≤ admissibleBound 0.826 0.25 1 5.5666305 x
+    Eπ x ≤ margin 0 * admissibleBound 0.826 0.25 1 5.5666305 x
 
 end FKS2Numerics.v1

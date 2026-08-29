@@ -352,7 +352,9 @@ theorem corollary_22
     FKS2.v1.corollary_22 := by
   intro x hx
   by_cases hle : x ≤ exp 20000
-  · exact hmid x ⟨hx, hle⟩
+  · have hm := hmid x ⟨hx, hle⟩
+    simp only [IEANTN.margin, pow_zero, one_mul] at hm
+    exact hm
   · have hgt : exp 20000 < x := lt_of_not_ge hle
     have hx1 : (1 : ℝ) < x := by linarith
     have hlog2 : (0.6931471803 : ℝ) < log 2 := Real.log_two_gt_d9

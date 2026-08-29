@@ -1,0 +1,119 @@
+# Introducing `IEANTN.margin` sites on FKS2Numerics.v1's numerical conclusions.
+#
+# See IEANTN/Vocabulary/Numerics.lean for what a margin is and why it is indexed by depth.
+# Every index here is 0, so no claim is weakened; what changes is that each claim now says in
+# its own statement that a computation stands behind it.
+
+acknowledge:
+- conclusion: FKS2Numerics.v1.table6_row2_floor
+  effect: receipt-voided
+  reason: 'Deliberate, and the point of the change. This conclusion now carries an explicit `IEANTN.margin
+    n` factor at n = 0. Since margin 0 = 1 it says exactly what it said before: the factor is a SITE,
+    not a weakening. It marks a number whose provenance is a computation, so that raising the index
+    when something downstream needs a looser table is a change of one numeral rather than a change
+    of shape -- and so that a reader can see which claims are computational and how far compounding
+    has gone, instead of that being folded invisibly into a constant like 0.827 for 0.826.
+
+
+    Editing in place rather than versioning is the right call here precisely BECAUSE the margin is
+    0: a new version would fork the node to say the same thing, and every consumer would have to be
+    migrated for no change in meaning. The cost is re-verifying FKS2.v1, paid once now while all margins
+    are 1, rather than repeatedly later as individual tables need loosening.
+
+
+    This conclusion is the direct check on [e, e⁶]. All four FKS2.v1 conclusions that import it still
+    prove; the solution is free of sorryAx and its types match the challenge under pp.all.'
+- conclusion: FKS2Numerics.v1.nu_asymp_e30_le
+  effect: receipt-voided
+  reason: 'Deliberate, and the point of the change. This conclusion now carries an explicit `IEANTN.margin
+    n` factor at n = 0. Since margin 0 = 1 it says exactly what it said before: the factor is a SITE,
+    not a weakening. It marks a number whose provenance is a computation, so that raising the index
+    when something downstream needs a looser table is a change of one numeral rather than a change
+    of shape -- and so that a reader can see which claims are computational and how far compounding
+    has gone, instead of that being folded invisibly into a constant like 0.827 for 0.826.
+
+
+    Editing in place rather than versioning is the right call here precisely BECAUSE the margin is
+    0: a new version would fork the node to say the same thing, and every consumer would have to be
+    migrated for no change in meaning. The cost is re-verifying FKS2.v1, paid once now while all margins
+    are 1, rather than repeatedly later as individual tables need loosening.
+
+
+    This conclusion is the Proposition 13 multiplier at e³⁰. All four FKS2.v1 conclusions that import
+    it still prove; the solution is free of sorryAx and its types match the challenge under pp.all.'
+- conclusion: FKS2Numerics.v1.theta_asymp_ge_one_below_e30
+  effect: receipt-voided
+  reason: 'Deliberate, and the point of the change. This conclusion now carries an explicit `IEANTN.margin
+    n` factor at n = 0. Since margin 0 = 1 it says exactly what it said before: the factor is a SITE,
+    not a weakening. It marks a number whose provenance is a computation, so that raising the index
+    when something downstream needs a looser table is a change of one numeral rather than a change
+    of shape -- and so that a reader can see which claims are computational and how far compounding
+    has gone, instead of that being folded invisibly into a constant like 0.827 for 0.826.
+
+
+    Editing in place rather than versioning is the right call here precisely BECAUSE the margin is
+    0: a new version would fork the node to say the same thing, and every consumer would have to be
+    migrated for no change in meaning. The cost is re-verifying FKS2.v1, paid once now while all margins
+    are 1, rather than repeatedly later as individual tables need loosening.
+
+
+    This conclusion is the small-range floor on [2, e³⁰]. All four FKS2.v1 conclusions that import
+    it still prove; the solution is free of sorryAx and its types match the challenge under pp.all.'
+- conclusion: FKS2Numerics.v1.corollary_22_mid_range
+  effect: receipt-voided
+  reason: 'Deliberate, and the point of the change. This conclusion now carries an explicit `IEANTN.margin
+    n` factor at n = 0. Since margin 0 = 1 it says exactly what it said before: the factor is a SITE,
+    not a weakening. It marks a number whose provenance is a computation, so that raising the index
+    when something downstream needs a looser table is a change of one numeral rather than a change
+    of shape -- and so that a reader can see which claims are computational and how far compounding
+    has gone, instead of that being folded invisibly into a constant like 0.827 for 0.826.
+
+
+    Editing in place rather than versioning is the right call here precisely BECAUSE the margin is
+    0: a new version would fork the node to say the same thing, and every consumer would have to be
+    migrated for no change in meaning. The cost is re-verifying FKS2.v1, paid once now while all margins
+    are 1, rather than repeatedly later as individual tables need loosening.
+
+
+    This conclusion is the step-function interpolation below e²⁰⁰⁰⁰. All four FKS2.v1 conclusions
+    that import it still prove; the solution is free of sorryAx and its types match the challenge
+    under pp.all.'
+- conclusion: FKS2Numerics.v1.corollary_23_mid_range
+  effect: receipt-voided
+  reason: 'Deliberate, and the point of the change. This conclusion now carries an explicit `IEANTN.margin
+    n` factor at n = 0. Since margin 0 = 1 it says exactly what it said before: the factor is a SITE,
+    not a weakening. It marks a number whose provenance is a computation, so that raising the index
+    when something downstream needs a looser table is a change of one numeral rather than a change
+    of shape -- and so that a reader can see which claims are computational and how far compounding
+    has gone, instead of that being folded invisibly into a constant like 0.827 for 0.826.
+
+
+    Editing in place rather than versioning is the right call here precisely BECAUSE the margin is
+    0: a new version would fork the node to say the same thing, and every consumer would have to be
+    migrated for no change in meaning. The cost is re-verifying FKS2.v1, paid once now while all margins
+    are 1, rather than repeatedly later as individual tables need loosening.
+
+
+    This conclusion is Buthe plus the Table 4 transport on [e⁶, e²⁰⁰⁰⁰]. All four FKS2.v1 conclusions
+    that import it still prove; the solution is free of sorryAx and its types match the challenge
+    under pp.all.'
+- conclusion: FKS2.v1.corollary_14
+  effect: receipt-voided
+  reason: Downstream of the margin sites above. Its own statement is unchanged; its receipt is voided
+    because a conclusion it imports moved. This is the cross-edge breakage working as designed --
+    the verified implication no longer connects to what is now claimed, however small the edit.
+- conclusion: FKS2.v1.corollary_22
+  effect: receipt-voided
+  reason: Downstream of the margin sites above. Its own statement is unchanged; its receipt is voided
+    because a conclusion it imports moved. This is the cross-edge breakage working as designed --
+    the verified implication no longer connects to what is now claimed, however small the edit.
+- conclusion: FKS2.v1.corollary_23
+  effect: receipt-voided
+  reason: Downstream of the margin sites above. Its own statement is unchanged; its receipt is voided
+    because a conclusion it imports moved. This is the cross-edge breakage working as designed --
+    the verified implication no longer connects to what is now claimed, however small the edit.
+- conclusion: FKS2.v1.corollary_26
+  effect: receipt-voided
+  reason: Downstream of the margin sites above. Its own statement is unchanged; its receipt is voided
+    because a conclusion it imports moved. This is the cross-edge breakage working as designed --
+    the verified implication no longer connects to what is now claimed, however small the edit.
