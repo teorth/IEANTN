@@ -1693,11 +1693,6 @@ def solution_drift(receipt: dict) -> str | None:
             f"{commit[:12]}; the receipt attests to that commit, not to what is there now")
 
 
-#: Committed fingerprints, cached per repository root. `set_root` moves `FINGERPRINTS`, so the
-#: cache is keyed on the path rather than held in a closure.
-_RECORDED_FINGERPRINTS: dict[str, dict[str, str]] = {}
-
-
 def recorded_fingerprints() -> dict[str, str]:
     """The statement fingerprints as committed, without asking Lean.
 
@@ -1705,13 +1700,15 @@ def recorded_fingerprints() -> dict[str, str]:
     unavailable to the generated views. It does not have to be: `fingerprints.json` is committed
     and CI runs `fingerprint --check` against a real build, so a stale file fails there rather
     than quietly mis-colouring a box here.
+
+    Deliberately not cached. The file is small and a view reads it a few dozen times, which costs
+    nothing measurable; a cache would have to be invalidated when `_set_root` moves underneath it
+    or when the file is rewritten mid-run, and getting that wrong means colouring a box from a
+    fingerprint that is no longer there.
     """
-    cached = _RECORDED_FINGERPRINTS.get(str(FINGERPRINTS))
-    if cached is None:
-        cached = (json.loads(FINGERPRINTS.read_text(encoding="utf-8"))
-                  if FINGERPRINTS.is_file() else {})
-        _RECORDED_FINGERPRINTS[str(FINGERPRINTS)] = cached
-    return cached
+    if not FINGERPRINTS.is_file():
+        return {}
+    return json.loads(FINGERPRINTS.read_text(encoding="utf-8"))
 
 
 def receipt_state(conclusion_key: str, conclusion: dict) -> tuple[str, str] | None:
@@ -3709,10 +3706,15 @@ def main() -> int:
     # a tooling failure. The encoding is left alone so redirected output stays byte-faithful;
     # only the reaction to an unencodable character changes.
     for stream in (sys.stdout, sys.stderr):
-        try:
-            stream.reconfigure(errors="replace")
-        except (AttributeError, ValueError):  # not a reconfigurable text stream
-            pass
+        # `getattr` rather than a direct call: these are typed `TextIO`, which does not declare
+        # `reconfigure` even though the concrete `TextIOWrapper` has it, and pyright rejects the
+        # direct form. A redirected or wrapped stream may genuinely lack it.
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            try:
+                reconfigure(errors="replace")
+            except ValueError:  # detached, or already closed
+                pass
 
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)

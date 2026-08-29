@@ -1,7 +1,6 @@
 # Node metadata for `FKS2.v1`.  See docs/NODES.md.
 #
-# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
-# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+# Four corollaries of the paper, all `lean-comparator` verified.
 version: "v0.4"
 
 node:
@@ -16,10 +15,11 @@ project:
   description: >-
     Two conversion pipelines carrying admissible classical bounds along psi -> theta -> pi, together with
     the explicit numerical bounds the paper obtains by running the best available inputs through them.
-    This node exports three of those numerical outputs: a classical bound for E_theta, one row of the
-    Table 6 classical bounds for E_pi, and the headline estimate |pi(x) - Li(x)| <= 0.4298 x / log x for
-    x >= 2. The pipelines themselves are not stated yet; see the Conclusions module docstring for what
-    they need first.
+    This node exports four of those numerical outputs: Corollary 14, a classical bound for E_theta;
+    Corollary 22, the headline asymptotic |pi(x) - Li(x)| <= 9.2211 x sqrt(log x) exp(-0.84768363
+    sqrt(log x)) for x >= 2; Corollary 23 at the [0.826, 0.25, 1.00, 1.000] row of Table 6; and Corollary
+    26, |pi(x) - Li(x)| <= 0.4298 x / log x for x >= 2. The pipelines themselves live on FKS2.v2, the
+    pipeline variant, and are imported here rather than restated.
   authors: ["Terence Tao"]
   license: "Apache-2.0"
   responsible_maintainers: ["Terence Tao"]
@@ -72,7 +72,7 @@ conclusions:
       change.
   - id: comparator
     kind: lean-comparator
-    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610'
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33265874834'
   designated: comparator
   imports_status: identified
 - id: corollary_22
@@ -123,7 +123,7 @@ conclusions:
       TO. The list previously named only theorem_3.
   - id: comparator
     kind: lean-comparator
-    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610'
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33265874834'
   designated: comparator
 - id: corollary_23
   declaration: FKS2.v1.corollary_23
@@ -195,7 +195,7 @@ conclusions:
       benefit from that per-row work.
   - id: comparator
     kind: lean-comparator
-    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610'
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33265874834'
   designated: comparator
   imports_status: identified
 - id: corollary_26
@@ -254,7 +254,7 @@ conclusions:
       is no longer needed and has been dropped.
   - id: comparator
     kind: lean-comparator
-    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610'
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33265874834'
   designated: comparator
 
   imports_status: identified
@@ -272,27 +272,35 @@ automation:
     models: ["Claude Opus 5 (Anthropic)"]
     framework: "Claude Code"
     role: >-
-      Created this stub and transcribed its bibliographic record from the PNT+
-      bibliography, under the direction of the maintainer. No mathematical claim is
-      made and no statement has been transcribed from the paper.
-
+      Transcribed the four corollaries from the paper and wrote the Lean solution proving
+      them from the imported pipelines and numerical inputs, under the direction of the
+      maintainer. Comparator accepted that solution; the receipts record the runs.
 review:
   status: self-assessed
   reviewers: ["Terence Tao"]
   notes: >-
-    Statements transcribed from PNT+'s formalization of the same paper, whose definitions of E_psi, E_theta,
-    E_pi and the admissible bound were checked line by line against this repository's Vocabulary and agree,
-    including the use of the offset Li rather than li. They have not been checked against the printed
-    paper directly.
+    Statements were first transcribed from PNT+'s formalization of the same paper, whose definitions of
+    E_psi, E_theta, E_pi and the admissible bound were checked line by line against this repository's
+    Vocabulary and agree, including the use of the offset Li rather than li. They have since been read
+    against the paper itself. The published version -- Res. Number Theory 9 (2023), Paper No. 63, the
+    version this node's sources[].id cites -- is now held alongside the arXiv preprint, and the two agree
+    on every constant: extracting each decimal in document order gives 692 distinct values in the preprint
+    and 693 in the published version, differing only in the DOI and one occurrence of the arXiv id. See
+    docs/SOURCES.md.
 
 limitations:
 - >-
-  Every conclusion here rests on the cited paper. None is proved in Lean in this repository, and anything
-  downstream inherits that.
+  Each conclusion is proved in Lean here, but only CONDITIONALLY: the step from its imports to its
+  statement is what Comparator checked. The imports themselves are not proved here. In particular
+  FKS2Numerics.v1's five finite computations are asserted on the paper's authority and have not been
+  re-run, and FKS.v1 and BKLNW.v1 are cited, so anything downstream inherits all of that.
 - >-
-  The paper's two conversion pipelines -- Proposition 13 and Corollary 21 -- are its reusable content
-  and are deliberately not stated yet: doing so faithfully needs BKLNW's bounds on psi - theta, which
-  no node yet provides. The Conclusions module docstring sets out the two routes and which is preferable.
+  Two errata in the source paper, both still present in the published version. Lemma 10's `a = 0`
+  bullet states that g decreases for all log(x) > -2b/c, where its own proof derives that the
+  derivative is negative when u < -2b/c -- the inequality is reversed. And Corollary 11 states
+  B >= 1 + C^2/(16R), where discharging it through Lemma 10's first bullet needs the strict
+  B > 1 + C^2/(16R); at equality one falls into the second bullet, which gives decrease only above a
+  threshold. Neither affects the corollaries stated here, which do not route through the equality case.
 - >-
   Tables 6 and 7 are exported one row deep. Corollary 23 holds for every row of Table 6 and Corollary
   24 for every row of Table 7; stating them in full wants the tables as a data structure in Vocabulary.

@@ -452,6 +452,91 @@ class TestImportStatus(FixtureRepo):
         self.assertNotIn("style A_v1_main stroke-dasharray", rendered)
 
 
+class TestReceiptHealthInTheViews(FixtureRepo):
+    """What the generated views say about a `lean-comparator` claim.
+
+    They used to say `verified` for as long as the metadata designated it, which stayed true after
+    an upstream edit had severed the very implication Comparator checked. `status` knew; the files
+    a reader actually opens did not. These tests pin the three states apart.
+    """
+
+    def _verified(self, node_id: str, *, statement: dict | None = None,
+                  mathlib_rev: str = "a" * 40, receipt: bool = True) -> str:
+        """A node designating `lean-comparator`, with the receipt and fingerprints to match."""
+        self.write_node(
+            node_id, LITERATURE.replace("kind: literature", "kind: lean-comparator"))
+        key = f"{node_id}.main"
+        (self.root / "fingerprints.json").write_text(
+            json.dumps({key: "digest-as-built"}), encoding="utf-8")
+        if receipt:
+            (self.root / "receipts").mkdir(exist_ok=True)
+            (self.root / "receipts" / f"{key}.json").write_text(json.dumps({
+                "conclusion": key,
+                "statement": {key: "digest-as-built"} if statement is None else statement,
+                "environment": {"lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+                                "mathlib_rev": mathlib_rev},
+            }), encoding="utf-8")
+        return key
+
+    def _kind_of(self, key: str) -> str:
+        nodes = ieantn.load_nodes()
+        return ieantn.display_kind(key, ieantn.index_conclusions(nodes)[key][1])
+
+    def test_a_standing_receipt_is_plain_verified(self) -> None:
+        self.assertEqual(self._kind_of(self._verified("A.v1")), "lean-comparator")
+
+    def test_a_moved_statement_is_drifted(self) -> None:
+        """The fingerprint the receipt pinned is not the one the library now elaborates to."""
+        key = self._verified("A.v1", statement={"A.v1.main": "digest-before-the-edit"})
+        self.assertEqual(self._kind_of(key), "lean-comparator-drifted")
+
+    def test_a_moved_environment_is_only_stale(self) -> None:
+        """Same two statements, different Mathlib: the proof still connects them."""
+        key = self._verified("A.v1", mathlib_rev="b" * 40)
+        self.assertEqual(self._kind_of(key), "lean-comparator-stale")
+
+    def test_a_missing_receipt_is_drifted_not_verified(self) -> None:
+        """Designating `lean-comparator` is a claim about a file; absent, it supports nothing."""
+        self.assertEqual(
+            self._kind_of(self._verified("A.v1", receipt=False)), "lean-comparator-drifted")
+
+    def test_drift_outranks_environment_staleness(self) -> None:
+        """A receipt can be both. Which one it is called is not a matter of taste: staleness is
+        recoverable by re-running, and a severed implication is not."""
+        key = self._verified(
+            "A.v1", statement={"A.v1.main": "digest-before-the-edit"}, mathlib_rev="b" * 40)
+        self.assertEqual(self._kind_of(key), "lean-comparator-drifted")
+
+    def test_a_drifted_receipt_ranks_below_a_bare_assertion(self) -> None:
+        """An assertion is a claim someone stands behind. A voided receipt supports nothing about
+        the statement as it now reads, so it must not summarise a node more favourably."""
+        order = ieantn.EVIDENCE_ORDER
+        self.assertLess(order.index("lean-comparator-drifted"), order.index("asserted"))
+        self.assertLess(order.index("lean-comparator-stale"), order.index("lean-comparator"))
+        self.assertLess(order.index("bridged"), order.index("lean-comparator-stale"))
+
+    def test_the_overview_box_says_drifted(self) -> None:
+        """The point of the exercise: it has to be legible without running the tooling."""
+        self._verified("A.v1", statement={"A.v1.main": "digest-before-the-edit"})
+        nodes = ieantn.load_nodes()
+        rendered = chr(10).join(
+            ieantn.render_node_overview(nodes, ieantn.index_conclusions(nodes)))
+        self.assertIn("verified, drifted", rendered)
+        self.assertIn("lean_comparator_drifted", rendered)
+
+    def test_state_names_the_claim_that_moved(self) -> None:
+        """A pull request that voids a receipt should carry that fact in its own diff."""
+        self._verified("A.v1", statement={"A.v1.main": "digest-before-the-edit"})
+        rendered = ieantn.render_state(ieantn.load_nodes())
+        self.assertIn("Receipts needing attention", rendered)
+        self.assertIn("A.v1.main", rendered)
+
+    def test_state_is_silent_when_every_receipt_stands(self) -> None:
+        self._verified("A.v1")
+        self.assertNotIn(
+            "Receipts needing attention", ieantn.render_state(ieantn.load_nodes()))
+
+
 class TestNodeOverview(FixtureRepo):
     """The collapsed, one-box-per-node picture.
 
@@ -465,10 +550,13 @@ class TestNodeOverview(FixtureRepo):
         return chr(10).join(ieantn.render_node_overview(nodes, ieantn.index_conclusions(nodes)))
 
     def test_a_node_is_summarised_by_its_weakest_claim(self) -> None:
-        """Nine verified claims and one citation is, to anyone importing the node, a citation."""
+        """Nine computed claims and one citation is, to anyone importing the node, a citation."""
         self.assertEqual(
-            ieantn.weakest_kind([{"justifications": [{"id": "j", "kind": k}], "designated": "j"}
-                                 for k in ("lean-comparator", "literature")]),
+            ieantn.weakest_kind("A.v1",
+                                [{"id": f"c{index}",
+                                  "justifications": [{"id": "j", "kind": kind}],
+                                  "designated": "j"}
+                                 for index, kind in enumerate(("numerical", "literature"))]),
             "literature")
 
     def test_an_edge_is_drawn_between_the_nodes_not_the_claims(self) -> None:

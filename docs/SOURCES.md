@@ -7,6 +7,11 @@ redistribute them. What is committed is this list, so that anyone filling in a n
 what they need and what has already been found. A local copy lives outside the repository — on the
 maintainer's machine at `../IEANTN-papers/` — and the filenames below are that copy's.
 
+So the **identifier column is the record**: a DOI or arXiv id is a durable pointer anyone can
+follow, where a filename is one machine's convenience. When a paper is held in both preprint
+and published form, name both identifiers — the two are not always the same paper, and the
+`Kadiri2005.v1` row below is the standing proof of it.
+
 **Why this exists.** Tracing what a result assumes needs the paper, not a citation. Twice already a
 secondary source has been wrong in a way only the paper settled: FKS2 and FKS both misattribute
 Mossinghoff–Trudgian's title, and BKLNW's own proof contradicts its displayed statement. A node's
@@ -16,15 +21,15 @@ Mossinghoff–Trudgian's title, and BKLNW's own proof contradicts its displayed 
 
 | Node | Paper | Identifier | Local file |
 |---|---|---|---|
-| `FKS2.v1`, `FKS2.v2`, `FKS2Numerics.v1` | Fiori–Kadiri–Swidinsky, *Sharper bounds for the error term in the prime number theorem* | [arXiv:2206.12557](https://arxiv.org/abs/2206.12557); published as [doi:10.1007/s40993-023-00454-w](https://doi.org/10.1007/s40993-023-00454-w), *Research in Number Theory* **9** (2023) | `FKS2-2023-error-term-PNT.pdf`, and `source/FKS2-2023-error-term-PNT/FKS2.tex` (the transcription surface). Preprint only — see *Cited but not held* |
+| `FKS2.v1`, `FKS2.v2`, `FKS2Numerics.v1` | Fiori–Kadiri–Swidinsky, *Sharper bounds for the error term in the prime number theorem* | [arXiv:2206.12557](https://arxiv.org/abs/2206.12557); published as [doi:10.1007/s40993-023-00454-w](https://doi.org/10.1007/s40993-023-00454-w), *Research in Number Theory* **9** (2023) | `FKS2-2023-published-ResNumberTheory.pdf` **and** `FKS2-2023-error-term-PNT.pdf`, with `source/FKS2-2023-error-term-PNT/FKS2.tex` as the transcription surface. The two agree on every constant — see below |
 | `FKS.v1` | Fiori–Kadiri–Swidinsky, *Sharper bounds for the Chebyshev function ψ(x)* | [arXiv:2204.02588](https://arxiv.org/abs/2204.02588) | `FKS2023-chebyshev-psi.pdf`, and the published JMAA version |
 | `BKLNW.v1` | Broadbent–Kadiri–Lumley–Ng–Wilk, *Sharper bounds for θ(x)* | [arXiv:2002.11068](https://arxiv.org/abs/2002.11068) | `BKLNW2021-chebyshev-theta.pdf`, and the published Math. Comp. version |
-| `KLN.v1` | Kadiri–Lumley–Ng, *Explicit zero density for the Riemann zeta function* | [arXiv:2101.12263](https://arxiv.org/abs/2101.12263) | `KLN2018-explicit-zero-density.pdf` |
-| `Buthe.v1` | Büthe, *An analytic method for bounding ψ(x)* | [arXiv:1511.02032](https://arxiv.org/abs/1511.02032) | `Buthe2018-bounding-psi.pdf` |
-| `MT.v1` | Mossinghoff–Trudgian, *Nonnegative trigonometric polynomials and a zero-free region* | [arXiv:1410.3926](https://arxiv.org/abs/1410.3926) | `MT2015-zero-free-region.pdf` |
+| `KLN.v1` | Kadiri–Lumley–Ng, *Explicit zero density for the Riemann zeta function* | [arXiv:2101.12263](https://arxiv.org/abs/2101.12263); published as [doi:10.1016/j.jmaa.2018.04.071](https://doi.org/10.1016/j.jmaa.2018.04.071), *J. Math. Anal. Appl.* **465** (2018) 22–46 | `KLN2018-published-JMAA.pdf` **and** `KLN2018-explicit-zero-density.pdf` |
+| `Buthe.v1` | Büthe, *An analytic method for bounding ψ(x)* | [arXiv:1511.02032](https://arxiv.org/abs/1511.02032); published as [doi:10.1090/mcom/3264](https://doi.org/10.1090/mcom/3264), *Math. Comp.* **87** (2018) 1991–2009 | `Buthe2018-published-MathComp.pdf` **and** `Buthe2018-bounding-psi.pdf` |
+| `MT.v1` | Mossinghoff–Trudgian, *Nonnegative trigonometric polynomials and a zero-free region* | [arXiv:1410.3926](https://arxiv.org/abs/1410.3926); published as [doi:10.1016/j.jnt.2015.05.010](https://doi.org/10.1016/j.jnt.2015.05.010), *J. Number Theory* **157** (2015) 329–349 | `MT2015-published-JNT.pdf` **and** `MT2015-zero-free-region.pdf` |
 | `MTY.v1` | Mossinghoff–Trudgian–Yang, *Explicit zero-free regions* | [arXiv:2212.06867](https://arxiv.org/abs/2212.06867) | `MTY2024-explicit-zero-free.pdf` |
 | `Kadiri2005.v1` | Kadiri, *Une région explicite sans zéros pour ζ* | Acta Arith. **117**.4 (2005) 303–339; [arXiv:math/0401238](https://arxiv.org/abs/math/0401238) | `Kadiri2005-published-ActaArith.pdf` **and** `Kadiri2005-region-sans-zeros.pdf`. The two are **not** interchangeable: the preprint gives `5.70176`, the published version `5.69693`, and only the latter supports MT's `R = 5.7` |
-| `PlattTrudgian.v1` | Platt–Trudgian, *The Riemann hypothesis is true up to 3·10¹²* | [arXiv:2004.09765](https://arxiv.org/abs/2004.09765) | `PlattTrudgian2021-RH-to-3e12.pdf` |
+| `PlattTrudgian.v1` | Platt–Trudgian, *The Riemann hypothesis is true up to 3·10¹²* | [arXiv:2004.09765](https://arxiv.org/abs/2004.09765); published as [doi:10.1112/blms.12460](https://doi.org/10.1112/blms.12460), *Bull. London Math. Soc.* **53** (2021) 792–797 | `PlattTrudgian2021-RH-to-3e12-published-BLMS.pdf` **and** `PlattTrudgian2021-RH-to-3e12.pdf` |
 | `Buthe2016.v1` | Büthe, *Estimating π(x) … under partial RH assumptions* | [arXiv:1410.7015](https://arxiv.org/abs/1410.7015) | `Buthe2016-pi-under-partial-RH.pdf` |
 | `Hiary2016.v1` | Hiary, *An explicit van der Corput estimate for ζ(1/2+it)* | [arXiv:1507.01261](https://arxiv.org/abs/1507.01261) | `Hiary2016-van-der-Corput.pdf` |
 | — | Hiary–Patel–Yang, *An improved explicit estimate for ζ(1/2+it)* | [arXiv:2207.02366](https://arxiv.org/abs/2207.02366) | `HiaryPatelYang2022-improved-zeta-half.pdf` |
@@ -58,29 +63,37 @@ hand from `Kadiri2005` and from Platt–Trudgian's account of the project, and i
 
 ### Cited but not held
 
-Five entries above name a **published** DOI in the node's `sources[].id` while the *Local file*
-column records only a **preprint**. Nobody here has read the version being cited.
+**None.** This section listed five entries that named a published DOI in the node's
+`sources[].id` while the library held only a preprint. All five are now held in both forms:
+FKS2 (*Res. Number Theory* **9** (2023) Paper No. 63), KLN (*JMAA* **465** (2018) 22–46),
+Büthe (*Math. Comp.* **87** (2018) 1991–2009), MT (*J. Number Theory* **157** (2015) 329–349)
+and Platt–Trudgian (*Bull. LMS* **53** (2021) 792–797).
 
-| Node(s) | Cited | Held |
-|---|---|---|
-| `FKS2.v1`, `FKS2.v2`, `FKS2Numerics.v1` | Research in Number Theory 9 (2023) | arXiv:2206.12557 + LaTeX source |
-| `KLN.v1` | J. Math. Anal. Appl. (2018) | arXiv:2101.12263 |
-| `Buthe.v1` | Math. Comp. (2018) | arXiv:1511.02032 |
-| `MT.v1` | J. Number Theory (2015) | arXiv:1410.3926 |
-| `PlattTrudgian.v1` | Bull. LMS (2020) | arXiv:2004.09765 |
+Keep it that way. The `Kadiri2005.v1` row is why this is not pedantry: its preprint gives
+`5.70176` and its published version `5.69693`, and **only the latter supports the `R = 5.7` that
+MT relies on**. A node whose constants came from a preprint while its citation points at the
+published paper is making an unchecked claim, and the network cannot see the difference — a
+fingerprint pins the statement, not the provenance of the numbers in it.
 
-This is not pedantry, and the `Kadiri2005.v1` row is the proof: its preprint gives `5.70176` and
-its published version `5.69693`, and **only the latter supports the `R = 5.7` that MT relies on**.
-A node whose constants came from a preprint while its citation points at the published paper is
-making an unchecked claim, and the network cannot see the difference — a fingerprint pins the
-statement, not the provenance of the numbers in it.
+#### What the FKS2 comparison found
 
-`FKS.v1` and `BKLNW.v1` show the fix: hold both, and say so in the *Local file* column.
+Six conclusions across `FKS2.v1` and `FKS2.v2` are `lean-comparator` verified, and every constant
+in them was read from the arXiv LaTeX. Comparing the published version against the preprint:
 
-The FKS2 case is the live one. Six conclusions across `FKS2.v1` and `FKS2.v2` are now
-`lean-comparator` verified, and every constant in them — `121.0961`, `9.2211`, `0.84768363`,
-`0.826` — was read from the arXiv LaTeX. If the published version moved any of them, the
-verification is of the wrong statement, and it is the citation rather than the proof that is wrong.
+- **Every decimal constant agrees, with matching multiplicities.** Extracting each number
+  matching `[0-9]+\.[0-9]{2,}` in document order gives 692 distinct values in the preprint and
+  693 in the published version; the only differences are the DOI `10.1007` and one fewer
+  occurrence of the arXiv id `2206.12557`. The load-bearing constants — `121.0961`, `9.2211`,
+  `0.84768363`, `0.826`, `5.5666305`, `6.3376`, `0.4298` — appear in both, the same number of
+  times. Integer differences are all table-layout artifacts of the two typesettings.
+- **Both recorded errata survive into the published version**, so the notes on them stand.
+  Lemma 10's `a = 0` bullet reads "decreases with x for all `log(x) > -2b/c`" where its own proof
+  derives "negative when `u < -2b/c`" — the inequality is reversed. And Corollary 11 states
+  `B ≥ 1 + C²/(16R)`, where discharging it through Lemma 10's *first* bullet needs
+  `b < -c²/(16a)`, i.e. the strict `B > 1 + C²/(16R)`; at equality one falls into the second
+  bullet, which gives decrease only above a threshold.
+
+So the six verified conclusions are verified against statements the published paper also makes.
 
 ## Wanted
 

@@ -186,8 +186,9 @@ def corollary_23_mid_range : Prop :=
 Recorded by the node itself, not derived.
 
 - A finite computation asserted on the paper's authority. Nothing here is proved in Lean, and the check has not been re-run.
-- `theta_asymp_ge_one_below_e30` is not a finite check at all: it quantifies over [2, e^30] and is provable outright, only its endpoint evaluation being numerical. Asserting it is weaker than the node's other two claims deserve to be read as, and it should be promoted to a proof.
+- `theta_asymp_ge_one_below_e30` is not a finite check at all: it quantifies over [2, e^30] and is provable outright, only its endpoint evaluation being numerical. Asserting it is weaker than the node's other four claims deserve to be read as, and it should be promoted to a proof.
 - Only Table 6's row 2 is stated, because it is the only floor a stated FKS2.v1 conclusion consumes. The paper's other rows, and its Table 7, have their own; upstream states ten and twenty-five respectively.
+- Every conclusion here carries an explicit `IEANTN.margin n` factor, currently at n = 0. Since margin 0 = 1 they say exactly what they said without it: the factor marks a number whose provenance is a computation, so that loosening one later is a change of one numeral rather than a change of shape. A reader comparing these statements to the paper should read past the margin factor.
 - A floor, not a tail bound. It says nothing above e^6 and does not compose upward by monotonicity.
 - No novelty is claimed. The computation is the paper's.
 

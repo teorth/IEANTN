@@ -4,3 +4,7 @@ __pycache__/
 
 # Solution projects are separate Lake projects; their build output is not tracked.
 /Solutions/*/.lake
+
+# Papers are other people's work and many are paywalled; the library lives outside the
+# repository (see docs/SOURCES.md). This is belt and braces against an `add -A` from inside.
+*.pdf

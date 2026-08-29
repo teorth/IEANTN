@@ -6,11 +6,11 @@
     "mathlib_rev": "5b1c3618759375e0ef0033d39000b1338e99f133"
   },
   "repository": {
-    "commit": "b19c3d757c1303c81c1ead0a9c683457b2176e9f"
+    "commit": "576b7282159c9ebda771c5548699c05a6dc59afb"
   },
   "run": {
-    "recorded_at": "2026-08-29T03:48:14Z",
-    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/33231361610"
+    "recorded_at": "2026-08-29T17:57:00Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/33265874834"
   },
   "schema": 2,
   "solution": {
@@ -22,8 +22,8 @@
     "FKS.v1.psi_classical_bound": "d42b43ed3148a6b9108804a3b64ca7cb37c4f909dd06606428700d7f32f39d54",
     "FKS2.v1.corollary_14": "16fe74e035b77aff8ccd9a02ecd9092d834b22b239894a2d0c10cb8455360a0b",
     "FKS2.v2.proposition_13": "27141570586026979433c0a2bbc7ba601dd5dd914132419ab5a91bc400111aa6",
-    "FKS2Numerics.v1.nu_asymp_e30_le": "c0114549f902e55c6ae03fb5f11a003bfb4e7707de50f64711a16bf23dff3b7a",
-    "FKS2Numerics.v1.theta_asymp_ge_one_below_e30": "4d17c213e9c11663865b5faa869f09f5fe28255d5107d7e487949e43c03f3368"
+    "FKS2Numerics.v1.nu_asymp_e30_le": "aa5de4333ab80f8a24184095966f57e810c9b089fdcf513ff9c771abffd10ac0",
+    "FKS2Numerics.v1.theta_asymp_ge_one_below_e30": "8efc716aa8c51b4b92aeed3164cb59cc26a86c6ce817fed0af2d6974c56e18f8"
   },
   "tools": {
     "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
