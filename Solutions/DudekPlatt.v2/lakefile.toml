@@ -1,0 +1,10 @@
+name = "solution_DudekPlatt_v2"
+defaultTargets = ["Solution"]
+
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]

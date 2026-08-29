@@ -15,6 +15,7 @@ import IEANTN.Nodes.DudekPlatt.v1.Challenge
 import IEANTN.Nodes.DudekPlatt.v2.Challenge
 import IEANTN.Nodes.DudekPlatt.v3.Challenge
 import IEANTN.Nodes.DudekPlattNumerics.v1.Challenge
+import IEANTN.Nodes.DudekPlattNumerics.v2.Challenge
 import IEANTN.Nodes.Dusart2018.v1.Challenge
 import IEANTN.Nodes.FKBJ.v1.Challenge
 import IEANTN.Nodes.FKS.v1.Challenge
