@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | pipeline |
-| Status | awaiting-verification |
+| Status | active |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -69,14 +69,19 @@ noncomputable def criterion : Prop :=
 | Challenge | `DudekPlatt.v3.challenge_criterion` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/DudekPlatt/v3/Conclusions.lean#L129) |
 | Solution | [`Solutions/DudekPlatt.v3`](https://github.com/teorth/IEANTN/tree/main/Solutions/DudekPlatt.v3) |
-| Evidence | unjustified (`none-yet`) |
+| Receipt | [`DudekPlatt.v3.criterion.json`](https://github.com/teorth/IEANTN/blob/main/receipts/DudekPlatt.v3.criterion.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | [`DudekPlatt.v1.ramanujan_inequality`](DudekPlatt-v1.md#ramanujan_inequality), [`DudekPlatt.v2.ramanujan_inequality_3915`](DudekPlatt-v2.md#ramanujan_inequality_3915) |
 
-**Justification `unjustified`** — **designated** — none-yet
+**Justification `unjustified`** — none-yet
 
 > A COMPLETE SOLUTION EXISTS at Solutions/DudekPlatt.v3, awaiting verification. It is free of sorryAx and its axioms are exactly propext, Classical.choice and Quot.sound; its type matches the challenge under `set_option pp.all true`. The justification stays `none-yet` until a receipt is recorded by the verification workflow -- a justification one can write by hand attests nothing. Imports `none`, and that is a real none: a conditional theorem quantified over all admissible parameters consumes no other result in the network, because everything it needs arrives as a hypothesis. So its justification can only be a Lean proof, and it can be verified without waiting on any numerical input. The proof follows PrimeNumberTheoremAnd's `Ramanujan.criterion`, which carries the same repair as `εlower` (a case split on the sign of m) and `shift_m_lower_of_nonpos`. The question of whether PNT+'s wider development meets this repository's axiom bound does not arise here: this chain was ported into a standalone solution and checked directly, and it uses no native_decide and touches none of PNT+'s numerical machinery.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33279819834
 
 ## Limitations
 

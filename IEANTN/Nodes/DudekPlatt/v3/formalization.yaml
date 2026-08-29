@@ -9,7 +9,7 @@ node:
   family: DudekPlatt
   version: v3
   kind: pipeline
-  status: awaiting-verification
+  status: active
 
 project:
   name: "Dudek-Platt's criterion for Ramanujan's inequality, repaired"
@@ -56,7 +56,10 @@ conclusions:
       PNT+'s wider development meets this repository's axiom bound does not arise here: this chain was
       ported into a standalone solution and checked directly, and it uses no native_decide and touches
       none of PNT+'s numerical machinery.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33279819834'
+  designated: comparator
 
 sources:
 - title: "On solving a curious inequality of Ramanujan"
