@@ -72,7 +72,7 @@ conclusions:
       change.
   - id: comparator
     kind: lean-comparator
-    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610'
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33265874834'
   designated: comparator
   imports_status: identified
 - id: corollary_22
@@ -123,7 +123,7 @@ conclusions:
       TO. The list previously named only theorem_3.
   - id: comparator
     kind: lean-comparator
-    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610'
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33265874834'
   designated: comparator
 - id: corollary_23
   declaration: FKS2.v1.corollary_23
@@ -195,7 +195,7 @@ conclusions:
       benefit from that per-row work.
   - id: comparator
     kind: lean-comparator
-    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610'
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33265874834'
   designated: comparator
   imports_status: identified
 - id: corollary_26
@@ -254,7 +254,7 @@ conclusions:
       is no longer needed and has been dropped.
   - id: comparator
     kind: lean-comparator
-    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33231361610'
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33265874834'
   designated: comparator
 
   imports_status: identified

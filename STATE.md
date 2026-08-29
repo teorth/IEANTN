@@ -43,10 +43,10 @@ adds the environment detail.
 | `FKBJ.v1` | active | `rh_up_to` | numerical | 0 | - |
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 3 | - |
 | `FKS.v1` | active | `psi_classical_bound` | literature | 3 | - |
-| `FKS2.v1` | active | `corollary_14` | lean-comparator-drifted | 6 | - |
-| `FKS2.v1` | active | `corollary_22` | lean-comparator-drifted | 8 | - |
-| `FKS2.v1` | active | `corollary_23` | lean-comparator-drifted | 10 | - |
-| `FKS2.v1` | active | `corollary_26` | lean-comparator-drifted | 10 | - |
+| `FKS2.v1` | active | `corollary_14` | lean-comparator | 6 | - |
+| `FKS2.v1` | active | `corollary_22` | lean-comparator | 8 | - |
+| `FKS2.v1` | active | `corollary_23` | lean-comparator | 10 | - |
+| `FKS2.v1` | active | `corollary_26` | lean-comparator | 10 | - |
 | `FKS2.v2` | active | `proposition_13` | lean-comparator | 0 | - |
 | `FKS2.v2` | active | `theorem_3` | lean-comparator | 0 | - |
 | `FKS2Numerics.v1` | stub | `table6_row2_floor` | numerical | 0 | - |
@@ -73,19 +73,6 @@ adds the environment detail.
 | `Trudgian2011.v1` | stub | `integral_S_bound` | literature | 0 | - |
 | `Wedeniwski.v1` | stub | `rh_up_to` | asserted | 0 | - |
 | `ZeroFreeHeight.v1` | active | `classical_region_descends` | lean-comparator | 0 | #30 |
-
-## Receipts needing attention
-
-Conclusions designated `lean-comparator` whose receipt no longer stands clean.
-**Drifted** is not staleness: the verified implication no longer reaches what the
-node now claims, and only a fresh verification restores it.
-
-| Conclusion | State | Why |
-|---|---|---|
-| `FKS2.v1.corollary_14` | drifted | `FKS2Numerics.v1.nu_asymp_e30_le` changed since verification |
-| `FKS2.v1.corollary_22` | drifted | `FKS2Numerics.v1.corollary_22_mid_range` changed since verification |
-| `FKS2.v1.corollary_23` | drifted | `FKS2Numerics.v1.corollary_22_mid_range` changed since verification |
-| `FKS2.v1.corollary_26` | drifted | `FKS2Numerics.v1.corollary_22_mid_range` changed since verification |
 
 ## Leverage
 
