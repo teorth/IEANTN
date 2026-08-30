@@ -1,0 +1,13 @@
+{
+  "challenge_module": "IEANTN.Nodes.DudekPlatt.v2.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "DudekPlatt.v2.challenge_ramanujan_inequality_3915"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

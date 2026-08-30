@@ -1,0 +1,128 @@
+# Node metadata for `DudekPlattNumerics.v2`.  See docs/NODES.md.
+#
+# The two-sided pi estimate at PrimeNumberTheoremAnd's constants rather than Dudek-Platt's. A
+# variant of v1, not a successor -- both stay. `status: stub`: conclusion stated, no solution
+# intended.
+version: "v0.4"
+
+node:
+  id: DudekPlattNumerics.v2
+  family: DudekPlattNumerics
+  version: v2
+  kind: computation
+  status: stub
+
+project:
+  name: "The explicit pi estimate behind the exp(3915) threshold"
+  description: >-
+    The two-sided bound on pi(x) that DudekPlatt.v3's criterion needs in order to reach the exp(3915)
+    threshold of DudekPlatt.v2, at PrimeNumberTheoremAnd's constants rather than the paper's. Same
+    shape of claim as DudekPlattNumerics.v1 and much sharper: pi(x) lies within 1194 x/(log x)^6 and
+    1426 x/(log x)^6 of the fifth partial sum of li's asymptotic expansion, for x above exp(3914),
+    where the paper's own constants are -3103.33 and 3343.48 above exp(9656.8). The improvement is
+    the whole reason DudekPlatt.v2 states a better threshold than DudekPlatt.v1.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11Y70"]
+
+conclusions:
+- id: pi_two_sided_pnt
+  declaration: DudekPlattNumerics.v2.pi_two_sided_pnt
+  challenge: DudekPlattNumerics.v2.challenge_pi_two_sided_pnt
+  imports: []
+  imports_status: undetermined
+  justifications:
+  - id: pnt-plus-computation
+    kind: numerical
+    source: PrimeNumberTheoremAnd
+    locator: "Ramanujan.Mₐ_exₐ_le_1426 and Ramanujan.mₐ_xₐ_ge_neg1194, with pi_upper_specific and pi_lower_specific"
+    note: >-
+      The constants are the output of a computation rather than of an argument, so `numerical`. They
+      are LITERAL BOUNDS on PNT+'s own constants, not the exact values: PNT+ carries Mₐ and mₐ as
+      functions and proves Mₐ exₐ <= 1426 and -1194 <= mₐ xₐ. That direction is the safe one -- a
+      larger M weakens the upper estimate and a more negative m weakens the lower -- so this
+      conclusion is IMPLIED BY PNT+'s pi_upper_specific and pi_lower_specific and is the weaker
+      claim. Stating literals rather than functions is what lets DudekPlatt.v2's solution discharge
+      the criterion's threshold condition by computation.
+      These constants are load-bearing to two significant figures. At log x = 3915 the threshold
+      condition clears by 0.4989 -- about half a unit of slack -- so loosening either eats directly
+      into it. The thinness is not accidental: exp(3914) was chosen to sit just inside.
+      `undetermined` imports, honestly. PNT+'s pi_lower_specific and pi_upper_specific rest on a
+      large development -- its Ramanujan closure spans 72 modules, 14 of them carrying sorries and
+      19 using native_decide -- and nobody here has traced which parts these two constants actually
+      depend on. Saying the sources are known would overstate it. Tracing them is worthwhile work
+      and would probably shorten this note considerably.
+  designated: pnt-plus-computation
+
+sources:
+- title: "On solving a curious inequality of Ramanujan"
+  authors: ["Adrian W. Dudek", "David J. Platt"]
+  type: "paper"
+  id: "https://doi.org/10.1080/10586458.2014.990118"
+  location: "Exp. Math. 24 (2015), no. 3, 289-294"
+  relationship: background
+  note: >-
+    `background`: the SHAPE of this estimate is the paper's -- it is what its Lemma 2.1 consumes --
+    but none of these constants is the paper's, and this node must not be read as citing them.
+    DudekPlattNumerics.v1 holds the paper's own parameters.
+- title: "PrimeNumberTheoremAnd"
+  authors: ["PrimeNumberTheoremAnd contributors"]
+  type: "other"
+  id: "https://github.com/AlexKontorovich/PrimeNumberTheoremAnd"
+  location: "PrimeNumberTheoremAnd/IEANTN/Ramanujan/Ramanujan.lean"
+  relationship: adapts
+  note: >-
+    The constants come from here. A Lean development rather than a paper, hence type `other`; note
+    that a Lean development is not automatically better evidence than a citation. This one carries
+    sorries and native_decide in its wider closure, and what is taken from it are two literal bounds
+    rather than a machine-checked theorem this repository has re-run.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Found PNT+'s literal bounds on its own constants, checked that the criterion's threshold
+      condition survives at them, and stated the resulting estimate, under the direction of the
+      maintainer. No proof is claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    The two literals were read from PrimeNumberTheoremAnd's Mₐ_exₐ_le_1426 and mₐ_xₐ_ge_neg1194, and
+    the threshold exp(3914) from its xₐ. The check that matters was done in Lean rather than assumed:
+    with M = 1426, m = -1194 and log xₐ = 3914, DudekPlatt.v3's threshold condition
+    eUpper M x - eNeg m xₐ x < log x holds at log x = 3915 by norm_num on exact rationals, clearing
+    by 0.4989, and the gap decreases in log x while log x increases, so it holds above. That check
+    was NOT redundant: the same condition FAILS at DudekPlattNumerics.v1's parameters at the paper's
+    printed threshold. The constants themselves have not been recomputed.
+
+limitations:
+- >-
+  A computation asserted on PrimeNumberTheoremAnd's authority. Nothing here is proved in Lean and
+  the check has not been re-run. Anything downstream -- which is to say DudekPlatt.v2 -- inherits
+  that, and inherits it as its ONLY unproved input.
+- >-
+  Its provenance is a Lean development with sorries and native_decide in its closure, not a peer
+  reviewed paper. That is a different kind of trust from `literature` and arguably a weaker one, and
+  it is worth being uncomfortable about rather than reassured by the word "Lean".
+- >-
+  `undetermined` imports: nobody has traced which of PNT+'s inputs these two constants depend on.
+- >-
+  It quantifies over an unbounded range, so unlike ButheNumerics.v1's conclusions it is not a finite
+  check. `numerical` records where its constants came from, not that the claim is bounded.
+- >-
+  The margin at the threshold is about 0.5 in log x. Both `IEANTN.margin` sites sit at index 0; raising
+  either would be a real weakening rather than a bookkeeping change, and would need the threshold
+  condition rechecked.
+- >-
+  No novelty is claimed.
