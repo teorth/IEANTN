@@ -9,7 +9,7 @@ node:
   family: DudekPlatt
   version: v2
   kind: paper
-  status: awaiting-verification
+  status: active
 
 project:
   name: "Ramanujan's inequality at the PrimeNumberTheoremAnd threshold"
@@ -62,16 +62,21 @@ conclusions:
       not been run, and running it would be a useful contribution on its own. Until then there is
       neither a citation nor a qualifying proof, and saying so is more useful than dressing an
       unverified development as evidence. The pipeline it goes through is DudekPlatt.v3, the REPAIRED
-      criterion, and that is now an import. PNT+ carries that repair too -- as `εlower`, a case split on
+      criterion, and that is now an import. PNT+ carries that repair too -- as `εlower`, a case split
+      on
       the sign of m, and `shift_m_lower_of_nonpos` -- so its route to exp(3915) does not inherit the
-      defect in the paper's Lemma 2.1 that DudekPlatt.v1's note records. Now `identified`: the other input is
+      defect in the paper's Lemma 2.1 that DudekPlatt.v1's note records. Now `identified`: the other input
+      is
       DudekPlattNumerics.v2.pi_two_sided_pnt, which states the two-sided pi estimate at PNT+'s literal
       bounds M = 1426 and m = -1194 above exp(3914). With both edges in place this conclusion is
       provable, and the threshold condition the criterion assumes was checked in Lean at those
       constants before the node was written: it clears by 0.4989 at log x = 3915. That check was not a
       formality -- the same condition FAILS at DudekPlattNumerics.v1's parameters at DudekPlatt.v1's
       printed threshold.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33282062445'
+  designated: comparator
 
 sources:
 - title: "On solving a curious inequality of Ramanujan"

@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | paper |
-| Status | awaiting-verification |
+| Status | active |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -47,14 +47,19 @@ noncomputable def ramanujan_inequality_3915 : Prop :=
 | Challenge | `DudekPlatt.v2.challenge_ramanujan_inequality_3915` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/DudekPlatt/v2/Conclusions.lean#L64) |
 | Solution | [`Solutions/DudekPlatt.v2`](https://github.com/teorth/IEANTN/tree/main/Solutions/DudekPlatt.v2) |
-| Evidence | unjustified (`none-yet`) |
+| Receipt | [`DudekPlatt.v2.ramanujan_inequality_3915.json`](https://github.com/teorth/IEANTN/blob/main/receipts/DudekPlatt.v2.ramanujan_inequality_3915.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | identified |
 | Assumes | [`DudekPlatt.v3.criterion`](DudekPlatt-v3.md#criterion), [`DudekPlattNumerics.v2.pi_two_sided_pnt`](DudekPlattNumerics-v2.md#pi_two_sided_pnt) |
 | Assumed by | nothing yet |
 
-**Justification `unjustified`** — **designated** — none-yet
+**Justification `unjustified`** — none-yet
 
 > A COMPLETE SOLUTION EXISTS at Solutions/DudekPlatt.v2, awaiting verification. It is free of sorryAx, its axioms are exactly propext, Classical.choice and Quot.sound, and its type matches the challenge under `set_option pp.all true`. The justification stays `none-yet` until the verification workflow records a receipt. Deliberately not `literature`. There is no paper to cite for exp(3915): Dudek and Platt prove exp(9658), and their footnote 1 names exp(9394) using Mossinghoff-Trudgian's improved R. The threshold here is PrimeNumberTheoremAnd's, whose ramanujan_final has xa = exp 3914 and concludes above exa = e*xa. That development contains no `sorry` in its own file, but its transitive import closure spans 72 modules of which 14 carry sorries -- including TMEEMT (80), Dusart (33) and FioriKadiriSwidinsky (29) -- and 19 use `native_decide`, among them Ramanujan.lean itself at lines 500 and 505. `native_decide` introduces Lean.ofReduceBool, which Comparator forbids. Module-level closure is an upper bound on what a theorem actually depends on, so the decisive test is `#print axioms ramanujan_final` against a built PrimeNumberTheoremAnd; that has not been run, and running it would be a useful contribution on its own. Until then there is neither a citation nor a qualifying proof, and saying so is more useful than dressing an unverified development as evidence. The pipeline it goes through is DudekPlatt.v3, the REPAIRED criterion, and that is now an import. PNT+ carries that repair too -- as `εlower`, a case split on the sign of m, and `shift_m_lower_of_nonpos` -- so its route to exp(3915) does not inherit the defect in the paper's Lemma 2.1 that DudekPlatt.v1's note records. Now `identified`: the other input is DudekPlattNumerics.v2.pi_two_sided_pnt, which states the two-sided pi estimate at PNT+'s literal bounds M = 1426 and m = -1194 above exp(3914). With both edges in place this conclusion is provable, and the threshold condition the criterion assumes was checked in Lean at those constants before the node was written: it clears by 0.4989 at log x = 3915. That check was not a formality -- the same condition FAILS at DudekPlattNumerics.v1's parameters at DudekPlatt.v1's printed threshold.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33282062445
 
 ## Limitations
 

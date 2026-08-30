@@ -14,7 +14,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 3 | computation |
 | [`ChengGraham2004.v1`](ChengGraham2004-v1.md) | paper | 0 | — |
 | [`DudekPlatt.v1`](DudekPlatt-v1.md) | paper | 2 | cited |
-| [`DudekPlatt.v2`](DudekPlatt-v2.md) | paper | 1 | unjustified |
+| [`DudekPlatt.v2`](DudekPlatt-v2.md) | paper | 1 | verified |
 | [`DudekPlatt.v3`](DudekPlatt-v3.md) | pipeline | 1 | verified |
 | [`DudekPlattNumerics.v1`](DudekPlattNumerics-v1.md) | computation | 1 | computation |
 | [`DudekPlattNumerics.v2`](DudekPlattNumerics-v2.md) | computation | 1 | computation |

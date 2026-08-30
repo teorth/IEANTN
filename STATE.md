@@ -15,9 +15,9 @@ adds the environment detail.
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 1 |
-| `lean-comparator` | 10 |
+| `lean-comparator` | 11 |
 | `literature` | 30 |
-| `none-yet` | 3 |
+| `none-yet` | 2 |
 | `numerical` | 13 |
 
 ## Nodes
@@ -47,7 +47,7 @@ adds the environment detail.
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
 | `DudekPlatt.v1` | stub | `largest_counterexample_on_rh` | literature | 0 | - |
-| `DudekPlatt.v2` | awaiting-verification | `ramanujan_inequality_3915` | none-yet | 2 | #54 |
+| `DudekPlatt.v2` | active | `ramanujan_inequality_3915` | lean-comparator | 2 | #54 |
 | `DudekPlatt.v3` | active | `criterion` | lean-comparator | 0 | #54 |
 | `DudekPlattNumerics.v1` | stub | `pi_two_sided_paper` | numerical | 0 | - |
 | `DudekPlattNumerics.v2` | stub | `pi_two_sided_pnt` | numerical | 0 | - |
