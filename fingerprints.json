@@ -24,6 +24,8 @@
   "CH2.v1.corollary_1_3_psi": "629398f4a7001b274d1271db2d2f61833861ce2030ef20c85ecc2cf646f09ca0",
   "CH2.v2.proposition_2_4_lower": "879a82e8a29d7bf3a0c3cc4847380a530d236d20cf952ad5cf90a64087b8eea7",
   "CH2.v2.proposition_2_4_upper": "74358eca0c837cb10263a159fea46718745128ed7905166607682f1d468e94f2",
+  "CH2.v3.extremal_majorant": "58dc312ebb7fba7d0308d7902dd9f02dc320d9eb51df36c551baa1d5c21f766c",
+  "CH2.v3.extremal_minorant": "ff200fdef6e23e060827f99a86105511ae5cd7e5b71c275921a38587a34fed52",
   "DudekPlatt.v1.largest_counterexample_on_rh": "b14042ac209a94ea4032b36274513f79166f9b80d85fbc7a31049dc4542e350a",
   "DudekPlatt.v1.ramanujan_inequality": "45219b69079c0e800042c96cb36121507eeb5e56a7c22a55ab4385b40b09fe3a",
   "DudekPlatt.v2.ramanujan_inequality_3915": "b5bf7a49e92a1c345e08566656c09a9c783d6a27b7d091ff6751aa29263713fd",

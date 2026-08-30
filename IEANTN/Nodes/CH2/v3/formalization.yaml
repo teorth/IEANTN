@@ -1,0 +1,146 @@
+# Node metadata for `CH2.v3`.  See docs/NODES.md.
+#
+# The extremal approximants of Chirre-Helfgott, section 4 as replaced by the authors' addendum.
+# A variant of CH2.v2, not a successor -- v2 consumes an approximant, v3 produces one. Both stay.
+version: "v0.4"
+
+node:
+  id: CH2.v3
+  family: CH2
+  version: v3
+  kind: pipeline
+  status: awaiting-solution
+
+project:
+  name: "Chirre-Helfgott's extremal approximants"
+  description: >-
+    Section 4 of Chirre-Helfgott, as replaced by the authors' addendum "Replacement for Section 4.1":
+    band-limited majorants and minorants of the truncated exponential, with their L1 error computed
+    exactly. Two conclusions, one per direction. Both are stated existentially -- they assert that an
+    approximant exists with the four properties a consumer uses, rather than naming the explicit
+    Beurling-Selberg function the paper constructs -- so this node introduces no definitions of its
+    own and its output feeds CH2.v2's hypotheses verbatim. The exactness of the L1 error is what makes
+    the resulting bound optimal rather than merely valid; it is the quantity the paper minimises, and
+    Corollary 1.2's pi/T is its value.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "42A05", "42A38"]
+
+conclusions:
+- id: extremal_majorant
+  issue: 64
+  declaration: CH2.v3.extremal_majorant
+  challenge: CH2.v3.challenge_extremal_majorant
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      Imports `none`, and that is a real none: `lambda` and `beta` are universally quantified with
+      their conditions as hypotheses, so this consumes nothing from the network and can be verified
+      without waiting on any numerical input.
+      MOSTLY A PORT. PrimeNumberTheoremAnd has the construction in CH2_part1.lean, lines 1138-6472,
+      the section "Extremal approximants to the truncated exponential", with NO `sorry`. The three
+      upstream statements that matter are CH2.Inu_bounds for the majorant inequality and
+      CH2.varphi_fourier_plus_error for the L1 error, in exactly the closed form stated here, plus
+      CH2.varphi_integ and CH2.varphi_fourier_decay for band-limitedness. The value of `phi 0` is
+      established inside the proof of varphi_fourier_plus_error rather than as a named lemma.
+      THE ONE PIECE THAT IS NOT A PORT is the sign of `lambda` -- see the node's limitations. Upstream
+      builds everything for a positive parameter; the intended application needs a negative one, and
+      the reflection step is not taken upstream because upstream never states the theorem these
+      approximants are for.
+      Solutions/CH2.v2 is the worked example of the port operation across the same Lean version gap,
+      and Solutions/DudekPlatt.v3 of the @[blueprint ...] stripping it needs.
+  designated: unjustified
+- id: extremal_minorant
+  issue: 64
+  declaration: CH2.v3.extremal_minorant
+  challenge: CH2.v3.challenge_extremal_minorant
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      The companion to the majorant, from CH2.Inu_bounds and CH2.varphi_fourier_minus_error upstream.
+      Imports `none`, for the same reason.
+      Stated as a separate conclusion rather than folded into a conjunction because the optimal
+      majorant and the optimal minorant are different functions -- the same reason CH2.v2 splits
+      Proposition 2.4 in two -- so a consumer instantiates one or the other, not both at a shared phi.
+      Note the two L1 errors are NOT equal: 1/(1-e^-L) - 1/L against 1/L - 1/(e^L - 1). The majorant
+      is the more expensive side, and that asymmetry survives into the final constants.
+  designated: unjustified
+
+sources:
+- title: "Optimal bounds for sums of non-negative arithmetic functions"
+  authors: ["Andres Chirre", "Harald Andres Helfgott"]
+  type: "paper"
+  id: "https://arxiv.org/abs/2512.15709"
+  relationship: formalizes
+  note: >-
+    Section 4, read from the arXiv preprint together with the authors' addendum "Replacement for
+    Section 4.1". The addendum is what makes this node worth stating: without it, section 4 rests on
+    Graham-Vaaler 1981, and formalizing the approximants would mean formalizing a 1981 paper nobody
+    here holds. The addendum supplies a self-contained construction.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Read the paper's section 4 and its addendum, located the corresponding upstream development in
+      PrimeNumberTheoremAnd, and chose the existential form of the statements, under the direction of
+      the maintainer. No proof is claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    The two statements were designed against CH2.v2's hypotheses rather than transcribed from the
+    paper's own numbering, so that the existentials feed proposition_2_4_upper and _lower with no
+    bridging. What was checked deliberately is the internal consistency of the last two properties:
+    since the integral of a Fourier transform is its value at 0 and the integral of truncExp lambda
+    is 1/|lambda|, the stated L1 error must equal `phi 0 - 1/|lambda|`, and it does, in both
+    directions. A transcription error in either the value at 0 or the error would break that
+    identity, so the two corroborate each other.
+    The upper limit beta <= 2 was derived, not copied: the upstream decay estimate is O(y^-2), and
+    IsBandLimited asks for a bound at every nonzero y, which a y^-2 bound supplies for |y| >= 1 and
+    boundedness of the Fourier transform of an integrable function supplies for |y| < 1. Neither
+    argument is available above beta = 2.
+
+limitations:
+- >-
+  Stated but not proved: no Lean proof exists here yet, and nothing downstream may treat these as
+  established.
+- >-
+  THE SIGN OF LAMBDA IS NOT A PORT. CH2.v2 applies these at lambda = 2 pi (sigma - 1) / T, and for
+  psi the relevant sigma is 0, so lambda is NEGATIVE in the intended application.
+  PrimeNumberTheoremAnd builds its approximants for `Inu nu x = if 0 <= x then exp(-nu x) else 0`
+  with nu > 0, which is CH2.v2.truncExp at a positive argument only. The two are related by
+  reflection -- for nu > 0, truncExp (-nu) u is Inu nu (-u), and reflecting phi reflects its Fourier
+  transform while preserving support in [-1,1] -- so the negative case follows from the positive one,
+  but it is a step upstream does not take, because upstream never states the theorem these
+  approximants are for. Expect it to be the only real mathematics in the solution.
+- >-
+  THE APPROXIMANT IS NOT NAMED. These conclusions assert existence, not a formula. A consumer that
+  needs a pointwise value of phi other than phi 0 -- which is the only one CH2.v2.mainExpression uses
+  -- will not find it here and would need a further conclusion or a stronger, non-existential
+  restatement. That was a deliberate trade: naming the function would put the Beurling-Selberg
+  construction into a Conclusions file and pin every consumer to the particular approximant.
+- >-
+  OPTIMALITY IS NOT CLAIMED. The paper's approximants are extremal -- no band-limited majorant has
+  smaller L1 error -- and that is what makes Corollary 1.2's pi/T optimal rather than merely valid.
+  These conclusions state the error exactly but do not state that no better approximant exists.
+  Stating the extremality is separate work and is not needed for any bound downstream.
+- >-
+  No novelty is claimed. The construction is Graham and Vaaler's as reconstructed by Chirre and
+  Helfgott.
