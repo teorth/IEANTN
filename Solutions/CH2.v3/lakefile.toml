@@ -1,0 +1,30 @@
+name = "solution_CH2_v3"
+defaultTargets = ["AdditiveCombination", "RectanglePort", "ResiduePort", "Approximants", "Decay", "Solution"]
+
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "AdditiveCombination"
+roots = ["AdditiveCombination"]
+
+[[lean_lib]]
+name = "RectanglePort"
+roots = ["RectanglePort"]
+
+[[lean_lib]]
+name = "ResiduePort"
+roots = ["ResiduePort"]
+
+[[lean_lib]]
+name = "Approximants"
+roots = ["Approximants"]
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+[[lean_lib]]
+name = "Decay"
+roots = ["Decay"]
