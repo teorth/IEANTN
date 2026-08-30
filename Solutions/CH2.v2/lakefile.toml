@@ -1,0 +1,38 @@
+name = "solution_CH2_v2"
+defaultTargets = ["PntSupport", "PntAsymptotics", "PntSobolev", "PntSmooth", "PntFourier", "WienerPort", "Core", "Solution"]
+
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "PntSupport"
+roots = ["PntSupport"]
+
+[[lean_lib]]
+name = "PntAsymptotics"
+roots = ["PntAsymptotics"]
+
+[[lean_lib]]
+name = "PntSobolev"
+roots = ["PntSobolev"]
+
+[[lean_lib]]
+name = "PntSmooth"
+roots = ["PntSmooth"]
+
+[[lean_lib]]
+name = "PntFourier"
+roots = ["PntFourier"]
+
+[[lean_lib]]
+name = "WienerPort"
+roots = ["WienerPort"]
+
+[[lean_lib]]
+name = "Core"
+roots = ["Core"]
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
