@@ -3,16 +3,23 @@ name: Intentions
 # Lets a contributor claim an issue by commenting on it: the bot assigns them and moves the
 # issue's card on the project board from `Unclaimed` to `Claimed`.
 #
-# The board is `PNT+ Project`, owned by AlexKontorovich, shared with PrimeNumberTheoremAnd. This
-# repository's issues sit on it alongside PNT+'s, which is deliberate -- the two projects overlap
-# heavily in both mathematics and people, and one board is where a contributor can see what is
-# free across both.
+# The board is `IEANTN`, at https://github.com/users/teorth/projects/3.
+#
+# It has to be owned by this repository's owner, and that is not a preference. The action resolves
+# the board by looking first at projects linked to the repository and then at projects owned by
+# `github.repository_owner`; it takes no board-owner input. GitHub separately refuses to link a
+# project to a repository under a different owner -- "Only projects owned by the same owner as the
+# repository can be linked." So a board under another account is unreachable from here however the
+# token is provisioned. This repository's issues previously sat on AlexKontorovich's `PNT+ Project`
+# board for cross-project visibility; that is what those two rules together ruled out.
 #
 # Only `issue_comment` is listed, matching PrimeNumberTheoremAnd's caller. That gives the comment
-# commands but NOT the automatic board lifecycle: issues are added to the board by hand. Adding
-# the `issues` and `pull_request_target` triggers would auto-add every issue opened here to a board
-# that is not this repository's own, which should be a deliberate decision rather than a default;
-# `auto-add-labels` is the way to scope it if that is ever wanted.
+# commands but NOT the automatic board lifecycle: issues reach the board by hand, and their status
+# is set by hand until someone claims them. Adding the `issues` and `pull_request_target` triggers
+# would auto-add every issue opened here and drive `Status` from pull request events. Now that the
+# board belongs to this repository there is no longer a reason not to, beyond wanting to see the
+# comment commands work first; `auto-add-labels` scopes it to labelled issues if the full sweep is
+# too much.
 #
 # `default-ttl: none` disables claim expiry, so no `Claim Expires` field and no scheduled sweep are
 # needed. A claim then persists until it is disclaimed.
@@ -35,7 +42,7 @@ jobs:
       pull-requests: write
     uses: leanprover-community/intentions/.github/workflows/intentions.yml@v1
     with:
-      project-title: "PNT+ Project"
+      project-title: "IEANTN"
       default-ttl: "none"
     secrets:
       project-token: ${{ secrets.PAT_TOKEN }}

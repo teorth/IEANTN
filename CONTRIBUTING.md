@@ -27,6 +27,16 @@ reviewer notices — which is exactly what a routine, always-required acknowledg
 
 ## Where to start, by how much of the network you can see
 
+**If you are looking for something to do**, the [project
+board](https://github.com/users/teorth/projects/3) lists it. Anything marked `Unclaimed` is free to
+take: comment `claim` on the issue and a bot assigns it to you and moves the card to `Claimed`.
+`disclaim` releases it, and `propose PR #123` links your pull request. Claims do not expire, so
+release one you have put down rather than leaving it to block someone else.
+
+Claiming is a courtesy, not a lock — nothing in CI enforces it. Its purpose is to stop two people
+independently formalizing the same node, which in a repository where a single node can be a
+six-thousand-line solution is a costly collision.
+
 The three layers carry very different blast radii, and that is the natural order to work through
 them in.
 

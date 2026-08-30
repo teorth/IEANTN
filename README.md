@@ -47,16 +47,17 @@ defeat the purpose of the split.
 ## Reading order
 
 0. [GRAPH.md](GRAPH.md) — **the network itself**: what it contains, what each result rests
-Each node also has a generated summary page under [docs/nodes/](docs/nodes/README.md): what it claims, in Lean and in prose, and everything recorded about why it should be believed.
    on, and what is taken on trust. Generated, and the place to start if you only want to
-   see the thing.
+   see the thing. Each node also has a generated summary page under
+   [docs/nodes/](docs/nodes/README.md): what it claims, in Lean and in prose, and everything
+   recorded about why it should be believed.
 1. [CONTRIBUTING.md](CONTRIBUTING.md) — the ten things people actually do, and how.
 2. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the design and why it is what it is.
 3. [docs/NODES.md](docs/NODES.md) — node file formats, in detail.
 4. [CLAUDE.md](CLAUDE.md) — the short version, for coding agents.
 5. [docs/ROADMAP.md](docs/ROADMAP.md) — what is deliberately not built yet, and why.
 6. [docs/SOURCES.md](docs/SOURCES.md) — the papers the nodes rest on, held and wanted.
-6. [SECURITY.md](SECURITY.md) — the trust model, and what a forged receipt would take.
+7. [SECURITY.md](SECURITY.md) — the trust model, and what a forged receipt would take.
 
 ## Status
 
@@ -71,6 +72,13 @@ workflow, and `ieantn.py status` grades it against the current environment.
 Outstanding: visualisation, the `/verify` comment trigger, and the composing half of the
 Palomar spin-off generator. [docs/ROADMAP.md](docs/ROADMAP.md) tracks what is deliberately not built
 and why; [SECURITY.md](SECURITY.md) states the trust model.
+
+## Claiming a task
+
+Open work is tracked on the [**IEANTN project board**](https://github.com/users/teorth/projects/3).
+Anything marked `Unclaimed` is free to take: comment `claim` on the issue and a bot assigns it to
+you and moves the card. `disclaim` releases it again, and `propose PR #123` links your pull request.
+Claims do not expire, so please release one you are no longer working on.
 
 This work grows out of the IEANTN subproject of
 [PNT+](https://github.com/AlexKontorovich/PrimeNumberTheoremAnd), whose blueprint-based structure
