@@ -757,6 +757,25 @@ class TestNodePages(FixtureRepo):
         self.assertIn("def main", page)
         self.assertNotIn("def later", page)
 
+    def test_a_leftover_build_tree_is_not_a_solution(self) -> None:
+        """A `.lake` tree is git-ignored, so it survives a branch switch that removes every
+        tracked file under it. The directory then still exists holding nothing but build
+        artefacts, and detecting a solution by `is_dir()` made the page regenerate differently
+        depending on which branch you had last built -- which CI catches as a stale page and
+        nobody can reproduce locally."""
+        self._node("def main : Prop := True" + chr(10))
+        stale = self.root / "Solutions" / "A.v1" / ".lake" / "build"
+        stale.mkdir(parents=True, exist_ok=True)
+        (stale / "artefact.olean").write_text("", encoding="utf-8")
+        self.assertNotIn("| Solution |", self._page())
+
+    def test_a_real_solution_is_on_the_page(self) -> None:
+        self._node("def main : Prop := True" + chr(10))
+        real = self.root / "Solutions" / "A.v1"
+        real.mkdir(parents=True, exist_ok=True)
+        (real / "Solution.lean").write_text("", encoding="utf-8")
+        self.assertIn("| Solution |", self._page())
+
     def test_pages_link_to_each_other_relatively(self) -> None:
         """They sit together in docs/nodes/, so a rooted path would be broken between them."""
         self.write_node("Upstream.v1", LITERATURE)
@@ -803,6 +822,9 @@ class TestNodePages(FixtureRepo):
         friction that stops people checking evidence at all."""
         self._node("def main : Prop := True" + chr(10))
         (self.root / "Solutions" / "A.v1").mkdir(parents=True, exist_ok=True)
+        # `Solution.lean` is the marker, not the directory -- see
+        # `test_a_leftover_build_tree_is_not_a_solution`.
+        (self.root / "Solutions" / "A.v1" / "Solution.lean").write_text("", encoding="utf-8")
         (self.root / "receipts").mkdir(exist_ok=True)
         (self.root / "receipts" / "A.v1.main.json").write_text("{}", encoding="utf-8")
         page = self._page()
