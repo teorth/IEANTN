@@ -53,6 +53,7 @@ def contour_shift_holomorphic : Prop :=
 | Lean name | `CH2.v4.contour_shift_holomorphic` |
 | Challenge | `CH2.v4.challenge_contour_shift_holomorphic` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v4/Conclusions.lean#L121) |
+| Solution | [`Solutions/CH2.v4`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v4) |
 | Evidence | unjustified (`none-yet`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -60,7 +61,7 @@ def contour_shift_holomorphic : Prop :=
 
 **Justification `unjustified`** — **designated** — none-yet
 
-> The pole-free case: pure Cauchy, no residues. Stated separately because it is what exercises `lContourIntegral` against Mathlib's rectangle theorem, so a mistake in the definition shows up here cheaply rather than tangled with residue bookkeeping. Imports `none`, and that is a real none: T, w and f are universally quantified with every condition a hypothesis. EXPECTED ROUTE. The region between the contour and the top edge is a union of two rectangles (one semi-infinite), so `integral_boundary_rect_eq_zero_of_differentiableOn` applies to each, and the far-left edge vanishes by `DecaysLeft`. That limit is the only analysis; the rest is geometry. Note the whole reason for choosing axis-parallel contours is that this step needs no Cauchy theorem beyond rectangles.
+> A COMPLETE SOLUTION EXISTS at Solutions/CH2.v4, awaiting verification: both conclusions free of sorryAx, axioms exactly propext / Classical.choice / Quot.sound, types matching the challenge under `set_option pp.all true`. The justification stays `none-yet` until the verification workflow records a receipt. The pole-free case: pure Cauchy, no residues. Stated separately because it is what exercises `lContourIntegral` against Mathlib's rectangle theorem, so a mistake in the definition shows up here cheaply rather than tangled with residue bookkeeping. Imports `none`, and that is a real none: T, w and f are universally quantified with every condition a hypothesis. EXPECTED ROUTE. The region between the contour and the top edge is a union of two rectangles (one semi-infinite), so `integral_boundary_rect_eq_zero_of_differentiableOn` applies to each, and the far-left edge vanishes by `DecaysLeft`. That limit is the only analysis; the rest is geometry. Note the whole reason for choosing axis-parallel contours is that this step needs no Cauchy theorem beyond rectangles.
 
 ### `contour_shift`
 
@@ -101,20 +102,22 @@ def contour_shift : Prop :=
 | Lean name | `CH2.v4.contour_shift` |
 | Challenge | `CH2.v4.challenge_contour_shift` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v4/Conclusions.lean#L147) |
+| Solution | [`Solutions/CH2.v4`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v4) |
 | Evidence | unjustified (`none-yet`) |
-| Sources traced | none |
-| Assumes | nothing recorded |
+| Sources traced | identified |
+| Assumes | [`ContourIntegration.v1.residue_theorem_rectangle`](ContourIntegration-v1.md#residue_theorem_rectangle) |
 | Assumed by | nothing yet |
 
 **Justification `unjustified`** — **designated** — none-yet
 
-> The general case, with finitely many poles each contributing its circle integral. Imports `none`, for the same reason. THREE CHOICES KEEP THIS TO ONE NEW DEFINITION. The poles arrive as a Finset rather than as "the poles of F in a region", which would need discreteness, finiteness and a bespoke sum -- a consumer always has the list, since for zeta'/zeta it is exactly the zeros a verification node enumerates. Circle integrals stand in for residues, because Mathlib has no `residue` but does have the annulus invariance that makes the value independent of r; and since a circle integral is 2 pi i times the residue, no 2 pi i appears in the statement. And only the upper half is stated, which the paper's own F(conj s) = conj (F s) hypothesis lets a consumer complete. PrimeNumberTheoremAnd proves the paper's Proposition 5.2, but in terms of a ladder contour, admissible contours, the Beurling-Selberg Phi family and residue sums over regions. It is a reference for the mathematics, not a port target for this statement.
+> SOLVED in Solutions/CH2.v4, awaiting verification, conditional on the import as every challenge is. The general case, with finitely many poles each contributing its circle integral. THREE CHOICES KEEP THIS TO ONE NEW DEFINITION. The poles arrive as a Finset rather than as "the poles of F in a region", which would need discreteness, finiteness and a bespoke sum -- a consumer always has the list, since for zeta'/zeta it is exactly the zeros a verification node enumerates. Circle integrals stand in for residues, because Mathlib has no `residue` but does have the annulus invariance that makes the value independent of r; and since a circle integral is 2 pi i times the residue, no 2 pi i appears in the statement. And only the upper half is stated, which the paper's own F(conj s) = conj (F s) hypothesis lets a consumer complete. PrimeNumberTheoremAnd proves the paper's Proposition 5.2, but in terms of a ladder contour, admissible contours, the Beurling-Selberg Phi family and residue sums over regions. It is a reference for the mathematics, not a port target for this statement. IMPORTS ContourIntegration.v1, and that import is the whole difference between this conclusion and its pole-free sibling. Mathlib has Cauchy on a rectangle but no residue theorem, so the pole-free half is provable from Mathlib alone while this half is not. The import supplies exactly the missing step and nothing else: with it, the proof is the same two-rectangle argument, decomposed at the HORIZONTAL line Im s = Im w rather than the vertical one, so that the rectangle [-M, 1] x [Im w, T] holds every pole -- the hypothesis Im w + r < rho.im above guarantees it -- and [Re w, 1] x [0, Im w] holds none and falls to Mathlib's own theorem. The residue theorem is stated in its own node rather than here because it is not Chirre-Helfgott's mathematics, is not specific to their contour, and will be wanted by anything else in the network that shifts a contour past a pole.
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
-- Stated but not proved, and the statements are TENTATIVE. They are a notational proposal for the contour vocabulary; the point of verifying them is to confirm the notation before CH2.v5 is built on it. Expect them to move if verification exposes a bad choice.
+- Proved, but not yet verified: a receipt requires a Comparator run. The general conclusion is proved only CONDITIONALLY, on ContourIntegration.v1, which is itself unproved -- so nothing downstream may treat it as established until that node is solved too.
+- The statements are TENTATIVE. They are a notational proposal for the contour vocabulary; the point of verifying them is to confirm the notation before CH2.v5 is built on it. Expect them to move if verification exposes a bad choice.
 - THE CONTOUR CLASS IS NARROWER THAN THE PAPER'S. CH2 allows any admissible contour -- a tameness condition, finitely many smooth arcs of bounded total length per unit-width strip -- and this node allows only L-shaped paths, one complex parameter. The paper permits the narrowing (section 8.2: the contour may be chosen "rather freely", needing only to pass under the non-trivial zeros of zeta and over the trivial ones), and its own Lemma 5.1 proof already closes contours rectangularly, but a consumer needing a genuinely different contour will not find it here. The diagonal class of Figure 3 is the natural next widening and would need Cauchy on triangles rather than rectangles.
 - ONLY THE UPPER HALF IS STATED. The paper's region is (-infinity, 1] + i[-T, T] and its Lemma 5.1 carries both C and its conjugate. Recovering the lower half uses the paper's own assumption F(conj s) = conj (F s), which is not stated here, so a consumer must supply that step.
 - THE POLE SUM IS A SUPPLIED Finset, not the poles of F. Nothing in the statement asserts that P is all of them; a consumer that omits a pole gets a false instance of the hypothesis `DifferentiableOn f (UpperRegion T \ P)` rather than a wrong conclusion, so the direction of the error is safe, but the completeness of P is the consumer's obligation and is not checked here.

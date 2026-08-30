@@ -3773,7 +3773,7 @@ def main() -> int:
     fresh = sub.add_parser("new-node")
     fresh.add_argument("family", help="e.g. FKS2")
     fresh.add_argument(
-        "--kind", default="paper", choices=["paper", "pipeline", "folklore", "computation"]
+        "--kind", default="paper", choices=["paper", "pipeline", "folklore", "computation", "standard"]
     )
     spun = sub.add_parser("spinoff")
     spun.add_argument("conclusion", help="e.g. Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap")

@@ -28,6 +28,7 @@
   "CH2.v3.extremal_minorant": "ff200fdef6e23e060827f99a86105511ae5cd7e5b71c275921a38587a34fed52",
   "CH2.v4.contour_shift": "4966eab3b3a6b15d4f35ca99ee927cff90863ec92adf1e63e5b72e46bc3b4cfd",
   "CH2.v4.contour_shift_holomorphic": "c05a22521314bfa58a849ed81438fdf4e815c8ecf34a91d103f2b24598719e71",
+  "ContourIntegration.v1.residue_theorem_rectangle": "18e725f39465c7e876117a5df187c5f48d77cbd6aa81fb07523519383fdee389",
   "DudekPlatt.v1.largest_counterexample_on_rh": "b14042ac209a94ea4032b36274513f79166f9b80d85fbc7a31049dc4542e350a",
   "DudekPlatt.v1.ramanujan_inequality": "45219b69079c0e800042c96cb36121507eeb5e56a7c22a55ab4385b40b09fe3a",
   "DudekPlatt.v2.ramanujan_inequality_3915": "b5bf7a49e92a1c345e08566656c09a9c783d6a27b7d091ff6751aa29263713fd",

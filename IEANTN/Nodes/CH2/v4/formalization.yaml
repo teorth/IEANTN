@@ -43,6 +43,10 @@ conclusions:
   - id: unjustified
     kind: none-yet
     note: >-
+      A COMPLETE SOLUTION EXISTS at Solutions/CH2.v4, awaiting verification: both conclusions free
+      of sorryAx, axioms exactly propext / Classical.choice / Quot.sound, types matching the
+      challenge under `set_option pp.all true`. The justification stays `none-yet` until the
+      verification workflow records a receipt.
       The pole-free case: pure Cauchy, no residues. Stated separately because it is what exercises
       `lContourIntegral` against Mathlib's rectangle theorem, so a mistake in the definition shows up
       here cheaply rather than tangled with residue bookkeeping.
@@ -58,14 +62,17 @@ conclusions:
   issue: 64
   declaration: CH2.v4.contour_shift
   challenge: CH2.v4.challenge_contour_shift
-  imports: []
-  imports_status: none
+  imports:
+  - node: ContourIntegration.v1
+    conclusion: residue_theorem_rectangle
+  imports_status: identified
   justifications:
   - id: unjustified
     kind: none-yet
     note: >-
-      The general case, with finitely many poles each contributing its circle integral. Imports
-      `none`, for the same reason.
+      SOLVED in Solutions/CH2.v4, awaiting verification, conditional on the import as every
+      challenge is.
+      The general case, with finitely many poles each contributing its circle integral.
       THREE CHOICES KEEP THIS TO ONE NEW DEFINITION. The poles arrive as a Finset rather than as
       "the poles of F in a region", which would need discreteness, finiteness and a bespoke sum -- a
       consumer always has the list, since for zeta'/zeta it is exactly the zeros a verification node
@@ -76,6 +83,16 @@ conclusions:
       PrimeNumberTheoremAnd proves the paper's Proposition 5.2, but in terms of a ladder contour,
       admissible contours, the Beurling-Selberg Phi family and residue sums over regions. It is a
       reference for the mathematics, not a port target for this statement.
+      IMPORTS ContourIntegration.v1, and that import is the whole difference between this conclusion
+      and its pole-free sibling. Mathlib has Cauchy on a rectangle but no residue theorem, so the
+      pole-free half is provable from Mathlib alone while this half is not. The import supplies
+      exactly the missing step and nothing else: with it, the proof is the same two-rectangle
+      argument, decomposed at the HORIZONTAL line Im s = Im w rather than the vertical one, so that
+      the rectangle [-M, 1] x [Im w, T] holds every pole -- the hypothesis Im w + r < rho.im above
+      guarantees it -- and [Re w, 1] x [0, Im w] holds none and falls to Mathlib's own theorem.
+      The residue theorem is stated in its own node rather than here because it is not
+      Chirre-Helfgott's mathematics, is not specific to their contour, and will be wanted by anything
+      else in the network that shifts a contour past a pole.
   designated: unjustified
 
 sources:
@@ -121,7 +138,11 @@ review:
 
 limitations:
 - >-
-  Stated but not proved, and the statements are TENTATIVE. They are a notational proposal for the
+  Proved, but not yet verified: a receipt requires a Comparator run. The general conclusion is proved
+  only CONDITIONALLY, on ContourIntegration.v1, which is itself unproved -- so nothing downstream may
+  treat it as established until that node is solved too.
+- >-
+  The statements are TENTATIVE. They are a notational proposal for the
   contour vocabulary; the point of verifying them is to confirm the notation before CH2.v5 is built
   on it. Expect them to move if verification exposes a bad choice.
 - >-

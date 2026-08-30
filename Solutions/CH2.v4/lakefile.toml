@@ -1,0 +1,10 @@
+name = "solution_CH2_v4"
+defaultTargets = ["Solution"]
+
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]

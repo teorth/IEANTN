@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-37 node version(s), 68 conclusion(s).  3 state nothing yet.
+38 node version(s), 69 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -17,7 +17,7 @@ adds the environment detail.
 | `bridged` | 1 |
 | `lean-comparator` | 15 |
 | `literature` | 34 |
-| `none-yet` | 4 |
+| `none-yet` | 5 |
 | `numerical` | 13 |
 
 ## Nodes
@@ -53,8 +53,9 @@ adds the environment detail.
 | `CH2.v3` | active | `extremal_majorant` | lean-comparator | 0 | #64 |
 | `CH2.v3` | active | `extremal_minorant` | lean-comparator | 0 | #64 |
 | `CH2.v4` | awaiting-solution | `contour_shift_holomorphic` | none-yet | 0 | #64 |
-| `CH2.v4` | awaiting-solution | `contour_shift` | none-yet | 0 | #64 |
+| `CH2.v4` | awaiting-solution | `contour_shift` | none-yet | 1 | #64 |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
+| `ContourIntegration.v1` | awaiting-solution | `residue_theorem_rectangle` | none-yet | 0 | #64 |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
 | `DudekPlatt.v1` | stub | `largest_counterexample_on_rh` | literature | 0 | - |
 | `DudekPlatt.v2` | active | `ramanujan_inequality_3915` | lean-comparator | 2 | #54 |
@@ -133,6 +134,7 @@ downstream.
 | `Dusart2018.v1.proposition_5_4` | 1 |
 | `DudekPlattNumerics.v2.pi_two_sided_pnt` | 1 |
 | `DudekPlattNumerics.v1.pi_two_sided_paper` | 1 |
+| `ContourIntegration.v1.residue_theorem_rectangle` | 1 |
 | `CH2.v1.corollary_1_2_psi` | 1 |
 | `CH2.v1.corollary_1_2_lambda_sum` | 1 |
 | `ButheNumerics.v1.li_minus_pi_below_1e7` | 1 |

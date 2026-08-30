@@ -1,0 +1,124 @@
+# Node metadata for `ContourIntegration.v1`.  See docs/NODES.md.
+#
+# Textbook complex analysis Mathlib does not have, stated once so several nodes can import it.
+# Belongs to no paper; the first consumer is CH2.v4.
+version: "v0.4"
+
+node:
+  id: ContourIntegration.v1
+  family: ContourIntegration
+  version: v1
+  kind: standard
+  status: awaiting-solution
+
+project:
+  name: "The residue theorem on a rectangle"
+  description: >-
+    For a function holomorphic on a closed rectangle except at finitely many interior points, the
+    boundary integral equals the sum of the circle integrals about those points. One conclusion. The
+    node exists because Mathlib has Cauchy on a rectangle and invariance of a circle integral under a
+    change of radius, but nothing bridging them: no residue, no Cauchy theorem for cycles, no
+    homotopy invariance of contour integrals. That gap -- a rectangle with finitely many holes -- is
+    what this states. It belongs to no paper, and it is deliberately not stated inside the node that
+    first needs it, because anything in the network that shifts a contour past a pole will want the
+    same thing.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.CV]
+  msc2020: ["30E20", "30A99"]
+
+conclusions:
+- id: residue_theorem_rectangle
+  issue: 64
+  declaration: ContourIntegration.v1.residue_theorem_rectangle
+  challenge: ContourIntegration.v1.challenge_residue_theorem_rectangle
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      Imports `none`, and that is a real none: z, w, P, r and f are universally quantified with every
+      condition a hypothesis.
+      WHAT MATHLIB HAS, AND WHAT IT DOES NOT. It has Cauchy on a rectangle
+      (integral_boundary_rect_eq_zero_of_differentiableOn), which is this statement's left-hand side
+      set equal to zero, and it has invariance of a circle integral under a change of radius across
+      an annulus (circleIntegral_eq_of_differentiable_on_annulus_off_countable, which holds for `f`
+      itself and not merely for (z - c)^-1 . f). It has no `residue`, no Cauchy theorem for cycles,
+      and no homotopy invariance of contour integrals -- checked against the pin this node was
+      written on, by searching Analysis/Complex/ and MeasureTheory/Integral/CircleIntegral.lean.
+      EXPECTED ROUTE, and it is real work rather than assembly. Induct on P. With P empty it is
+      Mathlib's theorem. To remove one point, cut the rectangle by the horizontal lines through
+      `rho.im - r` and `rho.im + r` and the vertical lines through `rho.re -+ r`: eight of the nine
+      pieces are pole-free rectangles, and the ninth is a small square around rho whose boundary
+      integral equals the circle integral by the annulus argument. PrimeNumberTheoremAnd's
+      ResidueCalcOnRectangles carries a version of the last step for a SIMPLE pole
+      (ResidueTheoremOnRectangleWithSimplePole'), already ported sorry-free to
+      Solutions/CH2.v3/ResiduePort.lean, and is worth reading before starting -- but it is not
+      general enough to be the whole proof, since this conclusion admits any isolated singularity.
+  designated: unjustified
+
+sources:
+- title: "The residue theorem"
+  authors: ["folklore"]
+  type: "folklore"
+  id: "residue-theorem"
+  relationship: formalizes
+  note: >-
+    Standard material, in every complex analysis textbook; no particular source is being followed and
+    none is claimed. The `folklore` source type is used in the sense the schema allows rather than in
+    the usual sense -- this is not an unproved fact circulating in the literature, it is a theorem
+    everybody knows and Mathlib has not yet got. What is specific to this node is the FORM: the
+    boundary expression is Mathlib's own four-term one so a consumer can swap between this and the
+    pole-free theorem without reshaping, and the residues are circle integrals because there is no
+    `residue` in Mathlib to state them with.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Established that Mathlib lacks the statement, chose the formulation to match Mathlib's rectangle
+      theorem and CH2.v4's needs, and checked the resulting decomposition numerically, under the
+      direction of the maintainer. No proof is claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    The statement was designed against its first consumer and then checked numerically, on
+    f(s) = exp(2s)/(s - rho) with rho = 0.5 + 5i over the rectangle [-40, 1] x [1, 10] and r = 0.3:
+    the four-term boundary expression and the circle integral agree to 6e-9, and the companion
+    pole-free rectangle [-3, 1] x [0, 1] has boundary 0 to 5e-11. That is evidence about the
+    STATEMENT and about the orientation conventions, not about any proof.
+    The junk-value question was considered and has a clean answer here, unlike in CH2.v4:
+    holomorphy on the closed rectangle off P already forces continuity on every boundary edge and on
+    every circle, hence integrability, so no separate integrability hypothesis is needed and none is
+    hiding a vacuous case. It would be needed if the holomorphy hypothesis were ever weakened.
+
+limitations:
+- >-
+  Stated but not proved. Nothing downstream may treat it as established, and CH2.v4's general
+  contour shift inherits that.
+- >-
+  P IS SUPPLIED, NOT DERIVED. Nothing asserts that P contains all the singularities. A consumer that
+  omits one is supplying a false `DifferentiableOn` hypothesis rather than getting a wrong
+  conclusion, so the direction of the error is safe, but completeness is the consumer's obligation.
+- >-
+  ONE RADIUS FOR ALL THE POINTS. `r` is a single parameter rather than one radius per point, which is
+  a real restriction when the singularities are very unevenly spaced -- a consumer must take r small
+  enough for the closest pair. Mathlib's annulus invariance converts to any other admissible radius,
+  so nothing is lost in principle, but a per-point radius would be the more general statement.
+- >-
+  RECTANGLES ONLY. The region is an axis-parallel rectangle, which is what makes Mathlib's Cauchy
+  theorem applicable and is all CH2.v4 needs. A general Jordan region, or a Cauchy theorem for
+  cycles, is the natural next statement in this family and is not here.
+- >-
+  No novelty is claimed. This is textbook mathematics; only the formulation is the node's.
