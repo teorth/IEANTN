@@ -1,0 +1,181 @@
+# Node metadata for `CH2.v1`.  See docs/NODES.md.
+#
+# Chirre-Helfgott's headline outputs for psi. The paper node: it claims what the paper claims.
+version: "v0.4"
+
+node:
+  id: CH2.v1
+  family: CH2
+  version: v1
+  kind: paper
+  status: stub
+
+project:
+  name: "Chirre-Helfgott: optimal bounds for sums of non-negative arithmetic functions"
+  description: >-
+    The paper's headline explicit estimates for the Chebyshev function psi and for the partial sums of
+    Lambda(n)/n. Its general result gives an optimal explicit formula for a sum of a non-negative
+    Dirichlet coefficient sequence, using only the poles of the associated Dirichlet series below a
+    height T and requiring NO zero-free region; these four conclusions are its specialisations.
+    Corollary 1.2 is conditional on the Riemann hypothesis holding up to height T, carried as a
+    hypothesis rather than an import, and Corollary 1.3 is its instance at the height Platt and
+    Trudgian verified. The shape is unlike every other psi estimate in the network: a main error term
+    pi/T times x, provably optimal for any argument agnostic above height T, plus a square-root term
+    carrying all the dependence on T.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M06", "11M26", "42A38"]
+
+conclusions:
+- id: corollary_1_2_psi
+  declaration: CH2.v1.corollary_1_2_psi
+  challenge: CH2.v1.challenge_corollary_1_2_psi
+  imports: []
+  imports_status: none
+  justifications:
+  - id: ch2-paper
+    kind: literature
+    source: CH2
+    locator: Corollary 1.2, first display
+    note: >-
+      Asserted on the authority of the paper, read from arXiv:2512.15709. The Riemann hypothesis up to
+      height T is carried as a hypothesis in the statement rather than as an import, and T is
+      universally quantified, so this conclusion consumes nothing from the network and applies at
+      whatever height a verification node supplies -- the same shape Buthe2016.v1 uses, and the reason
+      `imports` is a real `none`. NOTE THE MAIN TERM. It is x * (pi/T) * coth(pi/T), not x. Since
+      y*coth(y) = 1 + y^2/3 + O(y^4) that is x to enormous precision at the heights in play, which is
+      why Corollary 1.3 can drop it, but dropping it is a step in the paper's argument and not a
+      definitional convenience. PrimeNumberTheoremAnd states this as CH2.cor_1_2_a with a `sorry`; its
+      transcription agrees with this one, and the check that says so is that C_T evaluates to 113.6689
+      at T = 3e12, which is the 113.67 the paper prints in Corollary 1.3.
+  designated: ch2-paper
+- id: corollary_1_2_lambda_sum
+  declaration: CH2.v1.corollary_1_2_lambda_sum
+  challenge: CH2.v1.challenge_corollary_1_2_lambda_sum
+  imports: []
+  imports_status: none
+  justifications:
+  - id: ch2-paper
+    kind: literature
+    source: CH2
+    locator: Corollary 1.2, second display
+    note: >-
+      Asserted on the authority of the paper. The companion to the psi bound: the same two constants
+      pi/(T-1) and C_T, divided through by x. Imports `none` for the same reason as above -- the
+      Riemann hypothesis up to T is a hypothesis, not an edge. PrimeNumberTheoremAnd states this as
+      CH2.cor_1_2_b with a `sorry`, and its transcription agrees with this one.
+  designated: ch2-paper
+- id: corollary_1_3_psi
+  declaration: CH2.v1.corollary_1_3_psi
+  challenge: CH2.v1.challenge_corollary_1_3_psi
+  imports:
+  - node: CH2.v1
+    conclusion: corollary_1_2_psi
+  - node: PlattTrudgian.v1
+    conclusion: rh_up_to
+  imports_status: traced
+  justifications:
+  - id: ch2-paper
+    kind: literature
+    source: CH2
+    locator: Corollary 1.3, first display
+    note: >-
+      Asserted on the authority of the paper. Corollary 1.2 at Platt and Trudgian's verified height,
+      which the paper quotes as 3e12 + 1 + sqrt(3)/3 and remarks is in fact 3000175332800; both edges
+      are recorded. The rounding of the height down to 3e12 is the paper's own and is the safe
+      direction, pi/T being decreasing in T.
+      HOLDS FROM x = 1, with no lower threshold, where Corollary 1.2 needs x > max(T, 1e9). Closing
+      that gap is work the paper does and this node does not model, which is why `imports_status` is
+      `traced` rather than `identified`: the inputs are known and written down, but the descent below
+      max(T, 1e9) is not an edge any node currently supplies.
+      TRANSCRIBED FROM THE PAPER, NOT FROM PrimeNumberTheoremAnd. PNT+'s CH2.cor_1_3_a writes the
+      leading constant as pi * 3 * 1e-12 = 9.425e-12, in its blueprint LaTeX as well as its Lean,
+      where the paper has pi/(3e12) = 1.047e-12 -- nine times larger. It is a weaker claim rather than
+      a false one, but it is not the paper's result.
+  designated: ch2-paper
+- id: corollary_1_3_lambda_sum
+  declaration: CH2.v1.corollary_1_3_lambda_sum
+  challenge: CH2.v1.challenge_corollary_1_3_lambda_sum
+  imports:
+  - node: CH2.v1
+    conclusion: corollary_1_2_lambda_sum
+  - node: PlattTrudgian.v1
+    conclusion: rh_up_to
+  imports_status: traced
+  justifications:
+  - id: ch2-paper
+    kind: literature
+    source: CH2
+    locator: Corollary 1.3, second display
+    note: >-
+      Asserted on the authority of the paper. The paper writes this with O*, which is exactly the
+      two-sided bound stated here rather than an asymptotic; stating it as an asymptotic would lose
+      the content.
+      TRANSCRIBED FROM THE PAPER. PNT+'s CH2.cor_1_3_b writes the leading constant as
+      pi * sqrt(3) * 1e-12 = 5.441e-12, which agrees neither with the paper's pi/(3e12) = 1.047e-12
+      nor with PNT+'s own part (a) constant of 9.425e-12. Two statements of one corollary disagreeing
+      with each other is the clearest sign that neither should be copied.
+  designated: ch2-paper
+
+sources:
+- title: "Optimal bounds for sums of non-negative arithmetic functions"
+  authors: ["Andres Chirre", "Harald Andres Helfgott"]
+  type: "paper"
+  id: "https://arxiv.org/abs/2512.15709"
+  relationship: formalizes
+  note: >-
+    Read from the arXiv preprint, together with the authors' addendum "Replacement for Section 4.1",
+    which supplies a self-contained construction of the extremal approximants in place of the
+    dependence on Graham-Vaaler 1981. The addendum matters for the network: without it, formalizing
+    the analytic half would rest on a 1981 paper nobody here holds.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Read the paper and its addendum, compared them against PrimeNumberTheoremAnd's formalization,
+      and transcribed the four corollaries, under the direction of the maintainer. No proof is claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    The four statements were read from the arXiv preprint and cross-checked against
+    PrimeNumberTheoremAnd's CH2.cor_1_2_a/b and cor_1_3_a/b. Corollary 1.2 agrees; Corollary 1.3 does
+    NOT, and the paper was taken as authoritative -- see the conclusions' notes. One independent check
+    on Corollary 1.2's transcription: its C_T evaluates to 113.6689 at T = 3e12, which is the 113.67
+    the paper prints in Corollary 1.3, so the two corollaries corroborate each other.
+    The main term of Corollary 1.2 is x * (pi/T) * coth(pi/T) rather than x, and that was read from the
+    paper rather than assumed away.
+
+limitations:
+- >-
+  Every conclusion rests on the cited paper; none is proved in Lean here, and anything downstream
+  inherits that.
+- >-
+  Theorem 1.1, the general result these are specialisations of, is NOT stated. It is the natural
+  keystone of this family and PrimeNumberTheoremAnd does not state it either -- its CH2.lean carries
+  a "TODO: incorporate material from [CH2, Section 6]" where the theorem would go. See #64.
+- >-
+  Corollary 1.3's descent from x > max(T, 1e9) to x >= 1 is work the paper does that no node models,
+  which is what keeps its `imports_status` at `traced`.
+- >-
+  These estimates are not comparable to the network's other psi bounds by inspection. FKS.v1 and the
+  rest have the classical shape A (log x / R)^B exp(-C sqrt(log x / R)) coming from a zero-free
+  region; these have the form (pi/T) x + C_T sqrt(x) and use no zero-free region at all. Which is
+  better depends on the range. Stating the comparison, once both are justified, is worth doing and has
+  not been done.
+- >-
+  The paper's Appendix B, its zero-counting estimates, and its treatment of M(x) in the companion
+  paper are not stated.
+- >-
+  No novelty is claimed. The results are Chirre and Helfgott's.

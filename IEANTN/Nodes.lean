@@ -10,6 +10,8 @@ import IEANTN.Nodes.Buthe.v1.Challenge
 import IEANTN.Nodes.Buthe.v2.Challenge
 import IEANTN.Nodes.Buthe2016.v1.Challenge
 import IEANTN.Nodes.ButheNumerics.v1.Challenge
+import IEANTN.Nodes.CH2.v1.Challenge
+import IEANTN.Nodes.CH2.v2.Challenge
 import IEANTN.Nodes.ChengGraham2004.v1.Challenge
 import IEANTN.Nodes.DudekPlatt.v1.Challenge
 import IEANTN.Nodes.DudekPlatt.v2.Challenge

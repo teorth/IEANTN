@@ -1,0 +1,125 @@
+# Node metadata for `CH2.v2`.  See docs/NODES.md.
+#
+# The Fourier-analytic core of Chirre-Helfgott: Proposition 2.4, stated for arbitrary parameters.
+# A variant of CH2.v1, not a successor -- both stay.
+version: "v0.4"
+
+node:
+  id: CH2.v2
+  family: CH2
+  version: v2
+  kind: pipeline
+  status: awaiting-solution
+
+project:
+  name: "Chirre-Helfgott's Fourier-analytic core"
+  description: >-
+    Proposition 2.4 of Chirre-Helfgott, which converts a band-limited majorant or minorant of the
+    truncated exponential into a two-sided bound on the partial sums of a non-negative Dirichlet
+    coefficient sequence. Two conclusions, the majorant half giving an upper bound and the minorant
+    half a lower one. Both import nothing: the coefficient sequence, the pole-free part of its
+    Dirichlet series, the approximant and all the parameters arrive as hypotheses, so a Lean proof is
+    their whole justification. This is the machinery CH2.v1's numerical outputs are obtained with.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M45", "42A38"]
+
+conclusions:
+- id: proposition_2_4_upper
+  issue: 64
+  declaration: CH2.v2.proposition_2_4_upper
+  challenge: CH2.v2.challenge_proposition_2_4_upper
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      No proof here yet, but it is proved upstream and the work is a port rather than a proof.
+      PrimeNumberTheoremAnd has it as CH2.prop_2_4_plus in CH2_part1.lean -- 6472 lines with NO
+      `sorry`, together with the Proposition 2.3 it rests on. Imports `none`, and that is a real none:
+      every input is universally quantified with its conditions as hypotheses, so this consumes
+      nothing from the network and can be verified without waiting on any numerical input.
+      The direction of the inequality is forced by non-negativity of the coefficients: majorizing the
+      truncated exponential majorizes each term, and non-negativity is what lets the termwise
+      comparison survive summation. That is the whole reason the paper's method needs a_n >= 0.
+      When porting, note that PNT+'s `S` and `I'` are this node's `partialSum` and `truncExp`, and
+      that its @[blueprint ...] attribute blocks are LeanArchitect machinery absent here and must be
+      stripped. Solutions/DudekPlatt.v3 is the worked example of that operation.
+  designated: unjustified
+- id: proposition_2_4_lower
+  issue: 64
+  declaration: CH2.v2.proposition_2_4_lower
+  challenge: CH2.v2.challenge_proposition_2_4_lower
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      No proof here yet. PrimeNumberTheoremAnd has it as CH2.prop_2_4_minus, likewise sorry-free.
+      Imports `none`, for the same reason as the majorant half. Stated as a separate conclusion rather
+      than folded into a conjunction because the paper's optimal majorant and optimal minorant are
+      different functions, so a consumer instantiates the two at different approximants and generally
+      wants only one of them.
+  designated: unjustified
+
+sources:
+- title: "Optimal bounds for sums of non-negative arithmetic functions"
+  authors: ["Andres Chirre", "Harald Andres Helfgott"]
+  type: "paper"
+  id: "https://arxiv.org/abs/2512.15709"
+  relationship: formalizes
+  note: >-
+    Proposition 2.4, read from the arXiv preprint and cross-checked against
+    PrimeNumberTheoremAnd's prop_2_4_plus and prop_2_4_minus, whose shapes this follows.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Assessed which parts of the paper's analytic machinery could be stated within this repository's
+      Mathlib-only Vocabulary rule, and stated the part that could, under the direction of the
+      maintainer. No proof is claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    The statement follows PrimeNumberTheoremAnd's prop_2_4_plus and prop_2_4_minus, with the
+    hypotheses grouped into three named predicates for readability and the parameters made explicit
+    rather than implicit. The grouping is presentational; the content is theirs. What was checked
+    deliberately is that the statement needs only Mathlib plus two small definitions of the paper's
+    own -- see the limitations on why that mattered.
+
+limitations:
+- >-
+  Neither conclusion is proved here. Both are stated so that they CAN be: they import nothing, so a
+  Lean solution is their whole justification, and nothing numerical stands in the way.
+- >-
+  THIS IS NOT THE PAPER'S WHOLE ANALYTIC HALF. Its Proposition 5.2, the contour-shifting estimate,
+  is also proved in PrimeNumberTheoremAnd but is stated there in terms of a ladder contour, admissible
+  contours, the Beurling-Selberg Phi family and residue sums over regions -- nine or more bespoke
+  definitions. Transcribing it faithfully would mean admitting all of that into IEANTN/Vocabulary/,
+  whose rule is Mathlib-only definitions shared across the whole network. That is a real architectural
+  cost and should be decided deliberately rather than incurred as a side effect, so it is deferred.
+  See #64.
+- >-
+  Consequently this node does not by itself yield CH2.v1's corollaries. The route from here to them
+  runs through the contour half and then through Theorem 1.1, which nobody has stated -- PNT+'s
+  CH2.lean carries a "TODO: incorporate material from [CH2, Section 6]" where it would go.
+- >-
+  The paper's extremal approximants, Section 4 as replaced by the authors' addendum, are what supply
+  the majorant and minorant these conclusions take as hypotheses. They are not stated here, so a
+  consumer must produce an approximant itself. PNT+ has that material sorry-free as well.
+- >-
+  No novelty is claimed. The proposition is Chirre and Helfgott's.

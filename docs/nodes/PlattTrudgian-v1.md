@@ -42,7 +42,7 @@ def rh_up_to : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | nothing recorded |
-| Assumed by | [`FKS.v1.psi_bound_all_x`](FKS-v1.md#psi_bound_all_x), [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`MT.v1.zero_free_region_sharpened`](MT-v1.md#zero_free_region_sharpened), [`PlattTrudgian2021.v1.theorem_1_classical`](PlattTrudgian2021-v1.md#theorem_1_classical), [`PlattTrudgian2021.v1.theorem_1_numerical`](PlattTrudgian2021-v1.md#theorem_1_numerical) |
+| Assumed by | [`CH2.v1.corollary_1_3_lambda_sum`](CH2-v1.md#corollary_1_3_lambda_sum), [`CH2.v1.corollary_1_3_psi`](CH2-v1.md#corollary_1_3_psi), [`FKS.v1.psi_bound_all_x`](FKS-v1.md#psi_bound_all_x), [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`MT.v1.zero_free_region_sharpened`](MT-v1.md#zero_free_region_sharpened), [`PlattTrudgian2021.v1.theorem_1_classical`](PlattTrudgian2021-v1.md#theorem_1_classical), [`PlattTrudgian2021.v1.theorem_1_numerical`](PlattTrudgian2021-v1.md#theorem_1_numerical) |
 
 **Justification `platttrudgian-paper`** — **designated** — literature, the paper's main result
 
