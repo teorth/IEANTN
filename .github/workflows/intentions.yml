@@ -1,0 +1,41 @@
+name: Intentions
+
+# Lets a contributor claim an issue by commenting on it: the bot assigns them and moves the
+# issue's card on the project board from `Unclaimed` to `Claimed`.
+#
+# The board is `PNT+ Project`, owned by AlexKontorovich, shared with PrimeNumberTheoremAnd. This
+# repository's issues sit on it alongside PNT+'s, which is deliberate -- the two projects overlap
+# heavily in both mathematics and people, and one board is where a contributor can see what is
+# free across both.
+#
+# Only `issue_comment` is listed, matching PrimeNumberTheoremAnd's caller. That gives the comment
+# commands but NOT the automatic board lifecycle: issues are added to the board by hand. Adding
+# the `issues` and `pull_request_target` triggers would auto-add every issue opened here to a board
+# that is not this repository's own, which should be a deliberate decision rather than a default;
+# `auto-add-labels` is the way to scope it if that is ever wanted.
+#
+# `default-ttl: none` disables claim expiry, so no `Claim Expires` field and no scheduled sweep are
+# needed. A claim then persists until it is disclaimed.
+#
+# The credential: the automatic `GITHUB_TOKEN` cannot write Projects v2 -- that is the whole reason
+# a secret is needed here, and the only reason. `PAT_TOKEN` is a classic PAT with `project` scope
+# and nothing else; the reusable workflow assigns issues and edits pull requests with this
+# repository's own `GITHUB_TOKEN`, which it takes separately. Note that the token carries an expiry
+# and the bot fails quietly when it lapses, so a `claim` that draws no response is worth checking
+# against `gh secret list` before anything else.
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  intentions:
+    permissions:
+      issues: write
+      pull-requests: write
+    uses: leanprover-community/intentions/.github/workflows/intentions.yml@v1
+    with:
+      project-title: "PNT+ Project"
+      default-ttl: "none"
+    secrets:
+      project-token: ${{ secrets.PAT_TOKEN }}
