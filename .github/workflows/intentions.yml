@@ -13,13 +13,20 @@ name: Intentions
 # token is provisioned. This repository's issues previously sat on AlexKontorovich's `PNT+ Project`
 # board for cross-project visibility; that is what those two rules together ruled out.
 #
-# Only `issue_comment` is listed, matching PrimeNumberTheoremAnd's caller. That gives the comment
-# commands but NOT the automatic board lifecycle: issues reach the board by hand, and their status
-# is set by hand until someone claims them. Adding the `issues` and `pull_request_target` triggers
-# would auto-add every issue opened here and drive `Status` from pull request events. Now that the
-# board belongs to this repository there is no longer a reason not to, beyond wanting to see the
-# comment commands work first; `auto-add-labels` scopes it to labelled issues if the full sweep is
-# too much.
+# Only `issue_comment` is listed. That gives the comment commands but NOT the automatic board
+# lifecycle: issues reach the board by hand, and their status is set by hand until someone claims
+# one. That is deliberate and should stay.
+#
+# Adding the `issues` trigger would set `auto-add`, and with no `auto-add-labels` filter the action
+# adds EVERY issue opened here -- so on a public repository the board would be populated by whoever
+# happens to open an issue. No privilege comes with that: a stranger cannot set `Status`, assign, or
+# reach anything else. What it costs is the board's meaning. `Unclaimed` here is a maintainer's
+# judgement that the work is real and scoped, and automatic membership would say nothing at all.
+#
+# If the manual `gh project item-add` ever becomes a burden, the middle ground is `issues: [opened,
+# labeled]` with `auto-add-labels` set: only issues carrying that label join the board, `labeled`
+# catches the ones that qualify after the fact, and labels on a public repository need triage or
+# write access -- so curation stays with maintainers. Prefer that over an unfiltered auto-add.
 #
 # `default-ttl: none` disables claim expiry, so no `Claim Expires` field and no scheduled sweep are
 # needed. A claim then persists until it is disclaimed.
