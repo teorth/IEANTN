@@ -1,0 +1,28 @@
+{
+  "challenge": "CH2.v2.challenge_proposition_2_4_upper",
+  "conclusion": "CH2.v2.proposition_2_4_upper",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "5b1c3618759375e0ef0033d39000b1338e99f133"
+  },
+  "repository": {
+    "commit": "8338dc7c99eb09a144b7f22ea603197f3ec32eb8"
+  },
+  "run": {
+    "recorded_at": "2026-08-30T05:50:42Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/33294918034"
+  },
+  "schema": 2,
+  "solution": {
+    "project": "Solutions/CH2.v2"
+  },
+  "statement": {
+    "CH2.v2.proposition_2_4_upper": "74358eca0c837cb10263a159fea46718745128ed7905166607682f1d468e94f2"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}

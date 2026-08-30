@@ -9,7 +9,7 @@ node:
   family: CH2
   version: v2
   kind: pipeline
-  status: awaiting-verification
+  status: active
 
 project:
   name: "Chirre-Helfgott's Fourier-analytic core"
@@ -46,7 +46,8 @@ conclusions:
       seven files, free of sorryAx, axioms exactly propext / Classical.choice / Quot.sound, type
       matching the challenge under `set_option pp.all true`. The justification stays `none-yet`
       until the verification workflow records a receipt.
-      The proof is a port. PrimeNumberTheoremAnd has it as CH2.prop_2_4_plus in CH2_part1.lean -- 6472 lines with NO
+      The proof is a port. PrimeNumberTheoremAnd has it as CH2.prop_2_4_plus in CH2_part1.lean -- 6472
+      lines with NO
       `sorry`, together with the Proposition 2.3 it rests on. Imports `none`, and that is a real none:
       every input is universally quantified with its conditions as hypotheses, so this consumes
       nothing from the network and can be verified without waiting on any numerical input.
@@ -56,7 +57,10 @@ conclusions:
       When porting, note that PNT+'s `S` and `I'` are this node's `partialSum` and `truncExp`, and
       that its @[blueprint ...] attribute blocks are LeanArchitect machinery absent here and must be
       stripped. Solutions/DudekPlatt.v3 is the worked example of that operation.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33294918034'
+  designated: comparator
 - id: proposition_2_4_lower
   issue: 64
   declaration: CH2.v2.proposition_2_4_lower
@@ -73,7 +77,10 @@ conclusions:
       than folded into a conjunction because the paper's optimal majorant and optimal minorant are
       different functions, so a consumer instantiates the two at different approximants and generally
       wants only one of them.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33294918034'
+  designated: comparator
 
 sources:
 - title: "Optimal bounds for sums of non-negative arithmetic functions"

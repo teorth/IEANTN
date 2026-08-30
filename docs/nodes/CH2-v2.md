@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | pipeline |
-| Status | awaiting-verification |
+| Status | active |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -48,14 +48,19 @@ def proposition_2_4_upper : Prop :=
 | Challenge | `CH2.v2.challenge_proposition_2_4_upper` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v2/Conclusions.lean#L115) |
 | Solution | [`Solutions/CH2.v2`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v2) |
-| Evidence | unjustified (`none-yet`) |
+| Receipt | [`CH2.v2.proposition_2_4_upper.json`](https://github.com/teorth/IEANTN/blob/main/receipts/CH2.v2.proposition_2_4_upper.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | nothing yet |
 
-**Justification `unjustified`** — **designated** — none-yet
+**Justification `unjustified`** — none-yet
 
 > A COMPLETE SOLUTION EXISTS at Solutions/CH2.v2, awaiting verification: 2097 lines across seven files, free of sorryAx, axioms exactly propext / Classical.choice / Quot.sound, type matching the challenge under `set_option pp.all true`. The justification stays `none-yet` until the verification workflow records a receipt. The proof is a port. PrimeNumberTheoremAnd has it as CH2.prop_2_4_plus in CH2_part1.lean -- 6472 lines with NO `sorry`, together with the Proposition 2.3 it rests on. Imports `none`, and that is a real none: every input is universally quantified with its conditions as hypotheses, so this consumes nothing from the network and can be verified without waiting on any numerical input. The direction of the inequality is forced by non-negativity of the coefficients: majorizing the truncated exponential majorizes each term, and non-negativity is what lets the termwise comparison survive summation. That is the whole reason the paper's method needs a_n >= 0. When porting, note that PNT+'s `S` and `I'` are this node's `partialSum` and `truncExp`, and that its @[blueprint ...] attribute blocks are LeanArchitect machinery absent here and must be stripped. Solutions/DudekPlatt.v3 is the worked example of that operation.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33294918034
 
 ### `proposition_2_4_lower`
 
@@ -81,14 +86,19 @@ def proposition_2_4_lower : Prop :=
 | Challenge | `CH2.v2.challenge_proposition_2_4_lower` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v2/Conclusions.lean#L128) |
 | Solution | [`Solutions/CH2.v2`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v2) |
-| Evidence | unjustified (`none-yet`) |
+| Receipt | [`CH2.v2.proposition_2_4_lower.json`](https://github.com/teorth/IEANTN/blob/main/receipts/CH2.v2.proposition_2_4_lower.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | nothing yet |
 
-**Justification `unjustified`** — **designated** — none-yet
+**Justification `unjustified`** — none-yet
 
 > Proved in the same solution as the majorant half, and likewise axiom-clean. PrimeNumberTheoremAnd has it as CH2.prop_2_4_minus. Imports `none`, for the same reason as the majorant half. Stated as a separate conclusion rather than folded into a conjunction because the paper's optimal majorant and optimal minorant are different functions, so a consumer instantiates the two at different approximants and generally wants only one of them.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33294918034
 
 ## Limitations
 
