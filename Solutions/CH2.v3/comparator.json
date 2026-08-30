@@ -1,0 +1,14 @@
+{
+  "challenge_module": "IEANTN.Nodes.CH2.v3.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "CH2.v3.challenge_extremal_majorant",
+    "CH2.v3.challenge_extremal_minorant"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
