@@ -2886,8 +2886,13 @@ def render_node_page(node_id: str, nodes: dict, index: dict, importers: dict) ->
         # The evidence a reader would actually want to open. Naming the path without linking it
         # made them reconstruct the URL by hand, which is the sort of friction that stops people
         # checking at all.
+        # `Solution.lean`, not `is_dir()`. A solution directory keeps its `.lake` build tree,
+        # which is git-ignored and therefore SURVIVES A BRANCH SWITCH that removes every tracked
+        # file under it. The directory then still exists, holding nothing but build artefacts, and
+        # `is_dir()` reported a solution that the branch does not have -- a page that regenerates
+        # differently depending on which branch you last built. Marker files, not directories.
         solution = SOLUTIONS / node_id
-        if solution.is_dir():
+        if (solution / "Solution.lean").is_file():
             out.append(f"| Solution | [`Solutions/{node_id}`]"
                        f"({REPOSITORY_URL}/tree/main/Solutions/{node_id}) |")
         receipt = RECEIPTS / f"{key}.json"
