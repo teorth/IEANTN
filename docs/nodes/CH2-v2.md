@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | pipeline |
-| Status | awaiting-solution |
+| Status | awaiting-verification |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -47,6 +47,7 @@ def proposition_2_4_upper : Prop :=
 | Lean name | `CH2.v2.proposition_2_4_upper` |
 | Challenge | `CH2.v2.challenge_proposition_2_4_upper` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v2/Conclusions.lean#L115) |
+| Solution | [`Solutions/CH2.v2`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v2) |
 | Evidence | unjustified (`none-yet`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -54,7 +55,7 @@ def proposition_2_4_upper : Prop :=
 
 **Justification `unjustified`** — **designated** — none-yet
 
-> No proof here yet, but it is proved upstream and the work is a port rather than a proof. PrimeNumberTheoremAnd has it as CH2.prop_2_4_plus in CH2_part1.lean -- 6472 lines with NO `sorry`, together with the Proposition 2.3 it rests on. Imports `none`, and that is a real none: every input is universally quantified with its conditions as hypotheses, so this consumes nothing from the network and can be verified without waiting on any numerical input. The direction of the inequality is forced by non-negativity of the coefficients: majorizing the truncated exponential majorizes each term, and non-negativity is what lets the termwise comparison survive summation. That is the whole reason the paper's method needs a_n >= 0. When porting, note that PNT+'s `S` and `I'` are this node's `partialSum` and `truncExp`, and that its @[blueprint ...] attribute blocks are LeanArchitect machinery absent here and must be stripped. Solutions/DudekPlatt.v3 is the worked example of that operation.
+> A COMPLETE SOLUTION EXISTS at Solutions/CH2.v2, awaiting verification: 2097 lines across seven files, free of sorryAx, axioms exactly propext / Classical.choice / Quot.sound, type matching the challenge under `set_option pp.all true`. The justification stays `none-yet` until the verification workflow records a receipt. The proof is a port. PrimeNumberTheoremAnd has it as CH2.prop_2_4_plus in CH2_part1.lean -- 6472 lines with NO `sorry`, together with the Proposition 2.3 it rests on. Imports `none`, and that is a real none: every input is universally quantified with its conditions as hypotheses, so this consumes nothing from the network and can be verified without waiting on any numerical input. The direction of the inequality is forced by non-negativity of the coefficients: majorizing the truncated exponential majorizes each term, and non-negativity is what lets the termwise comparison survive summation. That is the whole reason the paper's method needs a_n >= 0. When porting, note that PNT+'s `S` and `I'` are this node's `partialSum` and `truncExp`, and that its @[blueprint ...] attribute blocks are LeanArchitect machinery absent here and must be stripped. Solutions/DudekPlatt.v3 is the worked example of that operation.
 
 ### `proposition_2_4_lower`
 
@@ -79,6 +80,7 @@ def proposition_2_4_lower : Prop :=
 | Lean name | `CH2.v2.proposition_2_4_lower` |
 | Challenge | `CH2.v2.challenge_proposition_2_4_lower` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v2/Conclusions.lean#L128) |
+| Solution | [`Solutions/CH2.v2`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v2) |
 | Evidence | unjustified (`none-yet`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -86,13 +88,14 @@ def proposition_2_4_lower : Prop :=
 
 **Justification `unjustified`** — **designated** — none-yet
 
-> No proof here yet. PrimeNumberTheoremAnd has it as CH2.prop_2_4_minus, likewise sorry-free. Imports `none`, for the same reason as the majorant half. Stated as a separate conclusion rather than folded into a conjunction because the paper's optimal majorant and optimal minorant are different functions, so a consumer instantiates the two at different approximants and generally wants only one of them.
+> Proved in the same solution as the majorant half, and likewise axiom-clean. PrimeNumberTheoremAnd has it as CH2.prop_2_4_minus. Imports `none`, for the same reason as the majorant half. Stated as a separate conclusion rather than folded into a conjunction because the paper's optimal majorant and optimal minorant are different functions, so a consumer instantiates the two at different approximants and generally wants only one of them.
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
-- Neither conclusion is proved here. Both are stated so that they CAN be: they import nothing, so a Lean solution is their whole justification, and nothing numerical stands in the way.
+- Proved, but not yet verified: a receipt requires a Comparator run.
+- The solution is a PORT ACROSS A MATHLIB VERSION GAP, which is worth recording because it is where the risk was. PrimeNumberTheoremAnd builds on Lean v4.32.2; this repository is on v4.34.0-rc2 with a different Mathlib pin. Four things had to change, and none of them is mathematics: `Real.fourierChar` now takes a real rather than a `Multiplicative` real, so PNT+'s explicit `Multiplicative.ofAdd` wrapper blocked `fun_prop` and was dropped; `S_eq_I` needed `set_option backward.isDefEq.respectTransparency false`, because 4.34 unfolds the `PNat` subtype partway through and no `PNat` lemma applies afterwards -- PNT+ already carries that option twice in the same material; and a handful of Mathlib imports that PNT+ got transitively had to be named. The five `Wiener` declarations the proof needs were ported rather than assumed, which is what makes the axiom check meaningful.
 - THIS IS NOT THE PAPER'S WHOLE ANALYTIC HALF. Its Proposition 5.2, the contour-shifting estimate, is also proved in PrimeNumberTheoremAnd but is stated there in terms of a ladder contour, admissible contours, the Beurling-Selberg Phi family and residue sums over regions -- nine or more bespoke definitions. Transcribing it faithfully would mean admitting all of that into IEANTN/Vocabulary/, whose rule is Mathlib-only definitions shared across the whole network. That is a real architectural cost and should be decided deliberately rather than incurred as a side effect, so it is deferred. See #64.
 - Consequently this node does not by itself yield CH2.v1's corollaries. The route from here to them runs through the contour half and then through Theorem 1.1, which nobody has stated -- PNT+'s CH2.lean carries a "TODO: incorporate material from [CH2, Section 6]" where it would go.
 - The paper's extremal approximants, Section 4 as replaced by the authors' addendum, are what supply the majorant and minorant these conclusions take as hypotheses. They are not stated here, so a consumer must produce an approximant itself. PNT+ has that material sorry-free as well.

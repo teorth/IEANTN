@@ -1,0 +1,14 @@
+{
+  "challenge_module": "IEANTN.Nodes.CH2.v2.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "CH2.v2.challenge_proposition_2_4_upper",
+    "CH2.v2.challenge_proposition_2_4_lower"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

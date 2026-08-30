@@ -48,8 +48,8 @@ adds the environment detail.
 | `CH2.v1` | stub | `corollary_1_2_lambda_sum` | literature | 0 | - |
 | `CH2.v1` | stub | `corollary_1_3_psi` | literature | 2 | - |
 | `CH2.v1` | stub | `corollary_1_3_lambda_sum` | literature | 2 | - |
-| `CH2.v2` | awaiting-solution | `proposition_2_4_upper` | none-yet | 0 | #64 |
-| `CH2.v2` | awaiting-solution | `proposition_2_4_lower` | none-yet | 0 | #64 |
+| `CH2.v2` | awaiting-verification | `proposition_2_4_upper` | none-yet | 0 | #64 |
+| `CH2.v2` | awaiting-verification | `proposition_2_4_lower` | none-yet | 0 | #64 |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
 | `DudekPlatt.v1` | stub | `largest_counterexample_on_rh` | literature | 0 | - |
