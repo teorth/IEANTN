@@ -60,6 +60,7 @@ graph LR
   NButheNumerics_v1["<b>ButheNumerics.v1</b><br/>3 claims<br/><i>weakest: computation</i>"]
   NCH2_v1["<b>CH2.v1</b><br/>4 claims<br/><i>weakest: cited</i>"]
   NCH2_v2["<b>CH2.v2</b><br/>2 claims<br/><i>weakest: verified</i>"]
+  NCH2_v3["<b>CH2.v3</b><br/>2 claims<br/><i>weakest: unjustified</i>"]
   NChengGraham2004_v1["<b>ChengGraham2004.v1</b><br/><i>nothing stated yet</i>"]
   NDudekPlatt_v1["<b>DudekPlatt.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NDudekPlatt_v2["<b>DudekPlatt.v2</b><br/>1 claim<br/><i>weakest: verified</i>"]
@@ -135,7 +136,7 @@ graph LR
   style NRosserSchoenfeld_v1 stroke-dasharray: 2 3;
   style NTrudgian2011_v1 stroke-dasharray: 2 3;
   style NWedeniwski_v1 stroke-dasharray: 2 3;
-  class NBrown1967_v1,NButhe_v2,NChengGraham2004_v1,NMTY_v1 none_yet;
+  class NBrown1967_v1,NButhe_v2,NCH2_v3,NChengGraham2004_v1,NMTY_v1 none_yet;
   class NWedeniwski_v1 asserted;
   class NBKLNW_v1,NButhe_v1,NButhe2016_v1,NCH2_v1,NDudekPlatt_v1,NDusart2018_v1,NFKS_v1,NHiary2016_v1,NKLN_v1,NKadiri2005_v1,NMT_v1,NPlattTrudgian_v1,NPlattTrudgian2021_v1,NRosserSchoenfeld_v1,NTrudgian2011_v1 literature;
   class NButheNumerics_v1,NDudekPlattNumerics_v1,NDudekPlattNumerics_v2,NFKBJ_v1,NFKS2Numerics_v1,NPlatt2015_v1,NPlatt2017_v1 numerical;
@@ -147,6 +148,7 @@ graph LR
   click NButheNumerics_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ButheNumerics-v1.md" _blank
   click NCH2_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v1.md" _blank
   click NCH2_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v2.md" _blank
+  click NCH2_v3 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v3.md" _blank
   click NDudekPlatt_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v1.md" _blank
   click NDudekPlatt_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v2.md" _blank
   click NDudekPlatt_v3 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v3.md" _blank
@@ -227,6 +229,10 @@ graph LR
   subgraph sgCH2_v2["CH2.v2"]
     CH2_v2_proposition_2_4_lower["<b>proposition_2_4_lower</b><br/><i>verified</i>"]
     CH2_v2_proposition_2_4_upper["<b>proposition_2_4_upper</b><br/><i>verified</i>"]
+  end
+  subgraph sgCH2_v3["CH2.v3"]
+    CH2_v3_extremal_majorant["<b>extremal_majorant</b><br/><i>unjustified</i>"]
+    CH2_v3_extremal_minorant["<b>extremal_minorant</b><br/><i>unjustified</i>"]
   end
   subgraph sgDudekPlatt_v1["DudekPlatt.v1"]
     DudekPlatt_v1_largest_counterexample_on_rh["<b>largest_counterexample_on_rh</b><br/><i>cited</i>"]
@@ -446,7 +452,7 @@ graph LR
   class RosserSchoenfeld_v1_zero_free_region_classical bridged;
   class CH2_v2_proposition_2_4_lower,CH2_v2_proposition_2_4_upper,DudekPlatt_v2_ramanujan_inequality_3915,DudekPlatt_v3_criterion,FKS2_v1_corollary_14,FKS2_v1_corollary_22,FKS2_v1_corollary_23,FKS2_v1_corollary_26,FKS2_v2_proposition_13,FKS2_v2_theorem_3,Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap,ZeroFreeHeight_v1_classical_region_descends lean_comparator;
   class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,CH2_v1_corollary_1_2_lambda_sum,CH2_v1_corollary_1_2_psi,CH2_v1_corollary_1_3_lambda_sum,CH2_v1_corollary_1_3_psi,DudekPlatt_v1_largest_counterexample_on_rh,DudekPlatt_v1_ramanujan_inequality,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,RosserSchoenfeld_v1_zero_free_region,Trudgian2011_v1_integral_S_bound literature;
-  class Buthe_v2_lemma_3_bounds,Buthe_v2_lemma_3_positivity none_yet;
+  class Buthe_v2_lemma_3_bounds,Buthe_v2_lemma_3_positivity,CH2_v3_extremal_majorant,CH2_v3_extremal_minorant none_yet;
   class ButheNumerics_v1_lemma_3_constant_gt_at_10,ButheNumerics_v1_lemma_3_constant_nonpos,ButheNumerics_v1_li_minus_pi_below_1e7,DudekPlattNumerics_v1_pi_two_sided_paper,DudekPlattNumerics_v2_pi_two_sided_pnt,FKBJ_v1_rh_up_to,FKS2Numerics_v1_corollary_22_mid_range,FKS2Numerics_v1_corollary_23_mid_range,FKS2Numerics_v1_nu_asymp_e30_le,FKS2Numerics_v1_table6_row2_floor,FKS2Numerics_v1_theta_asymp_ge_one_below_e30,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to numerical;
   click BKLNW_v1_corollary_5_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#corollary_5_1" _blank
   click BKLNW_v1_table8_psi_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound" _blank
@@ -473,6 +479,8 @@ graph LR
   click CH2_v1_corollary_1_3_psi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v1.md#corollary_1_3_psi" _blank
   click CH2_v2_proposition_2_4_lower href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v2.md#proposition_2_4_lower" _blank
   click CH2_v2_proposition_2_4_upper href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v2.md#proposition_2_4_upper" _blank
+  click CH2_v3_extremal_majorant href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v3.md#extremal_majorant" _blank
+  click CH2_v3_extremal_minorant href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v3.md#extremal_minorant" _blank
   click DudekPlatt_v1_largest_counterexample_on_rh href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v1.md#largest_counterexample_on_rh" _blank
   click DudekPlatt_v1_ramanujan_inequality href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v1.md#ramanujan_inequality" _blank
   click DudekPlatt_v2_ramanujan_inequality_3915 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v2.md#ramanujan_inequality_3915" _blank
@@ -583,6 +591,10 @@ A line is one claim, indented under whatever assumes it.
 - [`CH2.v2.proposition_2_4_lower`](docs/nodes/CH2-v2.md#proposition_2_4_lower) — verified
 
 - [`CH2.v2.proposition_2_4_upper`](docs/nodes/CH2-v2.md#proposition_2_4_upper) — verified
+
+- [`CH2.v3.extremal_majorant`](docs/nodes/CH2-v3.md#extremal_majorant) — unjustified
+
+- [`CH2.v3.extremal_minorant`](docs/nodes/CH2-v3.md#extremal_minorant) — unjustified
 
 - [`DudekPlatt.v1.largest_counterexample_on_rh`](docs/nodes/DudekPlatt-v1.md#largest_counterexample_on_rh) — cited — *sources known, not all drawable*
 
@@ -764,6 +776,8 @@ rather than maintained.
 | [`Buthe2016.v1.theorem_2_theta`](docs/nodes/Buthe2016-v1.md#theorem_2_theta) | cited | 0 | none |
 | [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) | cited | 0 | known, not all drawable |
 | [`CH2.v1.corollary_1_3_psi`](docs/nodes/CH2-v1.md#corollary_1_3_psi) | cited | 0 | known, not all drawable |
+| [`CH2.v3.extremal_majorant`](docs/nodes/CH2-v3.md#extremal_majorant) | unjustified | 0 | none |
+| [`CH2.v3.extremal_minorant`](docs/nodes/CH2-v3.md#extremal_minorant) | unjustified | 0 | none |
 | [`DudekPlatt.v1.largest_counterexample_on_rh`](docs/nodes/DudekPlatt-v1.md#largest_counterexample_on_rh) | cited | 0 | known, not all drawable |
 | [`DudekPlatt.v1.ramanujan_inequality`](docs/nodes/DudekPlatt-v1.md#ramanujan_inequality) | cited | 0 | traced |
 | [`FKS.v1.psi_bound_all_x`](docs/nodes/FKS-v1.md#psi_bound_all_x) | cited | 0 | traced |
