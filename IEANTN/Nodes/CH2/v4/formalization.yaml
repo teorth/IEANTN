@@ -1,0 +1,155 @@
+# Node metadata for `CH2.v4`.  See docs/NODES.md.
+#
+# The contour-shifting half of Chirre-Helfgott, section 5, restricted to L-shaped contours.
+# A variant of CH2.v2 and CH2.v3, not a successor -- all three feed the unstated CH2.v5.
+version: "v0.4"
+
+node:
+  id: CH2.v4
+  family: CH2
+  version: v4
+  kind: pipeline
+  status: awaiting-solution
+
+project:
+  name: "Chirre-Helfgott's contour shift, on L-shaped contours"
+  description: >-
+    Section 5 of Chirre-Helfgott: the identity moving an integral off the line Re s = 1 onto a
+    contour running out to Re s = -infinity, collecting the poles in between. Two conclusions, one
+    pole-free and one general. The paper states this for an arbitrary "admissible contour", a
+    tameness condition rather than a shape constraint; this node fixes the class to L-shaped paths
+    parameterized by a single complex number, which is entirely axis-parallel and so needs only
+    Mathlib's rectangle Cauchy theorem. THESE STATEMENTS ARE TENTATIVE: they are a notational
+    proposal whose confirmation is a Comparator run, not a transcription whose fidelity is settled.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M06", "30E20", "11N05"]
+
+conclusions:
+- id: contour_shift_holomorphic
+  issue: 64
+  declaration: CH2.v4.contour_shift_holomorphic
+  challenge: CH2.v4.challenge_contour_shift_holomorphic
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      The pole-free case: pure Cauchy, no residues. Stated separately because it is what exercises
+      `lContourIntegral` against Mathlib's rectangle theorem, so a mistake in the definition shows up
+      here cheaply rather than tangled with residue bookkeeping.
+      Imports `none`, and that is a real none: T, w and f are universally quantified with every
+      condition a hypothesis.
+      EXPECTED ROUTE. The region between the contour and the top edge is a union of two rectangles
+      (one semi-infinite), so `integral_boundary_rect_eq_zero_of_differentiableOn` applies to each,
+      and the far-left edge vanishes by `DecaysLeft`. That limit is the only analysis; the rest is
+      geometry. Note the whole reason for choosing axis-parallel contours is that this step needs no
+      Cauchy theorem beyond rectangles.
+  designated: unjustified
+- id: contour_shift
+  issue: 64
+  declaration: CH2.v4.contour_shift
+  challenge: CH2.v4.challenge_contour_shift
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      The general case, with finitely many poles each contributing its circle integral. Imports
+      `none`, for the same reason.
+      THREE CHOICES KEEP THIS TO ONE NEW DEFINITION. The poles arrive as a Finset rather than as
+      "the poles of F in a region", which would need discreteness, finiteness and a bespoke sum -- a
+      consumer always has the list, since for zeta'/zeta it is exactly the zeros a verification node
+      enumerates. Circle integrals stand in for residues, because Mathlib has no `residue` but does
+      have the annulus invariance that makes the value independent of r; and since a circle integral
+      is 2 pi i times the residue, no 2 pi i appears in the statement. And only the upper half is
+      stated, which the paper's own F(conj s) = conj (F s) hypothesis lets a consumer complete.
+      PrimeNumberTheoremAnd proves the paper's Proposition 5.2, but in terms of a ladder contour,
+      admissible contours, the Beurling-Selberg Phi family and residue sums over regions. It is a
+      reference for the mathematics, not a port target for this statement.
+  designated: unjustified
+
+sources:
+- title: "Optimal bounds for sums of non-negative arithmetic functions"
+  authors: ["Andres Chirre", "Harald Andres Helfgott"]
+  type: "paper"
+  id: "https://arxiv.org/abs/2512.15709"
+  relationship: adapts
+  note: >-
+    Section 5, Lemma 5.1 and Proposition 5.2, read from the arXiv preprint. `adapts` rather than
+    `formalizes` deliberately: the contour class is narrowed from the paper's admissible contours to
+    L-shaped ones, only the upper half is stated, the pole sum is replaced by a supplied Finset, and
+    the boundedness hypothesis is replaced by the decay it delivers. Each is recorded in the
+    limitations. The paper permits the narrowing explicitly -- section 8.2 says the contour may be
+    chosen "rather freely" -- but a reader should not mistake these for transcriptions.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Read section 5, designed the restricted contour class and the statements, and checked the
+      orientation numerically, under the direction of the maintainer. No proof is claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    THE ORIENTATION WAS CHECKED NUMERICALLY, which matters because a sign error here would make the
+    conclusions FALSE rather than vacuous, and an earlier draft of the general statement did have the
+    top-edge term with the wrong sign. Both identities were evaluated by quadrature on explicit
+    examples: for the general form, f(s) = exp(2s)/(s - rho) with rho = 0.5 + 5i, T = 10,
+    w = -3 + i, r = 0.3, where the two sides agree to 3e-9 and the circle integral reproduces
+    2 pi i exp(2 rho) to the same precision; for the pole-free form, three integrands including one
+    reaching 1e7 in magnitude, agreeing to a relative 2e-9. That is evidence about the STATEMENT, not
+    about any proof, and it is the reason to expect a Comparator run to succeed rather than to
+    discover a sign.
+    The junk-value trap was considered explicitly rather than inherited: `lContourIntegral`'s ray
+    piece is a Bochner integral and so is 0 for a non-integrable integrand, which would make a
+    conclusion quantified over f VACUOUS rather than false. Both conclusions carry the integrability
+    hypothesis, and the definition's docstring says why any future one must.
+
+limitations:
+- >-
+  Stated but not proved, and the statements are TENTATIVE. They are a notational proposal for the
+  contour vocabulary; the point of verifying them is to confirm the notation before CH2.v5 is built
+  on it. Expect them to move if verification exposes a bad choice.
+- >-
+  THE CONTOUR CLASS IS NARROWER THAN THE PAPER'S. CH2 allows any admissible contour -- a tameness
+  condition, finitely many smooth arcs of bounded total length per unit-width strip -- and this node
+  allows only L-shaped paths, one complex parameter. The paper permits the narrowing (section 8.2:
+  the contour may be chosen "rather freely", needing only to pass under the non-trivial zeros of zeta
+  and over the trivial ones), and its own Lemma 5.1 proof already closes contours rectangularly, but
+  a consumer needing a genuinely different contour will not find it here. The diagonal class of
+  Figure 3 is the natural next widening and would need Cauchy on triangles rather than rectangles.
+- >-
+  ONLY THE UPPER HALF IS STATED. The paper's region is (-infinity, 1] + i[-T, T] and its Lemma 5.1
+  carries both C and its conjugate. Recovering the lower half uses the paper's own assumption
+  F(conj s) = conj (F s), which is not stated here, so a consumer must supply that step.
+- >-
+  THE POLE SUM IS A SUPPLIED Finset, not the poles of F. Nothing in the statement asserts that P is
+  all of them; a consumer that omits a pole gets a false instance of the hypothesis
+  `DifferentiableOn f (UpperRegion T \ P)` rather than a wrong conclusion, so the direction of the
+  error is safe, but the completeness of P is the consumer's obligation and is not checked here.
+- >-
+  `DecaysLeft` IS NOT THE PAPER'S HYPOTHESIS. CH2 assumes F(s) x0^s bounded on the region and
+  concludes for x > x0; the decay used in the argument is what the leftover (x/x0)^s supplies. Stating
+  the decay directly is more reusable and is what the deformation needs, but it is a reformulation, and
+  a consumer holding only the paper's boundedness must derive it.
+- >-
+  Holomorphy is required at s = 1, the corner of the region, so a Dirichlet series with its pole there
+  must have it removed first. That is no restriction in practice -- CH2.v2.IsPoleFreePart already works
+  with G(s) = A(s) - 1/(s-1) -- but it is a real hypothesis.
+- >-
+  No novelty is claimed. The mathematics is Chirre and Helfgott's; only the restriction of the contour
+  class and the finite-pole formulation are this node's.

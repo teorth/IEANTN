@@ -53,6 +53,7 @@ def extremal_majorant : Prop :=
 | Lean name | `CH2.v3.extremal_majorant` |
 | Challenge | `CH2.v3.challenge_extremal_majorant` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v3/Conclusions.lean#L93) |
+| Solution | [`Solutions/CH2.v3`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v3) |
 | Evidence | unjustified (`none-yet`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -94,6 +95,7 @@ def extremal_minorant : Prop :=
 | Lean name | `CH2.v3.extremal_minorant` |
 | Challenge | `CH2.v3.challenge_extremal_minorant` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v3/Conclusions.lean#L115) |
+| Solution | [`Solutions/CH2.v3`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v3) |
 | Evidence | unjustified (`none-yet`) |
 | Sources traced | none |
 | Assumes | nothing recorded |

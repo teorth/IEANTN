@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-36 node version(s), 66 conclusion(s).  3 state nothing yet.
+37 node version(s), 68 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -17,7 +17,7 @@ adds the environment detail.
 | `bridged` | 1 |
 | `lean-comparator` | 13 |
 | `literature` | 34 |
-| `none-yet` | 4 |
+| `none-yet` | 6 |
 | `numerical` | 13 |
 
 ## Nodes
@@ -52,6 +52,8 @@ adds the environment detail.
 | `CH2.v2` | active | `proposition_2_4_lower` | lean-comparator | 0 | #64 |
 | `CH2.v3` | awaiting-solution | `extremal_majorant` | none-yet | 0 | #64 |
 | `CH2.v3` | awaiting-solution | `extremal_minorant` | none-yet | 0 | #64 |
+| `CH2.v4` | awaiting-solution | `contour_shift_holomorphic` | none-yet | 0 | #64 |
+| `CH2.v4` | awaiting-solution | `contour_shift` | none-yet | 0 | #64 |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
 | `DudekPlatt.v1` | stub | `largest_counterexample_on_rh` | literature | 0 | - |

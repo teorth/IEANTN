@@ -15,6 +15,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`CH2.v1`](CH2-v1.md) | paper | 4 | cited |
 | [`CH2.v2`](CH2-v2.md) | pipeline | 2 | verified |
 | [`CH2.v3`](CH2-v3.md) | pipeline | 2 | unjustified |
+| [`CH2.v4`](CH2-v4.md) | pipeline | 2 | unjustified |
 | [`ChengGraham2004.v1`](ChengGraham2004-v1.md) | paper | 0 | — |
 | [`DudekPlatt.v1`](DudekPlatt-v1.md) | paper | 2 | cited |
 | [`DudekPlatt.v2`](DudekPlatt-v2.md) | paper | 1 | verified |
