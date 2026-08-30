@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-33 node version(s), 58 conclusion(s).  3 state nothing yet.
+35 node version(s), 64 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -16,8 +16,8 @@ adds the environment detail.
 | `asserted` | 1 |
 | `bridged` | 1 |
 | `lean-comparator` | 11 |
-| `literature` | 30 |
-| `none-yet` | 2 |
+| `literature` | 34 |
+| `none-yet` | 4 |
 | `numerical` | 13 |
 
 ## Nodes
@@ -44,6 +44,12 @@ adds the environment detail.
 | `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
+| `CH2.v1` | stub | `corollary_1_2_psi` | literature | 0 | - |
+| `CH2.v1` | stub | `corollary_1_2_lambda_sum` | literature | 0 | - |
+| `CH2.v1` | stub | `corollary_1_3_psi` | literature | 2 | - |
+| `CH2.v1` | stub | `corollary_1_3_lambda_sum` | literature | 2 | - |
+| `CH2.v2` | awaiting-solution | `proposition_2_4_upper` | none-yet | 0 | #64 |
+| `CH2.v2` | awaiting-solution | `proposition_2_4_lower` | none-yet | 0 | #64 |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
 | `DudekPlatt.v1` | stub | `largest_counterexample_on_rh` | literature | 0 | - |
@@ -93,8 +99,8 @@ downstream.
 
 | Conclusion | Dependants |
 |---|---:|
+| `PlattTrudgian.v1.rh_up_to` | 7 |
 | `FKBJ.v1.rh_up_to` | 6 |
-| `PlattTrudgian.v1.rh_up_to` | 5 |
 | `FKS2Numerics.v1.theta_asymp_ge_one_below_e30` | 4 |
 | `FKS2Numerics.v1.nu_asymp_e30_le` | 4 |
 | `FKS2.v2.proposition_13` | 4 |
@@ -123,6 +129,8 @@ downstream.
 | `Dusart2018.v1.proposition_5_4` | 1 |
 | `DudekPlattNumerics.v2.pi_two_sided_pnt` | 1 |
 | `DudekPlattNumerics.v1.pi_two_sided_paper` | 1 |
+| `CH2.v1.corollary_1_2_psi` | 1 |
+| `CH2.v1.corollary_1_2_lambda_sum` | 1 |
 | `ButheNumerics.v1.li_minus_pi_below_1e7` | 1 |
 | `ButheNumerics.v1.lemma_3_constant_nonpos` | 1 |
 | `ButheNumerics.v1.lemma_3_constant_gt_at_10` | 1 |
