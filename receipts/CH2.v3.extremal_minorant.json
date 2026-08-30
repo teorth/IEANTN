@@ -1,0 +1,28 @@
+{
+  "challenge": "CH2.v3.challenge_extremal_minorant",
+  "conclusion": "CH2.v3.extremal_minorant",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "5b1c3618759375e0ef0033d39000b1338e99f133"
+  },
+  "repository": {
+    "commit": "5876247bfe11f8dea70ce9803e5f0f74d62f0212"
+  },
+  "run": {
+    "recorded_at": "2026-08-30T18:27:31Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/33327322588"
+  },
+  "schema": 2,
+  "solution": {
+    "project": "Solutions/CH2.v3"
+  },
+  "statement": {
+    "CH2.v3.extremal_minorant": "ff200fdef6e23e060827f99a86105511ae5cd7e5b71c275921a38587a34fed52"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}
