@@ -15,9 +15,9 @@ adds the environment detail.
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 1 |
-| `lean-comparator` | 13 |
+| `lean-comparator` | 15 |
 | `literature` | 34 |
-| `none-yet` | 4 |
+| `none-yet` | 2 |
 | `numerical` | 13 |
 
 ## Nodes
@@ -50,8 +50,8 @@ adds the environment detail.
 | `CH2.v1` | stub | `corollary_1_3_lambda_sum` | literature | 2 | - |
 | `CH2.v2` | active | `proposition_2_4_upper` | lean-comparator | 0 | #64 |
 | `CH2.v2` | active | `proposition_2_4_lower` | lean-comparator | 0 | #64 |
-| `CH2.v3` | awaiting-solution | `extremal_majorant` | none-yet | 0 | #64 |
-| `CH2.v3` | awaiting-solution | `extremal_minorant` | none-yet | 0 | #64 |
+| `CH2.v3` | active | `extremal_majorant` | lean-comparator | 0 | #64 |
+| `CH2.v3` | active | `extremal_minorant` | lean-comparator | 0 | #64 |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
 | `DudekPlatt.v1` | stub | `largest_counterexample_on_rh` | literature | 0 | - |

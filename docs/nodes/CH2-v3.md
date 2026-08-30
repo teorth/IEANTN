@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | pipeline |
-| Status | awaiting-solution |
+| Status | active |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -54,14 +54,19 @@ def extremal_majorant : Prop :=
 | Challenge | `CH2.v3.challenge_extremal_majorant` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v3/Conclusions.lean#L93) |
 | Solution | [`Solutions/CH2.v3`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v3) |
-| Evidence | unjustified (`none-yet`) |
+| Receipt | [`CH2.v3.extremal_majorant.json`](https://github.com/teorth/IEANTN/blob/main/receipts/CH2.v3.extremal_majorant.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | nothing yet |
 
-**Justification `unjustified`** — **designated** — none-yet
+**Justification `unjustified`** — none-yet
 
 > Imports `none`, and that is a real none: `lambda` and `beta` are universally quantified with their conditions as hypotheses, so this consumes nothing from the network and can be verified without waiting on any numerical input. A COMPLETE SOLUTION EXISTS at Solutions/CH2.v3, awaiting verification: 6969 lines across six files, free of sorryAx, axioms exactly propext / Classical.choice / Quot.sound, type matching the challenge under `set_option pp.all true`. The justification stays `none-yet` until the verification workflow records a receipt. MOSTLY A PORT of PrimeNumberTheoremAnd's CH2_part1.lean, lines 1138-6472, the section "Extremal approximants to the truncated exponential". The statements that matter upstream are CH2.Inu_bounds for the majorant inequality and CH2.varphi_fourier_plus_error for the L1 error, in exactly the closed form stated here. CORRECTION TO AN EARLIER CLAIM ON THIS NODE. That section contains no `sorry` of its own, but it is NOT sorry-free: `varphi_fourier_decay` and `varphi_hat_integrable` are proved from Wiener.prelim_decay_3 and Wiener.decay_alt, and prelim_decay_3 is one of the two `sorry`s in Wiener.lean -- the decay of the Fourier transform of a function whose derivative has bounded variation. Mathlib has no such lemma either; `eVariationOn` appears nowhere in Analysis/Fourier/. Both of this node's conclusions depend on it, since band-limitedness needs the decay and the L1 errors need integrability of the transform. THE SOLUTION AVOIDS IT rather than proving it. The closed form the section DOES prove sorry-free -- fourier_formula_pos and fourier_formula_neg -- gives the same bound directly, because B_real_lipschitz_of_pm shows `B` is globally 1-Lipschitz along the reals, so the integrand `B(nu -+ t) - B(nu)` vanishes LINEARLY at t = 0 and the second moment `int t exp(-ct) = 1/c^2` supplies the second power. See Solutions/CH2.v3/Decay.lean. A proper, upstreamable treatment of Riemann-Stieltjes integration by parts is worth having and is deliberately out of scope. THE OTHER PIECE THAT IS NOT A PORT is the sign of `lambda` -- see the node's limitations. Solutions/CH2.v2 is the worked example of the port operation across the same Lean version gap, and Solutions/DudekPlatt.v3 of the @[blueprint ...] stripping it needs.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33327322588
 
 ### `extremal_minorant`
 
@@ -96,14 +101,19 @@ def extremal_minorant : Prop :=
 | Challenge | `CH2.v3.challenge_extremal_minorant` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v3/Conclusions.lean#L115) |
 | Solution | [`Solutions/CH2.v3`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v3) |
-| Evidence | unjustified (`none-yet`) |
+| Receipt | [`CH2.v3.extremal_minorant.json`](https://github.com/teorth/IEANTN/blob/main/receipts/CH2.v3.extremal_minorant.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | nothing yet |
 
-**Justification `unjustified`** — **designated** — none-yet
+**Justification `unjustified`** — none-yet
 
 > The companion to the majorant, from CH2.Inu_bounds and CH2.varphi_fourier_minus_error upstream. Imports `none`, for the same reason. Stated as a separate conclusion rather than folded into a conjunction because the optimal majorant and the optimal minorant are different functions -- the same reason CH2.v2 splits Proposition 2.4 in two -- so a consumer instantiates one or the other, not both at a shared phi. Note the two L1 errors are NOT equal: 1/(1-e^-L) - 1/L against 1/L - 1/(e^L - 1). The majorant is the more expensive side, and that asymmetry survives into the final constants.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33327322588
 
 ## Limitations
 

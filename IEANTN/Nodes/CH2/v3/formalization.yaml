@@ -9,7 +9,7 @@ node:
   family: CH2
   version: v3
   kind: pipeline
-  status: awaiting-solution
+  status: active
 
 project:
   name: "Chirre-Helfgott's extremal approximants"
@@ -71,7 +71,10 @@ conclusions:
       THE OTHER PIECE THAT IS NOT A PORT is the sign of `lambda` -- see the node's limitations.
       Solutions/CH2.v2 is the worked example of the port operation across the same Lean version gap,
       and Solutions/DudekPlatt.v3 of the @[blueprint ...] stripping it needs.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33327322588'
+  designated: comparator
 - id: extremal_minorant
   issue: 64
   declaration: CH2.v3.extremal_minorant
@@ -89,7 +92,10 @@ conclusions:
       Proposition 2.4 in two -- so a consumer instantiates one or the other, not both at a shared phi.
       Note the two L1 errors are NOT equal: 1/(1-e^-L) - 1/L against 1/L - 1/(e^L - 1). The majorant
       is the more expensive side, and that asymmetry survives into the final constants.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33327322588'
+  designated: comparator
 
 sources:
 - title: "Optimal bounds for sums of non-negative arithmetic functions"
