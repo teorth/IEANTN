@@ -56,6 +56,12 @@ conclusions:
       expansion, and Mathlib's Digamma file lists Gauss' representation as a TODO. Whoever proves
       this should consider whether proving the representation first is cheaper than the recurrence
       argument; it would also give the -1/(2w) term for free.
+      THE REFLECTION FORMULA DOES NOT HELP WITH THIS, and it is worth saying so because it is the
+      obvious thing to reach for. A more recent Mathlib than this repository's pin has merged it
+      (leanprover-community/mathlib4#42349), giving psi(1-w) - psi(w) = pi cot(pi w). That relates
+      the two half-planes to each other; it supplies no growth bound in EITHER, so it cannot start
+      the argument. Where it does help is the left half-plane -- see the limitations -- and that
+      will arrive with a Mathlib bump rather than needing anything here.
   designated: unjustified
 
 sources:
@@ -112,6 +118,12 @@ limitations:
   stated alongside it.
 - >-
   Re w >= 1 excludes the left half-plane entirely, where digamma has its poles. An application that
-  needs psi there must use the reflection formula, which is not stated here either.
+  needs psi there must combine this with the reflection formula
+  psi(1-w) - psi(w) = pi cot(pi w), which a more recent Mathlib than this repository's pin has
+  merged (leanprover-community/mathlib4#42349). So that gap closes on a bump rather than needing a
+  conclusion here -- but note the reflection formula alone proves nothing about growth, in either
+  half-plane, so it does not shorten the work below.
+  CH2.v1 does not need the left half-plane: its ladder argument evaluates psi at 1-s with
+  Re(1-s) >= 2, which is already inside the stated range.
 - >-
   No novelty is claimed. The expansion is classical.
