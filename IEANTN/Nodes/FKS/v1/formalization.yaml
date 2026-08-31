@@ -45,8 +45,8 @@ conclusions:
     note: >-
       Asserted on the authority of the paper, and transcribed from the preprint in the paper's own normalisation
       rather than converted to the admissible-bound shape. The conversion is not free: with R = 5.5666305
-      it gives A = 9.22022 * R^(3/2) = 121.0916... and C = 0.8476836 * sqrt(R) = 2.0000..., and the rounding
-      there is the difference between this constant and the 121.096 FKS2 quotes. Imports: Settled against
+      it gives A = 9.22022 * R^(3/2) = 121.09602174... and C = 0.8476836 * sqrt(R) = 1.99999992...,
+      so the printed 121.096 / C = 2 are strengthenings rather than benign rounding versus this rescaling. Imports: Settled against
       the published version (J. Math. Anal. Appl. 527 (2023) 127426). FKS names three inputs: the verification
       height H0 = 3 x 10^12 from Platt and Trudgian, the zero-free region R = 5.5666305 from Mossinghoff
       and Trudgian, and a zero-density bound for N-tilde(sigma, T) of the shape (2.6) from Kadiri, Lumley
