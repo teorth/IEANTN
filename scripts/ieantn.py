@@ -678,6 +678,19 @@ def solution_holes(node: str) -> tuple[bool, list[str], dict[str, bool]] | None:
     if not (directory / "lakefile.toml").is_file() and not (directory / "lakefile.lean").is_file():
         return None
 
+    # SAY WHAT IS ABOUT TO HAPPEN. A solution is a separate Lake project and shares nothing with
+    # the core build, so the first build of a new one compiles its OWN Mathlib -- minutes with a
+    # cache, hours without -- and `capture_output` below emits not one line while it does. That was
+    # reported as a hang, which is fair: silence and a wedge look identical from outside. It is the
+    # same defect `verify` exists to prevent, one layer down, so it gets the same treatment.
+    warm = (directory / ".lake" / "packages" / "mathlib" / ".lake" / "build").is_dir()
+    print(f"  building {rel(directory)}, which may take a while", flush=True)
+    if not warm:
+        print("    no build tree there yet, so this builds the solution's own Mathlib first.",
+              flush=True)
+        print("    `lake exe cache get` in that directory first makes it minutes, not hours;",
+              flush=True)
+        print("    `--skip-precheck` dispatches without it.", flush=True)
     built = subprocess.run(["lake", "build"], cwd=directory, capture_output=True, text=True,
                            encoding="utf-8", errors="replace")
     if built.returncode != 0:
