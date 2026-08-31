@@ -123,19 +123,37 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/pal/scripts /tmp/pal/taxonomies
-          auth=(-H "Authorization: Bearer $GH_TOKEN")
-          if ! head=$(curl -fsSL "${auth[@]}" "https://api.github.com/repos/$UPSTREAM/commits/main"); then
+          if ! commit=$(gh api "repos/$UPSTREAM/commits/main" --jq .sha); then
             echo "::error::could not reach api.github.com for $UPSTREAM -- a FETCH failure, not a metadata failure. Nothing has been validated." >&2
             exit 1
           fi
-          commit=$(printf '%s' "$head" | python3 -c 'import json,sys; print(json.load(sys.stdin)["sha"])')
-          for f in scripts/submission_contract.py scripts/verification_errors.py \
-                   taxonomies/arxiv-categories.json taxonomies/msc2020-codes.json; do
-            if ! curl -fsSL "${auth[@]}" "https://raw.githubusercontent.com/$UPSTREAM/$commit/$f" -o "/tmp/pal/$f"; then
-              echo "::error::could not fetch $f from $UPSTREAM at $commit -- a FETCH failure, not a metadata failure. Nothing has been validated." >&2
-              exit 1
+          # Fetch each directory by LISTING it, not from a hand-maintained file list. The
+          # contract's own imports are a moving target: in August 2026 it grew a dependency
+          # on `scripts/orcid_validation`, which the pinned four-file list here did not
+          # carry, and the job failed with "No module named 'scripts.orcid_validation'" --
+          # a load failure that reads, to anyone skimming the log, like our metadata being
+          # rejected. Same defect class as the unauthenticated fetch this step already
+          # guards against: a check that cannot say which side is broken. Listing ends it.
+          fetch_dir() {
+            local dir=$1 ext=$2 names f
+            if ! names=$(gh api "repos/$UPSTREAM/contents/$dir?ref=$commit" --jq ".[] | select(.type == \"file\" and (.name | endswith(\"$ext\"))) | .name"); then
+              echo "::error::could not list $dir/ in $UPSTREAM at $commit -- a FETCH failure, not a metadata failure. Nothing has been validated." >&2
+              return 1
             fi
-          done
+            for f in $names; do
+              if ! gh api "repos/$UPSTREAM/contents/$dir/$f?ref=$commit" -H "Accept: application/vnd.github.raw" > "/tmp/pal/$dir/$f"; then
+                echo "::error::could not fetch $dir/$f from $UPSTREAM at $commit -- a FETCH failure, not a metadata failure. Nothing has been validated." >&2
+                return 1
+              fi
+            done
+          }
+          fetch_dir scripts .py
+          fetch_dir taxonomies .json
+          # An empty listing would leave us "successfully" validating against nothing.
+          if ! test -s /tmp/pal/scripts/submission_contract.py; then
+            echo "::error::fetched no submission_contract.py from $UPSTREAM at $commit -- a FETCH failure, not a metadata failure. Nothing has been validated." >&2
+            exit 1
+          fi
           touch /tmp/pal/scripts/__init__.py
           echo "Validated against \`$UPSTREAM\` at \`$commit\`." >> "$GITHUB_STEP_SUMMARY"
       - name: Validate each node

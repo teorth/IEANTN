@@ -1,0 +1,160 @@
+# Node metadata for `ZetaLogDeriv.v1`.  See docs/NODES.md.
+#
+# Identities and estimates for zeta'/zeta -- the middle Mathlib does not have between the
+# functional equation and the Dirichlet series.  Named for the class: intended to grow.
+version: "v0.4"
+
+node:
+  id: ZetaLogDeriv.v1
+  family: ZetaLogDeriv
+  version: v1
+  kind: standard
+  status: active
+
+project:
+  name: "The functional equation for the logarithmic derivative of zeta"
+  description: >-
+    Identities and estimates for the logarithmic derivative of the Riemann zeta function, stated
+    once so several nodes can import them rather than each carrying a copy. At present one
+    conclusion: the functional equation, differentiated. Mathlib supplies the two ends of this
+    subject without the middle -- it has the functional equation for zeta itself
+    (riemannZeta_one_sub) and the Dirichlet series -zeta'/zeta(s) = sum Lambda(n) n^{-s} on
+    Re s > 1 (LSeries_vonMangoldt_eq_deriv_riemannZeta_div, with LSeriesSummable_vonMangoldt), but
+    not the functional equation in logarithmic-derivative form, which is the step that carries
+    information about zeta'/zeta out of the convergent half-plane and into the left one. Every
+    contour-shift or ladder argument in explicit analytic number theory needs it, which is why it
+    is stated here rather than buried in one paper's solution.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M06"]
+
+conclusions:
+- id: logDeriv_functional_equation
+  issue: 64
+  declaration: ZetaLogDeriv.v1.logDeriv_functional_equation
+  challenge: ZetaLogDeriv.v1.challenge_logDeriv_functional_equation
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      Imports `none`, and that is a real none: s is universally quantified with every condition a
+      hypothesis, so a Lean proof is the whole justification.
+      A SOLUTION EXISTS AND IS AWAITING VERIFICATION: Solutions/ZetaLogDeriv.v1. It compiles with
+      no sorry and depends on propext, Classical.choice and Quot.sound only. Until Comparator has
+      run and a receipt is written, this conclusion remains none-yet -- an unverified solution
+      justifies nothing, and the kind is not changed by hand.
+      THE ROUTE, as taken. Mathlib's riemannZeta_one_sub, zeta(1-s) = 2 (2 pi)^{-s} Gamma(s)
+      cos(pi s / 2) zeta(s), is put through logDeriv factor by factor: the constant to zero,
+      (2 pi)^{-s} to -log(2 pi), Gamma to digamma (which IS logDeriv Gamma, by definition), and
+      cos(pi s/2) to -(pi/2) tan(pi s/2), with the chain rule on the left contributing the sign on
+      zeta'/zeta(1-s). No analytic content beyond what riemannZeta_one_sub already carries.
+      THE ONE STEP WITH CONTENT is not any of that. logDeriv of a product needs the identity on a
+      NEIGHBOURHOOD of s, not just at s, so an open set is required on which riemannZeta_one_sub
+      applies. The obvious choice -- the complement of the integers, open by isClosed_range_intCast
+      -- is too small for the statement as made here, because the hypotheses admit even integers
+      s >= 2 (at s = 2 every side condition holds, cos(pi) = -1 included). The solution uses
+      {z | 1 < z.re} union (range Int.cast)^c instead: a union of two opens, on each of which the
+      functional equation applies, and which contains s in both cases -- if s is not an integer the
+      second piece has it, and if it is, the hypotheses force it past 2.
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33367289954'
+  designated: comparator
+
+sources:
+- title: "The logarithmic derivative of the functional equation"
+  authors: ["folklore"]
+  type: "folklore"
+  id: "zeta-logderiv-functional-equation"
+  relationship: formalizes
+  note: >-
+    Standard material, in every account of the zeta function; no particular source is followed and
+    none is claimed. The `folklore` source type is used in the sense the schema allows rather than
+    the usual one -- this is not an unproved fact circulating in the literature, it is a classical
+    identity Mathlib has not got yet. The identity appears in Chirre-Helfgott (arXiv:2512.15709) as
+    equation (guruno) inside lem:derivbound, written for their A-tilde, which is -zeta'/zeta with
+    its pole at s = 1 subtracted -- hence the extra 1/(1-s) term there and not here. That paper is
+    the consumer, not the source.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Established that Mathlib carries the functional equation and the Dirichlet series but not the
+      identity between them, derived the statement in Mathlib's orientation, checked it numerically,
+      and chose the form, under the direction of the maintainer.
+      THE SOLUTION IS NOT ORIGINAL TO THIS SESSION. A proof of the identity was supplied by the
+      maintainer, generated elsewhere by an AI system not identified here, stated for logDeriv under
+      the hypothesis that s is not an integer. It compiled unaltered against this repository's
+      Mathlib pin. What was done here was the adaptation: that proof does not establish the
+      conclusion as stated, whose hypotheses are strictly weaker, and the neighbourhood argument at
+      its centre had to be replaced. Attribution for the bulk of the tactic script belongs to that
+      earlier system.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    THE ORIENTATION WAS CHOSEN, NOT COPIED. The textbook form is
+    zeta'/zeta(s) = log 2pi + (pi/2) cot(pi s/2) - psi(1-s) - zeta'/zeta(1-s), which comes from the
+    sin / Gamma(1-s) form of the functional equation. That form is unavailable as stated: MATHLIB
+    HAS NO Complex.cot -- checked, not assumed -- and its riemannZeta_one_sub is the other way
+    round, giving zeta(1-s) in terms of zeta(s) with a cos(pi s/2) and a Gamma(s). Differentiating
+    Mathlib's own form yields the equivalent identity with tan and psi(s) in place of cot and
+    psi(1-s), and that is what this node states. The two are the same identity; a consumer who wants
+    the cot form should state it as a further conclusion rather than reshape this one.
+    CHECKED NUMERICALLY BEFORE BEING WRITTEN, to 30 digits at five points, including s = -3 + 2i in
+    the left half-plane and s = 0.3 + 5i in the critical strip. A sign error in an identity of this
+    shape is invisible to the type-checker and would be fatal downstream, so agreement of the
+    statement with the mathematics was established independently of any later Lean proof.
+    THE Re s >= 2 BOUND WAS DELIBERATELY NOT MADE A CONCLUSION. Boundedness of zeta'/zeta on
+    Re s >= 2 is the other fact a consumer reaches for, and it is a short consequence of
+    LSeries_vonMangoldt_eq_deriv_riemannZeta_div together with LSeriesSummable_vonMangoldt, both of
+    which Mathlib already has. Roughly thirty lines inside a solution, resting on nothing this
+    repository would need to assert. Stating it as a node conclusion would add an unjustified claim
+    where none is needed.
+    A REDUNDANT HYPOTHESIS WAS FOUND AND REMOVED BY PROVING THE THING. The conclusion as first
+    written also assumed zeta(1-s) /= 0, on the reasoning that the right-hand side divides by it.
+    The proof never used it: the functional equation writes zeta(1-s) as a product of factors each
+    already known nonzero under the remaining hypotheses, so it follows rather than being assumed.
+    Dropping it STRENGTHENS the conclusion, which is why it was done in place rather than as a new
+    version -- nothing yet imports this node, and the fingerprint moved from 0a97242... to
+    0f2e5ee..., which is the record that the meaning changed.
+    THE STATEMENT WAS NOT BENT TO FIT THE PROOF -- the reverse. The supplied proof assumed s is not
+    an integer; this conclusion assumes only what each term needs, which admits even integers s >= 2
+    that the supplied hypotheses exclude. Weakening the conclusion to match the proof in hand would
+    have been the easy move and was not taken.
+
+limitations:
+- >-
+  PROVED BUT NOT YET VERIFIED. Solutions/ZetaLogDeriv.v1 compiles with no sorry on the three
+  permitted axioms, but Comparator has not run and no receipt exists. Until it does, this
+  conclusion is none-yet and nothing downstream may treat it as established. A solution that has
+  not been through the comparator attests nothing, however convincing it looks.
+- >-
+  ONE IDENTITY ONLY, and it is an identity rather than an estimate. The node is named for the class
+  because it is intended to grow, and the obvious next tenant is a growth bound: ||zeta'/zeta(s)||
+  = O(log|s|) on lines avoiding the zeros, which follows from this identity together with a digamma
+  bound (GammaAsymptotics.v1) and boundedness on Re s >= 2. It is not here because its clean form
+  depends on which lines are chosen, and choosing them for one consumer would be guessing; when a
+  second consumer wants the same lines, that is the moment to add it.
+- >-
+  THE HYPOTHESES ARE INHERITED, NOT MINIMISED. s /= -n for every natural n and s /= 1 are
+  riemannZeta_one_sub's own; the two non-vanishing conditions on zeta and cos are what make the
+  quotients and the tangent finite. A consumer at a point where one of these fails -- a zero of
+  zeta, an odd integer -- gets nothing from this conclusion and must handle that point separately.
+  In particular THE IDENTITY SAYS NOTHING AT A ZERO OF ZETA, which is precisely where a zero-density
+  argument does its work; it is the tool for moving between half-planes, not for studying the zeros.
+- >-
+  No novelty is claimed. The identity is classical.
