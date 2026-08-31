@@ -70,7 +70,22 @@ stages:
   - stage: "rectangle contour machinery"
     files: [AdditiveCombination.lean, RectanglePort.lean, ResiduePort.lean]
     state: done
-    note: Reused from Solutions/CH2.v3. Sorry-free upstream.
+    note: >-
+      Reused from Solutions/CH2.v3. Sorry-free upstream, BUT CONDITIONALLY SOUND, and a reader of a
+      future receipt should know why. ResiduePort's `residue` is labelled by its own authors a
+      "placeholder definition -- valid only for simple poles", which "at a higher-order or essential
+      singularity ... returns a junk value", and they add that results stated in terms of it are
+      "likely not provable in full generality with the current API. This is a deliberate stopgap."
+      The matching `HasSimplePolesOn` hypothesis is called a "temporary scaffold ... added to Lemma
+      5.1 / Proposition 5.2 and their sub-lemmas to make them provable with the present API", to be
+      removed once Mathlib gains higher-order residue support.
+      FOR THIS APPLICATION IT IS SOUND: PNT+ names zeta'/zeta as the intended case precisely because
+      its poles are all simple, and ZetaInstance.lean now PROVES that property rather than assuming
+      it. But a CH2.v1 receipt would attest something narrower than it looks, and that is worth
+      saying out loud rather than leaving buried in thirteen thousand lines.
+      It also settles a question raised elsewhere: ContourIntegration.v1's general residue theorem,
+      admitting arbitrary isolated singularities, is STRONGER than CH2 ever needs, since PNT+'s own
+      machinery already assumes simple poles.
 
   - stage: "section 5: the contour shift"
     files: [ZetaConjPort.lean, Section5.lean]
@@ -87,6 +102,29 @@ stages:
       1 + I * delta then backwards to -infinity + I * delta" -- the same vertical-plus-horizontal-ray
       restriction that CH2.v4 arrived at independently, which is some evidence the restriction is
       the natural one rather than a convenience.
+
+  - stage: "instantiating section 5 at A(s) = -zeta'/zeta"
+    files: [ZetaInstance.lean]
+    state: partial -- three of prop_5_2's five hypotheses
+    note: >-
+      Done first because it is the smallest thing that tests whether the section 5 port is USABLE
+      rather than merely compiling. It is: ConjSymm falls straight out of the ported
+      logDerivZeta_conj', MeromorphicOn out of Mathlib's MeromorphicOn.logDeriv, and the order bound
+      out of meromorphicOrderAt_logDeriv_eq_neg_one.
+      HasSimplePolesOn was the hypothesis expected to hurt and did not. -zeta'/zeta has a pole at
+      every zero of zeta, of every multiplicity, and Mathlib gives the logarithmic derivative order
+      exactly -1 at any zero or pole regardless: the multiplicity lands in the residue, not the
+      order. That is now proved rather than assumed.
+      TWO SMALL GAPS REMAIN, both honest. The order lemma carries the hypothesis
+      meromorphicOrderAt zeta z != top -- that zeta does not vanish on a punctured neighbourhood --
+      which is true by the identity theorem on the connected set {1}^c but is a separate small task.
+      And meromorphy AT s = 1 needs a removable-singularity argument from riemannZeta_residue_one.
+      NOT STARTED: the two IsBoundedNoPolesOn hypotheses, on the ladder and the contour. Those are
+      growth bounds on zeta'/zeta and belong with Appendix A, not here.
+      Mathlib friction worth knowing: `DifferentiableAt` unfolds to an Exists, so
+      `(differentiableAt_riemannZeta hz).analyticAt` resolves to `Exists.analyticAt` and fails
+      confusingly -- go through DifferentiableOn.analyticAt. And there is no meromorphicOrderAt_neg,
+      so a sign must go through meromorphicOrderAt_smul.
 
   - stage: "section 6: Theorem 1.1"
     state: not started, and possibly not needed
