@@ -50,6 +50,7 @@
   "FKS2Numerics.v1.nu_asymp_e30_le": "aa5de4333ab80f8a24184095966f57e810c9b089fdcf513ff9c771abffd10ac0",
   "FKS2Numerics.v1.table6_row2_floor": "9ffe27ea7d004b84edd59278b24954a63298b3459debab073a0bb8a3cd0dac22",
   "FKS2Numerics.v1.theta_asymp_ge_one_below_e30": "8efc716aa8c51b4b92aeed3164cb59cc26a86c6ce817fed0af2d6974c56e18f8",
+  "GammaAsymptotics.v1.digamma_sub_log_isBigO": "691d22e70bf3e6b01e28d24b6b625124b671ed75b3b609c3939ade2dabba7466",
   "Hiary2016.v1.zeta_half_line_bound": "7bf4e09385b1b412844527a59bcdae81b3b6e03790530cda3f0d09a154245647",
   "KLN.v1.subconvexity_bound": "7bf4e09385b1b412844527a59bcdae81b3b6e03790530cda3f0d09a154245647",
   "KLN.v1.zero_density": "f7aa8c84227fc85fd5641d9d55fc4d8bf1b34e370e14c54d8c8be1d8bc98d9a0",

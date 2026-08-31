@@ -29,6 +29,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`FKS2.v1`](FKS2-v1.md) | paper | 4 | verified |
 | [`FKS2.v2`](FKS2-v2.md) | pipeline | 2 | verified |
 | [`FKS2Numerics.v1`](FKS2Numerics-v1.md) | computation | 5 | computation |
+| [`GammaAsymptotics.v1`](GammaAsymptotics-v1.md) | standard | 1 | unjustified |
 | [`Hiary2016.v1`](Hiary2016-v1.md) | paper | 1 | cited |
 | [`KLN.v1`](KLN-v1.md) | paper | 2 | cited |
 | [`Kadiri2005.v1`](Kadiri2005-v1.md) | paper | 1 | cited |

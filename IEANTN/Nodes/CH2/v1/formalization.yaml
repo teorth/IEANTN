@@ -37,8 +37,10 @@ conclusions:
 - id: corollary_1_2_psi
   declaration: CH2.v1.corollary_1_2_psi
   challenge: CH2.v1.challenge_corollary_1_2_psi
-  imports: []
-  imports_status: none
+  imports:
+  - node: GammaAsymptotics.v1
+    conclusion: digamma_sub_log_isBigO
+  imports_status: traced
   justifications:
   - id: ch2-paper
     kind: literature
@@ -63,8 +65,10 @@ conclusions:
 - id: corollary_1_2_lambda_sum
   declaration: CH2.v1.corollary_1_2_lambda_sum
   challenge: CH2.v1.challenge_corollary_1_2_lambda_sum
-  imports: []
-  imports_status: none
+  imports:
+  - node: GammaAsymptotics.v1
+    conclusion: digamma_sub_log_isBigO
+  imports_status: traced
   justifications:
   - id: ch2-paper
     kind: literature

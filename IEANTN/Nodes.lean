@@ -27,6 +27,7 @@ import IEANTN.Nodes.FKS.v1.Challenge
 import IEANTN.Nodes.FKS2.v1.Challenge
 import IEANTN.Nodes.FKS2.v2.Challenge
 import IEANTN.Nodes.FKS2Numerics.v1.Challenge
+import IEANTN.Nodes.GammaAsymptotics.v1.Challenge
 import IEANTN.Nodes.Hiary2016.v1.Challenge
 import IEANTN.Nodes.KLN.v1.Challenge
 import IEANTN.Nodes.Kadiri2005.v1.Challenge
