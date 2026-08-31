@@ -9,7 +9,7 @@ node:
   family: CH2
   version: v4
   kind: pipeline
-  status: awaiting-solution
+  status: active
 
 project:
   name: "Chirre-Helfgott's contour shift, on L-shaped contours"
@@ -57,7 +57,10 @@ conclusions:
       and the far-left edge vanishes by `DecaysLeft`. That limit is the only analysis; the rest is
       geometry. Note the whole reason for choosing axis-parallel contours is that this step needs no
       Cauchy theorem beyond rectangles.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33343299680'
+  designated: comparator
 - id: contour_shift
   issue: 64
   declaration: CH2.v4.contour_shift
@@ -93,7 +96,10 @@ conclusions:
       The residue theorem is stated in its own node rather than here because it is not
       Chirre-Helfgott's mathematics, is not specific to their contour, and will be wanted by anything
       else in the network that shifts a contour past a pole.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33343299680'
+  designated: comparator
 
 sources:
 - title: "Optimal bounds for sums of non-negative arithmetic functions"

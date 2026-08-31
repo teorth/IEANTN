@@ -15,9 +15,9 @@ adds the environment detail.
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 1 |
-| `lean-comparator` | 15 |
+| `lean-comparator` | 17 |
 | `literature` | 34 |
-| `none-yet` | 5 |
+| `none-yet` | 3 |
 | `numerical` | 13 |
 
 ## Nodes
@@ -52,8 +52,8 @@ adds the environment detail.
 | `CH2.v2` | active | `proposition_2_4_lower` | lean-comparator | 0 | #64 |
 | `CH2.v3` | active | `extremal_majorant` | lean-comparator | 0 | #64 |
 | `CH2.v3` | active | `extremal_minorant` | lean-comparator | 0 | #64 |
-| `CH2.v4` | awaiting-solution | `contour_shift_holomorphic` | none-yet | 0 | #64 |
-| `CH2.v4` | awaiting-solution | `contour_shift` | none-yet | 1 | #64 |
+| `CH2.v4` | active | `contour_shift_holomorphic` | lean-comparator | 0 | #64 |
+| `CH2.v4` | active | `contour_shift` | lean-comparator | 1 | #64 |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `ContourIntegration.v1` | awaiting-solution | `residue_theorem_rectangle` | none-yet | 0 | #64 |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
