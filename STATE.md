@@ -15,9 +15,9 @@ adds the environment detail.
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 1 |
-| `lean-comparator` | 17 |
+| `lean-comparator` | 18 |
 | `literature` | 36 |
-| `none-yet` | 5 |
+| `none-yet` | 4 |
 | `numerical` | 14 |
 
 ## Nodes
@@ -100,7 +100,7 @@ adds the environment detail.
 | `ZeroCount.v1` | stub | `rvm_error_bound` | literature | 0 | #64 |
 | `ZeroCount.v1` | stub | `rvm_error_small` | literature | 0 | #64 |
 | `ZeroFreeHeight.v1` | active | `classical_region_descends` | lean-comparator | 0 | #30 |
-| `ZetaLogDeriv.v1` | awaiting-verification | `logDeriv_functional_equation` | none-yet | 0 | #64 |
+| `ZetaLogDeriv.v1` | active | `logDeriv_functional_equation` | lean-comparator | 0 | #64 |
 
 ## Leverage
 

@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | standard |
-| Status | awaiting-verification |
+| Status | active |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -54,14 +54,19 @@ def logDeriv_functional_equation : Prop :=
 | Challenge | `ZetaLogDeriv.v1.challenge_logDeriv_functional_equation` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDeriv/v1/Conclusions.lean#L81) |
 | Solution | [`Solutions/ZetaLogDeriv.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/ZetaLogDeriv.v1) |
-| Evidence | unjustified (`none-yet`) |
+| Receipt | [`ZetaLogDeriv.v1.logDeriv_functional_equation.json`](https://github.com/teorth/IEANTN/blob/main/receipts/ZetaLogDeriv.v1.logDeriv_functional_equation.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | nothing yet |
 
-**Justification `unjustified`** — **designated** — none-yet
+**Justification `unjustified`** — none-yet
 
 > Imports `none`, and that is a real none: s is universally quantified with every condition a hypothesis, so a Lean proof is the whole justification. A SOLUTION EXISTS AND IS AWAITING VERIFICATION: Solutions/ZetaLogDeriv.v1. It compiles with no sorry and depends on propext, Classical.choice and Quot.sound only. Until Comparator has run and a receipt is written, this conclusion remains none-yet -- an unverified solution justifies nothing, and the kind is not changed by hand. THE ROUTE, as taken. Mathlib's riemannZeta_one_sub, zeta(1-s) = 2 (2 pi)^{-s} Gamma(s) cos(pi s / 2) zeta(s), is put through logDeriv factor by factor: the constant to zero, (2 pi)^{-s} to -log(2 pi), Gamma to digamma (which IS logDeriv Gamma, by definition), and cos(pi s/2) to -(pi/2) tan(pi s/2), with the chain rule on the left contributing the sign on zeta'/zeta(1-s). No analytic content beyond what riemannZeta_one_sub already carries. THE ONE STEP WITH CONTENT is not any of that. logDeriv of a product needs the identity on a NEIGHBOURHOOD of s, not just at s, so an open set is required on which riemannZeta_one_sub applies. The obvious choice -- the complement of the integers, open by isClosed_range_intCast -- is too small for the statement as made here, because the hypotheses admit even integers s >= 2 (at s = 2 every side condition holds, cos(pi) = -1 included). The solution uses {z \| 1 < z.re} union (range Int.cast)^c instead: a union of two opens, on each of which the functional equation applies, and which contains s in both cases -- if s is not an integer the second piece has it, and if it is, the hypotheses force it past 2.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33367289954
 
 ## Limitations
 

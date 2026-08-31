@@ -9,7 +9,7 @@ node:
   family: ZetaLogDeriv
   version: v1
   kind: standard
-  status: awaiting-verification
+  status: active
 
 project:
   name: "The functional equation for the logarithmic derivative of zeta"
@@ -65,7 +65,10 @@ conclusions:
       {z | 1 < z.re} union (range Int.cast)^c instead: a union of two opens, on each of which the
       functional equation applies, and which contains s in both cases -- if s is not an integer the
       second piece has it, and if it is, the hypotheses force it past 2.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/33367289954'
+  designated: comparator
 
 sources:
 - title: "The logarithmic derivative of the functional equation"
