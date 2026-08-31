@@ -103,12 +103,15 @@ review:
     IEANTN.HasRvMBound, which would otherwise have been the obvious composable choice -- that
     predicate is literally |Q(T)| <= b1 log T + b2 log log T + b3, which is this statement at
     (1/5, 0, 2). It is built on `zetaN`, which counts Set.Ioo 0 T, whereas Rosser and CH2 count
-    0 < Im rho <= T. The two differ by m(t), the multiplicity at height exactly t, and NEITHER BOUND
-    IMPLIES THE OTHER: with Q_open = Q_closed - m(t) and m(t) >= 0 the upper bound transfers but the
-    lower one does not, since Q_open >= -B - m(t) is weaker than Q_open >= -B. Recovering the
-    open-interval form costs m(t) <= N(t+1) - N(t-1), itself of size log t, so it changes the
-    constant. Generically m(t) = 0 and the distinction is vacuous, but a node records a statement
-    rather than a generic case, so the conclusions use the source's convention.
+    0 < Im rho <= T, so the conclusions use the source's convention.
+    A CORRECTION TO AN EARLIER VERSION OF THIS NOTE, which said the two bounds are inequivalent. They
+    are not. That comparison was made at a SINGLE height, where they differ by m(t) and the lower
+    bound appears to lose m(t). But the hypothesis holds at every nearby height, and the zeroes in a
+    bounded region are finite, so there is an s < t with N_Ioc(s) = N_Ioo(t) exactly; substituting
+    and letting s tend to t from below, with the main term and the bound both continuous, gives the
+    open-interval form with NO loss of constant. So rvm_error_bound does imply
+    HasRvMBound (1/5) 0 2 for T > 1; what is missing is a Lean proof of that passage, not a
+    mathematical obstruction.
     The junk-value warning on zetaZeroesSum was considered and does not bite: the zeroes in a bounded
     rectangle are finite in number, so the family has finite support and the sum is the honest count.
     That is a fact about zeta rather than a hypothesis, which is why no summability condition appears.
@@ -119,11 +122,12 @@ limitations:
   proof would need Rosser's argument or a modern replacement, neither of which is in Mathlib -- there
   is no Riemann-von Mangoldt formula there at all.
 - >-
-  DOES NOT COMPOSE WITH IEANTN.HasRvMBound, for the counting-convention reason recorded in the review
-  notes. A consumer holding this node and wanting HasRvMBound must bound the multiplicity at a single
-  height, which costs a term of size log t and hence a different constant. Whether Vocabulary should
-  grow a closed-interval count, or `zetaN` should be restated, is a question this node raises and does
-  not answer.
+  DOES NOT COMPOSE WITH IEANTN.HasRvMBound AS IT STANDS, but the gap is a missing lemma, not a loss of
+  constant. `rvm_error_bound` implies HasRvMBound (1/5) 0 2 for T > 1 by a limit from below -- see the
+  review notes, which correct an earlier claim here that the two are inequivalent. Nobody has written
+  that passage in Lean, so a consumer must do it. The clean shape for it is the ZeroFreeHeight
+  pattern: keep both conventions and let a node or bridge record the passage between them, rather than
+  forcing one convention on Vocabulary.
 - >-
   WEAKER THAN THE LITERATURE SUPPORTS. Rosser's own bound is 0.137 log t + 0.443 log log t + 1.588,
   and CH2 note that better bounds are available today. The weakening is theirs and is deliberate; a
