@@ -73,49 +73,74 @@ lemma meromorphicOn_A_compl : MeromorphicOn A {(1 : ℂ)}ᶜ := by
   intro z hz
   exact (h z hz).neg
 
-/-- **Simple poles.** At a point off `s = 1` where `ζ` is not identically zero, `A` has meromorphic
-order at least `-1`.
+/-! ### Closing the two gaps
 
-This is the pointwise content of `HasSimplePolesOn`, and it holds at *every* such point rather than
-only at the zeros: away from a zero the order is `0`, and at a zero of any multiplicity the
-logarithmic derivative has order exactly `-1`. The multiplicity shows up in the residue, not in the
-order — which is why `−ζ'/ζ` needs only simple-pole machinery however bad the zeros are.
+`riemannZeta₀` and `riemannZeta₁` from `Mathlib.NumberTheory.Harmonic.ZetaAsymp` are what make this
+work: `ζ s = (s-1)⁻¹ + riemannZeta₀ s` away from `1`, with `riemannZeta₀` **entire**. That gives
+meromorphy at the pole directly, rather than through a removable-singularity argument.
 
-The non-vanishing hypothesis is `meromorphicOrderAt ζ z ≠ ⊤`, i.e. `ζ` does not vanish on a
-punctured neighbourhood of `z`. It is true — `ζ` is analytic on the connected set `{1}ᶜ` and not
-identically zero there — but discharging it needs the identity theorem, which is a separate small
-task and is left as one. -/
-lemma meromorphicOrderAt_A_ge_neg_one {z : ℂ} (hz : z ∈ ({(1 : ℂ)}ᶜ : Set ℂ))
-    (htop : meromorphicOrderAt riemannZeta z ≠ ⊤) :
-    (-1 : ℤ) ≤ meromorphicOrderAt A z := by
-  have hanalζ : AnalyticAt ℂ riemannZeta z := analyticAt_riemannZeta hz
-  have hζ : MeromorphicAt riemannZeta z := hanalζ.meromorphicAt
-  -- `A = (-1) • logDeriv ζ`, and a nonzero constant has order `0`.
+The non-vanishing is then the identity theorem, which Mathlib has for meromorphic order:
+`meromorphicOrderAt_ne_top_of_isPreconnected` transports "order `≠ ⊤`" across a preconnected set.
+Seeding it at `s = 2`, where `ζ` is analytic and non-zero, gives it everywhere. -/
+
+/-- `ζ` is meromorphic at its pole, via the entire function `riemannZeta₀`. -/
+lemma meromorphicAt_riemannZeta_one : MeromorphicAt riemannZeta 1 := by
+  have hEq : (fun s : ℂ ↦ (s - 1)⁻¹ + riemannZeta₀ s) =ᶠ[nhdsWithin 1 {(1 : ℂ)}ᶜ] riemannZeta := by
+    filter_upwards [self_mem_nhdsWithin] with s hs
+    exact (riemannZeta_eq_inv_sub_add hs).symm
+  refine MeromorphicAt.congr ?_ hEq
+  exact (((analyticAt_id.sub analyticAt_const).meromorphicAt).inv).add
+    (DifferentiableOn.analyticAt differentiable_riemannZeta₀.differentiableOn
+      Filter.univ_mem).meromorphicAt
+
+/-- **`ζ` is meromorphic everywhere.** -/
+lemma meromorphicOn_riemannZeta : MeromorphicOn riemannZeta Set.univ := by
+  intro z _
+  by_cases hz : z = 1
+  · exact hz ▸ meromorphicAt_riemannZeta_one
+  · exact (analyticAt_riemannZeta hz).meromorphicAt
+
+/-- **`ζ` never vanishes identically near a point.**
+
+The identity theorem, seeded at `s = 2` where `ζ` is analytic and non-zero. This discharges the
+hypothesis the earlier version of `meromorphicOrderAt_A_ge_neg_one` had to carry. -/
+lemma meromorphicOrderAt_riemannZeta_ne_top (z : ℂ) :
+    meromorphicOrderAt riemannZeta z ≠ ⊤ := by
+  have h2ne : riemannZeta 2 ≠ 0 :=
+    riemannZeta_ne_zero_of_one_lt_re (by norm_num)
+  have h2an : AnalyticAt ℂ riemannZeta 2 := analyticAt_riemannZeta (by norm_num)
+  have h2 : meromorphicOrderAt riemannZeta 2 ≠ ⊤ := by
+    rw [h2an.meromorphicOrderAt_eq, h2an.analyticOrderAt_eq_zero.mpr h2ne]
+    simp
+  exact meromorphicOn_riemannZeta.meromorphicOrderAt_ne_top_of_isPreconnected
+    isPreconnected_univ (Set.mem_univ 2) (Set.mem_univ z) h2
+
+/-- **`HasSimplePolesOn A Set.univ`**, unconditionally — one of `prop_5_2`'s hypotheses, on the
+whole plane rather than off the pole.
+
+Note this includes `s = 1`: Mathlib's `meromorphicOrderAt_logDeriv_eq_neg_one` applies at poles as
+well as zeros, and `ζ` has a simple pole there, so `A` has order `-1` at `1` too. -/
+lemma hasSimplePolesOn_A_univ : HasSimplePolesOn A Set.univ := by
+  intro z _
+  have hζ : MeromorphicAt riemannZeta z := meromorphicOn_riemannZeta z (Set.mem_univ z)
   have hconst : meromorphicOrderAt (fun _ : ℂ ↦ (-1 : ℂ)) z = 0 := by
     rw [analyticAt_const.meromorphicOrderAt_eq, analyticAt_const.analyticOrderAt_eq_zero.mpr
       (by norm_num)]
     rfl
-  have hAeq : A = (fun _ : ℂ ↦ (-1 : ℂ)) • logDeriv riemannZeta := by
-    funext w; simp [A]
+  have hAeq : A = (fun _ : ℂ ↦ (-1 : ℂ)) • logDeriv riemannZeta := by funext w; simp [A]
   have hA : meromorphicOrderAt A z = meromorphicOrderAt (logDeriv riemannZeta) z := by
     rw [hAeq, meromorphicOrderAt_smul analyticAt_const.meromorphicAt hζ.logDeriv, hconst, zero_add]
   rw [hA]
-  by_cases hzero : riemannZeta z = 0
-  · -- a zero of `ζ`, of whatever multiplicity: the logarithmic derivative has order exactly `-1`.
-    have h0 : meromorphicOrderAt riemannZeta z ≠ 0 := by
-      rw [hanalζ.meromorphicOrderAt_eq]
-      intro hcon
-      have : analyticOrderAt riemannZeta z = 0 := by
-        cases h : analyticOrderAt riemannZeta z with
-        | top => rw [h] at hcon; simp at hcon
-        | coe n => rw [h] at hcon; simpa using hcon
-      exact (hanalζ.analyticOrderAt_eq_zero.mp this) hzero
-    rw [meromorphicOrderAt_logDeriv_eq_neg_one hζ h0 htop]
-    norm_cast
-  · -- away from the zeros `logDeriv ζ` is analytic, so its order is nonnegative.
-    have hanal : AnalyticAt ℂ (logDeriv riemannZeta) z :=
-      (hanalζ.deriv).div hanalζ hzero
-    refine le_trans ?_ hanal.meromorphicOrderAt_nonneg
+  by_cases h0 : meromorphicOrderAt riemannZeta z = 0
+  · -- `ζ` neither vanishes nor blows up: the logarithmic derivative is regular.
+    refine le_trans ?_ (meromorphicOrderAt_logDeriv_nonneg hζ h0)
     decide
+  · rw [meromorphicOrderAt_logDeriv_eq_neg_one hζ h0 (meromorphicOrderAt_riemannZeta_ne_top z)]
+    norm_cast
+
+/-- **`A` is meromorphic everywhere.** -/
+lemma meromorphicOn_A : MeromorphicOn A Set.univ := by
+  intro z hz
+  exact (meromorphicOn_riemannZeta.logDeriv z hz).neg
 
 end CH2ZetaInstance

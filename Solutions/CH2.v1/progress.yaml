@@ -105,7 +105,7 @@ stages:
 
   - stage: "instantiating section 5 at A(s) = -zeta'/zeta"
     files: [ZetaInstance.lean]
-    state: partial -- three of prop_5_2's five hypotheses
+    state: partial -- three of prop_5_2's five hypotheses, unconditionally on all of C
     note: >-
       Done first because it is the smallest thing that tests whether the section 5 port is USABLE
       rather than merely compiling. It is: ConjSymm falls straight out of the ported
@@ -115,10 +115,17 @@ stages:
       every zero of zeta, of every multiplicity, and Mathlib gives the logarithmic derivative order
       exactly -1 at any zero or pole regardless: the multiplicity lands in the residue, not the
       order. That is now proved rather than assumed.
-      TWO SMALL GAPS REMAIN, both honest. The order lemma carries the hypothesis
-      meromorphicOrderAt zeta z != top -- that zeta does not vanish on a punctured neighbourhood --
-      which is true by the identity theorem on the connected set {1}^c but is a separate small task.
-      And meromorphy AT s = 1 needs a removable-singularity argument from riemannZeta_residue_one.
+      BOTH GAPS ARE NOW CLOSED, using Mathlib.NumberTheory.Harmonic.ZetaAsymp. Meromorphy at the
+      pole comes from riemannZeta_eq_inv_sub_add -- zeta s = (s-1)^-1 + riemannZeta0 s away from 1,
+      with riemannZeta0 ENTIRE -- so it is a congruence on the punctured neighbourhood plus
+      MeromorphicAt.inv, with no removable-singularity argument. Non-vanishing is then the identity
+      theorem, which Mathlib packages as meromorphicOrderAt_ne_top_of_isPreconnected: seed it at
+      s = 2 via riemannZeta_ne_zero_of_one_lt_re and it holds everywhere.
+      A third Mathlib lemma collapsed the rest. meromorphicOrderAt_logDeriv_nonneg gives order >= 0
+      for the logarithmic derivative wherever the function itself has order 0, which is exactly the
+      branch that had needed analyticity and z != 1. HasSimplePolesOn A now holds on ALL of C,
+      including s = 1, since meromorphicOrderAt_logDeriv_eq_neg_one covers poles as well as zeros
+      and zeta's pole there is simple.
       NOT STARTED: the two IsBoundedNoPolesOn hypotheses, on the ladder and the contour. Those are
       growth bounds on zeta'/zeta and belong with Appendix A, not here.
       Mathlib friction worth knowing: `DifferentiableAt` unfolds to an Exists, so
