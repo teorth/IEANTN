@@ -1,0 +1,16 @@
+{
+  "challenge_module": "IEANTN.Nodes.CH2.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "CH2.v1.challenge_corollary_1_2_psi",
+    "CH2.v1.challenge_corollary_1_2_lambda_sum",
+    "CH2.v1.challenge_corollary_1_3_psi",
+    "CH2.v1.challenge_corollary_1_3_lambda_sum"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
