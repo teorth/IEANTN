@@ -1,0 +1,120 @@
+# Node metadata for `LowZeroes.v1`.  See docs/NODES.md.
+#
+# Facts about the low-lying zeroes of zeta that come from a computation over a list of them.
+# Deliberately named for the class: intended to grow as other such facts are wanted.
+version: "v0.4"
+
+node:
+  id: LowZeroes.v1
+  family: LowZeroes
+  version: v1
+  kind: computation
+  status: stub
+
+project:
+  name: "Computed facts about the low-lying zeroes of zeta"
+  description: >-
+    Facts about the low zeroes of the Riemann zeta function that come from a computation over a list
+    of them rather than from an argument. At present one: the sum of reciprocal ordinates below
+    height 2 x 10^4, which Chirre-Helfgott compute from David Platt's zero data and use in the proof
+    of their Proposition on the contribution of the zeroes -- the step that produces C_T, the
+    square-root constant in CH2.v1's corollaries. Without it that constant cannot be obtained; no
+    amount of analysis substitutes for knowing where the low zeroes actually are.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M26", "11Y35"]
+
+conclusions:
+- id: sum_inv_ordinates_below_2e4
+  issue: 64
+  declaration: LowZeroes.v1.sum_inv_ordinates_below_2e4
+  challenge: LowZeroes.v1.challenge_sum_inv_ordinates_below_2e4
+  imports: []
+  imports_status: none
+  justifications:
+  - id: ch2-platt-computation
+    kind: numerical
+    source: CH2
+    locator: proof of Proposition 7.6 (`prop:vihuela`), the low-zero computation
+    note: >-
+      Asserted on the authority of a computation, not of an argument. CH2 write "by a brief
+      computation using the location of all rho with gamma = Im rho <= t_0 (furnished by
+      D. Platt)", and give the value as 10.319317... The authority is therefore the computation
+      together with Platt's zero data, which is what `numerical` records: re-establishing this means
+      re-running something, not re-reading something.
+      STATED AS A TWO-SIDED BRACKET rather than an equality. CH2 write "= 10.319317...", which
+      asserts that the displayed digits are correct, so the value lies in [10.319317, 10.319318). An
+      equality to the truncated decimal would be false, and a one-sided bound would discard half of
+      what the source gives. A consumer needing one side takes it.
+      Both bounds carry a `margin 0` site, so they say exactly what the paper says while marking the
+      numbers as computationally provenanced -- see IEANTN.margin. Raising a margin later is then a
+      change of one numeral rather than of shape.
+      Imports `none`, and that is a real none: a fact about zeta with no network input.
+  designated: ch2-platt-computation
+
+sources:
+- title: "Optimal bounds for sums of non-negative arithmetic functions"
+  authors: ["Andres Chirre", "Harald Andres Helfgott"]
+  type: "paper"
+  id: "https://arxiv.org/abs/2512.15709"
+  relationship: formalizes
+  note: >-
+    Read from the LaTeX source rather than the PDF -- `curl -L https://arxiv.org/e-print/2512.15709`
+    yields VonMangoldt.tex -- because several numerical displays in this paper do not survive OCR,
+    and one of them was misread during this work before the source settled it. The underlying zero
+    data is David Platt's, acknowledged by CH2 and not separately available here; a node for the data
+    itself would be the right thing if anything else comes to depend on it.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Traced the derivation of C_T back through the paper to find which inputs it actually needs,
+      identified this computation as one of them, and transcribed it from the LaTeX source, under the
+      direction of the maintainer. No proof or computation is claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    WHY THIS NODE EXISTS AT ALL is worth recording, because it was found by working backwards and
+    contradicted an earlier plan. The route to C_T was thought to need pointwise control of CH2.v3's
+    extremal approximant, and a sup bound was going to be added to that node. Reading section 7 from
+    source showed otherwise: Lemma `cor:thonny` reduces the residue weights on the critical line to
+    an explicit elementary function, F(z) = 1/pi - (1-z) cot(pi (1-z)), so no bound on the
+    approximant is needed. What the derivation does need is zero counting -- now ZeroCount.v1 -- and
+    this computation. Neither would have been supplied by the abandoned plan.
+    The counting convention was checked: `Set.Ioc 0 t` matches CH2's `0 < Im rho <= t`, and it
+    excludes the trivial zeroes, which sit at Im rho = 0, so no separate restriction to the critical
+    strip is needed. Multiplicity is carried by `zetaZeroesSum`, matching "counting multiplicity".
+    The junk-value warning on `zetaZeroesSum` does not bite: finitely many zeroes below a finite
+    height, so the family has finite support.
+
+limitations:
+- >-
+  Asserted on a computation, not proved. Nothing here is checked by Lean, and anything downstream
+  inherits that. Re-establishing it means re-running a computation over Platt's zero data.
+- >-
+  THE UNDERLYING DATA IS NOT IN THE NETWORK. CH2 credit David Platt for the list of low zeroes; that
+  list is not a node, and this conclusion cannot be checked against anything the repository holds. If
+  more facts come to rest on the same data, a node for the data itself would be the right structure.
+- >-
+  ONE FACT ONLY, at one height. The node is named for the class because it is intended to grow --
+  the ordinate of the first zero, 14.134725..., would sharpen ZeroFreeHeight, and further
+  reciprocal-power sums over low zeroes appear throughout the explicit-formula literature -- but
+  today it holds exactly one conclusion and a consumer wanting anything else will not find it.
+- >-
+  The value is a truncation, so the bracket is 10^-6 wide. That is the precision CH2 print, not the
+  precision of the computation, and a consumer needing more must go back to the data rather than to
+  this node.
+- >-
+  No novelty is claimed. The computation is Chirre and Helfgott's, over Platt's data.

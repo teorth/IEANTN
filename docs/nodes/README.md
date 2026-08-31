@@ -34,6 +34,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`Kadiri2005.v1`](Kadiri2005-v1.md) | paper | 1 | cited |
 | [`Lcm.v1`](Lcm-v1.md) | paper | 1 | verified |
 | [`Lcm.v2`](Lcm-v2.md) | pipeline | 1 | verified |
+| [`LowZeroes.v1`](LowZeroes-v1.md) | computation | 1 | computation |
 | [`MT.v1`](MT-v1.md) | paper | 2 | cited |
 | [`MTY.v1`](MTY-v1.md) | paper | 0 | — |
 | [`Platt2015.v1`](Platt2015-v1.md) | computation | 1 | computation |

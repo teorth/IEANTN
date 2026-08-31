@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-39 node version(s), 71 conclusion(s).  3 state nothing yet.
+40 node version(s), 72 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -18,7 +18,7 @@ adds the environment detail.
 | `lean-comparator` | 17 |
 | `literature` | 36 |
 | `none-yet` | 3 |
-| `numerical` | 13 |
+| `numerical` | 14 |
 
 ## Nodes
 
@@ -83,6 +83,7 @@ adds the environment detail.
 | `Kadiri2005.v1` | stub | `zero_free_region` | literature | 2 | - |
 | `Lcm.v1` | active | `lcmUpto_not_highlyAbundant` | lean-comparator | 1 | - |
 | `Lcm.v2` | active | `lcmUpto_not_highlyAbundant_of_primeGap` | lean-comparator | 0 | #10 |
+| `LowZeroes.v1` | stub | `sum_inv_ordinates_below_2e4` | numerical | 0 | #64 |
 | `MT.v1` | active | `zero_free_region` | literature | 2 | - |
 | `MT.v1` | active | `zero_free_region_sharpened` | literature | 2 | - |
 | `MTY.v1` | stub | *(none yet)* | - | - | - |
