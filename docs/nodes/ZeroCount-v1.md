@@ -39,7 +39,7 @@ def rvm_error_bound : Prop :=
 |---|---|
 | Lean name | `ZeroCount.v1.rvm_error_bound` |
 | Challenge | `ZeroCount.v1.challenge_rvm_error_bound` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZeroCount/v1/Conclusions.lean#L80) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZeroCount/v1/Conclusions.lean#L84) |
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -68,7 +68,7 @@ def rvm_error_small : Prop :=
 |---|---|
 | Lean name | `ZeroCount.v1.rvm_error_small` |
 | Challenge | `ZeroCount.v1.challenge_rvm_error_small` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZeroCount/v1/Conclusions.lean#L90) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZeroCount/v1/Conclusions.lean#L94) |
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -83,7 +83,7 @@ def rvm_error_small : Prop :=
 Recorded by the node itself, not derived.
 
 - Asserted on the literature; no Lean proof exists here, and anything downstream inherits that. A proof would need Rosser's argument or a modern replacement, neither of which is in Mathlib -- there is no Riemann-von Mangoldt formula there at all.
-- DOES NOT COMPOSE WITH IEANTN.HasRvMBound, for the counting-convention reason recorded in the review notes. A consumer holding this node and wanting HasRvMBound must bound the multiplicity at a single height, which costs a term of size log t and hence a different constant. Whether Vocabulary should grow a closed-interval count, or `zetaN` should be restated, is a question this node raises and does not answer.
+- DOES NOT COMPOSE WITH IEANTN.HasRvMBound AS IT STANDS, but the gap is a missing lemma, not a loss of constant. `rvm_error_bound` implies HasRvMBound (1/5) 0 2 for T > 1 by a limit from below -- see the review notes, which correct an earlier claim here that the two are inequivalent. Nobody has written that passage in Lean, so a consumer must do it. The clean shape for it is the ZeroFreeHeight pattern: keep both conventions and let a node or bridge record the passage between them, rather than forcing one convention on Vocabulary.
 - WEAKER THAN THE LITERATURE SUPPORTS. Rosser's own bound is 0.137 log t + 0.443 log log t + 1.588, and CH2 note that better bounds are available today. The weakening is theirs and is deliberate; a node wanting the sharper form should state it directly rather than strengthening this one.
 - The `Q(t)` of Lemma B.1 is bounded only for t >= 1 and on 0 < t <= 280. CH2's Appendix B contains further estimates -- on sums over zeroes, and on the function they call `I+,C` -- which are what actually deliver C_T, and none of those are stated here.
 - No novelty is claimed. The result is Rosser's, in Chirre and Helfgott's restatement.

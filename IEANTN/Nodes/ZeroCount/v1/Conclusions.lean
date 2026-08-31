@@ -30,16 +30,20 @@ That would have been the obvious composable choice — `HasRvMBound b₁ b₂ b�
 statement here, and the reason is a counting convention, not a constant.
 
 `HasRvMBound` is built on `zetaN`, which counts `Set.Ioo 0 T` — zeroes with `0 < Im ρ < T`. Rosser
-and Chirre–Helfgott count `0 < Im ρ ≤ T`. The two differ by `m(t)`, the multiplicity at height
-exactly `t`, and **neither bound implies the other**: writing `Q_open = Q_closed - m(t)` with
-`m(t) ≥ 0`, the upper bound transfers but the lower one does not, since `Q_open ≥ -B - m(t)` is
-weaker than `Q_open ≥ -B`. Recovering the open-interval form costs `m(t) ≤ N(t+1) - N(t-1)`, itself
-of size `log t`, so it would change the constant rather than being free.
+and Chirre–Helfgott count `0 < Im ρ ≤ T`. So the conclusions below use the source's convention,
+written out from `zetaZeroesSum` with `Set.Ioc`, and need no new definition for it.
 
-Generically `m(t) = 0` and the distinction is vacuous. It is not vacuous as a *statement*, which is
-what a node records, so the conclusions below use the source's convention, written out from
-`zetaZeroesSum` with `Set.Ioc`. No new definition is needed for that; see this node's limitations
-for what it means for composing with the rest of the network.
+The two conventions differ by `m(t)`, the multiplicity at height exactly `t`, and comparing them at a
+single height makes them look inequivalent — the upper bound transfers, the lower one loses `m(t)`.
+**That comparison is the wrong one.** The hypothesis holds at every nearby height, and the zeroes in
+a bounded region are finite, so there is an `s < t` with `N_Ioc(s) = N_Ioo(t)` exactly; substituting
+and letting `s ↑ t`, with the main term and the bound both continuous, gives the open-interval form
+with **no loss of constant**.
+
+So the two are equivalent, and stating the source's convention here costs a consumer only a lemma
+nobody has yet written. The clean shape for that is the `ZeroFreeHeight` pattern — keep both
+conventions and let a node or bridge record the passage between them — rather than forcing one
+convention on Vocabulary.
 
 ## A note on the sum
 
