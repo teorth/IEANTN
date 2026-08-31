@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-40 node version(s), 72 conclusion(s).  3 state nothing yet.
+41 node version(s), 73 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -17,7 +17,7 @@ adds the environment detail.
 | `bridged` | 1 |
 | `lean-comparator` | 17 |
 | `literature` | 36 |
-| `none-yet` | 3 |
+| `none-yet` | 4 |
 | `numerical` | 14 |
 
 ## Nodes
@@ -44,8 +44,8 @@ adds the environment detail.
 | `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
-| `CH2.v1` | stub | `corollary_1_2_psi` | literature | 0 | - |
-| `CH2.v1` | stub | `corollary_1_2_lambda_sum` | literature | 0 | - |
+| `CH2.v1` | stub | `corollary_1_2_psi` | literature | 1 | - |
+| `CH2.v1` | stub | `corollary_1_2_lambda_sum` | literature | 1 | - |
 | `CH2.v1` | stub | `corollary_1_3_psi` | literature | 2 | - |
 | `CH2.v1` | stub | `corollary_1_3_lambda_sum` | literature | 2 | - |
 | `CH2.v2` | active | `proposition_2_4_upper` | lean-comparator | 0 | #64 |
@@ -77,6 +77,7 @@ adds the environment detail.
 | `FKS2Numerics.v1` | stub | `theta_asymp_ge_one_below_e30` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `corollary_22_mid_range` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `corollary_23_mid_range` | numerical | 0 | - |
+| `GammaAsymptotics.v1` | awaiting-solution | `digamma_sub_log_isBigO` | none-yet | 0 | #64 |
 | `Hiary2016.v1` | stub | `zeta_half_line_bound` | literature | 0 | - |
 | `KLN.v1` | active | `subconvexity_bound` | literature | 1 | - |
 | `KLN.v1` | active | `zero_density` | literature | 1 | - |
@@ -124,6 +125,7 @@ downstream.
 | `Kadiri2005.v1.zero_free_region` | 2 |
 | `KLN.v1.zero_density` | 2 |
 | `KLN.v1.subconvexity_bound` | 2 |
+| `GammaAsymptotics.v1.digamma_sub_log_isBigO` | 2 |
 | `FKS2Numerics.v1.table6_row2_floor` | 2 |
 | `FKS2Numerics.v1.corollary_23_mid_range` | 2 |
 | `DudekPlatt.v3.criterion` | 2 |

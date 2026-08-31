@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import IEANTN.Nodes.CH2.v1.Conclusions
+import IEANTN.Nodes.GammaAsymptotics.v1.Conclusions
 import IEANTN.Nodes.PlattTrudgian.v1.Conclusions
 
 /-!
@@ -17,10 +18,14 @@ Each `sorry` below is deliberate and permanent: a challenge *states*, it does no
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
 
-theorem CH2.v1.challenge_corollary_1_2_psi : CH2.v1.corollary_1_2_psi := by
+theorem CH2.v1.challenge_corollary_1_2_psi
+    (gammaasymptotics_v1_digamma_sub_log_isbigo : GammaAsymptotics.v1.digamma_sub_log_isBigO) :
+    CH2.v1.corollary_1_2_psi := by
   sorry
 
-theorem CH2.v1.challenge_corollary_1_2_lambda_sum : CH2.v1.corollary_1_2_lambda_sum := by
+theorem CH2.v1.challenge_corollary_1_2_lambda_sum
+    (gammaasymptotics_v1_digamma_sub_log_isbigo : GammaAsymptotics.v1.digamma_sub_log_isBigO) :
+    CH2.v1.corollary_1_2_lambda_sum := by
   sorry
 
 theorem CH2.v1.challenge_corollary_1_3_psi

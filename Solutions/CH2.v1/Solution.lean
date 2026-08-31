@@ -6,6 +6,7 @@ Authors: Terence Tao
 import Section5
 import IEANTN.Nodes.CH2.v1.Conclusions
 import IEANTN.Nodes.PlattTrudgian.v1.Conclusions
+import IEANTN.Nodes.GammaAsymptotics.v1.Conclusions
 
 /-!
 # Solution: `CH2.v1` — **incomplete, and deliberately so**
@@ -51,10 +52,16 @@ The inputs that will close it are recorded as this node's imports rather than pr
 with a numerics node that does not exist yet.
 -/
 
-theorem CH2.v1.challenge_corollary_1_2_psi : CH2.v1.corollary_1_2_psi := by
+theorem CH2.v1.challenge_corollary_1_2_psi
+    (gammaasymptotics_v1_digamma_sub_log_isbigo :
+      GammaAsymptotics.v1.digamma_sub_log_isBigO) :
+    CH2.v1.corollary_1_2_psi := by
   sorry
 
-theorem CH2.v1.challenge_corollary_1_2_lambda_sum : CH2.v1.corollary_1_2_lambda_sum := by
+theorem CH2.v1.challenge_corollary_1_2_lambda_sum
+    (gammaasymptotics_v1_digamma_sub_log_isbigo :
+      GammaAsymptotics.v1.digamma_sub_log_isBigO) :
+    CH2.v1.corollary_1_2_lambda_sum := by
   sorry
 
 theorem CH2.v1.challenge_corollary_1_3_psi
