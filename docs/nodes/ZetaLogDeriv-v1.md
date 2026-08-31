@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | standard |
-| Status | awaiting-solution |
+| Status | awaiting-verification |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -26,9 +26,14 @@
 `ζ'/ζ(s) = −ζ'/ζ(1−s) + log 2π − ψ(s) + (π/2)tan(πs/2)`.
 
 The hypotheses are what make each term meaningful: `s ∉ {0, −1, −2, …}` and `s ≠ 1` are
-`riemannZeta_one_sub`'s own, the first also keeping `ψ(s)` off its poles; the two non-vanishing
-conditions make the logarithmic derivatives finite; and `cos(πs/2) ≠ 0` keeps `tan` off its poles,
-which is exactly the odd integers.
+`riemannZeta_one_sub`'s own, the first also keeping `ψ(s)` off its poles; `ζ(s) ≠ 0` makes the
+left-hand quotient finite; and `cos(πs/2) ≠ 0` keeps `tan` off its poles, which is exactly the odd
+integers.
+
+Note what is *absent*: `ζ(1−s) ≠ 0` is not assumed, though the right-hand side divides by it. It
+does not need to be, because it follows -- the functional equation writes `ζ(1−s)` as a product of
+factors each already known nonzero here. An earlier draft carried it as a hypothesis; the proof
+never used it, which is how the redundancy was found.
 
 Imports nothing: `s` is universally quantified with every condition a hypothesis, so a Lean proof
 is this conclusion's whole justification.
@@ -36,7 +41,7 @@ is this conclusion's whole justification.
 ```lean
 def logDeriv_functional_equation : Prop :=
   ∀ s : ℂ, (∀ n : ℕ, s ≠ -n) → s ≠ 1 →
-    riemannZeta s ≠ 0 → riemannZeta (1 - s) ≠ 0 → Complex.cos (Real.pi * s / 2) ≠ 0 →
+    riemannZeta s ≠ 0 → Complex.cos (Real.pi * s / 2) ≠ 0 →
       deriv riemannZeta s / riemannZeta s
         = -(deriv riemannZeta (1 - s) / riemannZeta (1 - s))
           + Complex.log (2 * Real.pi) - Complex.digamma s
@@ -47,7 +52,8 @@ def logDeriv_functional_equation : Prop :=
 |---|---|
 | Lean name | `ZetaLogDeriv.v1.logDeriv_functional_equation` |
 | Challenge | `ZetaLogDeriv.v1.challenge_logDeriv_functional_equation` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDeriv/v1/Conclusions.lean#L76) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDeriv/v1/Conclusions.lean#L81) |
+| Solution | [`Solutions/ZetaLogDeriv.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/ZetaLogDeriv.v1) |
 | Evidence | unjustified (`none-yet`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -55,20 +61,20 @@ def logDeriv_functional_equation : Prop :=
 
 **Justification `unjustified`** — **designated** — none-yet
 
-> Imports `none`, and that is a real none: s is universally quantified with every condition a hypothesis, so a Lean proof is the whole justification. EXPECTED ROUTE. Take the logarithmic derivative of Mathlib's riemannZeta_one_sub, zeta(1-s) = 2 (2 pi)^{-s} Gamma(s) cos(pi s / 2) zeta(s). Each factor differentiates to something Mathlib has: the constant to zero, (2 pi)^{-s} to -log(2 pi), Gamma to digamma via the relation between deriv Gamma and digamma, and cos(pi s/2) to -(pi/2) tan(pi s/2). The chain rule on the left contributes the sign on zeta'/zeta(1-s). The work is bookkeeping -- differentiability side conditions at each factor, and the non-vanishing needed to divide -- rather than mathematics; there is no analytic content beyond what riemannZeta_one_sub already carries. The one place to be careful is that logDeriv of a product needs each factor non-vanishing at s, not merely the product, so cos(pi s / 2) /= 0 and Gamma(s) /= 0 must both be discharged; the latter is free from Mathlib's Gamma_ne_zero given the hypothesis on -n.
+> Imports `none`, and that is a real none: s is universally quantified with every condition a hypothesis, so a Lean proof is the whole justification. A SOLUTION EXISTS AND IS AWAITING VERIFICATION: Solutions/ZetaLogDeriv.v1. It compiles with no sorry and depends on propext, Classical.choice and Quot.sound only. Until Comparator has run and a receipt is written, this conclusion remains none-yet -- an unverified solution justifies nothing, and the kind is not changed by hand. THE ROUTE, as taken. Mathlib's riemannZeta_one_sub, zeta(1-s) = 2 (2 pi)^{-s} Gamma(s) cos(pi s / 2) zeta(s), is put through logDeriv factor by factor: the constant to zero, (2 pi)^{-s} to -log(2 pi), Gamma to digamma (which IS logDeriv Gamma, by definition), and cos(pi s/2) to -(pi/2) tan(pi s/2), with the chain rule on the left contributing the sign on zeta'/zeta(1-s). No analytic content beyond what riemannZeta_one_sub already carries. THE ONE STEP WITH CONTENT is not any of that. logDeriv of a product needs the identity on a NEIGHBOURHOOD of s, not just at s, so an open set is required on which riemannZeta_one_sub applies. The obvious choice -- the complement of the integers, open by isClosed_range_intCast -- is too small for the statement as made here, because the hypotheses admit even integers s >= 2 (at s = 2 every side condition holds, cos(pi) = -1 included). The solution uses {z \| 1 < z.re} union (range Int.cast)^c instead: a union of two opens, on each of which the functional equation applies, and which contains s in both cases -- if s is not an integer the second piece has it, and if it is, the hypotheses force it past 2.
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
-- Stated but not proved. Nothing downstream may treat it as established.
+- PROVED BUT NOT YET VERIFIED. Solutions/ZetaLogDeriv.v1 compiles with no sorry on the three permitted axioms, but Comparator has not run and no receipt exists. Until it does, this conclusion is none-yet and nothing downstream may treat it as established. A solution that has not been through the comparator attests nothing, however convincing it looks.
 - ONE IDENTITY ONLY, and it is an identity rather than an estimate. The node is named for the class because it is intended to grow, and the obvious next tenant is a growth bound: \|\|zeta'/zeta(s)\|\| = O(log\|s\|) on lines avoiding the zeros, which follows from this identity together with a digamma bound (GammaAsymptotics.v1) and boundedness on Re s >= 2. It is not here because its clean form depends on which lines are chosen, and choosing them for one consumer would be guessing; when a second consumer wants the same lines, that is the moment to add it.
 - THE HYPOTHESES ARE INHERITED, NOT MINIMISED. s /= -n for every natural n and s /= 1 are riemannZeta_one_sub's own; the two non-vanishing conditions on zeta and cos are what make the quotients and the tangent finite. A consumer at a point where one of these fails -- a zero of zeta, an odd integer -- gets nothing from this conclusion and must handle that point separately. In particular THE IDENTITY SAYS NOTHING AT A ZERO OF ZETA, which is precisely where a zero-density argument does its work; it is the tool for moving between half-planes, not for studying the zeros.
 - No novelty is claimed. The identity is classical.
 
 ## How this node was made
 
-- **agent** (Claude Opus 5 (Anthropic)) — Established that Mathlib carries the functional equation and the Dirichlet series but not the identity between them, derived the statement in Mathlib's orientation, checked it numerically, and chose the form, under the direction of the maintainer. No proof is claimed.
+- **agent** (Claude Opus 5 (Anthropic)) — Established that Mathlib carries the functional equation and the Dirichlet series but not the identity between them, derived the statement in Mathlib's orientation, checked it numerically, and chose the form, under the direction of the maintainer. THE SOLUTION IS NOT ORIGINAL TO THIS SESSION. A proof of the identity was supplied by the maintainer, generated elsewhere by an AI system not identified here, stated for logDeriv under the hypothesis that s is not an integer. It compiled unaltered against this repository's Mathlib pin. What was done here was the adaptation: that proof does not establish the conclusion as stated, whose hypotheses are strictly weaker, and the neighbourhood argument at its centre had to be replaced. Attribution for the bulk of the tactic script belongs to that earlier system.
 
 ---
 

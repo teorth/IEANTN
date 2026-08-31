@@ -1,0 +1,13 @@
+{
+  "challenge_module": "IEANTN.Nodes.ZetaLogDeriv.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ZetaLogDeriv.v1.challenge_logDeriv_functional_equation"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

@@ -67,15 +67,20 @@ open Complex
 `ζ'/ζ(s) = −ζ'/ζ(1−s) + log 2π − ψ(s) + (π/2)tan(πs/2)`.
 
 The hypotheses are what make each term meaningful: `s ∉ {0, −1, −2, …}` and `s ≠ 1` are
-`riemannZeta_one_sub`'s own, the first also keeping `ψ(s)` off its poles; the two non-vanishing
-conditions make the logarithmic derivatives finite; and `cos(πs/2) ≠ 0` keeps `tan` off its poles,
-which is exactly the odd integers.
+`riemannZeta_one_sub`'s own, the first also keeping `ψ(s)` off its poles; `ζ(s) ≠ 0` makes the
+left-hand quotient finite; and `cos(πs/2) ≠ 0` keeps `tan` off its poles, which is exactly the odd
+integers.
+
+Note what is *absent*: `ζ(1−s) ≠ 0` is not assumed, though the right-hand side divides by it. It
+does not need to be, because it follows -- the functional equation writes `ζ(1−s)` as a product of
+factors each already known nonzero here. An earlier draft carried it as a hypothesis; the proof
+never used it, which is how the redundancy was found.
 
 Imports nothing: `s` is universally quantified with every condition a hypothesis, so a Lean proof
 is this conclusion's whole justification. -/
 def logDeriv_functional_equation : Prop :=
   ∀ s : ℂ, (∀ n : ℕ, s ≠ -n) → s ≠ 1 →
-    riemannZeta s ≠ 0 → riemannZeta (1 - s) ≠ 0 → Complex.cos (Real.pi * s / 2) ≠ 0 →
+    riemannZeta s ≠ 0 → Complex.cos (Real.pi * s / 2) ≠ 0 →
       deriv riemannZeta s / riemannZeta s
         = -(deriv riemannZeta (1 - s) / riemannZeta (1 - s))
           + Complex.log (2 * Real.pi) - Complex.digamma s
