@@ -47,6 +47,7 @@ import IEANTN.Nodes.Trudgian2011.v1.Challenge
 import IEANTN.Nodes.Wedeniwski.v1.Challenge
 import IEANTN.Nodes.ZeroCount.v1.Challenge
 import IEANTN.Nodes.ZeroFreeHeight.v1.Challenge
+import IEANTN.Nodes.ZetaLogDeriv.v1.Challenge
 
 /-!
 # The node network
