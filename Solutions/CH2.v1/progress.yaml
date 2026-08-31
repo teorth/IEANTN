@@ -1,0 +1,169 @@
+# Build plan for CH2.v1, mapped against PrimeNumberTheoremAnd and against the paper's sections.
+#
+# Best-practice file, not a schema CI enforces -- see docs/SOLUTIONS.md. Its job is to make the
+# shape of a long build visible before anyone starts. `remaining_holes` on the node's
+# formalization.yaml is derived from the build by `ieantn.py progress`; everything here is
+# judgement and should read like it.
+
+solution: Solutions/CH2.v1/
+
+# --------------------------------------------------------------------------------------------
+shape: >-
+  One node, one large solution, built a paper section at a time. This is not the usual shape for
+  this repository and the reason is deliberate: sections 2 to 5 of Chirre-Helfgott are machinery
+  INTERNAL to the paper rather than among its exports, so their bespoke vocabulary -- LadderParams,
+  Phi_lambda, sumResiduesIn, the ladder, the admissible contour -- belongs inside a solution and
+  not in IEANTN/Vocabulary/ or any Conclusions.lean. Stating them as nodes would have cost about
+  fifteen definitions in the layer humans read, permanently, to serve one node.
+  The consequence to accept: a solution carrying any `sorry` cannot be verified, and Comparator is
+  all-or-nothing per node, so NOTHING HERE GOES GREEN until all four corollaries are closed. The
+  milestones below are internal. If that becomes intolerable the escape is to surface an
+  intermediate result as its own node, which cuts against the reasoning above but stays available.
+state: in-progress   # sections 2-5 ported; 4 holes, the four corollaries
+source: PrimeNumberTheoremAnd, PrimeNumberTheoremAnd/IEANTN/CH2/CH2.lean and CH2_part1.lean
+paper_source: >-
+  The LaTeX source is worth having and is one command away:
+  `curl -L https://arxiv.org/e-print/2512.15709 | tar xz` yields VonMangoldt.tex, 389 KB. Use it
+  rather than a PDF extraction for anything numerical -- several displays in sections 8 and B do not
+  survive OCR, and one of them was misread here for some time before the source settled it.
+
+# --------------------------------------------------------------------------------------------
+# What has to be proved, and what exists upstream.
+# --------------------------------------------------------------------------------------------
+targets:
+  - conclusion: corollary_1_2_psi
+    upstream: PrimeNumberTheoremAnd.CH2.cor_1_2_a          # CH2.lean:4319
+    upstream_state: sorry
+    statement_match: >-
+      Agrees with this node's transcription, which was read from the paper and cross-checked
+      against PNT+. Note the main term is x * (pi/T) * coth(pi/T), not x.
+  - conclusion: corollary_1_2_lambda_sum
+    upstream: PrimeNumberTheoremAnd.CH2.cor_1_2_b          # CH2.lean:4333
+    upstream_state: sorry
+    statement_match: agrees.
+  - conclusion: corollary_1_3_psi
+    upstream: PrimeNumberTheoremAnd.CH2.cor_1_3_a          # CH2.lean:4347
+    upstream_state: sorry
+    statement_match: >-
+      DOES NOT AGREE, and the paper was taken as authoritative. PNT+ writes the leading constant as
+      pi * 3 * 1e-12 = 9.425e-12 where the paper has pi/(3e12) = 1.047e-12, nine times smaller. Its
+      cor_1_3_b uses a third value again. Do not copy either.
+  - conclusion: corollary_1_3_lambda_sum
+    upstream: PrimeNumberTheoremAnd.CH2.cor_1_3_b          # CH2.lean:4359
+    upstream_state: sorry
+    statement_match: does not agree; see above.
+
+# --------------------------------------------------------------------------------------------
+# Stages. Each is a paper section; the first four are ports, the rest are not.
+# --------------------------------------------------------------------------------------------
+stages:
+  - stage: "sections 2-4: Fourier core and extremal approximants"
+    files: [Part1Fourier.lean, Approximants.lean, Decay.lean, WienerPort.lean, Pnt*.lean]
+    state: done
+    note: >-
+      Reused verbatim from Solutions/CH2.v2 and Solutions/CH2.v3, both of which are verified, so
+      this material has already been through Comparator once in those nodes. Decay.lean is the one
+      piece that is not upstream's: PNT+ derives the Fourier decay of the approximant from
+      Wiener.prelim_decay_3, which is one of the two `sorry`s in that file, and Decay.lean replaces
+      that route with one through the closed form. See Solutions/CH2.v3.
+
+  - stage: "rectangle contour machinery"
+    files: [AdditiveCombination.lean, RectanglePort.lean, ResiduePort.lean]
+    state: done
+    note: >-
+      Reused from Solutions/CH2.v3. Sorry-free upstream, BUT CONDITIONALLY SOUND, and a reader of a
+      future receipt should know why. ResiduePort's `residue` is labelled by its own authors a
+      "placeholder definition -- valid only for simple poles", which "at a higher-order or essential
+      singularity ... returns a junk value", and they add that results stated in terms of it are
+      "likely not provable in full generality with the current API. This is a deliberate stopgap."
+      The matching `HasSimplePolesOn` hypothesis is called a "temporary scaffold ... added to Lemma
+      5.1 / Proposition 5.2 and their sub-lemmas to make them provable with the present API", to be
+      removed once Mathlib gains higher-order residue support.
+      FOR THIS APPLICATION IT IS SOUND: PNT+ names zeta'/zeta as the intended case precisely because
+      its poles are all simple, and ZetaInstance.lean now PROVES that property rather than assuming
+      it. But a CH2.v1 receipt would attest something narrower than it looks, and that is worth
+      saying out loud rather than leaving buried in thirteen thousand lines.
+      It also settles a question raised elsewhere: ContourIntegration.v1's general residue theorem,
+      admitting arbitrary isolated singularities, is STRONGER than CH2 ever needs, since PNT+'s own
+      machinery already assumes simple poles.
+
+  - stage: "section 5: the contour shift"
+    files: [ZetaConjPort.lean, Section5.lean]
+    state: done
+    note: >-
+      CH2.lean lines 1-4318, everything below the four corollary `sorry`s: lemma_5_1_a to _d,
+      prop_5_2_a/b/c and prop_5_2, with the LadderParams machinery. 199 declarations, sorry-free
+      upstream, and it compiled against this repository's Mathlib after exactly ONE change: the
+      `hp` argument of integrableOn_rpow_mul_exp_neg_mul_rpow is now `0 < p` where upstream's pin
+      accepted `le_rfl`. That is far less drift than CH2.v2's port, which opened at a hundred
+      errors, and the reason is that section 5 sits on top of Approximants and Part1Fourier, whose
+      drift had already been absorbed for CH2.v2 and CH2.v3.
+      Worth recording that PNT+'s LadderParams generates "a contour going up from 1 to
+      1 + I * delta then backwards to -infinity + I * delta" -- the same vertical-plus-horizontal-ray
+      restriction that CH2.v4 arrived at independently, which is some evidence the restriction is
+      the natural one rather than a convenience.
+
+  - stage: "instantiating section 5 at A(s) = -zeta'/zeta"
+    files: [ZetaInstance.lean]
+    state: partial -- three of prop_5_2's five hypotheses
+    note: >-
+      Done first because it is the smallest thing that tests whether the section 5 port is USABLE
+      rather than merely compiling. It is: ConjSymm falls straight out of the ported
+      logDerivZeta_conj', MeromorphicOn out of Mathlib's MeromorphicOn.logDeriv, and the order bound
+      out of meromorphicOrderAt_logDeriv_eq_neg_one.
+      HasSimplePolesOn was the hypothesis expected to hurt and did not. -zeta'/zeta has a pole at
+      every zero of zeta, of every multiplicity, and Mathlib gives the logarithmic derivative order
+      exactly -1 at any zero or pole regardless: the multiplicity lands in the residue, not the
+      order. That is now proved rather than assumed.
+      TWO SMALL GAPS REMAIN, both honest. The order lemma carries the hypothesis
+      meromorphicOrderAt zeta z != top -- that zeta does not vanish on a punctured neighbourhood --
+      which is true by the identity theorem on the connected set {1}^c but is a separate small task.
+      And meromorphy AT s = 1 needs a removable-singularity argument from riemannZeta_residue_one.
+      NOT STARTED: the two IsBoundedNoPolesOn hypotheses, on the ladder and the contour. Those are
+      growth bounds on zeta'/zeta and belong with Appendix A, not here.
+      Mathlib friction worth knowing: `DifferentiableAt` unfolds to an Exists, so
+      `(differentiableAt_riemannZeta hz).analyticAt` resolves to `Exists.analyticAt` and fails
+      confusingly -- go through DifferentiableOn.analyticAt. And there is no meromorphicOrderAt_neg,
+      so a sign must go through meromorphicOrderAt_smul.
+
+  - stage: "section 6: Theorem 1.1"
+    state: not started, and possibly not needed
+    note: >-
+      PNT+ has `TODO: incorporate material from [CH2, Section 6]` where this would go, and its
+      cor_1_2_a is meant to follow from prop_5_2 without it. If that holds here too, the general
+      theorem can be skipped entirely; it is the paper's headline but not on the path to the
+      corollaries. Decide this by working section 7 backwards, not by stating Theorem 1.1 first.
+
+  - stage: "sections 7-8: the specialisation to psi"
+    state: not started -- THIS IS THE REAL WORK
+    note: >-
+      Nobody has formalized this, upstream or anywhere. It needs: F instantiated as the pole-free
+      part of -zeta'/zeta with PNT+'s hypotheses discharged (MeromorphicOn, ConjSymm,
+      HasSimplePolesOn, boundedness on the ladder and contour); the residue sum over zeroes
+      evaluated under RH up to T; that sum bounded via ZeroCount.v1 to produce C_T; section 8.2's
+      assembly; and section 8.3's I+,C bound (Lemma 8.9).
+      TWO WARNINGS. Section 8.2 does not merely bound the contour contribution, it shows the total
+      is NEGATIVE for x >= 15 and drops it. The constants are now known exactly, read from the
+      LaTeX source rather than the PDF -- `curl https://arxiv.org/e-print/2512.15709` gives
+      VonMangoldt.tex -- and the display is
+        ((c-gamma)/2 - 5/3) x^2/log^2 x - 1.468 + 3.118/log x + 6.79/log^2 x + 1.75/log^3 x < 0.
+      Note x^2, not x^-2; the leading coefficient is (c-gamma)/2 - 5/3 = -0.0248, small and
+      NEGATIVE, multiplying a growing quantity. Two things a formalizer should know before starting.
+      THE MARGIN AT x = 15 IS ONLY 0.0625, so this step is numerically tight and rounding matters.
+      AND THE PAPER'S STATED REASON IS BACKWARDS: it says "the left side increases for x >= e", but
+      the left side DECREASES, from -0.0625 at x = 15 to -520 at x = 1000. Decreasing is what the
+      argument needs -- negative at one point plus decreasing gives negative thereafter -- so the
+      conclusion stands and only the justification sentence is wrong. Do not formalize that sentence
+      as written.
+      Second warning: CH2.v3 states its approximant EXISTENTIALLY, pinning only phi 0 and the L1
+      error; the residue weights need pointwise control of phi, so a sup bound will have to be added
+      to that node. Adding a third conclusion there should not disturb its two receipts, whose
+      fingerprints do not move, but re-verification will need comparator.json extended to cover all
+      three.
+
+  - stage: "corollary 1.3: the numerics"
+    state: not started
+    note: >-
+      Needs bounds on Real.log(T / 2pi) at T = 3000175332800, which norm_num cannot evaluate, hence
+      a numerics node that does not exist yet. Corollary 1.2 quantifies over T and needs none of
+      this.

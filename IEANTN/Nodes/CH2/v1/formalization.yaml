@@ -56,6 +56,10 @@ conclusions:
       transcription agrees with this one, and the check that says so is that C_T evaluates to 113.6689
       at T = 3e12, which is the 113.67 the paper prints in Corollary 1.3.
   designated: ch2-paper
+  progress:
+    solution: Solutions/CH2.v1/
+    state: in-progress
+    remaining_holes: 4
 - id: corollary_1_2_lambda_sum
   declaration: CH2.v1.corollary_1_2_lambda_sum
   challenge: CH2.v1.challenge_corollary_1_2_lambda_sum
@@ -72,6 +76,10 @@ conclusions:
       Riemann hypothesis up to T is a hypothesis, not an edge. PrimeNumberTheoremAnd states this as
       CH2.cor_1_2_b with a `sorry`, and its transcription agrees with this one.
   designated: ch2-paper
+  progress:
+    solution: Solutions/CH2.v1/
+    state: in-progress
+    remaining_holes: 4
 - id: corollary_1_3_psi
   declaration: CH2.v1.corollary_1_3_psi
   challenge: CH2.v1.challenge_corollary_1_3_psi
@@ -100,6 +108,10 @@ conclusions:
       where the paper has pi/(3e12) = 1.047e-12 -- nine times larger. It is a weaker claim rather than
       a false one, but it is not the paper's result.
   designated: ch2-paper
+  progress:
+    solution: Solutions/CH2.v1/
+    state: in-progress
+    remaining_holes: 4
 - id: corollary_1_3_lambda_sum
   declaration: CH2.v1.corollary_1_3_lambda_sum
   challenge: CH2.v1.challenge_corollary_1_3_lambda_sum
@@ -124,6 +136,10 @@ conclusions:
       with each other is the clearest sign that neither should be copied.
   designated: ch2-paper
 
+  progress:
+    solution: Solutions/CH2.v1/
+    state: in-progress
+    remaining_holes: 4
 sources:
 - title: "Optimal bounds for sums of non-negative arithmetic functions"
   authors: ["Andres Chirre", "Harald Andres Helfgott"]

@@ -1,0 +1,70 @@
+name = "solution_CH2_v1"
+defaultTargets = ["ZetaInstance", "AdditiveCombination", "RectanglePort", "ResiduePort", "ZetaConjPort", "PntSupport", "PntAsymptotics", "PntSobolev", "PntSmooth", "PntFourier", "WienerPort", "Part1Fourier", "Approximants", "Decay", "Section5", "Solution"]
+
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "AdditiveCombination"
+roots = ["AdditiveCombination"]
+
+[[lean_lib]]
+name = "RectanglePort"
+roots = ["RectanglePort"]
+
+[[lean_lib]]
+name = "ResiduePort"
+roots = ["ResiduePort"]
+
+[[lean_lib]]
+name = "ZetaConjPort"
+roots = ["ZetaConjPort"]
+
+[[lean_lib]]
+name = "PntSupport"
+roots = ["PntSupport"]
+
+[[lean_lib]]
+name = "PntAsymptotics"
+roots = ["PntAsymptotics"]
+
+[[lean_lib]]
+name = "PntSobolev"
+roots = ["PntSobolev"]
+
+[[lean_lib]]
+name = "PntSmooth"
+roots = ["PntSmooth"]
+
+[[lean_lib]]
+name = "PntFourier"
+roots = ["PntFourier"]
+
+[[lean_lib]]
+name = "WienerPort"
+roots = ["WienerPort"]
+
+[[lean_lib]]
+name = "Part1Fourier"
+roots = ["Part1Fourier"]
+
+[[lean_lib]]
+name = "Approximants"
+roots = ["Approximants"]
+
+[[lean_lib]]
+name = "Decay"
+roots = ["Decay"]
+
+[[lean_lib]]
+name = "Section5"
+roots = ["Section5"]
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+[[lean_lib]]
+name = "ZetaInstance"
+roots = ["ZetaInstance"]

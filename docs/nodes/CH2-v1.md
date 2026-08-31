@@ -46,6 +46,7 @@ def corollary_1_2_psi : Prop :=
 | Lean name | `CH2.v1.corollary_1_2_psi` |
 | Challenge | `CH2.v1.challenge_corollary_1_2_psi` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v1/Conclusions.lean#L96) |
+| Solution | [`Solutions/CH2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -77,6 +78,7 @@ def corollary_1_2_lambda_sum : Prop :=
 | Lean name | `CH2.v1.corollary_1_2_lambda_sum` |
 | Challenge | `CH2.v1.challenge_corollary_1_2_lambda_sum` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v1/Conclusions.lean#L107) |
+| Solution | [`Solutions/CH2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -114,6 +116,7 @@ def corollary_1_3_psi : Prop :=
 | Lean name | `CH2.v1.corollary_1_3_psi` |
 | Challenge | `CH2.v1.challenge_corollary_1_3_psi` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v1/Conclusions.lean#L126) |
+| Solution | [`Solutions/CH2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to) |
@@ -145,6 +148,7 @@ def corollary_1_3_lambda_sum : Prop :=
 | Lean name | `CH2.v1.corollary_1_3_lambda_sum` |
 | Challenge | `CH2.v1.challenge_corollary_1_3_lambda_sum` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v1/Conclusions.lean#L138) |
+| Solution | [`Solutions/CH2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to) |
