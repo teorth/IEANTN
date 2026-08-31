@@ -1,0 +1,14 @@
+{
+  "challenge_module": "IEANTN.Nodes.CH2.v4.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "CH2.v4.challenge_contour_shift_holomorphic",
+    "CH2.v4.challenge_contour_shift"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

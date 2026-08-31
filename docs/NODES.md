@@ -11,7 +11,7 @@ A node is one folder recording:
 - **imports** — what each conclusion assumes, per conclusion;
 - **justification** — the evidence for the step from assumptions to claim.
 
-A node usually corresponds to a paper, but need not. Four kinds occur:
+A node usually corresponds to a paper, but need not. Five kinds occur:
 
 | Kind | Example |
 |---|---|
@@ -19,6 +19,7 @@ A node usually corresponds to a paper, but need not. Four kinds occur:
 | `pipeline` | An abstraction of several papers' shared argument, taking flexible inputs. |
 | `folklore` | A fact used without proof in the literature, surfaced so it can be cited and eventually proved. |
 | `computation` | A large numerical verification, split out so several papers can import it. |
+| `standard` | Textbook mathematics that Mathlib happens not to have, stated once so several nodes can import it instead of each carrying its own copy. `ContourIntegration`. |
 
 ## Layout
 
