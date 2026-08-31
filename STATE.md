@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-38 node version(s), 69 conclusion(s).  3 state nothing yet.
+39 node version(s), 71 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -16,7 +16,7 @@ adds the environment detail.
 | `asserted` | 1 |
 | `bridged` | 1 |
 | `lean-comparator` | 17 |
-| `literature` | 34 |
+| `literature` | 36 |
 | `none-yet` | 3 |
 | `numerical` | 13 |
 
@@ -95,6 +95,8 @@ adds the environment detail.
 | `RosserSchoenfeld.v1` | stub | `zero_free_region_classical` | bridged | 0 | - |
 | `Trudgian2011.v1` | stub | `integral_S_bound` | literature | 0 | - |
 | `Wedeniwski.v1` | stub | `rh_up_to` | asserted | 0 | - |
+| `ZeroCount.v1` | stub | `rvm_error_bound` | literature | 0 | #64 |
+| `ZeroCount.v1` | stub | `rvm_error_small` | literature | 0 | #64 |
 | `ZeroFreeHeight.v1` | active | `classical_region_descends` | lean-comparator | 0 | #30 |
 
 ## Leverage

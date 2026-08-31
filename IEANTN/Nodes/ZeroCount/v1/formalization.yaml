@@ -1,0 +1,136 @@
+# Node metadata for `ZeroCount.v1`.  See docs/NODES.md.
+#
+# Rosser's bound on the Riemann-von Mangoldt error term, as Chirre-Helfgott restate it in Lemma B.1.
+# Not on the CH2 track: a zero count is an input several papers want.
+version: "v0.4"
+
+node:
+  id: ZeroCount.v1
+  family: ZeroCount
+  version: v1
+  kind: paper
+  status: stub
+
+project:
+  name: "Rosser's explicit Riemann-von Mangoldt error bound"
+  description: >-
+    Writing N(t) for the number of zeroes of the Riemann zeta function with 0 < Im rho <= t counted
+    with multiplicity, and Q(t) = N(t) - ((t/2pi) log(t/2pi) - t/2pi + 7/8), the two claims are
+    |Q(t)| < 1 for 0 < t <= 280 and |Q(t)| <= (1/5) log t + 2 for t >= 1. These are Lemma B.1 of
+    Chirre-Helfgott, who derive them from Rosser 1941 and use them throughout their Appendix B. The
+    node exists separately from the CH2 family because the result is not theirs and because an
+    explicit zero count is exactly the kind of input several papers want. It is the missing input for
+    the constant C_T in CH2.v1's corollaries, which comes from summing over zeroes against N.
+
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M26", "11M06"]
+
+conclusions:
+- id: rvm_error_bound
+  issue: 64
+  declaration: ZeroCount.v1.rvm_error_bound
+  challenge: ZeroCount.v1.challenge_rvm_error_bound
+  imports: []
+  imports_status: none
+  justifications:
+  - id: ch2-b1
+    kind: literature
+    source: CH2
+    locator: Lemma B.1, second bound
+    note: >-
+      Asserted on the authority of Chirre-Helfgott's Lemma B.1, which in turn rests on Rosser 1941,
+      Theorems 17-19. The chain is worth being explicit about, because the constants here are
+      CH2's and not Rosser's: Rosser gives |Q(t)| <= 0.137 log t + 0.443 log log t + 1.588 for
+      t >= 2, and CH2 weaken it to (1/5) log t + 2 by checking the inequality holds for t >= 5400
+      and computing directly below that. So this node states a WEAKER bound than the literature
+      supports, deliberately, following CH2's stated aim of minimising dependencies. A node wanting
+      the sharper three-term form should state it directly rather than strengthening this one.
+      Imports `none`, and that is a real none: this is a fact about zeta with no network input.
+  designated: ch2-b1
+- id: rvm_error_small
+  issue: 64
+  declaration: ZeroCount.v1.rvm_error_small
+  challenge: ZeroCount.v1.challenge_rvm_error_small
+  imports: []
+  imports_status: none
+  justifications:
+  - id: ch2-b1
+    kind: literature
+    source: CH2
+    locator: Lemma B.1, first bound
+    note: >-
+      Asserted on the authority of the same lemma. Stated as a separate conclusion rather than folded
+      into the other because it is a different claim, not a special case: on 0 < t <= 280 the general
+      bound (1/5) log t + 2 exceeds 2 and is far weaker than the truth, and CH2 use the strict bound
+      exactly where the general one would be too lossy. The strictness is the source's.
+  designated: ch2-b1
+
+sources:
+- title: "Optimal bounds for sums of non-negative arithmetic functions"
+  authors: ["Andres Chirre", "Harald Andres Helfgott"]
+  type: "paper"
+  id: "https://arxiv.org/abs/2512.15709"
+  relationship: formalizes
+  note: >-
+    Lemma B.1, read from the arXiv preprint. CH2 is cited rather than Rosser 1941 because the
+    constants stated here are CH2's simplification of Rosser's, not Rosser's own -- citing Rosser for
+    them would be a misattribution. Rosser 1941, Theorems 17-19, is the underlying source and is
+    named in the conclusions' notes.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Read Appendix B, transcribed Lemma B.1, and established that the network's existing
+      HasRvMBound could not be used for it, under the direction of the maintainer. No proof is
+      claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    THE COUNTING CONVENTION WAS CHECKED RATHER THAN ASSUMED, and it is why this node does not use
+    IEANTN.HasRvMBound, which would otherwise have been the obvious composable choice -- that
+    predicate is literally |Q(T)| <= b1 log T + b2 log log T + b3, which is this statement at
+    (1/5, 0, 2). It is built on `zetaN`, which counts Set.Ioo 0 T, whereas Rosser and CH2 count
+    0 < Im rho <= T. The two differ by m(t), the multiplicity at height exactly t, and NEITHER BOUND
+    IMPLIES THE OTHER: with Q_open = Q_closed - m(t) and m(t) >= 0 the upper bound transfers but the
+    lower one does not, since Q_open >= -B - m(t) is weaker than Q_open >= -B. Recovering the
+    open-interval form costs m(t) <= N(t+1) - N(t-1), itself of size log t, so it changes the
+    constant. Generically m(t) = 0 and the distinction is vacuous, but a node records a statement
+    rather than a generic case, so the conclusions use the source's convention.
+    The junk-value warning on zetaZeroesSum was considered and does not bite: the zeroes in a bounded
+    rectangle are finite in number, so the family has finite support and the sum is the honest count.
+    That is a fact about zeta rather than a hypothesis, which is why no summability condition appears.
+
+limitations:
+- >-
+  Asserted on the literature; no Lean proof exists here, and anything downstream inherits that. A
+  proof would need Rosser's argument or a modern replacement, neither of which is in Mathlib -- there
+  is no Riemann-von Mangoldt formula there at all.
+- >-
+  DOES NOT COMPOSE WITH IEANTN.HasRvMBound, for the counting-convention reason recorded in the review
+  notes. A consumer holding this node and wanting HasRvMBound must bound the multiplicity at a single
+  height, which costs a term of size log t and hence a different constant. Whether Vocabulary should
+  grow a closed-interval count, or `zetaN` should be restated, is a question this node raises and does
+  not answer.
+- >-
+  WEAKER THAN THE LITERATURE SUPPORTS. Rosser's own bound is 0.137 log t + 0.443 log log t + 1.588,
+  and CH2 note that better bounds are available today. The weakening is theirs and is deliberate; a
+  node wanting the sharper form should state it directly rather than strengthening this one.
+- >-
+  The `Q(t)` of Lemma B.1 is bounded only for t >= 1 and on 0 < t <= 280. CH2's Appendix B contains
+  further estimates -- on sums over zeroes, and on the function they call `I+,C` -- which are what
+  actually deliver C_T, and none of those are stated here.
+- >-
+  No novelty is claimed. The result is Rosser's, in Chirre and Helfgott's restatement.
