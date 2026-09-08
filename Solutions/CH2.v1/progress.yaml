@@ -389,3 +389,161 @@ stages:
       Needs bounds on Real.log(T / 2pi) at T = 3000175332800, which norm_num cannot evaluate, hence
       a numerics node that does not exist yet. Corollary 1.2 quantifies over T and needs none of
       this.
+
+# --------------------------------------------------------------------------------------------
+# STAGE 6, MAPPED. Written 2026-09-08, after stage 4 landed.
+# --------------------------------------------------------------------------------------------
+stage_6_map:
+  where_stage_4_leaves_us: >-
+    prop_5_2_zeta is a CONTOUR IDENTITY WITH AN ERROR BOUND, and nothing more. In words, the
+    vertical integral at Re s = 1 of Phi_lambda(zOf s) * F(s) * x^s, minus the residues inside the
+    ladder, minus the contour residues, is bounded by the two horizontal tails plus the contour
+    term. Every object in it is analytic machinery. NONE of it mentions Lambda, psi, or the zeros
+    as a set. Stage 6 is the translation into arithmetic.
+  target: >-
+    corollary_1_2_psi, which says |psi(x) - x (pi/T) coth(pi/T)| <= pi/(T-1) x + C_T sqrt(x) for
+    T >= 10^7 under RH up to T and x > max(T, 10^9), with
+    C_T = (1/2pi) log^2(T/2pi) - (1/6pi) log(T/2pi).
+  steps:
+    - id: "1"
+      name: vertical integral to arithmetic sum
+      section: "7"
+      what: >-
+        -zeta'/zeta = sum Lambda(n) n^-s turns the integral into sum_n Lambda(n) w(n) for a weight
+        built from Phi_lambda. Mathlib already has the Dirichlet series
+        (LSeries_vonMangoldt_eq_deriv_riemannZeta_div); what is not there is the interchange, and
+        the integral is AT Re s = 1 where the series does not converge, so this step needs care
+        rather than being a formality.
+      confidence: reconstruction from standard practice, not yet checked against the source
+    - id: "2"
+      name: residues to a sum over zeros
+      section: "6 or 7"
+      what: >-
+        F has a simple pole at every zero rho of zeta with residue -m_rho, so the residue sum is
+        -sum_rho m_rho w(rho) x^rho. The residue fact is recorded in ZetaInstance's own docstring,
+        quoting the paper.
+      confidence: recorded
+    - id: "3"
+      name: RH up to T collapses the zero sum
+      section: "8"
+      what: >-
+        Under RH up to T every rho with |Im rho| <= T has Re rho = 1/2, so |x^rho| = sqrt(x) and the
+        zero sum is bounded by sqrt(x) * sum_rho m_rho |w(rho)|. THIS IS THE ONLY PLACE THE
+        HYPOTHESIS IS USED, which is why the conclusion carries it rather than importing it.
+      confidence: reconstruction
+    - id: "4"
+      name: bound the weight sum to produce C_T
+      section: "7-8"
+      what: >-
+        Elementary estimates on the weights (section 7 compares them with
+        F(z) = 1/pi - (1-z) cot(pi(1-z))), then partial summation against the zero-counting function
+        N(t). ZeroCount.v1 supplies exactly the input, |N(t) - rvmMain(t)| <= (1/5) log t + 2 with
+        rvmMain(t) = (t/2pi) log(t/2pi) - t/2pi + 7/8.
+        THE log^2 IN C_T IS THE SIGNATURE OF THIS STEP - summing a 1/gamma-shaped weight against
+        dN(t) where N(t) is about (t/2pi) log(t/2pi) produces a log^2 and nothing else does.
+      confidence: recorded that ZeroCount is the input; the partial summation is reconstruction
+    - id: "5"
+      name: smoothed sum to sharp psi
+      section: "8.2"
+      what: >-
+        The Graham-Vaaler weights bracket the indicator of [0, x], and Lambda >= 0, so the smoothed
+        sums bracket psi(x). Then section 8.2 disposes of the contour contribution.
+      confidence: recorded, and see the warning already in this file
+  where_the_difficulty_sits: >-
+    Not in steps 1 to 3, which are standard. It is concentrated in step 4, which is the real
+    analytic work, and in step 5, which is numerically tight - the margin at x = 15 is 0.0625 and
+    the paper's justifying sentence is backwards. Both warnings are recorded above in the stage
+    entry itself and should be read before starting.
+  the_main_factor: >-
+    x (pi/T) coth(pi/T) is, on the reconstruction above, simply the weight evaluated at s = 1 - the
+    residue of the integrand at the pole of zeta. omega is built from theta cot(pi theta), and cot
+    of an imaginary argument is coth, which would explain why the main factor has that shape rather
+    than being an ad hoc correction. WORTH CHECKING against the source before relying on it.
+  deferrals_agreed_with_the_maintainer:
+    - >-
+      THEOREM 1.1 (section 6) IS DEFERRED AS LONG AS POSSIBLE. PNT+ intends cor_1_2_a to follow
+      from prop_5_2 without it. Work section 7 backwards and only state Theorem 1.1 if a step
+      genuinely needs it; do not state it first.
+    - >-
+      COROLLARY 1.3 IS LAST. It is not consumed anywhere else in the paper, and it needs bounds on
+      log(T/2pi) at T = 3000175332800 that norm_num cannot evaluate, hence a numerics node that
+      does not exist. Corollary 1.2 quantifies over T and needs none of it.
+
+# --------------------------------------------------------------------------------------------
+# A NODE PROPOSAL, arising from the map above.
+# --------------------------------------------------------------------------------------------
+proposed_node:
+  name: ZetaZeroes.v1
+  status: proposed, not created
+  why_not_ExplicitFormula: >-
+    The obvious name for a node capturing steps 1 to 3 is ExplicitFormula, and that was the
+    starting suggestion. On inspection the EXTRACTABLE content is narrower than the explicit
+    formula and sits underneath it. Steps 1 and 3 are not extractable at all - step 1's interchange
+    depends on which weight class is used and is CH2-shaped as used here, and step 3 is
+    definitional once RiemannHypothesisUpTo is unfolded. What IS standard, reusable and absent from
+    Mathlib is the structure of zeta's zero set and the local behaviour of zeta'/zeta there. That
+    is what the node should state. A genuine ExplicitFormula node - the weighted formula itself -
+    may be worth adding later, once sections 6 and 7 have settled which form is wanted; stating it
+    now would be guessing at its shape.
+  the_payoff: >-
+    SIX OF THE EIGHT PROPOSED CONCLUSIONS ARE ALREADY PROVED, inside Solutions/CH2.v1/ZetaInstance,
+    so the node is mostly migration rather than new work. Several of their docstrings say in terms
+    that Mathlib does not have them, which also makes them upstreaming candidates.
+  conclusions_already_proved:
+    - name: no zeros in the left half-plane but the trivial ones
+      source: ZetaInstance riemannZeta_ne_zero_of_re_neg
+      note: >-
+        Mathlib has that each -2(n+1) IS a zero and that there are none with Re s >= 1, but nothing
+        saying the trivial zeros are the only ones out there. Any ladder argument placing columns at
+        negative abscissas needs exactly this.
+    - name: zeros off the real axis lie in the closed critical strip
+      source: ZetaInstance re_mem_Icc_of_riemannZeta_eq_zero
+    - name: finitely many zeros in a compact set missing s = 1
+      source: ZetaInstance finite_zeros_riemannZeta_of_isCompact
+      note: >-
+        The workhorse. Every zero-counting or residue-summing argument needs it, and it is what
+        makes zetaZeroesSum meaningful rather than a tsum of a non-summable family.
+    - name: an ordinate-free height exists in every unit interval
+      source: ZetaInstance exists_ordinate_free_height
+      note: >-
+        Needed by any contour whose horizontal pieces must miss the zeros, not only by this ladder.
+    - name: zeta equals riemannZeta_1 divided by (s-1)
+      source: ZetaInstance riemannZeta_eq_riemannZeta₁_div
+    - name: zeta vanishes exactly where riemannZeta_1 does, away from s = 1
+      source: ZetaInstance riemannZeta_eq_zero_iff_riemannZeta₁
+      note: >-
+        With the codiscreteness of riemannZeta_1's non-vanishing, this is the bridge that makes the
+        zeros isolated. Mathlib defines riemannZeta_1 in ZetaAsymp and never relates it back to
+        zeta, so the bridge is genuinely missing.
+  conclusions_still_to_prove:
+    - name: the residue of -zeta'/zeta at a zero is minus the multiplicity
+      note: >-
+        THE ONE PIECE OF NEW WORK, and it is small. Mathlib's
+        meromorphicOrderAt_logDeriv_eq_neg_one gives that the ORDER is -1 at any zero whatever the
+        multiplicity - the multiplicity lands in the residue, and Mathlib does not compute it.
+        This is what makes every residue calculation in a contour argument work.
+    - name: the residue of -zeta'/zeta at s = 1 is 1
+      note: Gives the main term x. Same shape, from the simple pole of zeta.
+  state_them_without_a_residue_function: >-
+    MATHLIB HAS NO residue, and the port's is labelled by its own authors a placeholder valid only
+    for simple poles. A node must not rest on that. State the two residue facts as limits instead -
+    Tendsto (fun s => (s - rho) * (-(deriv zeta s / zeta s))) (nhdsWithin rho {rho}^c) (nhds (-m)) -
+    which is Mathlib-native, is what consumers actually use, and sidesteps the scaffold entirely.
+  what_deliberately_stays_out:
+    - >-
+      The Dirichlet series for -zeta'/zeta. Mathlib has it
+      (LSeries_vonMangoldt_eq_deriv_riemannZeta_div).
+    - >-
+      RH up to T implies Re rho = 1/2. Definitional once RiemannHypothesisUpTo is unfolded; a node
+      restating it would add a claim where none is needed.
+    - >-
+      The Perron or Mellin interchange of step 1. Its statement depends on the weight class, so it
+      is CH2-shaped as used here and premature to fix.
+  a_constraint_worth_knowing_before_choosing_where_these_go: >-
+    ZetaLogDeriv.v1 is the natural-looking home for the two residue facts, being the node for
+    identities and estimates for zeta'/zeta. IT IS ALREADY VERIFIED GREEN, and verification is
+    all-or-nothing per node - record_receipt refuses unless comparator.json covers every
+    conclusion - so ADDING a conclusion there invalidates its receipt and forces a re-verification
+    of the whole node. That is cheap here, the existing conclusion being short, but it is a real
+    cost and it is why a new node is proposed instead. The same constraint applies to any future
+    growth of a green node and is worth remembering generally.
