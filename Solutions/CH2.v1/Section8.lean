@@ -20,6 +20,7 @@ import DigammaReal
 import Mathlib.NumberTheory.LSeries.Dirichlet
 import IEANTN.Nodes.ZetaLogDerivValues.v1.Conclusions
 import IEANTN.Nodes.ZetaLogDeriv.v1.Conclusions
+import IEANTN.Nodes.GammaAsymptotics.v2.Conclusions
 
 /-!
 # Section 8: the integrals
@@ -534,8 +535,8 @@ open ArithmeticFunction in
 Termwise from the Dirichlet series, with the base value imported from `ZetaLogDerivValues.v1`. The
 constant is `0.57`, comfortably above the true `0.5699609931…`; nothing downstream is close enough
 to the boundary for the rounding to matter. -/
-theorem norm_logDeriv_zeta_le (hv : ZetaLogDerivValues.v1.logDeriv_two) {t : ℝ} (ht : 2 ≤ t) :
-    ‖deriv riemannZeta (t : ℂ) / riemannZeta (t : ℂ)‖ ≤ 0.57 := by
+theorem norm_logDeriv_zeta_le (hv : ZetaLogDerivValues.v1.logDeriv_two) {w : ℂ} (ht : 2 ≤ w.re) :
+    ‖deriv riemannZeta w / riemannZeta w‖ ≤ 0.57 := by
   obtain ⟨c, hc, hceq⟩ := hv
   have hmargin : IEANTN.margin 0 = 1 := by simp [IEANTN.margin]
   rw [hmargin, one_mul] at hc
@@ -543,7 +544,7 @@ theorem norm_logDeriv_zeta_le (hv : ZetaLogDerivValues.v1.logDeriv_two) {t : ℝ
   have hclo : c ≤ -0.569960 := by linarith [hcabs.2]
   have hchi : -0.569962 ≤ c := by linarith [hcabs.1]
   -- the two L-series
-  have hret : (1 : ℝ) < ((t : ℂ)).re := by simp; linarith
+  have hret : (1 : ℝ) < w.re := by linarith
   have hre2 : (1 : ℝ) < ((2 : ℂ)).re := by norm_num
   have hLt := LSeries_vonMangoldt_eq_deriv_riemannZeta_div hret
   have hL2 := LSeries_vonMangoldt_eq_deriv_riemannZeta_div hre2
@@ -559,22 +560,22 @@ theorem norm_logDeriv_zeta_le (hv : ZetaLogDerivValues.v1.logDeriv_two) {t : ℝ
     rw [hval] at h
     exact h.congr_fun fun n ↦ (term_two_eq_ofReal_norm n).symm
   -- termwise comparison
-  have hmono : ∀ n : ℕ, ‖LSeries.term (fun n ↦ ((Λ n : ℝ) : ℂ)) (t : ℂ) n‖
+  have hmono : ∀ n : ℕ, ‖LSeries.term (fun n ↦ ((Λ n : ℝ) : ℂ)) w n‖
       ≤ ‖LSeries.term (fun n ↦ ((Λ n : ℝ) : ℂ)) (2 : ℂ) n‖ := by
     intro n
     refine LSeries.norm_term_le_of_re_le_re _ ?_ n
-    simp
+    norm_num
     linarith
-  have hsumt : Summable fun n : ℕ ↦ ‖LSeries.term (fun n ↦ ((Λ n : ℝ) : ℂ)) (t : ℂ) n‖ :=
+  have hsumt : Summable fun n : ℕ ↦ ‖LSeries.term (fun n ↦ ((Λ n : ℝ) : ℂ)) w n‖ :=
     Summable.of_nonneg_of_le (fun n ↦ norm_nonneg _) hmono hsum2.summable
   -- and the bound
-  have hLtnorm : ‖LSeries (fun n ↦ ((Λ n : ℝ) : ℂ)) (t : ℂ)‖ ≤ -c := by
+  have hLtnorm : ‖LSeries (fun n ↦ ((Λ n : ℝ) : ℂ)) w‖ ≤ -c := by
     rw [LSeries]
     refine le_trans (norm_tsum_le_tsum_norm hsumt) ?_
     rw [← hsum2.tsum_eq]
     exact Summable.tsum_le_tsum hmono hsumt hsum2.summable
-  have hEq : ‖deriv riemannZeta (t : ℂ) / riemannZeta (t : ℂ)‖
-      = ‖LSeries (fun n ↦ ((Λ n : ℝ) : ℂ)) (t : ℂ)‖ := by
+  have hEq : ‖deriv riemannZeta w / riemannZeta w‖
+      = ‖LSeries (fun n ↦ ((Λ n : ℝ) : ℂ)) w‖ := by
     rw [hLt, neg_div, norm_neg]
   rw [hEq]
   linarith
@@ -761,7 +762,7 @@ theorem abs_log_sub_log_two_pi_le {t : ℝ} (ht : 2 ≤ t) :
 theorem norm_gfun_le (h2 : ZetaLogDerivValues.v1.logDeriv_two) {t : ℝ} (ht : 2 ≤ t) :
     ‖gfun t‖ ≤ 3.72 + 0.16 * t := by
   have ht0 : (0 : ℝ) < t := by linarith
-  have hz := norm_logDeriv_zeta_le h2 ht
+  have hz := norm_logDeriv_zeta_le h2 (by simpa using ht : (2:ℝ) ≤ ((t : ℂ)).re)
   have hd := CH2Digamma.norm_digamma_sub_log_le ht0
   have hlog : Complex.log ((t : ℝ) : ℂ) = ((Real.log t : ℝ) : ℂ) :=
     (Complex.ofReal_log ht0.le).symm
@@ -1635,5 +1636,90 @@ theorem contour_shift {F : ℂ → ℂ}
     exact hrect R hR'
   have := tendsto_nhds_unique (hL.congr' heq) hR
   simpa using this
+
+/-! ### `G` off the real axis
+
+The two side conditions of `contour_shift` — integrability on the half-lines, and the vanishing of
+the left edge — need `G` bounded on the strip `Re s ≤ -1`, `0 ≤ Im s ≤ 1`, which is off the real
+axis and so needs a *complex* digamma asymptotic.
+
+**The unnamed constant does not matter here, and that is the point.** `GammaAsymptotics.v2` states
+its conclusion as an `O`-statement with a constant it does not name, which is useless for an
+explicit estimate — but the constant is needed only for an integrability hypothesis and a limit.
+The final explicit bound comes from `norm_intHoriz_le`, on the real axis, where `DigammaReal`
+supplies `|ψ - log| ≤ 1/x` with the constant equal to `1`. So the `O`-form suffices, and none of
+`GammaAsymptotics.v2`'s solution has to be re-proved. -/
+
+/-- **`‖G(s)‖ ≤ A + log(1 + ‖s‖)` on the strip**, for some `A`.
+
+`A` is unnamed because the imported digamma asymptotic's constant is; see the section note for why
+that costs nothing. -/
+theorem exists_norm_Gfun_le (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two) :
+    ∃ A : ℝ, ∀ s : ℂ, s.re ≤ -1 → |s.im| ≤ 1 →
+      ‖Gfun s‖ ≤ A + Real.log (1 + ‖s‖) := by
+  obtain ⟨C, hC⟩ := hgam 1
+  refine ⟨0.57 + |C| / 2 + Real.pi + 1 / 2 + ‖Complex.log (2 * (Real.pi : ℂ))‖, ?_⟩
+  intro s hre him
+  have hw2 : (2 : ℝ) ≤ (1 - s).re := by
+    simp only [Complex.sub_re, Complex.one_re]
+    linarith
+  have hwn : (2 : ℝ) ≤ ‖1 - s‖ := le_trans hw2 (Complex.re_le_norm _)
+  have hwn0 : (0 : ℝ) < ‖1 - s‖ := by linarith
+  have hwim : |(1 - s).im| ≤ 1 := by
+    simp only [Complex.sub_im, Complex.one_im, zero_sub, abs_neg]
+    exact him
+  -- the four pieces
+  have hz : ‖deriv riemannZeta (1 - s) / riemannZeta (1 - s)‖ ≤ 0.57 :=
+    norm_logDeriv_zeta_le h2v hw2
+  have hd : ‖Complex.digamma (1 - s) - Complex.log (1 - s)‖ ≤ |C| / 2 := by
+    refine le_trans (hC (1 - s) (by linarith) hwim) ?_
+    have h1 : C / ‖1 - s‖ ≤ |C| / ‖1 - s‖ := by
+      gcongr
+      exact le_abs_self C
+    refine le_trans h1 ?_
+    rw [div_le_div_iff₀ hwn0 (by norm_num)]
+    nlinarith [abs_nonneg C]
+  have hlog : ‖Complex.log (1 - s)‖ ≤ Real.log (1 + ‖s‖) + Real.pi := by
+    have h1 : ‖Complex.log (1 - s)‖
+        ≤ |(Complex.log (1 - s)).re| + |(Complex.log (1 - s)).im| :=
+      Complex.norm_le_abs_re_add_abs_im _
+    rw [Complex.log_re, Complex.log_im] at h1
+    have h2 : |Real.log ‖1 - s‖| = Real.log ‖1 - s‖ :=
+      abs_of_nonneg (Real.log_nonneg (by linarith))
+    have h3 : |Complex.arg (1 - s)| ≤ Real.pi := Complex.abs_arg_le_pi _
+    have h4 : ‖1 - s‖ ≤ 1 + ‖s‖ := by
+      calc ‖1 - s‖ ≤ ‖(1 : ℂ)‖ + ‖s‖ := norm_sub_le _ _
+        _ = 1 + ‖s‖ := by simp
+    have h5 : Real.log ‖1 - s‖ ≤ Real.log (1 + ‖s‖) := Real.log_le_log hwn0 h4
+    linarith
+  have hinv : ‖(1 : ℂ) / (1 - s)‖ ≤ 1 / 2 := by
+    rw [norm_div, norm_one]
+    rw [div_le_div_iff₀ hwn0 (by norm_num)]
+    linarith
+  -- and the triangle inequality
+  have hsplit : Gfun s = deriv riemannZeta (1 - s) / riemannZeta (1 - s)
+      + (Complex.digamma (1 - s) - Complex.log (1 - s)) + Complex.log (1 - s)
+      + 1 / (1 - s) - Complex.log (2 * (Real.pi : ℂ)) := by
+    rw [Gfun]; ring
+  rw [hsplit]
+  calc ‖deriv riemannZeta (1 - s) / riemannZeta (1 - s)
+        + (Complex.digamma (1 - s) - Complex.log (1 - s)) + Complex.log (1 - s)
+        + 1 / (1 - s) - Complex.log (2 * (Real.pi : ℂ))‖
+      ≤ ‖deriv riemannZeta (1 - s) / riemannZeta (1 - s)
+          + (Complex.digamma (1 - s) - Complex.log (1 - s)) + Complex.log (1 - s)
+          + 1 / (1 - s)‖ + ‖Complex.log (2 * (Real.pi : ℂ))‖ := norm_sub_le _ _
+    _ ≤ ((‖deriv riemannZeta (1 - s) / riemannZeta (1 - s)
+          + (Complex.digamma (1 - s) - Complex.log (1 - s))‖ + ‖Complex.log (1 - s)‖)
+          + ‖(1 : ℂ) / (1 - s)‖) + ‖Complex.log (2 * (Real.pi : ℂ))‖ := by
+        gcongr
+        exact le_trans (norm_add_le _ _) (by gcongr; exact norm_add_le _ _)
+    _ ≤ ((‖deriv riemannZeta (1 - s) / riemannZeta (1 - s)‖
+          + ‖Complex.digamma (1 - s) - Complex.log (1 - s)‖ + ‖Complex.log (1 - s)‖)
+          + ‖(1 : ℂ) / (1 - s)‖) + ‖Complex.log (2 * (Real.pi : ℂ))‖ := by
+        gcongr
+        exact norm_add_le _ _
+    _ ≤ 0.57 + |C| / 2 + Real.pi + 1 / 2 + ‖Complex.log (2 * (Real.pi : ℂ))‖
+        + Real.log (1 + ‖s‖) := by linarith
 
 end CH2Section8
