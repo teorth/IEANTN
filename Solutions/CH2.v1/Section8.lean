@@ -11,6 +11,9 @@ import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.Analysis.SpecialFunctions.Pow.Complex
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
+import Mathlib.Analysis.Complex.ExponentialBounds
+import Section7
 
 /-!
 # Section 8: the integrals
@@ -282,5 +285,211 @@ theorem norm_intC1_le {Φ : ℂ → ℂ}
     rw [div_mul_eq_mul_div, div_le_div_iff₀ hx0 hx0]
     nlinarith [hs2lt, hx0]
   linarith [hfin]
+
+/-! ### The second segment of `𝓒_<`, from `-2+i` to `-∞+i`
+
+Parametrised as `s(t) = (-2-t) + i` for `t ∈ (0, ∞)`, so `ds = -dt`. This is the one piece of the
+contour where integrability cannot be dodged, since the interval is infinite.
+
+The bound on `cot` is the companion of `lem:adamant`'s: on a horizontal line `Im z = y > 0`,
+
+  `|cot z|² = (cos²x + sinh²y)/(sin²x + sinh²y) ≤ (1 + sinh²y)/sinh²y = coth²y`,
+
+and at `y = π/2` the crude `coth y ≤ 1 + 1/y` of §7 gives `1 + 2/π`, which spares any numerical
+evaluation of `cosh(π/2)`. The `t`-dependence is absorbed by `4 + t ≤ 4 e^{t/4}`, leaving a single
+exponential integral. -/
+
+/-- `|sin(x+iy)|² = sin²x + sinh²y`, the companion of `normSq_cos`. -/
+theorem normSq_sin (z : ℂ) :
+    Complex.normSq (Complex.sin z) = Real.sin z.re ^ 2 + Real.sinh z.im ^ 2 := by
+  have hz : z = (z.re : ℂ) + (z.im : ℂ) * Complex.I := (Complex.re_add_im z).symm
+  rw [hz, Complex.sin_add_mul_I]
+  rw [← Complex.ofReal_cos, ← Complex.ofReal_sin, ← Complex.ofReal_cosh, ← Complex.ofReal_sinh]
+  simp only [Complex.normSq_apply, Complex.add_re, Complex.add_im, Complex.mul_re,
+    Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im]
+  ring_nf
+  have hc : Real.cosh z.im ^ 2 = 1 + Real.sinh z.im ^ 2 := by
+    have := Real.sinh_sq z.im
+    linarith
+  nlinarith [Real.sin_sq_add_cos_sq z.re, hc]
+
+/-- **`|cot z| ≤ coth y` on the horizontal line `Im z = y > 0`.** -/
+theorem norm_cot_le_coth {z : ℂ} (hy : 0 < z.im) :
+    ‖Complex.cot z‖ ≤ Real.cosh z.im / Real.sinh z.im := by
+  have hs : 0 < Real.sinh z.im := Real.sinh_pos_iff.mpr hy
+  have hsin : Complex.normSq (Complex.sin z) ≠ 0 := by
+    rw [normSq_sin]
+    positivity
+  have hsin0 : Complex.sin z ≠ 0 := fun h ↦ hsin (by rw [h]; simp)
+  have hsq : ‖Complex.cot z‖ ^ 2 ≤ (Real.cosh z.im / Real.sinh z.im) ^ 2 := by
+    rw [Complex.cot_eq_cos_div_sin, norm_div, div_pow, Complex.sq_norm, Complex.sq_norm,
+      normSq_cos, normSq_sin, div_pow]
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    have hcs := Real.sin_sq_add_cos_sq z.re
+    have hch : Real.cosh z.im ^ 2 = 1 + Real.sinh z.im ^ 2 := by
+      have := Real.sinh_sq z.im; linarith
+    nlinarith [sq_nonneg (Real.sin z.re), sq_nonneg (Real.sinh z.im),
+      mul_nonneg (sq_nonneg (Real.sin z.re)) (sq_nonneg (Real.sinh z.im))]
+  have h1 : (0 : ℝ) ≤ Real.cosh z.im / Real.sinh z.im := by positivity
+  nlinarith [norm_nonneg (Complex.cot z), hsq, h1]
+
+/-- The second segment of `𝓒_<`, from `-2+i` (at `t = 0`) to `-∞+i`. -/
+noncomputable def segC2 (t : ℝ) : ℂ := ((-2 - t : ℝ) : ℂ) + Complex.I
+
+theorem segC2_re (t : ℝ) : (segC2 t).re = -2 - t := by simp [segC2]
+
+theorem segC2_im (t : ℝ) : (segC2 t).im = 1 := by simp [segC2]
+
+theorem norm_segC2_sub_one_le {t : ℝ} (ht : 0 ≤ t) : ‖segC2 t - 1‖ ≤ 4 + t := by
+  have h : segC2 t - 1 = ((-3 - t : ℝ) : ℂ) + Complex.I := by
+    rw [segC2]; push_cast; ring
+  rw [h]
+  calc ‖((-3 - t : ℝ) : ℂ) + Complex.I‖ ≤ ‖((-3 - t : ℝ) : ℂ)‖ + ‖Complex.I‖ := norm_add_le _ _
+    _ = (3 + t) + 1 := by
+        rw [Complex.norm_real, Real.norm_eq_abs, Complex.norm_I,
+          abs_of_nonpos (by linarith : (-3 - t : ℝ) ≤ 0)]
+        ring
+    _ = 4 + t := by ring
+
+/-- `|(π/2) cot(πs/2)| ≤ (π/2)(1 + 2/π)` along the second segment, where `Im(πs/2) = π/2`. -/
+theorem norm_cot_segC2_le (t : ℝ) :
+    ‖Complex.cot ((Real.pi : ℂ) * segC2 t / 2)‖ ≤ 1 + 2 / Real.pi := by
+  have hpi := Real.pi_pos
+  have him : ((Real.pi : ℂ) * segC2 t / 2).im = Real.pi / 2 := by
+    simp [Complex.mul_im, segC2_im, segC2_re]
+  have h := norm_cot_le_coth (z := (Real.pi : ℂ) * segC2 t / 2) (by rw [him]; positivity)
+  rw [him] at h
+  refine le_trans h ?_
+  have := CH2Section7.coth_le_one_add_inv (y := Real.pi / 2) (by positivity)
+  calc Real.cosh (Real.pi / 2) / Real.sinh (Real.pi / 2) ≤ 1 + 1 / (Real.pi / 2) := this
+    _ = 1 + 2 / Real.pi := by field_simp
+
+/-- The integral over the second segment of `𝓒_<`; `ds = -dt` along the parametrisation. -/
+noncomputable def intC2 (f : ℂ → ℂ) : ℂ := ∫ t in Set.Ioi (0:ℝ), -f (segC2 t)
+
+/-- **The second segment's contribution.**
+
+`4 + t ≤ 4 e^{t/4}` turns the whole integrand into a single exponential, so one application of
+`integral_exp_mul_Ioi` finishes it. The result is `O(x^{-2}/log x)` — far below anything the
+argument spends. -/
+theorem norm_intC2_le {Φ : ℂ → ℂ}
+    (hΦ : ∀ t ∈ Set.Ioi (0:ℝ), ‖Φ (segC2 t)‖ ≤ ‖segC2 t - 1‖)
+    {x : ℝ} (hx : 15 ≤ x) :
+    ‖intC2 (fun s ↦ ((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * s / 2) * Φ s
+      * (x : ℂ) ^ s)‖ ≤ 10.29 / (x ^ 2 * (Real.log x - 1 / 4)) := by
+  have hpi := Real.pi_pos
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hL : (2 : ℝ) < Real.log x := by
+    have h1 : Real.log 15 ≤ Real.log x := Real.log_le_log (by norm_num) hx
+    have h2 : (2 : ℝ) < Real.log 15 := by
+      rw [Real.lt_log_iff_exp_lt (by norm_num)]
+      have h := Real.exp_one_lt_d9
+      have he : Real.exp 2 = Real.exp 1 * Real.exp 1 := by
+        rw [← Real.exp_add]; norm_num
+      rw [he]
+      nlinarith [Real.exp_pos 1]
+    linarith
+  have ha : -(Real.log x - 1 / 4) < 0 := by linarith
+  have hpt : ∀ t ∈ Set.Ioi (0:ℝ),
+      ‖-(((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * segC2 t / 2) * Φ (segC2 t)
+        * (x : ℂ) ^ segC2 t)‖ ≤ 10.29 / x ^ 2 * Real.exp (-(Real.log x - 1 / 4) * t) := by
+    intro t ht
+    have ht0 : (0 : ℝ) < t := ht
+    have hpihalf : ‖((Real.pi : ℂ) / 2)‖ = Real.pi / 2 := by
+      rw [show ((Real.pi : ℝ) : ℂ) / 2 = (((Real.pi / 2 : ℝ)) : ℂ) by push_cast; ring,
+        Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
+    have hxs : ‖(x : ℂ) ^ segC2 t‖ = 1 / x ^ 2 * Real.exp (-(Real.log x * t)) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hx0, segC2_re, Real.rpow_def_of_pos hx0,
+        show Real.log x * (-2 - t) = -(2 * Real.log x) + -(Real.log x * t) by ring, Real.exp_add]
+      have h2 : Real.exp (-(2 * Real.log x)) = 1 / x ^ 2 := by
+        rw [show -(2 * Real.log x) = -(Real.log (x ^ 2)) by rw [Real.log_pow]; push_cast; ring,
+          Real.exp_neg, Real.exp_log (by positivity), one_div]
+      rw [h2]
+    have hc := norm_cot_segC2_le t
+    have hf : ‖Φ (segC2 t)‖ ≤ 4 + t := le_trans (hΦ t ht) (norm_segC2_sub_one_le ht0.le)
+    have hexp : 4 + t ≤ 4 * Real.exp (t / 4) := by
+      have := Real.add_one_le_exp (t / 4)
+      linarith
+    rw [norm_neg, norm_mul, norm_mul, norm_mul, hpihalf, hxs]
+    have hcn : (0 : ℝ) ≤ ‖Complex.cot ((Real.pi : ℂ) * segC2 t / 2)‖ := norm_nonneg _
+    have hfn : (0 : ℝ) ≤ ‖Φ (segC2 t)‖ := norm_nonneg _
+    have hstep : Real.pi / 2 * ‖Complex.cot ((Real.pi : ℂ) * segC2 t / 2)‖ * ‖Φ (segC2 t)‖
+        ≤ Real.pi / 2 * (1 + 2 / Real.pi) * (4 * Real.exp (t / 4)) := by
+      have hA : Real.pi / 2 * ‖Complex.cot ((Real.pi : ℂ) * segC2 t / 2)‖
+          ≤ Real.pi / 2 * (1 + 2 / Real.pi) := mul_le_mul_of_nonneg_left hc (by positivity)
+      exact mul_le_mul hA (le_trans hf hexp) hfn (by positivity)
+    have hpos : (0 : ℝ) ≤ 1 / x ^ 2 * Real.exp (-(Real.log x * t)) := by positivity
+    have hfinal : Real.pi / 2 * (1 + 2 / Real.pi) * (4 * Real.exp (t / 4))
+        * (1 / x ^ 2 * Real.exp (-(Real.log x * t)))
+        ≤ 10.29 / x ^ 2 * Real.exp (-(Real.log x - 1 / 4) * t) := by
+      have hcoef : Real.pi / 2 * (1 + 2 / Real.pi) * 4 ≤ 10.29 := by
+        have heq : Real.pi / 2 * (1 + 2 / Real.pi) * 4 = 2 * Real.pi + 4 := by field_simp; ring
+        rw [heq]
+        have := Real.pi_lt_d6
+        linarith
+      have hexpeq : Real.exp (t / 4) * Real.exp (-(Real.log x * t))
+          = Real.exp (-(Real.log x - 1 / 4) * t) := by
+        rw [← Real.exp_add]
+        congr 1
+        ring
+      have hrw : Real.pi / 2 * (1 + 2 / Real.pi) * (4 * Real.exp (t / 4))
+          * (1 / x ^ 2 * Real.exp (-(Real.log x * t)))
+          = Real.pi / 2 * (1 + 2 / Real.pi) * 4 / x ^ 2
+            * (Real.exp (t / 4) * Real.exp (-(Real.log x * t))) := by ring
+      rw [hrw, hexpeq]
+      have hxx : (0 : ℝ) < x ^ 2 := by positivity
+      have hE : (0 : ℝ) < Real.exp (-(Real.log x - 1 / 4) * t) := Real.exp_pos _
+      have hdiv : Real.pi / 2 * (1 + 2 / Real.pi) * 4 / x ^ 2 ≤ 10.29 / x ^ 2 := by gcongr
+      nlinarith [hdiv, hE]
+    nlinarith [hstep, hpos, hfinal,
+      mul_nonneg (mul_nonneg (by positivity : (0:ℝ) ≤ Real.pi / 2) hcn) hfn]
+  have hint : ‖intC2 (fun s ↦ ((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * s / 2) * Φ s
+      * (x : ℂ) ^ s)‖
+      ≤ ∫ t in Set.Ioi (0:ℝ), 10.29 / x ^ 2 * Real.exp (-(Real.log x - 1 / 4) * t) := by
+    refine le_trans (MeasureTheory.norm_integral_le_integral_norm _) ?_
+    refine MeasureTheory.integral_mono_of_nonneg
+      (Filter.Eventually.of_forall fun t ↦ norm_nonneg _)
+      ((integrableOn_exp_mul_Ioi ha 0).const_mul _) ?_
+    filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with t ht
+    exact hpt t ht
+  refine le_trans hint (le_of_eq ?_)
+  rw [MeasureTheory.integral_const_mul, integral_exp_mul_Ioi ha 0]
+  have hne : Real.log x - 1 / 4 ≠ 0 := by linarith
+  field_simp
+  norm_num
+
+/-- **The `lem:ranadi` analogue**: the whole of `𝓒_<` contributes at most `18/x`.
+
+The paper's bound is `(π²/4x)(2√2/log²x + (2+√2)/log³x + (1/√2)/log⁴x)`; this one keeps no powers
+of `log x` at all, which the budget in `lem:hardin` absorbs many times over. See the note on the
+first segment. -/
+theorem norm_intClt_le {Φ : ℂ → ℂ}
+    (hΦ1 : ∀ t ∈ Set.Icc (0:ℝ) (Real.sqrt 2), ‖Φ (segC1 t)‖ ≤ ‖segC1 t - 1‖)
+    (hΦ2 : ∀ t ∈ Set.Ioi (0:ℝ), ‖Φ (segC2 t)‖ ≤ ‖segC2 t - 1‖)
+    {x : ℝ} (hx : 15 ≤ x) :
+    ‖intC1 (fun s ↦ ((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * s / 2) * Φ s * (x : ℂ) ^ s)
+      + intC2 (fun s ↦ ((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * s / 2) * Φ s
+        * (x : ℂ) ^ s)‖ ≤ 18 / x := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hL : (2 : ℝ) < Real.log x := by
+    have h1 : Real.log 15 ≤ Real.log x := Real.log_le_log (by norm_num) hx
+    have h2 : (2 : ℝ) < Real.log 15 := by
+      rw [Real.lt_log_iff_exp_lt (by norm_num)]
+      have h := Real.exp_one_lt_d9
+      have he : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+      rw [he]
+      nlinarith [Real.exp_pos 1]
+    linarith
+  have h1 := norm_intC1_le hΦ1 (by linarith : (1:ℝ) < x)
+  have h2 := norm_intC2_le hΦ2 hx
+  have hlast : 10.29 / (x ^ 2 * (Real.log x - 1 / 4)) ≤ 1 / x := by
+    rw [div_le_div_iff₀ (by nlinarith) hx0]
+    nlinarith
+  calc ‖intC1 (fun s ↦ ((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * s / 2) * Φ s
+        * (x : ℂ) ^ s)
+      + intC2 (fun s ↦ ((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * s / 2) * Φ s
+        * (x : ℂ) ^ s)‖ ≤ _ + _ := norm_add_le _ _
+    _ ≤ 17 / x + 1 / x := add_le_add h1 (le_trans h2 hlast)
+    _ = 18 / x := by ring
 
 end CH2Section8
