@@ -406,7 +406,24 @@ stages:
       x >= 15); the initial segment 1 -> -1 (norm_intSeg_le, the lem:arles analogue); the horizontal
       contour -1 -> -infinity (norm_intHoriz_le, the lem:moruno analogue); and coronidis_bound,
       which puts the three together as gamma x/log^2 x + 1.8 x/log^3 x.
-      WHAT REMAINS IN 8.2 IS ONE THING: the contour shift. The identity
+      THE CONTOUR SHIFT IS DONE, as contour_shift, and C_< WAS RE-ROUTED THROUGH A VERTICAL LEG
+      to make it so: with the paper's 135 degree leg the region between C_< and the real half-line
+      is a rectangle with a corner cut off, so Cauchy would need a triangle too, and Mathlib has
+      the rectangle only. A vertical leg from -1 to -1+i makes the region exactly [-1-R,-1] x [0,1].
+      The paper's reason for 45 degrees does not apply on this route -- it wants x^s to decay along
+      the leg, which buys powers of log x this route has already given up -- and the cot bound on a
+      vertical leg is EASIER: at Re s = -1, cot(pi s/2) = -i tanh(pi v/2), so |cot| <= 1 outright.
+      lem:adamant and the diagonal segments stay in the file, correct and unused.
+      WHAT REMAINS IN 8.2 IS INSTANTIATING contour_shift at F = G * Phi * x^s: holomorphy on
+      Re s < 0 (differentiableOn_Gfun, plus Phi by hypothesis), integrability on the two half-lines,
+      and the vanishing of the left edge.
+      AND THE OBSTRUCTION FLAGGED EARLIER DISSOLVES THERE. Bounding G off the real axis needs a
+      COMPLEX digamma asymptotic, and GammaAsymptotics.v2's conclusion is an O-statement with an
+      unnamed constant -- useless for an explicit bound. But the unnamed constant is only ever
+      needed for the two SIDE CONDITIONS, integrability and a limit; the final explicit constant
+      comes from norm_intHoriz_le, on the real axis, where DigammaReal gives |psi - log| <= 1/x
+      with the constant explicit. So the O-form suffices, and no new Gamma work is required.
+      OLD NOTE, kept because it was the reason for the re-route: the contour shift. The identity
       int_C A~ Phi x^s ds = -int_{C_<} (pi/2) cot(pi s/2) Phi x^s ds + int_{-1}^{-infinity}
       (A~ + (pi/2) cot) Phi x^s ds is Cauchy's theorem applied to a function the functional equation
       makes holomorphic on the left half-plane. coronidis_bound therefore bounds the SUM OF THE
