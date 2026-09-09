@@ -22,7 +22,7 @@ project:
     threshold is recoverable under the repair once the footnote's sharper parameters are used in place
     of the main text's, with 257 log-units to spare. Unconditional, and resting only on this paper and
     Mossinghoff-Trudgian's, not on any external Lean development.
-  authors: ["Terence Tao"]
+  authors: ["Sebastián Rodrigo (AI-assisted)"]
   license: "Apache-2.0"
   responsible_maintainers: ["Terence Tao"]
 

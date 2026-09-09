@@ -22,7 +22,7 @@ project:
     paper uses. Stated as its own conclusion, in this network's HasClassicalBound vocabulary, so
     that DudekPlattNumerics.v4 (and anything else wanting an explicit theta bound at this R) can
     import it as a real edge rather than merely citing the same paper by number proximity.
-  authors: ["Terence Tao"]
+  authors: ["Sebastián Rodrigo (AI-assisted)"]
   license: "Apache-2.0"
   responsible_maintainers: ["Terence Tao"]
 

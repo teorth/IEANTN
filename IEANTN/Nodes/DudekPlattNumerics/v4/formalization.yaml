@@ -25,7 +25,7 @@ project:
     pi(x) = S5(x) + 120x/L^6 + 720 I7(x) - 2A + (theta(x)-x)/L + integral_2^x (theta(t)-t)/(t log^2 t),
     the elementary early-range bound, f_R's monotonicity and endpoint certificates, the corrected
     normalized majorants, and the real-x assembly recovering v3's own constants exactly.
-  authors: ["Terence Tao"]
+  authors: ["Sebastián Rodrigo (AI-assisted)"]
   license: "Apache-2.0"
   responsible_maintainers: ["Terence Tao"]
 

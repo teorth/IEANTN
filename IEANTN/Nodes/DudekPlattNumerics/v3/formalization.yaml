@@ -23,7 +23,7 @@ project:
     3010.333 x/(log x)^6 and 3250.488 x/(log x)^6 of the fifth partial sum of li's asymptotic expansion,
     for x above exp(9400). The footnote itself prints only the final, unrepaired threshold exp(9394);
     these m_a, M_a, x_a are computed here from the paper's own eq. (8)-(9), not printed by it.
-  authors: ["Terence Tao"]
+  authors: ["Sebastián Rodrigo (AI-assisted)"]
   license: "Apache-2.0"
   responsible_maintainers: ["Terence Tao"]
 
