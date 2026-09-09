@@ -80,7 +80,7 @@
   "ZeroFreeHeight.v1.classical_region_descends": "796809d584f97568c9b74fbd219ee65b3a6a70a0b52a2660f08e8302be76a367",
   "ZetaLogDeriv.v1.logDeriv_functional_equation": "d8fdd0ed83c200d19ee197abe94d3c28b07a57378676bfece5a428e811820293",
   "ZetaLogDerivValues.v1.deriv_logDeriv_neg_one": "007b304f5731bb35077cae22ec2b6b6a4d115603887964b4fe10722a7ac2bc29",
-  "ZetaLogDerivValues.v1.logDeriv_laurent_alternating": "b99ac04daafcd4a469fb4123c5b4c02a7d52679b6d0d0742cc64819af42f3646",
+  "ZetaLogDerivValues.v1.logDeriv_laurent_alternating": "eaa22ff15274701cfb0b046f891a02d9de438f94e5931add6b541596084a87f0",
   "ZetaLogDerivValues.v1.logDeriv_neg_one": "cd53475055f7caddbb145ffa2cfbec9051ff98a6de97e53300aecd9be62ad78a",
   "ZetaLogDerivValues.v1.logDeriv_three_halves": "c3e65be5c9e32b6ada801708975311d0ab997e507452ecdf3fe922b1fbea3917",
   "ZetaLogDerivValues.v1.logDeriv_two": "4d58a709acd55734bd240e732c1cb575b5a7b654ca378840af79e7e81a50ca1b",

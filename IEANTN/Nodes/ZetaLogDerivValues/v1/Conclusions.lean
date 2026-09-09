@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import Mathlib.NumberTheory.LSeries.RiemannZeta
+import Mathlib.NumberTheory.Harmonic.EulerMascheroni
 import IEANTN.Vocabulary.Numerics
 
 /-!
@@ -112,8 +113,14 @@ noncomputable def deriv_logDeriv_neg_one : Prop :=
 
 /-- **The Laurent coefficients of `-ζ'/ζ` at `1` alternate in sign.**
 
-`-ζ'/ζ(s) = 1/(s-1) + ∑_{n≥0} (-1)^{n+1} aₙ (s-1)ⁿ` with every `aₙ > 0`. In particular `a₀ = γ`,
-Euler's constant, since `-ζ'/ζ(s) - 1/(s-1) → -γ` as `s → 1`.
+`-ζ'/ζ(s) = 1/(s-1) + ∑_{n≥0} (-1)^{n+1} aₙ (s-1)ⁿ` with every `aₙ > 0`, and `a₀ = γ`, Euler's
+constant, since `-ζ'/ζ(s) - 1/(s-1) → -γ` as `s → 1`.
+
+**`a₀ = γ` is part of the claim rather than a remark**, because a consumer needs it: it is the
+leading coefficient of every estimate built on this expansion, and identifying it otherwise would
+mean redoing the limit at `s = 1` that the expansion already encodes. `Real.eulerMascheroniConstant`
+is Mathlib's, and comes with `one_half_lt_eulerMascheroniConstant` and
+`eulerMascheroniConstant_lt_two_thirds` for whoever needs a numeral.
 
 **The radius `3` is forced, not a convenience.** `-ζ'/ζ(s) - 1/(s-1)` is analytic on the open disc
 `‖s-1‖ < 3`: the nearest non-trivial zero of `ζ` is at distance `14.13…`, so the binding constraint
@@ -135,7 +142,7 @@ interval-arithmetic computation — the maximum modulus principle applied to `|G
 verified by bisection in Arb, with the first five coefficients computed separately — so it is a node
 fact of the same kind as the values above rather than something a solution could derive. -/
 def logDeriv_laurent_alternating : Prop :=
-  ∃ a : ℕ → ℝ, (∀ n, 0 < a n) ∧
+  ∃ a : ℕ → ℝ, (∀ n, 0 < a n) ∧ a 0 = Real.eulerMascheroniConstant ∧
     ∀ s : ℂ, s ≠ 1 → ‖s - 1‖ < 3 →
       HasSum (fun n : ℕ ↦ (-1 : ℂ) ^ (n + 1) * (a n : ℂ) * (s - 1) ^ n)
         (-(deriv riemannZeta s / riemannZeta s) - 1 / (s - 1))

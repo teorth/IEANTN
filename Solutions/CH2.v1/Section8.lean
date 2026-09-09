@@ -14,6 +14,8 @@ import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.Analysis.Complex.ExponentialBounds
 import Section7
+import Mathlib.NumberTheory.LSeries.Dirichlet
+import IEANTN.Nodes.ZetaLogDerivValues.v1.Conclusions
 
 /-!
 # Section 8: the integrals
@@ -491,5 +493,212 @@ theorem norm_intClt_le {Φ : ℂ → ℂ}
         * (x : ℂ) ^ s)‖ ≤ _ + _ := norm_add_le _ _
     _ ≤ 17 / x + 1 / x := add_le_add h1 (le_trans h2 hlast)
     _ = 18 / x := by ring
+
+/-! ### `ζ'/ζ` on the real axis above `2`
+
+`-ζ'/ζ(t) = ∑ Λ(n) n^{-t}` has non-negative terms, so its size is decreasing in `t`: the whole of
+`[2,∞)` is controlled by the single value at `2`, which `ZetaLogDerivValues.v1` supplies.
+
+Mathlib has every ingredient — `LSeries_vonMangoldt_eq_deriv_riemannZeta_div`,
+`ArithmeticFunction.vonMangoldt_nonneg`, and `LSeries.norm_term_le_of_re_le_re` — so only the
+numerical value has to be imported. The one step needing care is that the sum of the *norms* at
+`s = 2` is the norm of the sum, which holds because the terms there are non-negative reals; the
+node's statement form, an existential producing a real `c` with `ζ'/ζ(2) = c`, is what makes that
+available. -/
+
+open ArithmeticFunction in
+/-- At `s = 2` the terms of the Dirichlet series are non-negative reals. -/
+theorem term_two_eq_ofReal_norm (n : ℕ) :
+    LSeries.term (fun n ↦ ((Λ n : ℝ) : ℂ)) (2 : ℂ) n
+      = ((‖LSeries.term (fun n ↦ ((Λ n : ℝ) : ℂ)) (2 : ℂ) n‖ : ℝ) : ℂ) := by
+  rw [LSeries.norm_term_eq, LSeries.term_def]
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp
+  · simp only [if_neg hn]
+    have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    have hcast : ((n : ℂ)) ^ (2 : ℂ) = (((n : ℝ) ^ (2 : ℝ) : ℝ) : ℂ) := by
+      rw [Complex.ofReal_cpow hn0]
+      norm_num
+    rw [hcast, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (ArithmeticFunction.vonMangoldt_nonneg (n := n))]
+    push_cast
+    simp
+
+open ArithmeticFunction in
+/-- **`|ζ'/ζ(t)| ≤ 0.57` for every real `t ≥ 2`.**
+
+Termwise from the Dirichlet series, with the base value imported from `ZetaLogDerivValues.v1`. The
+constant is `0.57`, comfortably above the true `0.5699609931…`; nothing downstream is close enough
+to the boundary for the rounding to matter. -/
+theorem norm_logDeriv_zeta_le (hv : ZetaLogDerivValues.v1.logDeriv_two) {t : ℝ} (ht : 2 ≤ t) :
+    ‖deriv riemannZeta (t : ℂ) / riemannZeta (t : ℂ)‖ ≤ 0.57 := by
+  obtain ⟨c, hc, hceq⟩ := hv
+  have hmargin : IEANTN.margin 0 = 1 := by simp [IEANTN.margin]
+  rw [hmargin, one_mul] at hc
+  have hcabs := abs_le.mp hc
+  have hclo : c ≤ -0.569960 := by linarith [hcabs.2]
+  have hchi : -0.569962 ≤ c := by linarith [hcabs.1]
+  -- the two L-series
+  have hret : (1 : ℝ) < ((t : ℂ)).re := by simp; linarith
+  have hre2 : (1 : ℝ) < ((2 : ℂ)).re := by norm_num
+  have hLt := LSeries_vonMangoldt_eq_deriv_riemannZeta_div hret
+  have hL2 := LSeries_vonMangoldt_eq_deriv_riemannZeta_div hre2
+  rw [neg_div, hceq] at hL2
+  -- the norms at `s = 2` sum to `-c`
+  have hsum2 : HasSum (fun n : ℕ ↦ ‖LSeries.term (fun n ↦ ((Λ n : ℝ) : ℂ)) (2 : ℂ) n‖) (-c) := by
+    rw [← Complex.hasSum_ofReal]
+    have h : HasSum (LSeries.term (fun n ↦ ((Λ n : ℝ) : ℂ)) (2 : ℂ))
+        (LSeries (fun n ↦ ((Λ n : ℝ) : ℂ)) (2 : ℂ)) :=
+      (LSeriesSummable_vonMangoldt hre2).hasSum
+    have hval : LSeries (fun n ↦ ((Λ n : ℝ) : ℂ)) (2 : ℂ) = ((-c : ℝ) : ℂ) := by
+      rw [hL2]; push_cast; ring
+    rw [hval] at h
+    exact h.congr_fun fun n ↦ (term_two_eq_ofReal_norm n).symm
+  -- termwise comparison
+  have hmono : ∀ n : ℕ, ‖LSeries.term (fun n ↦ ((Λ n : ℝ) : ℂ)) (t : ℂ) n‖
+      ≤ ‖LSeries.term (fun n ↦ ((Λ n : ℝ) : ℂ)) (2 : ℂ) n‖ := by
+    intro n
+    refine LSeries.norm_term_le_of_re_le_re _ ?_ n
+    simp
+    linarith
+  have hsumt : Summable fun n : ℕ ↦ ‖LSeries.term (fun n ↦ ((Λ n : ℝ) : ℂ)) (t : ℂ) n‖ :=
+    Summable.of_nonneg_of_le (fun n ↦ norm_nonneg _) hmono hsum2.summable
+  -- and the bound
+  have hLtnorm : ‖LSeries (fun n ↦ ((Λ n : ℝ) : ℂ)) (t : ℂ)‖ ≤ -c := by
+    rw [LSeries]
+    refine le_trans (norm_tsum_le_tsum_norm hsumt) ?_
+    rw [← hsum2.tsum_eq]
+    exact Summable.tsum_le_tsum hmono hsumt hsum2.summable
+  have hEq : ‖deriv riemannZeta (t : ℂ) / riemannZeta (t : ℂ)‖
+      = ‖LSeries (fun n ↦ ((Λ n : ℝ) : ℂ)) (t : ℂ)‖ := by
+    rw [hLt, neg_div, norm_neg]
+  rw [hEq]
+  linarith
+
+/-! ### `Ã` on the segment from `1` to `-1`
+
+`Ã(s) = -ζ'/ζ(s) - 1/(s-1)`, and on that segment the paper parametrises by `s = 1 - t`,
+`t ∈ [0,2]`. The imported expansion collapses there: `s - 1 = -t` turns `(-1)^{n+1}aₙ(s-1)ⁿ` into
+`-aₙtⁿ`, so
+
+  `-Ã(1-t) = ∑ aₙ tⁿ`,   every `aₙ > 0`,   `a₀ = γ`.
+
+That gives both facts `lem:arles` opens with — `Ã < 0` there, and a majorant. Since `tⁿ ≤ t·2^{n-1}`
+for `n ≥ 1` and `t ∈ [0,2]`, the tail is at most `t(S - a₀)/2` with `S = ∑ aₙ2ⁿ = -Ã(-1)`, which the
+second imported value pins.
+
+**The majorant is `γ + 0.493 t`, where the paper's convexity argument gives a tangent line at
+`t = 2`.** The two differ only in the slope; the leading `γ` — what `prop:coronidis` reports and
+`lem:hardin` measures — is the same either way. -/
+
+/-- `Ã(s) = -ζ'/ζ(s) - 1/(s-1)`, the integrand of `𝓒` with the pole at `1` removed. -/
+noncomputable def Atilde (s : ℂ) : ℂ := -(deriv riemannZeta s / riemannZeta s) - 1 / (s - 1)
+
+/-- **`-Ã(1-t) = ∑ aₙtⁿ` for `0 < t < 3`**, the imported expansion at `s = 1 - t`.
+
+Returns the sum as a real, together with the fact that `Ã` there *is* its negative — which is what
+makes `‖Ã(1-t)‖` computable rather than merely bounded. -/
+theorem hasSum_Atilde_seg {a : ℕ → ℝ}
+    (hsum : ∀ s : ℂ, s ≠ 1 → ‖s - 1‖ < 3 →
+      HasSum (fun n : ℕ ↦ (-1 : ℂ) ^ (n + 1) * (a n : ℂ) * (s - 1) ^ n)
+        (-(deriv riemannZeta s / riemannZeta s) - 1 / (s - 1)))
+    {t : ℝ} (ht0 : 0 < t) (ht3 : t < 3) :
+    ∃ V : ℝ, HasSum (fun n : ℕ ↦ a n * t ^ n) V ∧
+      Atilde ((1 - t : ℝ) : ℂ) = ((-V : ℝ) : ℂ) := by
+  have hne : ((1 - t : ℝ) : ℂ) ≠ 1 := by
+    intro hcon
+    have h : (1 : ℝ) - t = 1 := by exact_mod_cast hcon
+    linarith
+  have hlt : ‖((1 - t : ℝ) : ℂ) - 1‖ < 3 := by
+    rw [show ((1 - t : ℝ) : ℂ) - 1 = ((-t : ℝ) : ℂ) by push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by linarith)]
+    linarith
+  have H := hsum _ hne hlt
+  have hterm : ∀ n : ℕ, (-1 : ℂ) ^ (n + 1) * (a n : ℂ) * (((1 - t : ℝ) : ℂ) - 1) ^ n
+      = ((-(a n * t ^ n) : ℝ) : ℂ) := by
+    intro n
+    have h1 : (((1 - t : ℝ) : ℂ) - 1) = ((-t : ℝ) : ℂ) := by push_cast; ring
+    have h4 : (-1 : ℂ) ^ n * (-1 : ℂ) ^ n = 1 := by rw [← mul_pow]; norm_num
+    rw [h1]
+    push_cast
+    rw [neg_pow, pow_succ]
+    linear_combination (-(a n : ℂ) * (t : ℂ) ^ n) * h4
+  have H2 : HasSum (fun n : ℕ ↦ ((-(a n * t ^ n) : ℝ) : ℂ)) (Atilde ((1 - t : ℝ) : ℂ)) :=
+    H.congr_fun fun n ↦ (hterm n).symm
+  have H3 : HasSum (fun n : ℕ ↦ -(a n * t ^ n)) (∑' n : ℕ, -(a n * t ^ n)) :=
+    (Complex.summable_ofReal.mp H2.summable).hasSum
+  refine ⟨-(∑' n : ℕ, -(a n * t ^ n)), ?_, ?_⟩
+  · simpa using H3.neg
+  · have h4 : ((∑' n : ℕ, -(a n * t ^ n) : ℝ) : ℂ) = Atilde ((1 - t : ℝ) : ℂ) := by
+      rw [← H2.tsum_eq, ← Complex.ofReal_tsum]
+    rw [← h4]
+    push_cast
+    ring
+
+/-- `S = ∑ aₙ2ⁿ = ζ'/ζ(-1) - 1/2 ≤ 1.485055`, the slope's ingredient. -/
+theorem hasSum_Atilde_two {a : ℕ → ℝ}
+    (hsum : ∀ s : ℂ, s ≠ 1 → ‖s - 1‖ < 3 →
+      HasSum (fun n : ℕ ↦ (-1 : ℂ) ^ (n + 1) * (a n : ℂ) * (s - 1) ^ n)
+        (-(deriv riemannZeta s / riemannZeta s) - 1 / (s - 1)))
+    (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one) :
+    ∃ S : ℝ, S ≤ 1.485055 ∧ HasSum (fun n : ℕ ↦ a n * 2 ^ n) S := by
+  obtain ⟨c, hc, hceq⟩ := hneg
+  have hmargin : IEANTN.margin 0 = 1 := by simp [IEANTN.margin]
+  rw [hmargin, one_mul] at hc
+  have hcabs := abs_le.mp hc
+  obtain ⟨V, hV, hVeq⟩ := hasSum_Atilde_seg hsum (t := 2) (by norm_num) (by norm_num)
+  refine ⟨V, ?_, hV⟩
+  have h1 : ((1 - (2 : ℝ) : ℝ) : ℂ) = -1 := by push_cast; ring
+  rw [h1, Atilde, hceq] at hVeq
+  have h2 : (1 : ℂ) / ((-1 : ℂ) - 1) = -(1 / 2 : ℂ) := by norm_num
+  rw [h2] at hVeq
+  have h3 : ((-V : ℝ) : ℂ) = ((-c + 1 / 2 : ℝ) : ℂ) := by rw [← hVeq]; push_cast; ring
+  have h4 : -V = -c + 1 / 2 := by exact_mod_cast h3
+  linarith [hcabs.2]
+
+/-- **`‖Ã(1-t)‖ ≤ γ + 0.493 t` for `0 < t ≤ 2`.**
+
+`-Ã(1-t) = ∑ aₙtⁿ` with `aₙ > 0`, so the value is `a₀` plus a tail at most `t(S - a₀)/2`; `a₀ = γ`
+and `γ > 1/2` with `S ≤ 1.485055` give the slope. -/
+theorem norm_Atilde_seg_le
+    (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    {t : ℝ} (ht0 : 0 < t) (ht2 : t ≤ 2) :
+    ‖Atilde ((1 - t : ℝ) : ℂ)‖ ≤ Real.eulerMascheroniConstant + 0.493 * t := by
+  obtain ⟨a, hpos, ha0, hsum⟩ := hk
+  obtain ⟨S, hS, hS2⟩ := hasSum_Atilde_two hsum hneg
+  obtain ⟨V, hV, hVeq⟩ := hasSum_Atilde_seg hsum ht0 (by linarith)
+  have hgam : (1 : ℝ) / 2 < Real.eulerMascheroniConstant := Real.one_half_lt_eulerMascheroniConstant
+  -- shift both series past the leading term
+  set G : ℕ → ℝ := fun n ↦ a n * t ^ n with hG
+  set H : ℕ → ℝ := fun n ↦ a n * 2 ^ n with hH
+  have hVs : HasSum (fun n : ℕ ↦ G (n + 1)) (V - a 0) := by
+    rw [hasSum_nat_add_iff 1]
+    simpa [hG] using hV
+  have hSs : HasSum (fun n : ℕ ↦ H (n + 1)) (S - a 0) := by
+    rw [hasSum_nat_add_iff 1]
+    simpa [hH] using hS2
+  have hcmp : ∀ n : ℕ, G (n + 1) ≤ t / 2 * H (n + 1) := by
+    intro n
+    simp only [hG, hH]
+    have hpow : t ^ (n + 1) ≤ t * 2 ^ n := by
+      have h : t ^ n ≤ 2 ^ n := pow_le_pow_left₀ ht0.le ht2 n
+      calc t ^ (n + 1) = t * t ^ n := by rw [pow_succ]; ring
+        _ ≤ t * 2 ^ n := by nlinarith [ht0.le]
+    have hrw : t / 2 * (a (n + 1) * 2 ^ (n + 1)) = a (n + 1) * (t * 2 ^ n) := by
+      rw [pow_succ]; ring
+    rw [hrw]
+    exact mul_le_mul_of_nonneg_left hpow (hpos (n + 1)).le
+  have htail : V - a 0 ≤ t / 2 * (S - a 0) := by
+    rw [← hVs.tsum_eq, ← (hSs.mul_left (t / 2)).tsum_eq]
+    refine Summable.tsum_le_tsum hcmp hVs.summable (hSs.mul_left (t / 2)).summable
+  have hnorm : ‖Atilde ((1 - t : ℝ) : ℂ)‖ = V := by
+    have hVnn : 0 ≤ V := by
+      refine hV.nonneg fun n ↦ ?_
+      have := (hpos n).le
+      positivity
+    rw [hVeq, Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by linarith), neg_neg]
+  rw [hnorm, ← ha0]
+  nlinarith [htail, hS, hgam, ht0.le, ha0 ▸ hgam]
 
 end CH2Section8
