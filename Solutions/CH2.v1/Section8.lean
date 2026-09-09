@@ -1450,11 +1450,12 @@ theorem norm_intV_le {Φ : ℂ → ℂ}
   rw [intV]
   simpa using hkey
 
-/-- **The horizontal tail's `cot` contribution**: at most `7.72/(x(log x - 1/3))`. -/
-theorem norm_intH_le {Φ : ℂ → ℂ}
+/-- **The pointwise bound on the horizontal tail's `cot` integrand.** -/
+theorem norm_intH_integrand_le {Φ : ℂ → ℂ}
     (hΦ : ∀ u ∈ Set.Ioi (0:ℝ), ‖Φ (segH u)‖ ≤ ‖segH u - 1‖)
-    {x : ℝ} (hx : 15 ≤ x) :
-    ‖intH Φ x‖ ≤ 7.72 / (x * (Real.log x - 1 / 3)) := by
+    {x : ℝ} (hx : 15 ≤ x) : ∀ u ∈ Set.Ioi (0:ℝ),
+      ‖-(((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * segH u / 2) * Φ (segH u)
+        * (x : ℂ) ^ segH u)‖ ≤ 7.72 / x * Real.exp (-(Real.log x - 1 / 3) * u) := by
   have hpi := Real.pi_pos
   have hpi2 : Real.pi < 3.141593 := Real.pi_lt_d6
   have hx0 : (0 : ℝ) < x := by linarith
@@ -1524,6 +1525,27 @@ theorem norm_intH_le {Φ : ℂ → ℂ}
           * (1 / x * Real.exp (-(Real.log x * u))) :=
           mul_le_mul_of_nonneg_right hB hpos
       _ ≤ 7.72 / x * Real.exp (-(Real.log x - 1 / 3) * u) := hcollapse
+  exact hpt
+
+/-- **The horizontal tail's `cot` contribution**: at most `7.72/(x(log x - 1/3))`. -/
+theorem norm_intH_le {Φ : ℂ → ℂ}
+    (hΦ : ∀ u ∈ Set.Ioi (0:ℝ), ‖Φ (segH u)‖ ≤ ‖segH u - 1‖)
+    {x : ℝ} (hx : 15 ≤ x) :
+    ‖intH Φ x‖ ≤ 7.72 / (x * (Real.log x - 1 / 3)) := by
+  have hpi := Real.pi_pos
+  have hpi2 : Real.pi < 3.141593 := Real.pi_lt_d6
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hL : (2 : ℝ) < Real.log x := by
+    have h1 : Real.log 15 ≤ Real.log x := Real.log_le_log (by norm_num) hx
+    have h2' : (2 : ℝ) < Real.log 15 := by
+      rw [Real.lt_log_iff_exp_lt (by norm_num)]
+      have h := Real.exp_one_lt_d9
+      have he : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+      rw [he]
+      nlinarith [Real.exp_pos 1]
+    linarith
+  have ha : -(Real.log x - 1 / 3) < 0 := by linarith
+  have hpt := norm_intH_integrand_le hΦ hx
   have hint : ‖intH Φ x‖ ≤ ∫ u in Set.Ioi (0:ℝ), 7.72 / x * Real.exp (-(Real.log x - 1/3) * u) := by
     refine le_trans (MeasureTheory.norm_integral_le_integral_norm _) ?_
     refine MeasureTheory.integral_mono_of_nonneg
@@ -1831,6 +1853,84 @@ theorem exists_norm_Fint_le (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_s
         mul_le_mul_of_nonneg_right (le_trans hprod hq) hpos
     _ = (19 + 4 * A') / x * Real.exp (-(Real.log x - 1) * u) := hcollapse
 
+/-- The `x ≥ 15` form of the bound, with the constant already extracted: convenient for the two
+integrability lemmas and for `shift_Fint`, all of which need the same three facts. -/
+theorem exists_norm_Fint_le' (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    {Φ : ℂ → ℂ} (hΦb : ∀ s : ℂ, s.re ≤ -1 → |s.im| ≤ 1 → ‖Φ s‖ ≤ ‖s - 1‖)
+    {x : ℝ} (hx : 15 ≤ x) :
+    ∃ K : ℝ, 0 ≤ K ∧ (2 : ℝ) < Real.log x ∧ ∀ s : ℂ, s.re ≤ -1 → |s.im| ≤ 1 →
+      ‖Fint Φ x s‖ ≤ K / x * Real.exp (-(Real.log x - 1) * (-1 - s.re)) := by
+  have hx1 : (1 : ℝ) < x := by linarith
+  have hL : (2 : ℝ) < Real.log x := by
+    have h1 : Real.log 15 ≤ Real.log x := Real.log_le_log (by norm_num) hx
+    have h2' : (2 : ℝ) < Real.log 15 := by
+      rw [Real.lt_log_iff_exp_lt (by norm_num)]
+      have h := Real.exp_one_lt_d9
+      have he : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+      rw [he]
+      nlinarith [Real.exp_pos 1]
+    linarith
+  obtain ⟨K, hK0, hKb⟩ := exists_norm_Fint_le hgam h2v hΦb hx1
+  exact ⟨K, hK0, hL, hKb⟩
+
+/-- **`F` is integrable along the horizontal tail.** -/
+theorem integrableOn_neg_Fint_segH (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    {Φ : ℂ → ℂ} (hΦd : DifferentiableOn ℂ Φ {s : ℂ | s.re < 0})
+    (hΦb : ∀ s : ℂ, s.re ≤ -1 → |s.im| ≤ 1 → ‖Φ s‖ ≤ ‖s - 1‖)
+    {x : ℝ} (hx : 15 ≤ x) :
+    MeasureTheory.IntegrableOn (fun u : ℝ ↦ -Fint Φ x (segH u)) (Set.Ioi 0) := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  obtain ⟨K, hK0, hL, hKb⟩ := exists_norm_Fint_le' hgam h2v hΦb hx
+  have hFd := differentiableOn_Fint hΦd hx0
+  have hmaj : MeasureTheory.IntegrableOn
+      (fun u : ℝ ↦ K / x * Real.exp (-(Real.log x - 1) * u)) (Set.Ioi 0) :=
+    (integrableOn_exp_mul_Ioi (by linarith : -(Real.log x - 1) < 0) 0).const_mul _
+  refine MeasureTheory.Integrable.mono' hmaj ?_ ?_
+  · refine ContinuousOn.aestronglyMeasurable (ContinuousOn.neg ?_) measurableSet_Ioi
+    refine ContinuousOn.comp hFd.continuousOn continuous_segH.continuousOn ?_
+    intro u hu
+    have : (0 : ℝ) < u := hu
+    simp only [Set.mem_setOf_eq, segH_re]
+    linarith
+  · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with u hu
+    have hu0 : (0 : ℝ) < u := hu
+    have h := hKb (segH u) (by rw [segH_re]; linarith) (by rw [segH_im]; norm_num)
+    rw [segH_re] at h
+    rw [norm_neg]
+    calc ‖Fint Φ x (segH u)‖ ≤ K / x * Real.exp (-(Real.log x - 1) * (-1 - (-1 - u))) := h
+      _ = K / x * Real.exp (-(Real.log x - 1) * u) := by ring_nf
+
+/-- **`F` is integrable along the real half-line.** -/
+theorem integrableOn_neg_Fint_real (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    {Φ : ℂ → ℂ} (hΦd : DifferentiableOn ℂ Φ {s : ℂ | s.re < 0})
+    (hΦb : ∀ s : ℂ, s.re ≤ -1 → |s.im| ≤ 1 → ‖Φ s‖ ≤ ‖s - 1‖)
+    {x : ℝ} (hx : 15 ≤ x) :
+    MeasureTheory.IntegrableOn (fun u : ℝ ↦ -Fint Φ x (((-1 - u : ℝ) : ℂ))) (Set.Ioi 0) := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  obtain ⟨K, hK0, hL, hKb⟩ := exists_norm_Fint_le' hgam h2v hΦb hx
+  have hFd := differentiableOn_Fint hΦd hx0
+  have hmaj : MeasureTheory.IntegrableOn
+      (fun u : ℝ ↦ K / x * Real.exp (-(Real.log x - 1) * u)) (Set.Ioi 0) :=
+    (integrableOn_exp_mul_Ioi (by linarith : -(Real.log x - 1) < 0) 0).const_mul _
+  refine MeasureTheory.Integrable.mono' hmaj ?_ ?_
+  · refine ContinuousOn.aestronglyMeasurable (ContinuousOn.neg ?_) measurableSet_Ioi
+    refine ContinuousOn.comp hFd.continuousOn (by fun_prop) ?_
+    intro u hu
+    have : (0 : ℝ) < u := hu
+    simp only [Set.mem_setOf_eq, Complex.ofReal_re]
+    linarith
+  · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with u hu
+    have hu0 : (0 : ℝ) < u := hu
+    have h := hKb (((-1 - u : ℝ) : ℂ)) (by simp; linarith) (by simp)
+    simp only [Complex.ofReal_re] at h
+    rw [norm_neg]
+    calc ‖Fint Φ x (((-1 - u : ℝ) : ℂ))‖
+        ≤ K / x * Real.exp (-(Real.log x - 1) * (-1 - (-1 - u))) := h
+      _ = K / x * Real.exp (-(Real.log x - 1) * u) := by ring_nf
+
 /-- **The shift, instantiated at `G·Φ·x^s`.**
 
 The three side conditions all come from the one pointwise bound: holomorphy from
@@ -1846,56 +1946,10 @@ theorem shift_Fint (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
       + (∫ u in Set.Ioi (0:ℝ), -Fint Φ x (segH u))
       = ∫ u in Set.Ioi (0:ℝ), -Fint Φ x (((-1 - u : ℝ) : ℂ)) := by
   have hx0 : (0 : ℝ) < x := by linarith
-  have hx1 : (1 : ℝ) < x := by linarith
-  have hL : (2 : ℝ) < Real.log x := by
-    have h1 : Real.log 15 ≤ Real.log x := Real.log_le_log (by norm_num) hx
-    have h2' : (2 : ℝ) < Real.log 15 := by
-      rw [Real.lt_log_iff_exp_lt (by norm_num)]
-      have h := Real.exp_one_lt_d9
-      have he : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
-      rw [he]
-      nlinarith [Real.exp_pos 1]
-    linarith
-  obtain ⟨K, hK0, hKb⟩ := exists_norm_Fint_le hgam h2v hΦb hx1
+  obtain ⟨K, hK0, hL, hKb⟩ := exists_norm_Fint_le' hgam h2v hΦb hx
   have hFd := differentiableOn_Fint hΦd hx0
-  have hr : -(Real.log x - 1) < 0 := by linarith
-  have hmaj : MeasureTheory.IntegrableOn
-      (fun u : ℝ ↦ K / x * Real.exp (-(Real.log x - 1) * u)) (Set.Ioi 0) :=
-    (integrableOn_exp_mul_Ioi hr 0).const_mul _
-  -- integrability on the horizontal tail
-  have hint1 : MeasureTheory.IntegrableOn (fun u : ℝ ↦ -Fint Φ x (segH u)) (Set.Ioi 0) := by
-    refine MeasureTheory.Integrable.mono' hmaj ?_ ?_
-    · refine ContinuousOn.aestronglyMeasurable (ContinuousOn.neg ?_) measurableSet_Ioi
-      refine ContinuousOn.comp hFd.continuousOn continuous_segH.continuousOn ?_
-      intro u hu
-      have : (0 : ℝ) < u := hu
-      simp only [Set.mem_setOf_eq, segH_re]
-      linarith
-    · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with u hu
-      have hu0 : (0 : ℝ) < u := hu
-      have h := hKb (segH u) (by rw [segH_re]; linarith) (by rw [segH_im]; norm_num)
-      rw [segH_re] at h
-      rw [norm_neg]
-      calc ‖Fint Φ x (segH u)‖ ≤ K / x * Real.exp (-(Real.log x - 1) * (-1 - (-1 - u))) := h
-        _ = K / x * Real.exp (-(Real.log x - 1) * u) := by ring_nf
-  -- integrability on the real half-line
-  have hint2 : MeasureTheory.IntegrableOn
-      (fun u : ℝ ↦ -Fint Φ x (((-1 - u : ℝ) : ℂ))) (Set.Ioi 0) := by
-    refine MeasureTheory.Integrable.mono' hmaj ?_ ?_
-    · refine ContinuousOn.aestronglyMeasurable (ContinuousOn.neg ?_) measurableSet_Ioi
-      refine ContinuousOn.comp hFd.continuousOn (by fun_prop) ?_
-      intro u hu
-      have : (0 : ℝ) < u := hu
-      simp only [Set.mem_setOf_eq, Complex.ofReal_re]
-      linarith
-    · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with u hu
-      have hu0 : (0 : ℝ) < u := hu
-      have h := hKb (((-1 - u : ℝ) : ℂ)) (by simp; linarith) (by simp)
-      simp only [Complex.ofReal_re] at h
-      rw [norm_neg]
-      calc ‖Fint Φ x (((-1 - u : ℝ) : ℂ))‖
-          ≤ K / x * Real.exp (-(Real.log x - 1) * (-1 - (-1 - u))) := h
-        _ = K / x * Real.exp (-(Real.log x - 1) * u) := by ring_nf
+  have hint1 := integrableOn_neg_Fint_segH hgam h2v hΦd hΦb hx
+  have hint2 := integrableOn_neg_Fint_real hgam h2v hΦd hΦb hx
   -- the left edge
   have hdecay : Filter.Tendsto
       (fun R : ℝ ↦ ∫ y in (0:ℝ)..1, Fint Φ x (((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I))
@@ -1928,5 +1982,171 @@ theorem shift_Fint (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
           (nhds 0) := Real.tendsto_exp_atBot.comp h1
       simpa using h2.const_mul (K / x)
   exact contour_shift hFd hint1 hint2 hdecay
+
+/-! ### `∫_𝓒` itself
+
+The pieces are all in place; what remains is to say that they *are* the contour integral. On
+`𝓒_<` the identity `Ã = G - (π/2)cot(πs/2)` splits the integrand into the regular part, whose
+contour `shift_Fint` moves to the real axis, and the `cot` part, which is `intV + intH`. Splitting
+an integral needs both halves integrable, which is what the next few lemmas supply. -/
+
+/-- `sin(πs/2) = 0` only at the even integers. -/
+theorem sin_pi_div_two_ne_zero {s : ℂ} (h : ∀ k : ℤ, s ≠ 2 * (k : ℂ)) :
+    Complex.sin ((Real.pi : ℂ) * s / 2) ≠ 0 := by
+  intro hcon
+  obtain ⟨k, hk⟩ := Complex.sin_eq_zero_iff.mp hcon
+  have hpi : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
+  refine h k ?_
+  have h2 : (Real.pi : ℂ) * s = (Real.pi : ℂ) * (2 * (k : ℂ)) := by linear_combination 2 * hk
+  exact mul_left_cancel₀ hpi h2
+
+/-- On the vertical leg `Re s = -1`, which is not an even integer. -/
+theorem sin_pi_segV_ne_zero (v : ℝ) : Complex.sin ((Real.pi : ℂ) * segV v / 2) ≠ 0 := by
+  refine sin_pi_div_two_ne_zero fun k hcon ↦ ?_
+  have h : (segV v).re = (2 * (k : ℂ)).re := by rw [hcon]
+  rw [segV_re] at h
+  simp only [Complex.mul_re, Complex.ofReal_re, Complex.intCast_re, Complex.intCast_im] at h
+  norm_num at h
+  have hz : ((2 * k : ℤ) : ℝ) = -1 := by push_cast; linarith
+  have hk : (2 * k : ℤ) = -1 := by exact_mod_cast hz
+  omega
+
+/-- On the horizontal tail `Im s = 1`, so `s` is not real at all. -/
+theorem sin_pi_segH_ne_zero (u : ℝ) : Complex.sin ((Real.pi : ℂ) * segH u / 2) ≠ 0 := by
+  refine sin_pi_div_two_ne_zero fun k hcon ↦ ?_
+  have h : (segH u).im = (2 * (k : ℂ)).im := by rw [hcon]
+  rw [segH_im] at h
+  simp at h
+
+theorem continuous_cot_segV :
+    Continuous fun v : ℝ ↦ Complex.cot ((Real.pi : ℂ) * segV v / 2) := by
+  have hc : Continuous fun v : ℝ ↦ (Real.pi : ℂ) * segV v / 2 := by unfold segV; fun_prop
+  simp only [Complex.cot_eq_cos_div_sin]
+  exact (Complex.continuous_cos.comp hc).div (Complex.continuous_sin.comp hc) sin_pi_segV_ne_zero
+
+theorem continuous_cot_segH :
+    Continuous fun u : ℝ ↦ Complex.cot ((Real.pi : ℂ) * segH u / 2) := by
+  have hc : Continuous fun u : ℝ ↦ (Real.pi : ℂ) * segH u / 2 := by unfold segH; fun_prop
+  simp only [Complex.cot_eq_cos_div_sin]
+  exact (Complex.continuous_cos.comp hc).div (Complex.continuous_sin.comp hc) sin_pi_segH_ne_zero
+
+/-- `t ↦ x^{f t}` is continuous for `x > 0`. -/
+theorem continuous_cpow_comp {x : ℝ} (hx : 0 < x) {f : ℝ → ℂ} (hf : Continuous f) :
+    Continuous fun t : ℝ ↦ (x : ℂ) ^ f t := by
+  have hx0 : ((x : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hx)
+  exact ((differentiable_id.const_cpow (Or.inl hx0)).continuous).comp hf
+
+/-- `Φ` is continuous along the vertical leg, which lies in `Re s < 0`. -/
+theorem continuous_Phi_segV {Φ : ℂ → ℂ} (hΦd : DifferentiableOn ℂ Φ {s : ℂ | s.re < 0}) :
+    Continuous fun v : ℝ ↦ Φ (segV v) := by
+  rw [← continuousOn_univ]
+  refine ContinuousOn.comp hΦd.continuousOn continuous_segV.continuousOn ?_
+  intro v _
+  simp only [Set.mem_setOf_eq, segV_re]
+  norm_num
+
+/-- `Φ` is continuous along the horizontal tail, which lies in `Re s < 0` for `u > 0`. -/
+theorem continuousOn_Phi_segH {Φ : ℂ → ℂ} (hΦd : DifferentiableOn ℂ Φ {s : ℂ | s.re < 0}) :
+    ContinuousOn (fun u : ℝ ↦ Φ (segH u)) (Set.Ioi 0) := by
+  refine ContinuousOn.comp hΦd.continuousOn continuous_segH.continuousOn ?_
+  intro u hu
+  have : (0 : ℝ) < u := hu
+  simp only [Set.mem_setOf_eq, segH_re]
+  linarith
+
+/-- **The `cot` part is integrable along the horizontal tail.** -/
+theorem integrableOn_cot_segH {Φ : ℂ → ℂ} (hΦd : DifferentiableOn ℂ Φ {s : ℂ | s.re < 0})
+    (hΦ : ∀ u ∈ Set.Ioi (0:ℝ), ‖Φ (segH u)‖ ≤ ‖segH u - 1‖)
+    {x : ℝ} (hx : 15 ≤ x) :
+    MeasureTheory.IntegrableOn
+      (fun u : ℝ ↦ -(((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * segH u / 2)
+        * Φ (segH u) * (x : ℂ) ^ segH u)) (Set.Ioi 0) := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hL : (2 : ℝ) < Real.log x := by
+    have h1 : Real.log 15 ≤ Real.log x := Real.log_le_log (by norm_num) hx
+    have h2' : (2 : ℝ) < Real.log 15 := by
+      rw [Real.lt_log_iff_exp_lt (by norm_num)]
+      have h := Real.exp_one_lt_d9
+      have he : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+      rw [he]
+      nlinarith [Real.exp_pos 1]
+    linarith
+  have hmaj : MeasureTheory.IntegrableOn
+      (fun u : ℝ ↦ 7.72 / x * Real.exp (-(Real.log x - 1 / 3) * u)) (Set.Ioi 0) :=
+    (integrableOn_exp_mul_Ioi (by linarith : -(Real.log x - 1 / 3) < 0) 0).const_mul _
+  refine MeasureTheory.Integrable.mono' hmaj ?_ ?_
+  · refine ContinuousOn.aestronglyMeasurable (ContinuousOn.neg ?_) measurableSet_Ioi
+    exact ((continuousOn_const.mul continuous_cot_segH.continuousOn).mul
+      (continuousOn_Phi_segH hΦd)).mul
+      (continuous_cpow_comp hx0 continuous_segH).continuousOn
+  · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with u hu
+    exact norm_intH_integrand_le hΦ hx u hu
+
+theorem continuous_Fint_segV {Φ : ℂ → ℂ} (hΦd : DifferentiableOn ℂ Φ {s : ℂ | s.re < 0})
+    {x : ℝ} (hx : 0 < x) : Continuous fun v : ℝ ↦ Fint Φ x (segV v) := by
+  rw [← continuousOn_univ]
+  refine ContinuousOn.comp (differentiableOn_Fint hΦd hx).continuousOn
+    continuous_segV.continuousOn ?_
+  intro v _
+  simp only [Set.mem_setOf_eq, segV_re]
+  norm_num
+
+/-- **`∫_{𝓒_<} Ã(s) Φ(s) x^s ds`**, along the re-routed `𝓒_<`: up the vertical leg from `-1` to
+`-1+i` (`ds = i dv`), then out along `Im s = 1` (`ds = -du`). -/
+noncomputable def intClt (Φ : ℂ → ℂ) (x : ℝ) : ℂ :=
+  (∫ v in (0:ℝ)..1, Atilde (segV v) * Φ (segV v) * (x : ℂ) ^ segV v * Complex.I)
+    + ∫ u in Set.Ioi (0:ℝ), -(Atilde (segH u) * Φ (segH u) * (x : ℂ) ^ segH u)
+
+/-- **The decomposition of `𝓒_<`.** Splitting `Ã = G - (π/2)cot(πs/2)` and shifting the regular
+part to the real axis turns the two-leg integral into the two `cot` pieces and one integral along
+`(-∞,-1]`. -/
+theorem intClt_eq (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    {Φ : ℂ → ℂ} (hΦd : DifferentiableOn ℂ Φ {s : ℂ | s.re < 0})
+    (hΦH : ∀ u ∈ Set.Ioi (0:ℝ), ‖Φ (segH u)‖ ≤ ‖segH u - 1‖)
+    (hΦb : ∀ s : ℂ, s.re ≤ -1 → |s.im| ≤ 1 → ‖Φ s‖ ≤ ‖s - 1‖)
+    {x : ℝ} (hx : 15 ≤ x) :
+    intClt Φ x
+      = -(intV Φ x + intH Φ x) + intHoriz (fun t : ℝ ↦ Φ ((1 - t : ℝ) : ℂ)) x := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  -- the two halves of the vertical leg
+  have hI1 : IntervalIntegrable (fun v : ℝ ↦ Fint Φ x (segV v) * Complex.I)
+      MeasureTheory.volume 0 1 :=
+    ((continuous_Fint_segV hΦd hx0).mul continuous_const).intervalIntegrable _ _
+  have hI2 : IntervalIntegrable (fun v : ℝ ↦ ((Real.pi : ℂ) / 2)
+      * Complex.cot ((Real.pi : ℂ) * segV v / 2) * Φ (segV v) * (x : ℂ) ^ segV v * Complex.I)
+      MeasureTheory.volume 0 1 :=
+    (((((continuous_const.mul continuous_cot_segV).mul (continuous_Phi_segV hΦd)).mul
+      (continuous_cpow_comp hx0 continuous_segV)).mul continuous_const)).intervalIntegrable _ _
+  have hV : (∫ v in (0:ℝ)..1, Atilde (segV v) * Φ (segV v) * (x : ℂ) ^ segV v * Complex.I)
+      = (∫ v in (0:ℝ)..1, Fint Φ x (segV v) * Complex.I) - intV Φ x := by
+    rw [intV, ← intervalIntegral.integral_sub hI1 hI2]
+    refine intervalIntegral.integral_congr fun v _ ↦ ?_
+    have hg := Gfun_eq hfe (by rw [segV_re]; norm_num : (segV v).re < 0) (sin_pi_segV_ne_zero v)
+    simp only [Fint, hg]
+    ring
+  -- the two halves of the horizontal tail
+  have hJ1 := integrableOn_neg_Fint_segH hgam h2v hΦd hΦb hx
+  have hJ2 := integrableOn_cot_segH hΦd hΦH hx
+  have hH : (∫ u in Set.Ioi (0:ℝ), -(Atilde (segH u) * Φ (segH u) * (x : ℂ) ^ segH u))
+      = (∫ u in Set.Ioi (0:ℝ), -Fint Φ x (segH u)) - intH Φ x := by
+    rw [intH, ← MeasureTheory.integral_sub hJ1 hJ2]
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi fun u hu ↦ ?_
+    have hu0 : (0 : ℝ) < u := hu
+    have hg := Gfun_eq hfe (by rw [segH_re]; linarith : (segH u).re < 0) (sin_pi_segH_ne_zero u)
+    simp only [Fint, hg]
+    ring
+  -- the shifted regular part is the horizontal contour of `norm_intHoriz_le`
+  have hhor : (∫ u in Set.Ioi (0:ℝ), -Fint Φ x (((-1 - u : ℝ) : ℂ)))
+      = intHoriz (fun t : ℝ ↦ Φ ((1 - t : ℝ) : ℂ)) x := by
+    rw [intHoriz]
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi fun u _ ↦ ?_
+    have harg : (1 : ℂ) - ((-1 - u : ℝ) : ℂ) = ((2 + u : ℝ) : ℂ) := by push_cast; ring
+    have hΦarg : ((1 - (2 + u) : ℝ) : ℂ) = ((-1 - u : ℝ) : ℂ) := by push_cast; ring
+    simp only [Fint, Gfun, gfun, harg, hΦarg]
+  have hshift := shift_Fint hgam h2v hΦd hΦb hx
+  rw [intClt, hV, hH, ← hhor, ← hshift]
+  ring
 
 end CH2Section8
