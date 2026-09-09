@@ -1323,6 +1323,10 @@ theorem segV_re (v : ℝ) : (segV v).re = -1 := by simp [segV]
 
 theorem segV_im (v : ℝ) : (segV v).im = v := by simp [segV]
 
+theorem continuous_segV : Continuous segV := by unfold segV; fun_prop
+
+theorem continuous_segH : Continuous segH := by unfold segH; fun_prop
+
 theorem segH_re (u : ℝ) : (segH u).re = -1 - u := by simp [segH]
 
 theorem segH_im (u : ℝ) : (segH u).im = 1 := by simp [segH]
@@ -1826,5 +1830,103 @@ theorem exists_norm_Fint_le (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_s
       ≤ ((19 + 4 * A') * Real.exp u) * (1 / x * Real.exp (-(Real.log x * u))) :=
         mul_le_mul_of_nonneg_right (le_trans hprod hq) hpos
     _ = (19 + 4 * A') / x * Real.exp (-(Real.log x - 1) * u) := hcollapse
+
+/-- **The shift, instantiated at `G·Φ·x^s`.**
+
+The three side conditions all come from the one pointwise bound: holomorphy from
+`differentiableOn_Fint`, integrability on the two half-lines by domination against
+`K/x · e^{-(log x - 1)u}`, and the left edge because that same bound at `u = R` no longer depends
+on the height, so the integral over a segment of length `1` inherits it. -/
+theorem shift_Fint (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    {Φ : ℂ → ℂ} (hΦd : DifferentiableOn ℂ Φ {s : ℂ | s.re < 0})
+    (hΦb : ∀ s : ℂ, s.re ≤ -1 → |s.im| ≤ 1 → ‖Φ s‖ ≤ ‖s - 1‖)
+    {x : ℝ} (hx : 15 ≤ x) :
+    (∫ v in (0:ℝ)..1, Fint Φ x (segV v) * Complex.I)
+      + (∫ u in Set.Ioi (0:ℝ), -Fint Φ x (segH u))
+      = ∫ u in Set.Ioi (0:ℝ), -Fint Φ x (((-1 - u : ℝ) : ℂ)) := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hx1 : (1 : ℝ) < x := by linarith
+  have hL : (2 : ℝ) < Real.log x := by
+    have h1 : Real.log 15 ≤ Real.log x := Real.log_le_log (by norm_num) hx
+    have h2' : (2 : ℝ) < Real.log 15 := by
+      rw [Real.lt_log_iff_exp_lt (by norm_num)]
+      have h := Real.exp_one_lt_d9
+      have he : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+      rw [he]
+      nlinarith [Real.exp_pos 1]
+    linarith
+  obtain ⟨K, hK0, hKb⟩ := exists_norm_Fint_le hgam h2v hΦb hx1
+  have hFd := differentiableOn_Fint hΦd hx0
+  have hr : -(Real.log x - 1) < 0 := by linarith
+  have hmaj : MeasureTheory.IntegrableOn
+      (fun u : ℝ ↦ K / x * Real.exp (-(Real.log x - 1) * u)) (Set.Ioi 0) :=
+    (integrableOn_exp_mul_Ioi hr 0).const_mul _
+  -- integrability on the horizontal tail
+  have hint1 : MeasureTheory.IntegrableOn (fun u : ℝ ↦ -Fint Φ x (segH u)) (Set.Ioi 0) := by
+    refine MeasureTheory.Integrable.mono' hmaj ?_ ?_
+    · refine ContinuousOn.aestronglyMeasurable (ContinuousOn.neg ?_) measurableSet_Ioi
+      refine ContinuousOn.comp hFd.continuousOn continuous_segH.continuousOn ?_
+      intro u hu
+      have : (0 : ℝ) < u := hu
+      simp only [Set.mem_setOf_eq, segH_re]
+      linarith
+    · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with u hu
+      have hu0 : (0 : ℝ) < u := hu
+      have h := hKb (segH u) (by rw [segH_re]; linarith) (by rw [segH_im]; norm_num)
+      rw [segH_re] at h
+      rw [norm_neg]
+      calc ‖Fint Φ x (segH u)‖ ≤ K / x * Real.exp (-(Real.log x - 1) * (-1 - (-1 - u))) := h
+        _ = K / x * Real.exp (-(Real.log x - 1) * u) := by ring_nf
+  -- integrability on the real half-line
+  have hint2 : MeasureTheory.IntegrableOn
+      (fun u : ℝ ↦ -Fint Φ x (((-1 - u : ℝ) : ℂ))) (Set.Ioi 0) := by
+    refine MeasureTheory.Integrable.mono' hmaj ?_ ?_
+    · refine ContinuousOn.aestronglyMeasurable (ContinuousOn.neg ?_) measurableSet_Ioi
+      refine ContinuousOn.comp hFd.continuousOn (by fun_prop) ?_
+      intro u hu
+      have : (0 : ℝ) < u := hu
+      simp only [Set.mem_setOf_eq, Complex.ofReal_re]
+      linarith
+    · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with u hu
+      have hu0 : (0 : ℝ) < u := hu
+      have h := hKb (((-1 - u : ℝ) : ℂ)) (by simp; linarith) (by simp)
+      simp only [Complex.ofReal_re] at h
+      rw [norm_neg]
+      calc ‖Fint Φ x (((-1 - u : ℝ) : ℂ))‖
+          ≤ K / x * Real.exp (-(Real.log x - 1) * (-1 - (-1 - u))) := h
+        _ = K / x * Real.exp (-(Real.log x - 1) * u) := by ring_nf
+  -- the left edge
+  have hdecay : Filter.Tendsto
+      (fun R : ℝ ↦ ∫ y in (0:ℝ)..1, Fint Φ x (((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I))
+      Filter.atTop (nhds 0) := by
+    refine squeeze_zero_norm'
+      (a := fun R : ℝ ↦ K / x * Real.exp (-(Real.log x - 1) * R)) ?_ ?_
+    · filter_upwards [Filter.eventually_gt_atTop (0:ℝ)] with R hR
+      have hb : ∀ y ∈ Set.uIoc (0:ℝ) 1,
+          ‖Fint Φ x (((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I)‖
+            ≤ K / x * Real.exp (-(Real.log x - 1) * R) := by
+        intro y hy
+        rw [Set.uIoc_of_le (by norm_num : (0:ℝ) ≤ 1)] at hy
+        have hre : (((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I).re = -1 - R := by simp
+        have him : |(((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I).im| ≤ 1 := by
+          simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+            Complex.I_im, Complex.I_re, mul_one, mul_zero, add_zero, zero_add]
+          rw [abs_of_nonneg (le_of_lt hy.1)]
+          exact hy.2
+        have h := hKb _ (by rw [hre]; linarith) him
+        rw [hre] at h
+        calc ‖Fint Φ x (((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I)‖
+            ≤ K / x * Real.exp (-(Real.log x - 1) * (-1 - (-1 - R))) := h
+          _ = K / x * Real.exp (-(Real.log x - 1) * R) := by ring_nf
+      have := intervalIntegral.norm_integral_le_of_norm_le_const hb
+      simpa using this
+    · have h1 : Filter.Tendsto (fun R : ℝ ↦ -(Real.log x - 1) * R) Filter.atTop Filter.atBot :=
+        (Filter.tendsto_const_mul_atBot_of_neg (by linarith : -(Real.log x - 1) < 0)).mpr
+          Filter.tendsto_id
+      have h2 : Filter.Tendsto (fun R : ℝ ↦ Real.exp (-(Real.log x - 1) * R)) Filter.atTop
+          (nhds 0) := Real.tendsto_exp_atBot.comp h1
+      simpa using h2.const_mul (K / x)
+  exact contour_shift hFd hint1 hint2 hdecay
 
 end CH2Section8
