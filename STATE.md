@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-46 node version(s), 86 conclusion(s).  3 state nothing yet.
+50 node version(s), 90 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -16,9 +16,9 @@ adds the environment detail.
 | `asserted` | 1 |
 | `bridged` | 1 |
 | `lean-comparator` | 29 |
-| `literature` | 36 |
-| `none-yet` | 5 |
-| `numerical` | 14 |
+| `literature` | 37 |
+| `none-yet` | 7 |
+| `numerical` | 15 |
 
 ## Nodes
 
@@ -61,8 +61,11 @@ adds the environment detail.
 | `DudekPlatt.v1` | stub | `largest_counterexample_on_rh` | literature | 0 | - |
 | `DudekPlatt.v2` | active | `ramanujan_inequality_3915` | lean-comparator-stale | 2 | #54 |
 | `DudekPlatt.v3` | active | `criterion` | lean-comparator-stale | 0 | #54 |
+| `DudekPlatt.v4` | stub | `ramanujan_inequality_9401` | none-yet | 2 | #63 |
 | `DudekPlattNumerics.v1` | stub | `pi_two_sided_paper` | numerical | 0 | - |
 | `DudekPlattNumerics.v2` | stub | `pi_two_sided_pnt` | numerical | 0 | - |
+| `DudekPlattNumerics.v3` | stub | `pi_two_sided_footnote` | numerical | 0 | #63 |
+| `DudekPlattNumerics.v4` | awaiting-verification | `pi_two_sided_footnote` | none-yet | 1 | #63 |
 | `Dusart2018.v1` | stub | `proposition_5_4` | literature | 0 | - |
 | `FKBJ.v1` | active | `rh_up_to` | numerical | 0 | - |
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 3 | - |
@@ -89,6 +92,7 @@ adds the environment detail.
 | `LowZeroes.v1` | stub | `sum_inv_ordinates_below_2e4` | numerical | 0 | #64 |
 | `MT.v1` | active | `zero_free_region` | literature | 2 | - |
 | `MT.v1` | active | `zero_free_region_sharpened` | literature | 2 | - |
+| `MT.v2` | active | `corollary_1` | literature | 1 | #63 |
 | `MTY.v1` | stub | *(none yet)* | - | - | - |
 | `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
 | `Platt2017.v1` | stub | `rh_up_to` | numerical | 1 | - |
@@ -157,19 +161,19 @@ downstream.
 | `FKS.v1.psi_classical_bound` | 4 |
 | `BKLNW.v1.theta_error_le_one` | 4 |
 | `BKLNW.v1.corollary_5_1` | 4 |
+| `MT.v1.zero_free_region` | 3 |
 | `FKS2Numerics.v1.corollary_22_mid_range` | 3 |
 | `FKS2.v2.theorem_3` | 3 |
+| `DudekPlatt.v3.criterion` | 3 |
 | `Buthe.v1.theorem_2_theta_lower` | 3 |
 | `PlattTrudgian2021.v1.theorem_1_numerical` | 2 |
 | `MT.v1.zero_free_region_sharpened` | 2 |
-| `MT.v1.zero_free_region` | 2 |
 | `Kadiri2005.v1.zero_free_region` | 2 |
 | `KLN.v1.zero_density` | 2 |
 | `KLN.v1.subconvexity_bound` | 2 |
 | `GammaAsymptotics.v2.digamma_sub_log_isBigO_strip` | 2 |
 | `FKS2Numerics.v1.table6_row2_floor` | 2 |
 | `FKS2Numerics.v1.corollary_23_mid_range` | 2 |
-| `DudekPlatt.v3.criterion` | 2 |
 | `CotangentSeries.v1.cot_series_zeta_values` | 2 |
 | `Buthe2016.v1.theorem_2_psi` | 2 |
 | `Wedeniwski.v1.rh_up_to` | 1 |
@@ -177,8 +181,10 @@ downstream.
 | `RosserSchoenfeld.v1.zero_free_region_classical` | 1 |
 | `Platt2017.v1.rh_up_to` | 1 |
 | `Platt2015.v1.rh_up_to` | 1 |
+| `MT.v2.corollary_1` | 1 |
 | `Hiary2016.v1.zeta_half_line_bound` | 1 |
 | `Dusart2018.v1.proposition_5_4` | 1 |
+| `DudekPlattNumerics.v3.pi_two_sided_footnote` | 1 |
 | `DudekPlattNumerics.v2.pi_two_sided_pnt` | 1 |
 | `DudekPlattNumerics.v1.pi_two_sided_paper` | 1 |
 | `ContourIntegration.v1.residue_theorem_rectangle` | 1 |

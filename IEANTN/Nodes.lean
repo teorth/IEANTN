@@ -20,8 +20,11 @@ import IEANTN.Nodes.CotangentSeries.v1.Challenge
 import IEANTN.Nodes.DudekPlatt.v1.Challenge
 import IEANTN.Nodes.DudekPlatt.v2.Challenge
 import IEANTN.Nodes.DudekPlatt.v3.Challenge
+import IEANTN.Nodes.DudekPlatt.v4.Challenge
 import IEANTN.Nodes.DudekPlattNumerics.v1.Challenge
 import IEANTN.Nodes.DudekPlattNumerics.v2.Challenge
+import IEANTN.Nodes.DudekPlattNumerics.v3.Challenge
+import IEANTN.Nodes.DudekPlattNumerics.v4.Challenge
 import IEANTN.Nodes.Dusart2018.v1.Challenge
 import IEANTN.Nodes.FKBJ.v1.Challenge
 import IEANTN.Nodes.FKS.v1.Challenge
@@ -38,6 +41,7 @@ import IEANTN.Nodes.Lcm.v1.Examples
 import IEANTN.Nodes.Lcm.v2.Challenge
 import IEANTN.Nodes.LowZeroes.v1.Challenge
 import IEANTN.Nodes.MT.v1.Challenge
+import IEANTN.Nodes.MT.v2.Challenge
 import IEANTN.Nodes.MTY.v1.Challenge
 import IEANTN.Nodes.Platt2015.v1.Challenge
 import IEANTN.Nodes.Platt2017.v1.Challenge

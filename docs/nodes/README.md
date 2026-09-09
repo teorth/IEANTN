@@ -22,8 +22,11 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`DudekPlatt.v1`](DudekPlatt-v1.md) | paper | 2 | cited |
 | [`DudekPlatt.v2`](DudekPlatt-v2.md) | paper | 1 | verified, stale |
 | [`DudekPlatt.v3`](DudekPlatt-v3.md) | pipeline | 1 | verified, stale |
+| [`DudekPlatt.v4`](DudekPlatt-v4.md) | paper | 1 | unjustified |
 | [`DudekPlattNumerics.v1`](DudekPlattNumerics-v1.md) | computation | 1 | computation |
 | [`DudekPlattNumerics.v2`](DudekPlattNumerics-v2.md) | computation | 1 | computation |
+| [`DudekPlattNumerics.v3`](DudekPlattNumerics-v3.md) | computation | 1 | computation |
+| [`DudekPlattNumerics.v4`](DudekPlattNumerics-v4.md) | computation | 1 | unjustified |
 | [`Dusart2018.v1`](Dusart2018-v1.md) | paper | 1 | cited |
 | [`FKBJ.v1`](FKBJ-v1.md) | computation | 1 | computation |
 | [`FKS.v1`](FKS-v1.md) | paper | 2 | cited |
@@ -39,6 +42,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`Lcm.v2`](Lcm-v2.md) | pipeline | 1 | verified, stale |
 | [`LowZeroes.v1`](LowZeroes-v1.md) | computation | 1 | computation |
 | [`MT.v1`](MT-v1.md) | paper | 2 | cited |
+| [`MT.v2`](MT-v2.md) | paper | 1 | cited |
 | [`MTY.v1`](MTY-v1.md) | paper | 0 | — |
 | [`Platt2015.v1`](Platt2015-v1.md) | computation | 1 | computation |
 | [`Platt2017.v1`](Platt2017-v1.md) | computation | 1 | computation |

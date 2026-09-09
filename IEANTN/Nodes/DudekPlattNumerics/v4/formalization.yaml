@@ -1,0 +1,186 @@
+# Node metadata for `DudekPlattNumerics.v4`.  See docs/NODES.md.
+#
+# The SAME two-sided pi estimate as DudekPlattNumerics.v3 (a = 3130, R = 6.315), now given a
+# complete Lean solution conditional on one explicit, honestly-cited literature premise
+# (MT.v2.corollary_1) instead of resting on a Python-checked certificate. A variant of v3, not a
+# replacement: v3 keeps its own `numerical` justification unchanged. `status: awaiting-verification`:
+# the solution is complete (no sorry, only the three permitted axioms) but has no Comparator receipt.
+version: "v0.4"
+
+node:
+  id: DudekPlattNumerics.v4
+  family: DudekPlattNumerics
+  version: v4
+  kind: computation
+  status: awaiting-verification
+
+project:
+  name: "The explicit pi estimate behind Dudek-Platt's footnote threshold, formalized"
+  description: >-
+    The same two-sided bound on pi(x) as DudekPlattNumerics.v3 (m = -3010.333, M = 3250.488,
+    x_a = exp(9400), Dudek-Platt's own footnote 1 parameters a = 3130, R = 6.315), now derived by a
+    complete Lean solution from one explicit literature premise, MT.v2.corollary_1
+    (Mossinghoff-Trudgian's Section 7 Corollary 1), rather than resting on a Python-checked
+    certificate. The solution formalizes the exact partial-summation identity
+    pi(x) = S5(x) + 120x/L^6 + 720 I7(x) - 2A + (theta(x)-x)/L + integral_2^x (theta(t)-t)/(t log^2 t),
+    the elementary early-range bound, f_R's monotonicity and endpoint certificates, the corrected
+    normalized majorants, and the real-x assembly recovering v3's own constants exactly.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11Y70"]
+
+conclusions:
+- id: pi_two_sided_footnote
+  issue: 63
+  declaration: DudekPlattNumerics.v4.pi_two_sided_footnote
+  challenge: DudekPlattNumerics.v4.challenge_pi_two_sided_footnote
+  imports:
+  - node: MT.v2
+    conclusion: corollary_1
+  imports_status: identified
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      A COMPLETE SOLUTION EXISTS at Solutions/DudekPlattNumerics.v4, awaiting verification. It is
+      free of sorryAx, its axioms are exactly propext, Classical.choice and Quot.sound, and its type
+      matches the challenge under `set_option pp.all true`. The justification stays `none-yet` until
+      the verification workflow records a receipt -- a justification one can write by hand attests
+      nothing, matching DudekPlatt.v4's own precedent for the same situation.
+
+      What the solution actually formalizes, given MT.v2.corollary_1 as its sole explicit premise:
+      the native theta-to-pi partial-summation identity (five finite integrations by parts from the
+      real lower endpoint 2, using Mathlib's own Abel-summation theorem for the actual
+      IEANTN.primeCounting, not a primewise differentiation); the elementary early-range bound
+      |theta(t)-t|/(t log^2 t) <= 4 for 2 <= t <= x^(99/100), using only theta(t) <= t log t and
+      log 2 > 2/3; f_R(u) = sqrt(8/17pi) (u/R)^(1/4) exp(-sqrt(u/R)) u^5's antitonicity (non-increasing,
+      not claimed strict) on [441R/4, infinity), including the endpoint, proved from a logarithm
+      inequality rather than by differentiating; and the two endpoint certificates f_R(9400) < 3110,
+      f_R(9306) < 3600, each from an
+      exact rational bracket on sqrt(u/R) and a split-exponent Taylor lower bound on the exponential,
+      not numerical root-finding; the corrected normalized majorants (the whole-integral bound
+      D(L) < 1/2 for L >= 9400, including the L^6 factor a transcription defect had dropped from
+      DudekPlattNumerics.v3's README.md; the I7 majorant < 1/10; the finite-sum correction
+      2*A*L^6*exp(-L) < 1/1000); and the real-x assembly recovering v3's own m = -3010.333,
+      M = 3250.488 at x_a = exp(9400) exactly, unchanged.
+
+      What is NOT proved here: MT.v2.corollary_1 itself. Its own proof (Mossinghoff-Trudgian's
+      zero-free-region-to-theta conversion, a contour integral against the zero-counting function,
+      following Trudgian's cited recipe) is genuine analytic work this network does not formalize;
+      see MT.v2's own formalization.yaml. This solution is therefore conditional on that one cited
+      result exactly as its import declares -- proving the calculus around a literature input is not
+      the same as proving the input, and this note does not claim the latter.
+  designated: unjustified
+
+  progress:
+    solution: Solutions/DudekPlattNumerics.v4/
+    state: in-progress
+    remaining_holes: 0
+sources:
+- title: "On solving a curious inequality of Ramanujan"
+  authors: ["Adrian W. Dudek", "David J. Platt"]
+  type: "paper"
+  id: "https://doi.org/10.1080/10586458.2014.990118"
+  location: "Exp. Math. 24 (2015), no. 3, 289-294"
+  relationship: adapts
+  note: >-
+    `adapts`, not `formalizes`: the (a, R) pair and the shape of the two-sided pi(x) estimate are the
+    paper's own (footnote 1, eq. (8)-(9)), matching DudekPlattNumerics.v3 exactly, but the Lean proof
+    here does not follow eq. (8)-(9)'s own derivation route (which needs an unaddressed [2, x_a]
+    integration range at these parameters) -- it derives the same constants directly from
+    Mossinghoff-Trudgian's Corollary 1 via an explicit split-integral argument, matching v3's own
+    README.md route. See DudekPlattNumerics.v1's and v3's own source notes for the footnote's
+    provenance (published-journal-only; not independently obtained by this node either).
+- title: "Nonnegative trigonometric polynomials and a zero-free region for the Riemann zeta-function"
+  authors: ["Michael J. Mossinghoff", "Timothy S. Trudgian"]
+  type: "paper"
+  id: "arXiv:1410.3926"
+  location: "J. Number Theory 157 (2015), 329-349"
+  relationship: background
+  note: >-
+    `background`, not a direct import: this node's Lean development imports MT.v2.corollary_1, the
+    network's own node for this paper's Section 7 Corollary 1, rather than citing the paper directly
+    a second time. Listed here for continuity with v1's and v3's own source notes.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Sonnet 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Proved the scalar endpoint, monotonicity and majorant certificates (f_R's monotonicity, the two
+      endpoint certificates, the corrected D(L)/I7/finite-sum majorants) and the connector from an
+      explicit Mossinghoff-Trudgian-Corollary-1-shaped theta hypothesis to the point/tail bounds the
+      calculus assembly needs, as one of two parallel workers, under the direction of the maintainer.
+  - method: agent
+    models: ["Claude Sonnet 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Proved the native theta-to-pi partial-summation identity, the elementary early-range bound, the
+      whole-range integral majorants, and the scalar-to-native assembly recovering v3's own
+      m = -3010.333, M = 3250.488, as the other parallel worker, under the direction of the
+      maintainer.
+  - method: agent
+    models: ["Claude Sonnet 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Integration pass: created this node and MT.v2 (splitting Mossinghoff-Trudgian's Section 7
+      Corollary 1 out of MT.v1 so it is a real, importable graph edge instead of traced prose), wrote
+      the composing Solution.lean discharging both parallel workers' interface hypotheses against the
+      generated challenge, reconciled the two workers' separately-defined `A` constant, and ran the
+      separate-solution build, `pp.all` type comparison and axiom check, under the direction of the
+      maintainer. No new mathematics beyond what the two parallel workers and MT.v2's citation already
+      established is claimed.
+
+review:
+  status: self-assessed
+  notes: >-
+    This new node has been checked by its contributing agents and by this repository's mechanical
+    checks (core build, separate solution build, `pp.all` type/axiom comparison,
+    fingerprint/graph/closure checks) only; no maintainer or other human review has been recorded for
+    it, and none is implied by omitting a `reviewers` field -- that review is pending ordinary
+    pull-request review. The statement is byte-identical to DudekPlattNumerics.v3's own
+    `pi_two_sided_footnote` (same threshold, same two constants), so no new numerical claim is being
+    made here relative to v3 -- only a new, independently Lean-checked route to it, conditional on
+    MT.v2.corollary_1. The D(L) majorant's own transcription defect (a missing L^6 factor in
+    DudekPlattNumerics.v3's README.md Section 3, the certificate's own numerical value being correct
+    regardless) was corrected in the Lean statement itself (Solutions/DudekPlattNumerics.v4's
+    hD_proof), not merely noted.
+
+limitations:
+- >-
+  Proved from its one import (MT.v2.corollary_1), but not yet verified: a receipt requires a
+  Comparator run, which has not been dispatched (external to this change; requires a maintainer's
+  approval of the verification environment per SECURITY.md).
+- >-
+  What it is proved FROM matters more than that it is proved. MT.v2.corollary_1 is `literature`,
+  asserted on Mossinghoff-Trudgian's authority; its own zero-free-region-to-theta conversion argument
+  is not formalized anywhere in this network. So this node's evidentiary tier is: Lean-proved calculus
+  and numerics, conditional on one cited theorem -- stronger than v3's Python-certificate tier (the
+  calculus is now machine-checked, not merely written down), but not a fully Lean-verified chain from
+  first principles, and MT.v2.corollary_1's own citation is no stronger than MT.v1's two conclusions
+  already were.
+- >-
+  DudekPlattNumerics.v3 is unchanged and still stands on its own `numerical` justification; this node
+  does not redesignate it and does not claim to supersede it. A bridge recording that this node's
+  conclusion implies v3's (they are the identical statement) is added at
+  IEANTN/Bridges/DudekPlattNumerics/V4ToV3.lean and registered as a second, non-designated
+  justification on v3's own conclusion, so a downstream node currently importing v3 (DudekPlatt.v4's
+  solution) can discharge that hypothesis from this node instead -- i.e. ultimately from
+  MT.v2.corollary_1 rather than from a numerical certificate -- without editing v3 or DudekPlatt.v4
+  in place. Nothing in this network's Solutions currently exercises that route; it is available, not
+  wired into any committed Solution.lean.
+- >-
+  x_a = exp(9400) is not a numerically re-optimized endpoint, for the same reason v3 records: it was
+  chosen with a safe, monotonicity-backed margin above the theta-bound's true crossing point rather
+  than as tight as possible. This node does not attempt to tighten it.
+- >-
+  No novelty is claimed. The results are Dudek and Platt's, and Mossinghoff and Trudgian's; the Lean
+  formalization is this network's own.
