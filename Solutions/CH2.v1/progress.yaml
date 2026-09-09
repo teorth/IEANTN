@@ -382,6 +382,25 @@ stages:
       lem:arles, and THE EXPONENTIAL INTEGRAL Ei, which Mathlib does not have at all and which
       lem:rameau and lem:bettnist both use. Ei is the clearest helper-node candidate in the
       section: elementary, absent from Mathlib, and not specific to this paper.
+      WHAT MATHLIB'S VON MANGOLDT L-SERIES GIVES, checked rather than assumed. Present and clean:
+      LSeries_vonMangoldt_eq_deriv_riemannZeta_div (L of Lambda at s equals -zeta'/zeta(s) for
+      Re s > 1), LSeriesSummable_vonMangoldt, LSeries.norm_term_le_of_re_le_re (termwise
+      monotonicity of the norms in Re s), and ArithmeticFunction.vonMangoldt_nonneg. Together those
+      give |zeta'/zeta(t)| <= |zeta'/zeta(2)| for real t >= 2 with only plumbing -- the one fiddly
+      step is that the terms at the real point s = 2 are non-negative reals, so the sum of the
+      norms is the norm of the sum.
+      WHAT IS ABSENT IS EVERY NUMERICAL VALUE. Mathlib has no bound for zeta'/zeta at any point, and
+      section 8 needs five of them: zeta'/zeta(2) = -0.5699... for the bound just described,
+      A~(-1) = -1.48505... for lem:moruno, c = zeta'/zeta(-1) - 2 (zeta'/zeta)'(-1) = 3.86102... for
+      lem:arles, |zeta'/zeta(1+sigma_0)| for lem:adioso, and zeta'/zeta(3/2) = -1.50523... for
+      lem:saghar and prop:titch96A. Each is a sum over Lambda(n) n^{-t} or its derivative.
+      SO THIS IS A HELPER NODE, not inline work. Five call sites in one section, all of the same
+      shape, none specific to this paper. It cannot go on ZetaLogDeriv.v1, which is green: adding a
+      conclusion there would invalidate its receipt, verification being all-or-nothing per node.
+      lem:arles needs one more thing of the same kind: A~(s) = sum (-1)^{n+1} a_n (s-1)^n with
+      a_n > 0, which is sign information on the Taylor coefficients of zeta'/zeta + 1/(s-1) at 1.
+      DONE SO FAR IN Section8.lean: lem:adamant, both segments of C_<, and norm_intClt_le, which is
+      the lem:ranadi analogue -- the whole of C_< contributes at most 18/x for x >= 15.
       SUGGESTED ORDER: 8.2 first, since lem:adamant, lem:ranadi and prop:coronidis are ordinary
       complex analysis with explicit constants and depend on nothing outside the paper except the
       functional equation, which is already a node; then Ei; then 8.1, which is where the explicit
