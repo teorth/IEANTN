@@ -1289,4 +1289,244 @@ theorem Gfun_eq (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
   field_simp
   ring
 
+/-! ### Re-routing `𝓒_<`: a vertical leg instead of a diagonal one
+
+**Finishing §8.2 means performing the contour shift, and the shape of `𝓒_<` decides how hard that
+is.** With the paper's `135°` leg the region between `𝓒_<` and the real half-line is a rectangle
+with one corner cut off, and Cauchy's theorem has to be applied to a triangle as well. With a
+*vertical* leg from `-1` to `-1+i` the region is **exactly the rectangle** `[-R,-1] × [0,1]`, which
+is the one shape Mathlib's `integral_boundary_rect_eq_zero_of_differentiableOn` covers.
+
+The paper's reason for `45°` does not apply here. It wants `x^s` to decay along the leg, and
+`lem:adamant` is what makes `45°` the smallest angle where `cot` stays bounded. This route already
+gives up the powers of `log x` that decay would buy, and on a vertical leg the `cot` bound is
+*easier*, not harder: at `Re s = -1`,
+
+  `cot(πs/2) = cot(-π/2 + iπv/2) = -i tanh(πv/2)`,
+
+so `|cot| = |tanh| ≤ 1` outright. `lem:adamant` and the diagonal segments above stay in the file —
+they are correct and the bound on the diagonal is of independent interest — but the contour used
+from here on is the vertical one.
+-/
+
+/-- The vertical leg of `𝓒_<`, from `-1` (at `v = 0`) to `-1+i` (at `v = 1`); `ds = i dv`. -/
+noncomputable def segV (v : ℝ) : ℂ := -1 + (v : ℂ) * Complex.I
+
+/-- The horizontal tail of `𝓒_<`, from `-1+i` (at `u = 0`) to `-∞+i`; `ds = -du`. -/
+noncomputable def segH (u : ℝ) : ℂ := ((-1 - u : ℝ) : ℂ) + Complex.I
+
+theorem segV_re (v : ℝ) : (segV v).re = -1 := by simp [segV]
+
+theorem segV_im (v : ℝ) : (segV v).im = v := by simp [segV]
+
+theorem segH_re (u : ℝ) : (segH u).re = -1 - u := by simp [segH]
+
+theorem segH_im (u : ℝ) : (segH u).im = 1 := by simp [segH]
+
+/-- **`|cot(πs/2)| ≤ 1` on the vertical line `Re s = -1`.**
+
+`|cot z|² = (cos²x + sinh²y)/(sin²x + sinh²y)` with `x = -π/2`, where `cos x = 0` and `sin²x = 1`,
+so the quotient is `sinh²y/(1 + sinh²y)`. This is the vertical leg's replacement for
+`lem:adamant`, and it is strictly easier. -/
+theorem norm_cot_segV_le (v : ℝ) : ‖Complex.cot ((Real.pi : ℂ) * segV v / 2)‖ ≤ 1 := by
+  have hre : ((Real.pi : ℂ) * segV v / 2).re = -(Real.pi / 2) := by
+    simp [segV, Complex.div_re, Complex.mul_re, Complex.normSq_apply]
+    ring
+  have hc : Real.cos (((Real.pi : ℂ) * segV v / 2).re) = 0 := by
+    rw [hre, Real.cos_neg, Real.cos_pi_div_two]
+  have hs : Real.sin (((Real.pi : ℂ) * segV v / 2).re) = -1 := by
+    rw [hre, Real.sin_neg, Real.sin_pi_div_two]
+  set y : ℝ := ((Real.pi : ℂ) * segV v / 2).im with hy
+  have hsinsq : Complex.normSq (Complex.sin ((Real.pi : ℂ) * segV v / 2))
+      = 1 + Real.sinh y ^ 2 := by
+    rw [normSq_sin, hs]
+    ring
+  have hcossq : Complex.normSq (Complex.cos ((Real.pi : ℂ) * segV v / 2)) = Real.sinh y ^ 2 := by
+    rw [normSq_cos, hc]
+    ring
+  have hsin0 : Complex.sin ((Real.pi : ℂ) * segV v / 2) ≠ 0 := by
+    intro hcon
+    rw [hcon] at hsinsq
+    simp at hsinsq
+    nlinarith [sq_nonneg (Real.sinh y)]
+  have hsq : ‖Complex.cot ((Real.pi : ℂ) * segV v / 2)‖ ^ 2 ≤ 1 := by
+    rw [Complex.cot_eq_cos_div_sin, norm_div, div_pow, Complex.sq_norm, Complex.sq_norm,
+      hcossq, hsinsq, div_le_one (by positivity)]
+    nlinarith [sq_nonneg (Real.sinh y)]
+  nlinarith [norm_nonneg (Complex.cot ((Real.pi : ℂ) * segV v / 2))]
+
+/-- `|cot(πs/2)| ≤ 1 + 2/π` on the horizontal tail, where `Im(πs/2) = π/2`. -/
+theorem norm_cot_segH_le (u : ℝ) :
+    ‖Complex.cot ((Real.pi : ℂ) * segH u / 2)‖ ≤ 1 + 2 / Real.pi := by
+  have hpi := Real.pi_pos
+  have him : ((Real.pi : ℂ) * segH u / 2).im = Real.pi / 2 := by
+    simp [Complex.mul_im, segH_im, segH_re]
+  have h := norm_cot_le_coth (z := (Real.pi : ℂ) * segH u / 2) (by rw [him]; positivity)
+  rw [him] at h
+  refine le_trans h ?_
+  have hc := CH2Section7.coth_le_one_add_inv (y := Real.pi / 2) (by positivity)
+  calc Real.cosh (Real.pi / 2) / Real.sinh (Real.pi / 2) ≤ 1 + 1 / (Real.pi / 2) := hc
+    _ = 1 + 2 / Real.pi := by field_simp
+
+theorem norm_segV_sub_one_le {v : ℝ} (hv0 : 0 ≤ v) (hv1 : v ≤ 1) : ‖segV v - 1‖ ≤ 3 := by
+  have h : segV v - 1 = -2 + (v : ℂ) * Complex.I := by rw [segV]; ring
+  rw [h]
+  calc ‖(-2 : ℂ) + (v : ℂ) * Complex.I‖ ≤ ‖(-2 : ℂ)‖ + ‖(v : ℂ) * Complex.I‖ := norm_add_le _ _
+    _ ≤ 3 := by
+        rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
+          abs_of_nonneg hv0]
+        norm_num
+        linarith
+
+theorem norm_segH_sub_one_le {u : ℝ} (hu : 0 ≤ u) : ‖segH u - 1‖ ≤ 3 + u := by
+  have h : segH u - 1 = ((-2 - u : ℝ) : ℂ) + Complex.I := by
+    rw [segH]; push_cast; ring
+  rw [h]
+  calc ‖((-2 - u : ℝ) : ℂ) + Complex.I‖ ≤ ‖((-2 - u : ℝ) : ℂ)‖ + ‖Complex.I‖ := norm_add_le _ _
+    _ = (2 + u) + 1 := by
+        rw [Complex.norm_real, Real.norm_eq_abs, Complex.norm_I,
+          abs_of_nonpos (by linarith : (-2 - u : ℝ) ≤ 0)]
+        ring
+    _ = 3 + u := by ring
+
+/-- The `cot` part of the integral over the vertical leg; `ds = i dv`. -/
+noncomputable def intV (Φ : ℂ → ℂ) (x : ℝ) : ℂ :=
+  ∫ v in (0:ℝ)..1, ((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * segV v / 2) * Φ (segV v)
+    * (x : ℂ) ^ segV v * Complex.I
+
+/-- The `cot` part of the integral over the horizontal tail; `ds = -du`. -/
+noncomputable def intH (Φ : ℂ → ℂ) (x : ℝ) : ℂ :=
+  ∫ u in Set.Ioi (0:ℝ), -(((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * segH u / 2)
+    * Φ (segH u) * (x : ℂ) ^ segH u)
+
+/-- **The vertical leg's `cot` contribution**: at most `3π/(2x)`. -/
+theorem norm_intV_le {Φ : ℂ → ℂ}
+    (hΦ : ∀ v ∈ Set.Icc (0:ℝ) 1, ‖Φ (segV v)‖ ≤ ‖segV v - 1‖)
+    {x : ℝ} (hx : 1 < x) :
+    ‖intV Φ x‖ ≤ 4.72 / x := by
+  have hpi := Real.pi_pos
+  have hpi2 : Real.pi < 3.141593 := Real.pi_lt_d6
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hbound : ∀ v ∈ Set.uIoc (0:ℝ) 1,
+      ‖((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * segV v / 2) * Φ (segV v)
+        * (x : ℂ) ^ segV v * Complex.I‖ ≤ 4.72 / x := by
+    intro v hv
+    rw [Set.uIoc_of_le (by norm_num : (0:ℝ) ≤ 1)] at hv
+    have hv0 : (0 : ℝ) ≤ v := le_of_lt hv.1
+    have hv1 : v ≤ 1 := hv.2
+    have hc := norm_cot_segV_le v
+    have hf : ‖Φ (segV v)‖ ≤ 3 :=
+      le_trans (hΦ v ⟨hv0, hv1⟩) (norm_segV_sub_one_le hv0 hv1)
+    have hxs : ‖(x : ℂ) ^ segV v‖ = 1 / x := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hx0, segV_re]
+      rw [show (1 : ℝ) / x = x ^ (-1 : ℝ) by rw [Real.rpow_neg_one]; simp]
+    have hpihalf : ‖((Real.pi : ℂ) / 2)‖ = Real.pi / 2 := by
+      rw [show ((Real.pi : ℝ) : ℂ) / 2 = (((Real.pi / 2 : ℝ)) : ℂ) by push_cast; ring,
+        Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
+    rw [norm_mul, norm_mul, norm_mul, norm_mul, Complex.norm_I, mul_one, hpihalf, hxs]
+    have hcn : (0 : ℝ) ≤ ‖Complex.cot ((Real.pi : ℂ) * segV v / 2)‖ := norm_nonneg _
+    have hfn : (0 : ℝ) ≤ ‖Φ (segV v)‖ := norm_nonneg _
+    have hA : Real.pi / 2 * ‖Complex.cot ((Real.pi : ℂ) * segV v / 2)‖ ≤ Real.pi / 2 * 1 :=
+      mul_le_mul_of_nonneg_left hc (by positivity)
+    have hB : Real.pi / 2 * ‖Complex.cot ((Real.pi : ℂ) * segV v / 2)‖ * ‖Φ (segV v)‖
+        ≤ Real.pi / 2 * 1 * 3 := mul_le_mul hA hf hfn (by positivity)
+    have hfinal : Real.pi / 2 * 1 * 3 * (1 / x) ≤ 4.72 / x := by
+      rw [mul_one_div, div_le_div_iff₀ hx0 hx0]
+      nlinarith
+    calc Real.pi / 2 * ‖Complex.cot ((Real.pi : ℂ) * segV v / 2)‖ * ‖Φ (segV v)‖ * (1 / x)
+        ≤ Real.pi / 2 * 1 * 3 * (1 / x) :=
+          mul_le_mul_of_nonneg_right hB (by positivity)
+      _ ≤ 4.72 / x := hfinal
+  have hkey := intervalIntegral.norm_integral_le_of_norm_le_const
+    (a := (0:ℝ)) (b := 1) (C := 4.72 / x) hbound
+  rw [intV]
+  simpa using hkey
+
+/-- **The horizontal tail's `cot` contribution**: at most `7.72/(x(log x - 1/3))`. -/
+theorem norm_intH_le {Φ : ℂ → ℂ}
+    (hΦ : ∀ u ∈ Set.Ioi (0:ℝ), ‖Φ (segH u)‖ ≤ ‖segH u - 1‖)
+    {x : ℝ} (hx : 15 ≤ x) :
+    ‖intH Φ x‖ ≤ 7.72 / (x * (Real.log x - 1 / 3)) := by
+  have hpi := Real.pi_pos
+  have hpi2 : Real.pi < 3.141593 := Real.pi_lt_d6
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hL : (2 : ℝ) < Real.log x := by
+    have h1 : Real.log 15 ≤ Real.log x := Real.log_le_log (by norm_num) hx
+    have h2' : (2 : ℝ) < Real.log 15 := by
+      rw [Real.lt_log_iff_exp_lt (by norm_num)]
+      have h := Real.exp_one_lt_d9
+      have he : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+      rw [he]
+      nlinarith [Real.exp_pos 1]
+    linarith
+  have ha : -(Real.log x - 1 / 3) < 0 := by linarith
+  have hpt : ∀ u ∈ Set.Ioi (0:ℝ),
+      ‖-(((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * segH u / 2) * Φ (segH u)
+        * (x : ℂ) ^ segH u)‖ ≤ 7.72 / x * Real.exp (-(Real.log x - 1 / 3) * u) := by
+    intro u hu
+    have hu0 : (0 : ℝ) < u := hu
+    have hc := norm_cot_segH_le u
+    have hf : ‖Φ (segH u)‖ ≤ 3 + u :=
+      le_trans (hΦ u hu) (norm_segH_sub_one_le hu0.le)
+    have hxs : ‖(x : ℂ) ^ segH u‖ = 1 / x * Real.exp (-(Real.log x * u)) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hx0, segH_re, Real.rpow_def_of_pos hx0,
+        show Real.log x * (-1 - u) = -Real.log x + -(Real.log x * u) by ring, Real.exp_add]
+      have h2' : Real.exp (-Real.log x) = 1 / x := by
+        rw [Real.exp_neg, Real.exp_log hx0, one_div]
+      rw [h2']
+    have hpihalf : ‖((Real.pi : ℂ) / 2)‖ = Real.pi / 2 := by
+      rw [show ((Real.pi : ℝ) : ℂ) / 2 = (((Real.pi / 2 : ℝ)) : ℂ) by push_cast; ring,
+        Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
+    have hexp : (3 : ℝ) + u ≤ 3 * Real.exp (u / 3) := by
+      have := Real.add_one_le_exp (u / 3)
+      linarith
+    rw [norm_neg, norm_mul, norm_mul, norm_mul, hpihalf, hxs]
+    have hcn : (0 : ℝ) ≤ ‖Complex.cot ((Real.pi : ℂ) * segH u / 2)‖ := norm_nonneg _
+    have hfn : (0 : ℝ) ≤ ‖Φ (segH u)‖ := norm_nonneg _
+    have hA : Real.pi / 2 * ‖Complex.cot ((Real.pi : ℂ) * segH u / 2)‖
+        ≤ Real.pi / 2 * (1 + 2 / Real.pi) := mul_le_mul_of_nonneg_left hc (by positivity)
+    have hB : Real.pi / 2 * ‖Complex.cot ((Real.pi : ℂ) * segH u / 2)‖ * ‖Φ (segH u)‖
+        ≤ Real.pi / 2 * (1 + 2 / Real.pi) * (3 * Real.exp (u / 3)) :=
+      mul_le_mul hA (le_trans hf hexp) hfn (by positivity)
+    have hpos : (0 : ℝ) ≤ 1 / x * Real.exp (-(Real.log x * u)) := by positivity
+    have hcoef : Real.pi / 2 * (1 + 2 / Real.pi) * 3 ≤ 7.72 := by
+      have heq : Real.pi / 2 * (1 + 2 / Real.pi) * 3 = 3 / 2 * Real.pi + 3 := by
+        field_simp
+      rw [heq]
+      linarith
+    have hcollapse : Real.pi / 2 * (1 + 2 / Real.pi) * (3 * Real.exp (u / 3))
+        * (1 / x * Real.exp (-(Real.log x * u)))
+        ≤ 7.72 / x * Real.exp (-(Real.log x - 1 / 3) * u) := by
+      have hexpeq : Real.exp (u / 3) * Real.exp (-(Real.log x * u))
+          = Real.exp (-(Real.log x - 1 / 3) * u) := by
+        rw [← Real.exp_add]
+        congr 1
+        ring
+      have hrw : Real.pi / 2 * (1 + 2 / Real.pi) * (3 * Real.exp (u / 3))
+          * (1 / x * Real.exp (-(Real.log x * u)))
+          = (Real.pi / 2 * (1 + 2 / Real.pi) * 3) / x
+            * (Real.exp (u / 3) * Real.exp (-(Real.log x * u))) := by ring
+      rw [hrw, hexpeq]
+      have hE : (0 : ℝ) < Real.exp (-(Real.log x - 1 / 3) * u) := Real.exp_pos _
+      have hdiv : Real.pi / 2 * (1 + 2 / Real.pi) * 3 / x ≤ 7.72 / x := by gcongr
+      nlinarith [hdiv, hE]
+    calc Real.pi / 2 * ‖Complex.cot ((Real.pi : ℂ) * segH u / 2)‖ * ‖Φ (segH u)‖
+          * (1 / x * Real.exp (-(Real.log x * u)))
+        ≤ Real.pi / 2 * (1 + 2 / Real.pi) * (3 * Real.exp (u / 3))
+          * (1 / x * Real.exp (-(Real.log x * u))) :=
+          mul_le_mul_of_nonneg_right hB hpos
+      _ ≤ 7.72 / x * Real.exp (-(Real.log x - 1 / 3) * u) := hcollapse
+  have hint : ‖intH Φ x‖ ≤ ∫ u in Set.Ioi (0:ℝ), 7.72 / x * Real.exp (-(Real.log x - 1/3) * u) := by
+    refine le_trans (MeasureTheory.norm_integral_le_integral_norm _) ?_
+    refine MeasureTheory.integral_mono_of_nonneg
+      (Filter.Eventually.of_forall fun u ↦ norm_nonneg _)
+      ((integrableOn_exp_mul_Ioi ha 0).const_mul _) ?_
+    filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with u hu
+    exact hpt u hu
+  refine le_trans hint (le_of_eq ?_)
+  rw [MeasureTheory.integral_const_mul, integral_exp_mul_Ioi ha 0]
+  have hne : Real.log x - 1 / 3 ≠ 0 := by linarith
+  field_simp
+  norm_num
+
 end CH2Section8
