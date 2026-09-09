@@ -12,6 +12,8 @@ import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.Analysis.SpecialFunctions.Pow.Complex
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
+import Mathlib.Analysis.Complex.CauchyIntegral
+import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.Analysis.Complex.ExponentialBounds
 import Section7
 import DigammaReal
@@ -1528,5 +1530,110 @@ theorem norm_intH_le {Φ : ℂ → ℂ}
   have hne : Real.log x - 1 / 3 ≠ 0 := by linarith
   field_simp
   norm_num
+
+/-! ### The contour shift
+
+The last step of §8.2. For a function holomorphic on `Re s < 0`, the integral along `𝓒_<` — up the
+vertical leg and out along `Im s = 1` — equals the integral straight out along the real axis.
+
+Cauchy on the rectangle `[-1-R, -1] × [0, 1]` says the four sides cancel; three of them are the two
+paths, and the fourth is the left edge at `Re s = -1-R`, which vanishes as `R → ∞` because the
+integrand carries `x^s`. Both improper integrals are then limits of their truncations.
+
+**This is the step the `135°` leg would have made awkward**, and it is why the contour was
+re-routed: with a diagonal the region is not a rectangle. -/
+
+/-- **The shift.** `∫_{𝓒_<} F = ∫_{-1}^{-∞} F` for `F` holomorphic on the left half-plane, given
+integrability on the two half-lines and the vanishing of the left edge. -/
+theorem contour_shift {F : ℂ → ℂ}
+    (hF : DifferentiableOn ℂ F {s : ℂ | s.re < 0})
+    (hint1 : MeasureTheory.IntegrableOn (fun u : ℝ ↦ -F (segH u)) (Set.Ioi 0))
+    (hint2 : MeasureTheory.IntegrableOn (fun u : ℝ ↦ -F (((-1 - u : ℝ) : ℂ))) (Set.Ioi 0))
+    (hdecay : Filter.Tendsto
+      (fun R : ℝ ↦ ∫ y in (0:ℝ)..1, F (((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I))
+      Filter.atTop (nhds 0)) :
+    (∫ v in (0:ℝ)..1, F (segV v) * Complex.I) + (∫ u in Set.Ioi (0:ℝ), -F (segH u))
+      = ∫ u in Set.Ioi (0:ℝ), -F (((-1 - u : ℝ) : ℂ)) := by
+  -- the rectangle identity, for each `R`
+  have hrect : ∀ R : ℝ, 0 < R →
+      (∫ v in (0:ℝ)..1, F (segV v) * Complex.I) + (∫ u in (0:ℝ)..R, -F (segH u))
+        = (∫ u in (0:ℝ)..R, -F (((-1 - u : ℝ) : ℂ)))
+          + Complex.I • ∫ y in (0:ℝ)..1, F (((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I) := by
+    intro R hR
+    set z : ℂ := ((-1 - R : ℝ) : ℂ) with hz
+    set w : ℂ := (-1 : ℂ) + Complex.I with hw
+    have hzre : z.re = -1 - R := by simp [hz]
+    have hzim : z.im = 0 := by simp [hz]
+    have hwre : w.re = -1 := by simp [hw]
+    have hwim : w.im = 1 := by simp [hw]
+    have hsub : Set.uIcc z.re w.re ×ℂ Set.uIcc z.im w.im ⊆ {s : ℂ | s.re < 0} := by
+      intro p hp
+      have hre : p.re ∈ Set.uIcc z.re w.re := hp.1
+      rw [hzre, hwre, Set.uIcc_of_le (by linarith)] at hre
+      exact lt_of_le_of_lt hre.2 (by norm_num)
+    have hkey := Complex.integral_boundary_rect_eq_zero_of_differentiableOn F z w (hF.mono hsub)
+    rw [hzre, hzim, hwre, hwim] at hkey
+    -- rewrite the two horizontal integrals in the `u` parametrisation
+    have hbot : (∫ x : ℝ in (-1 - R)..(-1), F ((x : ℂ) + ((0 : ℝ) : ℂ) * Complex.I))
+        = ∫ u : ℝ in (0:ℝ)..R, F (((-1 - u : ℝ) : ℂ)) := by
+      rw [show (∫ u : ℝ in (0:ℝ)..R, F (((-1 - u : ℝ) : ℂ)))
+        = ∫ u : ℝ in (0:ℝ)..R, (fun t : ℝ ↦ F ((t : ℂ) + ((0:ℝ) : ℂ) * Complex.I)) (-1 - u) by
+          refine intervalIntegral.integral_congr fun u _ ↦ ?_
+          push_cast
+          ring_nf]
+      rw [intervalIntegral.integral_comp_sub_left
+        (fun t : ℝ ↦ F ((t : ℂ) + ((0:ℝ) : ℂ) * Complex.I)) (-1 : ℝ)]
+      norm_num
+    have htop : (∫ x : ℝ in (-1 - R)..(-1), F ((x : ℂ) + ((1 : ℝ) : ℂ) * Complex.I))
+        = ∫ u : ℝ in (0:ℝ)..R, F (segH u) := by
+      rw [show (∫ u : ℝ in (0:ℝ)..R, F (segH u))
+        = ∫ u : ℝ in (0:ℝ)..R, (fun t : ℝ ↦ F ((t : ℂ) + ((1:ℝ) : ℂ) * Complex.I)) (-1 - u) by
+          refine intervalIntegral.integral_congr fun u _ ↦ ?_
+          rw [segH]
+          push_cast
+          ring_nf]
+      rw [intervalIntegral.integral_comp_sub_left
+        (fun t : ℝ ↦ F ((t : ℂ) + ((1:ℝ) : ℂ) * Complex.I)) (-1 : ℝ)]
+      norm_num
+    have hright : (Complex.I • ∫ y : ℝ in (0:ℝ)..1, F (((-1 : ℝ) : ℂ) + (y : ℂ) * Complex.I))
+        = ∫ v in (0:ℝ)..1, F (segV v) * Complex.I := by
+      rw [smul_eq_mul, ← intervalIntegral.integral_const_mul]
+      refine intervalIntegral.integral_congr fun v _ ↦ ?_
+      rw [segV]
+      push_cast
+      ring
+    have hleft : (Complex.I • ∫ y : ℝ in (0:ℝ)..1, F (((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I))
+        = Complex.I • ∫ y in (0:ℝ)..1, F (((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I) := rfl
+    rw [hbot, htop, hright] at hkey
+    rw [intervalIntegral.integral_neg, intervalIntegral.integral_neg]
+    linear_combination hkey
+  -- pass to the limit
+  have hlim1 : Filter.Tendsto (fun R : ℝ ↦ ∫ u in (0:ℝ)..R, -F (segH u)) Filter.atTop
+      (nhds (∫ u in Set.Ioi (0:ℝ), -F (segH u))) :=
+    MeasureTheory.intervalIntegral_tendsto_integral_Ioi 0 hint1 Filter.tendsto_id
+  have hlim2 : Filter.Tendsto (fun R : ℝ ↦ ∫ u in (0:ℝ)..R, -F (((-1 - u : ℝ) : ℂ)))
+      Filter.atTop (nhds (∫ u in Set.Ioi (0:ℝ), -F (((-1 - u : ℝ) : ℂ)))) :=
+    MeasureTheory.intervalIntegral_tendsto_integral_Ioi 0 hint2 Filter.tendsto_id
+  have hlim3 : Filter.Tendsto
+      (fun R : ℝ ↦ Complex.I • ∫ y in (0:ℝ)..1, F (((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I))
+      Filter.atTop (nhds 0) := by
+    simpa using hdecay.const_smul Complex.I
+  have hL : Filter.Tendsto
+      (fun R : ℝ ↦ (∫ v in (0:ℝ)..1, F (segV v) * Complex.I) + (∫ u in (0:ℝ)..R, -F (segH u)))
+      Filter.atTop
+      (nhds ((∫ v in (0:ℝ)..1, F (segV v) * Complex.I)
+        + ∫ u in Set.Ioi (0:ℝ), -F (segH u))) := hlim1.const_add _
+  have hR : Filter.Tendsto
+      (fun R : ℝ ↦ (∫ u in (0:ℝ)..R, -F (((-1 - u : ℝ) : ℂ)))
+        + Complex.I • ∫ y in (0:ℝ)..1, F (((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I))
+      Filter.atTop (nhds ((∫ u in Set.Ioi (0:ℝ), -F (((-1 - u : ℝ) : ℂ))) + 0)) := hlim2.add hlim3
+  have heq : (fun R : ℝ ↦ (∫ v in (0:ℝ)..1, F (segV v) * Complex.I)
+      + (∫ u in (0:ℝ)..R, -F (segH u)))
+      =ᶠ[Filter.atTop] fun R : ℝ ↦ (∫ u in (0:ℝ)..R, -F (((-1 - u : ℝ) : ℂ)))
+        + Complex.I • ∫ y in (0:ℝ)..1, F (((-1 - R : ℝ) : ℂ) + (y : ℂ) * Complex.I) := by
+    filter_upwards [Filter.eventually_gt_atTop (0:ℝ)] with R hR'
+    exact hrect R hR'
+  have := tendsto_nhds_unique (hL.congr' heq) hR
+  simpa using this
 
 end CH2Section8
