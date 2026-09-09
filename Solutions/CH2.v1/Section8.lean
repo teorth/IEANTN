@@ -10,6 +10,7 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.ComplexDeriv
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.Analysis.SpecialFunctions.Pow.Complex
+import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.Analysis.Complex.CauchyIntegral
@@ -1721,5 +1722,109 @@ theorem exists_norm_Gfun_le (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_s
         exact norm_add_le _ _
     _ ≤ 0.57 + |C| / 2 + Real.pi + 1 / 2 + ‖Complex.log (2 * (Real.pi : ℂ))‖
         + Real.log (1 + ‖s‖) := by linarith
+
+/-! ### Instantiating the shift
+
+The three side conditions of `contour_shift`, at `F = G·Φ·x^s`. All three run off one pointwise
+bound: on the strip, with `u = -1 - Re s ≥ 0`,
+
+  `‖F(s)‖ ≤ (A + 3 + u)(3 + u) · x^{-1-u} ≤ (19 + 4A)/x · e^{-(log x - 1)u}`,
+
+the collapse being `e^u ≥ (1 + u/2)² = 1 + u + u²/4`, which dominates a quadratic by a single
+exponential. The same bound serves the two half-lines, where `u` is the parameter, and the left
+edge, where `u = R` and the bound no longer depends on the height. -/
+
+/-- A quadratic is dominated by a single exponential: `e^u ≥ 1 + u + u²/4`. -/
+theorem quadratic_le_exp {a c u : ℝ} (ha : 0 ≤ a) (hc0 : 0 ≤ c) (hc3 : c ≤ 3) (hu : 0 ≤ u) :
+    (a + c + u) * (c + u) ≤ (19 + 4 * a) * Real.exp u := by
+  have h1 : (1 : ℝ) + u / 2 ≤ Real.exp (u / 2) := by
+    have := Real.add_one_le_exp (u / 2)
+    linarith
+  have h2 : ((1 : ℝ) + u / 2) ^ 2 ≤ Real.exp (u / 2) ^ 2 := by
+    have hnn : (0 : ℝ) ≤ 1 + u / 2 := by linarith
+    nlinarith [Real.exp_pos (u / 2)]
+  have h3 : Real.exp (u / 2) ^ 2 = Real.exp u := by
+    rw [sq, ← Real.exp_add]
+    ring_nf
+  rw [h3] at h2
+  have hE : (1 : ℝ) ≤ Real.exp u := by nlinarith
+  have hue : u ≤ Real.exp u := by nlinarith [h2]
+  have t1 : a * c ≤ 3 * a * Real.exp u := by
+    nlinarith [mul_nonneg ha (sub_nonneg.mpr hc3), mul_nonneg ha (sub_nonneg.mpr hE)]
+  have t2 : a * u ≤ a * Real.exp u :=
+    mul_le_mul_of_nonneg_left hue ha
+  have t3 : c * c ≤ 9 * Real.exp u := by nlinarith
+  have t4 : 2 * (c * u) ≤ 6 * Real.exp u := by nlinarith
+  have t5 : u * u ≤ 4 * Real.exp u := by nlinarith [h2]
+  nlinarith [t1, t2, t3, t4, t5]
+
+/-- The integrand of the regular part: `G(s) Φ(s) x^s`. -/
+noncomputable def Fint (Φ : ℂ → ℂ) (x : ℝ) (s : ℂ) : ℂ := Gfun s * Φ s * (x : ℂ) ^ s
+
+theorem differentiableOn_Fint {Φ : ℂ → ℂ} (hΦ : DifferentiableOn ℂ Φ {s : ℂ | s.re < 0})
+    {x : ℝ} (hx : 0 < x) : DifferentiableOn ℂ (Fint Φ x) {s : ℂ | s.re < 0} := by
+  have hx0 : ((x : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hx)
+  have hcpow : DifferentiableOn ℂ (fun s : ℂ ↦ (x : ℂ) ^ s) {s : ℂ | s.re < 0} :=
+    (differentiable_id.const_cpow (Or.inl hx0)).differentiableOn
+  exact (differentiableOn_Gfun.mul hΦ).mul hcpow
+
+/-- **The pointwise bound on the strip**, with `u = -1 - Re s`. -/
+theorem exists_norm_Fint_le (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    {Φ : ℂ → ℂ} (hΦb : ∀ s : ℂ, s.re ≤ -1 → |s.im| ≤ 1 → ‖Φ s‖ ≤ ‖s - 1‖)
+    {x : ℝ} (hx : 1 < x) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ s : ℂ, s.re ≤ -1 → |s.im| ≤ 1 →
+      ‖Fint Φ x s‖ ≤ K / x * Real.exp (-(Real.log x - 1) * (-1 - s.re)) := by
+  obtain ⟨A, hA⟩ := exists_norm_Gfun_le hgam h2v
+  set A' : ℝ := max A 0 with hA'
+  have hA'0 : (0 : ℝ) ≤ A' := le_max_right _ _
+  have hAA' : A ≤ A' := le_max_left _ _
+  have hx0 : (0 : ℝ) < x := by linarith
+  refine ⟨19 + 4 * A', by linarith, ?_⟩
+  intro s hre him
+  set u : ℝ := -1 - s.re with hu
+  have hu0 : (0 : ℝ) ≤ u := by rw [hu]; linarith
+  have hsnorm : ‖s‖ ≤ 2 + u := by
+    have h := Complex.norm_le_abs_re_add_abs_im s
+    have h1 : |s.re| = 1 + u := by
+      rw [abs_of_nonpos (by linarith), hu]
+      ring
+    linarith [h, him, h1]
+  have hG : ‖Gfun s‖ ≤ A' + 3 + u := by
+    refine le_trans (hA s hre him) ?_
+    have hlog : Real.log (1 + ‖s‖) ≤ 3 + u := by
+      have h1 : Real.log (1 + ‖s‖) ≤ (1 + ‖s‖) - 1 :=
+        Real.log_le_sub_one_of_pos (by positivity)
+      linarith
+    linarith
+  have hF : ‖Φ s‖ ≤ 3 + u := by
+    refine le_trans (hΦb s hre him) ?_
+    calc ‖s - 1‖ ≤ ‖s‖ + ‖(1 : ℂ)‖ := norm_sub_le _ _
+      _ ≤ (2 + u) + 1 := by simp; linarith
+      _ = 3 + u := by ring
+  have hxs : ‖(x : ℂ) ^ s‖ = 1 / x * Real.exp (-(Real.log x * u)) := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hx0, Real.rpow_def_of_pos hx0,
+      show Real.log x * s.re = -Real.log x + -(Real.log x * u) by rw [hu]; ring, Real.exp_add]
+    have h2' : Real.exp (-Real.log x) = 1 / x := by
+      rw [Real.exp_neg, Real.exp_log hx0, one_div]
+    rw [h2']
+  have hq := quadratic_le_exp (a := A') (c := 3) (u := u) hA'0 (by norm_num) le_rfl hu0
+  have hGn : (0 : ℝ) ≤ ‖Gfun s‖ := norm_nonneg _
+  have hFn : (0 : ℝ) ≤ ‖Φ s‖ := norm_nonneg _
+  have hprod : ‖Gfun s‖ * ‖Φ s‖ ≤ (A' + 3 + u) * (3 + u) :=
+    mul_le_mul hG hF hFn (by linarith)
+  have hpos : (0 : ℝ) ≤ 1 / x * Real.exp (-(Real.log x * u)) := by positivity
+  have hcollapse : (19 + 4 * A') * Real.exp u * (1 / x * Real.exp (-(Real.log x * u)))
+      = (19 + 4 * A') / x * Real.exp (-(Real.log x - 1) * u) := by
+    rw [show (19 + 4 * A') * Real.exp u * (1 / x * Real.exp (-(Real.log x * u)))
+        = (19 + 4 * A') / x * (Real.exp u * Real.exp (-(Real.log x * u))) by ring,
+      ← Real.exp_add]
+    congr 2
+    ring
+  rw [Fint, norm_mul, norm_mul, hxs]
+  calc ‖Gfun s‖ * ‖Φ s‖ * (1 / x * Real.exp (-(Real.log x * u)))
+      ≤ ((19 + 4 * A') * Real.exp u) * (1 / x * Real.exp (-(Real.log x * u))) :=
+        mul_le_mul_of_nonneg_right (le_trans hprod hq) hpos
+    _ = (19 + 4 * A') / x * Real.exp (-(Real.log x - 1) * u) := hcollapse
 
 end CH2Section8
