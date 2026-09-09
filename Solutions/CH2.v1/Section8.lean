@@ -1043,12 +1043,11 @@ and there the constant comes out at `1.8` against the paper's `1.667`, with the 
 
 The conversions all run through `log x ≤ 2√x`, which is `log u ≤ u - 1` at `u = √x`.
 
-**What is still missing is the contour shift**, not the arithmetic: the paper's identity
-`∫_𝓒 Ã Φ x^s ds = -∫_{𝓒_<} (π/2)cot(πs/2) Φ x^s ds + ∫_{-1}^{-∞}(Ã + (π/2)cot) Φ x^s ds`
-is Cauchy's theorem applied to a function the functional equation makes holomorphic on the left
-half-plane, and none of that is formalised here. So this bounds the *sum of the three pieces*, which
-is what the decomposition produces, and identifying that sum with the integral over `𝓒` remains to
-be done. -/
+The middle piece is left abstract, as a real `M ≤ 18/x`: both routes through `𝓒_<` — the paper's
+`135°` diagonal (`norm_intClt_le`) and the vertical leg this file eventually uses
+(`norm_intVH_le`) — come in under that, and the arithmetic does not care which. `coronidis`, at
+the end of the file, closes the loop: it identifies the sum of the three pieces with
+`∫_𝓒 Ã Φ x^s ds` itself, via `intClt_eq` and the contour shift. -/
 
 /-- `log x ≤ 2√x`, from `log u ≤ u - 1` at `u = √x`. -/
 theorem log_le_two_mul_sqrt {x : ℝ} (hx : 0 < x) : Real.log x ≤ 2 * Real.sqrt x := by
@@ -1074,23 +1073,16 @@ theorem thirteen_le_log {x : ℝ} (hx : 1000000 ≤ x) : (13 : ℝ) ≤ Real.log
   linarith
 
 /-- **The `prop:coronidis` arithmetic**: the three pieces sum to `γx/log²x + 1.8x/log³x` for
-`x ≥ 10⁶`, the range `lem:hardin` works in. -/
+`x ≥ 10⁶`, the range `lem:hardin` works in. The middle piece enters only through `M ≤ 18/x`. -/
 theorem coronidis_bound
     (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
     (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
     (h2v : ZetaLogDerivValues.v1.logDeriv_two)
     {Φ : ℂ → ℂ} {Ψ : ℝ → ℂ}
     (hΦseg : ∀ t ∈ Set.Icc (0:ℝ) 2, ‖Φ ((1 - t : ℝ) : ℂ)‖ ≤ t)
-    (hΦ1 : ∀ t ∈ Set.Icc (0:ℝ) (Real.sqrt 2), ‖Φ (segC1 t)‖ ≤ ‖segC1 t - 1‖)
-    (hΦ2 : ∀ t ∈ Set.Ioi (0:ℝ), ‖Φ (segC2 t)‖ ≤ ‖segC2 t - 1‖)
     (hΨ : ∀ u ∈ Set.Ioi (0:ℝ), ‖Ψ (2 + u)‖ ≤ 2 + u)
-    {x : ℝ} (hx : 1000000 ≤ x) :
-    ‖intSeg Φ x‖
-      + ‖intC1 (fun s ↦ ((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * s / 2) * Φ s
-            * (x : ℂ) ^ s)
-          + intC2 (fun s ↦ ((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * s / 2) * Φ s
-            * (x : ℂ) ^ s)‖
-      + ‖intHoriz Ψ x‖
+    {x : ℝ} (hx : 1000000 ≤ x) {M : ℝ} (hM : M ≤ 18 / x) :
+    ‖intSeg Φ x‖ + M + ‖intHoriz Ψ x‖
       ≤ Real.eulerMascheroniConstant * x / Real.log x ^ 2 + 1.8 * x / Real.log x ^ 3 := by
   have hx0 : (0 : ℝ) < x := by linarith
   have hx15 : (15 : ℝ) ≤ x := by linarith
@@ -1110,7 +1102,6 @@ theorem coronidis_bound
     nlinarith [this]
   -- the three pieces
   have hA := norm_intSeg_le hk hneg hΦseg hx15
-  have hB := norm_intClt_le hΦ1 hΦ2 hx15
   have hC := norm_intHoriz_le h2v hΨ hx15
   -- and their conversions
   have hlam : (0 : ℝ) < Real.log x - 0.986 := by linarith
@@ -1155,7 +1146,7 @@ theorem coronidis_bound
       + 0.15 * x / Real.log x ^ 3 + 0.05 * x / Real.log x ^ 3
       = Real.eulerMascheroniConstant * x / Real.log x ^ 2 + 1.8 * x / Real.log x ^ 3 := by
     ring
-  linarith [hA, hB, hC, hconv1, hconv2, hconv3, hfinal]
+  linarith [hA, hM, hC, hconv1, hconv2, hconv3, hfinal]
 
 /-! ### The regular part is holomorphic on the left half-plane
 
@@ -2148,5 +2139,88 @@ theorem intClt_eq (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
   have hshift := shift_Fint hgam h2v hΦd hΦb hx
   rw [intClt, hV, hH, ← hhor, ← hshift]
   ring
+
+/-- **The two `cot` legs together**: at most `18/x`, which is what `coronidis_bound` budgets for
+the middle piece. The diagonal route of `norm_intClt_le` reaches the same figure; the vertical one
+is comfortably inside it, `4.72 + 7.72/(log x - 1/3) < 9.4` for `x ≥ 15`. -/
+theorem norm_intVH_le {Φ : ℂ → ℂ}
+    (hΦV : ∀ v ∈ Set.Icc (0:ℝ) 1, ‖Φ (segV v)‖ ≤ ‖segV v - 1‖)
+    (hΦH : ∀ u ∈ Set.Ioi (0:ℝ), ‖Φ (segH u)‖ ≤ ‖segH u - 1‖)
+    {x : ℝ} (hx : 15 ≤ x) :
+    ‖intV Φ x + intH Φ x‖ ≤ 18 / x := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hL : (2 : ℝ) < Real.log x := by
+    have h1 : Real.log 15 ≤ Real.log x := Real.log_le_log (by norm_num) hx
+    have h2' : (2 : ℝ) < Real.log 15 := by
+      rw [Real.lt_log_iff_exp_lt (by norm_num)]
+      have h := Real.exp_one_lt_d9
+      have he : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+      rw [he]
+      nlinarith [Real.exp_pos 1]
+    linarith
+  have hA := norm_intV_le hΦV (by linarith : (1:ℝ) < x)
+  have hB := norm_intH_le hΦH hx
+  have hC : (7.72 : ℝ) / (x * (Real.log x - 1 / 3)) ≤ 4.7 / x := by
+    rw [div_le_div_iff₀ (by nlinarith) hx0]
+    nlinarith
+  have hD : (4.72 : ℝ) / x + 4.7 / x ≤ 18 / x := by
+    have h : (4.72 : ℝ) / x + 4.7 / x = 9.42 / x := by field_simp; ring
+    rw [h, div_le_div_iff₀ hx0 hx0]
+    nlinarith
+  calc ‖intV Φ x + intH Φ x‖ ≤ ‖intV Φ x‖ + ‖intH Φ x‖ := norm_add_le _ _
+    _ ≤ 4.72 / x + 4.7 / x := by linarith
+    _ ≤ 18 / x := hD
+
+/-- **`prop:coronidis`.** The integral of `Ã(s) Φ(s) x^s` over the whole of `𝓒` — from `1` to
+`-1` along the real axis, then up to `-1+i` and out to `-∞+i` — is at most
+`γx/log²x + 1.8x/log³x` for `x ≥ 10⁶`.
+
+The hypotheses are what the paper's `|Φ'| ≤ 1`, `Φ(1) = 0` and holomorphy give: `|Φ(s)| ≤ |s-1|`
+on the strip, `|Φ(1-t)| ≤ t` on the initial segment, and differentiability on `Re s < 0`. The
+contour differs from the paper's in its middle leg — vertical rather than at `135°` — which is
+immaterial, `Ã Φ x^s` being holomorphic in between, and it is what makes the shift a single
+application of Cauchy's theorem on a rectangle. -/
+theorem coronidis (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    {Φ : ℂ → ℂ} (hΦd : DifferentiableOn ℂ Φ {s : ℂ | s.re < 0})
+    (hΦseg : ∀ t ∈ Set.Icc (0:ℝ) 2, ‖Φ ((1 - t : ℝ) : ℂ)‖ ≤ t)
+    (hΦb : ∀ s : ℂ, s.re ≤ -1 → |s.im| ≤ 1 → ‖Φ s‖ ≤ ‖s - 1‖)
+    {x : ℝ} (hx : 1000000 ≤ x) :
+    ‖intSeg Φ x + intClt Φ x‖
+      ≤ Real.eulerMascheroniConstant * x / Real.log x ^ 2 + 1.8 * x / Real.log x ^ 3 := by
+  have hx15 : (15 : ℝ) ≤ x := by linarith
+  -- the three specialisations of `|Φ(s)| ≤ |s-1|`
+  have hΦV : ∀ v ∈ Set.Icc (0:ℝ) 1, ‖Φ (segV v)‖ ≤ ‖segV v - 1‖ := by
+    intro v hv
+    refine hΦb _ (by rw [segV_re]) ?_
+    rw [segV_im, abs_of_nonneg hv.1]
+    exact hv.2
+  have hΦH : ∀ u ∈ Set.Ioi (0:ℝ), ‖Φ (segH u)‖ ≤ ‖segH u - 1‖ := by
+    intro u hu
+    have hu0 : (0 : ℝ) < u := hu
+    exact hΦb _ (by rw [segH_re]; linarith) (by rw [segH_im]; norm_num)
+  have hΨ : ∀ u ∈ Set.Ioi (0:ℝ), ‖Φ ((1 - (2 + u) : ℝ) : ℂ)‖ ≤ 2 + u := by
+    intro u hu
+    have hu0 : (0 : ℝ) < u := hu
+    have hs : ((1 - (2 + u) : ℝ) : ℂ) = ((-1 - u : ℝ) : ℂ) := by push_cast; ring
+    rw [hs]
+    refine le_trans (hΦb _ (by simp; linarith) (by simp)) ?_
+    have hd : ((-1 - u : ℝ) : ℂ) - 1 = ((-2 - u : ℝ) : ℂ) := by push_cast; ring
+    rw [hd, Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by linarith)]
+    linarith
+  rw [intClt_eq hfe hgam h2v hΦd hΦH hΦb hx15]
+  have htri : ‖intSeg Φ x + (-(intV Φ x + intH Φ x)
+        + intHoriz (fun t : ℝ ↦ Φ ((1 - t : ℝ) : ℂ)) x)‖
+      ≤ ‖intSeg Φ x‖ + ‖intV Φ x + intH Φ x‖
+        + ‖intHoriz (fun t : ℝ ↦ Φ ((1 - t : ℝ) : ℂ)) x‖ := by
+    refine le_trans (norm_add_le _ _) ?_
+    have h := norm_add_le (-(intV Φ x + intH Φ x))
+      (intHoriz (fun t : ℝ ↦ Φ ((1 - t : ℝ) : ℂ)) x)
+    rw [norm_neg] at h
+    linarith
+  exact le_trans htri (coronidis_bound hk hneg h2v hΦseg hΨ hx (norm_intVH_le hΦV hΦH hx15))
 
 end CH2Section8

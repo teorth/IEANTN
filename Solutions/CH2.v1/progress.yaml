@@ -401,33 +401,36 @@ stages:
       a_n > 0, which is sign information on the Taylor coefficients of zeta'/zeta + 1/(s-1) at 1.
       DONE SO FAR IN Section8.lean: lem:adamant, both segments of C_<, and norm_intClt_le, which is
       the lem:ranadi analogue -- the whole of C_< contributes at most 18/x for x >= 15.
-      SECTION 8.2 IS DONE EXCEPT THE CONTOUR SHIFT. Section8.lean, 1155 lines, plus
-      DigammaReal.lean. lem:adamant; both segments of C_< and their sum (norm_intClt_le, 18/x for
-      x >= 15); the initial segment 1 -> -1 (norm_intSeg_le, the lem:arles analogue); the horizontal
-      contour -1 -> -infinity (norm_intHoriz_le, the lem:moruno analogue); and coronidis_bound,
-      which puts the three together as gamma x/log^2 x + 1.8 x/log^3 x.
-      THE CONTOUR SHIFT IS DONE, as contour_shift, and C_< WAS RE-ROUTED THROUGH A VERTICAL LEG
-      to make it so: with the paper's 135 degree leg the region between C_< and the real half-line
-      is a rectangle with a corner cut off, so Cauchy would need a triangle too, and Mathlib has
-      the rectangle only. A vertical leg from -1 to -1+i makes the region exactly [-1-R,-1] x [0,1].
-      The paper's reason for 45 degrees does not apply on this route -- it wants x^s to decay along
-      the leg, which buys powers of log x this route has already given up -- and the cot bound on a
-      vertical leg is EASIER: at Re s = -1, cot(pi s/2) = -i tanh(pi v/2), so |cot| <= 1 outright.
-      lem:adamant and the diagonal segments stay in the file, correct and unused.
-      WHAT REMAINS IN 8.2 IS INSTANTIATING contour_shift at F = G * Phi * x^s: holomorphy on
-      Re s < 0 (differentiableOn_Gfun, plus Phi by hypothesis), integrability on the two half-lines,
-      and the vanishing of the left edge.
-      AND THE OBSTRUCTION FLAGGED EARLIER DISSOLVES THERE. Bounding G off the real axis needs a
-      COMPLEX digamma asymptotic, and GammaAsymptotics.v2's conclusion is an O-statement with an
-      unnamed constant -- useless for an explicit bound. But the unnamed constant is only ever
-      needed for the two SIDE CONDITIONS, integrability and a limit; the final explicit constant
-      comes from norm_intHoriz_le, on the real axis, where DigammaReal gives |psi - log| <= 1/x
-      with the constant explicit. So the O-form suffices, and no new Gamma work is required.
-      OLD NOTE, kept because it was the reason for the re-route: the contour shift. The identity
-      int_C A~ Phi x^s ds = -int_{C_<} (pi/2) cot(pi s/2) Phi x^s ds + int_{-1}^{-infinity}
-      (A~ + (pi/2) cot) Phi x^s ds is Cauchy's theorem applied to a function the functional equation
-      makes holomorphic on the left half-plane. coronidis_bound therefore bounds the SUM OF THE
-      THREE PIECES, not yet the integral over C.
+      SECTION 8.2 IS DONE. Section8.lean, plus DigammaReal.lean. The endpoint is coronidis:
+      for x >= 10^6, ||int_C A~(s) Phi(s) x^s ds|| <= gamma x/log^2 x + 1.8 x/log^3 x, where C is
+      the initial segment 1 -> -1 followed by intClt, the re-routed C_<. Its hypotheses are what
+      the paper's |Phi'| <= 1, Phi(1) = 0 and holomorphy give: DifferentiableOn on Re s < 0,
+      ||Phi(1-t)|| <= t on [0,2], and ||Phi(s)|| <= ||s-1|| on the strip Re s <= -1, |Im s| <= 1.
+      C_< WAS RE-ROUTED THROUGH A VERTICAL LEG. With the paper's 135 degree leg the region between
+      C_< and the real half-line is a rectangle with a corner cut off, so Cauchy would need a
+      triangle too, and Mathlib has the rectangle only. A vertical leg from -1 to -1+i makes the
+      region exactly [-1-R,-1] x [0,1]. The paper's reason for 45 degrees does not apply on this
+      route -- it wants x^s to decay along the leg, which buys powers of log x this route has
+      already given up -- and the cot bound on a vertical leg is EASIER: at Re s = -1,
+      cot(pi s/2) = -i tanh(pi v/2), so |cot| <= 1 outright. The two routes are interchangeable
+      because A~ Phi x^s is holomorphic in the triangle between them; lem:adamant, segC1, segC2 and
+      norm_intClt_le stay in the file, correct and unused, and coronidis_bound takes the middle
+      piece abstractly as M <= 18/x so that either route instantiates it.
+      THE SHIFT IS contour_shift, INSTANTIATED AS shift_Fint. All three side conditions -- the two
+      integrabilities and the vanishing of the left edge -- come off one pointwise bound on the
+      strip: ||G Phi x^s|| <= (A + 3 + u)(3 + u) x^{-1-u} with u = -1 - Re s, collapsed by
+      e^u >= (1 + u/2)^2 to (19 + 4A)/x times e^{-(log x - 1)u}. The left edge needs nothing extra
+      because that bound at u = R does not depend on the height.
+      THE OBSTRUCTION FLAGGED EARLIER DISSOLVED. Bounding G off the real axis needs a COMPLEX
+      digamma asymptotic, and GammaAsymptotics.v2's conclusion is an O-statement with an unnamed
+      constant -- useless for an explicit bound. But the unnamed constant is only ever needed for
+      the two SIDE CONDITIONS, integrability and a limit; the final explicit constant comes from
+      norm_intHoriz_le, on the real axis, where DigammaReal gives |psi - log| <= 1/x with the
+      constant explicit. So the O-form sufficed, and no new Gamma work was required.
+      SPLITTING THE INTEGRAND UNDER THE INTEGRAL SIGN was the last piece of bookkeeping: intClt_eq
+      rewrites A~ = G - (pi/2) cot(pi s/2) on each leg via Gfun_eq, which needs sin(pi s/2) != 0.
+      The vertical leg misses the even integers by its real part (-1) and the horizontal tail by its
+      imaginary part (1), so cot(pi s/2) is continuous along both and the guard is free.
       THREE DELIBERATE DEPARTURES FROM THE PAPER, each with the downstream slack checked first.
       (1) lem:ranadi: no powers of log x are kept, since lem:hardin's budget for T >= 10^6 is at
       least 3.4539/log^2 x against a paper contribution of 0.6978/log^2 x -- the log^3 coefficient
