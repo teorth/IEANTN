@@ -17,6 +17,7 @@ import Section7
 import DigammaReal
 import Mathlib.NumberTheory.LSeries.Dirichlet
 import IEANTN.Nodes.ZetaLogDerivValues.v1.Conclusions
+import IEANTN.Nodes.ZetaLogDeriv.v1.Conclusions
 
 /-!
 # Section 8: the integrals
@@ -1151,5 +1152,141 @@ theorem coronidis_bound
       = Real.eulerMascheroniConstant * x / Real.log x ^ 2 + 1.8 * x / Real.log x ^ 3 := by
     ring
   linarith [hA, hB, hC, hconv1, hconv2, hconv3, hfinal]
+
+/-! ### The regular part is holomorphic on the left half-plane
+
+The contour shift `prop:coronidis` performs — replacing `𝓒_<` by the real half-line for the part
+of the integrand that has no poles there — rests on one analytic fact, and this is it.
+
+`Ã(s) + (π/2)cot(πs/2)` has, as a Lean expression, poles at `s = -2, -4, …`, where both of its
+terms blow up and only the sum is regular. **Written on the other side of the functional equation
+it has none**: `ζ'/ζ(1-s) + ψ(1-s) + 1/(1-s) - log 2π` is holomorphic on all of `Re s < 0`, since
+there `Re(1-s) > 1`, where `ζ` is non-vanishing and `ψ` is off its poles. That is the whole reason
+the paper forks the contour at `-1` and shifts only this piece.
+
+`deriv riemannZeta` and `deriv Gamma` are differentiable because their functions are *analytic* —
+differentiable on an open set — which is where `DifferentiableOn.analyticOnNhd` and `AnalyticAt.deriv`
+come in; differentiability alone would not give it.
+
+**What this does not do is the shift itself.** Cauchy's theorem for the region between `𝓒_<` and the
+real half-line, together with the vanishing of the cap at `-∞`, is not formalised here. -/
+
+/-- `ζ'/ζ` is holomorphic where `Re s > 1`. -/
+theorem differentiableAt_logDeriv_zeta {w : ℂ} (hw : 1 < w.re) :
+    DifferentiableAt ℂ (fun v : ℂ ↦ deriv riemannZeta v / riemannZeta v) w := by
+  have hne : w ≠ 1 := by
+    intro h
+    rw [h] at hw
+    simp at hw
+  have hζd : DifferentiableOn ℂ riemannZeta {v : ℂ | v ≠ 1} := fun v hv ↦
+    (differentiableAt_riemannZeta hv).differentiableWithinAt
+  have hζa : AnalyticAt ℂ riemannZeta w := hζd.analyticOnNhd isOpen_ne w hne
+  exact (hζa.deriv.differentiableAt).div (differentiableAt_riemannZeta hne)
+    (riemannZeta_ne_zero_of_one_lt_re hw)
+
+/-- `ψ` is holomorphic on the right half-plane. -/
+theorem differentiableAt_digamma {w : ℂ} (hw : 0 < w.re) :
+    DifferentiableAt ℂ Complex.digamma w := by
+  have hpole : ∀ v : ℂ, 0 < v.re → ∀ m : ℕ, v ≠ -(m : ℂ) := by
+    intro v hv m hcon
+    rw [hcon] at hv
+    simp only [Complex.neg_re, Complex.natCast_re] at hv
+    have : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+    linarith
+  have hopen : IsOpen {v : ℂ | 0 < v.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hΓd : DifferentiableOn ℂ Complex.Gamma {v : ℂ | 0 < v.re} := fun v hv ↦
+    (Complex.differentiableAt_Gamma v (hpole v hv)).differentiableWithinAt
+  have hΓa : AnalyticAt ℂ Complex.Gamma w := hΓd.analyticOnNhd hopen w hw
+  show DifferentiableAt ℂ (fun v : ℂ ↦ deriv Complex.Gamma v / Complex.Gamma v) w
+  exact (hΓa.deriv.differentiableAt).div hΓa.differentiableAt (Complex.Gamma_ne_zero (hpole w hw))
+
+/-- The regular part of the contour integrand, on the right-hand side of the functional equation:
+`G(s) = ζ'/ζ(1-s) + ψ(1-s) + 1/(1-s) - log 2π`. -/
+noncomputable def Gfun (s : ℂ) : ℂ :=
+  deriv riemannZeta (1 - s) / riemannZeta (1 - s) + Complex.digamma (1 - s)
+    + 1 / (1 - s) - Complex.log (2 * (Real.pi : ℂ))
+
+/-- **`G` is holomorphic on `Re s < 0`.** -/
+theorem differentiableOn_Gfun : DifferentiableOn ℂ Gfun {s : ℂ | s.re < 0} := by
+  intro s hs
+  have hs' : s.re < 0 := hs
+  have hre : 1 < (1 - s).re := by
+    simp only [Complex.sub_re, Complex.one_re]
+    linarith
+  have hne0 : (1 : ℂ) - s ≠ 0 := by
+    intro hcon
+    have : (1 - s).re = 0 := by rw [hcon]; simp
+    rw [Complex.sub_re, Complex.one_re] at this
+    linarith
+  have hinner : DifferentiableAt ℂ (fun v : ℂ ↦ 1 - v) s := by
+    simpa using (differentiableAt_id (𝕜 := ℂ) (x := s)).const_sub (1 : ℂ)
+  have h1 : DifferentiableAt ℂ (fun v : ℂ ↦ deriv riemannZeta (1 - v) / riemannZeta (1 - v)) s := by
+    simpa [Function.comp_def] using (differentiableAt_logDeriv_zeta hre).comp s hinner
+  have h2 : DifferentiableAt ℂ (fun v : ℂ ↦ Complex.digamma (1 - v)) s := by
+    simpa [Function.comp_def] using
+      (differentiableAt_digamma (by linarith : (0 : ℝ) < (1 - s).re)).comp s hinner
+  have h3 : DifferentiableAt ℂ (fun v : ℂ ↦ 1 / (1 - v)) s :=
+    DifferentiableAt.div (differentiableAt_const (1 : ℂ)) hinner hne0
+  exact (((h1.add h2).add h3).sub_const _).differentiableWithinAt
+
+/-- `cos(π(1-s)/2) = sin(πs/2)`. -/
+theorem cos_pi_one_sub_div_two (s : ℂ) :
+    Complex.cos ((Real.pi : ℂ) * (1 - s) / 2) = Complex.sin ((Real.pi : ℂ) * s / 2) := by
+  rw [show (Real.pi : ℂ) * (1 - s) / 2 = (Real.pi : ℂ) / 2 - (Real.pi : ℂ) * s / 2 by ring,
+    Complex.cos_sub, Complex.cos_pi_div_two, Complex.sin_pi_div_two]
+  ring
+
+/-- `tan(π(1-s)/2) = cot(πs/2)`, the identity that turns the functional equation's `tan` into the
+`cot` the contour integrand carries. -/
+theorem tan_pi_one_sub_div_two (s : ℂ) :
+    Complex.tan ((Real.pi : ℂ) * (1 - s) / 2) = Complex.cot ((Real.pi : ℂ) * s / 2) := by
+  rw [show (Real.pi : ℂ) * (1 - s) / 2 = (Real.pi : ℂ) / 2 - (Real.pi : ℂ) * s / 2 by ring,
+    Complex.tan_eq_sin_div_cos, Complex.cot_eq_cos_div_sin, Complex.sin_sub, Complex.cos_sub,
+    Complex.cos_pi_div_two, Complex.sin_pi_div_two]
+  ring_nf
+
+/-- **`G(s) = Ã(s) + (π/2)cot(πs/2)` on `Re s < 0`**, wherever the right-hand side is not a junk
+value.
+
+This is the functional equation, imported from `ZetaLogDeriv.v1` and applied at `1 - s`. The
+hypothesis `sin(πs/2) ≠ 0` excludes exactly the even integers `s = -2, -4, …`, which are precisely
+the points where `cot(πs/2)` and `Ã` both blow up and their sum does not — so it is the guard that
+keeps the right-hand side honest, and it costs nothing, those points being where the contour
+integral does not care. -/
+theorem Gfun_eq (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    {s : ℂ} (hs : s.re < 0) (hsin : Complex.sin ((Real.pi : ℂ) * s / 2) ≠ 0) :
+    Gfun s = Atilde s + ((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * s / 2) := by
+  have hs' : s.re < 0 := hs
+  have hre : 1 < (1 - s).re := by
+    simp only [Complex.sub_re, Complex.one_re]
+    linarith
+  have hn : ∀ n : ℕ, (1 : ℂ) - s ≠ -(n : ℂ) := by
+    intro n hcon
+    have h : (1 - s).re = -(n : ℝ) := by rw [hcon]; simp
+    have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    rw [h] at hre
+    linarith
+  have h1 : (1 : ℂ) - s ≠ 1 := by
+    intro hcon
+    rw [hcon] at hre
+    simp at hre
+  have hz : riemannZeta ((1 : ℂ) - s) ≠ 0 := riemannZeta_ne_zero_of_one_lt_re hre
+  have hcos : Complex.cos ((Real.pi : ℂ) * (1 - s) / 2) ≠ 0 := by
+    rw [cos_pi_one_sub_div_two]
+    exact hsin
+  have hfeq := hfe (1 - s) hn h1 hz hcos
+  rw [show (1 : ℂ) - (1 - s) = s by ring] at hfeq
+  rw [Gfun, Atilde, hfeq, tan_pi_one_sub_div_two]
+  have hne0 : (1 : ℂ) - s ≠ 0 := by
+    intro hcon
+    have h : (1 - s).re = 0 := by rw [hcon]; simp
+    rw [h] at hre
+    linarith
+  have hne1 : s - 1 ≠ 0 := by
+    intro hcon
+    apply hne0
+    linear_combination -hcon
+  field_simp
+  ring
 
 end CH2Section8
