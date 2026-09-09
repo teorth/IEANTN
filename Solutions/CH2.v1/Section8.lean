@@ -14,6 +14,7 @@ import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.Analysis.Complex.ExponentialBounds
 import Section7
+import DigammaReal
 import Mathlib.NumberTheory.LSeries.Dirichlet
 import IEANTN.Nodes.ZetaLogDerivValues.v1.Conclusions
 
@@ -700,5 +701,192 @@ theorem norm_Atilde_seg_le
     rw [hVeq, Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by linarith), neg_neg]
   rw [hnorm, ← ha0]
   nlinarith [htail, hS, hgam, ht0.le, ha0 ▸ hgam]
+
+/-! ### The horizontal contour from `-1` to `-∞`
+
+By the functional equation, `Ã(s) + (π/2)cot(πs/2) = ζ'/ζ(t) + ψ(t) + 1/t - log 2π` with
+`t = 1 - s`, and the right-hand side has no poles for `t ≥ 2` — which is the whole point of forking
+the contour at `-1`. The integral is therefore stated in the `t` parametrisation from the start:
+the left-hand side is a junk value at `s = -2, -4, …`, where both of its terms blow up and only the
+sum is regular, while the right-hand side is honest everywhere on `[2, ∞)`.
+
+Each piece of `g` is bounded separately: `|ζ'/ζ(t)| ≤ 0.57` from the imported value,
+`|ψ(t) - log t| ≤ 1/t` from `DigammaReal`, `|1/t| ≤ 1/2`, and `|log(t/2π)| ≤ 2.15 + 0.16 t` from
+`log u ≤ u - 1` applied both ways up. That gives `‖g(t)‖ ≤ 3.72 + 0.16 t`, and
+`(3.72 + 0.16t)·t ≤ 8.08 e^{0.6u}` at `t = 2 + u` collapses the integral to a single exponential.
+
+**Weaker than `lem:moruno`, which gets `-2Ã(-1)/(x log x) = 2.97/(x log x)`.** This gives `3.83/x`
+at `x = 15` — a factor of three, in a term the budget does not notice. The paper's route needs the
+concavity of `f(t) + 1/t` and the monotonicity of `t f(t)`, both from `lem:badabook`, whose proof
+has an interval-arithmetic step on `[2,7]`; none of that is needed here. -/
+
+/-- `g(t) = ζ'/ζ(t) + ψ(t) + 1/t - log 2π`, the integrand of the horizontal contour after the
+functional equation, in the `t = 1 - s` parametrisation. -/
+noncomputable def gfun (t : ℝ) : ℂ :=
+  deriv riemannZeta (t : ℂ) / riemannZeta (t : ℂ) + Complex.digamma (t : ℂ)
+    + 1 / (t : ℂ) - Complex.log (2 * (Real.pi : ℂ))
+
+/-- `|log(t/2π)| ≤ 2.15 + 0.16 t` for `t ≥ 2`, from `log u ≤ u - 1` used in both directions. -/
+theorem abs_log_sub_log_two_pi_le {t : ℝ} (ht : 2 ≤ t) :
+    |Real.log t - Real.log (2 * Real.pi)| ≤ 2.15 + 0.16 * t := by
+  have hpi := Real.pi_pos
+  have hpi1 : (3.141592 : ℝ) < Real.pi := Real.pi_gt_d6
+  have hpi2 : Real.pi < 3.141593 := Real.pi_lt_d6
+  have ht0 : (0 : ℝ) < t := by linarith
+  have h2pi : (0 : ℝ) < 2 * Real.pi := by linarith
+  have hup : Real.log t - Real.log (2 * Real.pi) ≤ 0.16 * t := by
+    have h : Real.log (t / (2 * Real.pi)) ≤ t / (2 * Real.pi) - 1 :=
+      Real.log_le_sub_one_of_pos (by positivity)
+    rw [Real.log_div (ne_of_gt ht0) (ne_of_gt h2pi)] at h
+    have hb : t / (2 * Real.pi) ≤ 0.16 * t := by
+      rw [div_le_iff₀ h2pi]
+      nlinarith
+    linarith
+  have hdn : Real.log (2 * Real.pi) - Real.log t ≤ 2.15 := by
+    have h : Real.log (2 * Real.pi / t) ≤ 2 * Real.pi / t - 1 :=
+      Real.log_le_sub_one_of_pos (by positivity)
+    rw [Real.log_div (ne_of_gt h2pi) (ne_of_gt ht0)] at h
+    have hb : 2 * Real.pi / t ≤ Real.pi := by
+      rw [div_le_iff₀ ht0]
+      nlinarith
+    linarith
+  rw [abs_le]
+  have h0 : (0 : ℝ) ≤ 0.16 * t := by linarith
+  constructor <;> linarith
+
+/-- **`‖g(t)‖ ≤ 3.72 + 0.16 t` for real `t ≥ 2`.** -/
+theorem norm_gfun_le (h2 : ZetaLogDerivValues.v1.logDeriv_two) {t : ℝ} (ht : 2 ≤ t) :
+    ‖gfun t‖ ≤ 3.72 + 0.16 * t := by
+  have ht0 : (0 : ℝ) < t := by linarith
+  have hz := norm_logDeriv_zeta_le h2 ht
+  have hd := CH2Digamma.norm_digamma_sub_log_le ht0
+  have hlog : Complex.log ((t : ℝ) : ℂ) = ((Real.log t : ℝ) : ℂ) :=
+    (Complex.ofReal_log ht0.le).symm
+  have hlog2 : Complex.log (2 * (Real.pi : ℂ)) = ((Real.log (2 * Real.pi) : ℝ) : ℂ) := by
+    rw [show (2 : ℂ) * ((Real.pi : ℝ) : ℂ) = (((2 * Real.pi : ℝ)) : ℂ) by push_cast; ring]
+    exact (Complex.ofReal_log (by positivity)).symm
+  have hinv : ‖(1 : ℂ) / ((t : ℝ) : ℂ)‖ = 1 / t := by
+    rw [show (1 : ℂ) / ((t : ℝ) : ℂ) = (((1 / t : ℝ)) : ℂ) by push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
+  have hsplit : gfun t = deriv riemannZeta (t : ℂ) / riemannZeta (t : ℂ)
+      + (Complex.digamma (t : ℂ) - ((Real.log t : ℝ) : ℂ))
+      + (((Real.log t - Real.log (2 * Real.pi) : ℝ)) : ℂ) + 1 / ((t : ℝ) : ℂ) := by
+    rw [gfun, hlog2]
+    push_cast
+    ring
+  have hlogbound : ‖(((Real.log t - Real.log (2 * Real.pi) : ℝ)) : ℂ)‖ ≤ 2.15 + 0.16 * t := by
+    rw [Complex.norm_real, Real.norm_eq_abs]
+    exact abs_log_sub_log_two_pi_le ht
+  have hinvle : 1 / t ≤ 1 / 2 := by
+    rw [div_le_div_iff₀ ht0 (by norm_num)]
+    linarith
+  have hdle : (1 : ℝ) / t ≤ 1 / 2 := hinvle
+  rw [hsplit]
+  calc ‖deriv riemannZeta (t : ℂ) / riemannZeta (t : ℂ)
+        + (Complex.digamma (t : ℂ) - ((Real.log t : ℝ) : ℂ))
+        + (((Real.log t - Real.log (2 * Real.pi) : ℝ)) : ℂ) + 1 / ((t : ℝ) : ℂ)‖
+      ≤ ‖deriv riemannZeta (t : ℂ) / riemannZeta (t : ℂ)
+          + (Complex.digamma (t : ℂ) - ((Real.log t : ℝ) : ℂ))
+          + (((Real.log t - Real.log (2 * Real.pi) : ℝ)) : ℂ)‖ + ‖(1 : ℂ) / ((t : ℝ) : ℂ)‖ :=
+        norm_add_le _ _
+    _ ≤ (‖deriv riemannZeta (t : ℂ) / riemannZeta (t : ℂ)
+          + (Complex.digamma (t : ℂ) - ((Real.log t : ℝ) : ℂ))‖
+          + ‖(((Real.log t - Real.log (2 * Real.pi) : ℝ)) : ℂ)‖) + ‖(1 : ℂ) / ((t : ℝ) : ℂ)‖ := by
+        gcongr
+        exact norm_add_le _ _
+    _ ≤ ((‖deriv riemannZeta (t : ℂ) / riemannZeta (t : ℂ)‖
+          + ‖Complex.digamma (t : ℂ) - ((Real.log t : ℝ) : ℂ)‖)
+          + ‖(((Real.log t - Real.log (2 * Real.pi) : ℝ)) : ℂ)‖) + ‖(1 : ℂ) / ((t : ℝ) : ℂ)‖ := by
+        gcongr
+        exact norm_add_le _ _
+    _ ≤ ((0.57 + 1 / t) + (2.15 + 0.16 * t)) + 1 / t := by
+        rw [hinv]
+        gcongr
+    _ ≤ 3.72 + 0.16 * t := by linarith
+
+/-- The horizontal contour from `-1` to `-∞`, parametrised by `t = 2 + u` with `u ∈ (0,∞)`, so that
+`s = 1 - t = -1 - u` and `ds = -du`. -/
+noncomputable def intHoriz (Φ : ℝ → ℂ) (x : ℝ) : ℂ :=
+  ∫ u in Set.Ioi (0:ℝ), -(gfun (2 + u) * Φ (2 + u) * ((x : ℂ) ^ ((-1 - u : ℝ) : ℂ)))
+
+/-- **The horizontal contour's contribution**, the `lem:moruno` analogue.
+
+`(3.72 + 0.16t)·t` at `t = 2 + u` is `8.08 + 4.36u + 0.16u²`, and `e^{0.6u} ≥ (1 + 0.3u)²` makes
+that at most `8.08 e^{0.6u}`; one exponential integral then finishes it. -/
+theorem norm_intHoriz_le (h2 : ZetaLogDerivValues.v1.logDeriv_two)
+    {Φ : ℝ → ℂ} (hΦ : ∀ u ∈ Set.Ioi (0:ℝ), ‖Φ (2 + u)‖ ≤ 2 + u)
+    {x : ℝ} (hx : 15 ≤ x) :
+    ‖intHoriz Φ x‖ ≤ 8.08 / (x * (Real.log x - 0.6)) := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hL : (2 : ℝ) < Real.log x := by
+    have h1 : Real.log 15 ≤ Real.log x := Real.log_le_log (by norm_num) hx
+    have h2' : (2 : ℝ) < Real.log 15 := by
+      rw [Real.lt_log_iff_exp_lt (by norm_num)]
+      have h := Real.exp_one_lt_d9
+      have he : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+      rw [he]
+      nlinarith [Real.exp_pos 1]
+    linarith
+  have ha : -(Real.log x - 0.6) < 0 := by linarith
+  have hpt : ∀ u ∈ Set.Ioi (0:ℝ),
+      ‖-(gfun (2 + u) * Φ (2 + u) * ((x : ℂ) ^ ((-1 - u : ℝ) : ℂ)))‖
+        ≤ 8.08 / x * Real.exp (-(Real.log x - 0.6) * u) := by
+    intro u hu
+    have hu0 : (0 : ℝ) < u := hu
+    have ht : (2 : ℝ) ≤ 2 + u := by linarith
+    have hg := norm_gfun_le h2 ht
+    have hf := hΦ u hu
+    have hxs : ‖(x : ℂ) ^ ((-1 - u : ℝ) : ℂ)‖ = 1 / x * Real.exp (-(Real.log x * u)) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hx0]
+      simp only [Complex.ofReal_re]
+      rw [Real.rpow_def_of_pos hx0,
+        show Real.log x * (-1 - u) = -Real.log x + -(Real.log x * u) by ring, Real.exp_add]
+      have h2' : Real.exp (-Real.log x) = 1 / x := by
+        rw [Real.exp_neg, Real.exp_log hx0, one_div]
+      rw [h2']
+    have hexp : (8.08 : ℝ) + 4.36 * u + 0.16 * u ^ 2 ≤ 8.08 * Real.exp (0.6 * u) := by
+      have h1 : (1 : ℝ) + 0.3 * u ≤ Real.exp (0.3 * u) := by
+        have := Real.add_one_le_exp (0.3 * u)
+        linarith
+      have h2' : ((1 : ℝ) + 0.3 * u) ^ 2 ≤ Real.exp (0.3 * u) ^ 2 := by
+        have hnn : (0 : ℝ) ≤ 1 + 0.3 * u := by linarith
+        nlinarith [Real.exp_pos (0.3 * u)]
+      have h3 : Real.exp (0.3 * u) ^ 2 = Real.exp (0.6 * u) := by
+        rw [sq, ← Real.exp_add]
+        ring_nf
+      rw [h3] at h2'
+      nlinarith [h2', sq_nonneg u]
+    rw [norm_neg, norm_mul, norm_mul, hxs]
+    have hgn : (0 : ℝ) ≤ ‖gfun (2 + u)‖ := norm_nonneg _
+    have hfn : (0 : ℝ) ≤ ‖Φ (2 + u)‖ := norm_nonneg _
+    have hstep : ‖gfun (2 + u)‖ * ‖Φ (2 + u)‖ ≤ (3.72 + 0.16 * (2 + u)) * (2 + u) :=
+      mul_le_mul hg hf hfn (by linarith)
+    have hpoly : (3.72 + 0.16 * (2 + u)) * (2 + u) = 8.08 + 4.36 * u + 0.16 * u ^ 2 := by ring
+    rw [hpoly] at hstep
+    have hpos : (0 : ℝ) ≤ 1 / x * Real.exp (-(Real.log x * u)) := by positivity
+    have hfinal : 8.08 * Real.exp (0.6 * u) * (1 / x * Real.exp (-(Real.log x * u)))
+        = 8.08 / x * Real.exp (-(Real.log x - 0.6) * u) := by
+      rw [show (8.08 : ℝ) * Real.exp (0.6 * u) * (1 / x * Real.exp (-(Real.log x * u)))
+          = 8.08 / x * (Real.exp (0.6 * u) * Real.exp (-(Real.log x * u))) by ring,
+        ← Real.exp_add]
+      congr 2
+      ring
+    calc ‖gfun (2 + u)‖ * ‖Φ (2 + u)‖ * (1 / x * Real.exp (-(Real.log x * u)))
+        ≤ (8.08 * Real.exp (0.6 * u)) * (1 / x * Real.exp (-(Real.log x * u))) := by
+          exact mul_le_mul_of_nonneg_right (le_trans hstep hexp) hpos
+      _ = 8.08 / x * Real.exp (-(Real.log x - 0.6) * u) := hfinal
+  have hint : ‖intHoriz Φ x‖
+      ≤ ∫ u in Set.Ioi (0:ℝ), 8.08 / x * Real.exp (-(Real.log x - 0.6) * u) := by
+    refine le_trans (MeasureTheory.norm_integral_le_integral_norm _) ?_
+    refine MeasureTheory.integral_mono_of_nonneg
+      (Filter.Eventually.of_forall fun u ↦ norm_nonneg _)
+      ((integrableOn_exp_mul_Ioi ha 0).const_mul _) ?_
+    filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with u hu
+    exact hpt u hu
+  refine le_trans hint (le_of_eq ?_)
+  rw [MeasureTheory.integral_const_mul, integral_exp_mul_Ioi ha 0]
+  have hne : Real.log x - 0.6 ≠ 0 := by linarith
+  field_simp
+  norm_num
 
 end CH2Section8
