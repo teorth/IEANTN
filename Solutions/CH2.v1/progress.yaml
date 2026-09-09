@@ -401,6 +401,33 @@ stages:
       a_n > 0, which is sign information on the Taylor coefficients of zeta'/zeta + 1/(s-1) at 1.
       DONE SO FAR IN Section8.lean: lem:adamant, both segments of C_<, and norm_intClt_le, which is
       the lem:ranadi analogue -- the whole of C_< contributes at most 18/x for x >= 15.
+      SECTION 8.2 IS DONE EXCEPT THE CONTOUR SHIFT. Section8.lean, 1155 lines, plus
+      DigammaReal.lean. lem:adamant; both segments of C_< and their sum (norm_intClt_le, 18/x for
+      x >= 15); the initial segment 1 -> -1 (norm_intSeg_le, the lem:arles analogue); the horizontal
+      contour -1 -> -infinity (norm_intHoriz_le, the lem:moruno analogue); and coronidis_bound,
+      which puts the three together as gamma x/log^2 x + 1.8 x/log^3 x.
+      WHAT REMAINS IN 8.2 IS ONE THING: the contour shift. The identity
+      int_C A~ Phi x^s ds = -int_{C_<} (pi/2) cot(pi s/2) Phi x^s ds + int_{-1}^{-infinity}
+      (A~ + (pi/2) cot) Phi x^s ds is Cauchy's theorem applied to a function the functional equation
+      makes holomorphic on the left half-plane. coronidis_bound therefore bounds the SUM OF THE
+      THREE PIECES, not yet the integral over C.
+      THREE DELIBERATE DEPARTURES FROM THE PAPER, each with the downstream slack checked first.
+      (1) lem:ranadi: no powers of log x are kept, since lem:hardin's budget for T >= 10^6 is at
+      least 3.4539/log^2 x against a paper contribution of 0.6978/log^2 x -- the log^3 coefficient
+      tolerates about 39.7 where the paper produces 5/3.
+      (2) lem:arles: a geometric majorant instead of convexity and a tangent line at t = 2. The
+      slopes differ; the leading gamma, the only coefficient with no slack downstream, does not.
+      (3) prop:coronidis is stated for x >= 10^6 rather than x >= 15. At x = 15 the C_< term alone
+      would eat the whole of the paper's 5/3; at 10^6 -- the only range lem:hardin uses, since it
+      assumes x >= T >= 10^6 -- the constant is 1.8 against the paper's 1.667.
+      lem:badabook IS NOT NEEDED on this route, which is why it stayed out of ZetaLogDerivValues.v1:
+      the crude bound on g(t) uses only |zeta'/zeta(t)| <= 0.57, |psi(t) - log t| <= 1/t and
+      log u <= u - 1, where the paper needs the concavity of f + 1/t and the monotonicity of t f(t).
+      DigammaReal.lean IS COPIED FROM GammaAsymptotics.v2's OWN SOLUTION. That node's conclusion is
+      an O-statement with an unnamed constant, useless for an explicit estimate, and a new version
+      of a green node would cost a receipt for no mathematical gain.
+      SECTION 8.1 IS NOT STARTED, and is the larger half: prop:titch96A, lem:saghar, and prop:adoro's
+      continuous pigeonhole. It needs zeta'/zeta(3/2), already in the values node, and zero counting.
       SUGGESTED ORDER: 8.2 first, since lem:adamant, lem:ranadi and prop:coronidis are ordinary
       complex analysis with explicit constants and depend on nothing outside the paper except the
       functional equation, which is already a node; then Ei; then 8.1, which is where the explicit
