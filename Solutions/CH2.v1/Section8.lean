@@ -889,4 +889,267 @@ theorem norm_intHoriz_le (h2 : ZetaLogDerivValues.v1.logDeriv_two)
   field_simp
   norm_num
 
+/-! ### The initial segment of `𝓒`, from `1` to `-1`
+
+`s(t) = 1 - t` on `[0,2]`, `ds = -dt`, so the integral is `-∫₀² Ã(1-t)Φ(1-t)x^{1-t} dt`. With
+`‖Φ(1-t)‖ ≤ t` and `‖Ã(1-t)‖ ≤ γ + 0.493t` the integrand is at most `(γt + 0.493t²) x^{1-t}`, and
+`γ(e^{λt} - 1) ≥ γλt ≥ 0.493t` for `λ = 0.986` folds the quadratic term into the exponential:
+
+  `(γ + 0.493t)·t ≤ γ t e^{λt}`,   so the integral is at most `γx/(log x - λ)²`.
+
+**`γ/(log x - λ)²` rather than `γ/log²x`**, which is where this parts company from `lem:arles`. The
+difference is `γ(L² - (L-λ)²)/(L(L-λ)²) ≈ 2γλ/L² · (1/L)`, an extra `x/log³x` term with coefficient
+about `2.3` — well inside what `lem:hardin` tolerates, and the leading `γ` is untouched.
+
+The elementary antiderivative is used rather than the Gamma-function integral over `Ioi 0`: `∫₀²`
+is a genuine interval integral here, and the fundamental theorem avoids every improper-integral
+side condition. The discarded boundary term `-(2/r + 1/r²)e^{-2r}` is negative, so dropping it is
+free. -/
+
+/-- `∫₀² t e^{-rt} dt ≤ 1/r²`, by the elementary antiderivative. -/
+theorem integral_mul_exp_le {r : ℝ} (hr : 0 < r) :
+    ∫ t in (0:ℝ)..2, t * Real.exp (-(r * t)) ≤ 1 / r ^ 2 := by
+  have hderiv : ∀ t ∈ Set.uIcc (0:ℝ) 2,
+      HasDerivAt (fun u : ℝ ↦ -(u / r + 1 / r ^ 2) * Real.exp (-(r * u)))
+        (t * Real.exp (-(r * t))) t := by
+    intro t _
+    have h1 : HasDerivAt (fun u : ℝ ↦ -(u / r + 1 / r ^ 2)) (-(1 / r)) t := by
+      have h : HasDerivAt (fun u : ℝ ↦ u / r + 1 / r ^ 2) (1 / r) t := by
+        simpa using ((hasDerivAt_id t).div_const r).add_const (1 / r ^ 2)
+      exact h.neg
+    have h2 : HasDerivAt (fun u : ℝ ↦ Real.exp (-(r * u))) (Real.exp (-(r * t)) * -r) t := by
+      have hin : HasDerivAt (fun u : ℝ ↦ -(r * u)) (-r) t := by
+        have h : HasDerivAt (fun u : ℝ ↦ r * u) r t := by
+          simpa using (hasDerivAt_id t).const_mul r
+        exact h.neg
+      simpa [Function.comp_def] using (Real.hasDerivAt_exp (-(r * t))).comp t hin
+    have h3 := h1.mul h2
+    refine h3.congr_deriv ?_
+    field_simp
+    ring
+  have hint : IntervalIntegrable (fun t : ℝ ↦ t * Real.exp (-(r * t))) MeasureTheory.volume 0 2 :=
+    (Continuous.intervalIntegrable (by fun_prop) 0 2)
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
+  have hexp : (0 : ℝ) < Real.exp (-(r * 2)) := Real.exp_pos _
+  have hr2 : (0 : ℝ) < r ^ 2 := by positivity
+  have hnn : (0 : ℝ) ≤ (2 / r + 1 / r ^ 2) * Real.exp (-(r * 2)) := by positivity
+  simp only [Real.exp_zero, mul_zero, neg_zero, zero_div, zero_add, mul_one]
+  nlinarith [hnn]
+
+/-- The initial segment of `𝓒`, from `1` (at `t = 0`) to `-1` (at `t = 2`); `ds = -dt`. -/
+noncomputable def intSeg (Φ : ℂ → ℂ) (x : ℝ) : ℂ :=
+  ∫ t in (0:ℝ)..2, -(Atilde ((1 - t : ℝ) : ℂ) * Φ ((1 - t : ℝ) : ℂ) * (x : ℂ) ^ ((1 - t : ℝ) : ℂ))
+
+/-- **The initial segment's contribution**, the `lem:arles` analogue. -/
+theorem norm_intSeg_le
+    (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    {Φ : ℂ → ℂ} (hΦ : ∀ t ∈ Set.Icc (0:ℝ) 2, ‖Φ ((1 - t : ℝ) : ℂ)‖ ≤ t)
+    {x : ℝ} (hx : 15 ≤ x) :
+    ‖intSeg Φ x‖ ≤ Real.eulerMascheroniConstant * x / (Real.log x - 0.986) ^ 2 := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hgam : (1 : ℝ) / 2 < Real.eulerMascheroniConstant := Real.one_half_lt_eulerMascheroniConstant
+  have hgam2 : Real.eulerMascheroniConstant < 2 / 3 := Real.eulerMascheroniConstant_lt_two_thirds
+  have hL : (2 : ℝ) < Real.log x := by
+    have h1 : Real.log 15 ≤ Real.log x := Real.log_le_log (by norm_num) hx
+    have h2' : (2 : ℝ) < Real.log 15 := by
+      rw [Real.lt_log_iff_exp_lt (by norm_num)]
+      have h := Real.exp_one_lt_d9
+      have he : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+      rw [he]
+      nlinarith [Real.exp_pos 1]
+    linarith
+  set r : ℝ := Real.log x - 0.986 with hrdef
+  have hr : (0 : ℝ) < r := by rw [hrdef]; linarith
+  -- the majorant
+  have hbound : ∀ᵐ t : ℝ, t ∈ Set.Ioc (0:ℝ) 2 →
+      ‖-(Atilde ((1 - t : ℝ) : ℂ) * Φ ((1 - t : ℝ) : ℂ) * (x : ℂ) ^ ((1 - t : ℝ) : ℂ))‖
+        ≤ Real.eulerMascheroniConstant * x * (t * Real.exp (-(r * t))) := by
+    filter_upwards with t ht
+    obtain ⟨ht0, ht2⟩ := ht
+    have hA := norm_Atilde_seg_le hk hneg ht0 ht2
+    have hf := hΦ t ⟨ht0.le, ht2⟩
+    have hxs : ‖(x : ℂ) ^ ((1 - t : ℝ) : ℂ)‖ = x * Real.exp (-(Real.log x * t)) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hx0]
+      simp only [Complex.ofReal_re]
+      rw [Real.rpow_def_of_pos hx0,
+        show Real.log x * (1 - t) = Real.log x + -(Real.log x * t) by ring, Real.exp_add,
+        Real.exp_log hx0]
+    have hexp : (Real.eulerMascheroniConstant + 0.493 * t) * t
+        ≤ Real.eulerMascheroniConstant * (t * Real.exp (0.986 * t)) := by
+      have h1 : (1 : ℝ) + 0.986 * t ≤ Real.exp (0.986 * t) := by
+        have := Real.add_one_le_exp (0.986 * t)
+        linarith
+      have hnn : (0 : ℝ) ≤ Real.eulerMascheroniConstant * t := by nlinarith [ht0.le]
+      have h2 : Real.eulerMascheroniConstant * t * (1 + 0.986 * t)
+          ≤ Real.eulerMascheroniConstant * t * Real.exp (0.986 * t) :=
+        mul_le_mul_of_nonneg_left h1 hnn
+      have h3 : (0 : ℝ) ≤ (Real.eulerMascheroniConstant - 1 / 2) * t ^ 2 :=
+        mul_nonneg (by linarith) (sq_nonneg t)
+      linarith [h2, h3]
+    rw [norm_neg, norm_mul, norm_mul, hxs]
+    have hAn : (0 : ℝ) ≤ ‖Atilde ((1 - t : ℝ) : ℂ)‖ := norm_nonneg _
+    have hfn : (0 : ℝ) ≤ ‖Φ ((1 - t : ℝ) : ℂ)‖ := norm_nonneg _
+    have hstep : ‖Atilde ((1 - t : ℝ) : ℂ)‖ * ‖Φ ((1 - t : ℝ) : ℂ)‖
+        ≤ (Real.eulerMascheroniConstant + 0.493 * t) * t :=
+      mul_le_mul hA hf hfn (by nlinarith [ht0.le])
+    have hxpos : (0 : ℝ) ≤ x * Real.exp (-(Real.log x * t)) := by positivity
+    have hcollapse : Real.eulerMascheroniConstant * (t * Real.exp (0.986 * t))
+        * (x * Real.exp (-(Real.log x * t)))
+        = Real.eulerMascheroniConstant * x * (t * Real.exp (-(r * t))) := by
+      rw [show Real.eulerMascheroniConstant * (t * Real.exp (0.986 * t))
+          * (x * Real.exp (-(Real.log x * t)))
+          = Real.eulerMascheroniConstant * x * t
+            * (Real.exp (0.986 * t) * Real.exp (-(Real.log x * t))) by ring,
+        ← Real.exp_add, hrdef]
+      have : (0.986 : ℝ) * t + -(Real.log x * t) = -((Real.log x - 0.986) * t) := by ring
+      rw [this]
+      ring
+    calc ‖Atilde ((1 - t : ℝ) : ℂ)‖ * ‖Φ ((1 - t : ℝ) : ℂ)‖ * (x * Real.exp (-(Real.log x * t)))
+        ≤ (Real.eulerMascheroniConstant * (t * Real.exp (0.986 * t)))
+          * (x * Real.exp (-(Real.log x * t))) :=
+          mul_le_mul_of_nonneg_right (le_trans hstep hexp) hxpos
+      _ = Real.eulerMascheroniConstant * x * (t * Real.exp (-(r * t))) := hcollapse
+  have hmajint : IntervalIntegrable
+      (fun t : ℝ ↦ Real.eulerMascheroniConstant * x * (t * Real.exp (-(r * t))))
+      MeasureTheory.volume 0 2 := Continuous.intervalIntegrable (by fun_prop) 0 2
+  have hstep := intervalIntegral.norm_integral_le_of_norm_le (by norm_num : (0:ℝ) ≤ 2)
+    hbound hmajint
+  rw [intSeg]
+  refine le_trans hstep ?_
+  rw [intervalIntegral.integral_const_mul]
+  have hI := integral_mul_exp_le hr
+  have hcoef : (0 : ℝ) ≤ Real.eulerMascheroniConstant * x := by nlinarith
+  calc Real.eulerMascheroniConstant * x * ∫ t in (0:ℝ)..2, t * Real.exp (-(r * t))
+      ≤ Real.eulerMascheroniConstant * x * (1 / r ^ 2) :=
+        mul_le_mul_of_nonneg_left hI hcoef
+    _ = Real.eulerMascheroniConstant * x / r ^ 2 := by ring
+
+/-! ### The three pieces together: the `prop:coronidis` arithmetic
+
+The paper reports `γx/log²x + (5/3)x/log³x` for `x ≥ 15`. The three bounds above are
+
+  `γx/(log x - 0.986)²`,   `18/x`,   `8.08/(x(log x - 0.6))`,
+
+and putting them into that shape is where the `x ≥ 15` of the paper is not the natural range for
+this route: at `x = 15` the second term alone needs the whole of the paper's `5/3`. **Stated for
+`x ≥ 10⁶` instead**, which is the only range `lem:hardin` ever uses — it assumes `x ≥ T ≥ 10⁶` —
+and there the constant comes out at `1.8` against the paper's `1.667`, with the leading `γ` exact.
+
+The conversions all run through `log x ≤ 2√x`, which is `log u ≤ u - 1` at `u = √x`.
+
+**What is still missing is the contour shift**, not the arithmetic: the paper's identity
+`∫_𝓒 Ã Φ x^s ds = -∫_{𝓒_<} (π/2)cot(πs/2) Φ x^s ds + ∫_{-1}^{-∞}(Ã + (π/2)cot) Φ x^s ds`
+is Cauchy's theorem applied to a function the functional equation makes holomorphic on the left
+half-plane, and none of that is formalised here. So this bounds the *sum of the three pieces*, which
+is what the decomposition produces, and identifying that sum with the integral over `𝓒` remains to
+be done. -/
+
+/-- `log x ≤ 2√x`, from `log u ≤ u - 1` at `u = √x`. -/
+theorem log_le_two_mul_sqrt {x : ℝ} (hx : 0 < x) : Real.log x ≤ 2 * Real.sqrt x := by
+  have hsx : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx
+  have h := Real.log_le_sub_one_of_pos hsx
+  rw [Real.log_sqrt hx.le] at h
+  linarith
+
+/-- `13 ≤ log x` for `x ≥ 10⁶`, since `e¹³ < 4.5 × 10⁵`. -/
+theorem thirteen_le_log {x : ℝ} (hx : 1000000 ≤ x) : (13 : ℝ) ≤ Real.log x := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  rw [Real.le_log_iff_exp_le hx0]
+  have he : Real.exp 13 = Real.exp 1 ^ 13 := by
+    rw [← Real.exp_nat_mul]
+    norm_num
+  have h1 : Real.exp 1 < 2.72 := by
+    have := Real.exp_one_lt_d9
+    linarith
+  have h2 : Real.exp 1 ^ 13 < (2.72 : ℝ) ^ 13 :=
+    pow_lt_pow_left₀ h1 (Real.exp_pos 1).le (by norm_num)
+  have h3 : (2.72 : ℝ) ^ 13 < 1000000 := by norm_num
+  rw [he]
+  linarith
+
+/-- **The `prop:coronidis` arithmetic**: the three pieces sum to `γx/log²x + 1.8x/log³x` for
+`x ≥ 10⁶`, the range `lem:hardin` works in. -/
+theorem coronidis_bound
+    (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    {Φ : ℂ → ℂ} {Ψ : ℝ → ℂ}
+    (hΦseg : ∀ t ∈ Set.Icc (0:ℝ) 2, ‖Φ ((1 - t : ℝ) : ℂ)‖ ≤ t)
+    (hΦ1 : ∀ t ∈ Set.Icc (0:ℝ) (Real.sqrt 2), ‖Φ (segC1 t)‖ ≤ ‖segC1 t - 1‖)
+    (hΦ2 : ∀ t ∈ Set.Ioi (0:ℝ), ‖Φ (segC2 t)‖ ≤ ‖segC2 t - 1‖)
+    (hΨ : ∀ u ∈ Set.Ioi (0:ℝ), ‖Ψ (2 + u)‖ ≤ 2 + u)
+    {x : ℝ} (hx : 1000000 ≤ x) :
+    ‖intSeg Φ x‖
+      + ‖intC1 (fun s ↦ ((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * s / 2) * Φ s
+            * (x : ℂ) ^ s)
+          + intC2 (fun s ↦ ((Real.pi : ℂ) / 2) * Complex.cot ((Real.pi : ℂ) * s / 2) * Φ s
+            * (x : ℂ) ^ s)‖
+      + ‖intHoriz Ψ x‖
+      ≤ Real.eulerMascheroniConstant * x / Real.log x ^ 2 + 1.8 * x / Real.log x ^ 3 := by
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hx15 : (15 : ℝ) ≤ x := by linarith
+  have hL13 : (13 : ℝ) ≤ Real.log x := thirteen_le_log hx
+  have hL0 : (0 : ℝ) < Real.log x := by linarith
+  have hgam : (1 : ℝ) / 2 < Real.eulerMascheroniConstant := Real.one_half_lt_eulerMascheroniConstant
+  have hgam2 : Real.eulerMascheroniConstant < 2 / 3 := Real.eulerMascheroniConstant_lt_two_thirds
+  set s : ℝ := Real.sqrt x with hsdef
+  have hs2 : s ^ 2 = x := Real.sq_sqrt hx0.le
+  have hs1000 : (1000 : ℝ) ≤ s := by
+    rw [hsdef, show (1000 : ℝ) = Real.sqrt 1000000 by
+      rw [show (1000000 : ℝ) = 1000 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+    exact Real.sqrt_le_sqrt hx
+  have hLs : Real.log x ≤ 2 * s := log_le_two_mul_sqrt hx0
+  have hL3 : Real.log x ^ 3 ≤ 8 * s ^ 3 := by
+    have := pow_le_pow_left₀ hL0.le hLs 3
+    nlinarith [this]
+  -- the three pieces
+  have hA := norm_intSeg_le hk hneg hΦseg hx15
+  have hB := norm_intClt_le hΦ1 hΦ2 hx15
+  have hC := norm_intHoriz_le h2v hΨ hx15
+  -- and their conversions
+  have hlam : (0 : ℝ) < Real.log x - 0.986 := by linarith
+  have hs0 : (0 : ℝ) < s := by linarith
+  have hkey1 : Real.eulerMascheroniConstant * Real.log x * 0.986 * (2 * Real.log x - 0.986)
+      ≤ 1.6 * (Real.log x - 0.986) ^ 2 := by
+    have hprod : (0 : ℝ) ≤ Real.log x * (2 * Real.log x - 0.986) := by nlinarith
+    nlinarith [hL13, sq_nonneg (Real.log x - 13),
+      mul_nonneg (by linarith : (0:ℝ) ≤ 2 / 3 - Real.eulerMascheroniConstant) hprod]
+  have hconv1 : Real.eulerMascheroniConstant * x / (Real.log x - 0.986) ^ 2
+      ≤ Real.eulerMascheroniConstant * x / Real.log x ^ 2 + 1.6 * x / Real.log x ^ 3 := by
+    have h1 : Real.eulerMascheroniConstant * x / (Real.log x - 0.986) ^ 2
+        - Real.eulerMascheroniConstant * x / Real.log x ^ 2
+        = Real.eulerMascheroniConstant * x * (0.986 * (2 * Real.log x - 0.986))
+          / ((Real.log x - 0.986) ^ 2 * Real.log x ^ 2) := by
+      field_simp
+      ring
+    have h2 : Real.eulerMascheroniConstant * x * (0.986 * (2 * Real.log x - 0.986))
+        / ((Real.log x - 0.986) ^ 2 * Real.log x ^ 2) ≤ 1.6 * x / Real.log x ^ 3 := by
+      rw [div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith [mul_le_mul_of_nonneg_left hkey1
+        (by positivity : (0:ℝ) ≤ x * Real.log x ^ 2)]
+    linarith [h1, h2]
+  have hconv2 : (18 : ℝ) / x ≤ 0.15 * x / Real.log x ^ 3 := by
+    rw [div_le_div_iff₀ hx0 (by positivity)]
+    have hxx : (0.15 : ℝ) * x * x = 0.15 * s ^ 4 := by rw [← hs2]; ring
+    have hkey : (144 : ℝ) * s ^ 3 ≤ 0.15 * s ^ 4 := by nlinarith [hs1000, pow_pos hs0 3]
+    rw [hxx]
+    linarith [hL3, hkey]
+  have hconv3 : (8.08 : ℝ) / (x * (Real.log x - 0.6)) ≤ 0.05 * x / Real.log x ^ 3 := by
+    have hpos : (0 : ℝ) < x * (Real.log x - 0.6) := by nlinarith
+    rw [div_le_div_iff₀ hpos (by positivity)]
+    have hxsq : x * x = s ^ 4 := by rw [← hs2]; ring
+    have hxx : (0.62 : ℝ) * s ^ 4 ≤ 0.05 * x * (x * (Real.log x - 0.6)) := by
+      have heq : 0.05 * x * (x * (Real.log x - 0.6)) = 0.05 * s ^ 4 * (Real.log x - 0.6) := by
+        linear_combination (0.05 * (Real.log x - 0.6)) * hxsq
+      rw [heq]
+      nlinarith [pow_pos hs0 4, hL13]
+    have hkey : (64.64 : ℝ) * s ^ 3 ≤ 0.62 * s ^ 4 := by nlinarith [hs1000, pow_pos hs0 3]
+    linarith [hL3, hkey, hxx]
+  have hfinal : Real.eulerMascheroniConstant * x / Real.log x ^ 2 + 1.6 * x / Real.log x ^ 3
+      + 0.15 * x / Real.log x ^ 3 + 0.05 * x / Real.log x ^ 3
+      = Real.eulerMascheroniConstant * x / Real.log x ^ 2 + 1.8 * x / Real.log x ^ 3 := by
+    ring
+  linarith [hA, hB, hC, hconv1, hconv2, hconv3, hfinal]
+
 end CH2Section8
