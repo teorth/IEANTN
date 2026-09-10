@@ -446,7 +446,63 @@ stages:
       DigammaReal.lean IS COPIED FROM GammaAsymptotics.v2's OWN SOLUTION. That node's conclusion is
       an O-statement with an unnamed constant, useless for an explicit estimate, and a new version
       of a green node would cost a receipt for no mathematical gain.
-      SECTION 8.1 IS NOT STARTED, and is the larger half: prop:titch96A, lem:saghar, and prop:adoro's
+      SECTION 8.1: THE MAP, AND THE CONSTANT BUDGET. The chain is
+      cor:adiaro <- prop:adoro <- lem:saghar <- {prop:titch96A, lem:rameau <- lem:bettnist},
+      with cor:adiaro also resting on cor:zeroinbox <- ZeroCount.v1 (rvm_error_bound,
+      rvm_error_small) and the definition N(t) = main + Q(t).
+      THE ONE GENUINE IMPORT IS THE PARTIAL-FRACTION EXPANSION of zeta'/zeta,
+      zeta'/zeta(s) = sum_rho (1/(s-rho) + 1/rho) - (1/2) psi(s/2+1) - 1/(s-1) + C
+      (Montgomery-Vaughan, Multiplicative Number Theory I, Corollary 10.14; Davenport ch. 12).
+      MATHLIB DOES NOT HAVE IT -- it has discreteness of the zeros (Mathlib.NumberTheory.LSeries.
+      ZetaZeros) and the functional equation, but no Hadamard factorisation of xi. This must be a
+      NEW NODE, citation-justified, and it cannot go on ZetaLogDeriv.v1, which is green. Note the
+      constant C is never needed: prop:titch96A uses only the difference of the formula at s and
+      at s_+ = 3/2 + it, so the node can state it with an existential constant, which is both
+      easier to justify and easier to consume. Everything else in 8.1 is solution work.
+      THE CONSTANT BUDGET, worked out from section 9 because it decides every choice in 8.1.
+      prop:sagaro needs pi/T' + I-term + (y coth y correction) <= pi/(T-1) with T' >= T - 1/2, so
+      the I-term budget is pi/(T-1) - pi/(T-1/2) = (pi/2)/((T-1)(T-1/2)), i.e. about 1.5708/T^2,
+      less 0.001/T^2 for the coth correction. The I-term is (K_2 + K_3/L) log T'/((T')^2 L^2) with
+      K_2 = 2*13, K_3 = 2*60 in the paper; the binding case is x = T = 10^9, where L = log x =
+      20.7233 and log T' = L too, so the constraint is K_2 + K_3/20.7233 <= 1.5698*20.7233 = 32.53.
+      The paper sits at 26 + 5.79 = 31.79. SO THE SLACK IS 2.3% ON THE TOTAL, but it is all in the
+      log^3 x coefficient: K_3 may rise to 135.6, i.e. lem:hardin's 60 may rise to about 67.9.
+      TRACING THAT BACK: k_{3,1} + k_{3,0}/log T <= 67.9 at log T = 16.118 (T >= 10^7), where
+      k_{3,1} = (8 + C/L) beta_1 + 2 c_{1,1} and k_{3,0} = (8 + C/L) beta_0 + 2 c_{1,0}, with
+      a = 1/4, alpha = 1/8, beta_1 = 0.51937, beta_0 = 3.7806, c_{1,1} = 14.0732, c_{1,0} = 125.66.
+      Restating cor:adiaro for x >= 10^9 rather than x >= 10^6 -- legitimate, prop:sagaro is its
+      only consumer and it has x > max(T, 10^9) -- gives L >= 20.7233 and the budget
+      C <= 498, where C is the log^4 x coefficient of eq:arguc2. The paper has C = 320/3 = 106.7.
+      SO THERE IS A FACTOR OF 4.7 OF ROOM IN THE Ei CONSTANT, and that is what makes lem:bettnist
+      cheap. The paper proves Ei(X) <= (e^X/X)(1 + 1/X + 2/X^2 + (40/3)/X^3) by showing the
+      difference has a single critical point at X = 80/11 and checking it there with Arb; the
+      margin is 0.0034 out of 239.65, a relative 1.4e-5, which would need seven digits of Ei and of
+      gamma -- and Mathlib only has 1/2 < gamma < 2/3. INSTEAD, with alpha = 40 in place of 40/3
+      (so C = 320 instead of 320/3, still under 498), the bound is elementary and needs no
+      numerics at all: substituting w = X - v,
+      int_1^X e^w/w dw = e^X int_0^{X-1} e^{-v}/(X-v) dv, and expanding
+      1/(X-v) = 1/X + v/X^2 + v^2/X^3 + v^3/X^4 + v^4/(X^4 (X-v)) with X - v >= 1 on the range and
+      int_0^{X-1} v^k e^{-v} dv <= k! gives
+      int_1^X e^w/w dw <= e^X (1/X + 1/X^2 + 2/X^3 + 30/X^4).
+      The leftover int_0^1 (e^w - 1)/w dw <= e - 1 costs (e-1) X^4 e^{-X} <= (e-1) * 256/e^4 =
+      8.06, so alpha = 39 already works for every X >= 1; 40 is the round number.
+      GAMMA IS NOT NEEDED EITHER. Define EiAux(X) = int_0^X (e^w - 1)/w dw, so that
+      Ei = gamma + log X + EiAux; the gamma and log X in the paper's eq:arguc1 cancel against the
+      arsinh term, and every term they sit in is O(1/sqrt x), which at x >= 10^9 is 3e-5 against a
+      2/L^2 = 0.0047 that has to be exact. So state eq:arguc2 with EiAux and never mention Ei.
+      END-TO-END CHECK at C = 320: k_{3,1} = 40.32, k_{3,0} = 339.94, k_{3,1} + k_{3,0}/16.118 =
+      61.41 <= 67.9, and K_2 + K_3/L = 24.2 + 5.93 = 30.1 <= 32.53. About 7% of margin.
+      STARTED: Section81.lean has lem:bettnist, as eiAux_le. The five factorial integrals
+      int_0^Y v^k e^{-v} dv <= k! (k = 0..4, one antiderivative each), the substitution and
+      geometric expansion giving int_1^X e^w/w dw <= e^X (1/X + 1/X^2 + 2/X^3 + 30/X^4), the
+      quartic bound X^4 <= 6.5536 e^X (four Taylor terms of e^{X/4}, raised to the fourth power --
+      the truth is 256/e^4 = 4.689 at X = 4, but no monotonicity argument is needed), and
+      EiAux X = int_0^X (e^w - 1)/w dw <= e^X (1/X + 1/X^2 + 2/X^3 + 42/X^4) for X >= 1.
+      42 against the paper's 40/3, well inside the budget of 62.
+      NOTE THE INTEGRABILITY TRAP: (e^w - 1)/w is NOT continuous at 0 in Lean, where it takes the
+      junk value 0/0 = 0 rather than the limit 1. ContinuousOn.intervalIntegrable does not apply on
+      [0,1]; the integrand has to be dominated by the constant e instead.
+      SECTION 8.1 IS OTHERWISE NOT STARTED, and is the larger half: prop:titch96A, lem:saghar, and prop:adoro's
       continuous pigeonhole. It needs zeta'/zeta(3/2), already in the values node, and zero counting.
       SUGGESTED ORDER: 8.2 first, since lem:adamant, lem:ranadi and prop:coronidis are ordinary
       complex analysis with explicit constants and depend on nothing outside the paper except the
