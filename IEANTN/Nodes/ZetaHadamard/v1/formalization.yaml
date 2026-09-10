@@ -130,15 +130,22 @@ review:
     Re rho >= 1 and none with Re rho <= 0 apart from the trivial ones at -2, -4, ... . Writing it
     as a strip rather than as "not a negative even integer" keeps the statement in the vocabulary
     the rest of the network already uses for zero counting.
-    CHECKED NUMERICALLY BEFORE BEING WRITTEN. To 12 digits at s = 0.3+5i, s = -3+2i and
-    s = 0.5+30i against w = 3/2 + i t, summing the first 300 zeroes and their conjugates; and
-    separately in differentiated form, (zeta'/zeta)'(s) = -sum 1/(s-rho)^2 - psi'(s/2+1)/4
-    + 1/(s-1)^2, where the terms are O(1/|rho|^3). In both the residual is independent of s and
-    shrinks like the Riemann-von Mangoldt tail log(T/2pi)/(2pi T): between N = 100 and N = 400 the
-    observed ratio is 0.428 against 0.443 predicted, which identifies the residual as truncation
-    rather than error. A sign or normalisation slip here would be invisible to the type-checker and
-    fatal downstream, so agreement with the mathematics was established independently of any Lean
-    proof.
+    CHECKED NUMERICALLY BEFORE BEING WRITTEN, AND THE CHECK IS INDIRECT BECAUSE IT HAS TO BE.
+    At s = 0.3+5i, s = -3+2i and s = 0.5+30i against w = 3/2 + i t, summing zeroes and conjugates
+    out to N = 2000. The paired terms are only O(1/|rho|^2), so partial sums converge like
+    log(T/2pi)/(2pi T) and about three digits is all a direct sum buys; raw agreement is therefore
+    not what was established. What was established is that the residual IS the truncation tail.
+    Three things say so. It decreases monotonically, roughly halving as N quadruples, which is the
+    Riemann-von Mangoldt rate. IT IS ALMOST PURELY REAL, WHICH IS THE SHARP TEST: in all three
+    cases w - s is real, so the tail terms (w-s)/((s-rho)(w-rho)) are approximately (w-s)/rho^2 and,
+    summed over conjugate pairs, real to leading order -- so the IMAGINARY parts are free of the
+    tail, and they agree to NINE significant figures at N = 2000 (relative 4e-7, 5.9e-7 and 1.9e-9)
+    while the real residuals are still 1e-3. And in differentiated form,
+    (zeta'/zeta)'(s) = -sum 1/(s-rho)^2 - psi'(s/2+1)/4 + 1/(s-1)^2, where the terms are
+    O(1/|rho|^3), the residual is independent of s to four digits across four test points and its
+    ratio between N = 100 and N = 400 is 0.428 observed against 0.443 predicted.
+    AN EARLIER DRAFT OF THIS NOTE SAID "to 12 digits", which was wrong -- that was the working
+    precision, not the agreement. Corrected here rather than left to be discovered.
 
 limitations:
 - >-

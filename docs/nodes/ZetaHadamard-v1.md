@@ -59,7 +59,7 @@ noncomputable def logDeriv_partial_fractions : Prop :=
 |---|---|
 | Lean name | `ZetaHadamard.v1.logDeriv_partial_fractions` |
 | Challenge | `ZetaHadamard.v1.challenge_logDeriv_partial_fractions` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaHadamard/v1/Conclusions.lean#L96) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaHadamard/v1/Conclusions.lean#L107) |
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
