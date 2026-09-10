@@ -382,6 +382,148 @@ stages:
       lem:arles, and THE EXPONENTIAL INTEGRAL Ei, which Mathlib does not have at all and which
       lem:rameau and lem:bettnist both use. Ei is the clearest helper-node candidate in the
       section: elementary, absent from Mathlib, and not specific to this paper.
+      WHAT MATHLIB'S VON MANGOLDT L-SERIES GIVES, checked rather than assumed. Present and clean:
+      LSeries_vonMangoldt_eq_deriv_riemannZeta_div (L of Lambda at s equals -zeta'/zeta(s) for
+      Re s > 1), LSeriesSummable_vonMangoldt, LSeries.norm_term_le_of_re_le_re (termwise
+      monotonicity of the norms in Re s), and ArithmeticFunction.vonMangoldt_nonneg. Together those
+      give |zeta'/zeta(t)| <= |zeta'/zeta(2)| for real t >= 2 with only plumbing -- the one fiddly
+      step is that the terms at the real point s = 2 are non-negative reals, so the sum of the
+      norms is the norm of the sum.
+      WHAT IS ABSENT IS EVERY NUMERICAL VALUE. Mathlib has no bound for zeta'/zeta at any point, and
+      section 8 needs five of them: zeta'/zeta(2) = -0.5699... for the bound just described,
+      A~(-1) = -1.48505... for lem:moruno, c = zeta'/zeta(-1) - 2 (zeta'/zeta)'(-1) = 3.86102... for
+      lem:arles, |zeta'/zeta(1+sigma_0)| for lem:adioso, and zeta'/zeta(3/2) = -1.50523... for
+      lem:saghar and prop:titch96A. Each is a sum over Lambda(n) n^{-t} or its derivative.
+      SO THIS IS A HELPER NODE, not inline work. Five call sites in one section, all of the same
+      shape, none specific to this paper. It cannot go on ZetaLogDeriv.v1, which is green: adding a
+      conclusion there would invalidate its receipt, verification being all-or-nothing per node.
+      lem:arles needs one more thing of the same kind: A~(s) = sum (-1)^{n+1} a_n (s-1)^n with
+      a_n > 0, which is sign information on the Taylor coefficients of zeta'/zeta + 1/(s-1) at 1.
+      DONE SO FAR IN Section8.lean: lem:adamant, both segments of C_<, and norm_intClt_le, which is
+      the lem:ranadi analogue -- the whole of C_< contributes at most 18/x for x >= 15.
+      SECTION 8.2 IS DONE. Section8.lean, plus DigammaReal.lean. The endpoint is coronidis:
+      for x >= 10^6, ||int_C A~(s) Phi(s) x^s ds|| <= gamma x/log^2 x + 1.8 x/log^3 x, where C is
+      the initial segment 1 -> -1 followed by intClt, the re-routed C_<. Its hypotheses are what
+      the paper's |Phi'| <= 1, Phi(1) = 0 and holomorphy give: DifferentiableOn on Re s < 0,
+      ||Phi(1-t)|| <= t on [0,2], and ||Phi(s)|| <= ||s-1|| on the strip Re s <= -1, |Im s| <= 1.
+      C_< WAS RE-ROUTED THROUGH A VERTICAL LEG. With the paper's 135 degree leg the region between
+      C_< and the real half-line is a rectangle with a corner cut off, so Cauchy would need a
+      triangle too, and Mathlib has the rectangle only. A vertical leg from -1 to -1+i makes the
+      region exactly [-1-R,-1] x [0,1]. The paper's reason for 45 degrees does not apply on this
+      route -- it wants x^s to decay along the leg, which buys powers of log x this route has
+      already given up -- and the cot bound on a vertical leg is EASIER: at Re s = -1,
+      cot(pi s/2) = -i tanh(pi v/2), so |cot| <= 1 outright. The two routes are interchangeable
+      because A~ Phi x^s is holomorphic in the triangle between them; lem:adamant, segC1, segC2 and
+      norm_intClt_le stay in the file, correct and unused, and coronidis_bound takes the middle
+      piece abstractly as M <= 18/x so that either route instantiates it.
+      THE SHIFT IS contour_shift, INSTANTIATED AS shift_Fint. All three side conditions -- the two
+      integrabilities and the vanishing of the left edge -- come off one pointwise bound on the
+      strip: ||G Phi x^s|| <= (A + 3 + u)(3 + u) x^{-1-u} with u = -1 - Re s, collapsed by
+      e^u >= (1 + u/2)^2 to (19 + 4A)/x times e^{-(log x - 1)u}. The left edge needs nothing extra
+      because that bound at u = R does not depend on the height.
+      THE OBSTRUCTION FLAGGED EARLIER DISSOLVED. Bounding G off the real axis needs a COMPLEX
+      digamma asymptotic, and GammaAsymptotics.v2's conclusion is an O-statement with an unnamed
+      constant -- useless for an explicit bound. But the unnamed constant is only ever needed for
+      the two SIDE CONDITIONS, integrability and a limit; the final explicit constant comes from
+      norm_intHoriz_le, on the real axis, where DigammaReal gives |psi - log| <= 1/x with the
+      constant explicit. So the O-form sufficed, and no new Gamma work was required.
+      SPLITTING THE INTEGRAND UNDER THE INTEGRAL SIGN was the last piece of bookkeeping: intClt_eq
+      rewrites A~ = G - (pi/2) cot(pi s/2) on each leg via Gfun_eq, which needs sin(pi s/2) != 0.
+      The vertical leg misses the even integers by its real part (-1) and the horizontal tail by its
+      imaginary part (1), so cot(pi s/2) is continuous along both and the guard is free.
+      THREE DELIBERATE DEPARTURES FROM THE PAPER, each with the downstream slack checked first.
+      (1) lem:ranadi: no powers of log x are kept, since lem:hardin's budget for T >= 10^6 is at
+      least 3.4539/log^2 x against a paper contribution of 0.6978/log^2 x -- the log^3 coefficient
+      tolerates about 39.7 where the paper produces 5/3.
+      (2) lem:arles: a geometric majorant instead of convexity and a tangent line at t = 2. The
+      slopes differ; the leading gamma, the only coefficient with no slack downstream, does not.
+      (3) prop:coronidis is stated for x >= 10^6 rather than x >= 15. At x = 15 the C_< term alone
+      would eat the whole of the paper's 5/3; at 10^6 -- the only range lem:hardin uses, since it
+      assumes x >= T >= 10^6 -- the constant is 1.8 against the paper's 1.667.
+      lem:badabook IS NOT NEEDED on this route, which is why it stayed out of ZetaLogDerivValues.v1:
+      the crude bound on g(t) uses only |zeta'/zeta(t)| <= 0.57, |psi(t) - log t| <= 1/t and
+      log u <= u - 1, where the paper needs the concavity of f + 1/t and the monotonicity of t f(t).
+      DigammaReal.lean IS COPIED FROM GammaAsymptotics.v2's OWN SOLUTION. That node's conclusion is
+      an O-statement with an unnamed constant, useless for an explicit estimate, and a new version
+      of a green node would cost a receipt for no mathematical gain.
+      SECTION 8.1: THE MAP, AND THE CONSTANT BUDGET. The chain is
+      cor:adiaro <- prop:adoro <- lem:saghar <- {prop:titch96A, lem:rameau <- lem:bettnist},
+      with cor:adiaro also resting on cor:zeroinbox <- ZeroCount.v1 (rvm_error_bound,
+      rvm_error_small) and the definition N(t) = main + Q(t).
+      THE ONE GENUINE IMPORT IS THE PARTIAL-FRACTION EXPANSION of zeta'/zeta,
+      zeta'/zeta(s) = sum_rho (1/(s-rho) + 1/rho) - (1/2) psi(s/2+1) - 1/(s-1) + C
+      (Montgomery-Vaughan, Multiplicative Number Theory I, Corollary 10.14; Davenport ch. 12).
+      MATHLIB DOES NOT HAVE IT -- it has discreteness of the zeros (Mathlib.NumberTheory.LSeries.
+      ZetaZeros) and the functional equation, but no Hadamard factorisation of xi.
+      THE NODE NOW EXISTS: ZetaHadamard.v1.logDeriv_partial_fractions, kind `standard`, justified
+      by Montgomery-Vaughan Corollary 10.14. It states the identity taken at TWO POINTS AND
+      SUBTRACTED, which is both what prop:titch96A actually uses and what makes the statement
+      non-vacuous: the unpaired sum over zeros is not absolutely summable, and Lean's tsum of a
+      non-summable family is 0, so the obvious transcription would typecheck and assert nothing.
+      Subtracting makes the terms (w-s)/((s-rho)(w-rho)) = O(1/|rho|^2), so HasSum can be used and
+      carries its own convergence, and the additive constant C cancels. Four hypotheses only:
+      s, w /= 1 and zeta(s), zeta(w) /= 0, the last two also keeping psi(s/2+1) off its poles,
+      which sit exactly at the trivial zeros. Everything else in 8.1 is solution work.
+      THE CONSTANT BUDGET, worked out from section 9 because it decides every choice in 8.1.
+      prop:sagaro needs pi/T' + I-term + (y coth y correction) <= pi/(T-1) with T' >= T - 1/2, so
+      the I-term budget is pi/(T-1) - pi/(T-1/2) = (pi/2)/((T-1)(T-1/2)), i.e. about 1.5708/T^2,
+      less 0.001/T^2 for the coth correction. The I-term is (K_2 + K_3/L) log T'/((T')^2 L^2) with
+      K_2 = 2*13, K_3 = 2*60 in the paper; the binding case is x = T = 10^9, where L = log x =
+      20.7233 and log T' = L too, so the constraint is K_2 + K_3/20.7233 <= 1.5698*20.7233 = 32.53.
+      The paper sits at 26 + 5.79 = 31.79. SO THE SLACK IS 2.3% ON THE TOTAL, but it is all in the
+      log^3 x coefficient: K_3 may rise to 135.6, i.e. lem:hardin's 60 may rise to about 67.9.
+      TRACING THAT BACK: k_{3,1} + k_{3,0}/log T <= 67.9 at log T = 16.118 (T >= 10^7), where
+      k_{3,1} = (8 + C/L) beta_1 + 2 c_{1,1} and k_{3,0} = (8 + C/L) beta_0 + 2 c_{1,0}, with
+      a = 1/4, alpha = 1/8, beta_1 = 0.51937, beta_0 = 3.7806, c_{1,1} = 14.0732, c_{1,0} = 125.66.
+      Restating cor:adiaro for x >= 10^9 rather than x >= 10^6 -- legitimate, prop:sagaro is its
+      only consumer and it has x > max(T, 10^9) -- gives L >= 20.7233 and the budget
+      C <= 498, where C is the log^4 x coefficient of eq:arguc2. The paper has C = 320/3 = 106.7.
+      SO THERE IS A FACTOR OF 4.7 OF ROOM IN THE Ei CONSTANT, and that is what makes lem:bettnist
+      cheap. The paper proves Ei(X) <= (e^X/X)(1 + 1/X + 2/X^2 + (40/3)/X^3) by showing the
+      difference has a single critical point at X = 80/11 and checking it there with Arb; the
+      margin is 0.0034 out of 239.65, a relative 1.4e-5, which would need seven digits of Ei and of
+      gamma -- and Mathlib only has 1/2 < gamma < 2/3. INSTEAD, with alpha = 40 in place of 40/3
+      (so C = 320 instead of 320/3, still under 498), the bound is elementary and needs no
+      numerics at all: substituting w = X - v,
+      int_1^X e^w/w dw = e^X int_0^{X-1} e^{-v}/(X-v) dv, and expanding
+      1/(X-v) = 1/X + v/X^2 + v^2/X^3 + v^3/X^4 + v^4/(X^4 (X-v)) with X - v >= 1 on the range and
+      int_0^{X-1} v^k e^{-v} dv <= k! gives
+      int_1^X e^w/w dw <= e^X (1/X + 1/X^2 + 2/X^3 + 30/X^4).
+      The leftover int_0^1 (e^w - 1)/w dw <= e - 1 costs (e-1) X^4 e^{-X} <= (e-1) * 256/e^4 =
+      8.06, so alpha = 39 already works for every X >= 1; 40 is the round number.
+      GAMMA IS NOT NEEDED EITHER. Define EiAux(X) = int_0^X (e^w - 1)/w dw, so that
+      Ei = gamma + log X + EiAux; the gamma and log X in the paper's eq:arguc1 cancel against the
+      arsinh term, and every term they sit in is O(1/sqrt x), which at x >= 10^9 is 3e-5 against a
+      2/L^2 = 0.0047 that has to be exact. So state eq:arguc2 with EiAux and never mention Ei.
+      END-TO-END CHECK at C = 320: k_{3,1} = 40.32, k_{3,0} = 339.94, k_{3,1} + k_{3,0}/16.118 =
+      61.41 <= 67.9, and K_2 + K_3/L = 24.2 + 5.93 = 30.1 <= 32.53. About 7% of margin.
+      STARTED: Section81.lean has lem:bettnist, as eiAux_le. The five factorial integrals
+      int_0^Y v^k e^{-v} dv <= k! (k = 0..4, one antiderivative each), the substitution and
+      geometric expansion giving int_1^X e^w/w dw <= e^X (1/X + 1/X^2 + 2/X^3 + 30/X^4), the
+      quartic bound X^4 <= 6.5536 e^X (four Taylor terms of e^{X/4}, raised to the fourth power --
+      the truth is 256/e^4 = 4.689 at X = 4, but no monotonicity argument is needed), and
+      EiAux X = int_0^X (e^w - 1)/w dw <= e^X (1/X + 1/X^2 + 2/X^3 + 42/X^4) for X >= 1.
+      42 against the paper's 40/3, well inside the budget of 62.
+      NOTE THE INTEGRABILITY TRAP: (e^w - 1)/w is NOT continuous at 0 in Lean, where it takes the
+      junk value 0/0 = 0 rather than the limit 1. ContinuousOn.intervalIntegrable does not apply on
+      [0,1]; the integrand has to be dominated by the constant e instead.
+      LEM:RAMEAU IS DONE TOO, as `rameau` in Section81.lean: for 0 < eta <= e and L = log x >= 7,
+      int_0^infty u e^{-Lu}/sqrt(eta^2 + (1/2-u)^2) du
+        <= 2/L^2 + 8/L^3 + 336/L^4 + e^{-L/2}(1 + log(1/eta)/2 + (1 + 2/L)/(2 eta L)).
+      THE EXTRA 1 IN THE 1/sqrt(x) COEFFICIENT is where the paper's gamma/2 + log(L/2)/2 goes.
+      Keeping them would need gamma to seven digits; the arsinh already exceeds log(1/eta) by
+      log((1+sqrt(4 eta^2+1))/2) <= log 3.27 <= 3.27/e, and 1/L + |log(1-2/L)|/2 <= 1/7 + 1/5 at
+      L >= 7, so 1 covers everything. It costs nothing: in prop:sagaro the whole 1/sqrt(x) block
+      ends up below 10^{-4}/(6 pi) log(T/2 pi), against a budget set by C_T itself.
+      THE PROOF, in the v = 1/2 - u variable throughout: the integrand becomes
+      e^{-L/2}(1/2 + g(v))/sqrt(eta^2+v^2) with g(v) = (1/2-v)e^{Lv} - 1/2, the constant 1/2 gives
+      the arsinh, and g is bounded by g(v)/v -- except to the right of v = 1/2 - 1/L, where g may
+      turn negative and one drops the -1/2 first, at the cost of -log(1-2/L)/2.
+      g >= 0 LEFT OF THE CUT for a one-line reason the paper does not spell out:
+      e^{Lv}(1-2v) >= (1+Lv)(1-2v) >= 1 exactly when v <= 1/2 - 1/L. No monotonicity of u e^{-Lu}
+      is needed.
+      SECTION 8.1 IS OTHERWISE NOT STARTED, and is the larger half: prop:titch96A, lem:saghar, and prop:adoro's
+      continuous pigeonhole. It needs zeta'/zeta(3/2), already in the values node, and zero counting.
       SUGGESTED ORDER: 8.2 first, since lem:adamant, lem:ranadi and prop:coronidis are ordinary
       complex analysis with explicit constants and depend on nothing outside the paper except the
       functional equation, which is already a node; then Ei; then 8.1, which is where the explicit

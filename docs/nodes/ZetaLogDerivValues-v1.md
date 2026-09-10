@@ -41,7 +41,7 @@ noncomputable def logDeriv_two : Prop :=
 |---|---|
 | Lean name | `ZetaLogDerivValues.v1.logDeriv_two` |
 | Challenge | `ZetaLogDerivValues.v1.challenge_logDeriv_two` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDerivValues/v1/Conclusions.lean#L76) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDerivValues/v1/Conclusions.lean#L77) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -70,7 +70,7 @@ noncomputable def logDeriv_three_halves : Prop :=
 |---|---|
 | Lean name | `ZetaLogDerivValues.v1.logDeriv_three_halves` |
 | Challenge | `ZetaLogDerivValues.v1.challenge_logDeriv_three_halves` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDerivValues/v1/Conclusions.lean#L86) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDerivValues/v1/Conclusions.lean#L87) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -101,7 +101,7 @@ noncomputable def logDeriv_neg_one : Prop :=
 |---|---|
 | Lean name | `ZetaLogDerivValues.v1.logDeriv_neg_one` |
 | Challenge | `ZetaLogDerivValues.v1.challenge_logDeriv_neg_one` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDerivValues/v1/Conclusions.lean#L98) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDerivValues/v1/Conclusions.lean#L99) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -131,7 +131,7 @@ noncomputable def deriv_logDeriv_neg_one : Prop :=
 |---|---|
 | Lean name | `ZetaLogDerivValues.v1.deriv_logDeriv_neg_one` |
 | Challenge | `ZetaLogDerivValues.v1.challenge_deriv_logDeriv_neg_one` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDerivValues/v1/Conclusions.lean#L109) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDerivValues/v1/Conclusions.lean#L110) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -145,8 +145,14 @@ noncomputable def deriv_logDeriv_neg_one : Prop :=
 
 **The Laurent coefficients of `-ζ'/ζ` at `1` alternate in sign.**
 
-`-ζ'/ζ(s) = 1/(s-1) + ∑_{n≥0} (-1)^{n+1} aₙ (s-1)ⁿ` with every `aₙ > 0`. In particular `a₀ = γ`,
-Euler's constant, since `-ζ'/ζ(s) - 1/(s-1) → -γ` as `s → 1`.
+`-ζ'/ζ(s) = 1/(s-1) + ∑_{n≥0} (-1)^{n+1} aₙ (s-1)ⁿ` with every `aₙ > 0`, and `a₀ = γ`, Euler's
+constant, since `-ζ'/ζ(s) - 1/(s-1) → -γ` as `s → 1`.
+
+**`a₀ = γ` is part of the claim rather than a remark**, because a consumer needs it: it is the
+leading coefficient of every estimate built on this expansion, and identifying it otherwise would
+mean redoing the limit at `s = 1` that the expansion already encodes. `Real.eulerMascheroniConstant`
+is Mathlib's, and comes with `one_half_lt_eulerMascheroniConstant` and
+`eulerMascheroniConstant_lt_two_thirds` for whoever needs a numeral.
 
 **The radius `3` is forced, not a convenience.** `-ζ'/ζ(s) - 1/(s-1)` is analytic on the open disc
 `‖s-1‖ < 3`: the nearest non-trivial zero of `ζ` is at distance `14.13…`, so the binding constraint
@@ -170,7 +176,7 @@ fact of the same kind as the values above rather than something a solution could
 
 ```lean
 def logDeriv_laurent_alternating : Prop :=
-  ∃ a : ℕ → ℝ, (∀ n, 0 < a n) ∧
+  ∃ a : ℕ → ℝ, (∀ n, 0 < a n) ∧ a 0 = Real.eulerMascheroniConstant ∧
     ∀ s : ℂ, s ≠ 1 → ‖s - 1‖ < 3 →
       HasSum (fun n : ℕ ↦ (-1 : ℂ) ^ (n + 1) * (a n : ℂ) * (s - 1) ^ n)
         (-(deriv riemannZeta s / riemannZeta s) - 1 / (s - 1))
@@ -180,7 +186,7 @@ def logDeriv_laurent_alternating : Prop :=
 |---|---|
 | Lean name | `ZetaLogDerivValues.v1.logDeriv_laurent_alternating` |
 | Challenge | `ZetaLogDerivValues.v1.challenge_logDeriv_laurent_alternating` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDerivValues/v1/Conclusions.lean#L137) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ZetaLogDerivValues/v1/Conclusions.lean#L144) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -188,7 +194,7 @@ def logDeriv_laurent_alternating : Prop :=
 
 **Justification `ch2-kalmynin`** — **designated** — numerical, Lemma B.6 (`lem:kalmynin`)
 
-> Asserted on the authority of an interval-arithmetic computation, not of an argument alone. The proof runs the maximum modulus principle on G(s) = -zeta'/zeta(s) - 1/(s-1) + 1/(s+2), bounding \|G\| <= 1.396 on the boundary of [-3,5] + i[-4,4] by bisection in FLINT/Arb; Cauchy then gives \|b_n\| < 1.4/4^n, the pole at -2 contributes (-1)^n 3^{-(n+1)} and dominates for n >= 5, and the first five coefficients are computed separately. So re-establishing this means re-running something, not re-reading something -- which is what `numerical` records. CH2 attribute the argument to A. Kalmynin (MathOverflow 501199). CHECKED INDEPENDENTLY HERE: the Taylor coefficients of -zeta'/zeta(s) - 1/(s-1) at s = 1 were computed with mpmath through n = 8 and alternate as claimed, with a_0 = 0.577215664902 matching Euler's constant to twelve places and a_8 = 5.1345e-5 against the predicted 3^{-9} = 5.0805e-5. NO MARGIN SITE: the claim is a sign pattern with no rounded numeral in it, so a multiplicative factor could not weaken it. Imports `none`.
+> Asserted on the authority of an interval-arithmetic computation, not of an argument alone. The proof runs the maximum modulus principle on G(s) = -zeta'/zeta(s) - 1/(s-1) + 1/(s+2), bounding \|G\| <= 1.396 on the boundary of [-3,5] + i[-4,4] by bisection in FLINT/Arb; Cauchy then gives \|b_n\| < 1.4/4^n, the pole at -2 contributes (-1)^n 3^{-(n+1)} and dominates for n >= 5, and the first five coefficients are computed separately. So re-establishing this means re-running something, not re-reading something -- which is what `numerical` records. CH2 attribute the argument to A. Kalmynin (MathOverflow 501199). CHECKED INDEPENDENTLY HERE: the Taylor coefficients of -zeta'/zeta(s) - 1/(s-1) at s = 1 were computed with mpmath through n = 8 and alternate as claimed, with a_0 = 0.577215664902 matching Euler's constant to twelve places and a_8 = 5.1345e-5 against the predicted 3^{-9} = 5.0805e-5. a_0 = gamma IS PART OF THE CLAIM rather than a remark, because a consumer needs it: it is the leading coefficient of every estimate built on this expansion, and identifying it otherwise would mean redoing the limit at s = 1 that the expansion already encodes. Real.eulerMascheroniConstant is Mathlib's, and comes with numerical bounds attached. NO MARGIN SITE: the claim is a sign pattern with no rounded numeral in it, so a multiplicative factor could not weaken it. Imports `none`.
 
 ## Limitations
 
