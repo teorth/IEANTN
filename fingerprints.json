@@ -78,6 +78,7 @@
   "ZeroCount.v1.rvm_error_bound": "5593f2903bba21a0a152a55bd53f0a3d269c616d064430c23d23c566d1560f48",
   "ZeroCount.v1.rvm_error_small": "c43e747cfdf971373791abf1bd986f2cc569122054c0302891c0409cd50d9813",
   "ZeroFreeHeight.v1.classical_region_descends": "796809d584f97568c9b74fbd219ee65b3a6a70a0b52a2660f08e8302be76a367",
+  "ZetaHadamard.v1.logDeriv_partial_fractions": "d9365ded5cbac78caa988a0e175d0fd2c200a09012f73d3e5d029b7299a5a41c",
   "ZetaLogDeriv.v1.logDeriv_functional_equation": "d8fdd0ed83c200d19ee197abe94d3c28b07a57378676bfece5a428e811820293",
   "ZetaLogDerivValues.v1.deriv_logDeriv_neg_one": "007b304f5731bb35077cae22ec2b6b6a4d115603887964b4fe10722a7ac2bc29",
   "ZetaLogDerivValues.v1.logDeriv_laurent_alternating": "eaa22ff15274701cfb0b046f891a02d9de438f94e5931add6b541596084a87f0",

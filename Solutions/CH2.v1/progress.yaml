@@ -454,11 +454,16 @@ stages:
       zeta'/zeta(s) = sum_rho (1/(s-rho) + 1/rho) - (1/2) psi(s/2+1) - 1/(s-1) + C
       (Montgomery-Vaughan, Multiplicative Number Theory I, Corollary 10.14; Davenport ch. 12).
       MATHLIB DOES NOT HAVE IT -- it has discreteness of the zeros (Mathlib.NumberTheory.LSeries.
-      ZetaZeros) and the functional equation, but no Hadamard factorisation of xi. This must be a
-      NEW NODE, citation-justified, and it cannot go on ZetaLogDeriv.v1, which is green. Note the
-      constant C is never needed: prop:titch96A uses only the difference of the formula at s and
-      at s_+ = 3/2 + it, so the node can state it with an existential constant, which is both
-      easier to justify and easier to consume. Everything else in 8.1 is solution work.
+      ZetaZeros) and the functional equation, but no Hadamard factorisation of xi.
+      THE NODE NOW EXISTS: ZetaHadamard.v1.logDeriv_partial_fractions, kind `standard`, justified
+      by Montgomery-Vaughan Corollary 10.14. It states the identity taken at TWO POINTS AND
+      SUBTRACTED, which is both what prop:titch96A actually uses and what makes the statement
+      non-vacuous: the unpaired sum over zeros is not absolutely summable, and Lean's tsum of a
+      non-summable family is 0, so the obvious transcription would typecheck and assert nothing.
+      Subtracting makes the terms (w-s)/((s-rho)(w-rho)) = O(1/|rho|^2), so HasSum can be used and
+      carries its own convergence, and the additive constant C cancels. Four hypotheses only:
+      s, w /= 1 and zeta(s), zeta(w) /= 0, the last two also keeping psi(s/2+1) off its poles,
+      which sit exactly at the trivial zeros. Everything else in 8.1 is solution work.
       THE CONSTANT BUDGET, worked out from section 9 because it decides every choice in 8.1.
       prop:sagaro needs pi/T' + I-term + (y coth y correction) <= pi/(T-1) with T' >= T - 1/2, so
       the I-term budget is pi/(T-1) - pi/(T-1/2) = (pi/2)/((T-1)(T-1/2)), i.e. about 1.5708/T^2,

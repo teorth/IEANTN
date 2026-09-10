@@ -50,6 +50,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`Wedeniwski.v1`](Wedeniwski-v1.md) | computation | 1 | asserted |
 | [`ZeroCount.v1`](ZeroCount-v1.md) | paper | 2 | cited |
 | [`ZeroFreeHeight.v1`](ZeroFreeHeight-v1.md) | folklore | 1 | verified, stale |
+| [`ZetaHadamard.v1`](ZetaHadamard-v1.md) | standard | 1 | cited |
 | [`ZetaLogDeriv.v1`](ZetaLogDeriv-v1.md) | standard | 1 | verified |
 | [`ZetaLogDerivValues.v1`](ZetaLogDerivValues-v1.md) | computation | 5 | computation |
 | [`ZetaZeroes.v1`](ZetaZeroes-v1.md) | standard | 6 | verified |
