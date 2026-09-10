@@ -530,4 +530,432 @@ theorem integral_id_mul_exp_neg_Ioi {L : ℝ} (hL : 0 < L) :
   field_simp
   ring
 
+/-! ### `lem:rameau`
+
+`∫₀^∞ u x^{-u}/√(η² + (½-u)²) du`, in the `L = log x` parametrisation. The `(0,½)` half becomes,
+under `v = ½ - u`, `e^{-L/2} ∫₀^{1/2} (½ + g(v))/√(η²+v²) dv` with `g(v) = (½-v)e^{Lv} - ½`, and the
+constant `½` gives the `arsinh`. What is left of `g` is bounded by `g(v)/v`, whose integral is
+`½ EiAux(L/2) - (e^{L/2}-1)/L` — except near `v = ½`, where `g` may turn negative and one drops the
+`-½` first, at the cost of `-½ log(1-2/L)`.
+
+The cut is at `v = ½ - 1/L`, and `g ≥ 0` to its left because `e^{Lv}(1-2v) ≥ (1+Lv)(1-2v) ≥ 1`
+exactly when `v ≤ ½ - 1/L`. -/
+
+/-- Measurable and bounded on `Ioc a b` is enough. Used where the integrand has a removable
+singularity and `ContinuousOn` is unavailable. -/
+theorem intervalIntegrable_of_bound {f : ℝ → ℝ} {a b C : ℝ} (hle : a ≤ b)
+    (hm : Measurable f) (hb : ∀ v ∈ Set.Ioc a b, |f v| ≤ C) :
+    IntervalIntegrable f MeasureTheory.volume a b := by
+  rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hle]
+  refine MeasureTheory.Integrable.mono' (g := fun _ : ℝ ↦ C)
+    (MeasureTheory.integrableOn_const (by simp) (by simp)) hm.aestronglyMeasurable.restrict ?_
+  filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioc] with v hv
+  rw [Real.norm_eq_abs]
+  exact hb v hv
+
+/-- The `lem:rameau` integrand, with `x^{-u}` written as `e^{-Lu}`. -/
+noncomputable def rameauF (L η u : ℝ) : ℝ :=
+  u * Real.exp (-(L * u)) / Real.sqrt (η ^ 2 + (1 / 2 - u) ^ 2)
+
+/-- `g(v) = (½ - v) e^{Lv} - ½`, what is left of the `(0,½)` integrand after the `arsinh`. -/
+noncomputable def rameauG (L v : ℝ) : ℝ := (1 / 2 - v) * Real.exp (L * v) - 1 / 2
+
+/-- **`g ≥ 0` up to the cut**, because `(1 + Lv)(1 - 2v) ≥ 1` exactly for `v ≤ ½ - 1/L`. -/
+theorem rameauG_nonneg {L v : ℝ} (hL : 0 < L) (hv0 : 0 ≤ v) (hv : v ≤ 1 / 2 - 1 / L) :
+    0 ≤ rameauG L v := by
+  have h1 : 1 + L * v ≤ Real.exp (L * v) := by
+    have := Real.add_one_le_exp (L * v)
+    linarith
+  have hv2 : (0:ℝ) ≤ 1 / 2 - v := by
+    have : (0:ℝ) < 1 / L := by positivity
+    linarith
+  have hkey : (1 + L * v) * (1 / 2 - v) ≥ 1 / 2 := by
+    have hLv : L * v ≤ L * (1 / 2 - 1 / L) := by nlinarith
+    have hLv' : L * (1 / 2 - 1 / L) = L / 2 - 1 := by field_simp
+    nlinarith [hv0, hv2, mul_nonneg hv0 (sub_nonneg.mpr hv)]
+  have hmul : (1 + L * v) * (1 / 2 - v) ≤ Real.exp (L * v) * (1 / 2 - v) :=
+    mul_le_mul_of_nonneg_right h1 hv2
+  rw [rameauG]
+  nlinarith [hkey, hmul]
+
+/-- `g(v)/v = ½(e^{Lv} - 1)/v - e^{Lv}` away from `0`. -/
+theorem rameauG_div {L v : ℝ} (hv : v ≠ 0) :
+    rameauG L v / v = (Real.exp (L * v) - 1) / v / 2 - Real.exp (L * v) := by
+  rw [rameauG]
+  field_simp
+  ring
+
+/-- `0 ≤ (e^{Lv} - 1)/v ≤ L e^{Lv}` for `v > 0`, which bounds `g(v)/v`. -/
+theorem exp_sub_one_div_bounds {L v : ℝ} (hL : 0 < L) (hv : 0 < v) :
+    0 ≤ (Real.exp (L * v) - 1) / v ∧ (Real.exp (L * v) - 1) / v ≤ L * Real.exp (L * v) := by
+  constructor
+  · have h1 : (1:ℝ) ≤ Real.exp (L * v) := Real.one_le_exp (by positivity)
+    positivity
+  · have h := sub_one_div_le_exp (le_of_lt (by positivity : (0:ℝ) < L * v))
+    rw [div_le_iff₀ (by positivity : (0:ℝ) < L * v)] at h
+    rw [div_le_iff₀ hv]
+    nlinarith [h]
+
+theorem intervalIntegrable_rameauG_div {L : ℝ} (hL : 0 < L) {a b : ℝ}
+    (ha : 0 ≤ a) (hab : a ≤ b) (hb : b ≤ 1 / 2) :
+    IntervalIntegrable (fun v : ℝ ↦ rameauG L v / v) MeasureTheory.volume a b := by
+  refine intervalIntegrable_of_bound hab (by unfold rameauG; fun_prop)
+    (C := (L / 2 + 1) * Real.exp (L / 2)) ?_
+  intro v hv
+  have hv0 : (0:ℝ) < v := lt_of_le_of_lt ha hv.1
+  have hv2 : v ≤ 1 / 2 := le_trans hv.2 hb
+  obtain ⟨hnn, hup⟩ := exp_sub_one_div_bounds hL hv0
+  have hexp : Real.exp (L * v) ≤ Real.exp (L / 2) := by
+    apply Real.exp_le_exp.mpr
+    nlinarith
+  have hE : (0:ℝ) < Real.exp (L * v) := Real.exp_pos _
+  rw [rameauG_div (ne_of_gt hv0), abs_le]
+  constructor <;> nlinarith [hnn, hup, hexp, hE, Real.exp_pos (L / 2)]
+
+/-- `∫₀^{1/2} g(v)/v dv = ½ EiAux(L/2) - (e^{L/2} - 1)/L`. -/
+theorem integral_rameauG_div {L : ℝ} (hL : 0 < L) :
+    (∫ v in (0:ℝ)..(1/2 : ℝ), rameauG L v / v)
+      = EiAux (L / 2) / 2 - (Real.exp (L / 2) - 1) / L := by
+  have hi1 : IntervalIntegrable (fun v : ℝ ↦ (Real.exp (L * v) - 1) / v / 2)
+      MeasureTheory.volume 0 (1/2 : ℝ) := by
+    refine intervalIntegrable_of_bound (by norm_num) (by fun_prop)
+      (C := L * Real.exp (L / 2) / 2) ?_
+    intro v hv
+    have hv0 : (0:ℝ) < v := hv.1
+    obtain ⟨hnn, hup⟩ := exp_sub_one_div_bounds hL hv0
+    have hexp : Real.exp (L * v) ≤ Real.exp (L / 2) := by
+      apply Real.exp_le_exp.mpr
+      nlinarith [hv.2]
+    rw [abs_le]
+    constructor <;> nlinarith [Real.exp_pos (L * v)]
+  have hi2 : IntervalIntegrable (fun v : ℝ ↦ Real.exp (L * v)) MeasureTheory.volume 0 (1/2 : ℝ) :=
+    (Real.continuous_exp.comp (continuous_const.mul continuous_id)).intervalIntegrable _ _
+  have hcongr : (∫ v in (0:ℝ)..(1/2 : ℝ), rameauG L v / v)
+      = ∫ v in (0:ℝ)..(1/2 : ℝ), ((Real.exp (L * v) - 1) / v / 2 - Real.exp (L * v)) := by
+    refine intervalIntegral.integral_congr_ae (Filter.Eventually.of_forall fun v hv ↦ ?_)
+    rw [Set.uIoc_of_le (by norm_num : (0:ℝ) ≤ 1/2)] at hv
+    exact rameauG_div (ne_of_gt hv.1)
+  rw [hcongr, intervalIntegral.integral_sub hi1 hi2, intervalIntegral.integral_div,
+    integral_eiAux_scaled hL, integral_exp_mul hL]
+
+/-- `v ≤ √(η² + v²)`. -/
+theorem le_sqrt_sq_add_sq {η v : ℝ} (hv : 0 ≤ v) : v ≤ Real.sqrt (η ^ 2 + v ^ 2) := by
+  rw [show v = Real.sqrt (v ^ 2) from (Real.sqrt_sq hv).symm]
+  refine Real.sqrt_le_sqrt ?_
+  nlinarith [sq_nonneg η, Real.sq_sqrt (sq_nonneg v)]
+
+/-- **The `g`-part of the `(0,½)` half.** -/
+theorem rameauK_le {L η : ℝ} (hL : 7 ≤ L) (hη0 : 0 < η) :
+    (∫ v in (0:ℝ)..(1/2 : ℝ), rameauG L v / Real.sqrt (η ^ 2 + v ^ 2))
+      ≤ EiAux (L / 2) / 2 - (Real.exp (L / 2) - 1) / L - Real.log (1 - 2 / L) / 2 := by
+  have hL0 : (0:ℝ) < L := by linarith
+  have hinvL : 1 / L ≤ 1 / 7 := by
+    rw [div_le_div_iff₀ hL0 (by norm_num)]
+    linarith
+  have hinvL0 : (0:ℝ) < 1 / L := by positivity
+  set c : ℝ := 1 / 2 - 1 / L with hcdef
+  have hc0 : (0:ℝ) < c := by rw [hcdef]; linarith
+  have hc2 : c ≤ 1 / 2 := by rw [hcdef]; linarith
+  have hsq : ∀ v : ℝ, (0:ℝ) < Real.sqrt (η ^ 2 + v ^ 2) := by
+    intro v
+    exact Real.sqrt_pos.mpr (by positivity)
+  have hcontK : Continuous fun v : ℝ ↦ rameauG L v / Real.sqrt (η ^ 2 + v ^ 2) := by
+    refine Continuous.div (by unfold rameauG; fun_prop) (by fun_prop) fun v ↦ ne_of_gt (hsq v)
+  have hK1 : IntervalIntegrable (fun v : ℝ ↦ rameauG L v / Real.sqrt (η ^ 2 + v ^ 2))
+      MeasureTheory.volume 0 c := hcontK.intervalIntegrable 0 c
+  have hK2 : IntervalIntegrable (fun v : ℝ ↦ rameauG L v / Real.sqrt (η ^ 2 + v ^ 2))
+      MeasureTheory.volume c (1/2 : ℝ) := hcontK.intervalIntegrable c (1/2 : ℝ)
+  have hsplitK : (∫ v in (0:ℝ)..(1/2 : ℝ), rameauG L v / Real.sqrt (η ^ 2 + v ^ 2))
+      = (∫ v in (0:ℝ)..c, rameauG L v / Real.sqrt (η ^ 2 + v ^ 2))
+        + ∫ v in c..(1/2 : ℝ), rameauG L v / Real.sqrt (η ^ 2 + v ^ 2) :=
+    (intervalIntegral.integral_add_adjacent_intervals hK1 hK2).symm
+  -- the two `g/v` integrals
+  have hG1 := intervalIntegrable_rameauG_div hL0 (le_refl (0:ℝ)) hc0.le hc2
+  have hG2 := intervalIntegrable_rameauG_div hL0 hc0.le hc2 (le_refl (1/2 : ℝ))
+  have hGsum : (∫ v in (0:ℝ)..c, rameauG L v / v) + (∫ v in c..(1/2 : ℝ), rameauG L v / v)
+      = EiAux (L / 2) / 2 - (Real.exp (L / 2) - 1) / L := by
+    rw [intervalIntegral.integral_add_adjacent_intervals hG1 hG2, integral_rameauG_div hL0]
+  -- left of the cut
+  have hleft : (∫ v in (0:ℝ)..c, rameauG L v / Real.sqrt (η ^ 2 + v ^ 2))
+      ≤ ∫ v in (0:ℝ)..c, rameauG L v / v := by
+    refine intervalIntegral.integral_mono_on hc0.le hK1 hG1 fun v hv ↦ ?_
+    have hv0 : (0:ℝ) ≤ v := hv.1
+    rcases eq_or_lt_of_le hv0 with h | h
+    · rw [← h]
+      simp [rameauG]
+    · have hvc : v ≤ 1 / 2 - 1 / L := by
+        have h2 : v ≤ c := hv.2
+        linarith
+      have hg : 0 ≤ rameauG L v := rameauG_nonneg hL0 hv0 hvc
+      have hle : v ≤ Real.sqrt (η ^ 2 + v ^ 2) := le_sqrt_sq_add_sq hv0
+      exact div_le_div_of_nonneg_left hg h hle
+  -- right of the cut
+  have hne : ∀ v ∈ Set.uIcc c (1/2 : ℝ), v ≠ 0 := by
+    intro v hv
+    rw [Set.uIcc_of_le hc2] at hv
+    have h1 : c ≤ v := hv.1
+    exact ne_of_gt (by linarith)
+  have hcontR : ContinuousOn (fun v : ℝ ↦ rameauG L v / v + 1 / 2 / v) (Set.uIcc c (1/2 : ℝ)) :=
+    ContinuousOn.add (ContinuousOn.div (by unfold rameauG; fun_prop) (by fun_prop) hne)
+      (ContinuousOn.div continuousOn_const (by fun_prop) hne)
+  have hR : IntervalIntegrable (fun v : ℝ ↦ rameauG L v / v + 1 / 2 / v)
+      MeasureTheory.volume c (1/2 : ℝ) := hcontR.intervalIntegrable
+  have hright : (∫ v in c..(1/2 : ℝ), rameauG L v / Real.sqrt (η ^ 2 + v ^ 2))
+      ≤ ∫ v in c..(1/2 : ℝ), (rameauG L v / v + 1 / 2 / v) := by
+    refine intervalIntegral.integral_mono_on hc2 hK2 hR fun v hv ↦ ?_
+    have hv0 : (0:ℝ) < v := lt_of_lt_of_le hc0 hv.1
+    have hle : v ≤ Real.sqrt (η ^ 2 + v ^ 2) := le_sqrt_sq_add_sq hv0.le
+    rcases le_or_gt 0 (rameauG L v) with hg | hg
+    · have h1 : rameauG L v / Real.sqrt (η ^ 2 + v ^ 2) ≤ rameauG L v / v :=
+        div_le_div_of_nonneg_left hg hv0 hle
+      have h2 : (0:ℝ) ≤ 1 / 2 / v := by positivity
+      linarith
+    · have h1 : rameauG L v / Real.sqrt (η ^ 2 + v ^ 2) ≤ 0 :=
+        div_nonpos_of_nonpos_of_nonneg hg.le (hsq v).le
+      have h2 : (0:ℝ) ≤ rameauG L v / v + 1 / 2 / v := by
+        have heq : rameauG L v / v + 1 / 2 / v = (1 / 2 - v) * Real.exp (L * v) / v := by
+          rw [rameauG]
+          field_simp
+          ring
+        rw [heq]
+        have : (0:ℝ) ≤ 1 / 2 - v := by linarith [hv.2]
+        positivity
+      linarith
+  have hRsplit : (∫ v in c..(1/2 : ℝ), (rameauG L v / v + 1 / 2 / v))
+      = (∫ v in c..(1/2 : ℝ), rameauG L v / v) + ∫ v in c..(1/2 : ℝ), 1 / 2 / v := by
+    exact intervalIntegral.integral_add hG2
+      (ContinuousOn.intervalIntegrable
+        (ContinuousOn.div continuousOn_const (by fun_prop) hne))
+  have hlog : (∫ v in c..(1/2 : ℝ), 1 / 2 / v) = -(Real.log (1 - 2 / L)) / 2 := by
+    have hdiv : ∀ v : ℝ, (1:ℝ) / 2 / v = (1 / 2) * (1 / v) := by intro v; ring
+    rw [intervalIntegral.integral_congr (g := fun v : ℝ ↦ (1/2 : ℝ) * (1 / v))
+        (fun v _ ↦ hdiv v), intervalIntegral.integral_const_mul]
+    have hnot : (0:ℝ) ∉ Set.uIcc c (1/2 : ℝ) := by
+      rw [Set.uIcc_of_le hc2]
+      intro hmem
+      exact absurd hmem.1 (by linarith)
+    rw [integral_one_div hnot]
+    have harg : (1/2 : ℝ) / c = (1 - 2 / L)⁻¹ := by
+      rw [hcdef]
+      field_simp
+    rw [harg, Real.log_inv]
+    ring
+  rw [hRsplit, hlog] at hright
+  rw [hsplitK]
+  linarith [hleft, hright, hGsum]
+
+theorem le_sqrt_sq_add_sq_left {a b : ℝ} (ha : 0 ≤ a) : a ≤ Real.sqrt (a ^ 2 + b ^ 2) := by
+  rw [show a = Real.sqrt (a ^ 2) from (Real.sqrt_sq ha).symm]
+  refine Real.sqrt_le_sqrt ?_
+  nlinarith [sq_nonneg b, Real.sq_sqrt (sq_nonneg a)]
+
+theorem continuous_rameauF {L η : ℝ} (hη0 : 0 < η) : Continuous (rameauF L η) := by
+  refine Continuous.div (by fun_prop) (by fun_prop) fun u ↦ ?_
+  exact ne_of_gt (Real.sqrt_pos.mpr (by positivity))
+
+/-- **The `(0,½)` half of `lem:rameau`.** -/
+theorem rameau_head {L η : ℝ} (hL : 7 ≤ L) (hη0 : 0 < η) :
+    (∫ u in (0:ℝ)..(1/2 : ℝ), rameauF L η u)
+      ≤ Real.exp (-(L / 2)) * (Real.arsinh (1 / 2 / η) / 2
+          + (EiAux (L / 2) / 2 - (Real.exp (L / 2) - 1) / L - Real.log (1 - 2 / L) / 2)) := by
+  have hsq : ∀ v : ℝ, (0:ℝ) < Real.sqrt (η ^ 2 + v ^ 2) := fun v ↦
+    Real.sqrt_pos.mpr (by positivity)
+  have hcv : (∫ u in (0:ℝ)..(1/2 : ℝ), rameauF L η u)
+      = ∫ v in (0:ℝ)..(1/2 : ℝ), rameauF L η (1/2 - v) := by
+    have h := intervalIntegral.integral_comp_sub_left (a := (0:ℝ)) (b := (1/2 : ℝ))
+      (fun u : ℝ ↦ rameauF L η u) (1/2 : ℝ)
+    simpa using h.symm
+  have hval : ∀ v : ℝ, rameauF L η (1/2 - v)
+      = Real.exp (-(L / 2)) * (1 / Real.sqrt (η ^ 2 + v ^ 2) / 2)
+        + Real.exp (-(L / 2)) * (rameauG L v / Real.sqrt (η ^ 2 + v ^ 2)) := by
+    intro v
+    have h1 : (1:ℝ) / 2 - (1 / 2 - v) = v := by ring
+    have h2 : Real.exp (-(L * (1 / 2 - v))) = Real.exp (-(L / 2)) * Real.exp (L * v) := by
+      rw [← Real.exp_add]
+      congr 1
+      ring
+    rw [rameauF, rameauG, h1, h2]
+    ring
+  have hIa : IntervalIntegrable
+      (fun v : ℝ ↦ Real.exp (-(L / 2)) * (1 / Real.sqrt (η ^ 2 + v ^ 2) / 2))
+      MeasureTheory.volume 0 (1/2 : ℝ) := by
+    refine Continuous.intervalIntegrable ?_ _ _
+    exact continuous_const.mul
+      ((Continuous.div continuous_const (by fun_prop) fun v ↦ ne_of_gt (hsq v)).div_const 2)
+  have hIb : IntervalIntegrable
+      (fun v : ℝ ↦ Real.exp (-(L / 2)) * (rameauG L v / Real.sqrt (η ^ 2 + v ^ 2)))
+      MeasureTheory.volume 0 (1/2 : ℝ) := by
+    refine Continuous.intervalIntegrable ?_ _ _
+    exact continuous_const.mul
+      (Continuous.div (by unfold rameauG; fun_prop) (by fun_prop) fun v ↦ ne_of_gt (hsq v))
+  rw [hcv, intervalIntegral.integral_congr (g := fun v : ℝ ↦
+      Real.exp (-(L / 2)) * (1 / Real.sqrt (η ^ 2 + v ^ 2) / 2)
+        + Real.exp (-(L / 2)) * (rameauG L v / Real.sqrt (η ^ 2 + v ^ 2))) (fun v _ ↦ hval v),
+    intervalIntegral.integral_add hIa hIb, intervalIntegral.integral_const_mul,
+    intervalIntegral.integral_const_mul, intervalIntegral.integral_div,
+    integral_one_div_sqrt_sq_add_sq hη0]
+  have hK := rameauK_le hL hη0
+  have hE : (0:ℝ) < Real.exp (-(L / 2)) := Real.exp_pos _
+  nlinarith [hK, hE]
+
+/-- The `1/√x` bookkeeping: `½ arsinh(1/2η) + 1/L - ½log(1-2/L) ≤ 1 + ½log(1/η)`.
+
+This is where the paper's `γ/2 + ½ log(L/2)` goes. The `arsinh` exceeds `log(1/η)` by
+`log((1+√(4η²+1))/2) ≤ log 3.27 ≤ 3.27/e`, and `1/L + ½|log(1-2/L)| ≤ 1/7 + 1/5` at `L ≥ 7`. -/
+theorem rameau_const {L η : ℝ} (hL : 7 ≤ L) (hη0 : 0 < η) (hη : η ≤ Real.exp 1) :
+    Real.arsinh (1 / 2 / η) / 2 + 1 / L - Real.log (1 - 2 / L) / 2
+      ≤ 1 + Real.log (1 / η) / 2 := by
+  have hL0 : (0:ℝ) < L := by linarith
+  have he2 : η ^ 2 ≤ 7.39 := by
+    have h := Real.exp_one_lt_d9
+    nlinarith [hη0, hη]
+  have hsq : Real.sqrt (1 + (1 / 2 / η) ^ 2) ≤ 2.77 / η := by
+    have hb : (1:ℝ) + (1 / 2 / η) ^ 2 ≤ (2.77 / η) ^ 2 := by
+      have hη2 : (0:ℝ) < η ^ 2 := by positivity
+      rw [← sub_nonneg]
+      have heq : (2.77 / η) ^ 2 - (1 + (1 / 2 / η) ^ 2)
+          = (2.77 ^ 2 - 1 / 4 - η ^ 2) / η ^ 2 := by
+        field_simp
+        ring
+      rw [heq]
+      refine div_nonneg ?_ hη2.le
+      nlinarith [he2]
+    calc Real.sqrt (1 + (1 / 2 / η) ^ 2) ≤ Real.sqrt ((2.77 / η) ^ 2) := Real.sqrt_le_sqrt hb
+      _ = 2.77 / η := Real.sqrt_sq (by positivity)
+  have harsinh : Real.arsinh (1 / 2 / η) ≤ Real.log (3.27 / η) := by
+    rw [Real.arsinh]
+    refine Real.log_le_log (by positivity) ?_
+    have hsum : (1:ℝ) / 2 / η + 2.77 / η = 3.27 / η := by
+      field_simp
+      ring
+    linarith [hsq, hsum.le, hsum.ge]
+  have hlogdiv : Real.log (3.27 / η) = Real.log 3.27 + Real.log (1 / η) := by
+    rw [Real.log_div (by norm_num) (ne_of_gt hη0), one_div, Real.log_inv]
+    ring
+  have hlog327 : Real.log 3.27 ≤ 1.203 := by
+    have h := Real.log_le_sub_one_of_pos (show (0:ℝ) < 3.27 / Real.exp 1 by positivity)
+    rw [Real.log_div (by norm_num) (Real.exp_ne_zero 1), Real.log_exp] at h
+    have he := Real.exp_one_gt_d9
+    have hdiv : (3.27:ℝ) / Real.exp 1 ≤ 3.27 / 2.7182818283 :=
+      div_le_div_of_nonneg_left (by norm_num) (by norm_num) (by linarith)
+    have hnum : (3.27:ℝ) / 2.7182818283 ≤ 2.203 := by norm_num
+    linarith
+  have hLm : (5:ℝ) ≤ L - 2 := by linarith
+  have h2L : (0:ℝ) < 1 - 2 / L := by
+    rw [sub_pos, div_lt_one hL0]
+    linarith
+  have hloglow : -(2 / (L - 2)) ≤ Real.log (1 - 2 / L) := by
+    have h := Real.log_le_sub_one_of_pos (show (0:ℝ) < (1 - 2 / L)⁻¹ by positivity)
+    rw [Real.log_inv] at h
+    have heq : (1 - 2 / L)⁻¹ - 1 = 2 / (L - 2) := by
+      field_simp
+      ring
+    rw [heq] at h
+    linarith
+  have hinv1 : 1 / L ≤ 1 / 7 := by
+    rw [div_le_div_iff₀ hL0 (by norm_num)]
+    linarith
+  have hinv2 : 2 / (L - 2) ≤ 2 / 5 := by
+    rw [div_le_div_iff₀ (by linarith) (by norm_num)]
+    linarith
+  linarith [harsinh, hlogdiv.le, hlogdiv.ge, hlog327, hloglow, hinv1, hinv2]
+
+/-- **`lem:rameau`**, `eq:arguc2`: the integral for `0 < η ≤ e` and `L = log x ≥ 7`.
+
+The paper's `1/√x` coefficient is `½log(1/η) + (1+2/L)/(2ηL)`; this one carries an extra `1`, which
+absorbs the `γ/2 + ½ log(L/2)` the paper keeps. The `√x` terms have room to spare downstream — in
+`prop:sagaro` they end up below `10⁻⁴/(6π) · log(T/2π)` — so it costs nothing. -/
+theorem rameau {L η : ℝ} (hL : 7 ≤ L) (hη0 : 0 < η) (hη : η ≤ Real.exp 1) :
+    (∫ u in Set.Ioi (0:ℝ), rameauF L η u)
+      ≤ 2 / L ^ 2 + 8 / L ^ 3 + 336 / L ^ 4
+        + Real.exp (-(L / 2)) * (1 + Real.log (1 / η) / 2 + (1 + 2 / L) / (2 * η * L)) := by
+  have hL0 : (0:ℝ) < L := by linarith
+  have hcont := continuous_rameauF (L := L) (η := η) hη0
+  have hbound : ∀ u ∈ Set.Ioi (1/2 : ℝ), ‖rameauF L η u‖ ≤ 1 / η * (u * Real.exp (-(L * u))) := by
+    intro u hu
+    have hu0 : (0:ℝ) < u := lt_trans (by norm_num) hu
+    have hden : η ≤ Real.sqrt (η ^ 2 + (1 / 2 - u) ^ 2) := le_sqrt_sq_add_sq_left hη0.le
+    have hnum : (0:ℝ) ≤ u * Real.exp (-(L * u)) := by positivity
+    have hnn : (0:ℝ) ≤ rameauF L η u := by
+      rw [rameauF]
+      positivity
+    rw [Real.norm_eq_abs, abs_of_nonneg hnn, rameauF, div_le_iff₀ (by positivity)]
+    have hcancel : 1 / η * (u * Real.exp (-(L * u))) * η = u * Real.exp (-(L * u)) := by
+      field_simp
+    nlinarith [hnum, hden, mul_nonneg (mul_nonneg (by positivity : (0:ℝ) ≤ 1 / η) hnum)
+      (sub_nonneg.mpr hden)]
+  have hFint : MeasureTheory.IntegrableOn (rameauF L η) (Set.Ioi (1/2 : ℝ)) := by
+    refine MeasureTheory.Integrable.mono' ((integrableOn_id_mul_exp_neg hL0).const_mul (1 / η))
+      hcont.aestronglyMeasurable.restrict ?_
+    filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with u hu
+    exact hbound u hu
+  have htail : (∫ u in Set.Ioi (1/2 : ℝ), rameauF L η u)
+      ≤ 1 / η * (Real.exp (-(L / 2)) * (1 / (2 * L) + 1 / L ^ 2)) := by
+    have hmono : (∫ u in Set.Ioi (1/2 : ℝ), rameauF L η u)
+        ≤ ∫ u in Set.Ioi (1/2 : ℝ), 1 / η * (u * Real.exp (-(L * u))) := by
+      refine MeasureTheory.setIntegral_mono_on hFint
+        ((integrableOn_id_mul_exp_neg hL0).const_mul (1 / η)) measurableSet_Ioi fun u hu ↦ ?_
+      have h := hbound u hu
+      rw [Real.norm_eq_abs] at h
+      exact le_trans (le_abs_self _) h
+    rw [MeasureTheory.integral_const_mul, integral_id_mul_exp_neg_Ioi hL0] at hmono
+    exact hmono
+  have hIoc : MeasureTheory.IntegrableOn (rameauF L η) (Set.Ioc (0:ℝ) (1/2)) := by
+    have h : IntervalIntegrable (rameauF L η) MeasureTheory.volume (0:ℝ) (1/2 : ℝ) :=
+      hcont.intervalIntegrable _ _
+    rwa [intervalIntegrable_iff_integrableOn_Ioc_of_le (by norm_num)] at h
+  have hsplit : (∫ u in Set.Ioi (0:ℝ), rameauF L η u)
+      = (∫ u in (0:ℝ)..(1/2 : ℝ), rameauF L η u) + ∫ u in Set.Ioi (1/2 : ℝ), rameauF L η u := by
+    rw [intervalIntegral.integral_of_le (by norm_num : (0:ℝ) ≤ 1/2),
+      ← MeasureTheory.setIntegral_union (Set.Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi hIoc hFint,
+      Set.Ioc_union_Ioi_eq_Ioi (by norm_num : (0:ℝ) ≤ 1/2)]
+  have hhead := rameau_head hL hη0
+  have hX : (1:ℝ) ≤ L / 2 := by linarith
+  have hei := eiAux_le hX
+  have hEE : Real.exp (-(L / 2)) * Real.exp (L / 2) = 1 := by
+    rw [← Real.exp_add]
+    simp
+  have hE : (0:ℝ) < Real.exp (-(L / 2)) := Real.exp_pos _
+  have heiE : Real.exp (-(L / 2)) * (EiAux (L / 2) / 2)
+      ≤ 1 / L + 2 / L ^ 2 + 8 / L ^ 3 + 336 / L ^ 4 := by
+    have h1 : Real.exp (-(L / 2)) * (EiAux (L / 2) / 2)
+        ≤ Real.exp (-(L / 2)) * (Real.exp (L / 2)
+          * (1 / (L / 2) + 1 / (L / 2) ^ 2 + 2 / (L / 2) ^ 3 + 42 / (L / 2) ^ 4) / 2) := by
+      have h := mul_le_mul_of_nonneg_left hei hE.le
+      linarith [h]
+    have h2 : Real.exp (-(L / 2)) * (Real.exp (L / 2)
+        * (1 / (L / 2) + 1 / (L / 2) ^ 2 + 2 / (L / 2) ^ 3 + 42 / (L / 2) ^ 4) / 2)
+        = 1 / L + 2 / L ^ 2 + 8 / L ^ 3 + 336 / L ^ 4 := by
+      rw [show Real.exp (-(L / 2)) * (Real.exp (L / 2)
+          * (1 / (L / 2) + 1 / (L / 2) ^ 2 + 2 / (L / 2) ^ 3 + 42 / (L / 2) ^ 4) / 2)
+          = (Real.exp (-(L / 2)) * Real.exp (L / 2))
+            * ((1 / (L / 2) + 1 / (L / 2) ^ 2 + 2 / (L / 2) ^ 3 + 42 / (L / 2) ^ 4) / 2) by ring,
+        hEE]
+      field_simp
+      ring
+    linarith [h1, h2.le, h2.ge]
+  have hsub : Real.exp (-(L / 2)) * (-((Real.exp (L / 2) - 1) / L))
+      = -(1 / L) + Real.exp (-(L / 2)) * (1 / L) := by
+    rw [show Real.exp (-(L / 2)) * (-((Real.exp (L / 2) - 1) / L))
+        = -((Real.exp (-(L / 2)) * Real.exp (L / 2)) / L) + Real.exp (-(L / 2)) * (1 / L) by ring,
+      hEE]
+  have hconst := mul_le_mul_of_nonneg_left (rameau_const hL hη0 hη) hE.le
+  have hetaform : 1 / η * (Real.exp (-(L / 2)) * (1 / (2 * L) + 1 / L ^ 2))
+      = Real.exp (-(L / 2)) * ((1 + 2 / L) / (2 * η * L)) := by
+    field_simp
+  have hexpand : Real.exp (-(L / 2)) * (Real.arsinh (1 / 2 / η) / 2
+        + (EiAux (L / 2) / 2 - (Real.exp (L / 2) - 1) / L - Real.log (1 - 2 / L) / 2))
+      = Real.exp (-(L / 2)) * (EiAux (L / 2) / 2)
+        + Real.exp (-(L / 2)) * (-((Real.exp (L / 2) - 1) / L))
+        + Real.exp (-(L / 2)) * (Real.arsinh (1 / 2 / η) / 2 + 1 / L
+            - Real.log (1 - 2 / L) / 2)
+        - Real.exp (-(L / 2)) * (1 / L) := by ring
+  have hlast : Real.exp (-(L / 2)) * (1 + Real.log (1 / η) / 2)
+      + Real.exp (-(L / 2)) * ((1 + 2 / L) / (2 * η * L))
+      = Real.exp (-(L / 2)) * (1 + Real.log (1 / η) / 2 + (1 + 2 / L) / (2 * η * L)) := by ring
+  rw [hexpand] at hhead
+  rw [hetaform] at htail
+  rw [hsplit]
+  linarith [hhead, htail, heiE, hsub.le, hsub.ge, hconst, hlast.le, hlast.ge]
+
 end CH2Section81

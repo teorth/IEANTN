@@ -502,6 +502,21 @@ stages:
       NOTE THE INTEGRABILITY TRAP: (e^w - 1)/w is NOT continuous at 0 in Lean, where it takes the
       junk value 0/0 = 0 rather than the limit 1. ContinuousOn.intervalIntegrable does not apply on
       [0,1]; the integrand has to be dominated by the constant e instead.
+      LEM:RAMEAU IS DONE TOO, as `rameau` in Section81.lean: for 0 < eta <= e and L = log x >= 7,
+      int_0^infty u e^{-Lu}/sqrt(eta^2 + (1/2-u)^2) du
+        <= 2/L^2 + 8/L^3 + 336/L^4 + e^{-L/2}(1 + log(1/eta)/2 + (1 + 2/L)/(2 eta L)).
+      THE EXTRA 1 IN THE 1/sqrt(x) COEFFICIENT is where the paper's gamma/2 + log(L/2)/2 goes.
+      Keeping them would need gamma to seven digits; the arsinh already exceeds log(1/eta) by
+      log((1+sqrt(4 eta^2+1))/2) <= log 3.27 <= 3.27/e, and 1/L + |log(1-2/L)|/2 <= 1/7 + 1/5 at
+      L >= 7, so 1 covers everything. It costs nothing: in prop:sagaro the whole 1/sqrt(x) block
+      ends up below 10^{-4}/(6 pi) log(T/2 pi), against a budget set by C_T itself.
+      THE PROOF, in the v = 1/2 - u variable throughout: the integrand becomes
+      e^{-L/2}(1/2 + g(v))/sqrt(eta^2+v^2) with g(v) = (1/2-v)e^{Lv} - 1/2, the constant 1/2 gives
+      the arsinh, and g is bounded by g(v)/v -- except to the right of v = 1/2 - 1/L, where g may
+      turn negative and one drops the -1/2 first, at the cost of -log(1-2/L)/2.
+      g >= 0 LEFT OF THE CUT for a one-line reason the paper does not spell out:
+      e^{Lv}(1-2v) >= (1+Lv)(1-2v) >= 1 exactly when v <= 1/2 - 1/L. No monotonicity of u e^{-Lu}
+      is needed.
       SECTION 8.1 IS OTHERWISE NOT STARTED, and is the larger half: prop:titch96A, lem:saghar, and prop:adoro's
       continuous pigeonhole. It needs zeta'/zeta(3/2), already in the values node, and zero counting.
       SUGGESTED ORDER: 8.2 first, since lem:adamant, lem:ranadi and prop:coronidis are ordinary
