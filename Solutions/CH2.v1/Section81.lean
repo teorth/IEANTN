@@ -8,6 +8,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.ArctanDeriv
+import Mathlib.Analysis.SpecialFunctions.Arsinh
 import Mathlib.Analysis.Complex.ExponentialBounds
 
 /-!
@@ -388,5 +389,145 @@ theorem eiAux_le {X : ℝ} (hX : 1 ≤ X) :
     ring
   rw [hsplit, hrw]
   linarith [hA, hB, hC, hgap]
+
+/-! ### The four closed forms `lem:rameau` needs
+
+`arsinh` for the leading piece, `EiAux` for the singular one, and two elementary antiderivatives. -/
+
+/-- `∫₀^b dv/√(η²+v²) = arsinh(b/η)`. -/
+theorem integral_one_div_sqrt_sq_add_sq {η : ℝ} (hη : 0 < η) (b : ℝ) :
+    (∫ v in (0:ℝ)..b, 1 / Real.sqrt (η ^ 2 + v ^ 2)) = Real.arsinh (b / η) := by
+  have hderiv : ∀ v : ℝ, HasDerivAt (fun w : ℝ ↦ Real.arsinh (w / η))
+      (1 / Real.sqrt (η ^ 2 + v ^ 2)) v := by
+    intro v
+    have hinner : HasDerivAt (fun w : ℝ ↦ w / η) (1 / η) v := by
+      simpa [div_eq_mul_inv, one_div] using (hasDerivAt_id v).div_const η
+    have h := (Real.hasDerivAt_arsinh (v / η)).comp v hinner
+    rw [Function.comp_def] at h
+    refine h.congr_deriv ?_
+    have hs : Real.sqrt (1 + (v / η) ^ 2) = Real.sqrt (η ^ 2 + v ^ 2) / η := by
+      have h1 : (1 : ℝ) + (v / η) ^ 2 = (η ^ 2 + v ^ 2) / η ^ 2 := by
+        field_simp
+      rw [h1, Real.sqrt_div (by positivity), Real.sqrt_sq hη.le]
+    rw [hs]
+    field_simp
+  have hcont : Continuous fun v : ℝ ↦ 1 / Real.sqrt (η ^ 2 + v ^ 2) := by
+    refine continuous_const.div (by fun_prop) fun v ↦ ?_
+    have : (0:ℝ) < η ^ 2 + v ^ 2 := by positivity
+    exact ne_of_gt (Real.sqrt_pos.mpr this)
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun v _ ↦ hderiv v)
+    (hcont.intervalIntegrable _ _)]
+  simp
+
+/-- `∫₀^{1/2} (e^{Lv} - 1)/v dv = EiAux(L/2)`, by `w = Lv`. -/
+theorem integral_eiAux_scaled {L : ℝ} (hL : 0 < L) :
+    (∫ v in (0:ℝ)..(1/2 : ℝ), (Real.exp (L * v) - 1) / v) = EiAux (L / 2) := by
+  have h := intervalIntegral.integral_comp_mul_left (a := (0:ℝ)) (b := (1/2 : ℝ))
+    (fun w : ℝ ↦ (Real.exp w - 1) / w) (ne_of_gt hL)
+  have heq : ∀ v : ℝ, (Real.exp (L * v) - 1) / v = L * ((Real.exp (L * v) - 1) / (L * v)) := by
+    intro v
+    rcases eq_or_ne v 0 with rfl | hv
+    · simp
+    · field_simp
+  rw [intervalIntegral.integral_congr
+      (g := fun v : ℝ ↦ L * ((Real.exp (L * v) - 1) / (L * v))) (fun v _ ↦ heq v),
+    intervalIntegral.integral_const_mul, h]
+  rw [EiAux, smul_eq_mul, mul_zero, show L * (1/2 : ℝ) = L / 2 by ring]
+  field_simp
+
+/-- `∫₀^{1/2} e^{Lv} dv = (e^{L/2} - 1)/L`. -/
+theorem integral_exp_mul {L : ℝ} (hL : 0 < L) :
+    (∫ v in (0:ℝ)..(1/2 : ℝ), Real.exp (L * v)) = (Real.exp (L / 2) - 1) / L := by
+  have hderiv : ∀ v : ℝ, HasDerivAt (fun w : ℝ ↦ Real.exp (L * w) / L) (Real.exp (L * v)) v := by
+    intro v
+    have hinner : HasDerivAt (fun w : ℝ ↦ L * w) L v := by
+      simpa using (hasDerivAt_id v).const_mul L
+    have h := ((Real.hasDerivAt_exp (L * v)).comp v hinner).div_const L
+    rw [Function.comp_def] at h
+    refine h.congr_deriv ?_
+    field_simp
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun v _ ↦ hderiv v)
+    ((Real.continuous_exp.comp (continuous_const.mul continuous_id)).intervalIntegrable _ _)]
+  simp
+  field_simp
+
+/-- `∫_{1/2}^∞ u e^{-Lu} du = e^{-L/2}(1/(2L) + 1/L²)`. -/
+theorem integrableOn_id_mul_exp_neg {L : ℝ} (hL : 0 < L) :
+    MeasureTheory.IntegrableOn (fun u : ℝ ↦ u * Real.exp (-(L * u))) (Set.Ioi (1/2 : ℝ)) := by
+  have hmaj : MeasureTheory.IntegrableOn
+      (fun u : ℝ ↦ 2 / L * Real.exp (-(L / 2) * u)) (Set.Ioi (1/2 : ℝ)) :=
+    (integrableOn_exp_mul_Ioi (by linarith : -(L / 2) < 0) _).const_mul _
+  refine MeasureTheory.Integrable.mono' hmaj ?_ ?_
+  · exact (continuous_id.mul (Real.continuous_exp.comp
+      (continuous_const.mul continuous_id).neg)).aestronglyMeasurable.restrict
+  · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi] with u hu
+    have hu0 : (0:ℝ) < u := lt_trans (by norm_num) hu
+    have hkey : u * Real.exp (-(L / 2) * u) ≤ 2 / L := by
+      have h1 : (L / 2) * u + 1 ≤ Real.exp ((L / 2) * u) := by
+        have := Real.add_one_le_exp ((L / 2) * u)
+        linarith
+      have h2 : (0:ℝ) < Real.exp ((L / 2) * u) := Real.exp_pos _
+      have h3 : Real.exp (-(L / 2) * u) = 1 / Real.exp ((L / 2) * u) := by
+        rw [show -(L / 2) * u = -((L / 2) * u) by ring, Real.exp_neg, one_div]
+      rw [h3, mul_one_div, div_le_div_iff₀ h2 (by linarith)]
+      nlinarith [h1, hu0.le]
+    have hexp : Real.exp (-(L * u)) = Real.exp (-(L / 2) * u) * Real.exp (-(L / 2) * u) := by
+      rw [← Real.exp_add]
+      congr 1
+      ring
+    have hnn : (0:ℝ) ≤ u * Real.exp (-(L * u)) := by positivity
+    rw [Real.norm_eq_abs, abs_of_nonneg hnn, hexp]
+    have hE : (0:ℝ) < Real.exp (-(L / 2) * u) := Real.exp_pos _
+    calc u * (Real.exp (-(L / 2) * u) * Real.exp (-(L / 2) * u))
+        = (u * Real.exp (-(L / 2) * u)) * Real.exp (-(L / 2) * u) := by ring
+      _ ≤ (2 / L) * Real.exp (-(L / 2) * u) := by
+          exact mul_le_mul_of_nonneg_right hkey hE.le
+
+/-- `∫_{1/2}^∞ u e^{-Lu} du = e^{-L/2}(1/(2L) + 1/L²)`. -/
+theorem integral_id_mul_exp_neg_Ioi {L : ℝ} (hL : 0 < L) :
+    (∫ u in Set.Ioi (1/2 : ℝ), u * Real.exp (-(L * u)))
+      = Real.exp (-(L / 2)) * (1 / (2 * L) + 1 / L ^ 2) := by
+  have hderiv : ∀ u ∈ Set.Ici (1/2 : ℝ),
+      HasDerivAt (fun w : ℝ ↦ -(Real.exp (-(L * w)) * (w / L + 1 / L ^ 2)))
+        (u * Real.exp (-(L * u))) u := by
+    intro u _
+    have hid : HasDerivAt (fun w : ℝ ↦ L * w) L u := by
+      simpa using (hasDerivAt_id u).const_mul L
+    have hinner : HasDerivAt (fun w : ℝ ↦ -(L * w)) (-L) u := hid.neg
+    have he : HasDerivAt (fun w : ℝ ↦ Real.exp (-(L * w))) (Real.exp (-(L * u)) * -L) u := by
+      have h := (Real.hasDerivAt_exp (-(L * u))).comp u hinner
+      rw [Function.comp_def] at h
+      exact h.congr_deriv (by ring)
+    have hp : HasDerivAt (fun w : ℝ ↦ w / L + 1 / L ^ 2) (1 / L) u := by
+      simpa using ((hasDerivAt_id u).div_const L).add_const (1 / L ^ 2)
+    have hm := (he.mul hp).neg
+    refine hm.congr_deriv ?_
+    field_simp
+    ring
+  have ht : Filter.Tendsto (fun w : ℝ ↦ -(Real.exp (-(L * w)) * (w / L + 1 / L ^ 2)))
+      Filter.atTop (nhds 0) := by
+    have hcomp : Filter.Tendsto (fun w : ℝ ↦ L * w) Filter.atTop Filter.atTop :=
+      Filter.Tendsto.const_mul_atTop hL Filter.tendsto_id
+    have h1 : Filter.Tendsto (fun y : ℝ ↦ y * Real.exp (-y)) Filter.atTop (nhds 0) := by
+      simpa using Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 1
+    have h0 : Filter.Tendsto (fun y : ℝ ↦ Real.exp (-y)) Filter.atTop (nhds 0) :=
+      Real.tendsto_exp_neg_atTop_nhds_zero
+    have hsum : Filter.Tendsto
+        (fun y : ℝ ↦ -(1 / L ^ 2 * (y * Real.exp (-y))) + -(1 / L ^ 2 * Real.exp (-y)))
+        Filter.atTop (nhds 0) := by
+      have ha := (h1.const_mul (1 / L ^ 2)).neg
+      have hb := (h0.const_mul (1 / L ^ 2)).neg
+      simpa using ha.add hb
+    have hcc := hsum.comp hcomp
+    refine hcc.congr fun w ↦ ?_
+    simp only [Function.comp_apply]
+    field_simp
+    ring
+  rw [MeasureTheory.integral_Ioi_of_hasDerivAt_of_tendsto' hderiv
+    (integrableOn_id_mul_exp_neg hL) ht]
+  have : L * (1/2 : ℝ) = L / 2 := by ring
+  rw [this]
+  field_simp
+  ring
 
 end CH2Section81
