@@ -1,0 +1,13 @@
+{
+  "challenge_module": "IEANTN.Nodes.DudekPlattNumerics.v4.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "DudekPlattNumerics.v4.challenge_pi_two_sided_footnote"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

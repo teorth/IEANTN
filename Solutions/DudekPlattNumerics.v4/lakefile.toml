@@ -1,0 +1,28 @@
+name = "solution_DudekPlattNumerics_v4"
+defaultTargets = ["Solution"]
+
+# The core library, for the node's `Conclusions`. Add whatever else the proof needs --
+# PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "ThetaPi"
+roots = ["ThetaPi"]
+
+[[lean_lib]]
+name = "IntegralBounds"
+roots = ["IntegralBounds"]
+
+[[lean_lib]]
+name = "CalculusAssembly"
+roots = ["CalculusAssembly"]
+
+[[lean_lib]]
+name = "Numerics"
+roots = ["Numerics"]
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]

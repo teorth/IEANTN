@@ -1,0 +1,131 @@
+# Node metadata for `MT.v2`.  See docs/NODES.md.
+#
+# Mossinghoff-Trudgian Section 7 Corollary 1 -- the explicit theta(x)-x error bound that
+# DudekPlattNumerics.v3's R = 6.315 traces to but, before this node, could not cite as an edge.
+# A variant of MT.v1, not a successor: MT.v1 keeps its two zero-free-region conclusions unchanged;
+# this node adds the one further conclusion of the same paper that is actually needed elsewhere.
+version: "v0.4"
+
+node:
+  id: MT.v2
+  family: MT
+  version: v2
+  kind: paper
+  status: active
+
+project:
+  name: "Mossinghoff-Trudgian: the explicit theta-error Corollary"
+  description: >-
+    Mossinghoff-Trudgian (2015) Section 7, Corollary 1: |theta(x) - x| <= x sqrt(8/17pi) X^(1/2)
+    exp(-X), X = sqrt(log x / R), R = 6.315, for x >= 149. Proved from the paper's own Theorem 1
+    (MT.v1.zero_free_region) by the same classical-zero-free-region-to-theta recipe Trudgian's solo
+    paper uses. Stated as its own conclusion, in this network's HasClassicalBound vocabulary, so
+    that DudekPlattNumerics.v4 (and anything else wanting an explicit theta bound at this R) can
+    import it as a real edge rather than merely citing the same paper by number proximity.
+  authors: ["Sebastián Rodrigo (AI-assisted)"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M26", "11N05"]
+
+conclusions:
+- id: corollary_1
+  issue: 63
+  declaration: MT.v2.corollary_1
+  challenge: MT.v2.challenge_corollary_1
+  imports:
+  - node: MT.v1
+    conclusion: zero_free_region
+  imports_status: identified
+  justifications:
+  - id: mt-paper-corollary-1
+    kind: literature
+    source: MT
+    locator: "Section 7, Corollary 1"
+    note: >-
+      Asserted on the authority of the paper, exactly as MT.v1's own two conclusions are. Fetched
+      and read directly from the open-access arXiv preprint (arxiv.org/pdf/1410.3926) this session:
+      its own proof of Corollary 1 reads "Theorem 1 can be used, as in [19, p. 2], to show that
+      there are no zeros ... in the region sigma >= 1 - 1/(6.315 log|t/17|), t >= 24. The statement
+      then follows from the arguments in [19]" -- i.e. it applies Trudgian's own (solo,
+      arXiv:1401.2689) classical-zero-free-region-to-theta conversion recipe verbatim, substituting
+      MT's own Theorem 1 constant R0 = 5.573412 (MT.v1.zero_free_region) for Kadiri's raw 5.69693.
+      The conversion argument itself (a contour integral against the zero-counting function,
+      following [19] = Trudgian's solo paper) is genuine analytic work that no node in this network
+      currently formalizes; this conclusion cites the paper's own corollary rather than re-deriving
+      that argument. The only network input beyond ordinary calculus is MT.v1.zero_free_region,
+      which already imports Platt2015.v1.rh_up_to (T0 = 3.06e10) -- so "unconditional" here means
+      that height is established, exactly as already recorded on MT.v1 itself, not that no
+      finite-height input was used.
+  designated: mt-paper-corollary-1
+
+sources:
+- title: "Nonnegative trigonometric polynomials and a zero-free region for the Riemann zeta-function"
+  authors: ["Michael J. Mossinghoff", "Timothy S. Trudgian"]
+  type: "paper"
+  id: "arXiv:1410.3926"
+  location: "J. Number Theory 157 (2015), 329-349"
+  relationship: formalizes
+  note: >-
+    The same paper MT.v1 already holds (its zero_free_region is this paper's Theorem 1). Section 7
+    is fetched and read directly from the freely available arXiv preprint this session
+    (arxiv.org/pdf/1410.3926) -- the same fetch DudekPlattNumerics.v3's own justification note
+    already cites for R = 6.315's provenance. Bibliographic details otherwise as MT.v1 records them.
+- title: "Updating the error term in the prime number theorem"
+  authors: ["Timothy S. Trudgian"]
+  type: "paper"
+  id: "arXiv:1401.2689"
+  location: "background"
+  relationship: background
+  note: >-
+    Reference [19] of the Mossinghoff-Trudgian paper, whose classical-zero-free-region-to-theta
+    conversion recipe Corollary 1's own proof reuses verbatim (substituting MT's sharper R0). Not a
+    network node; recorded here only because Corollary 1's proof names it directly. Not imported --
+    the actual conversion argument is not formalized by this node, which cites Corollary 1's
+    conclusion, not its proof.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Sonnet 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Split Mossinghoff-Trudgian's Section 7 Corollary 1 out of MT.v1 into its own node version so
+      it can be imported as a real graph edge, transcribing it into the network's existing
+      HasClassicalBound/E-theta vocabulary rather than a new bespoke predicate, under the direction
+      of the maintainer. No proof of the corollary itself is claimed; the conversion argument
+      remains cited, not formalized.
+
+review:
+  status: self-assessed
+  notes: >-
+    This new node has been checked by its contributing agent and by this repository's mechanical
+    checks (core build, fingerprint/graph/closure checks) only; no maintainer or other human review
+    has been recorded for it, and none is implied by omitting a `reviewers` field -- that review is
+    pending ordinary pull-request review. The statement was checked against the open-access arXiv
+    preprint directly (not merely against DudekPlattNumerics.v3's prior transcription of the same
+    formula) and against HasClassicalBound's own shape (admissibleBound A B C R x = A (log x/R)^B
+    exp(-C(log x/R)^(1/2))): B = 1/4 matches the corollary's X^(1/2) = (log x/R)^(1/4), C = 1
+    matches its bare exp(-X), and A = sqrt(8/17pi) is the corollary's own leading constant.
+
+limitations:
+- >-
+  Asserted on the paper's authority; not proved in Lean here. The zero-free-region-to-theta
+  conversion argument Corollary 1's own proof performs (citing Trudgian's solo paper's recipe) is
+  not formalized by any node in this network, so a consumer of this conclusion trusts that argument,
+  not a Lean derivation of it -- exactly as a consumer of MT.v1's own two conclusions trusts
+  Mossinghoff-Trudgian's zero-free-region proofs.
+- >-
+  Imports only MT.v1.zero_free_region directly. Platt2015.v1.rh_up_to (the T0 = 3.06e10 height) is
+  not re-listed here since it is already an import of MT.v1.zero_free_region and arrives
+  transitively; relisting it would duplicate an edge the dependency report already shows.
+- >-
+  x >= 149 is the paper's own stated range for Corollary 1. A consumer needing a smaller x should
+  not assume the bound extends there.
+- >-
+  No novelty is claimed. The result is Mossinghoff and Trudgian's.

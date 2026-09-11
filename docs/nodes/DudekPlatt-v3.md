@@ -74,7 +74,7 @@ noncomputable def criterion : Prop :=
 | Receipt state | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | [`DudekPlatt.v1.ramanujan_inequality`](DudekPlatt-v1.md#ramanujan_inequality), [`DudekPlatt.v2.ramanujan_inequality_3915`](DudekPlatt-v2.md#ramanujan_inequality_3915) |
+| Assumed by | [`DudekPlatt.v1.ramanujan_inequality`](DudekPlatt-v1.md#ramanujan_inequality), [`DudekPlatt.v2.ramanujan_inequality_3915`](DudekPlatt-v2.md#ramanujan_inequality_3915), [`DudekPlatt.v4.ramanujan_inequality_9401`](DudekPlatt-v4.md#ramanujan_inequality_9401) |
 
 **Justification `unjustified`** — none-yet
 
