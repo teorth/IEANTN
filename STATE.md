@@ -19,6 +19,9 @@ adds the environment detail.
 | `literature` | 37 |
 | `none-yet` | 7 |
 | `numerical` | 15 |
+| `literature` | 36 |
+| `none-yet` | 5 |
+| `numerical` | 19 |
 
 ## Nodes
 
@@ -111,6 +114,11 @@ adds the environment detail.
 | `ZeroCount.v1` | stub | `rvm_error_small` | literature | 0 | #64 |
 | `ZeroFreeHeight.v1` | active | `classical_region_descends` | lean-comparator-stale | 0 | #30 |
 | `ZetaLogDeriv.v1` | active | `logDeriv_functional_equation` | lean-comparator | 0 | #64 |
+| `ZetaLogDerivValues.v1` | stub | `logDeriv_two` | numerical | 0 | - |
+| `ZetaLogDerivValues.v1` | stub | `logDeriv_three_halves` | numerical | 0 | - |
+| `ZetaLogDerivValues.v1` | stub | `logDeriv_neg_one` | numerical | 0 | - |
+| `ZetaLogDerivValues.v1` | stub | `deriv_logDeriv_neg_one` | numerical | 0 | - |
+| `ZetaLogDerivValues.v1` | stub | `logDeriv_laurent_alternating` | numerical | 0 | - |
 | `ZetaZeroes.v1` | active | `no_nontrivial_zeroes_left` | lean-comparator | 0 | - |
 | `ZetaZeroes.v1` | active | `zeroes_off_axis_in_strip` | lean-comparator | 0 | - |
 | `ZetaZeroes.v1` | active | `finite_zeroes_on_compact` | lean-comparator | 0 | - |

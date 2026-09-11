@@ -330,12 +330,62 @@ stages:
       corollaries. Decide this by working section 7 backwards, not by stating Theorem 1.1 first.
 
   - stage: "sections 7-8: the specialisation to psi"
-    state: in progress -- SECTION 7 IS COMPLETE (Section7.lean); section 8 not started
+    state: in progress -- Appendix C plus section 7's preamble done (Section7.lean); sections 7, 8 open
     note: >-
-      SECTION 7 IS DONE, in Section7.lean, 2415 lines. lem:sibelius (a), (b) and (c), lem:cothder,
-      and both of the opening coth estimates. Part (b) is stated on 0 < x < 1; its case
-      0 < x <= 1/2 follows from (c) plus |1/(x+iy) - 1/x| = |y|/(x|x+iy|), and its case
-      1/2 <= x < 1 from lem:cothder and the mean value inequality along the vertical segment.
+      A CORRECTION TO THE NUMBERING, recorded because it was got wrong once. Section 7 of
+      Chirre-Helfgott is sec:zetres, "The case of Lambda(n): sums over zeros of zeta(s)", and
+      section 8 is sec:horint, "The case of Lambda(n): Integrals". lem:sibelius and lem:cothder are
+      NOT in section 7: they live in APPENDIX C, sec:darf ("Series, functions and comparisons"),
+      after the appendix marker at line 3615 of the source. Section 7 consumes them.
+      WHAT Section7.lean ACTUALLY CONTAINS, 2415 lines: all of Appendix C's subs:darf1 --
+      lem:sibelius (a), (b), (c) and lem:cothder -- together with section 7's two PREAMBLE
+      estimates, coth y <= 1 + 1/y and 1/y <= coth y <= 1/y + y/3 (source lines 2224-2225). Part (b)
+      is stated on 0 < x < 1; its case 0 < x <= 1/2 follows from (c) plus
+      |1/(x+iy) - 1/x| = |y|/(x|x+iy|), and its case 1/2 <= x < 1 from lem:cothder and the mean
+      value inequality along the vertical segment.
+      SECTION 7 PROPER IS NOT STARTED. Its four remaining pieces are lem:trivialzer (the trivial
+      zeros, which needs the residue of -zeta'/zeta at -2n and coth decreasing on (0,infty)),
+      cor:thonny (the weight estimate, which is what consumes lem:sibelius and lem:cothder),
+      prop:tritura with lem:tremic and lem:konstanz (the integral of
+      sqrt(F^2 + (1-t/T)^2) log(t/2pi), which introduces the constants C_1 = 0.168938... and
+      C_2 = 0.164184... computed with Arb/FLINT), and then lem:adar, lem:salmon and prop:vihuela
+      (the sums over non-trivial zeros, which need zero counting, RH up to height T, and a
+      numerical input from Platt: 2 sum_{0 < gamma <= 2*10^4} 1/gamma = 10.319317...).
+      SECTIONS 7 AND 8 ARE INDEPENDENT OF EACH OTHER; section 9 combines them.
+      SECTION 8 (sec:horint, source lines 2661-3229). Its output is lem:hardin: for T >= 10^6 with
+      RH holding in [T - 3/4, T], and x >= T, there is t in [T - 1/2, T] with
+      I_{+,C}(t) <= (13 + 60/log x) log T/log^2 x + 5 log T/sqrt x. Three parts.
+      8.1, THE INTEGRAL ON THE REAL LINE, int_{-infty}^1 |zeta'/zeta(sigma+it)| (1-sigma)
+      x^{-(1-sigma)} dsigma. Split at sigma = -1/2. Below it, lem:adioso (Appendix A) does it
+      directly. Above it, lem:saghar rests on prop:titch96A -- an explicit Theorem 9.6(A) of
+      Titchmarsh, zeta'/zeta(s) = sum_{|Im rho - t| <= a} 1/(s-rho) + O*(kappa_1 log(t/2pi) + ...)
+      -- and on lem:rameau, an explicit bound for int_0^infty u x^{-u}/sqrt(eta^2 + (1/2-u)^2) du.
+      Then prop:adoro CHOOSES t by a continuous pigeonhole: each ordinate forbids an interval of
+      width 2 Delta with Delta = alpha/(2(N_0+1)), the unforbidden set has measure >= alpha, so the
+      integrand attains a value at most its average there. cor:adiaro is the instance lem:hardin
+      uses.
+      8.2, THE INTEGRAL OVER C, the contour 1 -> -1 -> -2+i -> -infty+i. Four steps, and this is
+      the self-contained part: lem:arles for the segment [-1,1] (with the technical
+      lem:convexistan), which needs A~(s) = -zeta'/zeta - 1/(s-1) < 0 on (-2,1] and the Laurent
+      data at s = 1; lem:moruno for the horizontal contour, splitting off (pi/2) cot(pi s/2) by the
+      functional equation so the remainder is holomorphic on the left half-plane; lem:adamant,
+      |tan(e^{3 pi i/4} t)| <= |t|, which is elementary and cheap -- it follows from
+      |cos z|^2 = (cos 2x + cosh 2y)/2 and cos(-2y) + cosh 2y >= 2; and lem:ranadi, the bound on
+      int_{C_<} (pi/2) cot(pi s/2) Phi(s) x^s ds. prop:coronidis sums them:
+      |int_C A~(s) Phi(s) x^s ds| <= gamma x/log^2 x + (5/3) x/log^3 x for x >= 15.
+      8.3 is lem:hardin, which assembles 8.1 and 8.2.
+      WHAT SECTION 8 NEEDS FROM OUTSIDE ITSELF, and what the network already has.
+      ZetaLogDeriv.v1.logDeriv_functional_equation is exactly lem:moruno's input (eq:guruno).
+      ZeroCount.v1 supplies the Riemann-von Mangoldt counting that prop:adoro's pigeonhole needs.
+      NOT PRESENT AND NEEDED: prop:titch96A and lem:adioso (Appendix A, explicit estimates on
+      zeta'/zeta -- the heaviest external input), the Laurent constants of zeta'/zeta at s = 1 for
+      lem:arles, and THE EXPONENTIAL INTEGRAL Ei, which Mathlib does not have at all and which
+      lem:rameau and lem:bettnist both use. Ei is the clearest helper-node candidate in the
+      section: elementary, absent from Mathlib, and not specific to this paper.
+      SUGGESTED ORDER: 8.2 first, since lem:adamant, lem:ranadi and prop:coronidis are ordinary
+      complex analysis with explicit constants and depend on nothing outside the paper except the
+      functional equation, which is already a node; then Ei; then 8.1, which is where the explicit
+      zeta'/zeta machinery has to be built; then lem:hardin.
       The route through (c) is worth recording because the paper's is not the shortest.
       A(z) = -(1-z) f(z) with f(z) = 1/(pi z) - cot(pi z), whose Taylor coefficients are
       (2/pi) zeta(2n+2) -- the imported CotangentSeries.v1. Multiplying by (1 - z^2) telescopes the

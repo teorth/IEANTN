@@ -56,6 +56,7 @@ import IEANTN.Nodes.Wedeniwski.v1.Challenge
 import IEANTN.Nodes.ZeroCount.v1.Challenge
 import IEANTN.Nodes.ZeroFreeHeight.v1.Challenge
 import IEANTN.Nodes.ZetaLogDeriv.v1.Challenge
+import IEANTN.Nodes.ZetaLogDerivValues.v1.Challenge
 import IEANTN.Nodes.ZetaZeroes.v1.Challenge
 
 /-!

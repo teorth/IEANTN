@@ -1,0 +1,207 @@
+# Node metadata for `ZetaLogDerivValues.v1`.  See docs/NODES.md.
+#
+# Numerical values of zeta'/zeta at a few real points, plus the sign pattern of its Laurent
+# coefficients at 1.  Deliberately named for the class: intended to grow as other explicit
+# estimates need other values of the same kind.
+version: "v0.4"
+
+node:
+  id: ZetaLogDerivValues.v1
+  family: ZetaLogDerivValues
+  version: v1
+  kind: computation
+  status: stub
+
+project:
+  name: "Numerical values of the logarithmic derivative of zeta"
+  description: >-
+    Values of zeta'/zeta at real points, and the sign pattern of its Laurent coefficients at s = 1.
+    Mathlib has zeta'/zeta and its Dirichlet series but no numerical value of either, and every
+    explicit contour argument needs some: section 8 of Chirre-Helfgott alone reaches for
+    zeta'/zeta(2), zeta'/zeta(3/2), zeta'/zeta(-1) and (zeta'/zeta)'(-1) in five separate places,
+    together with the fact that the Laurent coefficients of -zeta'/zeta at 1 alternate in sign.
+    None of these is specific to a paper: each value is a sum over Lambda(n) n^{-t} or a
+    coefficient of a fixed expansion, and any explicit estimate that shifts a contour past s = 1 or
+    past the trivial zeroes will want them.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M06", "11Y60"]
+
+conclusions:
+  - id: logDeriv_two
+    declaration: ZetaLogDerivValues.v1.logDeriv_two
+    challenge: ZetaLogDerivValues.v1.challenge_logDeriv_two
+    imports: []
+    imports_status: none
+    justifications:
+      - id: computed
+        kind: numerical
+        note: >-
+          zeta'/zeta(2) = -0.5699609930945328063998643600..., computed here with mpmath at 30
+          decimal places. NOT A VALUE CHIRRE-HELFGOTT STATE: it is wanted for a step this network
+          adds rather than one the paper takes. -zeta'/zeta(t) = sum Lambda(n) n^{-t} has
+          non-negative terms, so |zeta'/zeta(t)| <= |zeta'/zeta(2)| for every real t >= 2, and that
+          reduction is ordinary Lean work from Mathlib's LSeries_vonMangoldt_eq_deriv_riemannZeta_div
+          and vonMangoldt_nonneg; only the value at the base point has to be imported.
+          Imports `none`, and that is a real none: a bare numerical claim about a Mathlib constant.
+    designated: computed
+
+  - id: logDeriv_three_halves
+    declaration: ZetaLogDerivValues.v1.logDeriv_three_halves
+    challenge: ZetaLogDerivValues.v1.challenge_logDeriv_three_halves
+    imports: []
+    imports_status: none
+    justifications:
+      - id: computed
+        kind: numerical
+        source: CH2
+        locator: proof of Lemma 8.1 (`lem:saghar`), the sigma_+ = 3/2 term
+        note: >-
+          zeta'/zeta(3/2) = -1.5052353557882679194220436030..., computed here with mpmath at 30
+          decimal places and AGREEING WITH THE SIX DIGITS CH2 STATE, "-1.50523...".
+          Used by lem:adioso, which carries |zeta'/zeta(1+sigma_0)| for a free sigma_0 > 0, at the
+          sigma_0 = 1/2 that lem:hardin needs; prop:titch96A uses the same value.
+          Imports `none`.
+    designated: computed
+
+  - id: logDeriv_neg_one
+    declaration: ZetaLogDerivValues.v1.logDeriv_neg_one
+    challenge: ZetaLogDerivValues.v1.challenge_logDeriv_neg_one
+    imports: []
+    imports_status: none
+    justifications:
+      - id: computed
+        kind: numerical
+        source: CH2
+        locator: proof of Lemma 8.5 (`lem:moruno`), through the stated A~(-1)
+        note: >-
+          zeta'/zeta(-1) = 1.9850537244054111505670359229..., computed here with mpmath at 30
+          decimal places. CH2 DO NOT STATE THIS VALUE DIRECTLY; they state
+          A~(-1) = -1.48505..., and A~(-1) = -zeta'/zeta(-1) + 1/2 recovers it, the two agreeing to
+          all six digits CH2 give.
+          zeta(-1) = -1/12 is non-zero, so zeta'/zeta is analytic here and this is not a junk value.
+          Imports `none`.
+    designated: computed
+
+  - id: deriv_logDeriv_neg_one
+    declaration: ZetaLogDerivValues.v1.deriv_logDeriv_neg_one
+    challenge: ZetaLogDerivValues.v1.challenge_deriv_logDeriv_neg_one
+    imports: []
+    imports_status: none
+    justifications:
+      - id: computed
+        kind: numerical
+        source: CH2
+        locator: statement of Lemma 8.3 (`lem:arles`), through the stated c
+        note: >-
+          (zeta'/zeta)'(-1) = -0.9379851994605893330396714295..., computed here with mpmath at 30
+          decimal places. CH2 DO NOT STATE THIS VALUE DIRECTLY EITHER; they state
+          c = zeta'/zeta(-1) - 2 (zeta'/zeta)'(-1) = 3.86102..., which together with
+          logDeriv_neg_one recovers it. The recomputed c is 3.8610241233265898166463787818, agreeing
+          with all six digits CH2 give, and (c - gamma)/2 = 1.6419042292125284780199333459 agrees
+          with the "1.6419..." CH2 quote in the proof of prop:coronidis.
+          THE DERIVATIVE IS OF THE LOGARITHMIC DERIVATIVE, not of zeta. The statement puts the
+          quotient inside the outer `deriv` so there is no room to read it the other way; that is
+          the transcription error this conclusion is most exposed to.
+          Imports `none`.
+    designated: computed
+
+  - id: logDeriv_laurent_alternating
+    declaration: ZetaLogDerivValues.v1.logDeriv_laurent_alternating
+    challenge: ZetaLogDerivValues.v1.challenge_logDeriv_laurent_alternating
+    imports: []
+    imports_status: none
+    justifications:
+      - id: ch2-kalmynin
+        kind: numerical
+        source: CH2
+        locator: Lemma B.6 (`lem:kalmynin`)
+        note: >-
+          Asserted on the authority of an interval-arithmetic computation, not of an argument alone.
+          The proof runs the maximum modulus principle on G(s) = -zeta'/zeta(s) - 1/(s-1) + 1/(s+2),
+          bounding |G| <= 1.396 on the boundary of [-3,5] + i[-4,4] by bisection in FLINT/Arb; Cauchy
+          then gives |b_n| < 1.4/4^n, the pole at -2 contributes (-1)^n 3^{-(n+1)} and dominates for
+          n >= 5, and the first five coefficients are computed separately. So re-establishing this
+          means re-running something, not re-reading something -- which is what `numerical` records.
+          CH2 attribute the argument to A. Kalmynin (MathOverflow 501199).
+          CHECKED INDEPENDENTLY HERE: the Taylor coefficients of -zeta'/zeta(s) - 1/(s-1) at s = 1
+          were computed with mpmath through n = 8 and alternate as claimed, with
+          a_0 = 0.577215664902 matching Euler's constant to twelve places and a_8 = 5.1345e-5 against
+          the predicted 3^{-9} = 5.0805e-5.
+          NO MARGIN SITE: the claim is a sign pattern with no rounded numeral in it, so a
+          multiplicative factor could not weaken it.
+          Imports `none`.
+    designated: ch2-kalmynin
+
+sources:
+  - title: "Optimal bounds for sums of non-negative arithmetic functions"
+    authors: ["Andres Chirre", "Harald Andres Helfgott"]
+    type: "paper"
+    id: "https://arxiv.org/abs/2512.15709"
+    relationship: formalizes
+    note: >-
+      The consumer, and the source for four of the five conclusions -- directly for zeta'/zeta(3/2),
+      and through the stated A~(-1) and c for the two values at -1. Read from the LaTeX source
+      rather than the PDF: `curl -L https://arxiv.org/e-print/2512.15709` yields VonMangoldt.tex.
+      Note that 46 per cent of that file sits inside \begin{comment} blocks, so a grep over the raw
+      file finds text that is not in the paper; strip comments before concluding anything from one.
+      zeta'/zeta(2) is not from this source at all -- it is wanted for a reduction this network
+      adds -- and is recorded as a computation with no citation.
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude Opus 5 (Anthropic)"]
+      framework: "Claude Code"
+      role: >-
+        Identified the five facts as a common missing input across section 8 of CH2, checked what
+        Mathlib actually supplies before asserting absence, chose the statement forms, and recomputed
+        every value independently with mpmath at 30 decimal places, under the direction of the
+        maintainer. No proof is claimed.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    THE TOLERANCE FORM IS DELIBERATE. Each value is stated as
+    `exists c, |c - v| <= margin 0 * 1e-6 and zeta'/zeta(p) = c` rather than as a two-sided bracket.
+    A bracket would need the margin applied in opposite ways on its two sides depending on the signs
+    of the endpoints, since raising a margin must always widen; the tolerance form widens whatever
+    the sign of v, which is the property the site exists to have. It also carries "this quantity is
+    real" with it, which a bound on the norm would not, and consumers need the signs: zeta'/zeta(-1)
+    is positive while the other three values are negative.
+    1e-6 IS FAR WIDER THAN THE COMPUTATION AND FAR TIGHTER THAN ANY CONSUMER. Every one of the four
+    values is within 4e-7 of the stated centre.
+    WHAT IS NOT HERE, deliberately. The monotonicity |zeta'/zeta(t)| <= |zeta'/zeta(2)| for real
+    t >= 2 is ordinary Lean work from Mathlib and belongs in a solution, not here. Values of zeta
+    itself, of zeta' alone, and the Stieltjes constants are different computations and belong
+    wherever they are needed. Lemma B.5 of CH2 (`lem:badabook`), whose interval-arithmetic step is
+    of the same character, is absent because the route this network takes through lem:moruno does
+    not use it.
+    NOT PUT ON ZetaLogDeriv.v1, which states the functional equation and is verified: verification
+    is all-or-nothing per node, so a new conclusion there would invalidate a receipt that has
+    nothing to do with these values.
+
+limitations:
+  - >-
+    STATED BUT NOT PROVED, and not provable in Lean from Mathlib as it stands: there is no numerical
+    evaluation of zeta'/zeta anywhere in Mathlib. Nothing downstream may treat these as established.
+    A consumer importing them carries them as hypotheses and inherits their unjustified status.
+  - >-
+    THE AUTHORITY IS A COMPUTATION. Four of the five values were recomputed here with mpmath and
+    three of them agree with digits CH2 state; the fifth conclusion, the alternating signs, rests on
+    CH2's interval-arithmetic argument, of which only the first nine coefficients were checked here.
+    Re-establishing any of it means re-running something.
+  - >-
+    FOUR POINTS ONLY, and one expansion. The node is named for the class because it is intended to
+    grow: other explicit arguments want zeta'/zeta at other real points, and the same computation
+    supplies them.
+  - >-
+    No novelty is claimed. These are standard constants.
