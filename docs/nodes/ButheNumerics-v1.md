@@ -135,6 +135,41 @@ noncomputable def lemma_3_constant_gt_at_10 : Prop :=
 
 > A finite check rather than an argument, so `numerical`. Buthe proves Lemma 3's positivity clause -- that x - theta(x) > 0 throughout [2, T] forces li(x) - pi(x) > 0 there -- by "taking a = 10 in (6.17) since pi(10) - li(10) + (10 - theta(10))/log 10 > 0.1". That inequality is displayed inside the proof but is not a stated result, and nothing else in the network carries it. It is the second hidden numerical input in this paper, the first being the sign of the same functional at a = 1500. Note the signs differ: A(10) > 0.1 and A(1500) <= 0. Not a contradiction -- A varies with a -- but a solution that conflates the two points proves nothing. Imports `none`: three evaluations at a single point consume no other result in the network.
 
+### `eq_6_2`
+
+**Equation (6.2).** The Eratosthenes-sieve bound on the normalised remainder
+`R_ψ(t) = (t − ψ(t)) / √t`.
+
+Büthe records `-0.8 ≤ R_ψ(t) ≤ 0.81` for every `100 ≤ t ≤ 5 · 10¹⁰`, obtained by sieving rather
+than by the analytic algorithm. Together with Table 1 this is what implies Theorem 2's (1.5) on
+`11 < t ≤ 10¹⁹` (the remaining `11 < t < 100` being a direct check).
+
+Transcribed from arXiv:1511.02032v2, equation (6.2), including the asymmetric constants and the
+closed interval. This is the "sieve bound of Section 6" that `Buthe.v1`'s limitations list as
+unstated. It lives here rather than on `Buthe.v1` because it is a finite computation, not an
+analytic claim.
+
+```lean
+def eq_6_2 : Prop :=
+  ∀ t : ℝ, 100 ≤ t → t ≤ 5 * 10 ^ (10 : ℕ) →
+    -0.8 ≤ (t - Chebyshev.psi t) / Real.sqrt t ∧
+      (t - Chebyshev.psi t) / Real.sqrt t ≤ 0.81
+```
+
+| | |
+|---|---|
+| Lean name | `ButheNumerics.v1.eq_6_2` |
+| Challenge | `ButheNumerics.v1.challenge_eq_6_2` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L132) |
+| Evidence | computation (`numerical`) |
+| Sources traced | none |
+| Assumes | nothing recorded |
+| Assumed by | nothing yet |
+
+**Justification `buthe-computation`** — **designated** — numerical, Equation (6.2)
+
+> A finite check rather than an argument, so `numerical`. Buthe records -0.8 <= R_psi(t) <= 0.81 for 100 <= t <= 5e10, "calculated using the Eratosthenes sieve". Together with Table 1 this implies Theorem 2's (1.5); the remaining 11 < t < 100 is a direct check. Transcribed from arXiv:1511.02032v2, including the asymmetric constants and the closed interval. Imports `none`: a bounded-range sieve consumes no other result in the network. This is the sieve bound of Section 6 that Buthe.v1's limitations list as unstated; it lives on this node because it is a computation, not an analytic claim.
+
 ## Limitations
 
 Recorded by the node itself, not derived.

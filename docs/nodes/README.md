@@ -11,7 +11,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`Buthe.v1`](Buthe-v1.md) | paper | 6 | cited |
 | [`Buthe.v2`](Buthe-v2.md) | pipeline | 2 | unjustified |
 | [`Buthe2016.v1`](Buthe2016-v1.md) | paper | 4 | cited |
-| [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 3 | computation |
+| [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 4 | computation |
 | [`CH2.v1`](CH2-v1.md) | paper | 4 | cited |
 | [`CH2.v2`](CH2-v2.md) | pipeline | 2 | verified, stale |
 | [`CH2.v3`](CH2-v3.md) | pipeline | 2 | verified |

@@ -118,4 +118,20 @@ here would point the wrong way. -/
 noncomputable def lemma_3_constant_gt_at_10 : Prop :=
   0.1 < primeCounting 10 - li 10 + (10 - Chebyshev.theta 10) / Real.log 10
 
+/-- **Equation (6.2).** The Eratosthenes-sieve bound on the normalised remainder
+`R_ψ(t) = (t − ψ(t)) / √t`.
+
+Büthe records `-0.8 ≤ R_ψ(t) ≤ 0.81` for every `100 ≤ t ≤ 5 · 10¹⁰`, obtained by sieving rather
+than by the analytic algorithm. Together with Table 1 this is what implies Theorem 2's (1.5) on
+`11 < t ≤ 10¹⁹` (the remaining `11 < t < 100` being a direct check).
+
+Transcribed from arXiv:1511.02032v2, equation (6.2), including the asymmetric constants and the
+closed interval. This is the "sieve bound of Section 6" that `Buthe.v1`'s limitations list as
+unstated. It lives here rather than on `Buthe.v1` because it is a finite computation, not an
+analytic claim. -/
+def eq_6_2 : Prop :=
+  ∀ t : ℝ, 100 ≤ t → t ≤ 5 * 10 ^ (10 : ℕ) →
+    -0.8 ≤ (t - Chebyshev.psi t) / Real.sqrt t ∧
+      (t - Chebyshev.psi t) / Real.sqrt t ≤ 0.81
+
 end ButheNumerics.v1
