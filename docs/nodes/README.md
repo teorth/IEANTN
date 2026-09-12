@@ -7,6 +7,8 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | Node | Kind | Claims | Weakest evidence |
 |---|---|---:|---|
 | [`BKLNW.v1`](BKLNW-v1.md) | paper | 4 | cited |
+| [`BKLNW.v2`](BKLNW-v2.md) | pipeline | 2 | cited |
+| [`BKLNWNumerics.v1`](BKLNWNumerics-v1.md) | computation | 2 | computation |
 | [`Brown1967.v1`](Brown1967-v1.md) | paper | 0 | — |
 | [`Buthe.v1`](Buthe-v1.md) | paper | 6 | cited |
 | [`Buthe.v2`](Buthe-v2.md) | pipeline | 2 | unjustified |

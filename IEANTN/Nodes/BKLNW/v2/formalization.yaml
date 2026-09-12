@@ -1,0 +1,92 @@
+# Node metadata for `BKLNW.v2`.  See docs/NODES.md.
+#
+# Pipeline variant: Corollary 5.1 as on v1, Table 8 tail imported from BKLNWNumerics.v1.
+version: "v0.4"
+
+node:
+  id: BKLNW.v2
+  family: BKLNW
+  version: v2
+  kind: pipeline
+  status: awaiting-solution
+
+project:
+  name: "BKLNW pipeline: Corollary 5.1 and the Table 8 tail"
+  description: >-
+    Same paper as BKLNW.v1. This version keeps the analytic ψ−θ bound and
+    states the Table 8 unbounded reading as depending on BKLNWNumerics.v1,
+    so the numerical table is not restated on the paper family.
+  authors: ["Taksh Kothari"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Taksh"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M06", "11M26"]
+
+conclusions:
+- id: corollary_5_1
+  declaration: BKLNW.v2.corollary_5_1
+  challenge: BKLNW.v2.challenge_corollary_5_1
+  imports:
+  - node: Buthe.v1
+    conclusion: theorem_2_theta_lower
+  justifications:
+  - id: bklnw-paper
+    kind: literature
+    source: BKLNW
+    locator: Corollary 5.1, equations (2.10) to (2.12), restricted to b <= 38 log 10
+    note: >-
+      Same statement as BKLNW.v1.corollary_5_1. Imports Buthe's (1.7) as on v1.
+      The Table 8 half of Corollary 2.1 is not an import here; it lives on
+      BKLNWNumerics.v1.
+  designated: bklnw-paper
+  imports_status: identified
+- id: table8_psi_bound_above
+  declaration: BKLNW.v2.table8_psi_bound_above
+  challenge: BKLNW.v2.challenge_table8_psi_bound_above
+  imports:
+  - node: BKLNWNumerics.v1
+    conclusion: table8_psi_bound
+  imports_status: identified
+  justifications:
+  - id: from-table8
+    kind: literature
+    source: BKLNW
+    locator: Table 8 in the form used by Corollaries 2.1 and 15.1
+    note: >-
+      Follows from BKLNWNumerics.v1.table8_psi_bound together with the
+      tabulated ε strictly decreasing, checked on v1 across consecutive
+      pairs. Cutoff e^25000 is the last tabulated b. Data is
+      BKLNWNumerics.v1.table8, not a second Tables.lean on this version.
+  designated: from-table8
+
+sources:
+- title: "Sharper bounds for the Chebyshev function theta(x)"
+  authors: ["Samuel Broadbent", "Habiba Kadiri", "Allysa Lumley", "Nathan Ng", "Kirsten Wilk"]
+  type: "paper"
+  id: "https://doi.org/10.1090/mcom/3643"
+  location: "Math. Comp. 90 (2021), no. 331, 2281-2315"
+  relationship: formalizes
+
+automation:
+  methods:
+  - method: manual
+    role: >-
+      Branched v2 so the Table 8 tail imports the computation node instead
+      of duplicating the table on this family.
+
+review:
+  status: self-assessed
+  reviewers: ["Taksh"]
+
+limitations:
+- >-
+  corollary_5_1 is still only the b ≤ 38 log 10 branch.
+- >-
+  BKLNW.v1 is not deprecated; it remains the paper-faithful node.
+- >-
+  No Lean proof is claimed.

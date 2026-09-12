@@ -41,7 +41,7 @@ def theorem_2_psi : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | [`BKLNW.v1.table8_psi_bound`](BKLNW-v1.md#table8_psi_bound), [`BKLNW.v1.table8_psi_bound_above`](BKLNW-v1.md#table8_psi_bound_above) |
+| Assumed by | [`BKLNW.v1.table8_psi_bound`](BKLNW-v1.md#table8_psi_bound), [`BKLNW.v1.table8_psi_bound_above`](BKLNW-v1.md#table8_psi_bound_above), [`BKLNWNumerics.v1.table8_psi_bound`](BKLNWNumerics-v1.md#table8_psi_bound) |
 
 **Justification `buthe2016-paper`** — **designated** — literature, Theorem 2, the psi estimate
 
