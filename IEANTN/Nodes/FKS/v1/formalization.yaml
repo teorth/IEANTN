@@ -41,7 +41,7 @@ conclusions:
   - id: fks-paper
     kind: literature
     source: FKS
-    locator: arXiv:2204.02588v2, Corollary 1.4
+    locator: arXiv:2204.02588v2, Corollary 1.4 (preprint numbering, checked)
     note: >-
       Asserted on the authority of the paper, and transcribed from the preprint in the paper's own normalisation
       rather than converted to the admissible-bound shape. The conversion is not free: with R = 5.5666305
@@ -109,6 +109,36 @@ conclusions:
   designated: fks-paper
 
   imports_status: identified
+- id: rescaled_A_exceeds_printed
+  declaration: FKS.v1.rescaled_A_exceeds_printed
+  challenge: FKS.v1.challenge_rescaled_A_exceeds_printed
+  imports: []
+  imports_status: none
+  justifications:
+  - id: fks-rescaling-A
+    kind: numerical
+    source: FKS
+    locator: Corollary 1.4 versus the printed A = 121.096
+    note: >-
+      Closed-form comparison of the two printed constants at R = 5.5666305. Imports none. This is the
+      A-gap recorded on psi_bound_all_x: the rescaling overshoots 121.096, so the classical bound is
+      not derivable from the all-x bound by converting R. The preprint's proof of Corollary 1.4 checks
+      the other direction, 121.096 / R^{3/2} < 9.22022, which is the same inequality.
+  designated: fks-rescaling-A
+- id: rescaled_C_is_short_of_two
+  declaration: FKS.v1.rescaled_C_is_short_of_two
+  challenge: FKS.v1.challenge_rescaled_C_is_short_of_two
+  imports: []
+  imports_status: none
+  justifications:
+  - id: fks-rescaling-C
+    kind: numerical
+    source: FKS
+    locator: Corollary 1.4 versus the printed C = 2
+    note: >-
+      The companion gap in C. 0.8476836 * sqrt(R) is strictly less than 2, so the printed classical
+      decay is a strengthening of the rescaling rather than a rounding of it.
+  designated: fks-rescaling-C
 sources:
 - title: "Sharper bounds for the Chebyshev function psi(x)"
   authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]
@@ -140,9 +170,12 @@ limitations:
 - >-
   Both conclusions rest on the cited paper; neither is proved in Lean here.
 - >-
-  The preprint and the published version number their results differently, and the second conclusion's
-  locator is taken from FKS2's citation rather than read directly. It is flagged for confirmation in the
-  node and in the module docstring.
+  The preprint (arXiv:2204.02588v2) numbers the all-x bound as Corollary 1.4; that is now checked
+  against the rendered preprint. The second conclusion's locator remains FKS2's "[8, Corollary 1.3]"
+  for the published numbering, which the preprint does not use.
+- >-
+  psi_classical_bound is not derivable from psi_bound_all_x by rescaling at R = 5.5666305. The two
+  new conclusions record the A and C gaps as claims.
 - >-
   R = 5.5666305 is not this paper's constant but Mossinghoff and Trudgian's, J. Number Theory 157 (2015).
   A sharper value is available from MTY.v1 and is the first thing to change when the chain is re-run.

@@ -41,6 +41,9 @@ A note here once put the rescaled `A` at `≈ 121.0916` and called the discrepan
 figure was wrong — it is `121.09602` — and so was the gloss: the difference is not a benign
 rounding but a gap in the direction that breaks the derivation.
 
+The two conclusions `rescaled_A_exceeds_printed` and `rescaled_C_is_short_of_two` record those
+gaps as claims rather than only as comments.
+
 Keeping the printed form means the transcription can be checked against the paper by eye.
 
 ```lean
@@ -53,13 +56,13 @@ def psi_bound_all_x : Prop :=
 |---|---|
 | Lean name | `FKS.v1.psi_bound_all_x` |
 | Challenge | `FKS.v1.challenge_psi_bound_all_x` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L57) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L60) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`KLN.v1.subconvexity_bound`](KLN-v1.md#subconvexity_bound), [`MT.v1.zero_free_region_sharpened`](MT-v1.md#zero_free_region_sharpened), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to) |
 | Assumed by | nothing yet |
 
-**Justification `fks-paper`** — **designated** — literature, arXiv:2204.02588v2, Corollary 1.4
+**Justification `fks-paper`** — **designated** — literature, arXiv:2204.02588v2, Corollary 1.4 (preprint numbering, checked)
 
 > Asserted on the authority of the paper, and transcribed from the preprint in the paper's own normalisation rather than converted to the admissible-bound shape. The conversion is not free: with R = 5.5666305 it gives A = 9.22022 * R^(3/2) = 121.09602174... and C = 0.8476836 * sqrt(R) = 1.99999992..., so the printed 121.096 / C = 2 are strengthenings rather than benign rounding versus this rescaling. Imports: Settled against the published version (J. Math. Anal. Appl. 527 (2023) 127426). FKS names three inputs: the verification height H0 = 3 x 10^12 from Platt and Trudgian, the zero-free region R = 5.5666305 from Mossinghoff and Trudgian, and a zero-density bound for N-tilde(sigma, T) of the shape (2.6) from Kadiri, Lumley and Ng [18], the published J. Math. Anal. Appl. 465 (2018) paper that KLN.v1 records. The first two are recorded as edges. The third is now recorded too, at the point where the error FKS reports actually bites: KLN.v1 states the subconvexity bound of its Lemma 3.2 with FKS's corrected constant 0.77 rather than the printed 0.63, which is the value FKS itself uses. KLN's Theorem 1.1 and its numerical density tables remain unstated, because their constants were computed with the erroneous value and nobody has published recomputed ones. FKS's other Kadiri-Lumley-Ng reference [19], the unpublished preprint 'Bounding psi(x) with zero-density', is NOT an input: Lemma 2.5, the sums-over-zeros estimate, is proved in FKS itself and the preprint is cited as attribution. It is background, not an edge. Absolute values, checked against the rendered page. FKS (1.1) defines E_psi(x) = \|(psi(x) - x)/x\| and FKS2 (1) and (2) define E_pi, E_theta and E_psi the same way, all with bars, exactly as this network's Vocabulary does. An earlier note here claimed the papers defined these signed and that the conclusions were therefore stronger than the printed corollaries; that was wrong. PDF text extraction silently drops absolute-value bars around a displayed fraction, and the definitions were read from extracted text. They have since been read from the rendered page, where the bars are plainly there. Nothing about the statements needed to change.
 
@@ -90,7 +93,7 @@ def psi_classical_bound : Prop :=
 |---|---|
 | Lean name | `FKS.v1.psi_classical_bound` |
 | Challenge | `FKS.v1.challenge_psi_classical_bound` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L76) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L79) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`KLN.v1.subconvexity_bound`](KLN-v1.md#subconvexity_bound), [`MT.v1.zero_free_region_sharpened`](MT-v1.md#zero_free_region_sharpened), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to) |
@@ -100,12 +103,66 @@ def psi_classical_bound : Prop :=
 
 > Asserted on the authority of the paper. Transcribed from FKS2's proof of its Corollary 14, which quotes A = 121.096, B = 3/2, C = 2, R = 5.5666305 for x >= e^30 and attributes them to [8, Corollary 1.3]. The arXiv preprint numbers its results differently -- its Corollary 1.3 is a remark -- and tabulates A(x0) only for log x0 > 1000, so the value at e^30 could not be checked against the version to hand. CONFIRM the locator and the constant against the published J. Math. Anal. Appl. version before relying on this. Imports: Settled against the published version (J. Math. Anal. Appl. 527 (2023) 127426). FKS names three inputs: the verification height H0 = 3 x 10^12 from Platt and Trudgian, the zero-free region R = 5.5666305 from Mossinghoff and Trudgian, and a zero-density bound for N-tilde(sigma, T) of the shape (2.6) from Kadiri, Lumley and Ng [18], the published J. Math. Anal. Appl. 465 (2018) paper that KLN.v1 records. The first two are recorded as edges. The third is now recorded too, at the point where the error FKS reports actually bites: KLN.v1 states the subconvexity bound of its Lemma 3.2 with FKS's corrected constant 0.77 rather than the printed 0.63, which is the value FKS itself uses. KLN's Theorem 1.1 and its numerical density tables remain unstated, because their constants were computed with the erroneous value and nobody has published recomputed ones. FKS's other Kadiri-Lumley-Ng reference [19], the unpublished preprint 'Bounding psi(x) with zero-density', is NOT an input: Lemma 2.5, the sums-over-zeros estimate, is proved in FKS itself and the preprint is cited as attribution. It is background, not an edge. Absolute values, checked against the rendered page. FKS (1.1) defines E_psi(x) = \|(psi(x) - x)/x\| and FKS2 (1) and (2) define E_pi, E_theta and E_psi the same way, all with bars, exactly as this network's Vocabulary does. An earlier note here claimed the papers defined these signed and that the conclusions were therefore stronger than the printed corollaries; that was wrong. PDF text extraction silently drops absolute-value bars around a displayed fraction, and the definitions were read from extracted text. They have since been read from the rendered page, where the bars are plainly there. Nothing about the statements needed to change.
 
+### `rescaled_A_exceeds_printed`
+
+Rescaling the all-`x` bound into the `R = 5.5666305` shape overshoots the printed `A`.
+
+`9.22022 · R^{3/2} = 121.09602174… > 121.096`. So the printed classical constant is *not*
+the rescaling of Corollary 1.4, and a derivation that treats it as one fails. Recorded as a
+conclusion so the gap is a claim, not only a docstring.
+
+```lean
+def rescaled_A_exceeds_printed : Prop :=
+  (9.22022 : ℝ) * (5.5666305 : ℝ) ^ ((3 : ℝ) / 2) > 121.096
+```
+
+| | |
+|---|---|
+| Lean name | `FKS.v1.rescaled_A_exceeds_printed` |
+| Challenge | `FKS.v1.challenge_rescaled_A_exceeds_printed` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L87) |
+| Evidence | computation (`numerical`) |
+| Sources traced | none |
+| Assumes | nothing recorded |
+| Assumed by | nothing yet |
+
+**Justification `fks-rescaling-A`** — **designated** — numerical, Corollary 1.4 versus the printed A = 121.096
+
+> Closed-form comparison of the two printed constants at R = 5.5666305. Imports none. This is the A-gap recorded on psi_bound_all_x: the rescaling overshoots 121.096, so the classical bound is not derivable from the all-x bound by converting R. The preprint's proof of Corollary 1.4 checks the other direction, 121.096 / R^{3/2} < 9.22022, which is the same inequality.
+
+### `rescaled_C_is_short_of_two`
+
+The matching gap in `C`: `0.8476836 · √R = 1.99999992… < 2`.
+
+A larger `C` is a stronger decay, so the printed `C = 2` is again a strengthening of the
+rescaling, not a rounding of it.
+
+```lean
+def rescaled_C_is_short_of_two : Prop :=
+  (0.8476836 : ℝ) * Real.sqrt 5.5666305 < 2
+```
+
+| | |
+|---|---|
+| Lean name | `FKS.v1.rescaled_C_is_short_of_two` |
+| Challenge | `FKS.v1.challenge_rescaled_C_is_short_of_two` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS/v1/Conclusions.lean#L94) |
+| Evidence | computation (`numerical`) |
+| Sources traced | none |
+| Assumes | nothing recorded |
+| Assumed by | nothing yet |
+
+**Justification `fks-rescaling-C`** — **designated** — numerical, Corollary 1.4 versus the printed C = 2
+
+> The companion gap in C. 0.8476836 * sqrt(R) is strictly less than 2, so the printed classical decay is a strengthening of the rescaling rather than a rounding of it.
+
 ## Limitations
 
 Recorded by the node itself, not derived.
 
 - Both conclusions rest on the cited paper; neither is proved in Lean here.
-- The preprint and the published version number their results differently, and the second conclusion's locator is taken from FKS2's citation rather than read directly. It is flagged for confirmation in the node and in the module docstring.
+- The preprint (arXiv:2204.02588v2) numbers the all-x bound as Corollary 1.4; that is now checked against the rendered preprint. The second conclusion's locator remains FKS2's "[8, Corollary 1.3]" for the published numbering, which the preprint does not use.
+- psi_classical_bound is not derivable from psi_bound_all_x by rescaling at R = 5.5666305. The two new conclusions record the A and C gaps as claims.
 - R = 5.5666305 is not this paper's constant but Mossinghoff and Trudgian's, J. Number Theory 157 (2015). A sharper value is available from MTY.v1 and is the first thing to change when the chain is re-run.
 - No novelty is claimed. The results are Fiori, Kadiri and Swidinsky's.
 

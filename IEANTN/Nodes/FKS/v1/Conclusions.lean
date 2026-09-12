@@ -53,6 +53,9 @@ A note here once put the rescaled `A` at `≈ 121.0916` and called the discrepan
 figure was wrong — it is `121.09602` — and so was the gloss: the difference is not a benign
 rounding but a gap in the direction that breaks the derivation.
 
+The two conclusions `rescaled_A_exceeds_printed` and `rescaled_C_is_short_of_two` record those
+gaps as claims rather than only as comments.
+
 Keeping the printed form means the transcription can be checked against the paper by eye. -/
 def psi_bound_all_x : Prop :=
   ∀ x > (2 : ℝ), Eψ x < 9.22022 * (Real.log x) ^ ((3 : ℝ) / 2) *
@@ -75,5 +78,20 @@ numerics do not reflect it — so this constant is the one to change first when 
 re-run. -/
 def psi_classical_bound : Prop :=
   HasClassicalBound Eψ 121.096 (3 / 2) 2 5.5666305 (Real.exp 30)
+
+/-- Rescaling the all-`x` bound into the `R = 5.5666305` shape overshoots the printed `A`.
+
+`9.22022 · R^{3/2} = 121.09602174… > 121.096`. So the printed classical constant is *not*
+the rescaling of Corollary 1.4, and a derivation that treats it as one fails. Recorded as a
+conclusion so the gap is a claim, not only a docstring. -/
+def rescaled_A_exceeds_printed : Prop :=
+  (9.22022 : ℝ) * (5.5666305 : ℝ) ^ ((3 : ℝ) / 2) > 121.096
+
+/-- The matching gap in `C`: `0.8476836 · √R = 1.99999992… < 2`.
+
+A larger `C` is a stronger decay, so the printed `C = 2` is again a strengthening of the
+rescaling, not a rounding of it. -/
+def rescaled_C_is_short_of_two : Prop :=
+  (0.8476836 : ℝ) * Real.sqrt 5.5666305 < 2
 
 end FKS.v1

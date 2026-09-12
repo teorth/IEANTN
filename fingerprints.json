@@ -40,6 +40,8 @@
   "FKBJ.v1.rh_up_to": "a0e3f733f20d8df755c8016cd0e4509a233411a168cd2fd6cb4fc3ccb5918698",
   "FKS.v1.psi_bound_all_x": "f5963ba07855070c1cabac8cd3c5e22dc810b0d9b4acd4761bd28321646ad4ef",
   "FKS.v1.psi_classical_bound": "d42b43ed3148a6b9108804a3b64ca7cb37c4f909dd06606428700d7f32f39d54",
+  "FKS.v1.rescaled_A_exceeds_printed": "cca8506d3e40ba3a39e3bd091f98354b0ce96b25d35bdf50392bcb7324ed6601",
+  "FKS.v1.rescaled_C_is_short_of_two": "6daf19b9be841ab2d9bb79c3f651bc5504a47954c549877f548166f7edfeed59",
   "FKS2.v1.corollary_14": "16fe74e035b77aff8ccd9a02ecd9092d834b22b239894a2d0c10cb8455360a0b",
   "FKS2.v1.corollary_22": "e9ceaee5c7cdc90a04c7b7723c6a4236500c3cfa2ff085e72dd87e161435c87c",
   "FKS2.v1.corollary_23": "a4e8b9028e790796ea6cfd90000b6a6c8128a62bc8b12351cc4986cd3483380a",
