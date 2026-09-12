@@ -32,7 +32,7 @@ def theorem_2_psi : Prop :=
 |---|---|
 | Lean name | `Buthe.v1.theorem_2_psi` |
 | Challenge | `Buthe.v1.challenge_theorem_2_psi` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L31) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L32) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to) |
@@ -58,7 +58,7 @@ def theorem_2_theta : Prop :=
 |---|---|
 | Lean name | `Buthe.v1.theorem_2_theta` |
 | Challenge | `Buthe.v1.challenge_theorem_2_theta` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L38) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L39) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to) |
@@ -84,7 +84,7 @@ def theorem_2_theta_lower : Prop :=
 |---|---|
 | Lean name | `Buthe.v1.theorem_2_theta_lower` |
 | Challenge | `Buthe.v1.challenge_theorem_2_theta_lower` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L45) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L46) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to) |
@@ -112,7 +112,7 @@ def theorem_2_li_minus_riemann_pi : Prop :=
 |---|---|
 | Lean name | `Buthe.v1.theorem_2_li_minus_riemann_pi` |
 | Challenge | `Buthe.v1.challenge_theorem_2_li_minus_riemann_pi` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L53) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L54) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to) |
@@ -143,7 +143,7 @@ def theorem_2_li_minus_pi : Prop :=
 |---|---|
 | Lean name | `Buthe.v1.theorem_2_li_minus_pi` |
 | Challenge | `Buthe.v1.challenge_theorem_2_li_minus_pi` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L63) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L64) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to), [`Buthe.v1.theorem_2_theta`](Buthe-v1.md#theorem_2_theta), [`ButheNumerics.v1.lemma_3_constant_nonpos`](ButheNumerics-v1.md#lemma_3_constant_nonpos), [`ButheNumerics.v1.li_minus_pi_below_1e7`](ButheNumerics-v1.md#li_minus_pi_below_1e7), [`Buthe.v2.lemma_3_bounds`](Buthe-v2.md#lemma_3_bounds) |
@@ -169,7 +169,7 @@ def theorem_2_li_gt_pi : Prop :=
 |---|---|
 | Lean name | `Buthe.v1.theorem_2_li_gt_pi` |
 | Challenge | `Buthe.v1.challenge_theorem_2_li_gt_pi` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L73) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L74) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to), [`Buthe.v1.theorem_2_theta_lower`](Buthe-v1.md#theorem_2_theta_lower), [`Buthe.v2.lemma_3_positivity`](Buthe-v2.md#lemma_3_positivity), [`ButheNumerics.v1.lemma_3_constant_gt_at_10`](ButheNumerics-v1.md#lemma_3_constant_gt_at_10) |
@@ -179,6 +179,36 @@ def theorem_2_li_gt_pi : Prop :=
 
 > Asserted on the authority of the paper, transcribed from arXiv:1511.02032v2. Note the estimate is against li, the un-offset logarithmic integral, not Li; the two differ by li(2) = 1.045..., which is far from negligible at this precision. Imports: Buthe states that the algorithm 'has been implemented and used to calculate analytic bounds for x <= 10^19, using the zeros with imaginary part up to 10^11, whose calculation has been reported in [5]' -- Franke, Kleinjung, Buthe and Jost, recorded as FKBJ.v1. That is the only external input Theorem 2 has; the analytic method is the paper's own. The edge understates the dependency, because the algorithm consumes the tabulated zeros themselves and the network can only state their consequence; see FKBJ.v1's limitations. Audited against arXiv:1511.02032v2 on 2026-08-26 and confirmed exact: all six equations of Theorem 2 match in constant, threshold and strictness, and the vocabulary matches the paper's own (1.4) -- li is the principal-value integral from 0, pi* is the Riemann prime-counting function. Reclassified from `identified` to `traced`: the edge to FKBJ.v1 is real, but as the note above says it understates the dependency -- the algorithm consumes the tabulated zeros themselves, and a table is not a proposition. `traced` is the value for exactly that, so the understatement is now visible in the graph rather than only in this note. DERIVATION, read from the paper's own proof: "The bound (1.10) follows from (1.7) and [14, Theorem 19]." Not computed either. (1.7) is recorded as an import. Reference [14] is Rosser and Schoenfeld, Approximate formulas for some functions of prime numbers, Illinois J. Math. 6 (1962), 64-94 -- which is NOT the Rosser-Schoenfeld paper this network holds: RosserSchoenfeld.v1 is Sharper bounds for the Chebyshev functions, Math. Comp. 29 (1975). Two different papers by the same pair, which is the same trap BKLNW's two Buthe references set in the other direction. The 1962 paper still has no node. But it turns out not to be needed as an edge: Lemma 3's own "Furthermore" clause, Buthe.v2.lemma_3_positivity, has exactly the shape (1.7) => (1.10) requires, and Buthe proves it by taking a = 10 in (6.17) using ButheNumerics.v1.lemma_3_constant_gt_at_10. So the inputs are all nodes and this is `identified`. Whether the Rosser-Schoenfeld citation is an alternative route or a step inside that clause has not been determined here, and is worth settling.
 
+### `table_1_interval_bounds`
+
+**Table 1 / Equation (6.2).** If `(x, M⁻, M⁺)` is a row of Table 1, then
+`M⁻ ≤ (t − ψ(t)) / √t ≤ M⁺` for every `t ∈ [x, 2x]`.
+
+This is the claim *about* `Tables.lean`, the same shape as PNT+'s `eq_6_2`. The last row's
+`2x` exceeds `10¹⁹`; the table still records it because that is what the paper prints.
+
+```lean
+def table_1_interval_bounds : Prop :=
+  ∀ p ∈ table_1, ∀ t : ℝ,
+    p.1 ≤ t → t ≤ 2 * p.1 →
+      p.2.1 ≤ (t - Chebyshev.psi t) / Real.sqrt t ∧
+        (t - Chebyshev.psi t) / Real.sqrt t ≤ p.2.2
+```
+
+| | |
+|---|---|
+| Lean name | `Buthe.v1.table_1_interval_bounds` |
+| Challenge | `Buthe.v1.challenge_table_1_interval_bounds` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L82) |
+| Evidence | cited (`literature`) |
+| Sources traced | traced |
+| Assumes | nothing recorded |
+| Assumed by | nothing yet |
+
+**Justification `buthe-paper`** — **designated** — literature, Table 1, Equation (6.2)
+
+> Asserted on the authority of the paper. The entries are in Tables.lean, copied from the PNT+ transcription of Table 1 (31 rows) and checked at the first and last printed blocks. Equation (6.2) is the paper's own reading of the table: each row (x, M-, M+) bounds (t - psi(t))/sqrt(t) on [x, 2x]. No external node is an input; the table is Buthe's computation.
+
 ## Limitations
 
 Recorded by the node itself, not derived.
@@ -186,7 +216,7 @@ Recorded by the node itself, not derived.
 - Every conclusion rests on the cited paper; none is proved in Lean here.
 - (1.8), (1.9) and (1.10) are stated against li rather than Li, and (1.8) against the Riemann prime-counting function pi* rather than pi. A node consuming them alongside FKS2, which works with Li and pi, must do the conversions rather than assume them away.
 - The import of FKBJ.v1 records a real dependency but understates it: Buthe's algorithm takes the tabulated zeros as input, and the network can state only that there are none off the critical line below that height.
-- Theorem 2 is now stated in full, (1.5) through (1.10). The paper's other results -- the sieve bound of Section 6 and the Table 1 data that PNT+ formalizes -- are not stated; the table is the natural first use of a Tables.lean in this node.
+- Theorem 2 is stated in full, (1.5) through (1.10). Table 1 is now in Tables.lean, and table_1_interval_bounds records Equation (6.2). The sieve bound of Section 6 is still unstated.
 - No novelty is claimed. The results are Buthe's.
 
 ## How this node was made

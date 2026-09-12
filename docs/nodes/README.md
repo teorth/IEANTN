@@ -8,7 +8,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 |---|---|---:|---|
 | [`BKLNW.v1`](BKLNW-v1.md) | paper | 4 | cited |
 | [`Brown1967.v1`](Brown1967-v1.md) | paper | 0 | — |
-| [`Buthe.v1`](Buthe-v1.md) | paper | 6 | cited |
+| [`Buthe.v1`](Buthe-v1.md) | paper | 7 | cited |
 | [`Buthe.v2`](Buthe-v2.md) | pipeline | 2 | unjustified |
 | [`Buthe2016.v1`](Buthe2016-v1.md) | paper | 4 | cited |
 | [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 3 | computation |

@@ -55,3 +55,6 @@ theorem Buthe.v1.challenge_theorem_2_li_gt_pi
     (buthenumerics_v1_lemma_3_constant_gt_at_10 : ButheNumerics.v1.lemma_3_constant_gt_at_10) :
     Buthe.v1.theorem_2_li_gt_pi := by
   sorry
+
+theorem Buthe.v1.challenge_table_1_interval_bounds : Buthe.v1.table_1_interval_bounds := by
+  sorry
