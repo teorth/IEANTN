@@ -27,3 +27,9 @@ theorem Buthe2016.v1.challenge_theorem_2_li_minus_riemann_pi : Buthe2016.v1.theo
 
 theorem Buthe2016.v1.challenge_theorem_2_li_minus_pi : Buthe2016.v1.theorem_2_li_minus_pi := by
   sorry
+
+theorem Buthe2016.v1.challenge_theorem_1_table1 : Buthe2016.v1.theorem_1_table1 := by
+  sorry
+
+theorem Buthe2016.v1.challenge_theorem_1_table2 : Buthe2016.v1.theorem_1_table2 := by
+  sorry

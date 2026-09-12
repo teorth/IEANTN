@@ -6,6 +6,8 @@ Authors: Terence Tao
 import IEANTN.Vocabulary.Zeta
 import IEANTN.Vocabulary.PrimeCounting
 import IEANTN.Vocabulary.ErrorTerms
+import IEANTN.Vocabulary.Numerics
+import IEANTN.Nodes.Buthe2016.v1.Tables
 
 /-!
 # Node `Buthe2016.v1`
@@ -32,6 +34,9 @@ Table 8, and `Platt–Trudgian`'s error-term paper cites it for the same purpose
 The conclusions below are stated as the paper states them: universally quantified in `T`, with the
 verification as a hypothesis rather than an import. So this node imports nothing, and that is a
 genuine `none` rather than an untraced `undetermined`.
+
+Theorem 1 — a relative-error bound of a different shape from Theorem 2 — is recorded through the
+paper's Tables 1 and 2 in `Tables.lean`. The Logan-kernel display of Theorem 1 is not stated.
 
 ## Watch the logarithmic integral
 
@@ -88,5 +93,24 @@ from a partial verification. Note the threshold `2657` and that the comparison i
 def theorem_2_li_minus_pi : Prop :=
   ∀ T : ℝ, RiemannHypothesisUpTo T → ∀ x : ℝ, 2657 < x → withinRange T x →
     |primeCounting x - li x| ≤ Real.sqrt x * Real.log x / (8 * Real.pi)
+
+/-- **Theorem 1, as Table 1 records it.** If the Riemann hypothesis holds up to the row's height
+`T`, then `|ψ(x) − x| ≤ δ₀ x` for every `x ≥ e^b`.
+
+This is a different shape from Theorem 2: a plain relative error `δ₀`, not Schoenfeld's
+`√x (log x)² / (8π)`. Theorem 1 itself is parameterised by the Logan kernel; the table is the
+output the paper actually uses, and is what a consumer can cite without that vocabulary.
+
+Each `δ₀` carries `margin 0` — a site, not a weakening — because the entries are computed upper
+bounds for `e^{αε}(ℰ₁+ℰ₂+ℰ₃)`, not displayed closed forms. -/
+def theorem_1_table1 : Prop :=
+  ∀ p ∈ table1, RiemannHypothesisUpTo p.2.1 → ∀ x : ℝ, Real.exp (p.1 : ℝ) ≤ x →
+    |Chebyshev.psi x - x| ≤ margin 0 * p.2.2 * x
+
+/-- **Theorem 1, as Table 2 records it.** Same claim as `theorem_1_table1`, at the larger
+verification heights of the paper's Table 2 (up to `2.445 × 10¹²`). -/
+def theorem_1_table2 : Prop :=
+  ∀ p ∈ table2, RiemannHypothesisUpTo p.2.1 → ∀ x : ℝ, Real.exp (p.1 : ℝ) ≤ x →
+    |Chebyshev.psi x - x| ≤ margin 0 * p.2.2 * x
 
 end Buthe2016.v1
