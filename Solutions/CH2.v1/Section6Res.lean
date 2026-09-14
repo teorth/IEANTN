@@ -215,4 +215,182 @@ theorem zetaOrder_trivial (k : ℕ) : IEANTN.zetaOrder (-2 * ((k : ℂ) + 1)) = 
   rw [IEANTN.zetaOrder, meromorphicOrderAt_riemannZeta_trivial]
   rfl
 
+/-! ### The residues off the band `R_C` -/
+
+/-- A residue of `g · f`, from the local behaviour of `f` and continuity of `g`. -/
+theorem residue_eq_mul_of_tendsto {f g h : ℂ → ℂ} {p c : ℂ} (hg : ContinuousAt g p)
+    (hf : Tendsto (fun s ↦ (s - p) * f s) (𝓝[≠] p) (𝓝 c))
+    (hev : ∀ᶠ s in 𝓝[≠] p, h s = g s * f s) :
+    residue h p = g p * c := by
+  apply residue_eq_of_tendsto
+  have hlim := (hg.tendsto.mono_left nhdsWithin_le_nhds).mul hf
+  refine hlim.congr' ?_
+  filter_upwards [hev] with s hs
+  rw [hs]
+  ring
+
+/-- Off the real axis `Φ_λ(z(s))` is locally `Φ^∘ + c Φ^⋆`, the sign factor being constant. -/
+theorem Phi_lambda_local (l : CH2.LadderParams) (lam ε : ℝ) {z : ℂ} (him : z.im ≠ 0) :
+    ∃ c : ℂ, ∀ᶠ w in 𝓝 z, CH2.Phi_lambda lam ε (l.zOf w)
+      = CH2.Phi_circ |lam| ε ((Real.sign lam : ℂ) * l.zOf w)
+        + c * CH2.Phi_star |lam| ε ((Real.sign lam : ℂ) * l.zOf w) := by
+  have hT := l.hT
+  rcases lt_or_gt_of_ne him with h | h
+  · refine ⟨(Real.sign lam : ℂ) * (-1), ?_⟩
+    filter_upwards [(isOpen_lt Complex.continuous_im continuous_const).mem_nhds h] with w hw
+    have hwim : w.im < 0 := hw
+    simp only [CH2.Phi_lambda, CH2ZetaInstance.re_zOf,
+      Real.sign_of_neg (div_neg_of_neg_of_pos hwim hT)]
+    push_cast
+    ring
+  · refine ⟨(Real.sign lam : ℂ) * 1, ?_⟩
+    filter_upwards [(isOpen_lt continuous_const Complex.continuous_im).mem_nhds h] with w hw
+    have hwim : 0 < w.im := hw
+    simp only [CH2.Phi_lambda, CH2ZetaInstance.re_zOf, Real.sign_of_pos (div_pos hwim hT)]
+    push_cast
+    ring
+
+/-- **Every residue in `R \ R_C` is `-m(ρ) Φ_λ(z(ρ)) x^ρ`**, zero away from the zeros of `ζ`
+(including at the removable singularities `σ ± iT`). -/
+theorem residue_band_neg (l : CH2.LadderParams) {lam ε x : ℝ} (hlam : lam < 0) (hx : 0 < x)
+    (hTfree : ∀ z : ℂ, riemannZeta z = 0 → |z.im| ≠ l.T) {z : ℂ} (hz : z ∈ l.R \ l.RC) :
+    residue (fun s ↦ CH2.Phi_lambda lam ε (l.zOf s) * CH2ZetaInstance.F s * (x : ℂ) ^ s) z
+      = CH2.Phi_lambda lam ε (l.zOf z) * (x : ℂ) ^ z * (-((IEANTN.zetaOrder z : ℤ) : ℂ)) := by
+  obtain ⟨⟨hzre, hzT⟩, hzRC⟩ := hz
+  have hdlt : l.δ < |z.im| := by
+    by_contra hc
+    exact hzRC ⟨hzre, not_lt.mp hc⟩
+  have hd0 := l.hδ.1
+  have him : z.im ≠ 0 := by
+    intro h; rw [h, abs_zero] at hdlt; linarith
+  have hz1 : z ≠ 1 := by intro h; rw [h] at him; simp at him
+  have hF := tendsto_sub_mul_F hz1
+  have hpow : AnalyticAt ℂ (fun w : ℂ ↦ (x : ℂ) ^ w) z :=
+    CH2ZetaInstance.analyticAt_const_cpow hx z
+  by_cases htop : z = ((l.sigmaOf lam : ℝ) : ℂ) + (l.T : ℂ) * I
+  · -- the removable singularity: `ζ(z) ≠ 0`, so `m = 0`, and the weight is locally analytic
+    have hζ : riemannZeta z ≠ 0 := fun hc ↦ hTfree z hc (by rw [htop]; simp [abs_of_pos l.hT])
+    have hm : IEANTN.zetaOrder z = 0 := by
+      have hFa := CH2ZetaInstance.analyticAt_riemannZeta hz1
+      rw [IEANTN.zetaOrder, meromorphicOrderAt_eq_zero_of_analytic hFa hζ]
+      rfl
+    rw [hm]
+    have hzim : 0 < z.im := by rw [htop]; simp [l.hT]
+    have hg : AnalyticAt ℂ (fun w ↦ -CH2.Phi_star |lam| ε (1 - l.zOf w) * (x : ℂ) ^ w) z := by
+      have hzA : AnalyticAt ℂ l.zOf z := by simpa using l.analyticAt_zOf 1 z
+      refine (((CH2.Phi_star.analyticAt_of_not_pole_nz |lam| ε (1 - l.zOf z) ?_).comp_of_eq
+        (analyticAt_const.sub hzA) rfl).neg).mul hpow
+      intro n hn heq
+      have hL : (1 - l.zOf z).re = 0 := by
+        rw [Complex.sub_re, Complex.one_re, l.zOf_re, htop]
+        simp [l.hT.ne']
+      have heq' : 1 - l.zOf z = ((n : ℝ) : ℂ) + ((-(|lam| / (2 * Real.pi)) : ℝ) : ℂ) * I := by
+        rw [heq]; push_cast; ring
+      have hre := congrArg Complex.re heq'
+      rw [hL] at hre
+      simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, Complex.I_im,
+        Complex.ofReal_im, mul_zero, sub_zero, add_zero, mul_one] at hre
+      exact hn (by exact_mod_cast hre.symm)
+    have hev : ∀ᶠ s in 𝓝[≠] z,
+        CH2.Phi_lambda lam ε (l.zOf s) * CH2ZetaInstance.F s * (x : ℂ) ^ s
+          = (-CH2.Phi_star |lam| ε (1 - l.zOf s) * (x : ℂ) ^ s) * CH2ZetaInstance.F s := by
+      have hopen : ∀ᶠ w in 𝓝 z, 0 < w.im :=
+        (isOpen_lt continuous_const Complex.continuous_im).mem_nhds hzim
+      filter_upwards [nhdsWithin_le_nhds hopen, self_mem_nhdsWithin] with w hw hw'
+      rw [l.Phi_lambda_neg_eq_top hlam hw (by rw [← htop]; exact hw')]
+      ring
+    rw [residue_eq_mul_of_tendsto hg.continuousAt hF hev]
+    simp [hm]
+  by_cases hbot : z = ((l.sigmaOf lam : ℝ) : ℂ) - (l.T : ℂ) * I
+  · have hζ : riemannZeta z ≠ 0 := fun hc ↦ hTfree z hc (by rw [hbot]; simp [abs_of_pos l.hT])
+    have hm : IEANTN.zetaOrder z = 0 := by
+      have hFa := CH2ZetaInstance.analyticAt_riemannZeta hz1
+      rw [IEANTN.zetaOrder, meromorphicOrderAt_eq_zero_of_analytic hFa hζ]
+      rfl
+    rw [hm]
+    have hzim : z.im < 0 := by rw [hbot]; simp [l.hT]
+    have hg : AnalyticAt ℂ (fun w ↦ CH2.Phi_star |lam| ε (-1 - l.zOf w) * (x : ℂ) ^ w) z := by
+      have hzA : AnalyticAt ℂ l.zOf z := by simpa using l.analyticAt_zOf 1 z
+      refine ((CH2.Phi_star.analyticAt_of_not_pole_nz |lam| ε (-1 - l.zOf z) ?_).comp_of_eq
+        (analyticAt_const.sub hzA) rfl).mul hpow
+      intro n hn heq
+      have hL : (-1 - l.zOf z).re = 0 := by
+        rw [Complex.sub_re, Complex.neg_re, Complex.one_re, l.zOf_re, hbot]
+        simp [l.hT.ne']
+      have heq' : -1 - l.zOf z = ((n : ℝ) : ℂ) + ((-(|lam| / (2 * Real.pi)) : ℝ) : ℂ) * I := by
+        rw [heq]; push_cast; ring
+      have hre := congrArg Complex.re heq'
+      rw [hL] at hre
+      simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, Complex.I_im,
+        Complex.ofReal_im, mul_zero, sub_zero, add_zero, mul_one] at hre
+      exact hn (by exact_mod_cast hre.symm)
+    have hev : ∀ᶠ s in 𝓝[≠] z,
+        CH2.Phi_lambda lam ε (l.zOf s) * CH2ZetaInstance.F s * (x : ℂ) ^ s
+          = (CH2.Phi_star |lam| ε (-1 - l.zOf s) * (x : ℂ) ^ s) * CH2ZetaInstance.F s := by
+      have hopen : ∀ᶠ w in 𝓝 z, w.im < 0 :=
+        (isOpen_lt Complex.continuous_im continuous_const).mem_nhds hzim
+      filter_upwards [nhdsWithin_le_nhds hopen, self_mem_nhdsWithin] with w hw hw'
+      rw [l.Phi_lambda_neg_eq_bot hlam hw (by rw [← hbot]; exact hw')]
+      ring
+    rw [residue_eq_mul_of_tendsto hg.continuousAt hF hev]
+    simp [hm]
+  -- a generic point of the band: the weight is locally analytic
+  have hav := CH2ZetaInstance.avoidsWeightPoles_of_band l hzT hdlt htop hbot
+  obtain ⟨c, hc⟩ := Phi_lambda_local l lam ε him
+  have hg : AnalyticAt ℂ (fun w ↦ (CH2.Phi_circ |lam| ε ((Real.sign lam : ℂ) * l.zOf w)
+      + c * CH2.Phi_star |lam| ε ((Real.sign lam : ℂ) * l.zOf w)) * (x : ℂ) ^ w) z :=
+    ((l.analyticAt_Phi_circ_neg hlam hav).add
+      (analyticAt_const.mul (l.analyticAt_Phi_star_neg hlam hav))).mul hpow
+  have hev : ∀ᶠ s in 𝓝[≠] z,
+      CH2.Phi_lambda lam ε (l.zOf s) * CH2ZetaInstance.F s * (x : ℂ) ^ s
+        = ((CH2.Phi_circ |lam| ε ((Real.sign lam : ℂ) * l.zOf s)
+          + c * CH2.Phi_star |lam| ε ((Real.sign lam : ℂ) * l.zOf s)) * (x : ℂ) ^ s)
+          * CH2ZetaInstance.F s := by
+    filter_upwards [nhdsWithin_le_nhds hc] with w hw
+    rw [hw]
+    ring
+  rw [residue_eq_mul_of_tendsto hg.continuousAt hF hev, ← hc.self_of_nhds]
+
+/-- `m(z) = 0` away from the zeros. -/
+theorem zetaOrder_eq_zero_of_ne {z : ℂ} (hz1 : z ≠ 1) (hζ : riemannZeta z ≠ 0) :
+    IEANTN.zetaOrder z = 0 := by
+  rw [IEANTN.zetaOrder, meromorphicOrderAt_eq_zero_of_analytic
+    (CH2ZetaInstance.analyticAt_riemannZeta hz1) hζ]
+  rfl
+
+/-- **The residue sum over `R \ R_C` is minus the weighted zero sum** over the zeros with
+`δ < |Im ρ| ≤ T`. An identity of `tsum`s, needing no summability. -/
+theorem sumResiduesIn_band_neg (l : CH2.LadderParams) {lam ε x : ℝ} (hlam : lam < 0) (hx : 0 < x)
+    (hTfree : ∀ z : ℂ, riemannZeta z = 0 → |z.im| ≠ l.T) :
+    sumResiduesIn (fun s ↦ CH2.Phi_lambda lam ε (l.zOf s) * CH2ZetaInstance.F s * (x : ℂ) ^ s)
+        (l.R \ l.RC)
+      = -IEANTN.zetaZeroesSum (Set.Iic 1) {t | l.δ < |t| ∧ |t| ≤ l.T}
+          (fun ρ ↦ CH2.Phi_lambda lam ε (l.zOf ρ) * (x : ℂ) ^ ρ) := by
+  unfold sumResiduesIn IEANTN.zetaZeroesSum
+  rw [← tsum_neg, tsum_subtype, tsum_subtype _
+    (fun ρ : ℂ ↦ -(CH2.Phi_lambda lam ε (l.zOf ρ) * (x : ℂ) ^ ρ * (IEANTN.zetaOrder ρ : ℂ)))]
+  congr 1
+  funext z
+  have hsub : z ∈ IEANTN.zetaZeroesIn (Set.Iic 1) {t | l.δ < |t| ∧ |t| ≤ l.T} → z ∈ l.R \ l.RC := by
+    rintro ⟨hre, ⟨hd, hT⟩, -⟩
+    refine ⟨⟨hre, hT⟩, fun hRC ↦ ?_⟩
+    exact absurd hRC.2 (not_le.mpr hd)
+  by_cases hz : z ∈ l.R \ l.RC
+  · rw [Set.indicator_of_mem hz, residue_band_neg l hlam hx hTfree hz]
+    by_cases hzz : z ∈ IEANTN.zetaZeroesIn (Set.Iic 1) {t | l.δ < |t| ∧ |t| ≤ l.T}
+    · rw [Set.indicator_of_mem hzz]
+      push_cast
+      ring
+    · rw [Set.indicator_of_notMem hzz]
+      obtain ⟨⟨hzre, hzT⟩, hzRC⟩ := hz
+      have hdlt : l.δ < |z.im| := by
+        by_contra hc
+        exact hzRC ⟨hzre, not_lt.mp hc⟩
+      have hζ : riemannZeta z ≠ 0 := fun h0 ↦ hzz ⟨hzre, ⟨hdlt, hzT⟩, h0⟩
+      have hz1 : z ≠ 1 := by
+        intro h; rw [h] at hdlt; have := l.hδ.1; simp at hdlt; linarith
+      rw [zetaOrder_eq_zero_of_ne hz1 hζ]
+      simp
+  · rw [Set.indicator_of_notMem hz, Set.indicator_of_notMem (fun h ↦ hz (hsub h))]
+
 end CH2Section6
