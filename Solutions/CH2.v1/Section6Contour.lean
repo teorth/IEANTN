@@ -141,4 +141,106 @@ theorem coronidis185 (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     linarith
   exact le_trans htri (coronidis_bound hk hneg h2v hΦseg hΨ hx hVH)
 
+/-! ### The weight `Φ(s) = T Φ⋆(sgn λ · z(s))` -/
+
+/-- `Φ(s) = T Φ⋆(sgn λ · z(s))`, the `Φ` that `coronidis` is applied to. -/
+noncomputable def PhiT (l : CH2.LadderParams) (lam ε : ℝ) (s : ℂ) : ℂ :=
+  (l.T : ℂ) * CH2.Phi_star |lam| ε ((Real.sign lam : ℂ) * l.zOf s)
+
+theorem PhiT_eq (l : CH2.LadderParams) {lam : ℝ} (ε : ℝ) (hlam : lam < 0) (s : ℂ) :
+    PhiT l lam ε s = (l.T : ℂ) * (CH2.B ε (2 * Real.pi * (s - 1) / l.T + (|lam| : ℝ))
+      - CH2.B ε ((|lam| : ℝ) : ℂ)) / (2 * Real.pi * I) := by
+  have hTc : (l.T : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr l.hT.ne'
+  simp only [PhiT, CH2.Phi_star]
+  rw [CH2.sign_cast_neg_one hlam]
+  have e : -2 * (Real.pi : ℂ) * I * (-1 * l.zOf s) + ((|lam| : ℝ) : ℂ)
+      = 2 * Real.pi * (s - 1) / l.T + (|lam| : ℝ) := by
+    rw [CH2.LadderParams.zOf]
+    field_simp
+    try ring_nf
+    try simp only [I_sq]
+    try ring
+  rw [e]
+  ring
+
+theorem norm_PhiT (l : CH2.LadderParams) {lam : ℝ} (ε : ℝ) (hlam : lam < 0) (s : ℂ) :
+    ‖PhiT l lam ε s‖ = l.T / (2 * Real.pi) *
+      ‖CH2.B ε (2 * Real.pi * (s - 1) / l.T + (|lam| : ℝ)) - CH2.B ε ((|lam| : ℝ) : ℂ)‖ := by
+  rw [PhiT_eq l ε hlam, mul_div_assoc, norm_mul, norm_div, Complex.norm_real, norm_mul, norm_mul,
+    Complex.norm_I, Complex.norm_real, Complex.norm_ofNat, Real.norm_eq_abs, Real.norm_eq_abs,
+    abs_of_pos l.hT, abs_of_pos Real.pi_pos]
+  ring
+
+theorem norm_PhiT_real_le (l : CH2.LadderParams) {lam ε : ℝ} (hlam : lam < 0) (hε : |ε| ≤ 1)
+    (r : ℝ) : ‖PhiT l lam ε (r : ℂ)‖ ≤ |r - 1| := by
+  have hT := l.hT
+  have hπ := Real.pi_pos
+  rw [norm_PhiT l ε hlam]
+  have e : 2 * (Real.pi : ℂ) * ((r : ℂ) - 1) / l.T + ((|lam| : ℝ) : ℂ)
+      = ((2 * Real.pi * (r - 1) / l.T + |lam| : ℝ) : ℂ) := by push_cast; ring
+  rw [e]
+  have h := norm_B_sub_le_real hε (2 * Real.pi * (r - 1) / l.T + |lam|) |lam|
+  have e2 : ‖((2 * Real.pi * (r - 1) / l.T + |lam| : ℝ) : ℂ) - ((|lam| : ℝ) : ℂ)‖
+      = 2 * Real.pi / l.T * |r - 1| := by
+    rw [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs,
+      show 2 * Real.pi * (r - 1) / l.T + |lam| - |lam| = 2 * Real.pi / l.T * (r - 1) by ring,
+      abs_mul, abs_of_pos (by positivity : 0 < 2 * Real.pi / l.T)]
+  rw [e2] at h
+  calc l.T / (2 * Real.pi) * _ ≤ l.T / (2 * Real.pi) * (2 * Real.pi / l.T * |r - 1|) :=
+        mul_le_mul_of_nonneg_left h (by positivity)
+    _ = |r - 1| := by field_simp
+
+theorem norm_PhiT_strip_le (l : CH2.LadderParams) {lam ε : ℝ} (hlam : lam < 0) (hε : |ε| ≤ 1)
+    (hT4 : 4 ≤ l.T) {s : ℂ} (hs : |s.im| ≤ 1) : ‖PhiT l lam ε s‖ ≤ 1.85 * ‖s - 1‖ := by
+  have hT := l.hT
+  have hπ := Real.pi_pos
+  rw [norm_PhiT l ε hlam]
+  have him : |(2 * (Real.pi : ℂ) * (s - 1) / l.T + ((|lam| : ℝ) : ℂ)).im| ≤ Real.pi / 2 := by
+    have e : (2 * (Real.pi : ℂ) * (s - 1) / l.T + ((|lam| : ℝ) : ℂ)).im
+        = 2 * Real.pi / l.T * s.im := by
+      rw [Complex.add_im, Complex.ofReal_im, add_zero, Complex.div_ofReal_im]
+      simp
+      ring
+    rw [e, abs_mul, abs_of_pos (by positivity : 0 < 2 * Real.pi / l.T)]
+    calc 2 * Real.pi / l.T * |s.im| ≤ 2 * Real.pi / l.T * 1 := by gcongr
+      _ ≤ Real.pi / 2 := by
+        rw [mul_one, div_le_div_iff₀ hT (by norm_num)]; nlinarith
+  have h := norm_B_sub_le_strip (W' := ((|lam| : ℝ) : ℂ)) hε him (by simp; positivity)
+  have e2 : ‖2 * (Real.pi : ℂ) * (s - 1) / l.T + ((|lam| : ℝ) : ℂ) - ((|lam| : ℝ) : ℂ)‖
+      = 2 * Real.pi / l.T * ‖s - 1‖ := by
+    rw [add_sub_cancel_right, norm_div, norm_mul, norm_mul, Complex.norm_real, Complex.norm_real,
+      Complex.norm_ofNat, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos hT, abs_of_pos hπ]
+    ring
+  rw [e2] at h
+  calc l.T / (2 * Real.pi) * _ ≤ l.T / (2 * Real.pi) * (1.85 * (2 * Real.pi / l.T * ‖s - 1‖)) :=
+        mul_le_mul_of_nonneg_left h (by positivity)
+    _ = 1.85 * ‖s - 1‖ := by field_simp
+
+theorem differentiableOn_PhiT (l : CH2.LadderParams) {lam ε : ℝ} (hlam : lam < 0)
+    (hσ0 : 0 ≤ l.sigmaOf lam) : DifferentiableOn ℂ (PhiT l lam ε) {s : ℂ | s.re < 0} := by
+  intro s hs
+  have hs' : s.re < 0 := hs
+  have hav : l.AvoidsWeightPoles lam s := l.avoidsWeightPoles_of_re_ne (by linarith)
+  exact ((l.analyticAt_Phi_star_neg hlam hav).differentiableAt.const_mul _).differentiableWithinAt
+
+/-- **`coronidis` at `Φ = T Φ⋆(sgn λ · z(s))`.** -/
+theorem coronidis_PhiT (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (hgam : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    (l : CH2.LadderParams) {lam ε : ℝ} (hlam : lam < 0) (hε : |ε| ≤ 1) (hT4 : 4 ≤ l.T)
+    (hσ0 : 0 ≤ l.sigmaOf lam) {x : ℝ} (hx : 1000000 ≤ x) :
+    ‖intSeg (PhiT l lam ε) x + intClt (PhiT l lam ε) x‖
+      ≤ Real.eulerMascheroniConstant * x / Real.log x ^ 2 + 1.8 * x / Real.log x ^ 3 := by
+  refine coronidis185 hfe hgam hk hneg h2v (differentiableOn_PhiT l hlam hσ0) ?_ ?_ ?_ hx
+  · intro t ht
+    refine (norm_PhiT_real_le l hlam hε _).trans (le_of_eq ?_)
+    rw [show 1 - t - 1 = -t by ring, abs_neg, abs_of_nonneg ht.1]
+  · intro u hu
+    refine (norm_PhiT_real_le l hlam hε _).trans (le_of_eq ?_)
+    rw [show -1 - u - 1 = -(2 + u) by ring, abs_neg, abs_of_pos (by linarith)]
+  · intro s _ hs
+    exact norm_PhiT_strip_le l hlam hε hT4 hs
+
 end CH2Section6
