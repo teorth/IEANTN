@@ -224,4 +224,86 @@ theorem summable_vonMangoldt_div_log_sq :
         rw [pow_succ]
         field_simp
 
+/-! ### `F` as `prop_2_4`'s `G` -/
+
+open CH2ZetaInstance in
+/-- `F` is continuous on the closed half-plane `Re s ≥ 1`: `ζ` has no zeros there, and the pole at
+`1` is removed. -/
+theorem F_continuousOn_right (T : ℝ) :
+    ContinuousOn F {z : ℂ | z.re ≥ 1 ∧ z.im ∈ Set.Icc (-T) T} := by
+  intro z hz
+  refine ContinuousAt.continuousWithinAt ?_
+  by_cases h1 : z = 1
+  · rw [h1]; exact analyticAt_F_one.continuousAt
+  · exact (analyticAt_F_of_zeta_ne_zero h1 (riemannZeta_ne_zero_of_one_le_re hz.1)).continuousAt
+
+open CH2ZetaInstance in
+/-- On `Re s > 1`, `F(s) = ∑ Λ(n) n^{-s} - 1/(s-1)`. -/
+theorem F_eqOn_dirichlet :
+    Set.EqOn F
+      (fun s ↦ ∑' n, ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ) / ((n : ℂ) ^ s) - 1 / (s - 1))
+      {z : ℂ | z.re > 1} := by
+  intro s hs
+  have hs1 : 1 < s.re := hs
+  have hne1 : s ≠ 1 := by intro h; rw [h] at hs1; simp at hs1
+  have hz : riemannZeta s ≠ 0 := riemannZeta_ne_zero_of_one_lt_re hs1
+  simp only
+  rw [F, logDeriv_riemannZeta₁_eq hne1 hz, logDeriv_apply]
+  have hL := ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs1
+  have hts : LSeries (fun n ↦ (ArithmeticFunction.vonMangoldt n : ℂ)) s
+      = ∑' n, ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ) / ((n : ℂ) ^ s) := by
+    rw [LSeries]
+    refine tsum_congr fun n ↦ ?_
+    rcases Nat.eq_zero_or_pos n with h | h
+    · simp [h, LSeries.term]
+    · rw [LSeries.term_of_ne_zero h.ne']
+  rw [← hts, hL]
+  ring
+
+/-! ### The vertical integral of `prop_2_4` is the one `prop_5_2` shifts -/
+
+/-- On the segment, `Φ_λ(z(1 + it)) = ϕ_pm |λ| ε (-t/T)` for `λ < 0`. -/
+theorem Phi_lambda_segment_neg (l : CH2.LadderParams) {lam ε : ℝ} (hlam : lam < 0) (t : ℝ)
+    (ht : t ∈ Set.Icc (-l.T) l.T) :
+    CH2.Phi_lambda lam ε (l.zOf (((1 : ℝ) : ℂ) + (t : ℂ) * I)) = phiNeg |lam| ε (t / l.T) := by
+  have hT := l.hT
+  have hz : l.zOf (((1 : ℝ) : ℂ) + (t : ℂ) * I) = ((t / l.T : ℝ) : ℂ) := by
+    rw [CH2.LadderParams.zOf]
+    have hTc : (l.T : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hT.ne'
+    push_cast
+    field_simp
+    ring
+  have hmem : -1 ≤ -(t / l.T) ∧ -(t / l.T) ≤ 1 := by
+    obtain ⟨h1, h2⟩ := ht
+    constructor
+    · rw [neg_le_neg_iff, div_le_one hT]; exact h2
+    · rw [neg_le, le_div_iff₀ hT]; linarith
+  rw [hz, CH2.Phi_lambda, phiNeg, CH2.ϕ_pm, if_pos hmem, CH2.sign_cast_neg_one hlam]
+  simp only [Complex.ofReal_re, Real.sign_neg, Complex.ofReal_neg, neg_one_mul]
+
+/-- **The identification.** `prop_2_4`'s integral is `2π` times the normalised vertical integral
+that `prop_5_2_zeta_neg` controls. -/
+theorem integral_segment_eq_intVerticalAt (l : CH2.LadderParams) {lam ε x : ℝ} (hlam : lam < 0) :
+    (∫ t in Set.Icc (-l.T) l.T,
+        phiNeg |lam| ε (t / l.T) * CH2ZetaInstance.F (1 + t * I) * ((x : ℂ) ^ (1 + (t : ℂ) * I)))
+      = 2 * (π : ℂ) * ((2 * (π : ℂ) * I)⁻¹ * l.intVerticalAt 1
+          (fun s ↦ CH2.Phi_lambda lam ε (l.zOf s) * CH2ZetaInstance.F s * (x : ℂ) ^ s)) := by
+  have hT := l.hT
+  have hπ : (π : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_pos.ne'
+  rw [CH2.LadderParams.intVerticalAt, CH2.intVSeg,
+    intervalIntegral.integral_of_le (by linarith : -l.T ≤ l.T),
+    ← MeasureTheory.integral_Icc_eq_integral_Ioc, MeasureTheory.integral_mul_const]
+  have hcongr : (∫ t in Set.Icc (-l.T) l.T,
+        CH2.Phi_lambda lam ε (l.zOf (((1 : ℝ) : ℂ) + (t : ℂ) * I))
+          * CH2ZetaInstance.F (((1 : ℝ) : ℂ) + (t : ℂ) * I)
+          * (x : ℂ) ^ (((1 : ℝ) : ℂ) + (t : ℂ) * I))
+      = ∫ t in Set.Icc (-l.T) l.T,
+        phiNeg |lam| ε (t / l.T) * CH2ZetaInstance.F (1 + t * I) * ((x : ℂ) ^ (1 + (t : ℂ) * I)) := by
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Icc fun t ht ↦ ?_
+    rw [Phi_lambda_segment_neg l hlam t ht, Complex.ofReal_one]
+  rw [hcongr]
+  generalize (∫ t in Set.Icc (-l.T) l.T,
+      phiNeg |lam| ε (t / l.T) * CH2ZetaInstance.F (1 + t * I) * ((x : ℂ) ^ (1 + (t : ℂ) * I))) = X
+  field_simp
+
 end CH2Section6
