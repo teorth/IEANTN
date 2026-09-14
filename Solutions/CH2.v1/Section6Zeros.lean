@@ -144,4 +144,169 @@ theorem norm_Phi_lambda_omlet (l : CH2.LadderParams) {σ ε : ℝ} (hσ1 : σ < 
   rw [Phi_lambda_omlet l hσ1 hs, norm_mul, norm_neg, norm_div, Complex.norm_I, Complex.norm_ofNat]
   ring
 
+/-! ### Conjugation symmetry and the zero sum -/
+
+/-- **eq. `Phicong`**: `Φ_λ(z(s̄)) = \overline{Φ_λ(z(s))}`. -/
+theorem Phi_lambda_zOf_conj (l : CH2.LadderParams) (lam ε : ℝ) (s : ℂ) :
+    CH2.Phi_lambda lam ε (l.zOf (starRingEnd ℂ s))
+      = starRingEnd ℂ (CH2.Phi_lambda lam ε (l.zOf s)) := by
+  have hc : ∀ u : ℂ, CH2.Phi_circ |lam| ε (-(starRingEnd ℂ u))
+      = starRingEnd ℂ (CH2.Phi_circ |lam| ε u) := by
+    intro u
+    simp only [CH2.Phi_circ, map_mul, map_add, map_div₀, map_one, map_ofNat, Complex.conj_ofReal,
+      CH2.coth_conj]
+    congr 3
+    simp only [map_add, map_mul, map_neg, map_ofNat, Complex.conj_ofReal, Complex.conj_I]
+    ring
+  have hsgn : ((Real.sign lam : ℝ) : ℂ) * -(starRingEnd ℂ (l.zOf s))
+      = -(starRingEnd ℂ (((Real.sign lam : ℝ) : ℂ) * l.zOf s)) := by
+    simp only [map_mul, Complex.conj_ofReal]; ring
+  have hre : (l.zOf (starRingEnd ℂ s)).re = -(l.zOf s).re := by
+    rw [l.zOf_conj]; simp
+  simp only [CH2.Phi_lambda]
+  rw [l.zOf_conj, hsgn, hc, CH2.Phi_star_conj_neg]
+  rw [show (-(starRingEnd ℂ (l.zOf s))).re = -(l.zOf s).re by simp, Real.sign_neg]
+  simp only [map_add, map_mul, Complex.conj_ofReal]
+  push_cast
+  ring
+
+/-- `m(ρ̄) = m(ρ)`. -/
+theorem zetaOrder_conj (ρ : ℂ) : IEANTN.zetaOrder (starRingEnd ℂ ρ) = IEANTN.zetaOrder ρ := by
+  have h := CH2.meromorphicOrderAt_conj_reflect (G := riemannZeta) (a := ρ)
+  have e : (fun w ↦ starRingEnd ℂ (riemannZeta (starRingEnd ℂ w))) = riemannZeta := by
+    funext w
+    rw [riemannZeta_conj, Complex.conj_conj]
+  change meromorphicOrderAt (fun w ↦ starRingEnd ℂ (riemannZeta (starRingEnd ℂ w)))
+    (starRingEnd ℂ ρ) = _ at h
+  rw [e] at h
+  rw [IEANTN.zetaOrder, IEANTN.zetaOrder, h]
+
+/-- The zeros with `δ < |Im| ≤ T` left of `Re s = 1` are finitely many. -/
+theorem finite_zeros_band (l : CH2.LadderParams) :
+    (IEANTN.zetaZeroesIn (Set.Iic 1) {t | l.δ < |t| ∧ |t| ≤ l.T}).Finite := by
+  have hd := l.hδ.1
+  set K : Set ℂ := {z | 0 ≤ z.re ∧ z.re ≤ 1 ∧ l.δ ≤ |z.im| ∧ |z.im| ≤ l.T} with hK
+  have hKc : IsCompact K := by
+    rw [Metric.isCompact_iff_isClosed_bounded]
+    refine ⟨?_, ?_⟩
+    · refine (isClosed_le continuous_const Complex.continuous_re).inter
+        ((isClosed_le Complex.continuous_re continuous_const).inter
+          ((isClosed_le continuous_const Complex.continuous_im.abs).inter
+            (isClosed_le Complex.continuous_im.abs continuous_const)))
+    · refine (Metric.isBounded_iff_subset_closedBall 0).mpr ⟨1 + l.T, fun z hz ↦ ?_⟩
+      obtain ⟨h0, h1, -, h3⟩ := hz
+      rw [Metric.mem_closedBall, dist_zero_right]
+      calc ‖z‖ ≤ |z.re| + |z.im| := Complex.norm_le_abs_re_add_abs_im z
+        _ ≤ 1 + l.T := by rw [abs_of_nonneg h0]; linarith
+  have h1K : (1 : ℂ) ∉ K := by
+    intro h; have := h.2.2.1; simp at this; linarith
+  refine (CH2ZetaInstance.finite_zeros_riemannZeta_of_isCompact hKc h1K).subset ?_
+  rintro z ⟨hre, ⟨hdz, hTz⟩, hz⟩
+  have him : z.im ≠ 0 := by intro h; rw [h, abs_zero] at hdz; linarith
+  have hs := CH2ZetaInstance.re_mem_Icc_of_riemannZeta_eq_zero hz him
+  exact ⟨⟨hs.1, hs.2, hdz.le, hTz⟩, hz⟩
+
+/-- At a zero, `m(ρ) ≥ 0`. -/
+theorem zetaOrder_nonneg_of_ne_one {ρ : ℂ} (hρ : ρ ≠ 1) : 0 ≤ IEANTN.zetaOrder ρ := by
+  have ha := CH2ZetaInstance.analyticAt_riemannZeta hρ
+  rw [IEANTN.zetaOrder, ha.meromorphicOrderAt_eq]
+  rcases analyticOrderAt riemannZeta ρ with _ | n
+  · exact le_refl 0
+  · exact Int.natCast_nonneg n
+
+/-- **The zero sum, bounded by the `ω⁺` sum above the axis.** Each conjugate pair contributes
+`2 · |ω⁺(ρ) + ε i θ_{T,1}(ρ)|/2 · x^{Re ρ} m(ρ)`. -/
+theorem abs_re_zeroTerm_le (l : CH2.LadderParams) {σ ε x : ℝ} (hσ1 : σ < 1) (hx : 0 < x) :
+    |(zeroTerm l (lamOf l.T σ) ε x).re|
+      ≤ IEANTN.zetaZeroesSum (Set.Iic 1) (Set.Ioc l.δ l.T)
+          (fun ρ ↦ ‖omegaPlus l.T σ ρ + ε * I * thetaTS l.T 1 ρ‖ * x ^ ρ.re) := by
+  have hd := l.hδ.1
+  set A := IEANTN.zetaZeroesIn (Set.Iic 1) {t | l.δ < |t| ∧ |t| ≤ l.T} with hA
+  set Ap := IEANTN.zetaZeroesIn (Set.Iic 1) (Set.Ioc l.δ l.T) with hAp
+  set Am := IEANTN.zetaZeroesIn (Set.Iic 1) (Set.Ico (-l.T) (-l.δ)) with hAm
+  have hfin : A.Finite := finite_zeros_band l
+  have hApA : Ap ⊆ A := by
+    rintro z ⟨h1, ⟨h2, h3⟩, h4⟩
+    exact ⟨h1, ⟨by rw [abs_of_pos (by linarith)]; exact h2,
+      by rw [abs_of_pos (by linarith)]; exact h3⟩, h4⟩
+  have hAmA : Am ⊆ A := by
+    rintro z ⟨h1, ⟨h2, h3⟩, h4⟩
+    exact ⟨h1, ⟨by rw [abs_of_neg (by linarith)]; linarith,
+      by rw [abs_of_neg (by linarith)]; linarith⟩, h4⟩
+  have hunion : A = Ap ∪ Am := by
+    ext z
+    constructor
+    · rintro ⟨h1, ⟨h2, h3⟩, h4⟩
+      rcases le_or_gt 0 z.im with h | h
+      · left; rw [abs_of_nonneg h] at h2 h3; exact ⟨h1, ⟨h2, h3⟩, h4⟩
+      · right; rw [abs_of_neg h] at h2 h3; exact ⟨h1, ⟨by linarith, by linarith⟩, h4⟩
+    · rintro (h | h)
+      · exact hApA h
+      · exact hAmA h
+  have hdisj : Disjoint Ap Am := by
+    rw [Set.disjoint_left]
+    rintro z ⟨-, ⟨h2, -⟩, -⟩ ⟨-, ⟨-, h3⟩, -⟩
+    linarith
+  set g : ℂ → ℝ := fun ρ ↦ ‖CH2.Phi_lambda (lamOf l.T σ) ε (l.zOf ρ)‖ * x ^ ρ.re
+    * (IEANTN.zetaOrder ρ : ℝ) with hg
+  haveI : Finite A := hfin.to_subtype
+  haveI : Finite Ap := (hfin.subset hApA).to_subtype
+  haveI : Finite Am := (hfin.subset hAmA).to_subtype
+  have hne1 : ∀ ρ ∈ A, ρ ≠ 1 := by
+    rintro ρ ⟨-, ⟨h2, -⟩, -⟩ rfl
+    simp at h2; linarith
+  -- the norm bound, term by term
+  have hterm : ∀ ρ : A, ‖CH2.Phi_lambda (lamOf l.T σ) ε (l.zOf ρ) * (x : ℂ) ^ (ρ : ℂ)
+      * ((IEANTN.zetaOrder ρ : ℤ) : ℂ)‖ = g ρ := by
+    intro ρ
+    have hm := zetaOrder_nonneg_of_ne_one (hne1 ρ ρ.2)
+    rw [norm_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hx, hg]
+    congr 1
+    rw [Complex.norm_intCast]
+    exact_mod_cast abs_of_nonneg hm
+  have h1 : |(zeroTerm l (lamOf l.T σ) ε x).re| ≤ ∑' ρ : A, g ρ := by
+    refine (Complex.abs_re_le_norm _).trans ?_
+    rw [zeroTerm, IEANTN.zetaZeroesSum]
+    refine (norm_tsum_le_tsum_norm (Summable.of_finite)).trans (le_of_eq ?_)
+    exact tsum_congr hterm
+  -- split into the two half-planes and fold the lower one onto the upper one
+  have h2 : ∑' ρ : A, g ρ = ∑' ρ : Ap, g ρ + ∑' ρ : Am, g ρ := by
+    rw [show (∑' ρ : A, g ρ) = ∑' ρ : ↑(Ap ∪ Am), g ρ by rw [← hunion]]
+    exact Summable.tsum_union_disjoint hdisj Summable.of_finite Summable.of_finite
+  have hconjmem : ∀ ρ ∈ Ap, starRingEnd ℂ ρ ∈ Am := by
+    rintro ρ ⟨h1, ⟨h2, h3⟩, h4⟩
+    refine ⟨by simpa using h1, ⟨by simp; linarith, by simp; linarith⟩, ?_⟩
+    show riemannZeta _ = 0
+    rw [riemannZeta_conj, show riemannZeta ρ = 0 from h4, map_zero]
+  have hconjmem' : ∀ ρ ∈ Am, starRingEnd ℂ ρ ∈ Ap := by
+    rintro ρ ⟨h1, ⟨h2, h3⟩, h4⟩
+    refine ⟨by simpa using h1, ⟨by simp; linarith, by simp; linarith⟩, ?_⟩
+    show riemannZeta _ = 0
+    rw [riemannZeta_conj, show riemannZeta ρ = 0 from h4, map_zero]
+  let e : Ap ≃ Am :=
+    { toFun := fun ρ ↦ ⟨starRingEnd ℂ ρ, hconjmem ρ ρ.2⟩
+      invFun := fun ρ ↦ ⟨starRingEnd ℂ ρ, hconjmem' ρ ρ.2⟩
+      left_inv := fun ρ ↦ by ext; simp
+      right_inv := fun ρ ↦ by ext; simp }
+  have h3 : ∑' ρ : Am, g ρ = ∑' ρ : Ap, g ρ := by
+    rw [← e.tsum_eq]
+    refine tsum_congr fun ρ ↦ ?_
+    show g (starRingEnd ℂ ρ) = g ρ
+    rw [hg]
+    simp only
+    rw [Phi_lambda_zOf_conj, zetaOrder_conj, Complex.conj_re, norm_conj]
+  have h4 : ∀ ρ : Ap, g ρ = (‖omegaPlus l.T σ ρ + ε * I * thetaTS l.T 1 ρ‖ * x ^ (ρ : ℂ).re
+      * (IEANTN.zetaOrder ρ : ℝ)) / 2 := by
+    intro ρ
+    have him : 0 < (ρ : ℂ).im := lt_trans hd ρ.2.2.1.1
+    rw [hg]
+    simp only
+    rw [norm_Phi_lambda_omlet l hσ1 him]
+    ring
+  calc |(zeroTerm l (lamOf l.T σ) ε x).re| ≤ ∑' ρ : A, g ρ := h1
+    _ = 2 * ∑' ρ : Ap, g ρ := by rw [h2, h3]; ring
+    _ = _ := by
+      rw [IEANTN.zetaZeroesSum, tsum_congr h4, tsum_div_const]
+      ring
+
 end CH2Section6
