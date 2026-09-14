@@ -322,7 +322,16 @@ stages:
       so a sign must go through meromorphicOrderAt_smul.
 
   - stage: "section 6: Theorem 1.1"
-    state: not started, and NEEDED -- analysed 2026-09-13
+    state: >-
+      IN PROGRESS. Step 1 of 3 done: Proposition 5.2 for lam < 0, generically (Section5Neg.lean,
+      prop_5_2_neg) and at A = -zeta'/zeta (ZetaInstanceNeg.lean, prop_5_2_zeta_neg, which adds
+      0 <= sigma and zeta(sigma) /= 0). The removable singularities at sigma +- iT are handled by the
+      shift identity Phi_lambda(z(s)) = -Phi_star(1 - z(s)) near sigma + iT (and Phi_star(-1 - z(s))
+      near sigma - iT); the bounds left of sigma come from Approximants' phi_*_bound_left, and the
+      part of the contour right of sigma - 1 is compact and misses every pole. Remaining: the
+      delta = 1 rectangle joining intC to coronidis, and the residue bookkeeping to eq:quentino.
+      Section5.lean and Approximants.lean had their `private` modifiers removed so the lam < 0 files
+      could reuse helpers; nothing else in them changed.
     note: >-
       THE EARLIER HOPE THAT SECTION 6 COULD BE SKIPPED WAS WRONG. prop_5_2 is the paper's
       prop:shiftnonneg, which is section 5. Section 6 (prop:ewsai and the proof of thm:mainthmB) is
