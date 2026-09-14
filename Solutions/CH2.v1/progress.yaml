@@ -332,6 +332,30 @@ stages:
       delta = 1 rectangle joining intC to coronidis, and the residue bookkeeping to eq:quentino.
       Section5.lean and Approximants.lean had their `private` modifiers removed so the lam < 0 files
       could reuse helpers; nothing else in them changed.
+      THE TARGET FOR STEP 3 IS SMALLER THAN eq:quentino, and here is why. prop:sagaro never keeps
+      the complex-zero sums as main terms: it bounds them in absolute value by prop:vihuela, whose
+      statement is a bound on sum_rho |omega^+(rho) + xi theta_{T,1}(rho) i| for any xi in [-1,1].
+      By lem:omlet, Phi^+-_lambda(z(rho)) = (i sgn lam/2)(omega^+(rho) -+ i sgn lam theta_{T,1}(rho))
+      for Im rho > 0, so |Phi^+-_lambda(z(rho))| = |omega^+ + xi theta i|/2 with xi = -+sgn lam. So
+      what section 6 must deliver is the two ONE-SIDED inequalities from prop_2_4_plus and
+      prop_2_4_minus, each shifted, with (a) the s = 1 and s = sigma residues evaluated exactly --
+      together they give (pi/T)coth(pi(1-sigma)/T) +- pi/T - zeta'/zeta(sigma) x^{sigma-1}, the
+      +-pi/T being the optimal main error term -- and (b) the zero residues bounded by
+      m(rho) |Phi_lambda(z(rho))| x^{Re rho}. The exact eq:quentino split is never needed.
+      TAKE delta = 1. Then no zero of zeta has 0 < |Im| <= delta (the first is at 14.13), so R_C
+      contains only real poles -- sigma, 1 (removable for F) and the trivial zeros -- and every
+      complex zero below T sits in R \ R_C, where sumResiduesIn is a finite sum. It also makes
+      LadderParams.intC and coronidis's contour agree left of Re s = -1 (see above).
+      A SNAG FOR STEP 2, found while planning it. coronidis assumes ||Phi(s)|| <= ||s-1|| on the whole
+      strip Re s <= -1, |Im s| <= 1, with Phi(s) = T Phi_star(sgn lam z(s)). The paper gets this from
+      |Phi_star'| <= 1 on |Re| <= 1/4, i.e. from the FIRST half of lem:cothder,
+      |(z coth z)'| < 1 on |Im z| <= pi/4, which is NOT ported -- only the second half,
+      |(z coth z)'| <= |z| on |Im z| <= pi/2, is. From the second half one gets
+      |Phi(s)| <= |s-1| (1 + |lam|/2 + pi|s-1|/T)/2, which is <= |s-1| only for |s-1| <~ T/pi. The
+      leading gamma x/log^2 x comes from the segment [-1,1], where |s-1| <= 2 and the sharp bound
+      holds; the far pieces have large slack. So the fix is to weaken coronidis's strip hypothesis to
+      ||Phi(s)|| <= K ||s-1|| with a K near 1 on the vertical leg and a cruder K beyond, not to prove
+      the first half of lem:cothder.
     note: >-
       THE EARLIER HOPE THAT SECTION 6 COULD BE SKIPPED WAS WRONG. prop_5_2 is the paper's
       prop:shiftnonneg, which is section 5. Section 6 (prop:ewsai and the proof of thm:mainthmB) is
