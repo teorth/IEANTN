@@ -343,8 +343,20 @@ stages:
       at t = 2pi, as planned) and (b) NO REAL ZEROS IN [0,1) -- not in any node or Mathlib. (b) is
       classical (zeta(s) = s/(s-1) - s int_1^inf {u} u^{-s-1} du < 0 on (0,1)); to be proved or made
       a small node.
-      NEXT: bound |Re zeroTerm| by the prop:vihuela sum via lem:omlet; step 2, the delta = 1
-      rectangle joining intC to coronidis; bound the remaining pieces of shiftError.
+      ZEROS DONE (Section6Zeros.lean). lem:omlet for lam < 0 (Phi_lambda_omlet: Phi_lambda(z(s)) =
+      -(i/2)(omega+_{T,sigma}(s) + eps i theta_{T,1}(s)) for Im s > 0, with omegaPlus/thetaTS/cTS
+      defined literally as in thm:mainthmB; no pole side condition, junk values agree), eq:Phicong,
+      m(conj rho) = m(rho), finiteness of the band zeros, and abs_re_zeroTerm_le: |Re zero sum| <=
+      zetaZeroesSum over Im in (delta, T] of |omega+ + eps i theta_{T,1}| x^Re rho -- exactly the
+      prop:vihuela quantity, xi = eps. ASSEMBLED as svm_abs_bound:
+      |psi_sigma(x)/x^{1-sigma} - ((pi/T) coth(pi(1-sigma)/T) - zeta'/zeta(sigma) x^{sigma-1})|
+        <= pi/T + (2 pi/(T x)) (Z + (1 + T/4pi) x^-2/(1-x^-2) + E)
+      for sigma in [0,1), given hZ (the vihuela bound, both signs), hE (shiftError, both signs),
+      hTfree, hRC. This is prop:sagaro's shape before the vihuela/hardin/coronidis inputs.
+      NEXT: (1) bound shiftError: its intC piece via step 2 (delta = 1 rectangle to coronidis) and
+      its two horizontal integrals via section 8; (2) discharge hRC (no zeros with 0 < |Im| <= 1 from
+      ZeroCount; no real zeros in [0,1) -- open); (3) sigma -> 1- limit for the Lambda(n)/n case;
+      (4) prop:vihuela (needs lem:adar, lem:salmon, cor:thonny, and Platt's zero list to 2e4).
       Step 1 of 3 done: Proposition 5.2 for lam < 0, generically (Section5Neg.lean,
       prop_5_2_neg) and at A = -zeta'/zeta (ZetaInstanceNeg.lean, prop_5_2_zeta_neg, which adds
       0 <= sigma and zeta(sigma) /= 0). The removable singularities at sigma +- iT are handled by the

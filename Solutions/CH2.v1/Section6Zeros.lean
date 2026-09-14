@@ -309,4 +309,119 @@ theorem abs_re_zeroTerm_le (l : CH2.LadderParams) {σ ε x : ℝ} (hσ1 : σ < 1
       rw [IEANTN.zetaZeroesSum, tsum_congr h4, tsum_div_const]
       ring
 
+/-! ### The two-sided bound -/
+
+/-- `Re φ_±(0) = ½ coth(π(1-σ)/T) ± ½`. -/
+theorem re_phiNeg_zero (T σ ε : ℝ) (hT : 0 < T) (hσ1 : σ < 1) :
+    (phiNeg |lamOf T σ| ε 0).re
+      = (1 / 2) * (Real.cosh (Real.pi * (1 - σ) / T) / Real.sinh (Real.pi * (1 - σ) / T)) + ε / 2 := by
+  have hν : |lamOf T σ| / 2 = Real.pi * (1 - σ) / T := by
+    rw [abs_of_neg (lamOf_neg hT hσ1), lamOf]; ring
+  rw [phiNeg_zero]
+  have hc : CH2.coth (((|lamOf T σ| : ℝ) : ℂ) / 2)
+      = ((Real.cosh (Real.pi * (1 - σ) / T) / Real.sinh (Real.pi * (1 - σ) / T) : ℝ) : ℂ) := by
+    rw [coth_eq_cosh_div_sinh, show (((|lamOf T σ| : ℝ) : ℂ) / 2) = ((|lamOf T σ| / 2 : ℝ) : ℂ) by
+      push_cast; ring, hν, ← Complex.ofReal_cosh, ← Complex.ofReal_sinh]
+    push_cast; rfl
+  rw [hc]
+  simp only [Complex.mul_re, Complex.add_re, Complex.ofReal_re, Complex.ofReal_im]
+  norm_num
+  ring
+
+/-- **`|ψ_σ(x)/x^{1-σ} - Main| ≤ π/T + (2π/(Tx))(Z + Tr + E)`** for `σ ∈ [0, 1)`, where `Main` is
+`(π/T) coth(π(1-σ)/T) - (ζ'/ζ)(σ) x^{σ-1}` and `Z`, `E` are any bounds on the `ω⁺` zero sums and
+the shift errors for both signs. -/
+theorem svm_abs_bound
+    (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    {l : CH2.LadderParams} (hsig : l.σ = CH2ZetaInstance.sigmaZeta)
+    (hTfree : ∀ z : ℂ, riemannZeta z = 0 → |z.im| ≠ l.T)
+    (hRC : ∀ z ∈ l.RC, riemannZeta z = 0 → z.re < 0)
+    {σ x₀ x : ℝ} (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hσζ : riemannZeta (σ : ℂ) ≠ 0)
+    (hx₀ : 1 < x₀) (hx : x₀ < x) {Z E : ℝ}
+    (hZ : ∀ ε : ℝ, (ε = 1 ∨ ε = -1) →
+      IEANTN.zetaZeroesSum (Set.Iic 1) (Set.Ioc l.δ l.T)
+          (fun ρ ↦ ‖omegaPlus l.T σ ρ + ε * I * thetaTS l.T 1 ρ‖ * x ^ ρ.re) ≤ Z)
+    (hE : ∀ ε : ℝ, (ε = 1 ∨ ε = -1) → shiftError l (lamOf l.T σ) ε x ≤ E) :
+    |Svm σ x / x ^ (1 - σ)
+        - (Real.pi / l.T * (Real.cosh (Real.pi * (1 - σ) / l.T) / Real.sinh (Real.pi * (1 - σ) / l.T))
+          - (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re * x ^ (σ - 1))|
+      ≤ Real.pi / l.T + 2 * Real.pi / (l.T * x) *
+          (Z + (1 + l.T / (4 * Real.pi)) * (x ^ (-2 : ℝ) / (1 - x ^ (-2 : ℝ))) + E) := by
+  have hT := l.hT
+  have hπ := Real.pi_pos
+  have hxpos : 0 < x := by linarith
+  have hx1 : 1 < x := by linarith
+  have hlam : lamOf l.T σ < 0 := lamOf_neg hT hσ1
+  have hσ' : l.sigmaOf (lamOf l.T σ) = σ := sigmaOf_lamOf l hσ1
+  obtain ⟨hup, hlo⟩ := svm_bounds_explicit hfe hdig hsig hTfree hRC hσ0 hσ1 hσζ hx₀ hx
+  set C := Real.cosh (Real.pi * (1 - σ) / l.T) / Real.sinh (Real.pi * (1 - σ) / l.T) with hC
+  set D := (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re with hD
+  set B := (1 + l.T / (4 * Real.pi)) * (x ^ (-2 : ℝ) / (1 - x ^ (-2 : ℝ))) with hB
+  set p := x ^ (1 - σ) with hp
+  have hppos : 0 < p := Real.rpow_pos_of_pos hxpos _
+  have hZε : ∀ ε : ℝ, (ε = 1 ∨ ε = -1) → |(zeroTerm l (lamOf l.T σ) ε x).re| ≤ Z :=
+    fun ε hε ↦ (abs_re_zeroTerm_le l hσ1 hxpos).trans (hZ ε hε)
+  have hTr : ∀ ε : ℝ, (ε = 1 ∨ ε = -1) → |(∑' k, trivTerm l (lamOf l.T σ) ε x k).re| ≤ B := by
+    intro ε hε
+    have hε1 : |ε| ≤ 1 := by rcases hε with rfl | rfl <;> norm_num
+    exact (Complex.abs_re_le_norm _).trans
+      (norm_tsum_trivTerm_le l hlam (by rw [hσ']; exact hσ0) hε1 hx1)
+  -- `x^{-σ} = p/x` and `x^{σ-1} = 1/p`
+  have hxs : x ^ (-σ) = p / x := by
+    rw [hp, show (1 : ℝ) - σ = 1 + -σ by ring, Real.rpow_add hxpos, Real.rpow_one]
+    field_simp
+  have hxs1 : x ^ (σ - 1) = 1 / p := by
+    rw [hp, show σ - 1 = -(1 - σ) by ring, Real.rpow_neg hxpos.le, one_div]
+  rw [re_phiNeg_zero l.T σ 1 hT hσ1, ← hC] at hup
+  rw [re_phiNeg_zero l.T σ (-1) hT hσ1, ← hC] at hlo
+  rw [hxs] at hup hlo
+  rw [hxs1, abs_le]
+  have hK : 0 ≤ 2 * Real.pi * (p / x) / l.T := by positivity
+  constructor
+  · -- lower bound
+    have hZ1 := abs_le.mp (hZε (-1) (Or.inr rfl))
+    have hT1 := abs_le.mp (hTr (-1) (Or.inr rfl))
+    have hE1 := hE (-1) (Or.inr rfl)
+    have hin : -(Z + B + E) ≤ -(zeroTerm l (lamOf l.T σ) (-1) x).re
+        - (∑' k, trivTerm l (lamOf l.T σ) (-1) x k).re - shiftError l (lamOf l.T σ) (-1) x := by
+      linarith [hZ1.2, hT1.2]
+    have h := mul_le_mul_of_nonneg_left hin hK
+    have hS : p * (Real.pi / l.T * C - D * (1 / p) - (Real.pi / l.T
+        + 2 * Real.pi / (l.T * x) * (Z + B + E))) ≤ Svm σ x := by
+      have e1 : p * (Real.pi / l.T * C - D * (1 / p) - (Real.pi / l.T
+          + 2 * Real.pi / (l.T * x) * (Z + B + E)))
+          = 2 * Real.pi * p / l.T * ((1 / 2) * C + -1 / 2) - D
+            + 2 * Real.pi * (p / x) / l.T * (-(Z + B + E)) := by
+        field_simp
+        ring
+      rw [e1]
+      linarith
+    have key : Real.pi / l.T * C - D * (1 / p) - (Real.pi / l.T
+        + 2 * Real.pi / (l.T * x) * (Z + B + E)) ≤ Svm σ x / p := by
+      rw [le_div_iff₀ hppos, mul_comm]; exact hS
+    linarith
+  · -- upper bound
+    have hZ1 := abs_le.mp (hZε 1 (Or.inl rfl))
+    have hT1 := abs_le.mp (hTr 1 (Or.inl rfl))
+    have hE1 := hE 1 (Or.inl rfl)
+    have hin : -(zeroTerm l (lamOf l.T σ) 1 x).re
+        - (∑' k, trivTerm l (lamOf l.T σ) 1 x k).re + shiftError l (lamOf l.T σ) 1 x ≤ Z + B + E := by
+      linarith [hZ1.1, hT1.1]
+    have h := mul_le_mul_of_nonneg_left hin hK
+    have hS : Svm σ x ≤ p * (Real.pi / l.T * C - D * (1 / p) + (Real.pi / l.T
+        + 2 * Real.pi / (l.T * x) * (Z + B + E))) := by
+      have e1 : p * (Real.pi / l.T * C - D * (1 / p) + (Real.pi / l.T
+          + 2 * Real.pi / (l.T * x) * (Z + B + E)))
+          = 2 * Real.pi * p / l.T * ((1 / 2) * C + 1 / 2) - D
+            + 2 * Real.pi * (p / x) / l.T * (Z + B + E) := by
+        field_simp
+        ring
+      rw [e1]
+      linarith
+    have key : Svm σ x / p ≤ Real.pi / l.T * C - D * (1 / p) + (Real.pi / l.T
+        + 2 * Real.pi / (l.T * x) * (Z + B + E)) := by
+      rw [div_le_iff₀ hppos, mul_comm]; exact hS
+    linarith
+
 end CH2Section6
