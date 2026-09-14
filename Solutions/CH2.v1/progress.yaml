@@ -322,12 +322,62 @@ stages:
       so a sign must go through meromorphicOrderAt_smul.
 
   - stage: "section 6: Theorem 1.1"
-    state: not started, and possibly not needed
+    state: not started, and NEEDED -- analysed 2026-09-13
     note: >-
-      PNT+ has `TODO: incorporate material from [CH2, Section 6]` where this would go, and its
-      cor_1_2_a is meant to follow from prop_5_2 without it. If that holds here too, the general
-      theorem can be skipped entirely; it is the paper's headline but not on the path to the
-      corollaries. Decide this by working section 7 backwards, not by stating Theorem 1.1 first.
+      THE EARLIER HOPE THAT SECTION 6 COULD BE SKIPPED WAS WRONG. prop_5_2 is the paper's
+      prop:shiftnonneg, which is section 5. Section 6 (prop:ewsai and the proof of thm:mainthmB) is
+      what combines the Fourier inequality -- prop:gennonneg, ported as prop_2_4_plus/minus in
+      Part1Fourier.lean -- with that shift and evaluates the residues, producing eq:quentino, the
+      four-sums formula prop:sagaro consumes. Its content is unavoidable; only its generality is
+      optional.
+      THE PORT COVERS THE WRONG SIGN. prop_5_2_a, prop_5_2 and prop_5_2_zeta all require 0 < lam,
+      and lam = 2 pi (sigma - 1)/T, so they cover sigma > 1 only. Corollary 1.2 needs sigma = 0 (psi)
+      and sigma -> 1- (Lambda(n)/n): BOTH lam < 0, and nothing on the path uses lam > 0. For lam < 0
+      Phi_circ(sgn lam z(s)) has an extra simple pole at s = sigma, inside R_C below the contour; its
+      residue T/(2 pi) is what cancels the 1_{sigma<1}/(1-sigma) of prop:gennonneg and produces the
+      -zeta'/zeta(sigma) x^{sigma-1} term. Phi_star has poles at sigma +- iT, on the horizontal edges,
+      where the combination Phi_lambda is regular.
+      HOW MUCH OF THE lam < 0 CASE EXISTS: prop_5_2_b and prop_5_2_c are sign-generic;
+      norm_Phi_lambda_one_add_I_mul_le_of_neg and its twin give the edge bounds; Approximants has
+      phi_circ_bound_left and phi_star_bound_left; and CH2.v3's solution already builds the lam < 0
+      majorant as refl' (phi_pm |lam| eps), matching Phi_lambda on the segment. WHAT MUST BE REDONE:
+      the four isBoundedNoPolesOn_Phi_*_mul lemmas. For lam > 0 the argument of Phi lies in the upper
+      half-plane and the bounds are uniform on all of R; for lam < 0 they hold only on Re s < sigma,
+      and the strip sigma <= Re s <= 1 needs compactness away from s = sigma and sigma +- iT. Then
+      prop_5_2_a for lam < 0, and ZetaInstance's finiteness and simple-pole lemmas with the extra pole.
+      THE GEOMETRY IS FAVOURABLE: ladder columns are 1, -1, -3, ..., so sigma in [0,1) is never on one;
+      the contour runs at height delta > 0, so sigma is strictly inside R_C and the paper's "lift C
+      slightly" step is not needed; and the poles in R \ R_C are the zeros with delta < |Im| <= T,
+      a FINITE set, so the complex-zero sums are finite and the paper's interchange-of-limits worry
+      (eq:adorno) does not arise for sigma < 1.
+      WHAT IS NOT PORTED AT ALL, the residue bookkeeping: (1) identify Phi_lambda((s-1)/iT) on the
+      segment with the phi_pm fed to prop_2_4 (eq:amfia), with phi_pm(0) = coth(|lam|/2)/2 +- 1/2;
+      (2) lem:omlet, the closed form i sgn(lam)(-theta cot(pi theta)/2 + c/2) +- (1-z)/2 for Im s > 0,
+      and eq:Phicong to fold conjugate zeros into 2 Re; (3) Phi_circ = (coth(w/2) +- 1)/2 to turn the
+      R_C residues into the coth-weighted real-pole sum; (4) translating ResiduePort's sumResiduesIn
+      and sumResiduesLim into sums over zeros with multiplicity and over the real poles
+      {1, sigma, -2, -4, ...}, which needs the residue of zeta'/zeta at a zero to be its order.
+      THREE SIMPLIFICATIONS, TAKEN AS DECISIONS.
+      (a) ONLY sigma < 1. The sigma > 1 case of thm:mainthmB is not on the path; skip it.
+      (b) sigma = 1 BY A LIMIT IN THE FINAL INEQUALITY, NOT IN THE FORMULA. The paper passes
+      sigma -> 1- inside eq:quentino, which needs the eq:adorno dominated-convergence argument. But
+      prop:sagaro's error bound pi/(T-1) + C_T/sqrt(x) does not depend on sigma, so prove prop:sagaro
+      for sigma in [0,1) and let sigma -> 1- at the very end: the left side is a finite sum, continuous
+      in sigma, and Main(x,sigma) -> log x - gamma needs only the Laurent expansion at 1, already in
+      ZetaLogDerivValues.v1 (a_0 = gamma), plus coth y = 1/y + O(y). This removes the hardest analytic
+      step in section 6.
+      (c) STATE IT AT A = -zeta'/zeta, NOT IN GENERALITY. No arbitrary a_n, no arbitrary admissible
+      contour; two-sided inequality form, since prop_2_4_plus and _minus are separate shifts with
+      eps = 1 and eps = -1 and the corollaries only ever need the O* version.
+      A COMPATIBILITY ISSUE WITH SECTION 8.2, AND ITS FIX. prop_5_2's contour term is over
+      LadderParams.intC: up from 1 to 1 + i delta, then out along Im s = delta. coronidis bounds the
+      integral over 1 -> -1 -> -1+i -> -infinity+i. TAKE delta = 1 (allowed: delta in (0, T/4) with
+      T >= 10^7, and no zero has |Im| = 1). The two contours then agree left of Re s = -1 and differ
+      by the boundary of the rectangle [-1,1] x [0,1], on which Phi_star(sgn lam z(s)) F(s) x^s is
+      holomorphic -- F has no poles there, Phi_star's poles are at sigma +- iT -- so one application of
+      Complex.integral_boundary_rect_eq_zero_of_differentiableOn, as in section 8.2, connects them.
+      The Phi fed to coronidis is T * Phi_star(sgn lam (s-1)/(iT)); its hypotheses come from
+      lem:benvenuto2's |Phi_star'| <= 1 on 0 <= Re z <= 1/4, which rests on lem:cothder, already done.
 
   - stage: "sections 7-8: the specialisation to psi"
     state: in progress -- Appendix C plus section 7's preamble done (Section7.lean); sections 7, 8 open
