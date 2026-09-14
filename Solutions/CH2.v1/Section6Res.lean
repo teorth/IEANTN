@@ -711,4 +711,111 @@ theorem sumResiduesLim_RC (l : CH2.LadderParams) {lam ε x : ℝ}
   rw [sumResiduesIn_RC_partial l hsig hlam (by linarith) hσ0 hσζ hRC hn]
   rfl
 
+/-! ### The one-sided bounds with the residues evaluated -/
+
+/-- The zero sum of the one-sided bounds: `∑_{δ < |γ| ≤ T} m(ρ) Φ_λ(z(ρ)) x^ρ`. -/
+noncomputable def zeroTerm (l : CH2.LadderParams) (lam ε x : ℝ) : ℂ :=
+  IEANTN.zetaZeroesSum (Set.Iic 1) {t | l.δ < |t| ∧ |t| ≤ l.T}
+    (fun ρ ↦ CH2.Phi_lambda lam ε (l.zOf ρ) * (x : ℂ) ^ ρ)
+
+/-- `shiftResidues`, evaluated. -/
+theorem shiftResidues_eq (l : CH2.LadderParams) {lam ε x : ℝ}
+    (hsig : l.σ = CH2ZetaInstance.sigmaZeta) (hlam : lam < 0) (hx : 1 < x) (hε : |ε| ≤ 1)
+    (hTfree : ∀ z : ℂ, riemannZeta z = 0 → |z.im| ≠ l.T)
+    (hσ0 : 0 ≤ l.sigmaOf lam) (hσζ : riemannZeta ((l.sigmaOf lam : ℝ) : ℂ) ≠ 0)
+    (hRC : ∀ z ∈ l.RC, riemannZeta z = 0 → z.re < 0) :
+    shiftResidues l lam ε x
+      = -zeroTerm l lam ε x + (l.T : ℂ) / (2 * Real.pi) * CH2ZetaInstance.F ((l.sigmaOf lam : ℝ) : ℂ)
+          * (x : ℂ) ^ ((l.sigmaOf lam : ℝ) : ℂ) - ∑' k, trivTerm l lam ε x k := by
+  rw [shiftResidues, sumResiduesIn_band_neg l hlam (by linarith) hTfree,
+    sumResiduesLim_RC l hsig hlam hx hε hσ0 hσζ hRC, zeroTerm]
+  ring
+
+/-- `F(σ) - 1/(1-σ) = -ζ'(σ)/ζ(σ)` for real `σ < 1`. -/
+theorem F_re_sub {σ : ℝ} (hσ1 : σ < 1) (hσζ : riemannZeta (σ : ℂ) ≠ 0) :
+    (CH2ZetaInstance.F (σ : ℂ)).re - 1 / (1 - σ)
+      = -(deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re := by
+  have h1 : (σ : ℂ) ≠ 1 := by
+    intro h; have := congrArg Complex.re h; simp at this; linarith
+  rw [CH2ZetaInstance.F, CH2ZetaInstance.logDeriv_riemannZeta₁_eq h1 hσζ, logDeriv_apply]
+  have e : ((σ : ℂ) - 1)⁻¹ = ((σ - 1 : ℝ)⁻¹ : ℝ) := by push_cast; rfl
+  rw [e, Complex.neg_re, Complex.add_re, Complex.ofReal_re]
+  have : σ - 1 ≠ 0 := by linarith
+  have : 1 - σ ≠ 0 := by linarith
+  field_simp
+  ring
+
+/-- **The one-sided bounds for `σ ∈ [0, 1)`, residues evaluated.**
+
+`ψ_σ(x) = ∑_{n ≤ x} Λ(n) n^{-σ}` lies between the two expressions below, where `λ = 2π(σ-1)/T`: the
+main terms `(2π x^{1-σ}/T) Re φ_±(0)` and `-ζ'(σ)/ζ(σ)`, then `2π x^{-σ}/T` times the zero sum, the
+trivial-zero series and the explicit error of `prop_5_2_zeta_neg`. The only zero-location input is
+`hRC`: the zeros of `ζ` within `δ` of the real axis, left of `Re s = 1`, are in `Re s < 0` — so
+they are trivial. -/
+theorem svm_bounds_explicit
+    (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    {l : CH2.LadderParams} (hsig : l.σ = CH2ZetaInstance.sigmaZeta)
+    (hTfree : ∀ z : ℂ, riemannZeta z = 0 → |z.im| ≠ l.T)
+    (hRC : ∀ z ∈ l.RC, riemannZeta z = 0 → z.re < 0)
+    {σ x₀ x : ℝ} (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hσζ : riemannZeta (σ : ℂ) ≠ 0)
+    (hx₀ : 1 < x₀) (hx : x₀ < x) :
+    Svm σ x ≤ (2 * Real.pi * x ^ (1 - σ) / l.T) * (phiNeg |lamOf l.T σ| 1 0).re
+        - (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re
+        + 2 * Real.pi * x ^ (-σ) / l.T *
+          (-(zeroTerm l (lamOf l.T σ) 1 x).re - (∑' k, trivTerm l (lamOf l.T σ) 1 x k).re
+            + shiftError l (lamOf l.T σ) 1 x) ∧
+    (2 * Real.pi * x ^ (1 - σ) / l.T) * (phiNeg |lamOf l.T σ| (-1) 0).re
+        - (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re
+        + 2 * Real.pi * x ^ (-σ) / l.T *
+          (-(zeroTerm l (lamOf l.T σ) (-1) x).re - (∑' k, trivTerm l (lamOf l.T σ) (-1) x k).re
+            - shiftError l (lamOf l.T σ) (-1) x) ≤ Svm σ x := by
+  have hT := l.hT
+  have hd := l.hδ
+  have hlam : lamOf l.T σ < 0 := lamOf_neg hT hσ1
+  have hσ' : l.sigmaOf (lamOf l.T σ) = σ := sigmaOf_lamOf l hσ1
+  have hxpos : 0 < x := by linarith
+  have hx1 : 1 < x := by linarith
+  -- `hdfree` from `hRC`
+  have hdfree : ∀ z : ℂ, riemannZeta z = 0 → |z.im| ≠ l.δ := by
+    intro z hz hzd
+    by_cases hre : z.re ≤ 1
+    · have hneg := hRC z ⟨hre, hzd.le⟩ hz
+      refine CH2ZetaInstance.riemannZeta_ne_zero_of_re_neg hneg (fun m hm ↦ ?_) hz
+      rw [hm] at hzd
+      simp at hzd
+      linarith [hd.1]
+    · exact riemannZeta_ne_zero_of_one_lt_re (not_le.mp hre) hz
+  obtain ⟨hup, hlo⟩ := svm_bounds hfe hdig hsig hTfree hdfree hσ0 hσ1 hσζ hx₀ hx
+  have hmain : ∀ ε : ℝ, (ε = 1 ∨ ε = -1) →
+      2 * Real.pi * x ^ (-σ) / l.T * (shiftResidues l (lamOf l.T σ) ε x).re - 1 / (1 - σ)
+        = -(deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re
+          + 2 * Real.pi * x ^ (-σ) / l.T *
+            (-(zeroTerm l (lamOf l.T σ) ε x).re - (∑' k, trivTerm l (lamOf l.T σ) ε x k).re) := by
+    intro ε hε
+    have hε1 : |ε| ≤ 1 := by rcases hε with rfl | rfl <;> norm_num
+    rw [shiftResidues_eq l hsig hlam hx1 hε1 hTfree (by rw [hσ']; exact hσ0)
+      (by rw [hσ']; exact hσζ) hRC, hσ', ← F_re_sub hσ1 hσζ]
+    have hpow : (x : ℂ) ^ (σ : ℂ) = ((x ^ σ : ℝ) : ℂ) := (Complex.ofReal_cpow hxpos.le σ).symm
+    have hc : (l.T : ℂ) / (2 * Real.pi) = ((l.T / (2 * Real.pi) : ℝ) : ℂ) := by push_cast; rfl
+    rw [hpow, hc]
+    simp only [Complex.sub_re, Complex.add_re, Complex.neg_re]
+    rw [show (((l.T / (2 * Real.pi) : ℝ) : ℂ) * CH2ZetaInstance.F (σ : ℂ) * ((x ^ σ : ℝ) : ℂ))
+        = (((l.T / (2 * Real.pi) * x ^ σ : ℝ)) : ℂ) * CH2ZetaInstance.F (σ : ℂ) by push_cast; ring,
+      Complex.re_ofReal_mul]
+    have hxx : x ^ (-σ) * x ^ σ = 1 := by
+      rw [Real.rpow_neg hxpos.le, inv_mul_cancel₀ (Real.rpow_pos_of_pos hxpos σ).ne']
+    have hπ := Real.pi_pos
+    have e : 2 * Real.pi * x ^ (-σ) / l.T * (l.T / (2 * Real.pi) * x ^ σ) = 1 := by
+      rw [show 2 * Real.pi * x ^ (-σ) / l.T * (l.T / (2 * Real.pi) * x ^ σ)
+          = (x ^ (-σ) * x ^ σ) * ((2 * Real.pi) / (2 * Real.pi)) * (l.T / l.T) by ring, hxx,
+        div_self hT.ne', div_self (by positivity)]
+      ring
+    linear_combination (CH2ZetaInstance.F (σ : ℂ)).re * e
+  constructor
+  · have h := hmain 1 (Or.inl rfl)
+    linarith
+  · have h := hmain (-1) (Or.inr rfl)
+    linarith
+
 end CH2Section6
