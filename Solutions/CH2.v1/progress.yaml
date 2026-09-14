@@ -330,9 +330,21 @@ stages:
       sumResiduesIn + sumResiduesLim) and the named `shiftError`. Along the way: the lam < 0 Fourier
       inputs (phiNeg, majorant/minorant, decay, value at 0), sum Lambda(n)/(n log^2 n) < infinity by
       dyadic blocks from Mathlib's psi <= (log 4 + 4) x, and F as prop_2_4's G.
-      NEXT: evaluate shiftResidues -- the pole at sigma (exactly), the trivial zeros (bounded,
-      lem:trivialzer), the complex zeros (|Phi_lambda(z(rho))| via lem:omlet) -- and step 2, the
-      delta = 1 rectangle joining intC to coronidis.
+      RESIDUES NOW EVALUATED (Section6Res.lean, svm_bounds_explicit). Res F at a zero is minus its
+      multiplicity (tendsto_sub_mul_F, via a general residue-of-logDeriv lemma); the trivial zeros
+      are simple (zetaOrder_trivial, functional equation at 2k+3). Over R minus R_C the residue sum
+      is exactly -zeroTerm, the zetaZeroesSum of Phi_lambda(z(rho)) x^rho over delta < |Im| <= T
+      (sumResiduesIn_band_neg; an identity of tsums, no summability needed; at sigma +- iT the
+      residue is 0 since hTfree forces m = 0). The R_C limit is (T/2pi) F(sigma) x^sigma minus the
+      trivial-zero series trivTerm, which is bounded by (1 + T/4pi) x^-2/(1 - x^-2) through
+      coth y <= 1 + 1/y (imported from Section7). The T/2pi F(sigma) cancels 1/(1-sigma) down to
+      -zeta'/zeta(sigma). The ONE zero-location hypothesis is hRC: zeros of zeta in R_C lie in
+      Re < 0. It implies hdfree. With delta = 1 it needs (a) no zeros with 0 < |Im| <= 1 (ZeroCount
+      at t = 2pi, as planned) and (b) NO REAL ZEROS IN [0,1) -- not in any node or Mathlib. (b) is
+      classical (zeta(s) = s/(s-1) - s int_1^inf {u} u^{-s-1} du < 0 on (0,1)); to be proved or made
+      a small node.
+      NEXT: bound |Re zeroTerm| by the prop:vihuela sum via lem:omlet; step 2, the delta = 1
+      rectangle joining intC to coronidis; bound the remaining pieces of shiftError.
       Step 1 of 3 done: Proposition 5.2 for lam < 0, generically (Section5Neg.lean,
       prop_5_2_neg) and at A = -zeta'/zeta (ZetaInstanceNeg.lean, prop_5_2_zeta_neg, which adds
       0 <= sigma and zeta(sigma) /= 0). The removable singularities at sigma +- iT are handled by the
