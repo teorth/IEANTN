@@ -363,6 +363,17 @@ stages:
       coth|a| + (|a|+pi/4)/a^2 <= 2.7 for |Re u| >= 1.2). coronidis185 keeps the sharp constant on the
       segment and the real half-line and pays 1.85 only on the two cot legs (1.85 * 9.42/x <= 18/x).
       Derivative of B at W = 0 handled by continuity of deriv (B analytic there) and |h'(u)| <= |u|.
+      hRC DISCHARGED for delta = 1 (Section6Hyp.lean, hRC_of_rvm), from two new facts:
+      no_zero_low (ZeroCount.v1.rvm_error_small at t = 2 pi: rvmMain = -1/8 forces N(2 pi) < 7/8,
+      while a zero contributes m >= 1; finiteness via riemannZeta_1's codiscrete zero set, which does
+      not need 1 excluded from the compact set) and riemannZeta_ne_zero_Ico (ZetaReal01.lean):
+      zeta(s) /= 0 for real s in [0,1). THE LATTER NEEDED NO NODE: Mathlib's riemannZeta_0 is entire,
+      ZetaAsymptotics.zeta_limit_aux1 gives riemannZeta_0 = 1 - s int_1^inf {x} x^(-s-1) for real
+      s > 1, the integral is mellin ({x} 1_{x>1}) (-s), holomorphic on Re s > 0 by
+      mellin_differentiableAt_of_isBigO_rpow, and the identity theorem extends the formula; then
+      zeta(s) = s/(s-1) - s * (nonneg) < 0 on (0,1). About 200 lines.
+      IMPORTS TO ADD to CH2.v1's formalization.yaml when the solution is assembled: ZeroCount.v1
+      (rvm_error_small), ZetaLogDeriv.v1, ZetaLogDerivValues.v1, ZetaHadamard.v1, GammaAsymptotics.v2.
       NEXT: (1) the two horizontal integrals of shiftError via section 8.1 (lem:hardin); (2) discharge hRC (no zeros with 0 < |Im| <= 1 from
       ZeroCount; no real zeros in [0,1) -- open); (3) sigma -> 1- limit for the Lambda(n)/n case;
       (4) prop:vihuela (needs lem:adar, lem:salmon, cor:thonny, and Platt's zero list to 2e4).
