@@ -353,8 +353,17 @@ stages:
         <= pi/T + (2 pi/(T x)) (Z + (1 + T/4pi) x^-2/(1-x^-2) + E)
       for sigma in [0,1), given hZ (the vihuela bound, both signs), hE (shiftError, both signs),
       hTfree, hRC. This is prop:sagaro's shape before the vihuela/hardin/coronidis inputs.
-      NEXT: (1) bound shiftError: its intC piece via step 2 (delta = 1 rectangle to coronidis) and
-      its two horizontal integrals via section 8; (2) discharge hRC (no zeros with 0 < |Im| <= 1 from
+      STEP 2 DONE (Section6Weight.lean, Section6Contour.lean): norm_intC_le, for delta = 1, T >= 4,
+      x >= 10^6, ||int_C Phi_star(sgn lam z(s)) F(s) x^s ds|| <= (gamma x/log^2 x + 1.8 x/log^3 x)/T.
+      Route: intC_eq_coronidis (Cauchy on the rectangle [-1,1]x[0,1], holomorphy from hRC; the ray is
+      moved by u -> -1-u; Atilde = F off s = 1, a null set on the segment), then coronidis185.
+      THE lem:cothder SNAG IS RESOLVED WITHOUT ITS FIRST HALF. B(W) = (W/2)(coth(W/2)+eps) is
+      1-Lipschitz on the REAL axis (|(u coth u)'| <= 1 there, two one-line exp inequalities) and
+      1.85-Lipschitz on |Im W| <= pi/2 (|(u coth u)'| <= |u| near the imaginary axis, and
+      coth|a| + (|a|+pi/4)/a^2 <= 2.7 for |Re u| >= 1.2). coronidis185 keeps the sharp constant on the
+      segment and the real half-line and pays 1.85 only on the two cot legs (1.85 * 9.42/x <= 18/x).
+      Derivative of B at W = 0 handled by continuity of deriv (B analytic there) and |h'(u)| <= |u|.
+      NEXT: (1) the two horizontal integrals of shiftError via section 8.1 (lem:hardin); (2) discharge hRC (no zeros with 0 < |Im| <= 1 from
       ZeroCount; no real zeros in [0,1) -- open); (3) sigma -> 1- limit for the Lambda(n)/n case;
       (4) prop:vihuela (needs lem:adar, lem:salmon, cor:thonny, and Platt's zero list to 2e4).
       Step 1 of 3 done: Proposition 5.2 for lam < 0, generically (Section5Neg.lean,
