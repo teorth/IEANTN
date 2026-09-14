@@ -1,5 +1,5 @@
 name = "solution_CH2_v1"
-defaultTargets = ["ZetaInstance", "AdditiveCombination", "RectanglePort", "ResiduePort", "ZetaConjPort", "PntSupport", "PntAsymptotics", "PntSobolev", "PntSmooth", "PntFourier", "WienerPort", "Part1Fourier", "Approximants", "Decay", "Section5", "Section7", "DigammaReal", "Section8", "Section81", "Solution"]
+defaultTargets = ["ZetaInstance", "AdditiveCombination", "RectanglePort", "ResiduePort", "ZetaConjPort", "PntSupport", "PntAsymptotics", "PntSobolev", "PntSmooth", "PntFourier", "WienerPort", "Part1Fourier", "Approximants", "Decay", "Section5", "Section5Neg", "Section7", "DigammaReal", "Section8", "Section81", "Solution"]
 
 [[require]]
 name = "IEANTN"
@@ -60,6 +60,10 @@ roots = ["Decay"]
 [[lean_lib]]
 name = "Section5"
 roots = ["Section5"]
+
+[[lean_lib]]
+name = "Section5Neg"
+roots = ["Section5Neg"]
 
 [[lean_lib]]
 name = "Section7"
