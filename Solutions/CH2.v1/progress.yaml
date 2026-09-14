@@ -323,7 +323,17 @@ stages:
 
   - stage: "section 6: Theorem 1.1"
     state: >-
-      IN PROGRESS. Step 1 of 3 done: Proposition 5.2 for lam < 0, generically (Section5Neg.lean,
+      IN PROGRESS. Section6.lean now has svm_bounds: for sigma in [0,1), zeta(sigma) /= 0, and any
+      admissible zeta ladder, the two one-sided bounds on sum_{n<=x} Lambda(n) n^{-sigma} obtained
+      from prop_2_4_plus/minus with the reflected Graham-Vaaler approximants, their segment
+      integrals shifted by prop_5_2_zeta_neg. What remains in them is `shiftResidues` (still
+      sumResiduesIn + sumResiduesLim) and the named `shiftError`. Along the way: the lam < 0 Fourier
+      inputs (phiNeg, majorant/minorant, decay, value at 0), sum Lambda(n)/(n log^2 n) < infinity by
+      dyadic blocks from Mathlib's psi <= (log 4 + 4) x, and F as prop_2_4's G.
+      NEXT: evaluate shiftResidues -- the pole at sigma (exactly), the trivial zeros (bounded,
+      lem:trivialzer), the complex zeros (|Phi_lambda(z(rho))| via lem:omlet) -- and step 2, the
+      delta = 1 rectangle joining intC to coronidis.
+      Step 1 of 3 done: Proposition 5.2 for lam < 0, generically (Section5Neg.lean,
       prop_5_2_neg) and at A = -zeta'/zeta (ZetaInstanceNeg.lean, prop_5_2_zeta_neg, which adds
       0 <= sigma and zeta(sigma) /= 0). The removable singularities at sigma +- iT are handled by the
       shift identity Phi_lambda(z(s)) = -Phi_star(1 - z(s)) near sigma + iT (and Phi_star(-1 - z(s))

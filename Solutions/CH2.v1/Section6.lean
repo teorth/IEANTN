@@ -306,4 +306,165 @@ theorem integral_segment_eq_intVerticalAt (l : CH2.LadderParams) {lam ε x : ℝ
       phiNeg |lam| ε (t / l.T) * CH2ZetaInstance.F (1 + t * I) * ((x : ℂ) ^ (1 + (t : ℂ) * I))) = X
   field_simp
 
+/-! ### The two one-sided bounds -/
+
+/-- `λ = 2π(σ-1)/T`. -/
+noncomputable def lamOf (T σ : ℝ) : ℝ := 2 * π * (σ - 1) / T
+
+theorem lamOf_neg {T σ : ℝ} (hT : 0 < T) (hσ : σ < 1) : lamOf T σ < 0 := by
+  unfold lamOf
+  apply div_neg_of_neg_of_pos _ hT
+  have := Real.pi_pos
+  nlinarith
+
+theorem sigmaOf_lamOf (l : CH2.LadderParams) {σ : ℝ} (hσ : σ < 1) :
+    l.sigmaOf (lamOf l.T σ) = σ := by
+  have hT := l.hT
+  rw [CH2.LadderParams.sigmaOf, abs_of_neg (lamOf_neg hT hσ), lamOf]
+  have := Real.pi_pos
+  field_simp
+  ring
+
+/-- The error term of `prop_5_2_zeta_neg`, named. -/
+noncomputable def shiftError (l : CH2.LadderParams) (lam ε x : ℝ) : ℝ :=
+  (1 / (2 * Real.pi)) *
+    ((1 / l.T) *
+        ((∫ t in Set.Ioi (0 : ℝ), t * ‖CH2ZetaInstance.F (1 - t + l.T * Complex.I)‖ * x ^ (1 - t)) +
+          ∫ t in Set.Ioi (0 : ℝ), t * ‖CH2ZetaInstance.F (1 - t - l.T * Complex.I)‖ * x ^ (1 - t)) +
+      2 * ‖l.intC (fun s ↦ CH2.Phi_star |lam| ε ((Real.sign lam : ℂ) * l.zOf s) *
+          CH2ZetaInstance.F s * (x : ℂ) ^ s)‖)
+
+/-- The residue sum of `prop_5_2_zeta_neg`, named. -/
+noncomputable def shiftResidues (l : CH2.LadderParams) (lam ε x : ℝ) : ℂ :=
+  sumResiduesIn (fun s ↦ CH2.Phi_lambda lam ε (l.zOf s) * CH2ZetaInstance.F s * (x : ℂ) ^ s)
+      (l.R \ l.RC) +
+    l.sumResiduesLim
+      (fun s ↦ CH2.Phi_circ |lam| ε ((Real.sign lam : ℂ) * l.zOf s) * CH2ZetaInstance.F s *
+        (x : ℂ) ^ s) l.RC
+
+/-- `ψ` for Section 6: the partial sum `∑_{n ≤ x} Λ(n) n^{-σ}`, as `prop_2_4` writes it. -/
+noncomputable abbrev Svm (σ x : ℝ) : ℝ :=
+  CH2Sol.S (fun n ↦ ArithmeticFunction.vonMangoldt n) σ x
+
+/-- **The one-sided bounds for `σ ∈ [0, 1)`.** Proposition 2.4 with the reflected Graham–Vaaler
+majorant and minorant, its segment integral shifted by `prop_5_2_zeta_neg`. What is left is the
+residue sum, still in `sumResiduesIn` form, and the explicit error. -/
+theorem svm_bounds
+    (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    {l : CH2.LadderParams} (hsig : l.σ = CH2ZetaInstance.sigmaZeta)
+    (hTfree : ∀ z : ℂ, riemannZeta z = 0 → |z.im| ≠ l.T)
+    (hdfree : ∀ z : ℂ, riemannZeta z = 0 → |z.im| ≠ l.δ)
+    {σ x₀ x : ℝ} (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hσζ : riemannZeta (σ : ℂ) ≠ 0)
+    (hx₀ : 1 < x₀) (hx : x₀ < x) :
+    Svm σ x ≤ (2 * π * x ^ (1 - σ) / l.T) * (phiNeg |lamOf l.T σ| 1 0).re
+        + 2 * π * x ^ (-σ) / l.T *
+          ((shiftResidues l (lamOf l.T σ) 1 x).re + shiftError l (lamOf l.T σ) 1 x)
+        - 1 / (1 - σ) ∧
+    (2 * π * x ^ (1 - σ) / l.T) * (phiNeg |lamOf l.T σ| (-1) 0).re
+        + 2 * π * x ^ (-σ) / l.T *
+          ((shiftResidues l (lamOf l.T σ) (-1) x).re - shiftError l (lamOf l.T σ) (-1) x)
+        - 1 / (1 - σ) ≤ Svm σ x := by
+  have hT := l.hT
+  set lam := lamOf l.T σ with hlam_def
+  have hlam : lam < 0 := lamOf_neg hT hσ1
+  have hν : 0 < |lam| := abs_pos.mpr hlam.ne
+  have hlam_abs : lam = -|lam| := by rw [abs_of_neg hlam]; ring
+  have hσ' : l.sigmaOf lam = σ := sigmaOf_lamOf l hσ1
+  have hx1 : (1 : ℝ) ≤ x := by linarith
+  have hxpos : (0 : ℝ) < x := by linarith
+  have ha_pos : ∀ n, (ArithmeticFunction.vonMangoldt n : ℝ) ≥ 0 :=
+    fun n ↦ ArithmeticFunction.vonMangoldt_nonneg
+  have hsumm := summable_vonMangoldt_div_log_sq
+  have hGc := F_continuousOn_right l.T
+  have hGe := F_eqOn_dirichlet
+  -- the shift, for each sign
+  have hshift : ∀ ε : ℝ, (ε = 1 ∨ ε = -1) →
+      ‖(2 * (Real.pi : ℂ) * Complex.I)⁻¹ *
+          l.intVerticalAt 1 (fun s ↦ CH2.Phi_lambda lam ε (l.zOf s) * CH2ZetaInstance.F s *
+            (x : ℂ) ^ s) - shiftResidues l lam ε x‖ ≤ shiftError l lam ε x := by
+    intro ε hε
+    have h := CH2ZetaInstance.prop_5_2_zeta_neg hfe hdig hsig hTfree hdfree hlam hε
+      (by rw [hσ']; exact hσ0) (by rw [hσ']; exact hσζ) hx₀ hx
+    unfold shiftResidues shiftError
+    rw [show ∀ a b c : ℂ, a - (b + c) = a - b - c from fun a b c ↦ by ring]
+    exact h
+  -- `Re V ≤ Re Res + E` and `Re Res - E ≤ Re V`
+  have hre_le : ∀ ε : ℝ, (ε = 1 ∨ ε = -1) →
+      ((2 * (Real.pi : ℂ) * Complex.I)⁻¹ *
+          l.intVerticalAt 1 (fun s ↦ CH2.Phi_lambda lam ε (l.zOf s) * CH2ZetaInstance.F s *
+            (x : ℂ) ^ s)).re ≤ (shiftResidues l lam ε x).re + shiftError l lam ε x ∧
+      (shiftResidues l lam ε x).re - shiftError l lam ε x ≤
+        ((2 * (Real.pi : ℂ) * Complex.I)⁻¹ *
+          l.intVerticalAt 1 (fun s ↦ CH2.Phi_lambda lam ε (l.zOf s) * CH2ZetaInstance.F s *
+            (x : ℂ) ^ s)).re := by
+    intro ε hε
+    have h := hshift ε hε
+    have hre := (Complex.abs_re_le_norm _).trans h
+    rw [Complex.sub_re] at hre
+    constructor <;> linarith [abs_le.mp hre]
+  -- the segment integral as `2π V`
+  have hseg : ∀ ε : ℝ, (∫ t in Set.Icc (-l.T) l.T,
+        phiNeg |lam| ε (t / l.T) * CH2ZetaInstance.F (1 + t * I) * ((x : ℂ) ^ (1 + (t : ℂ) * I))).re
+      = 2 * π * ((2 * (Real.pi : ℂ) * Complex.I)⁻¹ * l.intVerticalAt 1
+          (fun s ↦ CH2.Phi_lambda lam ε (l.zOf s) * CH2ZetaInstance.F s * (x : ℂ) ^ s)).re := by
+    intro ε
+    rw [integral_segment_eq_intVerticalAt l hlam]
+    rw [show (2 * (π : ℂ)) = ((2 * π : ℝ) : ℂ) by push_cast; ring, Complex.re_ofReal_mul]
+  have hσne : σ ≠ 1 := hσ1.ne
+  constructor
+  · have hP := CH2Sol.prop_2_4_plus (a := fun n ↦ ArithmeticFunction.vonMangoldt n) ha_pos
+      hT (by norm_num : (1 : ℝ) < 2) hσne hsumm hGc hGe
+      (phiNeg_measurable hν 1) (phiNeg_integrable hν 1) (phiNeg_continuousAt hν 1)
+      (fun x hx ↦ phiNeg_zero_outside |lam| 1 hx) (phiNeg_fourier_decay hν (Or.inl rfl))
+      (fun y ↦ by
+        show CH2Sol.I' (2 * π * (σ - 1) / l.T) y ≤ _
+        rw [show 2 * π * (σ - 1) / l.T = -|lam| by rw [← hlam_abs]; rfl]
+        exact phiNeg_majorant hν y)
+      x hx1
+    rw [if_pos hσ1] at hP
+    have h1 := (hre_le 1 (Or.inl rfl)).1
+    rw [hseg 1] at hP
+    set V := ((2 * (Real.pi : ℂ) * Complex.I)⁻¹ * l.intVerticalAt 1
+      (fun s ↦ CH2.Phi_lambda lam 1 (l.zOf s) * CH2ZetaInstance.F s * (x : ℂ) ^ s)).re with hV
+    have hphi : (2 * (π : ℂ) * ((x ^ (1 - σ) : ℝ) : ℂ) / (l.T : ℂ) * phiNeg |lam| 1 0).re
+        = (2 * π * x ^ (1 - σ) / l.T) * (phiNeg |lam| 1 0).re := by
+      rw [show (2 * (π : ℂ) * ((x ^ (1 - σ) : ℝ) : ℂ) / (l.T : ℂ))
+          = ((2 * π * x ^ (1 - σ) / l.T : ℝ) : ℂ) by push_cast; ring, Complex.re_ofReal_mul]
+    have hc : (0 : ℝ) ≤ x ^ (-σ) / l.T * (2 * π) := by positivity
+    have h2 := mul_le_mul_of_nonneg_left h1 hc
+    have e1 : x ^ (-σ) / l.T * (2 * π * V) = (x ^ (-σ) / l.T * (2 * π)) * V := by ring
+    have e2 : 2 * π * x ^ (-σ) / l.T * ((shiftResidues l lam 1 x).re + shiftError l lam 1 x)
+        = (x ^ (-σ) / l.T * (2 * π)) * ((shiftResidues l lam 1 x).re + shiftError l lam 1 x) := by
+      ring
+    rw [hphi] at hP
+    linarith [hP, h2, e1, e2]
+  · have hM := CH2Sol.prop_2_4_minus (a := fun n ↦ ArithmeticFunction.vonMangoldt n) ha_pos
+      hT (by norm_num : (1 : ℝ) < 2) hσne hsumm hGc hGe
+      (phiNeg_measurable hν (-1)) (phiNeg_integrable hν (-1)) (phiNeg_continuousAt hν (-1))
+      (fun x hx ↦ phiNeg_zero_outside |lam| (-1) hx) (phiNeg_fourier_decay hν (Or.inr rfl))
+      (fun y ↦ by
+        show _ ≤ CH2Sol.I' (2 * π * (σ - 1) / l.T) y
+        rw [show 2 * π * (σ - 1) / l.T = -|lam| by rw [← hlam_abs]; rfl]
+        exact phiNeg_minorant hν y)
+      hx1
+    rw [if_pos hσ1] at hM
+    have h1 := (hre_le (-1) (Or.inr rfl)).2
+    rw [hseg (-1)] at hM
+    set V := ((2 * (Real.pi : ℂ) * Complex.I)⁻¹ * l.intVerticalAt 1
+      (fun s ↦ CH2.Phi_lambda lam (-1) (l.zOf s) * CH2ZetaInstance.F s * (x : ℂ) ^ s)).re with hV
+    have hphi : (2 * (π : ℂ) * ((x ^ (1 - σ) : ℝ) : ℂ) / (l.T : ℂ) * phiNeg |lam| (-1) 0).re
+        = (2 * π * x ^ (1 - σ) / l.T) * (phiNeg |lam| (-1) 0).re := by
+      rw [show (2 * (π : ℂ) * ((x ^ (1 - σ) : ℝ) : ℂ) / (l.T : ℂ))
+          = ((2 * π * x ^ (1 - σ) / l.T : ℝ) : ℂ) by push_cast; ring, Complex.re_ofReal_mul]
+    have hc : (0 : ℝ) ≤ x ^ (-σ) / l.T * (2 * π) := by positivity
+    have h2 := mul_le_mul_of_nonneg_left h1 hc
+    have e1 : x ^ (-σ) / l.T * (2 * π * V) = (x ^ (-σ) / l.T * (2 * π)) * V := by ring
+    have e2 : 2 * π * x ^ (-σ) / l.T * ((shiftResidues l lam (-1) x).re - shiftError l lam (-1) x)
+        = (x ^ (-σ) / l.T * (2 * π)) * ((shiftResidues l lam (-1) x).re
+          - shiftError l lam (-1) x) := by
+      ring
+    rw [hphi] at hM
+    linarith [hM, h2, e1, e2]
+
 end CH2Section6
