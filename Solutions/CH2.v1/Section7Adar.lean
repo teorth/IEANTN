@@ -223,4 +223,207 @@ theorem zsum_one_le {a b : ℝ} (ha : 0 ≤ a) :
             ((Set.Finite.mem_toFinset hfin0).mp hρ)
           split_ifs <;> linarith
 
+/-! ### Bounds on the comparison weight -/
+
+theorem norm_F_add_le_phiW {T t ξ : ℝ} (hξ : |ξ| ≤ 1) :
+    ‖((Fweight (t / T) : ℝ) : ℂ) + (ξ : ℂ) * (((1 - t / T) : ℝ) : ℂ) * Complex.I‖ ≤ phiW T t := by
+  rw [show ((Fweight (t / T) : ℝ) : ℂ) + (ξ : ℂ) * (((1 - t / T) : ℝ) : ℂ) * Complex.I
+      = ((Fweight (t / T) : ℝ) : ℂ) + ((ξ * (1 - t / T) : ℝ) : ℂ) * Complex.I by push_cast; ring,
+    Complex.norm_add_mul_I, phiW]
+  apply Real.sqrt_le_sqrt
+  have : ξ ^ 2 ≤ 1 := by rw [← sq_abs]; nlinarith [abs_nonneg ξ]
+  nlinarith [sq_nonneg (1 - t / T)]
+
+theorem phiW_le {T t : ℝ} (hT : 0 < T) (ht0 : 0 < t) (htT : t < T) :
+    phiW T t ≤ T / (Real.pi * t) + 1 := by
+  have hu0 : 0 < t / T := div_pos ht0 hT
+  have hu1 : t / T < 1 := (div_lt_one hT).mpr htT
+  have hF := Fweight_pos hu0 hu1
+  have hF2 := Fweight_lt_inv hu0 hu1
+  have h1u : 0 ≤ 1 - t / T := by linarith
+  have e : 1 / (Real.pi * (t / T)) = T / (Real.pi * t) := by field_simp
+  rw [e] at hF2
+  unfold phiW
+  rw [Real.sqrt_le_left (by positivity)]
+  nlinarith
+
+/-- **The weight at a zero on the line** (`witdim`, summed form). -/
+theorem weight_le {T σ ξ : ℝ} (hcs : CotangentSeries.v1.cot_series_zeta_values) (hT : 0 < T)
+    (hσ1 : σ ≠ 1) (hσT : |σ - 1 / 2| ≤ T / 2) (hξ : |ξ| ≤ 1) {ρ : ℂ} (hre : ρ.re = 1 / 2)
+    (h0 : 0 < ρ.im) (hT' : ρ.im < T) :
+    ‖CH2Section6.omegaPlus T σ ρ + (ξ : ℂ) * Complex.I * CH2Section6.thetaTS T 1 ρ‖
+      ≤ phiW T ρ.im + |σ - 1 / 2| * T / (Real.pi * ρ.im ^ 2) + (2.78 * |σ - 1 / 2| + 1) / T := by
+  have hρ : ρ = 1 / 2 + (ρ.im : ℂ) * Complex.I := Complex.ext (by simp [hre]) (by simp)
+  have hw := CH2Section6.thonny_witdim hcs hT hσ1 hσT hξ h0 hT'
+  rw [← hρ] at hw
+  have := norm_F_add_le_phiW (T := T) (t := ρ.im) hξ
+  calc _ ≤ ‖((Fweight (ρ.im / T) : ℝ) : ℂ) + (ξ : ℂ) * (((1 - ρ.im / T) : ℝ) : ℂ) * Complex.I‖
+        + ‖CH2Section6.omegaPlus T σ ρ + (ξ : ℂ) * Complex.I * CH2Section6.thetaTS T 1 ρ
+          - (((Fweight (ρ.im / T) : ℝ) : ℂ) + (ξ : ℂ) * (((1 - ρ.im / T) : ℝ) : ℂ) * Complex.I)‖ := by
+          exact norm_le_insert' _ _
+    _ ≤ _ := by linarith
+
+/-! ### The `φ` sum up to `t₁ < T` -/
+
+set_option maxHeartbeats 1000000 in
+theorem sum_phiW_le (hcs : CotangentSeries.v1.cot_series_zeta_values)
+    (hrvm : ZeroCount.v1.rvm_error_bound) {T t₀ t₁ : ℝ} (ht0 : 14 ≤ t₀) (h2 : 2 * t₀ ≤ T)
+    (h01 : t₀ ≤ t₁) (h1T : t₁ < T) :
+    2 * Real.pi / T * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ t₁) (fun ρ ↦ phiW T ρ.im)
+      ≤ (1 / (2 * Real.pi)) * (Real.log (T / (2 * Real.pi)) ^ 2 - Real.log (t₀ / (2 * Real.pi)) ^ 2
+          - 2 * C1lo 12 * (Real.log (T / (2 * Real.pi)) + 1) + 2 * C2hi
+          + (2 * (Real.log (T / (2 * Real.pi)) + 1) * ((t₀ / T) ^ 2 / 2 + (1 - t₁ / T)) * 14
+            + Real.pi ^ 2 * gT (t₁ / T) * Real.log (T / (2 * Real.pi))))
+        + (2 / (5 * t₀) + 2 * Real.pi * Real.log (T / t₀) / (5 * T))
+        + (2 / t₀ + 2 * Real.pi / T) * (2 * Real.log t₀ / 5 + 4) := by
+  have hπ := Real.pi_pos
+  have hπ4 := Real.pi_lt_d2
+  have ht0p : 0 < t₀ := by linarith
+  have hT : 0 < T := by linarith
+  have ht1p : 0 < t₁ := by linarith
+  set y := Real.log (T / (2 * Real.pi)) with hy
+  have hmemI : ∀ t ∈ Set.uIcc t₀ t₁, 0 < t ∧ t < T := by
+    intro t ht; rw [Set.uIcc_of_le h01] at ht; exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  have hL := CH2Section7Z.lehman_antitone hrvm (φ := phiW T) (φ' := phiW' T) (by linarith) h01
+    (fun t ht ↦ hasDerivAt_phiW hT (hmemI t ht).1 (hmemI t ht).2)
+    (by rw [Set.uIcc_of_le h01]; exact continuousOn_phiW' hT ht0p h1T)
+    (fun t ht ↦ phiW'_nonpos hT (by linarith [ht.1]) (by linarith [ht.2]))
+    (phiW_pos hT h1T).le
+  -- continuity
+  have hphic : ContinuousOn (phiW T) (Set.Icc t₀ t₁) := fun t ht ↦
+    (hasDerivAt_phiW hT (by linarith [ht.1]) (by linarith [ht.2])).continuousAt.continuousWithinAt
+  have hlogc : ContinuousOn (fun t ↦ Real.log (t / (2 * Real.pi))) (Set.Icc t₀ t₁) := by
+    intro t ht
+    have htp : 0 < t := by linarith [ht.1]
+    have hne : t / (2 * Real.pi) ≠ 0 := by positivity
+    exact (((continuous_id.div_const (2 * Real.pi)).continuousAt (x := t)).log hne).continuousWithinAt
+  have hinvc : ContinuousOn (fun t : ℝ ↦ 1 / (5 * t)) (Set.Icc t₀ t₁) := by
+    intro t ht
+    have htp : 0 < t := by linarith [ht.1]
+    have hne : 5 * t ≠ 0 := by positivity
+    exact (continuousAt_const.div (by fun_prop) hne).continuousWithinAt
+  -- split the integral
+  have hsplit : (∫ t in t₀..t₁, phiW T t * (Real.log (t / (2 * Real.pi)) / (2 * Real.pi) + 1 / (5 * t)))
+      = (1 / (2 * Real.pi)) * (∫ t in t₀..t₁, phiW T t * Real.log (t / (2 * Real.pi)))
+        + ∫ t in t₀..t₁, phiW T t * (1 / (5 * t)) := by
+    rw [← intervalIntegral.integral_const_mul, ← intervalIntegral.integral_add]
+    · exact intervalIntegral.integral_congr fun t _ ↦ by ring
+    · exact ((hphic.mul hlogc).const_mul _).intervalIntegrable_of_Icc h01
+    · exact (hphic.mul hinvc).intervalIntegrable_of_Icc h01
+  -- the main integral is tritura
+  set ε := t₀ / T with hε
+  set b := t₁ / T with hb
+  have hεp : 0 < ε := div_pos ht0p hT
+  have hε2 : ε ≤ 1 / 2 := by rw [hε, div_le_iff₀ hT]; linarith
+  have hεb : ε ≤ b := div_le_div_of_nonneg_right h01 hT.le
+  have hb1 : b < 1 := (div_lt_one hT).mpr h1T
+  have hw : 0 ≤ y + Real.log ε := by
+    have e : y + Real.log ε = Real.log (t₀ / (2 * Real.pi)) := by
+      rw [hy, hε, ← Real.log_mul (by positivity) (by positivity)]; congr 1; field_simp
+    rw [e]; apply Real.log_nonneg; rw [le_div_iff₀ (by positivity)]; linarith
+  have htr := tritura hcs hεp hε2 hεb hb1 hw 12
+  have hsub : (∫ t in t₀..t₁, phiW T t * Real.log (t / (2 * Real.pi)))
+      = T * ∫ u in ε..b, Real.sqrt (Fweight u ^ 2 + (1 - u) ^ 2) * (y + Real.log u) := by
+    have hcomp := intervalIntegral.integral_comp_mul_left
+      (fun t ↦ phiW T t * Real.log (t / (2 * Real.pi))) (a := ε) (b := b) hT.ne'
+    rw [show T * ε = t₀ by rw [hε]; field_simp, show T * b = t₁ by rw [hb]; field_simp] at hcomp
+    have h3 : (∫ t in t₀..t₁, phiW T t * Real.log (t / (2 * Real.pi)))
+        = T * ∫ x in ε..b, phiW T (T * x) * Real.log (T * x / (2 * Real.pi)) := by
+      rw [hcomp, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hT.ne', one_mul]
+    rw [h3]
+    congr 1
+    refine intervalIntegral.integral_congr fun u hu ↦ ?_
+    rw [Set.uIcc_of_le hεb] at hu
+    have hu0 : 0 < u := by linarith [hu.1]
+    simp only [phiW]
+    rw [show T * u / T = u by field_simp, show T * u / (2 * Real.pi) = (T / (2 * Real.pi)) * u by ring,
+      Real.log_mul (by positivity) hu0.ne', ← hy]
+  -- the `1/(5t)` integral
+  have hI2 : (∫ t in t₀..t₁, phiW T t * (1 / (5 * t)))
+      ≤ T / (5 * Real.pi * t₀) + Real.log (T / t₀) / 5 := by
+    have hmono : (∫ t in t₀..t₁, phiW T t * (1 / (5 * t)))
+        ≤ ∫ t in t₀..t₁, (T / (5 * Real.pi) * (1 / t ^ 2) + (1 / 5) * (1 / t)) := by
+      refine intervalIntegral.integral_mono_on h01 ((hphic.mul hinvc).intervalIntegrable_of_Icc h01) ?_
+        fun t ht ↦ ?_
+      · refine ContinuousOn.intervalIntegrable ?_
+        rw [Set.uIcc_of_le h01]
+        intro t ht
+        have : t ≠ 0 := by linarith [ht.1]
+        have : t ^ 2 ≠ 0 := by positivity
+        exact ContinuousAt.continuousWithinAt (by fun_prop (disch := assumption))
+      · have htp : 0 < t := by linarith [ht.1]
+        have hle := phiW_le hT htp (by linarith [ht.2])
+        have := mul_le_mul_of_nonneg_right hle (by positivity : (0:ℝ) ≤ 1 / (5 * t))
+        calc _ ≤ (T / (Real.pi * t) + 1) * (1 / (5 * t)) := this
+          _ = _ := by field_simp
+    have hd : ∀ t ∈ Set.uIcc t₀ t₁, HasDerivAt (fun t ↦ -(T / (5 * Real.pi)) * (1 / t) + (1 / 5) * Real.log t)
+        (T / (5 * Real.pi) * (1 / t ^ 2) + (1 / 5) * (1 / t)) t := by
+      intro t ht
+      have htp := (hmemI t ht).1
+      have h1 := ((hasDerivAt_inv htp.ne').const_mul (-(T / (5 * Real.pi))))
+      have h2 := (Real.hasDerivAt_log htp.ne').const_mul (1 / 5 : ℝ)
+      refine (h1.add h2).congr_of_eventuallyEq ?_ |>.congr_deriv ?_
+      · exact Filter.Eventually.of_forall fun s ↦ by simp [one_div]
+      · field_simp
+    have hint := intervalIntegral.integral_eq_sub_of_hasDerivAt hd (by
+      refine ContinuousOn.intervalIntegrable ?_
+      rw [Set.uIcc_of_le h01]
+      intro t ht
+      have : t ≠ 0 := by linarith [ht.1]
+      have : t ^ 2 ≠ 0 := by positivity
+      exact ContinuousAt.continuousWithinAt (by fun_prop (disch := assumption)))
+    rw [hint] at hmono
+    have hlog : Real.log t₁ - Real.log t₀ ≤ Real.log (T / t₀) := by
+      rw [Real.log_div hT.ne' ht0p.ne']
+      have := Real.log_le_log ht1p h1T.le
+      linarith
+    have ht1inv : 0 ≤ T / (5 * Real.pi) * (1 / t₁) := by positivity
+    have e : T / (5 * Real.pi * t₀) = T / (5 * Real.pi) * (1 / t₀) := by field_simp
+    nlinarith
+  -- the endpoint term
+  have hQ := (abs_le.mp (hrvm t₀ (by linarith))).1
+  have hphi0 := phiW_le hT ht0p (by linarith)
+  have hphi0p := (phiW_pos hT (by linarith : t₀ < T)).le
+  have hend : phiW T t₀ * (Real.log t₀ / 5 + 2 - (ZeroCount.v1.zetaNClosed t₀ - ZeroCount.v1.rvmMain t₀))
+      ≤ (T / (Real.pi * t₀) + 1) * (2 * Real.log t₀ / 5 + 4) := by
+    have hlog0 : 0 ≤ Real.log t₀ := Real.log_nonneg (by linarith)
+    have h1 : Real.log t₀ / 5 + 2 - (ZeroCount.v1.zetaNClosed t₀ - ZeroCount.v1.rvmMain t₀)
+        ≤ 2 * Real.log t₀ / 5 + 4 := by linarith
+    have h2 : 0 ≤ Real.log t₀ / 5 + 2 - (ZeroCount.v1.zetaNClosed t₀ - ZeroCount.v1.rvmMain t₀) := by
+      have := (abs_le.mp (hrvm t₀ (by linarith))).2; linarith
+    calc _ ≤ phiW T t₀ * (2 * Real.log t₀ / 5 + 4) := mul_le_mul_of_nonneg_left h1 hphi0p
+      _ ≤ _ := mul_le_mul_of_nonneg_right hphi0 (by positivity)
+  -- assemble
+  rw [hsplit, hsub] at hL
+  have hsumC : ∑ n ∈ Finset.range 12, cLow n ≤ 14 := sum_cLow_twelve
+  have hE : 2 * (y + 1) * (ε ^ 2 / 2 + (1 - b)) * ∑ n ∈ Finset.range 12, cLow n
+      ≤ 2 * (y + 1) * (ε ^ 2 / 2 + (1 - b)) * 14 := by
+    have : 0 ≤ y := by
+      rw [hy]; apply Real.log_nonneg; rw [le_div_iff₀ (by positivity)]; linarith
+    have : 0 ≤ 2 * (y + 1) * (ε ^ 2 / 2 + (1 - b)) := by
+      have : 0 ≤ 1 - b := by linarith
+      positivity
+    exact mul_le_mul_of_nonneg_left hsumC this
+  have hK : 0 ≤ 2 * Real.pi / T := by positivity
+  have hmain := mul_le_mul_of_nonneg_left hL hK
+  have e1 : 2 * Real.pi / T * ((1 / (2 * Real.pi)) * (T * ∫ u in ε..b,
+      Real.sqrt (Fweight u ^ 2 + (1 - u) ^ 2) * (y + Real.log u)))
+      = (1 / (2 * Real.pi)) * (2 * Real.pi * ∫ u in ε..b,
+        Real.sqrt (Fweight u ^ 2 + (1 - u) ^ 2) * (y + Real.log u)) := by
+    field_simp
+  have e2 : Real.log (t₀ / (2 * Real.pi)) = y + Real.log ε := by
+    rw [hy, hε, ← Real.log_mul (by positivity) (by positivity)]; congr 1; field_simp
+  have htr' := mul_le_mul_of_nonneg_left htr (by positivity : (0:ℝ) ≤ 1 / (2 * Real.pi))
+  have hI2' := mul_le_mul_of_nonneg_left hI2 hK
+  have hend' := mul_le_mul_of_nonneg_left hend hK
+  have e3 : 2 * Real.pi / T * (T / (5 * Real.pi * t₀) + Real.log (T / t₀) / 5)
+      = 2 / (5 * t₀) + 2 * Real.pi * Real.log (T / t₀) / (5 * T) := by field_simp
+  have e4 : 2 * Real.pi / T * ((T / (Real.pi * t₀) + 1) * (2 * Real.log t₀ / 5 + 4))
+      = (2 / t₀ + 2 * Real.pi / T) * (2 * Real.log t₀ / 5 + 4) := by field_simp
+  rw [e3] at hI2'
+  rw [e4] at hend'
+  rw [e2]
+  have hE' := mul_le_mul_of_nonneg_left hE (by positivity : (0:ℝ) ≤ 1 / (2 * Real.pi))
+  nlinarith [hmain, e1, htr', hI2', hend', hE']
+
 end CH2Section7A
