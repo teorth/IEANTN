@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-48 node version(s), 92 conclusion(s).  3 state nothing yet.
+49 node version(s), 93 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -16,7 +16,7 @@ adds the environment detail.
 | `asserted` | 1 |
 | `bridged` | 1 |
 | `lean-comparator` | 29 |
-| `literature` | 37 |
+| `literature` | 38 |
 | `none-yet` | 5 |
 | `numerical` | 19 |
 
@@ -95,6 +95,7 @@ adds the environment detail.
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
 | `PlattTrudgian2021.v1` | stub | `theorem_1_classical` | literature | 3 | - |
 | `PlattTrudgian2021.v1` | stub | `theorem_1_numerical` | literature | 3 | - |
+| `PlattZeroSum.v1` | active | `inv_ordinate_sum_le` | literature | 0 | - |
 | `PrimeInterval.v1` | active | `theta_characterisation` | lean-comparator-stale | 0 | #53 |
 | `PrimeInterval.v1` | active | `eTheta_criterion` | lean-comparator-stale | 0 | #53 |
 | `PrimeInterval.v1` | active | `numericalBound_hasPrimeInInterval` | lean-comparator-stale | 0 | #53 |
