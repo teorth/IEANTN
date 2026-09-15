@@ -261,4 +261,136 @@ theorem lehman_antitone (hrvm : ZeroCount.v1.rvm_error_bound) {t₀ t₁ : ℝ} 
   simp only [hG, hB] at hibp hend ⊢
   linarith
 
+/-! ### `cor:brut` and `lem:cathinv` -/
+
+/-- `log t ≤ t/e`. -/
+theorem log_le_div_exp_one {t : ℝ} (ht : 0 < t) : Real.log t ≤ t / Real.exp 1 := by
+  have h := Real.add_one_le_exp (t / Real.exp 1 - 1)
+  have he : Real.exp (t / Real.exp 1 - 1) = Real.exp (t / Real.exp 1) / Real.exp 1 := by
+    rw [Real.exp_sub]
+  have hlog : Real.log t - 1 ≤ t / Real.exp 1 - 1 := by
+    have h2 : Real.log (t / Real.exp 1) ≤ t / Real.exp 1 - 1 :=
+      Real.log_le_sub_one_of_pos (by positivity)
+    rw [Real.log_div ht.ne' (Real.exp_pos 1).ne', Real.log_exp] at h2
+    exact h2
+  linarith
+
+/-- `Q(t) ≤ log t/5 + 2` in the form `N ≤ M + log t/5 + 2`, and `N ≤ M + 1` below `280`. -/
+theorem zetaN_le (hrvm : ZeroCount.v1.rvm_error_bound) {t : ℝ} (ht : 1 ≤ t) :
+    ZeroCount.v1.zetaNClosed t ≤ ZeroCount.v1.rvmMain t + Real.log t / 5 + 2 := by
+  have := (abs_le.mp (hrvm t ht)).2
+  linarith
+
+/-- **`cor:brut`**, from `T ≥ 12`: `N(T) ≤ (T/2π) log(T/2π)`. -/
+theorem zetaN_le_brut (hrvm : ZeroCount.v1.rvm_error_bound)
+    (hsmall : ZeroCount.v1.rvm_error_small) {T : ℝ} (hT : 12 ≤ T) :
+    ZeroCount.v1.zetaNClosed T ≤ T / (2 * Real.pi) * Real.log (T / (2 * Real.pi)) := by
+  have hπ := Real.pi_gt_three
+  have hπ2 := Real.pi_lt_d2
+  suffices h : ZeroCount.v1.zetaNClosed T - ZeroCount.v1.rvmMain T + 7 / 8 ≤ T / (2 * Real.pi) by
+    unfold ZeroCount.v1.rvmMain at h; linarith
+  rcases le_or_gt T 280 with h280 | h280
+  · have := (abs_lt.mp (hsmall T (by linarith) h280)).2
+    have : (15 / 8 : ℝ) ≤ T / (2 * Real.pi) := by
+      rw [le_div_iff₀ (by positivity)]; nlinarith
+    linarith
+  · have h1 := zetaN_le hrvm (by linarith : (1:ℝ) ≤ T)
+    have h2 := log_le_div_exp_one (by linarith : (0:ℝ) < T)
+    have he := Real.exp_one_gt_d9
+    have h3 : T / Real.exp 1 ≤ T / 2.7182818283 :=
+      div_le_div_of_nonneg_left (by linarith) (by norm_num) he.le
+    have h4 : T / 2.7182818283 / 5 + 2 + 7 / 8 ≤ T / (2 * Real.pi) := by
+      rw [div_div, le_div_iff₀ (by positivity)]
+      have : (T / (2.7182818283 * 5) + 2 + 7 / 8) * (2 * Real.pi)
+          ≤ (T / (2.7182818283 * 5) + 2 + 7 / 8) * 6.3 := by
+        apply mul_le_mul_of_nonneg_left _ (by positivity); linarith
+      have e : (T / (2.7182818283 * 5) + 2 + 7 / 8) * 6.3 = T * (6.3 / (2.7182818283 * 5)) + 18.1125 := by
+        ring
+      have : 6.3 / (2.7182818283 * 5) ≤ (0.47 : ℝ) := by norm_num
+      nlinarith
+    linarith
+
+/-- **`lem:cathinv`**, up to a finite height: for `14 ≤ t₀ ≤ t₁`,
+`∑_{t₀ < γ ≤ t₁} 1/γ² ≤ log(e t₀/2π)/(2π t₀) + (2 log t₀/5 + 41/10)/t₀²`. -/
+theorem sum_inv_sq_le (hrvm : ZeroCount.v1.rvm_error_bound) {t₀ t₁ : ℝ} (h14 : 14 ≤ t₀)
+    (h01 : t₀ ≤ t₁) :
+    IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ t₁) (fun ρ ↦ 1 / ρ.im ^ 2)
+      ≤ Real.log (Real.exp 1 * t₀ / (2 * Real.pi)) / (2 * Real.pi * t₀)
+        + (2 * Real.log t₀ / 5 + 41 / 10) / t₀ ^ 2 := by
+  have hπ := Real.pi_pos
+  have hπ4 := Real.pi_lt_d2
+  have ht0 : 0 < t₀ := by linarith
+  have hpos : ∀ t ∈ Set.uIcc t₀ t₁, 0 < t := by
+    intro t ht; rw [Set.uIcc_of_le h01] at ht; linarith [ht.1]
+  have hL := lehman_antitone hrvm (φ := fun t ↦ 1 / t ^ 2) (φ' := fun t ↦ -2 / t ^ 3)
+    (by linarith) h01
+    (fun t ht ↦ by
+      have htp := hpos t ht
+      have := ((hasDerivAt_pow 2 t).inv (by positivity))
+      simp only [one_div]
+      refine this.congr_deriv ?_
+      field_simp; ring)
+    (fun t ht ↦ ((continuousAt_const.div (continuousAt_id.pow 3)
+      (pow_ne_zero 3 (hpos t ht).ne')).continuousWithinAt))
+    (fun t ht ↦ by
+      have : 0 < t := by linarith [ht.1]
+      have : 0 < t ^ 3 := by positivity
+      exact div_nonpos_of_nonpos_of_nonneg (by norm_num) this.le)
+    (by have : 0 < t₁ := by linarith
+        positivity)
+  -- the integral, exactly
+  set A : ℝ → ℝ := fun t ↦ -(Real.log (Real.exp 1 * t / (2 * Real.pi)) / (2 * Real.pi * t))
+    - 1 / (10 * t ^ 2) with hA
+  have hAd : ∀ t ∈ Set.uIcc t₀ t₁, HasDerivAt A
+      (1 / t ^ 2 * (Real.log (t / (2 * Real.pi)) / (2 * Real.pi) + 1 / (5 * t))) t := by
+    intro t ht
+    have htp := hpos t ht
+    have hlog : HasDerivAt (fun t : ℝ ↦ Real.log (Real.exp 1 * t / (2 * Real.pi))) (1 / t) t := by
+      have h1 : HasDerivAt (fun t : ℝ ↦ Real.exp 1 * t / (2 * Real.pi))
+          (Real.exp 1 / (2 * Real.pi)) t := by
+        simpa using ((hasDerivAt_id t).const_mul (Real.exp 1)).div_const (2 * Real.pi)
+      refine ((Real.hasDerivAt_log (by positivity)).comp t h1).congr_deriv ?_
+      field_simp
+    have h2 : HasDerivAt (fun t : ℝ ↦ 2 * Real.pi * t) (2 * Real.pi) t := by
+      simpa using (hasDerivAt_id t).const_mul (2 * Real.pi)
+    have h3 : HasDerivAt (fun t : ℝ ↦ 10 * t ^ 2) (10 * (2 * t)) t := by
+      simpa using (hasDerivAt_pow 2 t).const_mul 10
+    have := ((hlog.div h2 (by positivity)).neg).sub ((hasDerivAt_const t (1:ℝ)).div h3 (by positivity))
+    refine this.congr_deriv ?_
+    have hl : Real.log (Real.exp 1 * t / (2 * Real.pi)) = 1 + Real.log (t / (2 * Real.pi)) := by
+      rw [mul_div_assoc, Real.log_mul (Real.exp_pos 1).ne' (by positivity), Real.log_exp]
+    rw [hl]
+    field_simp
+    ring
+  have hint : (∫ t in t₀..t₁, 1 / t ^ 2 * (Real.log (t / (2 * Real.pi)) / (2 * Real.pi) + 1 / (5 * t)))
+      = A t₁ - A t₀ := by
+    refine intervalIntegral.integral_eq_sub_of_hasDerivAt hAd ?_
+    refine ContinuousOn.intervalIntegrable fun t ht ↦ ?_
+    have htp := hpos t ht
+    have : t / (2 * Real.pi) ≠ 0 := by positivity
+    refine ContinuousAt.continuousWithinAt ?_
+    fun_prop (disch := first | assumption | positivity)
+  have ht1 : 0 < t₁ := by linarith
+  have hAt1 : A t₁ ≤ 0 := by
+    simp only [hA]
+    have : 0 ≤ Real.log (Real.exp 1 * t₁ / (2 * Real.pi)) := by
+      apply Real.log_nonneg
+      rw [le_div_iff₀ (by positivity)]
+      nlinarith [Real.exp_one_gt_d9]
+    have : 0 ≤ Real.log (Real.exp 1 * t₁ / (2 * Real.pi)) / (2 * Real.pi * t₁) := by positivity
+    have : 0 ≤ 1 / (10 * t₁ ^ 2) := by positivity
+    linarith
+  have hQ := (abs_le.mp (hrvm t₀ (by linarith))).1
+  rw [hint] at hL
+  have hphi : 0 ≤ 1 / t₀ ^ 2 := by positivity
+  have hQ' : 1 / t₀ ^ 2 * (Real.log t₀ / 5 + 2
+      - (ZeroCount.v1.zetaNClosed t₀ - ZeroCount.v1.rvmMain t₀))
+      ≤ 1 / t₀ ^ 2 * (2 * Real.log t₀ / 5 + 4) := by
+    apply mul_le_mul_of_nonneg_left _ hphi; linarith
+  have hfin : -A t₀ + 1 / t₀ ^ 2 * (2 * Real.log t₀ / 5 + 4)
+      = Real.log (Real.exp 1 * t₀ / (2 * Real.pi)) / (2 * Real.pi * t₀)
+        + (2 * Real.log t₀ / 5 + 41 / 10) / t₀ ^ 2 := by
+    simp only [hA]; field_simp; ring
+  linarith
+
 end CH2Section7Z
