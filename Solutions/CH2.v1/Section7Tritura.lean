@@ -314,4 +314,297 @@ theorem integral_log_le {ε b : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) (hεb 
     norm_num
     linarith
 
+/-! ### Assembly -/
+
+theorem continuousOn_Fweight {a b : ℝ} (ha : 0 < a) (hb : b < 1) :
+    ContinuousOn Fweight (Set.Icc a b) := by
+  intro u hu
+  have h0 : 0 < u := by linarith [hu.1]
+  have h1 : u < 1 := by linarith [hu.2]
+  have hs := sin_pi_ne_zero h0 h1
+  refine ContinuousAt.continuousWithinAt ?_
+  have hc : ContinuousAt (fun v : ℝ ↦ Real.cot (Real.pi * v)) u := by
+    simp only [Real.cot_eq_cos_div_sin]
+    exact (by fun_prop : ContinuousAt (fun v : ℝ ↦ Real.cos (Real.pi * v)) u).div
+      (by fun_prop) hs
+  have e : Fweight = fun v ↦ 1 / Real.pi + (1 - v) * Real.cot (Real.pi * v) := by
+    funext v; exact Fweight_eq v
+  rw [e]
+  exact continuousAt_const.add ((continuousAt_const.sub continuousAt_id).mul hc)
+
+/-- The numerical constant `2 · (ζ(2)·13/144 + ζ(4)·9/400)`, halved: `C₂`. -/
+noncomputable def C2hi : ℝ := Real.pi ^ 2 / 6 * (13 / 144) + Real.pi ^ 4 / 90 * (9 / 400)
+
+/-- The partial sum defining the lower bound for `C₁`. -/
+noncomputable def C1lo (N : ℕ) : ℝ :=
+  ∑ n ∈ Finset.range N, cLow n * (1 / (2 * (n : ℝ) + 2) - 2 / (2 * n + 3) + 1 / (2 * n + 4))
+
+set_option maxHeartbeats 2000000 in
+/-- **`prop:tritura` on `[ε, b]`.** -/
+theorem tritura (hcs : CotangentSeries.v1.cot_series_zeta_values) {ε b y : ℝ} (hε : 0 < ε)
+    (hε2 : ε ≤ 1 / 2) (hεb : ε ≤ b) (hb : b < 1) (hw : 0 ≤ y + Real.log ε) (N : ℕ) :
+    2 * Real.pi * ∫ u in ε..b, Real.sqrt (Fweight u ^ 2 + (1 - u) ^ 2) * (y + Real.log u)
+      ≤ y ^ 2 - (y + Real.log ε) ^ 2 - 2 * C1lo N * (y + 1) + 2 * C2hi
+        + (2 * (y + 1) * (ε ^ 2 / 2 + (1 - b)) * ∑ n ∈ Finset.range N, cLow n
+          + Real.pi ^ 2 * gT b * y) := by
+  have hπ := Real.pi_pos
+  have hb0 : 0 < b := by linarith
+  set W : ℝ → ℝ := fun u ↦ y + Real.log u with hW
+  have hmem : ∀ u ∈ Set.uIcc ε b, 0 < u ∧ u < 1 ∧ 0 ≤ W u ∧ W u ≤ y := by
+    intro u hu
+    rw [Set.uIcc_of_le hεb] at hu
+    have h0 : 0 < u := by linarith [hu.1]
+    refine ⟨h0, by linarith [hu.2], ?_, ?_⟩
+    · have := Real.log_le_log hε hu.1; simp only [hW]; linarith
+    · have := Real.log_nonpos h0.le (by linarith [hu.2]); simp only [hW]; linarith
+  have hεmem : ε ∈ Set.uIcc ε b := by rw [Set.uIcc_of_le hεb]; exact ⟨le_rfl, hεb⟩
+  have hbmem : b ∈ Set.uIcc ε b := by rw [Set.uIcc_of_le hεb]; exact ⟨hεb, le_rfl⟩
+  have hy : 0 ≤ y := by have := (hmem ε hεmem).2.2.2; linarith [(hmem ε hεmem).2.2.1]
+  -- continuity on the interval
+  have hIcc : Set.uIcc ε b = Set.Icc ε b := Set.uIcc_of_le hεb
+  have hlogc : ContinuousOn Real.log (Set.Icc ε b) := fun u hu ↦
+    (Real.continuousAt_log (by linarith [hu.1])).continuousWithinAt
+  have hWc : ContinuousOn W (Set.Icc ε b) := continuousOn_const.add hlogc
+  have hFc := continuousOn_Fweight hε hb
+  have hgc := continuousOn_gT hε hb
+  set g' : ℝ → ℝ := fun u ↦ Fweight u ^ 2 + (1 - u) ^ 2 - 1 / (Real.pi * u) ^ 2 with hg'
+  have hinvc : ContinuousOn (fun u : ℝ ↦ 1 / (Real.pi * u)) (Set.Icc ε b) := fun u hu ↦
+    (continuousAt_const.div (by fun_prop) (by have : 0 < u := by linarith [hu.1]
+                                              positivity)).continuousWithinAt
+  have hg'c : ContinuousOn g' (Set.Icc ε b) :=
+    ((hFc.pow 2).add (((continuousOn_const (c := (1:ℝ))).sub continuousOn_id).pow 2)).sub
+      (hinvc.pow 2) |>.congr (fun u _ ↦ by simp [hg']; ring)
+  -- step 1: the tangent-line bound
+  have hstep1 : (∫ u in ε..b, Real.sqrt (Fweight u ^ 2 + (1 - u) ^ 2) * W u)
+      ≤ ∫ u in ε..b, (W u / (Real.pi * u) + (Real.pi / 2) * (u * W u * g' u)) := by
+    refine intervalIntegral.integral_mono_on hεb ?_ ?_ fun u hu ↦ ?_
+    · refine ContinuousOn.intervalIntegrable ?_
+      rw [hIcc]
+      exact (((hFc.pow 2).add ((continuousOn_const.sub continuousOn_id).pow 2)).sqrt).mul hWc
+    · refine ContinuousOn.intervalIntegrable ?_
+      rw [hIcc]
+      refine (hWc.mul hinvc |>.congr (fun u _ ↦ by simp [div_eq_mul_inv])).add
+        (continuousOn_const.mul ((continuousOn_id.mul hWc).mul hg'c))
+    · obtain ⟨h0, h1, hW0, -⟩ := hmem u (by rw [hIcc]; exact hu)
+      have hA : 0 < 1 / (Real.pi * u) := by positivity
+      have ht := sqrt_le_tangent hA (by positivity : 0 ≤ Fweight u ^ 2 + (1 - u) ^ 2)
+      have e : 1 / (Real.pi * u) + (Fweight u ^ 2 + (1 - u) ^ 2 - (1 / (Real.pi * u)) ^ 2)
+          / (2 * (1 / (Real.pi * u))) = 1 / (Real.pi * u) + (Real.pi / 2) * (u * g' u) := by
+        simp only [hg', div_pow]; field_simp
+      rw [e] at ht
+      have := mul_le_mul_of_nonneg_right ht hW0
+      calc _ ≤ (1 / (Real.pi * u) + Real.pi / 2 * (u * g' u)) * W u := this
+        _ = _ := by field_simp
+  -- step 2: `∫ W/(πu)`
+  have hstep2 : (∫ u in ε..b, W u / (Real.pi * u)) = (W b ^ 2 - W ε ^ 2) / (2 * Real.pi) := by
+    have hd : ∀ u ∈ Set.uIcc ε b, HasDerivAt (fun u ↦ W u ^ 2 / (2 * Real.pi))
+        (W u / (Real.pi * u)) u := by
+      intro u hu
+      have h0 := (hmem u hu).1
+      have := (((hasDerivAt_const u y).add (Real.hasDerivAt_log h0.ne')).pow 2).div_const
+        (2 * Real.pi)
+      refine this.congr_deriv ?_
+      simp only [hW, Pi.add_apply]; push_cast; field_simp; ring
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hd]
+    · ring
+    · refine ContinuousOn.intervalIntegrable ?_
+      rw [hIcc]; exact hWc.mul hinvc |>.congr (fun u _ ↦ by simp [div_eq_mul_inv])
+  -- step 3: integration by parts
+  have hstep3 : (∫ u in ε..b, (u * W u) * g' u)
+      = (b * W b) * gT b - (ε * W ε) * gT ε - ∫ u in ε..b, (W u + 1) * gT u := by
+    have hd1 : ∀ u ∈ Set.uIcc ε b, HasDerivAt (fun u ↦ u * W u) (W u + 1) u := by
+      intro u hu
+      have h0 := (hmem u hu).1
+      refine ((hasDerivAt_id u).mul ((hasDerivAt_const u y).add
+        (Real.hasDerivAt_log h0.ne'))).congr_deriv ?_
+      simp only [hW, id, Pi.add_apply]; field_simp; ring
+    have hd2 : ∀ u ∈ Set.uIcc ε b, HasDerivAt gT (g' u) u := fun u hu ↦
+      hasDerivAt_gT (hmem u hu).1 (hmem u hu).2.1
+    exact intervalIntegral.integral_mul_deriv_eq_deriv_mul hd1 hd2
+      ((hWc.add continuousOn_const).intervalIntegrable_of_Icc hεb)
+      (hg'c.intervalIntegrable_of_Icc hεb)
+  -- step 5: the lower bound on `∫ (W+1) g`
+  have hgb : 0 ≤ gT b := gT_nonneg hcs hb0 hb
+  have hgε : 0 ≤ gT ε := gT_nonneg hcs hε (by linarith)
+  have hint_g : (2 / Real.pi ^ 2) * ∑ n ∈ Finset.range N,
+      cLow n * (1 / (2 * (n : ℝ) + 2) - 2 / (2 * n + 3) + 1 / (2 * n + 4) - ε ^ 2 / 2 - (1 - b))
+      ≤ ∫ u in ε..b, gT u := by
+    calc _ ≤ ∫ u in ε..b, (2 / Real.pi ^ 2) * ∑ n ∈ Finset.range N,
+            cLow n * ((1 - u) ^ 2 * u ^ (2 * n + 1)) := by
+          rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_finset_sum
+            (fun n _ ↦ (Continuous.intervalIntegrable (by fun_prop) _ _))]
+          gcongr with n
+          rw [intervalIntegral.integral_const_mul]
+          exact mul_le_mul_of_nonneg_left (integral_poly_ge n hε.le hεb hb.le) (cLow_nonneg n)
+      _ ≤ ∫ u in ε..b, gT u := by
+          refine intervalIntegral.integral_mono_on hεb (Continuous.intervalIntegrable (by fun_prop) _ _)
+            (hgc.intervalIntegrable_of_Icc hεb) fun u hu ↦ ?_
+          obtain ⟨h0, h1, -, -⟩ := hmem u (by rw [hIcc]; exact hu)
+          have hf := freal_ge_partial hcs h0 h1 N
+          unfold gT
+          rw [le_div_iff₀ hπ]
+          have e : (2 / Real.pi ^ 2) * (∑ n ∈ Finset.range N, cLow n * ((1 - u) ^ 2 * u ^ (2 * n + 1)))
+              * Real.pi = (1 - u) ^ 2 * ((2 / Real.pi) * ∑ n ∈ Finset.range N, cLow n * u ^ (2 * n + 1)) := by
+            simp only [Finset.mul_sum, Finset.sum_mul]
+            exact Finset.sum_congr rfl fun n _ ↦ by field_simp
+          rw [e]
+          exact mul_le_mul_of_nonneg_left hf (sq_nonneg _)
+  have hint_log : -(2 / Real.pi ^ 2) * (Real.pi ^ 2 / 6 * (13 / 144) + Real.pi ^ 4 / 90 * (9 / 400))
+      ≤ ∫ u in ε..b, Real.log u * gT u := by
+    obtain ⟨hl1, hl2⟩ := integral_log_le hε hε2 hεb hb.le
+    have hcont1 : Continuous (fun u : ℝ ↦ u * (1 - u) ^ 2) := by fun_prop
+    have hi1 : IntervalIntegrable (fun u : ℝ ↦ u * (1 - u) ^ 2 * (-Real.log u)) MeasureTheory.volume ε b := by
+      refine ContinuousOn.intervalIntegrable ?_
+      rw [hIcc]; exact (hcont1.continuousOn.mul hlogc.neg)
+    have hi2 : IntervalIntegrable (fun u : ℝ ↦ u ^ 3 * (1 - u) * (-Real.log u)) MeasureTheory.volume ε b := by
+      refine ContinuousOn.intervalIntegrable ?_
+      rw [hIcc]; exact ((by fun_prop : Continuous fun u : ℝ ↦ u ^ 3 * (1 - u)).continuousOn.mul hlogc.neg)
+    have hup : (∫ u in ε..b, -(Real.log u * gT u))
+        ≤ ∫ u in ε..b, (2 / Real.pi ^ 2) * (Real.pi ^ 2 / 6 * (u * (1 - u) ^ 2 * (-Real.log u))
+            + Real.pi ^ 4 / 90 * (u ^ 3 * (1 - u) * (-Real.log u))) := by
+      refine intervalIntegral.integral_mono_on hεb ?_ ((hi1.const_mul _).add (hi2.const_mul _) |>.const_mul _)
+        fun u hu ↦ ?_
+      · exact ((hlogc.mul hgc).neg).intervalIntegrable_of_Icc hεb
+      · obtain ⟨h0, h1, -, -⟩ := hmem u (by rw [hIcc]; exact hu)
+        have hf := freal_le hcs h0 h1
+        have hlog : 0 ≤ -Real.log u := by have := Real.log_nonpos h0.le h1.le; linarith
+        have hq : (1 - u) ^ 2 * (u ^ 3 / (1 - u ^ 2)) ≤ u ^ 3 * (1 - u) := by
+          have h1u : 0 < 1 + u := by linarith
+          have e : (1 - u) ^ 2 * (u ^ 3 / (1 - u ^ 2)) = u ^ 3 * (1 - u) / (1 + u) := by
+            have : 1 - u ^ 2 = (1 - u) * (1 + u) := by ring
+            rw [this]; field_simp [show (1 - u) ≠ 0 by linarith]
+          rw [e, div_le_iff₀ h1u]
+          have : 0 ≤ u ^ 3 * (1 - u) := by have : 0 ≤ 1 - u := by linarith
+                                           positivity
+          nlinarith
+        have hg : gT u ≤ (2 / Real.pi ^ 2) * (Real.pi ^ 2 / 6 * (u * (1 - u) ^ 2)
+            + Real.pi ^ 4 / 90 * (u ^ 3 * (1 - u))) := by
+          unfold gT
+          rw [div_le_iff₀ hπ]
+          calc (1 - u) ^ 2 * freal u
+              ≤ (1 - u) ^ 2 * ((2 / Real.pi) * (Real.pi ^ 2 / 6 * u
+                  + Real.pi ^ 4 / 90 * (u ^ 3 / (1 - u ^ 2)))) :=
+                mul_le_mul_of_nonneg_left hf (sq_nonneg _)
+            _ = (2 / Real.pi) * (Real.pi ^ 2 / 6 * (u * (1 - u) ^ 2)
+                  + Real.pi ^ 4 / 90 * ((1 - u) ^ 2 * (u ^ 3 / (1 - u ^ 2)))) := by ring
+            _ ≤ (2 / Real.pi) * (Real.pi ^ 2 / 6 * (u * (1 - u) ^ 2)
+                  + Real.pi ^ 4 / 90 * (u ^ 3 * (1 - u))) := by gcongr
+            _ = _ := by field_simp
+        calc -(Real.log u * gT u) = gT u * (-Real.log u) := by ring
+          _ ≤ (2 / Real.pi ^ 2) * (Real.pi ^ 2 / 6 * (u * (1 - u) ^ 2)
+              + Real.pi ^ 4 / 90 * (u ^ 3 * (1 - u))) * (-Real.log u) :=
+            mul_le_mul_of_nonneg_right hg hlog
+          _ = _ := by ring
+    rw [intervalIntegral.integral_neg, intervalIntegral.integral_const_mul,
+      intervalIntegral.integral_add (hi1.const_mul _) (hi2.const_mul _),
+      intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul] at hup
+    have hk : 0 ≤ 2 / Real.pi ^ 2 := by positivity
+    have : (2 / Real.pi ^ 2) * (Real.pi ^ 2 / 6 * (∫ u in ε..b, u * (1 - u) ^ 2 * (-Real.log u))
+        + Real.pi ^ 4 / 90 * ∫ u in ε..b, u ^ 3 * (1 - u) * (-Real.log u))
+        ≤ (2 / Real.pi ^ 2) * (Real.pi ^ 2 / 6 * (13 / 144) + Real.pi ^ 4 / 90 * (9 / 400)) := by
+      gcongr
+    linarith
+  have hsplit : (∫ u in ε..b, (W u + 1) * gT u)
+      = (y + 1) * (∫ u in ε..b, gT u) + ∫ u in ε..b, Real.log u * gT u := by
+    rw [← intervalIntegral.integral_const_mul, ← intervalIntegral.integral_add]
+    · exact intervalIntegral.integral_congr fun u _ ↦ by simp only [hW]; ring
+    · exact (hgc.intervalIntegrable_of_Icc hεb).const_mul _
+    · exact (hlogc.mul hgc).intervalIntegrable_of_Icc hεb
+  -- assemble
+  have hRHS : (∫ u in ε..b, (W u / (Real.pi * u) + (Real.pi / 2) * (u * W u * g' u)))
+      = (∫ u in ε..b, W u / (Real.pi * u)) + (Real.pi / 2) * ∫ u in ε..b, (u * W u) * g' u := by
+    rw [intervalIntegral.integral_add, intervalIntegral.integral_const_mul]
+    · refine ContinuousOn.intervalIntegrable ?_
+      rw [hIcc]; exact hWc.mul hinvc |>.congr (fun u _ ↦ by simp [div_eq_mul_inv])
+    · exact ((continuousOn_id.mul hWc).mul hg'c |>.const_mul _ |>.intervalIntegrable_of_Icc hεb)
+  rw [hRHS, hstep2, hstep3, hsplit] at hstep1
+  obtain ⟨-, -, hWb0, hWby⟩ := hmem b hbmem
+  obtain ⟨-, -, hWε0, -⟩ := hmem ε hεmem
+  have hWb2 : W b ^ 2 ≤ y ^ 2 := pow_le_pow_left₀ hWb0 hWby 2
+  have hbW : b * W b * gT b ≤ gT b * y := by
+    have : b * W b ≤ y := by nlinarith
+    nlinarith
+  have hεW : 0 ≤ ε * W ε * gT ε := by positivity
+  have hsum_expand : (2 / Real.pi ^ 2) * ∑ n ∈ Finset.range N,
+      cLow n * (1 / (2 * (n : ℝ) + 2) - 2 / (2 * n + 3) + 1 / (2 * n + 4) - ε ^ 2 / 2 - (1 - b))
+      = (2 / Real.pi ^ 2) * (C1lo N - (ε ^ 2 / 2 + (1 - b)) * ∑ n ∈ Finset.range N, cLow n) := by
+    rw [C1lo, mul_comm (ε ^ 2 / 2 + (1 - b)), Finset.sum_mul, ← Finset.sum_sub_distrib]
+    congr 1
+    exact Finset.sum_congr rfl fun n _ ↦ by ring
+  rw [hsum_expand] at hint_g
+  have hy1 : 0 ≤ y + 1 := by linarith
+  have hfin := mul_le_mul_of_nonneg_left hint_g hy1
+  simp only [hW] at hstep1 hWb2 hbW
+  unfold C2hi
+  have hπ2 : Real.pi ^ 2 ≠ 0 := by positivity
+  have key : 2 * Real.pi * ((W b ^ 2 - W ε ^ 2) / (2 * Real.pi)
+      + Real.pi / 2 * (b * W b * gT b - ε * W ε * gT ε
+        - ((y + 1) * (∫ u in ε..b, gT u) + ∫ u in ε..b, Real.log u * gT u)))
+      = W b ^ 2 - W ε ^ 2 + Real.pi ^ 2 * (b * W b * gT b - ε * W ε * gT ε)
+        - Real.pi ^ 2 * ((y + 1) * (∫ u in ε..b, gT u)) - Real.pi ^ 2 * ∫ u in ε..b, Real.log u * gT u := by
+    field_simp; ring
+  simp only [hW] at key
+  have h1 := mul_le_mul_of_nonneg_left hstep1 (by positivity : (0:ℝ) ≤ 2 * Real.pi)
+  have e1 : Real.pi ^ 2 * ((y + 1) * ((2 / Real.pi ^ 2) *
+      (C1lo N - (ε ^ 2 / 2 + (1 - b)) * ∑ n ∈ Finset.range N, cLow n)))
+      = 2 * (y + 1) * (C1lo N - (ε ^ 2 / 2 + (1 - b)) * ∑ n ∈ Finset.range N, cLow n) := by
+    field_simp
+  have e2 : Real.pi ^ 2 * (-(2 / Real.pi ^ 2) * (Real.pi ^ 2 / 6 * (13 / 144) + Real.pi ^ 4 / 90 * (9 / 400)))
+      = -(2 * (Real.pi ^ 2 / 6 * (13 / 144) + Real.pi ^ 4 / 90 * (9 / 400))) := by
+    field_simp
+  have h2 := mul_le_mul_of_nonneg_left hfin (by positivity : (0:ℝ) ≤ Real.pi ^ 2)
+  have h3 := mul_le_mul_of_nonneg_left hint_log (by positivity : (0:ℝ) ≤ Real.pi ^ 2)
+  rw [e2] at h3
+  have h4 : Real.pi ^ 2 * (b * (y + Real.log b) * gT b) ≤ Real.pi ^ 2 * (gT b * y) :=
+    mul_le_mul_of_nonneg_left hbW (by positivity)
+  have h5 : 0 ≤ Real.pi ^ 2 * (ε * (y + Real.log ε) * gT ε) := by positivity
+  rw [key] at h1
+  rw [e1] at h2
+  linarith [h1, h2, h3, h4, h5, hWb2]
+
+/-! ### The numbers -/
+
+theorem C1lo_twelve : (0.1672 : ℝ) ≤ C1lo 12 := by
+  have hπ := Real.pi_gt_d6
+  have h2 : (9.869600 : ℝ) ≤ Real.pi ^ 2 := by nlinarith
+  have h4 : (97.409 : ℝ) ≤ Real.pi ^ 4 := by nlinarith
+  simp only [C1lo, Finset.sum_range_succ, Finset.sum_range_zero, cLow]
+  norm_num
+  nlinarith
+
+theorem C2hi_le : C2hi ≤ 0.1729 := by
+  have hπ := Real.pi_lt_d6
+  have hπ0 := Real.pi_pos
+  have h2 : Real.pi ^ 2 ≤ 9.869607 := by nlinarith
+  have h4 : Real.pi ^ 4 ≤ 97.4092 := by nlinarith
+  unfold C2hi
+  nlinarith
+
+theorem sum_cLow_twelve : ∑ n ∈ Finset.range 12, cLow n ≤ 14 := by
+  have hπ := Real.pi_lt_d6
+  have hπ0 := Real.pi_pos
+  have h2 : Real.pi ^ 2 ≤ 9.869607 := by nlinarith
+  have h4 : Real.pi ^ 4 ≤ 97.4092 := by nlinarith
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, cLow]
+  norm_num
+  nlinarith
+
+/-- `g(b) ≤ (1-b)²/(π² b) + (1-b)/π²`, from `cot(πb) ≥ -1/(π(1-b))`. -/
+theorem gT_le {b : ℝ} (hb0 : 0 < b) (hb : b < 1) :
+    gT b ≤ (1 - b) ^ 2 / (Real.pi ^ 2 * b) + (1 - b) / Real.pi ^ 2 := by
+  have hπ := Real.pi_pos
+  have h1b : 0 < 1 - b := by linarith
+  have hcot : -(1 / (Real.pi * (1 - b))) ≤ Real.cot (Real.pi * b) := by
+    have hlt := cot_lt_inv (u := Real.pi * (1 - b)) (by positivity) (by nlinarith)
+    rw [show Real.pi * (1 - b) = Real.pi - Real.pi * b by ring, cot_pi_sub] at hlt
+    rw [show Real.pi * (1 - b) = Real.pi - Real.pi * b by ring]
+    linarith
+  have hf : freal b ≤ 1 / (Real.pi * b) + 1 / (Real.pi * (1 - b)) := by
+    unfold freal; linarith
+  unfold gT
+  calc (1 - b) ^ 2 * freal b / Real.pi
+      ≤ (1 - b) ^ 2 * (1 / (Real.pi * b) + 1 / (Real.pi * (1 - b))) / Real.pi := by gcongr
+    _ = (1 - b) ^ 2 / (Real.pi ^ 2 * b) + (1 - b) / Real.pi ^ 2 := by
+        field_simp
+
 end CH2Section7T
