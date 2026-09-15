@@ -51,8 +51,7 @@ conclusions:
       paper's own decomposition gives 10.353677 - 0.03435 = 10.31933, agreeing with the printed
       10.319317 to the rounding of the 0.03435... That confirms the transcription, not the computation.
       MULTIPLICITY: the paper sums over zeroes with multiplicity (its section 7 says so
-      explicitly); zetaZeroesSum weights by zetaOrder, which agrees. All zeroes at this height are
-      known to be simple, so the distinction does not affect the value.
+      explicitly); zetaZeroesSum weights by zetaOrder, which agrees.
   designated: ch2-computation
 
 sources:

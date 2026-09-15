@@ -47,7 +47,7 @@ def inv_ordinate_sum_le : Prop :=
 
 **Justification `ch2-computation`** — **designated** — literature, proof of Proposition prop:vihuela (section 7, 'Sums over non-trivial zeros')
 
-> The paper states 2 sum_{0 < gamma <= t_0} 1/gamma = 10.319317... = (1/2 pi) log^2(t_0/2 pi) - 0.03435... with t_0 = 2 * 10^4, "by a brief computation using the location of all rho with gamma <= t_0 (furnished by D. Platt)". This node asserts the upper bound on that authority, rounded up to 10.3194. A CONSISTENCY CHECK, NOT A VERIFICATION: (1/2 pi) log^2(20000/2 pi) = 10.353677..., and the paper's own decomposition gives 10.353677 - 0.03435 = 10.31933, agreeing with the printed 10.319317 to the rounding of the 0.03435... That confirms the transcription, not the computation. MULTIPLICITY: the paper sums over zeroes with multiplicity (its section 7 says so explicitly); zetaZeroesSum weights by zetaOrder, which agrees. All zeroes at this height are known to be simple, so the distinction does not affect the value.
+> The paper states 2 sum_{0 < gamma <= t_0} 1/gamma = 10.319317... = (1/2 pi) log^2(t_0/2 pi) - 0.03435... with t_0 = 2 * 10^4, "by a brief computation using the location of all rho with gamma <= t_0 (furnished by D. Platt)". This node asserts the upper bound on that authority, rounded up to 10.3194. A CONSISTENCY CHECK, NOT A VERIFICATION: (1/2 pi) log^2(20000/2 pi) = 10.353677..., and the paper's own decomposition gives 10.353677 - 0.03435 = 10.31933, agreeing with the printed 10.319317 to the rounding of the 0.03435... That confirms the transcription, not the computation. MULTIPLICITY: the paper sums over zeroes with multiplicity (its section 7 says so explicitly); zetaZeroesSum weights by zetaOrder, which agrees.
 
 ## Limitations
 
