@@ -426,4 +426,146 @@ theorem sum_phiW_le (hcs : CotangentSeries.v1.cot_series_zeta_values)
   have hE' := mul_le_mul_of_nonneg_left hE (by positivity : (0:ℝ) ≤ 1 / (2 * Real.pi))
   nlinarith [hmain, e1, htr', hI2', hend', hE']
 
+/-! ### `lem:adar` -/
+
+theorem tendsto_gT_one (hcs : CotangentSeries.v1.cot_series_zeta_values) {T : ℝ} (hT : 0 < T) :
+    Filter.Tendsto (fun t₁ ↦ gT (t₁ / T)) (nhdsWithin T (Set.Iio T)) (nhds 0) := by
+  have hπ := Real.pi_pos
+  have hbound : Filter.Tendsto (fun t₁ : ℝ ↦ (1 - t₁ / T) ^ 2 / (Real.pi ^ 2 * (t₁ / T))
+      + (1 - t₁ / T) / Real.pi ^ 2) (nhdsWithin T (Set.Iio T)) (nhds 0) := by
+    have hc : ContinuousAt (fun t₁ : ℝ ↦ (1 - t₁ / T) ^ 2 / (Real.pi ^ 2 * (t₁ / T))
+        + (1 - t₁ / T) / Real.pi ^ 2) T := by
+      have : Real.pi ^ 2 * (T / T) ≠ 0 := by rw [div_self hT.ne']; positivity
+      fun_prop (disch := first | assumption | positivity)
+    have h := hc.tendsto.mono_left (nhdsWithin_le_nhds (s := Set.Iio T))
+    simpa [div_self hT.ne'] using h
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hbound ?_ ?_
+  · filter_upwards [Ioo_mem_nhdsLT hT] with t₁ ht
+    exact gT_nonneg hcs (div_pos ht.1 hT) ((div_lt_one hT).mpr ht.2)
+  · filter_upwards [Ioo_mem_nhdsLT hT] with t₁ ht
+    exact gT_le (div_pos ht.1 hT) ((div_lt_one hT).mpr ht.2)
+
+set_option maxHeartbeats 1000000 in
+/-- **`lem:adar`**, for `14 ≤ t₀ ≤ T/2`, RH up to `T` and no zero ordinate at `T`. -/
+theorem adar (hcs : CotangentSeries.v1.cot_series_zeta_values)
+    (hrvm : ZeroCount.v1.rvm_error_bound) (hsmall : ZeroCount.v1.rvm_error_small)
+    {T σ ξ t₀ : ℝ} (hRH : IEANTN.RiemannHypothesisUpTo T)
+    (hTfree : ∀ z : ℂ, riemannZeta z = 0 → z.im ≠ T) (ht0 : 14 ≤ t₀) (h2 : 2 * t₀ ≤ T)
+    (hσ1 : σ ≠ 1) (hσT : |σ - 1 / 2| ≤ T / 2) (hξ : |ξ| ≤ 1) :
+    2 * Real.pi / T * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T)
+        (fun ρ ↦ ‖CH2Section6.omegaPlus T σ ρ + (ξ : ℂ) * Complex.I * CH2Section6.thetaTS T 1 ρ‖)
+      ≤ (1 / (2 * Real.pi)) * (Real.log (T / (2 * Real.pi)) ^ 2 - Real.log (t₀ / (2 * Real.pi)) ^ 2
+          - 2 * C1lo 12 * (Real.log (T / (2 * Real.pi)) + 1) + 2 * C2hi
+          + 14 * (Real.log (T / (2 * Real.pi)) + 1) * (t₀ / T) ^ 2)
+        + (2 / (5 * t₀) + 2 * Real.pi * Real.log (T / t₀) / (5 * T))
+        + (2 / t₀ + 2 * Real.pi / T) * (2 * Real.log t₀ / 5 + 4)
+        + 2 * |σ - 1 / 2| * (Real.log (Real.exp 1 * t₀ / (2 * Real.pi)) / (2 * Real.pi * t₀)
+          + (2 * Real.log t₀ / 5 + 41 / 10) / t₀ ^ 2)
+        + (2.78 * |σ - 1 / 2| + 1) * Real.log (T / (2 * Real.pi)) / T := by
+  have hπ := Real.pi_pos
+  have ht0p : 0 < t₀ := by linarith
+  have hT : 0 < T := by linarith
+  have hK : 0 ≤ 2 * Real.pi / T := by positivity
+  set y := Real.log (T / (2 * Real.pi)) with hy
+  set c := 2.78 * |σ - 1 / 2| + 1 with hc
+  -- (i) termwise
+  have hterm := zsum_mono ht0p.le (a := t₀) (b := T)
+    (f := fun ρ ↦ ‖CH2Section6.omegaPlus T σ ρ + (ξ : ℂ) * Complex.I * CH2Section6.thetaTS T 1 ρ‖)
+    (g := fun ρ ↦ phiW T ρ.im + ((|σ - 1 / 2| * T / Real.pi) * (1 / ρ.im ^ 2) + (c / T) * 1))
+    (fun ρ hρ ↦ by
+      obtain ⟨-, ⟨h0, h1⟩, hz⟩ := hρ
+      have hre := re_eq_half_of_RH hRH hz (by linarith) h1
+      have hlt : ρ.im < T := lt_of_le_of_ne h1 (hTfree ρ hz)
+      have := weight_le hcs hT hσ1 hσT hξ hre (by linarith) hlt
+      have e : |σ - 1 / 2| * T / (Real.pi * ρ.im ^ 2)
+          = |σ - 1 / 2| * T / Real.pi * (1 / ρ.im ^ 2) := by
+        have : ρ.im ≠ 0 := by linarith
+        field_simp
+      rw [← hc, e] at this
+      linarith)
+  rw [zsum_add ht0p.le, zsum_add ht0p.le, zsum_const_mul ht0p.le, zsum_const_mul ht0p.le] at hterm
+  -- (ii) the three pieces
+  have hinvsq := CH2Section7Z.sum_inv_sq_le hrvm ht0 (by linarith : t₀ ≤ T)
+  have hcount : IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun _ ↦ (1:ℝ)) ≤ T / (2 * Real.pi) * y :=
+    (zsum_one_le ht0p.le).trans (CH2Section7Z.zetaN_le_brut hrvm hsmall (by linarith))
+  -- (iii) the `φ` sum, by a limit
+  have hphi : 2 * Real.pi / T * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun ρ ↦ phiW T ρ.im)
+      ≤ (1 / (2 * Real.pi)) * (y ^ 2 - Real.log (t₀ / (2 * Real.pi)) ^ 2
+          - 2 * C1lo 12 * (y + 1) + 2 * C2hi
+          + (2 * (y + 1) * ((t₀ / T) ^ 2 / 2 + (1 - T / T)) * 14 + Real.pi ^ 2 * 0 * y))
+        + (2 / (5 * t₀) + 2 * Real.pi * Real.log (T / t₀) / (5 * T))
+        + (2 / t₀ + 2 * Real.pi / T) * (2 * Real.log t₀ / 5 + 4) := by
+    have hfin := CH2Section7Z.finite_zeros_Ioc (a := t₀) (b := T) ht0p.le
+    have hev : ∀ᶠ t₁ in nhdsWithin T (Set.Iio T),
+        2 * Real.pi / T * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun ρ ↦ phiW T ρ.im)
+        ≤ (1 / (2 * Real.pi)) * (y ^ 2 - Real.log (t₀ / (2 * Real.pi)) ^ 2
+            - 2 * C1lo 12 * (y + 1) + 2 * C2hi
+            + (2 * (y + 1) * ((t₀ / T) ^ 2 / 2 + (1 - t₁ / T)) * 14 + Real.pi ^ 2 * gT (t₁ / T) * y))
+          + (2 / (5 * t₀) + 2 * Real.pi * Real.log (T / t₀) / (5 * T))
+          + (2 / t₀ + 2 * Real.pi / T) * (2 * Real.log t₀ / 5 + 4) := by
+      have hall : ∀ᶠ t₁ in nhdsWithin T (Set.Iio T),
+          ∀ ρ ∈ IEANTN.zetaZeroesIn Set.univ (Set.Ioc t₀ T), ρ.im < t₁ := by
+        refine (Filter.eventually_all_finite hfin).mpr fun ρ hρ ↦ ?_
+        obtain ⟨-, ⟨-, h1⟩, hz⟩ := hρ
+        have hlt : ρ.im < T := lt_of_le_of_ne h1 (hTfree ρ hz)
+        exact Ioo_mem_nhdsLT hlt |> fun h ↦ Filter.mem_of_superset h fun t ht ↦ ht.1
+      filter_upwards [hall, Ioo_mem_nhdsLT (by linarith : t₀ < T)] with t₁ ht₁ ht₁'
+      have hset : IEANTN.zetaZeroesIn Set.univ (Set.Ioc t₀ T)
+          = IEANTN.zetaZeroesIn Set.univ (Set.Ioc t₀ t₁) := by
+        ext ρ
+        constructor
+        · intro hρ
+          exact ⟨hρ.1, ⟨hρ.2.1.1, (ht₁ ρ hρ).le⟩, hρ.2.2⟩
+        · rintro ⟨h0, ⟨h1, h2⟩, h3⟩
+          exact ⟨h0, ⟨h1, h2.trans ht₁'.2.le⟩, h3⟩
+      have hsum_eq : IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun ρ ↦ phiW T ρ.im)
+          = IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ t₁) (fun ρ ↦ phiW T ρ.im) := by
+        unfold IEANTN.zetaZeroesSum; rw [hset]
+      rw [hsum_eq]
+      exact sum_phiW_le hcs hrvm ht0 h2 ht₁'.1.le ht₁'.2
+    refine ge_of_tendsto ?_ hev
+    have hg := tendsto_gT_one hcs hT
+    have hlin : Filter.Tendsto (fun t₁ : ℝ ↦ 1 - t₁ / T) (nhdsWithin T (Set.Iio T)) (nhds (1 - T / T)) :=
+      ((continuous_const.sub (continuous_id.div_const T)).tendsto T).mono_left nhdsWithin_le_nhds
+    refine Filter.Tendsto.add (Filter.Tendsto.add (Filter.Tendsto.const_mul _ ?_) tendsto_const_nhds)
+      tendsto_const_nhds
+    refine Filter.Tendsto.add tendsto_const_nhds (Filter.Tendsto.add ?_ ?_)
+    · exact ((tendsto_const_nhds.add hlin).const_mul _).mul_const _
+    · exact ((hg.const_mul _).mul_const _)
+  -- assemble
+  have e0 : (1 - T / T) = 0 := by rw [div_self hT.ne']; ring
+  rw [e0] at hphi
+  have hc0 : 0 ≤ c := by rw [hc]; positivity
+  have hs0 : 0 ≤ |σ - 1 / 2| := abs_nonneg _
+  have h1 := mul_le_mul_of_nonneg_left hterm hK
+  have h3 : 2 * Real.pi / T * (|σ - 1 / 2| * T / Real.pi
+      * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun ρ ↦ 1 / ρ.im ^ 2))
+      ≤ 2 * |σ - 1 / 2| * (Real.log (Real.exp 1 * t₀ / (2 * Real.pi)) / (2 * Real.pi * t₀)
+          + (2 * Real.log t₀ / 5 + 41 / 10) / t₀ ^ 2) := by
+    have e : 2 * Real.pi / T * (|σ - 1 / 2| * T / Real.pi
+        * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun ρ ↦ 1 / ρ.im ^ 2))
+        = 2 * |σ - 1 / 2| * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun ρ ↦ 1 / ρ.im ^ 2) := by
+      field_simp
+    rw [e]
+    exact mul_le_mul_of_nonneg_left hinvsq (by positivity)
+  have h4 : 2 * Real.pi / T * (c / T * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun _ ↦ (1:ℝ)))
+      ≤ c * y / T := by
+    calc _ ≤ 2 * Real.pi / T * (c / T * (T / (2 * Real.pi) * y)) := by
+          apply mul_le_mul_of_nonneg_left _ hK
+          exact mul_le_mul_of_nonneg_left hcount (by positivity)
+      _ = c * y / T := by field_simp
+  have e1 : 2 * Real.pi / T * (IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun ρ ↦ phiW T ρ.im)
+      + (|σ - 1 / 2| * T / Real.pi * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun ρ ↦ 1 / ρ.im ^ 2)
+        + c / T * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun _ ↦ (1:ℝ))))
+      = 2 * Real.pi / T * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun ρ ↦ phiW T ρ.im)
+        + 2 * Real.pi / T * (|σ - 1 / 2| * T / Real.pi
+          * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun ρ ↦ 1 / ρ.im ^ 2))
+        + 2 * Real.pi / T * (c / T * IEANTN.zetaZeroesSum Set.univ (Set.Ioc t₀ T) (fun _ ↦ (1:ℝ))) := by
+    ring
+  rw [e1] at h1
+  have e2 : 2 * (y + 1) * ((t₀ / T) ^ 2 / 2 + 0) * 14 + Real.pi ^ 2 * 0 * y
+      = 14 * (y + 1) * (t₀ / T) ^ 2 := by ring
+  rw [e2] at hphi
+  linarith [h1, hphi, h3, h4]
+
 end CH2Section7A
