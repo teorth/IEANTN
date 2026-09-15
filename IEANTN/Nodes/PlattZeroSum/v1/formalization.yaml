@@ -1,0 +1,95 @@
+# Node metadata for `PlattZeroSum.v1`.  See docs/NODES.md.
+#
+# One numerical fact about the low zeroes of zeta, used by Chirre-Helfgott's prop:vihuela.
+version: "v0.4"
+
+node:
+  id: PlattZeroSum.v1
+  family: PlattZeroSum
+  version: v1
+  kind: standard
+  status: active
+
+project:
+  name: "The reciprocal-ordinate sum of the zeroes of zeta up to height 20000"
+  description: >-
+    The bound 2 * sum over non-trivial zeroes rho of zeta with 0 < Im rho <= 20000, counted with
+    multiplicity, of 1/Im rho, is at most 10.3194. The value 10.319317... is computed by
+    Chirre and Helfgott from the ordinates of all zeroes up to that height, supplied by D. Platt,
+    and used in their bound on the weighted sum over zeroes that gives the square-root term of
+    their explicit psi estimate. It is a finite numerical fact that zero-counting estimates cannot
+    replace at the precision needed, and that a Lean proof cannot reach, so it is recorded once
+    as its own node.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M06", "11M26", "11Y35"]
+
+conclusions:
+- id: inv_ordinate_sum_le
+  declaration: PlattZeroSum.v1.inv_ordinate_sum_le
+  challenge: PlattZeroSum.v1.challenge_inv_ordinate_sum_le
+  imports: []
+  imports_status: none
+  justifications:
+  - id: ch2-computation
+    kind: literature
+    source: CH2
+    locator: "proof of Proposition prop:vihuela (section 7, 'Sums over non-trivial zeros')"
+    note: >-
+      The paper states 2 sum_{0 < gamma <= t_0} 1/gamma = 10.319317... = (1/2 pi) log^2(t_0/2 pi)
+      - 0.03435... with t_0 = 2 * 10^4, "by a brief computation using the location of all rho with
+      gamma <= t_0 (furnished by D. Platt)". This node asserts the upper bound on that authority,
+      rounded up to 10.3194.
+      A CONSISTENCY CHECK, NOT A VERIFICATION: (1/2 pi) log^2(20000/2 pi) = 10.353677..., and the
+      paper's own decomposition gives 10.353677 - 0.03435 = 10.31933, agreeing with the printed
+      10.319317 to the rounding of the 0.03435... That confirms the transcription, not the computation.
+      MULTIPLICITY: the paper sums over zeroes with multiplicity (its section 7 says so
+      explicitly); zetaZeroesSum weights by zetaOrder, which agrees.
+  designated: ch2-computation
+
+sources:
+- title: "Optimal bounds for sums of non-negative arithmetic functions"
+  authors: ["Andres Chirre", "Harald Andres Helfgott"]
+  type: "paper"
+  id: "CH2"
+  relationship: formalizes
+  note: >-
+    arXiv:2512.15709. The value appears in the proof of Proposition prop:vihuela; the zero
+    ordinates were supplied to the authors by D. Platt.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Identified the numerical input while planning section 7 of CH2.v1, checked that no
+      zero-counting estimate can substitute at the required precision, and wrote the statement
+      and this metadata, under the direction of the maintainer.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    Stated as an upper bound only, since prop:vihuela uses only that direction; a two-sided
+    statement would add a claim nothing consumes. The rounding 10.319317... -> 10.3194 costs
+    8e-5 in a margin of about 2e-2.
+
+limitations:
+- >-
+  THE JUSTIFICATION IS THE LITERATURE, NOT A COMPUTATION RUN HERE. The value is the paper's, from
+  data supplied by Platt; nothing in this repository recomputes it. A computation node checking it
+  against published zero tables with rigorous error bounds would upgrade it.
+- >-
+  The tsum in zetaZeroesSum would be 0 if the family were not summable. It is summable (finitely
+  many zeroes below the height), but that is a separate theorem, so the statement read on its own
+  is only meaningful given it.
+- >-
+  No novelty is claimed.

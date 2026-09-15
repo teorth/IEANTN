@@ -44,6 +44,7 @@ import IEANTN.Nodes.Platt2017.v1.Challenge
 import IEANTN.Nodes.PlattTrudgian.v1.Challenge
 import IEANTN.Nodes.PlattTrudgian2021.v1.Tables
 import IEANTN.Nodes.PlattTrudgian2021.v1.Challenge
+import IEANTN.Nodes.PlattZeroSum.v1.Challenge
 import IEANTN.Nodes.PrimeInterval.v1.Challenge
 import IEANTN.Nodes.PrimeInterval.v1.Examples
 import IEANTN.Nodes.RosserSchoenfeld.v1.Challenge
@@ -51,6 +52,7 @@ import IEANTN.Nodes.Trudgian2011.v1.Challenge
 import IEANTN.Nodes.Wedeniwski.v1.Challenge
 import IEANTN.Nodes.ZeroCount.v1.Challenge
 import IEANTN.Nodes.ZeroFreeHeight.v1.Challenge
+import IEANTN.Nodes.ZetaHadamard.v1.Challenge
 import IEANTN.Nodes.ZetaLogDeriv.v1.Challenge
 import IEANTN.Nodes.ZetaLogDerivValues.v1.Challenge
 import IEANTN.Nodes.ZetaZeroes.v1.Challenge

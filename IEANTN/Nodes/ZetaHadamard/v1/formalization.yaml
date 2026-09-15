@@ -1,0 +1,172 @@
+# Node metadata for `ZetaHadamard.v1`.  See docs/NODES.md.
+#
+# The partial-fraction expansion of zeta'/zeta -- the Hadamard product for xi, differentiated.
+# Textbook material Mathlib has not got; stated in paired form so that it is not vacuous.
+version: "v0.4"
+
+node:
+  id: ZetaHadamard.v1
+  family: ZetaHadamard
+  version: v1
+  kind: standard
+  status: active
+
+project:
+  name: "The partial-fraction expansion of the logarithmic derivative of zeta"
+  description: >-
+    The identity zeta'/zeta(s) = sum over non-trivial zeroes rho of (1/(s-rho) + 1/rho)
+    - psi(s/2+1)/2 - 1/(s-1) + C, which comes from the Hadamard factorisation of xi and is
+    Corollary 10.14 of Montgomery and Vaughan. It is the only route from the zeroes of zeta to the
+    size of zeta'/zeta inside the critical strip, and every explicit estimate of the shape
+    "zeta'/zeta(s) is its nearby zeroes plus O(log t)" -- Titchmarsh Theorem 9.6(A) and its
+    explicit descendants -- starts from it. Mathlib has the functional equation, the Dirichlet
+    series and the discreteness of the zero set, but not the Hadamard factorisation, so this is
+    stated once here rather than inside one paper's solution. The node states the identity taken at
+    two points and SUBTRACTED, which removes both the additive constant and the conditional
+    convergence of the unpaired sum: the paired terms are O(1/|rho|^2), so the claim can be made
+    with HasSum, which asserts summability rather than leaving a tsum to fall back on its junk
+    value of zero.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M06", "11M26"]
+
+conclusions:
+- id: logDeriv_partial_fractions
+  declaration: ZetaHadamard.v1.logDeriv_partial_fractions
+  challenge: ZetaHadamard.v1.challenge_logDeriv_partial_fractions
+  imports: []
+  imports_status: none
+  justifications:
+  - id: montgomery-vaughan
+    kind: literature
+    source: MontgomeryVaughan2007
+    locator: "Corollary 10.14"
+    note: >-
+      Montgomery and Vaughan prove the unsubtracted identity, with the constant left implicit and
+      the sum over zeroes taken in the symmetric order. THIS NODE STATES THE DIFFERENCE OF THAT
+      IDENTITY AT TWO POINTS, and the step from theirs to this is subtraction: nothing analytic is
+      added and nothing is weakened. What subtraction buys is that the constant cancels -- so no
+      normalisation has to be pinned down -- and that the terms become
+      (w-s)/((s-rho)(w-rho)) = O(1/|rho|^2), hence absolutely summable, so the claim can be made
+      with HasSum and carries its own convergence.
+      THE SUBTRACTED FORM IS ALSO THE FORM CONSUMERS USE. Titchmarsh Theorem 9.6(A), and its
+      explicit version as Chirre-Helfgott's prop:titch96A, evaluate the identity at s and at
+      s_+ = sigma_+ + i t with sigma_+ > 1 and subtract; the unsubtracted version never appears.
+      Davenport chapter 12 gives the same identity, as does Titchmarsh's own chapter 3.
+      IMPORTS `none`, AND IT IS A REAL NONE. s and w are universally quantified with every side
+      condition a hypothesis, so this conclusion consumes nothing from the network.
+      A LEAN SOLUTION IS NOT CHEAP. It would need the Hadamard factorisation of xi -- order-one
+      entire function, Jensen's formula, the product over zeroes -- none of which Mathlib has. That
+      is why the designated justification is the literature and not a receipt; see `limitations`.
+  designated: montgomery-vaughan
+
+sources:
+- title: "Multiplicative Number Theory I: Classical Theory"
+  authors: ["Hugh L. Montgomery", "Robert C. Vaughan"]
+  type: "book"
+  id: "MontgomeryVaughan2007"
+  relationship: formalizes
+  note: >-
+    Cambridge Studies in Advanced Mathematics 97, Cambridge University Press, 2007.
+    doi:10.1017/CBO9780511618314. Corollary 10.14 is the partial-fraction expansion of zeta'/zeta;
+    Theorem 10.13 is the Hadamard product for xi it comes from. Chirre and Helfgott cite this same
+    corollary for the same purpose in the proof of their Proposition B.7 (prop:titch96A).
+- title: "Multiplicative Number Theory"
+  authors: ["Harold Davenport"]
+  type: "book"
+  id: "Davenport2000"
+  relationship: background
+  note: >-
+    Third edition, revised by Hugh L. Montgomery, Graduate Texts in Mathematics 74, Springer, 2000.
+    Chapter 12 derives the same identity. Recorded as a second account of the same classical fact,
+    not as an independent source.
+- title: "Optimal bounds for sums of non-negative arithmetic functions"
+  authors: ["Andres Chirre", "Harald Andres Helfgott"]
+  type: "paper"
+  id: "CH2"
+  relationship: background
+  note: >-
+    arXiv:2512.15709. The consumer, not the source: its Proposition B.7 (prop:titch96A) applies the
+    subtracted identity at s and at 3/2 + i t, which is why this node states the subtracted form.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Established that Mathlib carries the functional equation, the Dirichlet series and the
+      discreteness of the zero set but not the Hadamard factorisation of xi; chose the paired form
+      over the unpaired one after the Vocabulary junk-value warning; derived the subtracted identity
+      from the standard one and checked it numerically; and wrote the statement and this metadata,
+      under the direction of the maintainer.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    THE UNPAIRED STATEMENT WOULD HAVE BEEN VACUOUS, NOT WRONG, WHICH IS WORSE. The textbook form
+    sums (1/(s-rho) + 1/rho) over the non-trivial zeroes in order of |Im rho|; that family is not
+    absolutely summable, and Lean's tsum of a non-summable family is 0, so a conclusion built from
+    IEANTN.zetaZeroesSum in the obvious way would typecheck and assert nothing. The Vocabulary
+    docstring on zetaZeroesSum flags exactly this trap and names the fix -- state a regularised
+    form -- and that is what was done. HasSum was chosen over tsum for the same reason: it carries
+    summability as part of the claim.
+    THE HYPOTHESES ARE FOUR, AND TWO OF THEM DO DOUBLE DUTY. s /= 1 and w /= 1 keep the 1/(s-1)
+    terms finite and stay off the pole of zeta. zeta(s) /= 0 and zeta(w) /= 0 make the logarithmic
+    derivatives finite, keep s and w off the zeroes the sum divides by, AND keep psi(s/2+1) off its
+    poles: psi has poles exactly at 0, -1, -2, ..., so psi(s/2+1) has poles exactly at
+    s = -2, -4, -6, ..., which are the trivial zeroes of zeta. A separate hypothesis for the digamma
+    term was drafted and then removed as redundant.
+    THE INDEX SET IS THE CRITICAL STRIP, and that is a choice worth stating. zetaZeroesIn
+    (Set.Ioo 0 1) Set.univ is exactly the non-trivial zeroes, because zeta has no zeroes with
+    Re rho >= 1 and none with Re rho <= 0 apart from the trivial ones at -2, -4, ... . Writing it
+    as a strip rather than as "not a negative even integer" keeps the statement in the vocabulary
+    the rest of the network already uses for zero counting.
+    CHECKED NUMERICALLY BEFORE BEING WRITTEN, AND THE CHECK IS INDIRECT BECAUSE IT HAS TO BE.
+    At s = 0.3+5i, s = -3+2i and s = 0.5+30i against w = 3/2 + i t, summing zeroes and conjugates
+    out to N = 2000. The paired terms are only O(1/|rho|^2), so partial sums converge like
+    log(T/2pi)/(2pi T) and about three digits is all a direct sum buys; raw agreement is therefore
+    not what was established. What was established is that the residual IS the truncation tail.
+    Three things say so. It decreases monotonically, roughly halving as N quadruples, which is the
+    Riemann-von Mangoldt rate. IT IS ALMOST PURELY REAL, WHICH IS THE SHARP TEST: in all three
+    cases w - s is real, so the tail terms (w-s)/((s-rho)(w-rho)) are approximately (w-s)/rho^2 and,
+    summed over conjugate pairs, real to leading order -- so the IMAGINARY parts are free of the
+    tail, and they agree to NINE significant figures at N = 2000 (relative 4e-7, 5.9e-7 and 1.9e-9)
+    while the real residuals are still 1e-3. And in differentiated form,
+    (zeta'/zeta)'(s) = -sum 1/(s-rho)^2 - psi'(s/2+1)/4 + 1/(s-1)^2, where the terms are
+    O(1/|rho|^3), the residual is independent of s to four digits across four test points and its
+    ratio between N = 100 and N = 400 is 0.428 observed against 0.443 predicted.
+    AN EARLIER DRAFT OF THIS NOTE SAID "to 12 digits", which was wrong -- that was the working
+    precision, not the agreement. Corrected here rather than left to be discovered.
+
+limitations:
+- >-
+  THE JUSTIFICATION IS THE LITERATURE, NOT A RECEIPT. Montgomery and Vaughan prove Corollary 10.14;
+  this node asserts it on that authority, plus the one line of algebra that turns their statement
+  into the subtracted one. Nothing here has been through Comparator.
+- >-
+  A LEAN PROOF IS A REAL PROJECT, and that is the honest reason there is no solution. It needs the
+  Hadamard factorisation of xi: that xi is entire of order 1, which needs a growth bound; that the
+  zeroes satisfy sum 1/|rho|^2 < infinity, which needs Jensen's formula; and the product formula
+  itself. Mathlib has none of these for xi. It does now have the discreteness of the zero set
+  (Mathlib.NumberTheory.LSeries.ZetaZeros, 2026), which is a start and not much more.
+- >-
+  ONE IDENTITY, AND ONLY IN SUBTRACTED FORM. A consumer who genuinely needs the unsubtracted
+  expansion, with its constant and its symmetric ordering, gets nothing from this conclusion. That
+  is deliberate: the unsubtracted form cannot be stated in Lean without either fixing a summation
+  order or naming the constant, and no consumer in this network needs it.
+- >-
+  THE MULTIPLICITY CONVENTION IS zetaOrder, matching IEANTN.zetaZeroesSum. If a zero were ever a
+  pole -- it is not, zeta being holomorphic away from s = 1 -- zetaOrder would be negative and the
+  weight would have the wrong sign. The convention is safe here and is recorded because it is the
+  kind of thing that is safe until it is not.
+- >-
+  No novelty is claimed. The identity is classical and is not this repository's.

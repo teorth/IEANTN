@@ -135,6 +135,10 @@ conclusions:
           were computed with mpmath through n = 8 and alternate as claimed, with
           a_0 = 0.577215664902 matching Euler's constant to twelve places and a_8 = 5.1345e-5 against
           the predicted 3^{-9} = 5.0805e-5.
+          a_0 = gamma IS PART OF THE CLAIM rather than a remark, because a consumer needs it: it is
+          the leading coefficient of every estimate built on this expansion, and identifying it
+          otherwise would mean redoing the limit at s = 1 that the expansion already encodes.
+          Real.eulerMascheroniConstant is Mathlib's, and comes with numerical bounds attached.
           NO MARGIN SITE: the claim is a sign pattern with no rounded numeral in it, so a
           multiplicative factor could not weaken it.
           Imports `none`.
