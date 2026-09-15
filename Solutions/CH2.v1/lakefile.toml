@@ -1,5 +1,5 @@
 name = "solution_CH2_v1"
-defaultTargets = ["ZetaInstance", "AdditiveCombination", "RectanglePort", "ResiduePort", "ZetaConjPort", "PntSupport", "PntAsymptotics", "PntSobolev", "PntSmooth", "PntFourier", "WienerPort", "Part1Fourier", "Approximants", "Decay", "Section5", "Section5Neg", "ZetaInstanceNeg", "Section6", "Section6Res", "Section6Zeros", "Section6Weight", "Section7", "DigammaReal", "Section8", "Section81", "Section6Contour", "ZetaReal01", "Section6Hyp", "Section7Zeros", "Section7Weights", "Section7Tritura", "Solution"]
+defaultTargets = ["ZetaInstance", "AdditiveCombination", "RectanglePort", "ResiduePort", "ZetaConjPort", "PntSupport", "PntAsymptotics", "PntSobolev", "PntSmooth", "PntFourier", "WienerPort", "Part1Fourier", "Approximants", "Decay", "Section5", "Section5Neg", "ZetaInstanceNeg", "Section6", "Section6Res", "Section6Zeros", "Section6Weight", "Section7", "DigammaReal", "Section8", "Section81", "Section6Contour", "ZetaReal01", "Section6Hyp", "Section7Zeros", "Section7Weights", "Section7Tritura", "Section7Adar", "Solution"]
 
 [[require]]
 name = "IEANTN"
@@ -108,6 +108,10 @@ roots = ["Section7Weights"]
 [[lean_lib]]
 name = "Section7Tritura"
 roots = ["Section7Tritura"]
+
+[[lean_lib]]
+name = "Section7Adar"
+roots = ["Section7Adar"]
 
 [[lean_lib]]
 name = "Section7"
