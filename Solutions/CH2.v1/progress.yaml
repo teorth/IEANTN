@@ -480,7 +480,30 @@ stages:
       is stated on 0 < x < 1; its case 0 < x <= 1/2 follows from (c) plus
       |1/(x+iy) - 1/x| = |y|/(x|x+iy|), and its case 1/2 <= x < 1 from lem:cothder and the mean
       value inequality along the vertical segment.
-      SECTION 7 PROPER IS NOT STARTED. Its four remaining pieces are lem:trivialzer (the trivial
+      SECTION 7 IS NOW DONE, ENDING IN prop:vihuela (Section7Vihuela.lean, `vihuela`): for T >= 10^7,
+      0 <= sigma < 1, |xi| <= 1, RH up to T and no zero ordinate at T,
+      (2pi/T) sum_{0<gamma<=T} |omega+_{T,sigma}(rho) + xi theta_{T,1}(rho) i|
+        <= (1/2pi) log^2(T/2pi) - (1.001/6pi) log(T/2pi).
+      Inputs: CotangentSeries.v1, ZeroCount.v1 (both halves), PlattZeroSum.v1 (new literature node,
+      2 sum_{0<gamma<=20000} 1/gamma <= 10.3194, the paper's Platt computation).
+      THE COEFFICIENT IS 1.001, NOT THE PAPER'S 1.01, and sigma is restricted to [0,1). Section 9
+      spends the 0.01/6pi slack on terms of size 1e-4 (and on log(2pi)/sqrt(x)), so 1.001 suffices;
+      numerically the margin at T = 10^7 is 0.017 and grows with T.
+      THE ROUTE DIFFERS FROM THE PAPER IN FOUR PLACES, each to avoid a numeric or junk-value obstacle.
+      (1) prop:tritura is proved on [eps, b] with b < 1 (Section7Tritura.lean), because Fweight 1 is a
+      junk value; lem:adar sums over zeros below t1 < T and takes t1 -> T at the end (possible since the
+      zeros are finite and none sits at T). (2) C_1 and C_2 are one-sided and crude: C_1 >= 0.1672
+      from a dozen cotangent-series terms with zeta(2), zeta(4) exact and zeta(2n) >= 1 after
+      (true 0.168938), C_2 <= 0.1729 from zeta(2n) <= zeta(4) (true 0.164184). No Arb. The needed
+      y-coefficient is 2 C_1 >= 1.001/3. (3) lem:tremic is not needed: the [0, eps] and [b, 1] pieces
+      are bounded outright by eps^2/2 and 1 - b. (4) lem:Lehmanmodern never integrates against the
+      step function Q: N(t) - N(t0) is bounded by a smooth majorant inside the integral (legitimate as
+      -phi' >= 0) and integration by parts is done on that. cor:brut is stated from T >= 12 (ZeroCount
+      cannot see that the first zero is at 14.13), lem:cathinv up to a finite height.
+      RH up to T as the Vocabulary defines it excludes only 1/2 < Re < 1; re_eq_half_of_RH reflects
+      0 < Re < 1/2 into it through riemannZeta_one_sub and conjugation.
+      THE PAPER'S OLD NOTE FOLLOWS, KEPT FOR ITS ROADMAP.
+      SECTION 7 PROPER WAS NOT STARTED. Its four remaining pieces are lem:trivialzer (the trivial
       zeros, which needs the residue of -zeta'/zeta at -2n and coth decreasing on (0,infty)),
       cor:thonny (the weight estimate, which is what consumes lem:sibelius and lem:cothder),
       prop:tritura with lem:tremic and lem:konstanz (the integral of
