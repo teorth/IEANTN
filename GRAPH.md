@@ -83,7 +83,7 @@ graph LR
   NKadiri2005_v1["<b>Kadiri2005.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NLcm_v1["<b>Lcm.v1</b><br/>1 claim<br/><i>weakest: verified, stale</i>"]
   NLcm_v2["<b>Lcm.v2</b><br/>1 claim<br/><i>weakest: verified, stale</i>"]
-  NLowZeroes_v1["<b>LowZeroes.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
+  NLowZeroes_v1["<b>LowZeroes.v1</b><br/>2 claims<br/><i>weakest: computation</i>"]
   NMT_v1["<b>MT.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NMTY_v1["<b>MTY.v1</b><br/><i>nothing stated yet</i>"]
   NPlatt2015_v1["<b>Platt2015.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
@@ -337,6 +337,7 @@ graph LR
     Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap["<b>lcmUpto_not_highlyAbundant_of_primeGap</b><br/><i>verified, stale</i>"]
   end
   subgraph sgLowZeroes_v1["LowZeroes.v1"]
+    LowZeroes_v1_no_zeroes_below_first_ordinate["<b>no_zeroes_below_first_ordinate</b><br/><i>computation</i>"]
     LowZeroes_v1_sum_inv_ordinates_below_2e4["<b>sum_inv_ordinates_below_2e4</b><br/><i>computation</i>"]
   end
   subgraph sgMT_v1["MT.v1"]
@@ -536,7 +537,7 @@ graph LR
   class CH2_v2_proposition_2_4_lower,CH2_v2_proposition_2_4_upper,DudekPlatt_v2_ramanujan_inequality_3915,DudekPlatt_v3_criterion,FKS2_v1_corollary_14,FKS2_v1_corollary_22,FKS2_v1_corollary_23,FKS2_v1_corollary_26,FKS2_v2_proposition_13,FKS2_v2_theorem_3,Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap,PrimeInterval_v1_classicalBound_hasPrimeInInterval,PrimeInterval_v1_eTheta_criterion,PrimeInterval_v1_numericalBound_hasPrimeInInterval,PrimeInterval_v1_theta_characterisation,ZeroFreeHeight_v1_classical_region_descends lean_comparator_stale;
   class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,CH2_v1_corollary_1_2_lambda_sum,CH2_v1_corollary_1_2_psi,CH2_v1_corollary_1_3_lambda_sum,CH2_v1_corollary_1_3_psi,DudekPlatt_v1_largest_counterexample_on_rh,DudekPlatt_v1_ramanujan_inequality,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,RosserSchoenfeld_v1_zero_free_region,Trudgian2011_v1_integral_S_bound,ZeroCount_v1_rvm_error_bound,ZeroCount_v1_rvm_error_small literature;
   class Buthe_v2_lemma_3_bounds,Buthe_v2_lemma_3_positivity,ContourIntegration_v1_residue_theorem_rectangle,CotangentSeries_v1_cot_series_zeta_values,GammaAsymptotics_v1_digamma_sub_log_isBigO none_yet;
-  class ButheNumerics_v1_lemma_3_constant_gt_at_10,ButheNumerics_v1_lemma_3_constant_nonpos,ButheNumerics_v1_li_minus_pi_below_1e7,DudekPlattNumerics_v1_pi_two_sided_paper,DudekPlattNumerics_v2_pi_two_sided_pnt,FKBJ_v1_rh_up_to,FKS2Numerics_v1_corollary_22_mid_range,FKS2Numerics_v1_corollary_23_mid_range,FKS2Numerics_v1_nu_asymp_e30_le,FKS2Numerics_v1_table6_row2_floor,FKS2Numerics_v1_theta_asymp_ge_one_below_e30,LowZeroes_v1_sum_inv_ordinates_below_2e4,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to,ZetaLogDerivValues_v1_deriv_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_laurent_alternating,ZetaLogDerivValues_v1_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_three_halves,ZetaLogDerivValues_v1_logDeriv_two numerical;
+  class ButheNumerics_v1_lemma_3_constant_gt_at_10,ButheNumerics_v1_lemma_3_constant_nonpos,ButheNumerics_v1_li_minus_pi_below_1e7,DudekPlattNumerics_v1_pi_two_sided_paper,DudekPlattNumerics_v2_pi_two_sided_pnt,FKBJ_v1_rh_up_to,FKS2Numerics_v1_corollary_22_mid_range,FKS2Numerics_v1_corollary_23_mid_range,FKS2Numerics_v1_nu_asymp_e30_le,FKS2Numerics_v1_table6_row2_floor,FKS2Numerics_v1_theta_asymp_ge_one_below_e30,LowZeroes_v1_no_zeroes_below_first_ordinate,LowZeroes_v1_sum_inv_ordinates_below_2e4,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to,ZetaLogDerivValues_v1_deriv_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_laurent_alternating,ZetaLogDerivValues_v1_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_three_halves,ZetaLogDerivValues_v1_logDeriv_two numerical;
   click BKLNW_v1_corollary_5_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#corollary_5_1" _blank
   click BKLNW_v1_table8_psi_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound" _blank
   click BKLNW_v1_table8_psi_bound_above href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound_above" _blank
@@ -597,6 +598,7 @@ graph LR
   click Kadiri2005_v1_zero_free_region href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Kadiri2005-v1.md#zero_free_region" _blank
   click Lcm_v1_lcmUpto_not_highlyAbundant href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Lcm-v1.md#lcmUpto_not_highlyAbundant" _blank
   click Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Lcm-v2.md#lcmUpto_not_highlyAbundant_of_primeGap" _blank
+  click LowZeroes_v1_no_zeroes_below_first_ordinate href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/LowZeroes-v1.md#no_zeroes_below_first_ordinate" _blank
   click LowZeroes_v1_sum_inv_ordinates_below_2e4 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/LowZeroes-v1.md#sum_inv_ordinates_below_2e4" _blank
   click MT_v1_zero_free_region href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v1.md#zero_free_region" _blank
   click MT_v1_zero_free_region_sharpened href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v1.md#zero_free_region_sharpened" _blank
@@ -826,6 +828,8 @@ A line is one claim, indented under whatever assumes it.
 
 - [`Lcm.v2.lcmUpto_not_highlyAbundant_of_primeGap`](docs/nodes/Lcm-v2.md#lcmUpto_not_highlyAbundant_of_primeGap) — verified, stale
 
+- [`LowZeroes.v1.no_zeroes_below_first_ordinate`](docs/nodes/LowZeroes-v1.md#no_zeroes_below_first_ordinate) — computation
+
 - [`LowZeroes.v1.sum_inv_ordinates_below_2e4`](docs/nodes/LowZeroes-v1.md#sum_inv_ordinates_below_2e4) — computation
 
 - [`PlattTrudgian2021.v1.theorem_1_classical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_classical) — cited
@@ -939,6 +943,7 @@ rather than maintained.
 | [`DudekPlatt.v1.ramanujan_inequality`](docs/nodes/DudekPlatt-v1.md#ramanujan_inequality) | cited | 0 | traced |
 | [`FKS.v1.psi_bound_all_x`](docs/nodes/FKS-v1.md#psi_bound_all_x) | cited | 0 | traced |
 | [`GammaAsymptotics.v1.digamma_sub_log_isBigO`](docs/nodes/GammaAsymptotics-v1.md#digamma_sub_log_isBigO) | unjustified | 0 | none |
+| [`LowZeroes.v1.no_zeroes_below_first_ordinate`](docs/nodes/LowZeroes-v1.md#no_zeroes_below_first_ordinate) | computation | 0 | none |
 | [`LowZeroes.v1.sum_inv_ordinates_below_2e4`](docs/nodes/LowZeroes-v1.md#sum_inv_ordinates_below_2e4) | computation | 0 | none |
 | [`PlattTrudgian2021.v1.theorem_1_classical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_classical) | cited | 0 | traced |
 | [`RosserSchoenfeld.v1.zero_free_region`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region) | cited | 0 | **not yet traced** |
