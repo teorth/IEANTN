@@ -682,12 +682,28 @@ stages:
       g >= 0 LEFT OF THE CUT for a one-line reason the paper does not spell out:
       e^{Lv}(1-2v) >= (1+Lv)(1-2v) >= 1 exactly when v <= 1/2 - 1/L. No monotonicity of u e^{-Lu}
       is needed.
-      SECTION 8.1 IS OTHERWISE NOT STARTED, and is the larger half: prop:titch96A, lem:saghar, and prop:adoro's
-      continuous pigeonhole. It needs zeta'/zeta(3/2), already in the values node, and zero counting.
-      SUGGESTED ORDER: 8.2 first, since lem:adamant, lem:ranadi and prop:coronidis are ordinary
-      complex analysis with explicit constants and depend on nothing outside the paper except the
-      functional equation, which is already a node; then Ei; then 8.1, which is where the explicit
-      zeta'/zeta machinery has to be built; then lem:hardin.
+      SECTION 8.1 IS DONE: CH2Section81.hardin (Section81Hardin.lean), axioms propext/choice/Quot.sound only.
+      STATEMENT: T >= 10^7, RiemannHypothesisUpTo T, x >= max(T, 10^9). Then there is t in [T-1/2, T] with
+      no zero of |ordinate| t, and both horizontal integrals of shiftError,
+      int_0^inf u |F(1 - u +- it)| x^{1-u} du, are <= x (12.5 R/L^2 + 62 R/L^3 + 2 (R+10)^2/sqrt x),
+      R = log T, L = log x. Budget check: J + gamma/L^2 + 1.8/L^3 <= 0.748 at the binding case
+      R = L = 20.72, against about 0.785 available in prop:sagaro.
+      FILES: Section81Janframe (Lehman, lem:janframe at a = 1/4, error 0.004); Section81Titch
+      (prop:titch96A at a = 1/4, sigma_+ = 3/2, eps = 0.016; |zeta'/zeta| <= 1.5053 on Re >= 3/2; the
+      digamma difference by the Gauss series; the outer zero sum bounded at every finite stage by
+      janframe, then le_of_tendsto' through ZetaHadamard's HasSum); Section81Saghar (saghar_pt from
+      titch96A, dropping its negative sigma-free part; adioso_pt: |zeta'/zeta(1-u+it)| <= 12 + 2t + u
+      for u >= 3/2, from ZetaLogDeriv.v1 at 1 - s and GammaStrip's crude digamma bounds;
+      saghar_integral with an explicit integrable majorant on all of (0, inf) and rameau per zero);
+      Section81Hardin (pigeonhole, counts, numerics, F(conj s) = conj F(s), assembly).
+      DEPARTURES FROM THE PAPER, all in the 1/sqrt x term, which has enormous slack in prop:sagaro
+      (2K/T^2 against 10^-4 log T): (1) lem:adioso replaced by the crude pointwise bound above, costing
+      9/sqrt x; (2) prop:adoro's continuous pigeonhole replaced by a discrete one: of n + 1 equally
+      spaced points in [T-1/2, T-1/4], n the number of distinct zero ordinates in (T-3/4, T], one is at
+      distance >= 1/(8(n+1)) from all of them, so the 1/sqrt x coefficient is O((log T)^2), not
+      O(log T log log T); (3) the gamma/L^2 and log-coefficient constants are 12.5 and 62 (paper: 51/4,
+      60) with rameau's 336 in place of 320/3.
+      IMPORTS TO ADD for 8.1: ZetaHadamard.v1, ZetaLogDeriv.v1 (already listed), ZetaLogDerivValues.v1.
       The route through (c) is worth recording because the paper's is not the shortest.
       A(z) = -(1-z) f(z) with f(z) = 1/(pi z) - cot(pi z), whose Taylor coefficients are
       (2/pi) zeta(2n+2) -- the imported CotangentSeries.v1. Multiplying by (1 - z^2) telescopes the
