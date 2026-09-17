@@ -1,5 +1,5 @@
 name = "solution_CH2_v1"
-defaultTargets = ["GammaRealAsymptotic", "GammaPeriodic", "GammaGaussSeries", "GammaRecurrence", "GammaComplexToReal", "GammaOscillation", "GammaRealIdentity", "GammaAnalytic", "GammaStrip", "ZetaInstance", "AdditiveCombination", "RectanglePort", "ResiduePort", "ZetaConjPort", "PntSupport", "PntAsymptotics", "PntSobolev", "PntSmooth", "PntFourier", "WienerPort", "Part1Fourier", "Approximants", "Decay", "Section5", "Section5Neg", "ZetaInstanceNeg", "Section6", "Section6Res", "Section6Zeros", "Section6Weight", "Section7", "DigammaReal", "Section8", "Section81", "Section6Contour", "ZetaReal01", "Section6Hyp", "Section7Zeros", "Section7Weights", "Section7Tritura", "Section7Adar", "Section7Vihuela", "Section81Janframe", "Solution"]
+defaultTargets = ["GammaRealAsymptotic", "GammaPeriodic", "GammaGaussSeries", "GammaRecurrence", "GammaComplexToReal", "GammaOscillation", "GammaRealIdentity", "GammaAnalytic", "GammaStrip", "ZetaInstance", "AdditiveCombination", "RectanglePort", "ResiduePort", "ZetaConjPort", "PntSupport", "PntAsymptotics", "PntSobolev", "PntSmooth", "PntFourier", "WienerPort", "Part1Fourier", "Approximants", "Decay", "Section5", "Section5Neg", "ZetaInstanceNeg", "Section6", "Section6Res", "Section6Zeros", "Section6Weight", "Section7", "DigammaReal", "Section8", "Section81", "Section6Contour", "ZetaReal01", "Section6Hyp", "Section7Zeros", "Section7Weights", "Section7Tritura", "Section7Adar", "Section7Vihuela", "Section81Janframe", "Section81Titch", "Solution"]
 
 [[require]]
 name = "IEANTN"
@@ -180,3 +180,7 @@ roots = ["GammaAnalytic"]
 [[lean_lib]]
 name = "GammaStrip"
 roots = ["GammaStrip"]
+
+[[lean_lib]]
+name = "Section81Titch"
+roots = ["Section81Titch"]
