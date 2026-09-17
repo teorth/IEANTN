@@ -504,4 +504,283 @@ theorem integral_mirror_le {t y₀ Y : ℝ} (hy0 : 2 * Real.pi ≤ y₀) (ht : 0
   rw [e2, e3, e4]
   nlinarith
 
+/-! ### Numbers for `lem:janframe` -/
+
+theorem zetaNClosed_nonneg (u : ℝ) : 0 ≤ ZeroCount.v1.zetaNClosed u := by
+  rcases le_or_gt u 0 with hu | hu
+  · have h := CH2Section7A.zsum_one_le (a := 0) (b := u) le_rfl
+    unfold ZeroCount.v1.zetaNClosed
+    have hempty : IEANTN.zetaZeroesIn Set.univ (Set.Ioc 0 u) = ∅ := by
+      ext ρ; simp only [Set.mem_empty_iff_false, iff_false]
+      rintro ⟨-, ⟨h1, h2⟩, -⟩; linarith
+    unfold IEANTN.zetaZeroesSum; rw [hempty]; simp
+  · unfold ZeroCount.v1.zetaNClosed
+    have hfin := CH2Section7Z.finite_zeros_Ioc (a := 0) (b := u) le_rfl
+    rw [CH2Section7Z.zetaZeroesSum_eq_sum hfin]
+    refine Finset.sum_nonneg fun ρ hρ ↦ ?_
+    have := CH2Section7Z.zetaOrder_nonneg_of_mem (J := Set.Ioc 0 u) (fun x hx ↦ hx.1)
+      ((Set.Finite.mem_toFinset hfin).mp hρ)
+    linarith
+
+theorem log_20_div_le : Real.log (20 / (2 * Real.pi)) ≤ 1.17 := by
+  have hπ1 := Real.pi_gt_d6
+  rw [Real.log_le_iff_le_exp (by positivity)]
+  have hs := CH2Section7A.exp_small_ge (x := 1.17) (by norm_num)
+  rw [div_le_iff₀ (by positivity)]
+  norm_num at hs
+  nlinarith
+
+theorem log_20_div_nonneg : 0 ≤ Real.log (20 / (2 * Real.pi)) :=
+  Real.log_nonneg (by rw [le_div_iff₀ (by positivity)]; nlinarith [Real.pi_lt_d2])
+
+theorem log_4001_le : Real.log 4001 ≤ 8.3 := by
+  rw [Real.log_le_iff_le_exp (by norm_num), show (8.3 : ℝ) = (8 : ℕ) + 0.3 by norm_num, Real.exp_add]
+  have h8 := (CH2Section7A.exp_nat_bounds 8).1
+  have hs := CH2Section7A.exp_small_ge (x := 0.3) (by norm_num)
+  have h8' : (2980.9 : ℝ) ≤ Real.exp ((8 : ℕ) : ℝ) := by norm_num at h8 ⊢; linarith
+  have hs' : (1.3498 : ℝ) ≤ Real.exp 0.3 := by norm_num at hs ⊢; linarith
+  have : (2980.9 : ℝ) * 1.3498 ≤ Real.exp ((8 : ℕ) : ℝ) * Real.exp 0.3 :=
+    mul_le_mul h8' hs' (by norm_num) (Real.exp_pos _).le
+  linarith
+
+theorem log_51_le : Real.log 51 ≤ 3.94 := by
+  rw [Real.log_le_iff_le_exp (by norm_num), show (3.94 : ℝ) = (3 : ℕ) + 0.94 by norm_num, Real.exp_add]
+  have h3 := (CH2Section7A.exp_nat_bounds 3).1
+  have hs := CH2Section7A.exp_small_ge (x := 0.94) (by norm_num)
+  have h3' : (20.08 : ℝ) ≤ Real.exp ((3 : ℕ) : ℝ) := by norm_num at h3 ⊢; linarith
+  have hs' : (2.55 : ℝ) ≤ Real.exp 0.94 := by norm_num at hs ⊢; linarith
+  have : (20.08 : ℝ) * 2.55 ≤ Real.exp ((3 : ℕ) : ℝ) * Real.exp 0.94 :=
+    mul_le_mul h3' hs' (by norm_num) (Real.exp_pos _).le
+  linarith
+
+theorem zetaN_20_le (hsmall : ZeroCount.v1.rvm_error_small) : ZeroCount.v1.zetaNClosed 20 ≤ 2.42 := by
+  have hπ1 := Real.pi_gt_d6
+  have hπ2 := Real.pi_lt_d6
+  have h := (abs_lt.mp (hsmall 20 (by norm_num) (by norm_num))).2
+  have hl := log_20_div_le
+  have hl0 := log_20_div_nonneg
+  have hM : ZeroCount.v1.rvmMain 20 ≤ 1.42 := by
+    unfold ZeroCount.v1.rvmMain
+    have hu : 20 / (2 * Real.pi) ≤ 3.1832 := by rw [div_le_iff₀ (by positivity)]; nlinarith
+    have hu' : 3.1830 ≤ 20 / (2 * Real.pi) := by rw [le_div_iff₀ (by positivity)]; nlinarith
+    nlinarith
+  linarith
+
+set_option maxHeartbeats 2000000 in
+/-- **`lem:janframe`** for `a = 1/4`, at a finite height `Y`: the zeros right of `t + 1/4`, left of
+`t - 1/4`, and (through conjugation) below the real axis. -/
+theorem janframe (hrvm : ZeroCount.v1.rvm_error_bound) (hsmall : ZeroCount.v1.rvm_error_small)
+    {t Y : ℝ} (ht : 1000 ≤ t) (hY : t + 1 / 4 ≤ Y) :
+    IEANTN.zetaZeroesSum Set.univ (Set.Ioc (t + 1 / 4) Y) (fun ρ ↦ 1 / (ρ.im - t) ^ 2)
+      + IEANTN.zetaZeroesSum Set.univ (Set.Ioc 0 (t - 1 / 4)) (fun ρ ↦ 1 / (t - ρ.im) ^ 2)
+      + IEANTN.zetaZeroesSum Set.univ (Set.Ioc 0 Y) (fun ρ ↦ 1 / (t + ρ.im) ^ 2)
+      ≤ 4 / Real.pi * Real.log (t / (2 * Real.pi))
+        + 16 * (2 / 5 * Real.log t + 4
+          + (ZeroCount.v1.zetaNClosed (t - 1 / 4) - ZeroCount.v1.rvmMain (t - 1 / 4))
+          - (ZeroCount.v1.zetaNClosed (t + 1 / 4) - ZeroCount.v1.rvmMain (t + 1 / 4))) + 0.004 := by
+  have hπ := Real.pi_pos
+  have hπ1 := Real.pi_gt_d6
+  have hπ2 := Real.pi_lt_d6
+  set N := ZeroCount.v1.zetaNClosed
+  set M := ZeroCount.v1.rvmMain
+  have hN20 := zetaN_20_le hsmall
+  -- S1
+  have hS1 := lehman_dec hrvm (t₀ := t + (1 / 4)) (t₁ := Y) (φ := fun y ↦ 1 / (y - t) ^ 2)
+    (φ' := fun y ↦ -2 / (y - t) ^ 3) (by linarith) hY
+    (fun y hy ↦ by
+      rw [Set.uIcc_of_le hY] at hy
+      have h1 : 0 < y - t := by linarith [hy.1]
+      have := ((hasDerivAt_id y).sub_const t).pow 2 |>.inv (by simpa using pow_ne_zero 2 h1.ne')
+      refine (this.congr_of_eventuallyEq (Filter.Eventually.of_forall fun z ↦ by simp [one_div])).congr_deriv ?_
+      simp only [id, Pi.pow_apply]; field_simp; ring)
+    (fun y hy ↦ by
+      rw [Set.uIcc_of_le hY] at hy
+      have h1 : 0 < y - t := by linarith [hy.1]
+      have : (y - t) ^ 3 ≠ 0 := by positivity
+      exact ContinuousAt.continuousWithinAt (by fun_prop (disch := assumption)))
+    (fun y hy ↦ by
+      have h1 : 0 < y - t := by linarith [hy.1]
+      have : 0 < (y - t) ^ 3 := by positivity
+      exact div_nonpos_of_nonpos_of_nonneg (by norm_num) this.le)
+  have hI1 := integral_right_le (t := t) (a := 1 / 4) (Y := Y) (by nlinarith) (by norm_num) hY
+  have hQB : ∀ u : ℝ, 1 ≤ u → |N u - M u| ≤ Real.log u / 5 + 2 := fun u hu ↦ by
+    have := hrvm u hu; rwa [show Real.log u / 5 = 1 / 5 * Real.log u by ring]
+  have hS1' : IEANTN.zetaZeroesSum Set.univ (Set.Ioc (t + (1 / 4)) Y) (fun ρ ↦ 1 / (ρ.im - t) ^ 2)
+      ≤ (Real.log ((t + (1 / 4)) / (2 * Real.pi)) / (2 * Real.pi * (1 / 4)) + Real.log (1 + t / (1 / 4)) / (2 * Real.pi * t)
+        + 1 / (5 * t * (1 / 4))) + 16 * ((Real.log (t + (1 / 4)) / 5 + 2) - (N (t + (1 / 4)) - M (t + (1 / 4)))) := by
+    have hY1 : 0 ≤ 1 / (Y - t) ^ 2 := by positivity
+    have hYQ := (abs_le.mp (hQB Y (by linarith))).2
+    have : 1 / (Y - t) ^ 2 * ((N Y - M Y) - (Real.log Y / 5 + 2)) ≤ 0 :=
+      mul_nonpos_of_nonneg_of_nonpos hY1 (by linarith)
+    have e : 1 / (t + (1 / 4) - t) ^ 2 = 16 := by norm_num
+    simp only [e] at hS1
+    linarith
+  -- S2
+  rw [CH2Section7A.zsum_split (a := (20:ℝ)) (by norm_num) (by linarith)]
+  have hS2a : IEANTN.zetaZeroesSum Set.univ (Set.Ioc 0 (20:ℝ)) (fun ρ ↦ 1 / (t - ρ.im) ^ 2)
+      ≤ 1 / (t - (20:ℝ)) ^ 2 * N (20:ℝ) := by
+    have hm := CH2Section7A.zsum_mono (a := 0) (b := (20:ℝ)) le_rfl
+      (f := fun ρ ↦ 1 / (t - ρ.im) ^ 2) (g := fun ρ ↦ 1 / (t - (20:ℝ)) ^ 2 * 1) (fun ρ hρ ↦ by
+        obtain ⟨-, ⟨h0, h1⟩, -⟩ := hρ
+        simp only [mul_one]
+        apply one_div_le_one_div_of_le (by nlinarith)
+        apply pow_le_pow_left₀ (by linarith) (by linarith) 2)
+    rw [CH2Section7A.zsum_const_mul le_rfl] at hm
+    exact hm
+  have hS2b := lehman_inc hrvm (t₀ := (20:ℝ)) (t₁ := t - (1 / 4)) (φ := fun y ↦ 1 / (t - y) ^ 2)
+    (φ' := fun y ↦ 2 / (t - y) ^ 3) (by norm_num) (by linarith)
+    (fun y hy ↦ by
+      rw [Set.uIcc_of_le (by linarith)] at hy
+      have h1 : 0 < t - y := by linarith [hy.2]
+      have := ((hasDerivAt_id y).const_sub t).pow 2 |>.inv (by simpa using pow_ne_zero 2 h1.ne')
+      refine (this.congr_of_eventuallyEq (Filter.Eventually.of_forall fun z ↦ by simp [one_div])).congr_deriv ?_
+      simp only [id, Pi.pow_apply]; field_simp; ring)
+    (fun y hy ↦ by
+      rw [Set.uIcc_of_le (by linarith)] at hy
+      have h1 : 0 < t - y := by linarith [hy.2]
+      have : (t - y) ^ 3 ≠ 0 := by positivity
+      exact ContinuousAt.continuousWithinAt (by fun_prop (disch := assumption)))
+    (fun y hy ↦ by
+      have h1 : 0 < t - y := by linarith [hy.2]
+      positivity)
+  have hI2 := integral_left_le (t := t) (a := 1 / 4) (y₀ := 20) (by nlinarith) (by linarith)
+    (by norm_num) (by norm_num) (by linarith)
+  have hS2b' : IEANTN.zetaZeroesSum Set.univ (Set.Ioc (20:ℝ) (t - (1 / 4))) (fun ρ ↦ 1 / (t - ρ.im) ^ 2)
+      ≤ Real.log ((t - (1 / 4)) / (2 * Real.pi)) / (2 * Real.pi * (1 / 4))
+        + 16 * ((N (t - (1 / 4)) - M (t - (1 / 4))) + (Real.log (t - (1 / 4)) / 5 + 2)) := by
+    have h0 := (abs_le.mp (hQB (20:ℝ) (by norm_num))).1
+    have : 0 ≤ 1 / (t - (20:ℝ)) ^ 2 * ((N (20:ℝ) - M (20:ℝ)) + (Real.log (20:ℝ) / 5 + 2)) :=
+      mul_nonneg (by positivity) (by linarith)
+    have e : 1 / (t - (t - (1 / 4))) ^ 2 = 16 := by norm_num
+    simp only [e] at hS2b
+    linarith
+  -- S4
+  rw [CH2Section7A.zsum_split (a := (20:ℝ)) (b := Y) (by norm_num) (by linarith)]
+  have hS4a : IEANTN.zetaZeroesSum Set.univ (Set.Ioc 0 (20:ℝ)) (fun ρ ↦ 1 / (t + ρ.im) ^ 2)
+      ≤ 1 / t ^ 2 * N (20:ℝ) := by
+    have hm := CH2Section7A.zsum_mono (a := 0) (b := (20:ℝ)) le_rfl
+      (f := fun ρ ↦ 1 / (t + ρ.im) ^ 2) (g := fun ρ ↦ 1 / t ^ 2 * 1) (fun ρ hρ ↦ by
+        obtain ⟨-, ⟨h0, h1⟩, -⟩ := hρ
+        simp only [mul_one]
+        apply one_div_le_one_div_of_le (by positivity)
+        apply pow_le_pow_left₀ (by linarith) (by linarith) 2)
+    rw [CH2Section7A.zsum_const_mul le_rfl] at hm
+    exact hm
+  have hS4b := lehman_dec hrvm (t₀ := (20:ℝ)) (t₁ := Y) (φ := fun y ↦ 1 / (t + y) ^ 2)
+    (φ' := fun y ↦ -2 / (t + y) ^ 3) (by norm_num) (by linarith)
+    (fun y hy ↦ by
+      rw [Set.uIcc_of_le (by linarith)] at hy
+      have h1 : 0 < t + y := by linarith [hy.1]
+      have := ((hasDerivAt_id y).const_add t).pow 2 |>.inv (by simpa using pow_ne_zero 2 h1.ne')
+      refine (this.congr_of_eventuallyEq (Filter.Eventually.of_forall fun z ↦ by simp [one_div])).congr_deriv ?_
+      simp only [id, Pi.pow_apply]; field_simp; ring)
+    (fun y hy ↦ by
+      rw [Set.uIcc_of_le (by linarith)] at hy
+      have h1 : 0 < t + y := by linarith [hy.1]
+      have : (t + y) ^ 3 ≠ 0 := by positivity
+      exact ContinuousAt.continuousWithinAt (by fun_prop (disch := assumption)))
+    (fun y hy ↦ by
+      have h1 : 0 < t + y := by linarith [hy.1]
+      have : 0 < (t + y) ^ 3 := by positivity
+      exact div_nonpos_of_nonpos_of_nonneg (by norm_num) this.le)
+  have hI4 := integral_mirror_le (t := t) (y₀ := 20) (Y := Y) (by nlinarith) (by linarith)
+    (by linarith)
+  have hS4b' : IEANTN.zetaZeroesSum Set.univ (Set.Ioc (20:ℝ) Y) (fun ρ ↦ 1 / (t + ρ.im) ^ 2)
+      ≤ (Real.log ((20:ℝ) / (2 * Real.pi)) / (2 * Real.pi * (t + (20:ℝ)))
+        + Real.log ((t + (20:ℝ)) / (20:ℝ)) / (2 * Real.pi * t) + 1 / (5 * (20:ℝ) * (t + (20:ℝ))))
+        + 1 / (t + (20:ℝ)) ^ 2 * (2 * (Real.log (20:ℝ) / 5 + 2)) := by
+    have hYQ := (abs_le.mp (hQB Y (by linarith))).2
+    have h0 := (abs_le.mp (hQB (20:ℝ) (by norm_num))).1
+    have : 1 / (t + Y) ^ 2 * ((N Y - M Y) - (Real.log Y / 5 + 2)) ≤ 0 :=
+      mul_nonpos_of_nonneg_of_nonpos (by positivity) (by linarith)
+    have : 1 / (t + (20:ℝ)) ^ 2 * ((Real.log (20:ℝ) / 5 + 2) - (N (20:ℝ) - M (20:ℝ)))
+        ≤ 1 / (t + (20:ℝ)) ^ 2 * (2 * (Real.log (20:ℝ) / 5 + 2)) :=
+      mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+    linarith
+  -- the logarithms combine
+  have ht4 : 0 < t - 1 / 4 := by linarith
+  have hlog2 : Real.log ((t + (1 / 4)) / (2 * Real.pi)) + Real.log ((t - (1 / 4)) / (2 * Real.pi))
+      ≤ 2 * Real.log (t / (2 * Real.pi)) := by
+    have h1 : 0 < (t + 1 / 4) / (2 * Real.pi) := by positivity
+    have h2 : 0 < (t - 1 / 4) / (2 * Real.pi) := by positivity
+    rw [← Real.log_mul h1.ne' h2.ne', show 2 * Real.log (t / (2 * Real.pi))
+      = Real.log ((t / (2 * Real.pi)) ^ 2) by rw [Real.log_pow]; norm_num]
+    apply Real.log_le_log (by positivity)
+    rw [div_mul_div_comm, div_pow, ← pow_two]
+    apply div_le_div_of_nonneg_right _ (by positivity)
+    nlinarith
+  have hB2 : (Real.log (t + (1 / 4)) / 5 + 2) + (Real.log (t - (1 / 4)) / 5 + 2) ≤ 2 / 5 * Real.log t + 4 := by
+    have : Real.log (t + (1 / 4)) + Real.log (t - (1 / 4)) ≤ 2 * Real.log t := by
+      rw [← Real.log_mul (by positivity) ht4.ne', show 2 * Real.log t = Real.log (t ^ 2) by
+        rw [Real.log_pow]; norm_num]
+      apply Real.log_le_log (by positivity)
+      nlinarith
+    linarith
+  -- the small terms
+  have hlog4001 := log_4001_le
+  have hE1 : Real.log (1 + t / (1 / 4)) / (2 * Real.pi * t) ≤ 0.00133 := by
+    rw [div_le_iff₀ (by positivity)]
+    have h1 : Real.log (1 + t / (1 / 4)) ≤ 7.3 + (1 + 4 * t) / 4001 := by
+      have e : Real.log (1 + t / (1 / 4)) = Real.log 4001 + Real.log ((1 + 4 * t) / 4001) := by
+        rw [← Real.log_mul (by norm_num) (by positivity)]; congr 1; field_simp
+      have := Real.log_le_sub_one_of_pos (show 0 < (1 + 4 * t) / 4001 by positivity)
+      linarith
+    nlinarith
+  have hE2 : 1 / (5 * t * (1 / 4)) ≤ 0.0008 := by
+    rw [div_le_iff₀ (by positivity)]; nlinarith
+  have hE3 : 1 / (t - (20:ℝ)) ^ 2 * N (20:ℝ) ≤ 0.0000026 := by
+    have h1 : 1 / (t - (20:ℝ)) ^ 2 ≤ 1 / 960000 := by
+      apply one_div_le_one_div_of_le (by norm_num); nlinarith
+    have hN0 : 0 ≤ N (20:ℝ) := zetaNClosed_nonneg _
+    calc _ ≤ 1 / 960000 * 2.42 := mul_le_mul h1 hN20 hN0 (by norm_num)
+      _ ≤ 0.0000026 := by norm_num
+  have hN0 : 0 ≤ N (20:ℝ) := zetaNClosed_nonneg _
+  have hE4 : 1 / t ^ 2 * N (20:ℝ) ≤ 0.0000025 := by
+    have h1 : 1 / t ^ 2 ≤ 1 / 1000000 := by
+      apply one_div_le_one_div_of_le (by norm_num); nlinarith
+    calc _ ≤ 1 / 1000000 * 2.42 := mul_le_mul h1 hN20 hN0 (by norm_num)
+      _ ≤ 0.0000025 := by norm_num
+  have hl20 := log_20_div_le
+  have hl20' := log_20_div_nonneg
+  have hlog51 := log_51_le
+  have hlog20 : Real.log 20 ≤ 3 := by
+    rw [Real.log_le_iff_le_exp (by norm_num)]
+    have := (CH2Section7A.exp_nat_bounds 3).1
+    norm_num at this ⊢; linarith
+  have hE5 : (Real.log ((20:ℝ) / (2 * Real.pi)) / (2 * Real.pi * (t + (20:ℝ)))
+        + Real.log ((t + (20:ℝ)) / (20:ℝ)) / (2 * Real.pi * t) + 1 / (5 * (20:ℝ) * (t + (20:ℝ))))
+        + 1 / (t + (20:ℝ)) ^ 2 * (2 * (Real.log (20:ℝ) / 5 + 2)) ≤ 0.00084 := by
+    have h1 : Real.log (20 / (2 * Real.pi)) / (2 * Real.pi * (t + 20)) ≤ 0.00019 := by
+      rw [div_le_iff₀ (by positivity)]; nlinarith
+    have h2 : Real.log ((t + 20) / 20) / (2 * Real.pi * t) ≤ 0.00063 := by
+      have hl : Real.log ((t + 20) / 20) ≤ 2.94 + (t + 20) / 1020 := by
+        have e : Real.log ((t + 20) / 20) = Real.log 51 + Real.log ((t + 20) / 1020) := by
+          rw [← Real.log_mul (by norm_num) (by positivity)]; congr 1; field_simp; ring
+        have := Real.log_le_sub_one_of_pos (show 0 < (t + 20) / 1020 by positivity)
+        linarith
+      rw [div_le_iff₀ (by positivity)]; nlinarith
+    have h3 : 1 / (5 * 20 * (t + 20)) ≤ 0.00001 := by
+      rw [div_le_iff₀ (by positivity)]; nlinarith
+    have h4 : 1 / (t + 20) ^ 2 * (2 * (Real.log 20 / 5 + 2)) ≤ 0.000006 := by
+      have hA : 1 / (t + 20) ^ 2 ≤ 1 / 1000000 := by
+        apply one_div_le_one_div_of_le (by norm_num); nlinarith
+      have hB : 2 * (Real.log 20 / 5 + 2) ≤ 5.2 := by linarith
+      have hB0 : 0 ≤ 2 * (Real.log 20 / 5 + 2) := by
+        have := Real.log_nonneg (show (1:ℝ) ≤ 20 by norm_num); positivity
+      calc _ ≤ 1 / 1000000 * 5.2 := mul_le_mul hA hB hB0 (by norm_num)
+        _ ≤ 0.000006 := by norm_num
+    linarith
+  have hmainlog : Real.log ((t + (1 / 4)) / (2 * Real.pi)) / (2 * Real.pi * (1 / 4))
+      + Real.log ((t - (1 / 4)) / (2 * Real.pi)) / (2 * Real.pi * (1 / 4)) ≤ 4 / Real.pi * Real.log (t / (2 * Real.pi)) := by
+    have e : Real.log ((t + (1 / 4)) / (2 * Real.pi)) / (2 * Real.pi * (1 / 4))
+        + Real.log ((t - (1 / 4)) / (2 * Real.pi)) / (2 * Real.pi * (1 / 4))
+        = (2 / Real.pi) * (Real.log ((t + (1 / 4)) / (2 * Real.pi)) + Real.log ((t - (1 / 4)) / (2 * Real.pi))) := by
+      field_simp; ring
+    rw [e]
+    have := mul_le_mul_of_nonneg_left hlog2 (by positivity : (0:ℝ) ≤ 2 / Real.pi)
+    have e2 : 2 / Real.pi * (2 * Real.log (t / (2 * Real.pi))) = 4 / Real.pi * Real.log (t / (2 * Real.pi)) := by
+      ring
+    linarith
+  linarith [hS1', hS2a, hS2b', hS4a, hS4b', hE1, hE2, hE3, hE4, hE5, hmainlog, hB2]
+
 end CH2Section81
