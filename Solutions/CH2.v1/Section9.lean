@@ -392,4 +392,243 @@ theorem sagaro_shifted (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
       _ ≤ _ := this
   linarith
 
+/-! ### The numeric collapse: from the height `t` to `T` -/
+
+theorem log_two_pi_le : Real.log (2 * Real.pi) ≤ 1.9 := by
+  have hπ := Real.pi_lt_d2
+  have hπ0 := Real.pi_pos
+  rw [Real.log_le_iff_le_exp (by positivity), show (1.9 : ℝ) = (1 : ℕ) + 0.9 by norm_num,
+    Real.exp_add]
+  have h1 := (CH2Section7A.exp_nat_bounds 1).1
+  have hs := CH2Section7A.exp_small_ge (x := 0.9) (by norm_num)
+  have h0 : (0 : ℝ) ≤ Real.exp 0.9 := (Real.exp_pos _).le
+  calc 2 * Real.pi ≤ 2 * 3.15 := by linarith
+    _ ≤ (2.7182818283 : ℝ) ^ 1 * (1 + 0.9 + 0.9 ^ 2 / 2 + 0.9 ^ 3 / 6 + 0.9 ^ 4 / 24) := by
+        norm_num
+    _ ≤ (2.7182818283 : ℝ) ^ 1 * Real.exp 0.9 := mul_le_mul_of_nonneg_left hs (by norm_num)
+    _ ≤ Real.exp ((1 : ℕ) : ℝ) * Real.exp 0.9 := mul_le_mul_of_nonneg_right h1 h0
+
+/-- `log T ≤ 2√T`, hence `(log T + 10)² ≤ 9T` once `T ≥ 64`. -/
+theorem log_add_ten_sq_le {T : ℝ} (hT : 64 ≤ T) : (Real.log T + 10) ^ 2 ≤ 9 * T := by
+  have hT0 : (0 : ℝ) < T := by linarith
+  have hs0 : (0 : ℝ) < Real.sqrt T := Real.sqrt_pos.mpr hT0
+  have hss : Real.sqrt T * Real.sqrt T = T := Real.mul_self_sqrt hT0.le
+  have h8 : (8 : ℝ) ≤ Real.sqrt T := by
+    rw [show (8 : ℝ) = Real.sqrt 64 by rw [show (64 : ℝ) = 8 ^ 2 by norm_num, Real.sqrt_sq]; norm_num]
+    exact Real.sqrt_le_sqrt hT
+  have hlog : Real.log T ≤ 2 * Real.sqrt T - 2 := by
+    have h1 : Real.log (Real.sqrt T) ≤ Real.sqrt T - 1 := Real.log_le_sub_one_of_pos hs0
+    have h2 : Real.log (Real.sqrt T) = Real.log T / 2 := Real.log_sqrt hT0.le
+    rw [h2] at h1
+    linarith
+  have hR0 : 0 ≤ Real.log T + 10 := by
+    have := Real.log_nonneg (show (1:ℝ) ≤ T by linarith)
+    linarith
+  have hR3 : Real.log T + 10 ≤ 3 * Real.sqrt T := by linarith
+  calc (Real.log T + 10) ^ 2 ≤ (3 * Real.sqrt T) ^ 2 := by
+        exact pow_le_pow_left₀ hR0 hR3 2
+    _ = 9 * T := by rw [mul_pow, Real.sq_sqrt hT0.le]; ring
+
+set_option maxHeartbeats 4000000 in
+/-- **`prop:sagaro`.** The error terms of `sagaro_shifted` collapse into `π/(T-1)` and the
+`prop:vihuela` block; the `1.001` in the latter pays for everything else on the `1/√x` side. -/
+theorem sagaro (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    (hv : ZetaLogDerivValues.v1.logDeriv_three_halves)
+    (hcs : CotangentSeries.v1.cot_series_zeta_values)
+    (hrvm : ZeroCount.v1.rvm_error_bound) (hsmall : ZeroCount.v1.rvm_error_small)
+    (hplatt : PlattZeroSum.v1.inv_ordinate_sum_le)
+    (hH : ZetaHadamard.v1.logDeriv_partial_fractions)
+    {T x σ : ℝ} (hT : (10 : ℝ) ^ 7 + 1 ≤ T) (hx9 : (10 : ℝ) ^ 9 ≤ x) (hxT : T ≤ x)
+    (hRH : IEANTN.RiemannHypothesisUpTo T)
+    (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hσζ : riemannZeta (σ : ℂ) ≠ 0) :
+    |CH2Section6.Svm σ x / x ^ (1 - σ)
+        - (Real.pi / T * (Real.cosh (Real.pi * (1 - σ) / T) / Real.sinh (Real.pi * (1 - σ) / T))
+          - (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re * x ^ (σ - 1))|
+      ≤ Real.pi / (T - 1)
+        + (1 / (2 * Real.pi) * Real.log (T / (2 * Real.pi)) ^ 2
+            - 1 / (6 * Real.pi) * Real.log (T / (2 * Real.pi))) / Real.sqrt x := by
+  have hπ := Real.pi_pos
+  have hπ1 := Real.pi_gt_d2
+  have hπ2 := Real.pi_lt_d2
+  obtain ⟨t, ⟨ht1, ht2⟩, hbd⟩ := sagaro_shifted hfe hdig hk hneg h2v hv hcs hrvm hsmall hplatt hH
+    hT hx9 hxT hRH hσ0 hσ1 hσζ
+  have h107 : (10000000 : ℝ) = (10 : ℝ) ^ 7 := by norm_num
+  have h109 : (1000000000 : ℝ) = (10 : ℝ) ^ 9 := by norm_num
+  have hT0 : (10000001 : ℝ) ≤ T := by rw [h107] at *; linarith
+  have hx0 : (1000000000 : ℝ) ≤ x := by rw [h109]; exact hx9
+  have hxpos : (0 : ℝ) < x := by linarith
+  have ht0 : (10000000 : ℝ) ≤ t := by linarith
+  have htpos : (0 : ℝ) < t := by linarith
+  refine hbd.trans ?_
+  -- names
+  set R : ℝ := Real.log T with hRdef
+  set L : ℝ := Real.log x with hLdef
+  set y : ℝ := Real.log (T / (2 * Real.pi)) with hydef
+  set z : ℝ := Real.log (t / (2 * Real.pi)) with hzdef
+  set s : ℝ := Real.sqrt x with hsdef
+  have hs0 : (0 : ℝ) < s := Real.sqrt_pos.mpr hxpos
+  -- the logarithms
+  have hR16 : 16.1 ≤ R := by
+    have h1 : Real.log ((10 : ℝ) ^ 7) ≤ R := Real.log_le_log (by norm_num) (by linarith)
+    rw [Real.log_pow] at h1
+    push_cast at h1
+    linarith [log_ten_ge]
+  have hL20 : 20.7 ≤ L := by
+    have h1 : Real.log ((10 : ℝ) ^ 9) ≤ L := Real.log_le_log (by norm_num) (by linarith)
+    rw [Real.log_pow] at h1
+    push_cast at h1
+    linarith [log_ten_ge]
+  have hRL : R ≤ L := Real.log_le_log (by linarith) (by linarith)
+  have hL0 : (0 : ℝ) < L := by linarith
+  have hzy : z ≤ y := Real.log_le_log (by positivity) (by gcongr)
+  have hz142 : 14.2 ≤ z := by
+    have h1 : Real.log ((10 : ℝ) ^ 7 / (2 * Real.pi)) ≤ z :=
+      Real.log_le_log (by positivity) (by gcongr; linarith)
+    rw [Real.log_div (by norm_num) (by positivity), Real.log_pow] at h1
+    push_cast at h1
+    linarith [log_ten_ge, log_two_pi_le]
+  have hy142 : 14.2 ≤ y := by linarith
+  -- the `1/√x` block
+  have hslack : 4 * (R + 10) ^ 2 / t ^ 2 ≤ 0.001 / (6 * Real.pi) * z := by
+    have h1 : (R + 10) ^ 2 ≤ 9 * T := log_add_ten_sq_le (by linarith)
+    have h2 : T ^ 2 / 2 ≤ t ^ 2 := by nlinarith
+    have h3 : 4 * (R + 10) ^ 2 / t ^ 2 ≤ 72 / T := by
+      rw [div_le_div_iff₀ (by positivity) (by linarith)]
+      nlinarith
+    have h4 : (72 : ℝ) / T ≤ 0.0000072 := by
+      rw [div_le_iff₀ (by linarith)]; linarith
+    have h5 : 0.001 / (6 * Real.pi) * z ≥ 0.001 / (6 * Real.pi) * 14.2 := by
+      apply mul_le_mul_of_nonneg_left hz142 (by positivity)
+    have h6 : (0.00075 : ℝ) ≤ 0.001 / (6 * Real.pi) * 14.2 := by
+      rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
+      nlinarith
+    linarith
+  have hkey2 : (1 / (2 * Real.pi) * z ^ 2 - 1.001 / (6 * Real.pi) * z) / s
+        + 4 * (R + 10) ^ 2 / t ^ 2 / s
+      ≤ (1 / (2 * Real.pi) * y ^ 2 - 1 / (6 * Real.pi) * y) / s := by
+    rw [← add_div, div_le_div_iff_of_pos_right hs0]
+    have hbracket : 0 ≤ 1 / (2 * Real.pi) * (y ^ 2 - z ^ 2) - 1 / (6 * Real.pi) * (y - z) := by
+      have h1 : 1 / (6 * Real.pi) * (y - z) ≤ 1 / (2 * Real.pi) * (y ^ 2 - z ^ 2) := by
+        have hyz : 0 ≤ y - z := by linarith
+        have h2 : y ^ 2 - z ^ 2 = (y - z) * (y + z) := by ring
+        rw [h2]
+        have h3 : 1 / (6 * Real.pi) ≤ 1 / (2 * Real.pi) * (y + z) := by
+          rw [div_le_iff₀ (by positivity)]
+          have : (1 : ℝ) / (2 * Real.pi) * (y + z) * (6 * Real.pi) = 3 * (y + z) := by
+            field_simp; ring
+          rw [this]
+          linarith
+        nlinarith
+      linarith
+    have he : 1 / (2 * Real.pi) * y ^ 2 - 1 / (6 * Real.pi) * y
+        - (1 / (2 * Real.pi) * z ^ 2 - 1.001 / (6 * Real.pi) * z)
+        = (1 / (2 * Real.pi) * (y ^ 2 - z ^ 2) - 1 / (6 * Real.pi) * (y - z))
+          + 0.001 / (6 * Real.pi) * z := by ring
+    linarith
+  -- the `π/T` block
+  have htriv : 2 * Real.pi / (t * x) * ((1 + t / (4 * Real.pi)) * (x ^ (-2 : ℝ) / (1 - x ^ (-2 : ℝ))))
+      ≤ 0.001 / t ^ 2 := by
+    have hx2 : x ^ (-2 : ℝ) = 1 / x ^ 2 := by
+      rw [Real.rpow_neg hxpos.le, show ((2 : ℝ)) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast,
+        one_div]
+    rw [hx2]
+    have hxne : x ≠ 0 := ne_of_gt hxpos
+    have hx2ne : x ^ 2 - 1 ≠ 0 := by nlinarith
+    have hne : 1 - 1 / x ^ 2 ≠ 0 := by
+      have h9 : 1 / x ^ 2 < 1 := by rw [div_lt_one (by positivity)]; nlinarith
+      intro hc
+      rw [sub_eq_zero] at hc
+      linarith [hc.symm.le]
+    have hd : 1 / x ^ 2 / (1 - 1 / x ^ 2) = 1 / (x ^ 2 - 1) := by
+      field_simp
+      try ring
+    rw [hd]
+    have h1 : 1 / (x ^ 2 - 1) ≤ 2 / x ^ 2 := by
+      rw [div_le_div_iff₀ (by nlinarith) (by positivity)]
+      nlinarith
+    have h2 : 2 * Real.pi / (t * x) * (1 + t / (4 * Real.pi)) ≤ 0.51 / x := by
+      have e : 2 * Real.pi / (t * x) * (1 + t / (4 * Real.pi))
+          = 2 * Real.pi / (t * x) + 1 / (2 * x) := by field_simp; ring
+      rw [e]
+      have h3 : 2 * Real.pi / (t * x) ≤ 0.01 / x := by
+        rw [div_le_div_iff₀ (by positivity) (by positivity)]
+        nlinarith
+      have h4 : 1 / (2 * x) = 0.5 / x := by field_simp; ring
+      rw [h4] at *
+      have : (0.01 : ℝ) / x + 0.5 / x = 0.51 / x := by field_simp; ring
+      linarith
+    have h5 : 0 ≤ 2 * Real.pi / (t * x) * (1 + t / (4 * Real.pi)) := by positivity
+    have h6 : 2 * Real.pi / (t * x) * ((1 + t / (4 * Real.pi)) * (1 / (x ^ 2 - 1)))
+        = 2 * Real.pi / (t * x) * (1 + t / (4 * Real.pi)) * (1 / (x ^ 2 - 1)) := by ring
+    rw [h6]
+    have h7 : 2 * Real.pi / (t * x) * (1 + t / (4 * Real.pi)) * (1 / (x ^ 2 - 1))
+        ≤ 0.51 / x * (2 / x ^ 2) := by
+      exact mul_le_mul h2 h1 (div_nonneg (by norm_num) (by nlinarith)) (by positivity)
+    have h8 : (0.51 : ℝ) / x * (2 / x ^ 2) ≤ 0.001 / t ^ 2 := by
+      rw [div_mul_div_comm, div_le_div_iff₀ (by positivity) (by positivity)]
+      have htx : t ≤ x := by linarith
+      have h9 : t ^ 2 ≤ x ^ 2 := by nlinarith
+      nlinarith [h9, mul_nonneg (sq_nonneg x) (by linarith : (0 : ℝ) ≤ x - 1020)]
+    linarith
+  have hcoth : Real.pi ^ 2 / (2 * t ^ 2 * T) ≤ 0.000001 / t ^ 2 := by
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    have h1 : Real.pi ^ 2 ≤ 0.000002 * T := by nlinarith
+    calc Real.pi ^ 2 * t ^ 2 ≤ (0.000002 * T) * t ^ 2 :=
+          mul_le_mul_of_nonneg_right h1 (sq_nonneg t)
+      _ = 0.000001 * (2 * t ^ 2 * T) := by ring
+  have hI : 2 * (12.5 * R / L ^ 2 + 62 * R / L ^ 3
+        + Real.eulerMascheroniConstant / L ^ 2 + 1.8 / L ^ 3) ≤ 1.51 := by
+    have hγ := Real.eulerMascheroniConstant_lt_two_thirds
+    have hL2 : (20.7 : ℝ) * L ≤ L ^ 2 := by nlinarith
+    have hL3 : (20.7 : ℝ) ^ 2 * L ≤ L ^ 3 := by nlinarith
+    have h1 : 12.5 * R / L ^ 2 ≤ 0.605 := by
+      rw [div_le_iff₀ (by positivity)]; linarith
+    have h2 : 62 * R / L ^ 3 ≤ 0.145 := by
+      rw [div_le_iff₀ (by positivity)]; linarith
+    have h3 : Real.eulerMascheroniConstant / L ^ 2 ≤ 0.0016 := by
+      rw [div_le_iff₀ (by positivity)]; linarith
+    have h4 : (1.8 : ℝ) / L ^ 3 ≤ 0.0003 := by
+      rw [div_le_iff₀ (by positivity)]; linarith
+    linarith
+  have hkey1 : Real.pi / t
+      + 2 * (12.5 * R / L ^ 2 + 62 * R / L ^ 3
+          + Real.eulerMascheroniConstant / L ^ 2 + 1.8 / L ^ 3) / t ^ 2
+      + 2 * Real.pi / (t * x) * ((1 + t / (4 * Real.pi)) * (x ^ (-2 : ℝ) / (1 - x ^ (-2 : ℝ))))
+      + Real.pi ^ 2 / (2 * t ^ 2 * T)
+      ≤ Real.pi / (T - 1) := by
+    have hIt : 2 * (12.5 * R / L ^ 2 + 62 * R / L ^ 3
+        + Real.eulerMascheroniConstant / L ^ 2 + 1.8 / L ^ 3) / t ^ 2 ≤ 1.51 / t ^ 2 := by
+      apply div_le_div_of_nonneg_right hI (by positivity)
+    have hsum : 1.51 / t ^ 2 + 0.001 / t ^ 2 + 0.000001 / t ^ 2 ≤ Real.pi / 2 / t ^ 2 := by
+      rw [← add_div, ← add_div]
+      apply div_le_div_of_nonneg_right (by nlinarith) (by positivity)
+    have hq1 : (0 : ℝ) < (T - 1) * (T - 1 / 2) := mul_pos (by linarith) (by linarith)
+    have hq2 : (T - 1) * (T - 1 / 2) ≤ t ^ 2 := by nlinarith [ht1, hT0]
+    have hle : Real.pi / 2 / t ^ 2 ≤ Real.pi / 2 / ((T - 1) * (T - 1 / 2)) :=
+      div_le_div_of_nonneg_left (by positivity) hq1 hq2
+    have hpt : Real.pi / t ≤ Real.pi / (T - 1 / 2) :=
+      div_le_div_of_nonneg_left (by positivity) (by linarith) ht1
+    have hsplit : Real.pi / (T - 1 / 2) + Real.pi / 2 / ((T - 1) * (T - 1 / 2))
+        = Real.pi / (T - 1) := by
+      have hT1 : (T : ℝ) - 1 ≠ 0 := by intro h; linarith
+      have hT2 : (T : ℝ) - 1 / 2 ≠ 0 := by intro h; linarith
+      rw [div_add_div _ _ hT2 (ne_of_gt hq1),
+        div_eq_div_iff (mul_ne_zero hT2 (ne_of_gt hq1)) hT1]
+      ring
+    linarith
+  -- combine
+  have hJsplit : 2 * (12.5 * R / L ^ 2 + 62 * R / L ^ 3 + 2 * (R + 10) ^ 2 / s
+        + Real.eulerMascheroniConstant / L ^ 2 + 1.8 / L ^ 3) / t ^ 2
+      = 2 * (12.5 * R / L ^ 2 + 62 * R / L ^ 3
+          + Real.eulerMascheroniConstant / L ^ 2 + 1.8 / L ^ 3) / t ^ 2
+        + 4 * (R + 10) ^ 2 / t ^ 2 / s := by
+    field_simp
+    ring
+  rw [hJsplit]
+  linarith
+
 end CH2Section9

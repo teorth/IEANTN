@@ -735,14 +735,33 @@ stages:
       THE SHIFT ITSELF is the mean value theorem on [a/T, a/t] with a = pi(1-sigma), via
       Convex.norm_image_sub_le_of_norm_hasDerivWithin_le, writing (pi/u) coth(a/u) = (pi/a) g(a/u)
       with g = y coth y. Cost pi a (1/t - 1/T)/t <= pi^2/(2 t^2 T).
-      SECTION 9, STEP 2b (NOT STARTED): the numeric collapse of the four error blocks into
-      pi/(T-1) + (log^2(T/2pi)/(2pi) - log(T/2pi)/(6pi))/sqrt x. The pieces to check are
-      pi/t <= pi/(T-1/2), the 1.001 -> 1 margin at log(t/2pi) vs log(T/2pi) (t <= T, so the log^2
-      term needs the t-form to be raised to the T-form: log(t/2pi) <= log(T/2pi) makes the positive
-      log^2 term smaller, but the subtracted 1.001 log term also shrinks -- the paper's own step),
-      2(J+K)/t^2 <= 1.5698/T^2 at the binding case, the trivial-zero block, and pi^2/(2 t^2 T).
-      SECTION 9, REMAINING: the sigma -> 1^- limit for the Lambda(n)/n case, and Corollary 1.2/1.3
-      with the lem:pernic computation node.
+      SECTION 9, STEP 2b DONE: CH2Section9.sagaro, axioms propext/choice/Quot.sound, no sorry.
+      PROP:SAGARO NOW READS, for T >= 10^7 + 1, RiemannHypothesisUpTo T, x >= 10^9, x >= T,
+      0 <= sigma < 1, zeta(sigma) /= 0:
+      |psi_sigma(x)/x^{1-sigma} - ((pi/T) coth(pi(1-sigma)/T) - zeta'/zeta(sigma) x^{sigma-1})|
+        <= pi/(T-1) + (log^2(T/2pi)/(2pi) - log(T/2pi)/(6pi))/sqrt x,
+      which is the paper's statement on this sigma range.
+      HOW THE FOUR ERROR BLOCKS COLLAPSE. Two disjoint budgets, and nothing else is needed.
+      (1) THE 1/sqrt x SIDE is paid for entirely by vihuela's 1.001 against the target's 1:
+      the slack is 0.001 log(t/2pi)/(6 pi) >= 7.5e-4, and what it absorbs is the (log T + 10)^2
+      piece of hardin, 4(log T + 10)^2/t^2 <= 72/T <= 7.2e-6. The passage z = log(t/2pi) to
+      y = log(T/2pi) is free: y^2/(2pi) - y/(6pi) - (z^2/(2pi) - z/(6pi)) = (y-z)((y+z)/(2pi)
+      - 1/(6pi)) >= 0 since y, z >= 14.2.
+      (2) THE pi/T SIDE: pi/(T-1) - pi/(T-1/2) = (pi/2)/((T-1)(T-1/2)) is exactly the budget, and
+      t^2 >= (T-1/2)^2 >= (T-1)(T-1/2), so it suffices that the numerators sum below pi/2 = 1.5708:
+      the I-term 2(12.5 R/L^2 + 62 R/L^3 + gamma/L^2 + 1.8/L^3) <= 1.51 (R <= L, L >= 20.7,
+      gamma < 2/3), the trivial-zero block <= 0.001/t^2 (it is ~1.02/x^3), and the coth shift
+      <= 1e-6/t^2. Total 1.5111 <= 1.5708, about 4% of margin.
+      NUMERIC INPUTS ADDED: log(2pi) <= 1.9, and (log T + 10)^2 <= 9T for T >= 64, which comes from
+      log T = 2 log sqrt T <= 2 sqrt T - 2.
+      MATHLIB NAMING DRIFT COST A ROUND OF FIXES: div_le_div_iff is now div_le_div_iff_0 (subscript
+      zero), div_add_div_same is gone (use add_div backwards), div_le_div_of_nonneg_left takes
+      (0 <= a) (0 < c) (c <= b), and abs_add is abs_add_le.
+      SECTION 9, REMAINING: (a) the sigma range: prop:sagaro in the paper covers -1.999 <= sigma
+      <= 100 and sigma = 1, while svm_abs_bound (and hence CH2Section9.sagaro) is 0 <= sigma < 1
+      with zeta(sigma) /= 0; the sigma -> 1^- limit gives the Lambda(n)/n case, and sigma outside
+      [0,1) needs section 6 revisited. (b) Corollary 1.2/1.3 with the lem:pernic computation node.
+      (c) The T >= 10^7 + 1 vs 10^7 gap recorded above.
       The route through (c) is worth recording because the paper's is not the shortest.
       A(z) = -(1-z) f(z) with f(z) = 1/(pi z) - cot(pi z), whose Taylor coefficients are
       (2/pi) zeta(2n+2) -- the imported CotangentSeries.v1. Multiplying by (1 - z^2) telescopes the
