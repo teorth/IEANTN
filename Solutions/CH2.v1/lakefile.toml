@@ -1,5 +1,5 @@
 name = "solution_CH2_v1"
-defaultTargets = ["ZetaInstance", "AdditiveCombination", "RectanglePort", "ResiduePort", "ZetaConjPort", "PntSupport", "PntAsymptotics", "PntSobolev", "PntSmooth", "PntFourier", "WienerPort", "Part1Fourier", "Approximants", "Decay", "Section5", "Section7", "Solution"]
+defaultTargets = ["GammaRealAsymptotic", "GammaPeriodic", "GammaGaussSeries", "GammaRecurrence", "GammaComplexToReal", "GammaOscillation", "GammaRealIdentity", "GammaAnalytic", "GammaStrip", "ZetaInstance", "AdditiveCombination", "RectanglePort", "ResiduePort", "ZetaConjPort", "PntSupport", "PntAsymptotics", "PntSobolev", "PntSmooth", "PntFourier", "WienerPort", "Part1Fourier", "Approximants", "Decay", "Section5", "Section5Neg", "ZetaInstanceNeg", "Section6", "Section6Res", "Section6Zeros", "Section6Weight", "Section7", "DigammaReal", "Section8", "Section81", "Section6Contour", "ZetaReal01", "Section6Hyp", "Section7Zeros", "Section7Weights", "Section7Tritura", "Section7Adar", "Section7Vihuela", "Section81Janframe", "Section81Titch", "Section81Saghar", "Section81Hardin", "Section9", "Solution"]
 
 [[require]]
 name = "IEANTN"
@@ -62,8 +62,80 @@ name = "Section5"
 roots = ["Section5"]
 
 [[lean_lib]]
+name = "Section5Neg"
+roots = ["Section5Neg"]
+
+[[lean_lib]]
+name = "ZetaInstanceNeg"
+roots = ["ZetaInstanceNeg"]
+
+[[lean_lib]]
+name = "Section6"
+roots = ["Section6"]
+
+[[lean_lib]]
+name = "Section6Res"
+roots = ["Section6Res"]
+
+[[lean_lib]]
+name = "Section6Zeros"
+roots = ["Section6Zeros"]
+
+[[lean_lib]]
+name = "Section6Weight"
+roots = ["Section6Weight"]
+
+[[lean_lib]]
+name = "Section6Contour"
+roots = ["Section6Contour"]
+
+[[lean_lib]]
+name = "ZetaReal01"
+roots = ["ZetaReal01"]
+
+[[lean_lib]]
+name = "Section6Hyp"
+roots = ["Section6Hyp"]
+
+[[lean_lib]]
+name = "Section7Zeros"
+roots = ["Section7Zeros"]
+
+[[lean_lib]]
+name = "Section7Weights"
+roots = ["Section7Weights"]
+
+[[lean_lib]]
+name = "Section7Tritura"
+roots = ["Section7Tritura"]
+
+[[lean_lib]]
+name = "Section7Adar"
+roots = ["Section7Adar"]
+
+[[lean_lib]]
+name = "Section7Vihuela"
+roots = ["Section7Vihuela"]
+
+[[lean_lib]]
+name = "Section81Janframe"
+roots = ["Section81Janframe"]
+
+[[lean_lib]]
 name = "Section7"
 roots = ["Section7"]
+
+[[lean_lib]]
+name = "DigammaReal"
+roots = ["DigammaReal"]
+
+[[lean_lib]]
+name = "Section8"
+roots = ["Section8"]
+
+[[lean_lib]]
+name = "Section81"
+roots = ["Section81"]
 
 [[lean_lib]]
 name = "Solution"
@@ -72,3 +144,55 @@ roots = ["Solution"]
 [[lean_lib]]
 name = "ZetaInstance"
 roots = ["ZetaInstance"]
+
+[[lean_lib]]
+name = "GammaRealAsymptotic"
+roots = ["GammaRealAsymptotic"]
+
+[[lean_lib]]
+name = "GammaPeriodic"
+roots = ["GammaPeriodic"]
+
+[[lean_lib]]
+name = "GammaGaussSeries"
+roots = ["GammaGaussSeries"]
+
+[[lean_lib]]
+name = "GammaRecurrence"
+roots = ["GammaRecurrence"]
+
+[[lean_lib]]
+name = "GammaComplexToReal"
+roots = ["GammaComplexToReal"]
+
+[[lean_lib]]
+name = "GammaOscillation"
+roots = ["GammaOscillation"]
+
+[[lean_lib]]
+name = "GammaRealIdentity"
+roots = ["GammaRealIdentity"]
+
+[[lean_lib]]
+name = "GammaAnalytic"
+roots = ["GammaAnalytic"]
+
+[[lean_lib]]
+name = "GammaStrip"
+roots = ["GammaStrip"]
+
+[[lean_lib]]
+name = "Section81Titch"
+roots = ["Section81Titch"]
+
+[[lean_lib]]
+name = "Section81Saghar"
+roots = ["Section81Saghar"]
+
+[[lean_lib]]
+name = "Section81Hardin"
+roots = ["Section81Hardin"]
+
+[[lean_lib]]
+name = "Section9"
+roots = ["Section9"]
