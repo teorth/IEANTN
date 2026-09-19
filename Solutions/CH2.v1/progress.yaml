@@ -704,6 +704,31 @@ stages:
       O(log T log log T); (3) the gamma/L^2 and log-coefficient constants are 12.5 and 62 (paper: 51/4,
       60) with rameau's 336 in place of 320/3.
       IMPORTS TO ADD for 8.1: ZetaHadamard.v1, ZetaLogDeriv.v1 (already listed), ZetaLogDerivValues.v1.
+      SECTION 9, STEP 1 DONE: CH2Section9.sagaro_at_t (Section9.lean), axioms propext/choice/Quot.sound.
+      svm_abs_bound is now applied. For T >= 10^7 + 1, RiemannHypothesisUpTo T, x >= 10^9, x >= T,
+      0 <= sigma < 1 and zeta(sigma) /= 0, there is t in [T-1/2, T] with
+      |psi_sigma(x)/x^{1-sigma} - ((pi/t) coth(pi(1-sigma)/t) - zeta'/zeta(sigma) x^{sigma-1})|
+        <= pi/t + (log^2(t/2pi)/(2pi) - 1.001 log(t/2pi)/(6pi))/sqrt x
+           + 2 (12.5 log T/L^2 + 62 log T/L^3 + 2(log T+10)^2/sqrt x + gamma/L^2 + 1.8/L^3)/t^2
+           + (2 pi/(t x)) (1 + t/(4 pi)) x^-2/(1 - x^-2).
+      THE LADDER IS BUILT AT THE HARDIN HEIGHT: delta = 1, T := t, abscissas sigmaZeta; hRC from
+      hRC_of_rvm, hTfree from hardin (which gives |Im| /= t, covering the conjugate side).
+      hZ IS VIHUELA: the index sets (Iic 1, Ioc 1 t) and (univ, Ioc 0 t) carry the same zeros --
+      no zero has Re > 1, and none has 0 < Im <= 1 (no_zero_low) -- and under RH every zero has
+      Re rho = 1/2, so the x^{Re rho} weight is exactly sqrt x. Z = sqrt x (t/2pi) V, and
+      (2 pi/(t x)) Z = V/sqrt x.
+      hE IS HARDIN PLUS norm_intC_le: E = (x/(pi t))(J + K) with J the hardin bound and
+      K = gamma/L^2 + 1.8/L^3, so (2 pi/(t x)) E = 2(J + K)/t^2.
+      ONE GAP, DELIBERATE AND RECORDED: the hypothesis is T >= 10^7 + 1, not 10^7, because vihuela
+      is stated for T >= 10^7 and is applied at t >= T - 1/2. Either weaken vihuela to T >= 10^7 - 1
+      (its uses of hT are 1/T <= 1e-7, t0/T <= 0.002 and T/10^7 terms, all with slack, but the
+      literal proofs would need re-tuning) or keep the +1. The paper has the same slip.
+      SECTION 9, STEP 2 (NOT STARTED): the passage from t to T. Needs (a) |(y coth y)'| <= |y|
+      (lem:cothder, already in Section6Weight as abs_deriv_hcoth_real) to move
+      (pi/t) coth(pi(1-sigma)/t) to (pi/T) coth(pi(1-sigma)/T) at a cost of 0.001/T^2, (b) the
+      numeric collapse of the three error blocks into pi/(T-1) + (log^2(T/2pi)/(2pi)
+      - log(T/2pi)/(6pi))/sqrt x, (c) the sigma -> 1^- limit for the Lambda(n)/n case, and
+      (d) Corollary 1.2/1.3 with the lem:pernic computation node.
       The route through (c) is worth recording because the paper's is not the shortest.
       A(z) = -(1-z) f(z) with f(z) = 1/(pi z) - cot(pi z), whose Taylor coefficients are
       (2/pi) zeta(2n+2) -- the imported CotangentSeries.v1. Multiplying by (1 - z^2) telescopes the
