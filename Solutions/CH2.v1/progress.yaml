@@ -723,12 +723,26 @@ stages:
       is stated for T >= 10^7 and is applied at t >= T - 1/2. Either weaken vihuela to T >= 10^7 - 1
       (its uses of hT are 1/T <= 1e-7, t0/T <= 0.002 and T/10^7 terms, all with slack, but the
       literal proofs would need re-tuning) or keep the +1. The paper has the same slip.
-      SECTION 9, STEP 2 (NOT STARTED): the passage from t to T. Needs (a) |(y coth y)'| <= |y|
-      (lem:cothder, already in Section6Weight as abs_deriv_hcoth_real) to move
-      (pi/t) coth(pi(1-sigma)/t) to (pi/T) coth(pi(1-sigma)/T) at a cost of 0.001/T^2, (b) the
-      numeric collapse of the three error blocks into pi/(T-1) + (log^2(T/2pi)/(2pi)
-      - log(T/2pi)/(6pi))/sqrt x, (c) the sigma -> 1^- limit for the Lambda(n)/n case, and
-      (d) Corollary 1.2/1.3 with the lem:pernic computation node.
+      SECTION 9, STEP 2a DONE: the main term now sits at T (CH2Section9.sagaro_shifted).
+      LEM:COTHDER'S FIRST HALF IS NEEDED AFTER ALL, and is now proved: |(y coth y)'| <= y for y > 0
+      (abs_deriv_ycoth_le). The <= 1 bound already in Section6Weight is useless here: it would cost
+      pi (1/t - 1/T) ~ 1.57/T^2, the entire I-term budget, whereas the |y| bound costs
+      pi^2/(2 t^2 T) ~ 5/T^3.
+      THE PROOF IS TWO LINES OF CALCULUS ONCE sinh w <= w cosh w IS AVAILABLE: that inequality is
+      monotone_of_deriv_nonneg applied to w cosh w - sinh w, whose derivative is w sinh w >= 0 on all
+      of R; then sinh cosh <= v cosh^2 = v(1 + sinh^2) gives (sinh cosh - v)/sinh^2 <= v, and the
+      lower bound 0 is the 2v form of sinh already used for abs_deriv_hcoth_real.
+      THE SHIFT ITSELF is the mean value theorem on [a/T, a/t] with a = pi(1-sigma), via
+      Convex.norm_image_sub_le_of_norm_hasDerivWithin_le, writing (pi/u) coth(a/u) = (pi/a) g(a/u)
+      with g = y coth y. Cost pi a (1/t - 1/T)/t <= pi^2/(2 t^2 T).
+      SECTION 9, STEP 2b (NOT STARTED): the numeric collapse of the four error blocks into
+      pi/(T-1) + (log^2(T/2pi)/(2pi) - log(T/2pi)/(6pi))/sqrt x. The pieces to check are
+      pi/t <= pi/(T-1/2), the 1.001 -> 1 margin at log(t/2pi) vs log(T/2pi) (t <= T, so the log^2
+      term needs the t-form to be raised to the T-form: log(t/2pi) <= log(T/2pi) makes the positive
+      log^2 term smaller, but the subtracted 1.001 log term also shrinks -- the paper's own step),
+      2(J+K)/t^2 <= 1.5698/T^2 at the binding case, the trivial-zero block, and pi^2/(2 t^2 T).
+      SECTION 9, REMAINING: the sigma -> 1^- limit for the Lambda(n)/n case, and Corollary 1.2/1.3
+      with the lem:pernic computation node.
       The route through (c) is worth recording because the paper's is not the shortest.
       A(z) = -(1-z) f(z) with f(z) = 1/(pi z) - cot(pi z), whose Taylor coefficients are
       (2/pi) zeta(2n+2) -- the imported CotangentSeries.v1. Multiplying by (1 - z^2) telescopes the

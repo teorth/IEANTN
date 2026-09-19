@@ -212,4 +212,184 @@ theorem sagaro_at_t (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
   rw [e3, e1, e2, hV, hJ, hK]
   ring
 
+/-! ### `lem:cothder` and the passage from `t` to `T` -/
+
+/-- `sinh w ≤ w cosh w` for `w ≥ 0`: the derivative of `w cosh w - sinh w` is `w sinh w ≥ 0`. -/
+theorem sinh_le_mul_cosh {w : ℝ} (hw : 0 ≤ w) : Real.sinh w ≤ w * Real.cosh w := by
+  have hd : ∀ v : ℝ, HasDerivAt (fun u : ℝ ↦ u * Real.cosh u - Real.sinh u) (v * Real.sinh v) v := by
+    intro v
+    have h1 : HasDerivAt (fun u : ℝ ↦ u * Real.cosh u) (1 * Real.cosh v + v * Real.sinh v) v :=
+      (hasDerivAt_id v).mul (Real.hasDerivAt_cosh v)
+    exact (h1.sub (Real.hasDerivAt_sinh v)).congr_deriv (by ring)
+  have hnn : ∀ v : ℝ, 0 ≤ v * Real.sinh v := by
+    intro v
+    rcases le_total 0 v with h | h
+    · exact mul_nonneg h (Real.sinh_nonneg_iff.mpr h)
+    · nlinarith [Real.sinh_nonpos_iff.mpr h]
+  have hmono : Monotone (fun u : ℝ ↦ u * Real.cosh u - Real.sinh u) :=
+    monotone_of_deriv_nonneg (fun v ↦ (hd v).differentiableAt)
+      (fun v ↦ by rw [(hd v).deriv]; exact hnn v)
+  have h0 := hmono hw
+  simp only [zero_mul, Real.sinh_zero, sub_zero, sub_self] at h0
+  linarith
+
+/-- `y coth y`, on the real line. -/
+noncomputable def ycoth (y : ℝ) : ℝ := y * Real.cosh y / Real.sinh y
+
+theorem hasDerivAt_ycoth {v : ℝ} (hv : 0 < v) :
+    HasDerivAt ycoth (Real.cosh v / Real.sinh v - v / Real.sinh v ^ 2) v := by
+  have hs : Real.sinh v ≠ 0 := (Real.sinh_pos_iff.mpr hv).ne'
+  have h := ((hasDerivAt_id v).mul (Real.hasDerivAt_cosh v)).div (Real.hasDerivAt_sinh v) hs
+  refine h.congr_deriv ?_
+  simp only [Pi.mul_apply, id, one_mul]
+  have hsq := Real.cosh_sq v
+  field_simp
+  linear_combination (-v) * hsq
+
+/-- **`lem:cothder`, first half.** `|(y coth y)'| ≤ y` for `y > 0`. -/
+theorem abs_deriv_ycoth_le {v : ℝ} (hv : 0 < v) :
+    |Real.cosh v / Real.sinh v - v / Real.sinh v ^ 2| ≤ v := by
+  have hs : 0 < Real.sinh v := Real.sinh_pos_iff.mpr hv
+  have hs2 : 0 < Real.sinh v ^ 2 := by positivity
+  have hc : 0 < Real.cosh v := Real.cosh_pos v
+  have e : Real.cosh v / Real.sinh v - v / Real.sinh v ^ 2
+      = (Real.sinh v * Real.cosh v - v) / Real.sinh v ^ 2 := by field_simp
+  rw [e, abs_le]
+  constructor
+  · have h0 : 0 ≤ (Real.sinh v * Real.cosh v - v) / Real.sinh v ^ 2 := by
+      apply div_nonneg _ hs2.le
+      have h2 := Real.self_le_sinh_iff.mpr (by linarith : (0 : ℝ) ≤ 2 * v)
+      rw [Real.sinh_two_mul] at h2
+      linarith
+    linarith
+  · rw [div_le_iff₀ hs2]
+    have h1 := sinh_le_mul_cosh hv.le
+    have hsq := Real.cosh_sq v
+    nlinarith [mul_le_mul_of_nonneg_right h1 hc.le]
+
+/-- **The main term moves from `t` to `T` at a cost of `π a (1/t - 1/T)/t`**, `a = π(1-σ)`. -/
+theorem coth_main_shift {σ t T : ℝ} (hσ1 : σ < 1) (ht : 0 < t) (htT : t ≤ T) :
+    |Real.pi / t * (Real.cosh (Real.pi * (1 - σ) / t) / Real.sinh (Real.pi * (1 - σ) / t))
+        - Real.pi / T * (Real.cosh (Real.pi * (1 - σ) / T) / Real.sinh (Real.pi * (1 - σ) / T))|
+      ≤ Real.pi * (Real.pi * (1 - σ)) * (1 / t - 1 / T) / t := by
+  have hπ := Real.pi_pos
+  have hT : 0 < T := by linarith
+  set a : ℝ := Real.pi * (1 - σ) with ha
+  have ha0 : 0 < a := by rw [ha]; positivity
+  have hyt : 0 < a / t := by positivity
+  have hyT : 0 < a / T := by positivity
+  have hle : a / T ≤ a / t := by
+    apply div_le_div_of_nonneg_left ha0.le ht htT
+  -- rewrite both sides through `ycoth`
+  have hrw : ∀ u : ℝ, 0 < u → Real.pi / u * (Real.cosh (a / u) / Real.sinh (a / u))
+      = Real.pi / a * ycoth (a / u) := by
+    intro u hu
+    have hs : Real.sinh (a / u) ≠ 0 := (Real.sinh_pos_iff.mpr (by positivity)).ne'
+    rw [ycoth]
+    field_simp
+    try ring
+  rw [hrw t ht, hrw T hT, ← mul_sub, abs_mul, abs_of_pos (by positivity : 0 < Real.pi / a)]
+  -- the mean value theorem on `[a/T, a/t]`
+  have hmvt : |ycoth (a / t) - ycoth (a / T)| ≤ (a / t) * |a / t - a / T| := by
+    have hsub : ∀ y ∈ Set.Icc (a / T) (a / t), 0 < y := fun y hy ↦ lt_of_lt_of_le hyT hy.1
+    have hd : ∀ y ∈ Set.Icc (a / T) (a / t), HasDerivWithinAt ycoth
+        (Real.cosh y / Real.sinh y - y / Real.sinh y ^ 2) (Set.Icc (a / T) (a / t)) y :=
+      fun y hy ↦ (hasDerivAt_ycoth (hsub y hy)).hasDerivWithinAt
+    have hb : ∀ y ∈ Set.Icc (a / T) (a / t),
+        ‖Real.cosh y / Real.sinh y - y / Real.sinh y ^ 2‖ ≤ a / t := by
+      intro y hy
+      rw [Real.norm_eq_abs]
+      exact (abs_deriv_ycoth_le (hsub y hy)).trans hy.2
+    have := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le hd hb (convex_Icc _ _)
+      (Set.left_mem_Icc.mpr hle) (Set.right_mem_Icc.mpr hle)
+    simpa [Real.norm_eq_abs] using this
+  have he : Real.pi / a * ((a / t) * |a / t - a / T|)
+      = Real.pi * a * (1 / t - 1 / T) / t := by
+    rw [abs_of_nonneg (by linarith : (0 : ℝ) ≤ a / t - a / T)]
+    field_simp
+    try ring
+  calc Real.pi / a * |ycoth (a / t) - ycoth (a / T)|
+      ≤ Real.pi / a * ((a / t) * |a / t - a / T|) := by
+        exact mul_le_mul_of_nonneg_left hmvt (by positivity)
+    _ = _ := he
+
+set_option maxHeartbeats 1000000 in
+/-- **`prop:sagaro` with the main term at `T`.** `sagaro_at_t` plus `coth_main_shift`; the error
+is still expressed in terms of the chosen `t`. -/
+theorem sagaro_shifted (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    (hv : ZetaLogDerivValues.v1.logDeriv_three_halves)
+    (hcs : CotangentSeries.v1.cot_series_zeta_values)
+    (hrvm : ZeroCount.v1.rvm_error_bound) (hsmall : ZeroCount.v1.rvm_error_small)
+    (hplatt : PlattZeroSum.v1.inv_ordinate_sum_le)
+    (hH : ZetaHadamard.v1.logDeriv_partial_fractions)
+    {T x σ : ℝ} (hT : (10 : ℝ) ^ 7 + 1 ≤ T) (hx9 : (10 : ℝ) ^ 9 ≤ x) (hxT : T ≤ x)
+    (hRH : IEANTN.RiemannHypothesisUpTo T)
+    (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hσζ : riemannZeta (σ : ℂ) ≠ 0) :
+    ∃ t ∈ Set.Icc (T - 1 / 2) T,
+      |CH2Section6.Svm σ x / x ^ (1 - σ)
+          - (Real.pi / T * (Real.cosh (Real.pi * (1 - σ) / T) / Real.sinh (Real.pi * (1 - σ) / T))
+            - (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re * x ^ (σ - 1))|
+        ≤ Real.pi / t
+          + (1 / (2 * Real.pi) * Real.log (t / (2 * Real.pi)) ^ 2
+              - 1.001 / (6 * Real.pi) * Real.log (t / (2 * Real.pi))) / Real.sqrt x
+          + 2 * (12.5 * Real.log T / Real.log x ^ 2 + 62 * Real.log T / Real.log x ^ 3
+              + 2 * (Real.log T + 10) ^ 2 / Real.sqrt x
+              + Real.eulerMascheroniConstant / Real.log x ^ 2 + 1.8 / Real.log x ^ 3) / t ^ 2
+          + 2 * Real.pi / (t * x)
+              * ((1 + t / (4 * Real.pi)) * (x ^ (-2 : ℝ) / (1 - x ^ (-2 : ℝ))))
+          + Real.pi ^ 2 / (2 * t ^ 2 * T) := by
+  have hπ := Real.pi_pos
+  obtain ⟨t, ⟨ht1, ht2⟩, hbd⟩ := sagaro_at_t hfe hdig hk hneg h2v hv hcs hrvm hsmall hplatt hH
+    hT hx9 hxT hRH hσ0 hσ1 hσζ
+  have ht0 : (0 : ℝ) < t := by
+    have : (0 : ℝ) < 10 ^ 7 := by norm_num
+    linarith
+  refine ⟨t, ⟨ht1, ht2⟩, ?_⟩
+  have hshift := coth_main_shift (σ := σ) (t := t) (T := T) hσ1 ht0 ht2
+  have hnum : Real.pi * (Real.pi * (1 - σ)) * (1 / t - 1 / T) / t ≤ Real.pi ^ 2 / (2 * t ^ 2 * T) := by
+    have hT0 : (0 : ℝ) < T := by linarith [show (0 : ℝ) < 10 ^ 7 by norm_num]
+    have h1 : 1 / t - 1 / T = (T - t) / (t * T) := by field_simp
+    rw [h1]
+    have h2 : (T - t) / (t * T) ≤ (1 / 2) / (t * T) := by
+      apply div_le_div_of_nonneg_right (by linarith) (by positivity)
+    have h3 : Real.pi * (Real.pi * (1 - σ)) ≤ Real.pi ^ 2 := by nlinarith
+    have h4 : (0 : ℝ) ≤ (T - t) / (t * T) := by
+      apply div_nonneg (by linarith) (by positivity)
+    calc Real.pi * (Real.pi * (1 - σ)) * ((T - t) / (t * T)) / t
+        ≤ Real.pi ^ 2 * ((T - t) / (t * T)) / t := by
+          apply div_le_div_of_nonneg_right _ ht0.le
+          exact mul_le_mul_of_nonneg_right h3 h4
+      _ ≤ Real.pi ^ 2 * ((1 / 2) / (t * T)) / t := by
+          apply div_le_div_of_nonneg_right _ ht0.le
+          exact mul_le_mul_of_nonneg_left h2 (by positivity)
+      _ = Real.pi ^ 2 / (2 * t ^ 2 * T) := by field_simp; try ring
+  have htri : |CH2Section6.Svm σ x / x ^ (1 - σ)
+      - (Real.pi / T * (Real.cosh (Real.pi * (1 - σ) / T) / Real.sinh (Real.pi * (1 - σ) / T))
+        - (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re * x ^ (σ - 1))|
+      ≤ |CH2Section6.Svm σ x / x ^ (1 - σ)
+          - (Real.pi / t * (Real.cosh (Real.pi * (1 - σ) / t) / Real.sinh (Real.pi * (1 - σ) / t))
+            - (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re * x ^ (σ - 1))|
+        + |Real.pi / t * (Real.cosh (Real.pi * (1 - σ) / t) / Real.sinh (Real.pi * (1 - σ) / t))
+            - Real.pi / T
+              * (Real.cosh (Real.pi * (1 - σ) / T) / Real.sinh (Real.pi * (1 - σ) / T))| := by
+    have := abs_add_le (CH2Section6.Svm σ x / x ^ (1 - σ)
+      - (Real.pi / t * (Real.cosh (Real.pi * (1 - σ) / t) / Real.sinh (Real.pi * (1 - σ) / t))
+        - (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re * x ^ (σ - 1)))
+      (Real.pi / t * (Real.cosh (Real.pi * (1 - σ) / t) / Real.sinh (Real.pi * (1 - σ) / t))
+        - Real.pi / T * (Real.cosh (Real.pi * (1 - σ) / T)
+          / Real.sinh (Real.pi * (1 - σ) / T)))
+    calc _ = |(CH2Section6.Svm σ x / x ^ (1 - σ)
+          - (Real.pi / t * (Real.cosh (Real.pi * (1 - σ) / t) / Real.sinh (Real.pi * (1 - σ) / t))
+            - (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re * x ^ (σ - 1)))
+          + (Real.pi / t * (Real.cosh (Real.pi * (1 - σ) / t)
+              / Real.sinh (Real.pi * (1 - σ) / t))
+            - Real.pi / T * (Real.cosh (Real.pi * (1 - σ) / T)
+              / Real.sinh (Real.pi * (1 - σ) / T)))| := by ring_nf
+      _ ≤ _ := this
+  linarith
+
 end CH2Section9
