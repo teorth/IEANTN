@@ -795,14 +795,24 @@ stages:
       deriv_riemannZeta_zero = -log(2pi)/2 and riemannZeta_zero = -1/2. Multiplying the bound by x
       turns it into an additive log 2pi <= 1.9, paid by 0.0005 sqrt x >= 15.8 at x >= 10^9.
       Svm 0 x = Chebyshev.psi x is immediate once Ioc 0 (floor x) = Icc 1 (floor x).
-      SECTION 9, REMAINING: (a) corollary_1_2_lambda_sum, which is sagaro_one plus the same
-      hypothesis reshuffle (max T 10^9 < x); it needs no slack, its main term being log x - gamma.
-      (b) Corollary 1.3 at T = 3e12 (PlattTrudgian.v1.rh_up_to) plus a lem:pernic computation node
-      for 1 <= x <= 10^13. (c) THE REPO-SIDE STEP, now due: CH2.v1's formalization.yaml still lists
-      only GammaAsymptotics.v2 and CotangentSeries.v1 as imports, but the solution uses ZeroCount.v1
-      (both conclusions), ZetaLogDeriv.v1, ZetaLogDerivValues.v1 (four conclusions), ZetaHadamard.v1
-      and PlattZeroSum.v1 as well; the imports list, the regenerated Challenge and Solution.lean
-      (whose signatures are stale and which still carries a sorry) have to be brought into line.
+      COROLLARY 1.2 IS CLOSED, BOTH DISPLAYS. Solution.lean now proves
+      CH2.v1.challenge_corollary_1_2_psi and challenge_corollary_1_2_lambda_sum outright (axioms
+      propext/choice/Quot.sound); only the two Corollary 1.3 challenges still carry a sorry.
+      corollary_1_2_lambda_sum is sagaro_one with the hypotheses reshuffled (max T 10^9 < x gives
+      both T <= x and 10^9 <= x) and needs no slack, its main term being log x - gamma.
+      THE REPO SIDE IS SYNCED. CH2.v1's formalization.yaml now lists the eleven edges the proof
+      really rests on -- GammaAsymptotics.v2, CotangentSeries.v1, ZeroCount.v1 (both conclusions),
+      ZetaLogDeriv.v1, ZetaLogDerivValues.v1 (four), ZetaHadamard.v1, PlattZeroSum.v1 -- with
+      imports_status raised from `traced` to `identified`, and the two justification notes corrected:
+      they used to say `imports` is a real none, which was true of the STATEMENT (the Riemann
+      hypothesis up to T is a hypothesis, not an edge) but is not true of the proof. Challenge.lean
+      was regenerated, fingerprints/state/graph/pages rewritten, and `check` passes.
+      WHAT REMAINS IN THE NODE: Corollary 1.3, both displays. It is Corollary 1.2 at T = 3e12
+      (PlattTrudgian.v1.rh_up_to) plus the descent from x > max(T, 10^9) to x >= 1, which is
+      lem:pernic: -sqrt 2 < (psi(x) - x)/sqrt x <= 0.79059275... for 1 <= x <= 10^13, a computation
+      no node supplies yet and the obvious next node to create. Note also that at T = 3e12 the
+      main factor (pi/T) coth(pi/T) has to be dropped down to 1, which is the paper's own step, and
+      that 113.67 >= C_T(3e12) = 113.6689... is the numeric check the node's yaml already records.
       THE FULL SIGMA RANGE OF prop:sagaro (-1.999 <= sigma <= 100) IS NOT NEEDED BY THIS NODE: the
       paper's own proof of cor:psi is "just cases sigma = 0 and sigma = 1". sigma in (-2, 0) would
       only need hsigma0 relaxed in the trivial-zero block; sigma > 1 is lambda > 0 and would need
