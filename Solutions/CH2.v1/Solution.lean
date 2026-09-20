@@ -3,7 +3,7 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
-import Section9Limit
+import Section9Cor13
 import IEANTN.Nodes.CH2.v1.Conclusions
 import IEANTN.Nodes.PlattTrudgian.v1.Conclusions
 import IEANTN.Nodes.Buthe.v1.Conclusions
@@ -51,12 +51,10 @@ displays are proved below from this node's imports, with no `sorry` between them
 
 ## What is missing
 
-Corollary 1.3, both displays. It is Corollary 1.2 at Platt and Trudgian's verified height —
-`rh_up_to_exact`, the unrounded one, because `π/(T−1)` has to be quotable as `π/(3 · 10¹²)` —
-together with the descent from `x > max(T, 10⁹)` to `x ≥ 1`. The descent needs no new node:
-`Buthe.v1.theorem_2_psi` covers `11 < x ≤ 10¹⁹`, below `11` the bound is trivial, and Corollary 1.2
-at `T = 10⁷` bridges the middle, its `π/(10⁷−1)` fitting inside the `√x` slack for all
-`x ≤ 6.8 · 10¹⁶`.
+Corollary 1.3's `∑ Λ(n)/n` display. Its `ψ` display is now proved (`Section9Cor13`), by Corollary
+1.2 at `T = 3 · 10¹² + 5` for `x` above that, at `T = 10⁷` down to `x > 10⁹`, `Buthe.v1` on
+`11 < x ≤ 10⁹` and a trivial bound below `11`. What is left is the same descent for the sum, which
+goes by Abel summation against the `ψ` bound.
 -/
 
 theorem CH2.v1.challenge_corollary_1_2_psi
@@ -105,8 +103,9 @@ theorem CH2.v1.challenge_corollary_1_3_psi
     (ch2_v1_corollary_1_2_psi : CH2.v1.corollary_1_2_psi)
     (platttrudgian_v1_rh_up_to_exact : PlattTrudgian.v1.rh_up_to_exact)
     (buthe_v1_theorem_2_psi : Buthe.v1.theorem_2_psi) :
-    CH2.v1.corollary_1_3_psi := by
-  sorry
+    CH2.v1.corollary_1_3_psi :=
+  CH2Section9.corollary_1_3_psi ch2_v1_corollary_1_2_psi platttrudgian_v1_rh_up_to_exact
+    buthe_v1_theorem_2_psi
 
 theorem CH2.v1.challenge_corollary_1_3_lambda_sum
     (ch2_v1_corollary_1_2_lambda_sum : CH2.v1.corollary_1_2_lambda_sum)

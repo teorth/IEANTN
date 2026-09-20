@@ -807,6 +807,27 @@ stages:
       they used to say `imports` is a real none, which was true of the STATEMENT (the Riemann
       hypothesis up to T is a hypothesis, not an edge) but is not true of the proof. Challenge.lean
       was regenerated, fingerprints/state/graph/pages rewritten, and `check` passes.
+      COROLLARY 1.3, PSI DISPLAY: DONE (Section9Cor13.lean, CH2Section9.corollary_1_3_psi, axioms
+      propext/choice/Quot.sound). Solution.lean now carries a single sorry, the Lambda/n display.
+      THE FOUR RANGES, as planned: x > 3e12 + 5 uses Corollary 1.2 at T = 3e12 + 5; 10^9 < x <=
+      3e12 + 5 uses it at T = 10^7; 11 < x <= 10^9 is Buthe.v1.theorem_2_psi (0.94 sqrt x); and
+      1 <= x <= 11 is crude -- psi(x) <= 11 log 16 = 44 log 2 <= 31, so |psi - x| <= 31 <= 113.67.
+      T = 3e12 + 5 IS THE RIGHT CHOICE: the condition is pi/(T-1) + (pi/T)^2 <= pi/(3e12), i.e.
+      4(3e12+5)^2 >= pi 3e12 (3e12+4), which holds with 27% to spare at k = 5 and fails at k = 1.
+      Smaller k also means smaller C_T, and C_T is the binding constraint.
+      THE NUMERICS, the part that needed care. C_T(3e12+5) = 113.66888 against the target 113.67,
+      a margin of 1.1e-3, which is 1.3e-4 in y = log(T/2pi) and so six significant digits of both
+      logs. Ten-term Taylor bounds for exp on [0,1] (Real.exp_bound' and Real.sum_le_exp_of_nonneg
+      at n = 10, error ~5e-8) plus e^28 in [1.4462570e12, 1.4462572e12] from exp_nat_bounds give
+      28.7296 <= log(3e12+5) <= 28.7297 and 1.83787 <= log 2pi <= 1.8379, hence y in
+      [26.8917, 26.89183] and C_T <= 113.66968. Margin to 113.67: 3.2e-4.
+      ALSO ADDED: log 10 <= 2.3026 (the earlier log_ten_ge only bounded below), C_T(10^7) <= 82
+      (true 31.698, no precision needed), and mainFactor T = ycoth(pi/T) with
+      1 <= mainFactor T <= 1 + (pi/T)^2 -- the same ycoth bounds the sigma = 1 limit used.
+      WATCH THE REWRITE TRAP that cost two rounds: `rw [hxs]` with hxs : x = sqrt x * sqrt x
+      rewrites x inside sqrt x too, giving sqrt (sqrt x * sqrt x). Feed the identity to nlinarith
+      as a hypothesis instead. Same for `set y := log (T/2pi)` before `rw [CH2.v1.CT]`: unfolding
+      CT introduces fresh occurrences that the earlier `set` cannot have folded.
       COROLLARY 1.3, THE PLAN, and the node question settled. NO lem:pernic COMPUTATION NODE IS
       NEEDED: Buthe.v1.theorem_2_psi already gives |x - psi(x)| <= 0.94 sqrt x for 11 < x <= 10^19,
       which covers the descent with two orders of magnitude to spare against 113.67.
