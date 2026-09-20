@@ -196,7 +196,7 @@ set_option maxHeartbeats 2000000 in
 theorem vihuela (hcs : CotangentSeries.v1.cot_series_zeta_values)
     (hrvm : ZeroCount.v1.rvm_error_bound) (hsmall : ZeroCount.v1.rvm_error_small)
     (hplatt : PlattZeroSum.v1.inv_ordinate_sum_le)
-    {T σ ξ : ℝ} (hT : (10 : ℝ) ^ 7 ≤ T) (hRH : IEANTN.RiemannHypothesisUpTo T)
+    {T σ ξ : ℝ} (hT : (10 : ℝ) ^ 7 - 1 ≤ T) (hRH : IEANTN.RiemannHypothesisUpTo T)
     (hTfree : ∀ z : ℂ, riemannZeta z = 0 → z.im ≠ T) (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hξ : |ξ| ≤ 1) :
     2 * Real.pi / T * IEANTN.zetaZeroesSum Set.univ (Set.Ioc 0 T)
         (fun ρ ↦ ‖CH2Section6.omegaPlus T σ ρ + (ξ : ℂ) * Complex.I * CH2Section6.thetaTS T 1 ρ‖)
@@ -231,7 +231,7 @@ theorem vihuela (hcs : CotangentSeries.v1.cot_series_zeta_values)
     linarith [log_T0_le]
   have hy0 : 0 ≤ y := by
     rw [hy]; apply Real.log_nonneg; rw [le_div_iff₀ (by positivity)]; nlinarith
-  have hu : 1 / T ≤ 1e-7 := by rw [div_le_iff₀ hT0]; norm_num; linarith
+  have hu : 1 / T ≤ 1.0000002e-7 := by rw [div_le_iff₀ hT0]; norm_num; linarith
   have hu0 : 0 < 1 / T := by positivity
   -- each error term
   have hlogTt0 : Real.log (T / t₀) ≤ T / 10 ^ 7 + 5.22 := by
@@ -252,16 +252,16 @@ theorem vihuela (hcs : CotangentSeries.v1.cot_series_zeta_values)
   have hc'0 : 0 ≤ 2.78 * |σ - 1 / 2| + 1 := by positivity
   -- salmon's error
   have hE1 : t₀ / T * (1 + (2.78 * |σ - 1 / 2| + 1) / T) * L0 ≤ 0.016141 := by
-    have ha : t₀ / T ≤ 0.002 := by rw [ht₀, div_le_iff₀ hT0]; linarith
-    have hb : (2.78 * |σ - 1 / 2| + 1) / T ≤ 2.39e-7 := by
+    have ha : t₀ / T ≤ 0.0020001 := by rw [ht₀, div_le_iff₀ hT0]; linarith
+    have hb : (2.78 * |σ - 1 / 2| + 1) / T ≤ 2.3901e-7 := by
       rw [div_le_iff₀ hT0]; nlinarith
     have hb0 : 0 ≤ (2.78 * |σ - 1 / 2| + 1) / T := by positivity
-    have : t₀ / T * (1 + (2.78 * |σ - 1 / 2| + 1) / T) ≤ 0.002 * (1 + 2.39e-7) := by
+    have : t₀ / T * (1 + (2.78 * |σ - 1 / 2| + 1) / T) ≤ 0.0020001 * (1 + 2.3901e-7) := by
       apply mul_le_mul ha (by linarith) (by positivity) (by norm_num)
-    calc _ ≤ 0.002 * (1 + 2.39e-7) * 8.07 := mul_le_mul this hL0hi hL0nn (by norm_num)
+    calc _ ≤ 0.0020001 * (1 + 2.3901e-7) * 8.07 := mul_le_mul this hL0hi hL0nn (by norm_num)
       _ ≤ 0.016141 := by norm_num
   have hE2 : 14 * (y + 1) * (t₀ / T) ^ 2 ≤ 0.001 := by
-    have h1 : (y + 1) * (1 / T) ≤ 15.3e-7 := by
+    have h1 : (y + 1) * (1 / T) ≤ 15.31e-7 := by
       have : (y + 1) * (1 / T) ≤ (14.3 + T / 10 ^ 7) * (1 / T) :=
         mul_le_mul_of_nonneg_right (by linarith) hu0.le
       have e : (14.3 + T / 10 ^ 7) * (1 / T) = 14.3 * (1 / T) + 1e-7 := by field_simp; ring
@@ -269,12 +269,12 @@ theorem vihuela (hcs : CotangentSeries.v1.cot_series_zeta_values)
     have e : 14 * (y + 1) * (t₀ / T) ^ 2 = 14 * ((y + 1) * (1 / T)) * (t₀ ^ 2 * (1 / T)) := by
       field_simp
     rw [e]
-    have h2 : t₀ ^ 2 * (1 / T) ≤ 40 := by rw [ht₀]; nlinarith
+    have h2 : t₀ ^ 2 * (1 / T) ≤ 40.0001 := by rw [ht₀]; nlinarith
     have h3 : 0 ≤ (y + 1) * (1 / T) := by positivity
-    calc 14 * ((y + 1) * (1 / T)) * (t₀ ^ 2 * (1 / T)) ≤ 14 * 15.3e-7 * 40 := by gcongr
+    calc 14 * ((y + 1) * (1 / T)) * (t₀ ^ 2 * (1 / T)) ≤ 14 * 15.31e-7 * 40.0001 := by gcongr
       _ ≤ 0.001 := by norm_num
   have hE3 : 2 / (5 * t₀) + 2 * Real.pi * Real.log (T / t₀) / (5 * T) ≤ 0.000031 := by
-    have h1 : Real.log (T / t₀) * (1 / T) ≤ 1e-7 + 5.22e-7 := by
+    have h1 : Real.log (T / t₀) * (1 / T) ≤ 1.0000002e-7 + 5.2200011e-7 := by
       have hlp : 0 ≤ Real.log (T / t₀) := Real.log_nonneg (by rw [le_div_iff₀ (by norm_num)]; linarith)
       have : Real.log (T / t₀) * (1 / T) ≤ (T / 10 ^ 7 + 5.22) * (1 / T) :=
         mul_le_mul_of_nonneg_right hlogTt0 hu0.le
@@ -309,7 +309,7 @@ theorem vihuela (hcs : CotangentSeries.v1.cot_series_zeta_values)
           mul_le_mul h3 (by linarith) h4 (by norm_num)
       _ ≤ 0.0000723 := by norm_num
   have hE6 : (2.78 * |σ - 1 / 2| + 1) * y / T ≤ 0.0000037 := by
-    have h1 : y * (1 / T) ≤ 14.3e-7 := by
+    have h1 : y * (1 / T) ≤ 14.31e-7 := by
       have : y * (1 / T) ≤ (13.3 + T / 10 ^ 7) * (1 / T) :=
         mul_le_mul_of_nonneg_right (by linarith) hu0.le
       have e : (13.3 + T / 10 ^ 7) * (1 / T) = 13.3 * (1 / T) + 1e-7 := by field_simp; ring
@@ -318,7 +318,7 @@ theorem vihuela (hcs : CotangentSeries.v1.cot_series_zeta_values)
       field_simp
     rw [e]
     have : 0 ≤ y * (1 / T) := by positivity
-    calc _ ≤ 2.39 * 14.3e-7 := mul_le_mul hc' h1 this (by norm_num)
+    calc _ ≤ 2.39 * 14.31e-7 := mul_le_mul hc' h1 this (by norm_num)
       _ ≤ 0.0000037 := by norm_num
   -- the main terms
   have hmain : (1 / (2 * Real.pi)) * (y ^ 2 - L0 ^ 2 - 2 * C1lo 12 * (y + 1) + 2 * C2hi

@@ -93,7 +93,7 @@ theorem sagaro_at_t (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hrvm : ZeroCount.v1.rvm_error_bound) (hsmall : ZeroCount.v1.rvm_error_small)
     (hplatt : PlattZeroSum.v1.inv_ordinate_sum_le)
     (hH : ZetaHadamard.v1.logDeriv_partial_fractions)
-    {T x σ : ℝ} (hT : (10 : ℝ) ^ 7 + 1 ≤ T) (hx9 : (10 : ℝ) ^ 9 ≤ x) (hxT : T ≤ x)
+    {T x σ : ℝ} (hT : (10 : ℝ) ^ 7 ≤ T) (hx9 : (10 : ℝ) ^ 9 ≤ x) (hxT : T ≤ x)
     (hRH : IEANTN.RiemannHypothesisUpTo T)
     (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hσζ : riemannZeta (σ : ℂ) ≠ 0) :
     ∃ t ∈ Set.Icc (T - 1 / 2) T,
@@ -113,7 +113,7 @@ theorem sagaro_at_t (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
   have hx0 : (0 : ℝ) < x := by linarith [show (0 : ℝ) < 10 ^ 9 by norm_num]
   have hx1 : (1000000 : ℝ) ≤ x := by linarith [show (1000000 : ℝ) ≤ 10 ^ 9 by norm_num]
   obtain ⟨t, ⟨ht1, ht2⟩, hTfree, hInt1, hInt2⟩ := hardin hH hrvm hsmall hv hfe (by linarith) hx9 hxT hRH
-  have ht7 : (10 : ℝ) ^ 7 ≤ t := by linarith
+  have ht7 : (10 : ℝ) ^ 7 - 1 ≤ t := by linarith
   have ht0 : (0 : ℝ) < t := by linarith [show (0 : ℝ) < 10 ^ 7 by norm_num]
   have ht4 : (4 : ℝ) ≤ t := by linarith [show (4 : ℝ) ≤ 10 ^ 7 by norm_num]
   have hRHt : IEANTN.RiemannHypothesisUpTo t := RH_mono ht2 hRH
@@ -326,7 +326,7 @@ theorem sagaro_shifted (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hrvm : ZeroCount.v1.rvm_error_bound) (hsmall : ZeroCount.v1.rvm_error_small)
     (hplatt : PlattZeroSum.v1.inv_ordinate_sum_le)
     (hH : ZetaHadamard.v1.logDeriv_partial_fractions)
-    {T x σ : ℝ} (hT : (10 : ℝ) ^ 7 + 1 ≤ T) (hx9 : (10 : ℝ) ^ 9 ≤ x) (hxT : T ≤ x)
+    {T x σ : ℝ} (hT : (10 : ℝ) ^ 7 ≤ T) (hx9 : (10 : ℝ) ^ 9 ≤ x) (hxT : T ≤ x)
     (hRH : IEANTN.RiemannHypothesisUpTo T)
     (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hσζ : riemannZeta (σ : ℂ) ≠ 0) :
     ∃ t ∈ Set.Icc (T - 1 / 2) T,
@@ -430,9 +430,11 @@ theorem log_add_ten_sq_le {T : ℝ} (hT : 64 ≤ T) : (Real.log T + 10) ^ 2 ≤ 
     _ = 9 * T := by rw [mul_pow, Real.sq_sqrt hT0.le]; ring
 
 set_option maxHeartbeats 4000000 in
-/-- **`prop:sagaro`.** The error terms of `sagaro_shifted` collapse into `π/(T-1)` and the
-`prop:vihuela` block; the `1.001` in the latter pays for everything else on the `1/√x` side. -/
-theorem sagaro (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
+/-- **`prop:sagaro`, with the leftover margin kept.** The error terms of `sagaro_shifted` collapse
+into `π/(T-1)` and the `prop:vihuela` block; the `1.001` in the latter pays for everything else on
+the `1/√x` side and still leaves `0.0005/√x`, which `Corollary 1.2` needs at `σ = 0` to absorb
+`ζ'/ζ(0) = log 2π`. -/
+theorem sagaro_slack (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
     (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
     (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
@@ -442,7 +444,7 @@ theorem sagaro (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hrvm : ZeroCount.v1.rvm_error_bound) (hsmall : ZeroCount.v1.rvm_error_small)
     (hplatt : PlattZeroSum.v1.inv_ordinate_sum_le)
     (hH : ZetaHadamard.v1.logDeriv_partial_fractions)
-    {T x σ : ℝ} (hT : (10 : ℝ) ^ 7 + 1 ≤ T) (hx9 : (10 : ℝ) ^ 9 ≤ x) (hxT : T ≤ x)
+    {T x σ : ℝ} (hT : (10 : ℝ) ^ 7 ≤ T) (hx9 : (10 : ℝ) ^ 9 ≤ x) (hxT : T ≤ x)
     (hRH : IEANTN.RiemannHypothesisUpTo T)
     (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hσζ : riemannZeta (σ : ℂ) ≠ 0) :
     |CH2Section6.Svm σ x / x ^ (1 - σ)
@@ -450,7 +452,7 @@ theorem sagaro (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
           - (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re * x ^ (σ - 1))|
       ≤ Real.pi / (T - 1)
         + (1 / (2 * Real.pi) * Real.log (T / (2 * Real.pi)) ^ 2
-            - 1 / (6 * Real.pi) * Real.log (T / (2 * Real.pi))) / Real.sqrt x := by
+            - 1 / (6 * Real.pi) * Real.log (T / (2 * Real.pi)) - 0.0005) / Real.sqrt x := by
   have hπ := Real.pi_pos
   have hπ1 := Real.pi_gt_d2
   have hπ2 := Real.pi_lt_d2
@@ -458,10 +460,10 @@ theorem sagaro (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     hT hx9 hxT hRH hσ0 hσ1 hσζ
   have h107 : (10000000 : ℝ) = (10 : ℝ) ^ 7 := by norm_num
   have h109 : (1000000000 : ℝ) = (10 : ℝ) ^ 9 := by norm_num
-  have hT0 : (10000001 : ℝ) ≤ T := by rw [h107] at *; linarith
+  have hT0 : (10000000 : ℝ) ≤ T := by rw [h107] at *; linarith
   have hx0 : (1000000000 : ℝ) ≤ x := by rw [h109]; exact hx9
   have hxpos : (0 : ℝ) < x := by linarith
-  have ht0 : (10000000 : ℝ) ≤ t := by linarith
+  have ht0 : (9999999 : ℝ) ≤ t := by linarith
   have htpos : (0 : ℝ) < t := by linarith
   refine hbd.trans ?_
   -- names
@@ -485,15 +487,17 @@ theorem sagaro (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
   have hRL : R ≤ L := Real.log_le_log (by linarith) (by linarith)
   have hL0 : (0 : ℝ) < L := by linarith
   have hzy : z ≤ y := Real.log_le_log (by positivity) (by gcongr)
-  have hz142 : 14.2 ≤ z := by
-    have h1 : Real.log ((10 : ℝ) ^ 7 / (2 * Real.pi)) ≤ z :=
-      Real.log_le_log (by positivity) (by gcongr; linarith)
-    rw [Real.log_div (by norm_num) (by positivity), Real.log_pow] at h1
-    push_cast at h1
-    linarith [log_ten_ge, log_two_pi_le]
-  have hy142 : 14.2 ≤ y := by linarith
+  have hz135 : 13.5 ≤ z := by
+    have hzeq : z = Real.log t - Real.log (2 * Real.pi) := by
+      rw [hzdef, Real.log_div (by linarith) (by positivity)]
+    have hlt : Real.log ((10 : ℝ) ^ 7 / 2) ≤ Real.log t :=
+      Real.log_le_log (by positivity) (by linarith)
+    rw [Real.log_div (by norm_num) (by norm_num), Real.log_pow] at hlt
+    push_cast at hlt
+    linarith [log_ten_ge, log_two_pi_le, Real.log_two_lt_d9]
+  have hy135 : 13.5 ≤ y := by linarith
   -- the `1/√x` block
-  have hslack : 4 * (R + 10) ^ 2 / t ^ 2 ≤ 0.001 / (6 * Real.pi) * z := by
+  have hslack : 4 * (R + 10) ^ 2 / t ^ 2 + 0.0005 ≤ 0.001 / (6 * Real.pi) * z := by
     have h1 : (R + 10) ^ 2 ≤ 9 * T := log_add_ten_sq_le (by linarith)
     have h2 : T ^ 2 / 2 ≤ t ^ 2 := by nlinarith
     have h3 : 4 * (R + 10) ^ 2 / t ^ 2 ≤ 72 / T := by
@@ -501,15 +505,15 @@ theorem sagaro (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
       nlinarith
     have h4 : (72 : ℝ) / T ≤ 0.0000072 := by
       rw [div_le_iff₀ (by linarith)]; linarith
-    have h5 : 0.001 / (6 * Real.pi) * z ≥ 0.001 / (6 * Real.pi) * 14.2 := by
-      apply mul_le_mul_of_nonneg_left hz142 (by positivity)
-    have h6 : (0.00075 : ℝ) ≤ 0.001 / (6 * Real.pi) * 14.2 := by
+    have h5 : 0.001 / (6 * Real.pi) * z ≥ 0.001 / (6 * Real.pi) * 13.5 := by
+      apply mul_le_mul_of_nonneg_left hz135 (by positivity)
+    have h6 : (0.0007 : ℝ) ≤ 0.001 / (6 * Real.pi) * 13.5 := by
       rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
       nlinarith
     linarith
   have hkey2 : (1 / (2 * Real.pi) * z ^ 2 - 1.001 / (6 * Real.pi) * z) / s
         + 4 * (R + 10) ^ 2 / t ^ 2 / s
-      ≤ (1 / (2 * Real.pi) * y ^ 2 - 1 / (6 * Real.pi) * y) / s := by
+      ≤ (1 / (2 * Real.pi) * y ^ 2 - 1 / (6 * Real.pi) * y - 0.0005) / s := by
     rw [← add_div, div_le_div_iff_of_pos_right hs0]
     have hbracket : 0 ≤ 1 / (2 * Real.pi) * (y ^ 2 - z ^ 2) - 1 / (6 * Real.pi) * (y - z) := by
       have h1 : 1 / (6 * Real.pi) * (y - z) ≤ 1 / (2 * Real.pi) * (y ^ 2 - z ^ 2) := by
@@ -629,6 +633,36 @@ theorem sagaro (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     field_simp
     ring
   rw [hJsplit]
+  linarith
+
+/-- **`prop:sagaro`**, in the paper's form: `sagaro_slack` with the margin dropped. -/
+theorem sagaro (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    (hv : ZetaLogDerivValues.v1.logDeriv_three_halves)
+    (hcs : CotangentSeries.v1.cot_series_zeta_values)
+    (hrvm : ZeroCount.v1.rvm_error_bound) (hsmall : ZeroCount.v1.rvm_error_small)
+    (hplatt : PlattZeroSum.v1.inv_ordinate_sum_le)
+    (hH : ZetaHadamard.v1.logDeriv_partial_fractions)
+    {T x σ : ℝ} (hT : (10 : ℝ) ^ 7 ≤ T) (hx9 : (10 : ℝ) ^ 9 ≤ x) (hxT : T ≤ x)
+    (hRH : IEANTN.RiemannHypothesisUpTo T)
+    (hσ0 : 0 ≤ σ) (hσ1 : σ < 1) (hσζ : riemannZeta (σ : ℂ) ≠ 0) :
+    |CH2Section6.Svm σ x / x ^ (1 - σ)
+        - (Real.pi / T * (Real.cosh (Real.pi * (1 - σ) / T) / Real.sinh (Real.pi * (1 - σ) / T))
+          - (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re * x ^ (σ - 1))|
+      ≤ Real.pi / (T - 1)
+        + (1 / (2 * Real.pi) * Real.log (T / (2 * Real.pi)) ^ 2
+            - 1 / (6 * Real.pi) * Real.log (T / (2 * Real.pi))) / Real.sqrt x := by
+  have hx0 : (0 : ℝ) < x := by linarith [show (0 : ℝ) < 10 ^ 9 by norm_num]
+  have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx0
+  have h := sagaro_slack hfe hdig hk hneg h2v hv hcs hrvm hsmall hplatt hH hT hx9 hxT hRH hσ0 hσ1 hσζ
+  have hle : (1 / (2 * Real.pi) * Real.log (T / (2 * Real.pi)) ^ 2
+        - 1 / (6 * Real.pi) * Real.log (T / (2 * Real.pi)) - 0.0005) / Real.sqrt x
+      ≤ (1 / (2 * Real.pi) * Real.log (T / (2 * Real.pi)) ^ 2
+        - 1 / (6 * Real.pi) * Real.log (T / (2 * Real.pi))) / Real.sqrt x :=
+    div_le_div_of_nonneg_right (by linarith) hs0.le
   linarith
 
 end CH2Section9

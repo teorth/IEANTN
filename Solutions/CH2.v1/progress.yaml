@@ -777,12 +777,32 @@ stages:
       for sigma < 1; at sigma >= 1 it switches to the tail sum over n >= x. So the limit has to be
       taken through the explicit finite sum, not through S itself, and the limit value is
       sum_{n in Iic (floor x)} Lambda n / n (the n = 0 term is 0/0 = 0, matching the node's lambdaSum).
-      SECTION 9, REMAINING: (a) package the node's four conclusions: corollary_1_2_psi is sagaro at
-      sigma = 0 (zeta(0) = -1/2 /= 0), where the main term's -zeta'/zeta(0) x^{-1} = -log(2pi)/x has
-      to be absorbed -- it costs log(2pi)/x against the roughly 7.4e-4/sqrt x of vihuela's 1.001 that
-      the numeric collapse left unspent, which needs only x >= 6.2e6; corollary_1_2_lambda_sum is
-      sagaro_one. (b) Corollary 1.3 at T = 3e12 (PlattTrudgian.v1.rh_up_to) plus a lem:pernic
-      computation node for 1 <= x <= 10^13. (c) The T >= 10^7 + 1 vs 10^7 gap recorded above.
+      FIRST CONCLUSION PROVED: CH2Section9.corollary_1_2_psi : CH2.v1.corollary_1_2_psi, in the
+      node's own words, axioms propext/choice/Quot.sound, no sorry. It is conditional on the eleven
+      imported node conclusions (hfe, hdig, hk, hneg, h2v, hv, hcs, hrvm, hsmall, hplatt, hH).
+      THE 10^7 + 1 GAP IS CLOSED. prop:vihuela now assumes T >= 10^7 - 1 rather than 10^7, which is
+      what the chain needs since it is applied at the hardin height t >= T - 1/2. Only six numerals
+      moved, all with slack to spare: 1/T <= 1.0000002e-7, t0/T <= 0.0020001, the salmon factor
+      2.3901e-7, (y+1)/T <= 15.31e-7, t0^2/T <= 40.0001, y/T <= 14.31e-7 and the eq:arguc tail
+      6.2200011e-7. The five error allowances (0.016141, 0.000031, 0.000802, 0.0000723, 0.0000037)
+      and their sum 0.01705 are untouched, so the vihuela endgame is unchanged.
+      DOWNSTREAM, sagaro now assumes T >= 10^7 and z = log(t/2pi) >= 13.5 rather than 14.2 (t can
+      now dip half a unit below 10^7, so the clean 10^7 lower bound is gone; 13.5 comes from
+      t >= 10^7/2 and costs nothing, the slack test needing only 5.07e-4 against 7e-4).
+      SAGARO NOW COMES IN TWO FORMS: sagaro_slack keeps 0.0005/sqrt x of the vihuela margin
+      explicit, and sagaro drops it. THE SIGMA = 0 PACKAGING NEEDS THE SLACK: the main term carries
+      -zeta'/zeta(0) x^{-1}, and zeta'/zeta(0) = log 2pi comes straight from Mathlib's
+      deriv_riemannZeta_zero = -log(2pi)/2 and riemannZeta_zero = -1/2. Multiplying the bound by x
+      turns it into an additive log 2pi <= 1.9, paid by 0.0005 sqrt x >= 15.8 at x >= 10^9.
+      Svm 0 x = Chebyshev.psi x is immediate once Ioc 0 (floor x) = Icc 1 (floor x).
+      SECTION 9, REMAINING: (a) corollary_1_2_lambda_sum, which is sagaro_one plus the same
+      hypothesis reshuffle (max T 10^9 < x); it needs no slack, its main term being log x - gamma.
+      (b) Corollary 1.3 at T = 3e12 (PlattTrudgian.v1.rh_up_to) plus a lem:pernic computation node
+      for 1 <= x <= 10^13. (c) THE REPO-SIDE STEP, now due: CH2.v1's formalization.yaml still lists
+      only GammaAsymptotics.v2 and CotangentSeries.v1 as imports, but the solution uses ZeroCount.v1
+      (both conclusions), ZetaLogDeriv.v1, ZetaLogDerivValues.v1 (four conclusions), ZetaHadamard.v1
+      and PlattZeroSum.v1 as well; the imports list, the regenerated Challenge and Solution.lean
+      (whose signatures are stale and which still carries a sorry) have to be brought into line.
       THE FULL SIGMA RANGE OF prop:sagaro (-1.999 <= sigma <= 100) IS NOT NEEDED BY THIS NODE: the
       paper's own proof of cor:psi is "just cases sigma = 0 and sigma = 1". sigma in (-2, 0) would
       only need hsigma0 relaxed in the trivial-zero block; sigma > 1 is lambda > 0 and would need
