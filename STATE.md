@@ -44,8 +44,8 @@ adds the environment detail.
 | `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
-| `CH2.v1` | awaiting-solution | `corollary_1_2_psi` | literature | 2 | - |
-| `CH2.v1` | awaiting-solution | `corollary_1_2_lambda_sum` | literature | 2 | - |
+| `CH2.v1` | awaiting-solution | `corollary_1_2_psi` | literature | 11 | - |
+| `CH2.v1` | awaiting-solution | `corollary_1_2_lambda_sum` | literature | 11 | - |
 | `CH2.v1` | awaiting-solution | `corollary_1_3_psi` | literature | 2 | - |
 | `CH2.v1` | awaiting-solution | `corollary_1_3_lambda_sum` | literature | 2 | - |
 | `CH2.v2` | active | `proposition_2_4_upper` | lean-comparator-stale | 0 | #64 |
@@ -167,6 +167,15 @@ downstream.
 | `FKS2Numerics.v1.corollary_22_mid_range` | 3 |
 | `FKS2.v2.theorem_3` | 3 |
 | `Buthe.v1.theorem_2_theta_lower` | 3 |
+| `ZetaLogDerivValues.v1.logDeriv_two` | 2 |
+| `ZetaLogDerivValues.v1.logDeriv_three_halves` | 2 |
+| `ZetaLogDerivValues.v1.logDeriv_neg_one` | 2 |
+| `ZetaLogDerivValues.v1.logDeriv_laurent_alternating` | 2 |
+| `ZetaLogDeriv.v1.logDeriv_functional_equation` | 2 |
+| `ZetaHadamard.v1.logDeriv_partial_fractions` | 2 |
+| `ZeroCount.v1.rvm_error_small` | 2 |
+| `ZeroCount.v1.rvm_error_bound` | 2 |
+| `PlattZeroSum.v1.inv_ordinate_sum_le` | 2 |
 | `PlattTrudgian2021.v1.theorem_1_numerical` | 2 |
 | `MT.v1.zero_free_region_sharpened` | 2 |
 | `MT.v1.zero_free_region` | 2 |

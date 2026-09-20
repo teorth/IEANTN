@@ -3,10 +3,9 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
-import Section5
+import Section9Limit
 import IEANTN.Nodes.CH2.v1.Conclusions
 import IEANTN.Nodes.PlattTrudgian.v1.Conclusions
-import IEANTN.Nodes.GammaAsymptotics.v1.Conclusions
 
 /-!
 # Solution: `CH2.v1` — **incomplete, and deliberately so**
@@ -39,30 +38,64 @@ lives here in the solution and **never reaches `IEANTN/Vocabulary/` or any `Conc
 That is the point of putting it here: §5 is machinery internal to the paper, not one of its
 exports, so it does not belong in the layer the network reads.
 
+§6 through §9 and Appendix B are now done as well, and **Corollary 1.2 is closed**: both of its
+displays are proved below from this node's imports, with no `sorry` between them and Mathlib.
+
+| file | content |
+|---|---|
+| `Section6*`, `ZetaReal01` | §6 — the residues, the zero terms, the contour, `svm_abs_bound` |
+| `Section7*` | §7 — `prop:vihuela`, the bound on the `ω⁺` zero sum |
+| `Section81*` | §8.1 — `prop:titch96A`, `lem:saghar`, `lem:hardin` |
+| `Section9`, `Section9Limit` | §9 — `prop:sagaro`, and Corollary 1.2 at `σ = 0` and `σ = 1` |
+
 ## What is missing
 
-§6 through §8, and Appendix B. Nobody has formalized them — `PrimeNumberTheoremAnd`'s `CH2.lean`
-carries exactly four `sorry`s, and they are exactly these four corollaries, with
-`TODO: incorporate material from [CH2, Section 6]` and `[CH2, Section 7] onwards` where the work
-would go. So this is not a port waiting to be finished; it is mathematics waiting to be done.
-
-The inputs that will close it are recorded as this node's imports rather than proved here:
-`CH2.v2` (Proposition 2.4, verified), `CH2.v3` (the approximants, verified), `ZeroCount.v1`
-(Rosser's zero count, for the constant `C_T`), and for Corollary 1.3 `PlattTrudgian.v1` together
-with a numerics node that does not exist yet.
+Corollary 1.3, both displays. It is Corollary 1.2 at Platt and Trudgian's verified height together
+with the descent from `x > max(T, 10⁹)` to `x ≥ 1`, which is `lem:pernic` — a computation over
+`1 ≤ x ≤ 10¹³` that no node supplies yet.
 -/
 
 theorem CH2.v1.challenge_corollary_1_2_psi
-    (gammaasymptotics_v1_digamma_sub_log_isbigo :
-      GammaAsymptotics.v1.digamma_sub_log_isBigO) :
-    CH2.v1.corollary_1_2_psi := by
-  sorry
+    (gammaasymptotics_v2_digamma_sub_log_isbigo_strip : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (cotangentseries_v1_cot_series_zeta_values : CotangentSeries.v1.cot_series_zeta_values)
+    (zerocount_v1_rvm_error_bound : ZeroCount.v1.rvm_error_bound)
+    (zerocount_v1_rvm_error_small : ZeroCount.v1.rvm_error_small)
+    (zetalogderiv_v1_logderiv_functional_equation : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (zetalogderivvalues_v1_logderiv_two : ZetaLogDerivValues.v1.logDeriv_two)
+    (zetalogderivvalues_v1_logderiv_three_halves : ZetaLogDerivValues.v1.logDeriv_three_halves)
+    (zetalogderivvalues_v1_logderiv_neg_one : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    (zetalogderivvalues_v1_logderiv_laurent_alternating : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (zetahadamard_v1_logderiv_partial_fractions : ZetaHadamard.v1.logDeriv_partial_fractions)
+    (plattzerosum_v1_inv_ordinate_sum_le : PlattZeroSum.v1.inv_ordinate_sum_le) :
+    CH2.v1.corollary_1_2_psi :=
+  CH2Section9.corollary_1_2_psi zetalogderiv_v1_logderiv_functional_equation
+    gammaasymptotics_v2_digamma_sub_log_isbigo_strip
+    zetalogderivvalues_v1_logderiv_laurent_alternating zetalogderivvalues_v1_logderiv_neg_one
+    zetalogderivvalues_v1_logderiv_two zetalogderivvalues_v1_logderiv_three_halves
+    cotangentseries_v1_cot_series_zeta_values zerocount_v1_rvm_error_bound
+    zerocount_v1_rvm_error_small plattzerosum_v1_inv_ordinate_sum_le
+    zetahadamard_v1_logderiv_partial_fractions
 
 theorem CH2.v1.challenge_corollary_1_2_lambda_sum
-    (gammaasymptotics_v1_digamma_sub_log_isbigo :
-      GammaAsymptotics.v1.digamma_sub_log_isBigO) :
-    CH2.v1.corollary_1_2_lambda_sum := by
-  sorry
+    (gammaasymptotics_v2_digamma_sub_log_isbigo_strip : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (cotangentseries_v1_cot_series_zeta_values : CotangentSeries.v1.cot_series_zeta_values)
+    (zerocount_v1_rvm_error_bound : ZeroCount.v1.rvm_error_bound)
+    (zerocount_v1_rvm_error_small : ZeroCount.v1.rvm_error_small)
+    (zetalogderiv_v1_logderiv_functional_equation : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (zetalogderivvalues_v1_logderiv_two : ZetaLogDerivValues.v1.logDeriv_two)
+    (zetalogderivvalues_v1_logderiv_three_halves : ZetaLogDerivValues.v1.logDeriv_three_halves)
+    (zetalogderivvalues_v1_logderiv_neg_one : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    (zetalogderivvalues_v1_logderiv_laurent_alternating : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (zetahadamard_v1_logderiv_partial_fractions : ZetaHadamard.v1.logDeriv_partial_fractions)
+    (plattzerosum_v1_inv_ordinate_sum_le : PlattZeroSum.v1.inv_ordinate_sum_le) :
+    CH2.v1.corollary_1_2_lambda_sum :=
+  CH2Section9.corollary_1_2_lambda_sum zetalogderiv_v1_logderiv_functional_equation
+    gammaasymptotics_v2_digamma_sub_log_isbigo_strip
+    zetalogderivvalues_v1_logderiv_laurent_alternating zetalogderivvalues_v1_logderiv_neg_one
+    zetalogderivvalues_v1_logderiv_two zetalogderivvalues_v1_logderiv_three_halves
+    cotangentseries_v1_cot_series_zeta_values zerocount_v1_rvm_error_bound
+    zerocount_v1_rvm_error_small plattzerosum_v1_inv_ordinate_sum_le
+    zetahadamard_v1_logderiv_partial_fractions
 
 theorem CH2.v1.challenge_corollary_1_3_psi
     (ch2_v1_corollary_1_2_psi : CH2.v1.corollary_1_2_psi)

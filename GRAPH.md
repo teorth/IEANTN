@@ -131,9 +131,14 @@ graph LR
   NPlattTrudgian_v1 --> NMT_v1
   NPlattTrudgian_v1 -->|2| NPlattTrudgian2021_v1
   NPlattTrudgian2021_v1 -->|2| NBKLNW_v1
+  NPlattZeroSum_v1 -->|2| NCH2_v1
   NRosserSchoenfeld_v1 --> NKadiri2005_v1
   NTrudgian2011_v1 --> NPlatt2017_v1
   NWedeniwski_v1 --> NKadiri2005_v1
+  NZeroCount_v1 -->|4| NCH2_v1
+  NZetaHadamard_v1 -->|2| NCH2_v1
+  NZetaLogDeriv_v1 -->|2| NCH2_v1
+  NZetaLogDerivValues_v1 -->|8| NCH2_v1
   NLcm_v2 ==>|bridge| NLcm_v1
   NPlatt2017_v1 ==>|bridge| NPlatt2015_v1
   NPlatt2017_v1 ==>|bridge| NWedeniwski_v1
@@ -428,8 +433,26 @@ graph LR
   FKBJ_v1_rh_up_to --> Buthe_v1_theorem_2_theta_lower
   GammaAsymptotics_v2_digamma_sub_log_isBigO_strip --> CH2_v1_corollary_1_2_lambda_sum
   CotangentSeries_v1_cot_series_zeta_values --> CH2_v1_corollary_1_2_lambda_sum
+  ZeroCount_v1_rvm_error_bound --> CH2_v1_corollary_1_2_lambda_sum
+  ZeroCount_v1_rvm_error_small --> CH2_v1_corollary_1_2_lambda_sum
+  ZetaLogDeriv_v1_logDeriv_functional_equation --> CH2_v1_corollary_1_2_lambda_sum
+  ZetaLogDerivValues_v1_logDeriv_two --> CH2_v1_corollary_1_2_lambda_sum
+  ZetaLogDerivValues_v1_logDeriv_three_halves --> CH2_v1_corollary_1_2_lambda_sum
+  ZetaLogDerivValues_v1_logDeriv_neg_one --> CH2_v1_corollary_1_2_lambda_sum
+  ZetaLogDerivValues_v1_logDeriv_laurent_alternating --> CH2_v1_corollary_1_2_lambda_sum
+  ZetaHadamard_v1_logDeriv_partial_fractions --> CH2_v1_corollary_1_2_lambda_sum
+  PlattZeroSum_v1_inv_ordinate_sum_le --> CH2_v1_corollary_1_2_lambda_sum
   GammaAsymptotics_v2_digamma_sub_log_isBigO_strip --> CH2_v1_corollary_1_2_psi
   CotangentSeries_v1_cot_series_zeta_values --> CH2_v1_corollary_1_2_psi
+  ZeroCount_v1_rvm_error_bound --> CH2_v1_corollary_1_2_psi
+  ZeroCount_v1_rvm_error_small --> CH2_v1_corollary_1_2_psi
+  ZetaLogDeriv_v1_logDeriv_functional_equation --> CH2_v1_corollary_1_2_psi
+  ZetaLogDerivValues_v1_logDeriv_two --> CH2_v1_corollary_1_2_psi
+  ZetaLogDerivValues_v1_logDeriv_three_halves --> CH2_v1_corollary_1_2_psi
+  ZetaLogDerivValues_v1_logDeriv_neg_one --> CH2_v1_corollary_1_2_psi
+  ZetaLogDerivValues_v1_logDeriv_laurent_alternating --> CH2_v1_corollary_1_2_psi
+  ZetaHadamard_v1_logDeriv_partial_fractions --> CH2_v1_corollary_1_2_psi
+  PlattZeroSum_v1_inv_ordinate_sum_le --> CH2_v1_corollary_1_2_psi
   CH2_v1_corollary_1_2_lambda_sum --> CH2_v1_corollary_1_3_lambda_sum
   PlattTrudgian_v1_rh_up_to --> CH2_v1_corollary_1_3_lambda_sum
   CH2_v1_corollary_1_2_psi --> CH2_v1_corollary_1_3_psi
@@ -513,8 +536,6 @@ graph LR
   style Buthe_v1_theorem_2_psi stroke-dasharray: 8 4;
   style Buthe_v1_theorem_2_theta stroke-dasharray: 8 4;
   style Buthe_v1_theorem_2_theta_lower stroke-dasharray: 8 4;
-  style CH2_v1_corollary_1_2_lambda_sum stroke-dasharray: 8 4;
-  style CH2_v1_corollary_1_2_psi stroke-dasharray: 8 4;
   style CH2_v1_corollary_1_3_lambda_sum stroke-dasharray: 8 4;
   style CH2_v1_corollary_1_3_psi stroke-dasharray: 8 4;
   style DudekPlatt_v1_largest_counterexample_on_rh stroke-dasharray: 8 4;
@@ -701,15 +722,33 @@ A line is one claim, indented under whatever assumes it.
 - [`Buthe2016.v1.theorem_2_theta`](docs/nodes/Buthe2016-v1.md#theorem_2_theta) — cited
 
 - [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) — cited — *sources known, not all drawable*
-  - [`CH2.v1.corollary_1_2_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_2_lambda_sum) — cited — *sources known, not all drawable*
+  - [`CH2.v1.corollary_1_2_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_2_lambda_sum) — cited
     - [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](docs/nodes/GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip) — verified
     - [`CotangentSeries.v1.cot_series_zeta_values`](docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values) — unjustified
+    - [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) — cited
+    - [`ZeroCount.v1.rvm_error_small`](docs/nodes/ZeroCount-v1.md#rvm_error_small) — cited
+    - [`ZetaLogDeriv.v1.logDeriv_functional_equation`](docs/nodes/ZetaLogDeriv-v1.md#logDeriv_functional_equation) — verified
+    - [`ZetaLogDerivValues.v1.logDeriv_two`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_two) — computation
+    - [`ZetaLogDerivValues.v1.logDeriv_three_halves`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_three_halves) — computation
+    - [`ZetaLogDerivValues.v1.logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_neg_one) — computation
+    - [`ZetaLogDerivValues.v1.logDeriv_laurent_alternating`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating) — computation
+    - [`ZetaHadamard.v1.logDeriv_partial_fractions`](docs/nodes/ZetaHadamard-v1.md#logDeriv_partial_fractions) — cited
+    - [`PlattZeroSum.v1.inv_ordinate_sum_le`](docs/nodes/PlattZeroSum-v1.md#inv_ordinate_sum_le) — cited
   - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
 
 - [`CH2.v1.corollary_1_3_psi`](docs/nodes/CH2-v1.md#corollary_1_3_psi) — cited — *sources known, not all drawable*
-  - [`CH2.v1.corollary_1_2_psi`](docs/nodes/CH2-v1.md#corollary_1_2_psi) — cited — *sources known, not all drawable*
+  - [`CH2.v1.corollary_1_2_psi`](docs/nodes/CH2-v1.md#corollary_1_2_psi) — cited
     - [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](docs/nodes/GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip) — verified
     - [`CotangentSeries.v1.cot_series_zeta_values`](docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values) — unjustified
+    - [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) — cited
+    - [`ZeroCount.v1.rvm_error_small`](docs/nodes/ZeroCount-v1.md#rvm_error_small) — cited
+    - [`ZetaLogDeriv.v1.logDeriv_functional_equation`](docs/nodes/ZetaLogDeriv-v1.md#logDeriv_functional_equation) — verified
+    - [`ZetaLogDerivValues.v1.logDeriv_two`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_two) — computation
+    - [`ZetaLogDerivValues.v1.logDeriv_three_halves`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_three_halves) — computation
+    - [`ZetaLogDerivValues.v1.logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_neg_one) — computation
+    - [`ZetaLogDerivValues.v1.logDeriv_laurent_alternating`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating) — computation
+    - [`ZetaHadamard.v1.logDeriv_partial_fractions`](docs/nodes/ZetaHadamard-v1.md#logDeriv_partial_fractions) — cited
+    - [`PlattZeroSum.v1.inv_ordinate_sum_le`](docs/nodes/PlattZeroSum-v1.md#inv_ordinate_sum_le) — cited
   - [`PlattTrudgian.v1.rh_up_to`](docs/nodes/PlattTrudgian-v1.md#rh_up_to) — cited — *sources known, not all drawable*
 
 - [`CH2.v2.proposition_2_4_lower`](docs/nodes/CH2-v2.md#proposition_2_4_lower) — verified, stale
@@ -851,8 +890,6 @@ A line is one claim, indented under whatever assumes it.
     - [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) — computation — *sources known, not all drawable*
       - [`Trudgian2011.v1.integral_S_bound`](docs/nodes/Trudgian2011-v1.md#integral_S_bound) — cited — *sources not traced*
 
-- [`PlattZeroSum.v1.inv_ordinate_sum_le`](docs/nodes/PlattZeroSum-v1.md#inv_ordinate_sum_le) — cited
-
 - [`PrimeInterval.v1.classicalBound_hasPrimeInInterval`](docs/nodes/PrimeInterval-v1.md#classicalBound_hasPrimeInInterval) — verified, stale
 
 - [`PrimeInterval.v1.eTheta_criterion`](docs/nodes/PrimeInterval-v1.md#eTheta_criterion) — verified, stale
@@ -863,25 +900,9 @@ A line is one claim, indented under whatever assumes it.
 
 - [`RosserSchoenfeld.v1.zero_free_region`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region) — cited — *sources not traced*
 
-- [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) — cited
-
-- [`ZeroCount.v1.rvm_error_small`](docs/nodes/ZeroCount-v1.md#rvm_error_small) — cited
-
 - [`ZeroFreeHeight.v1.classical_region_descends`](docs/nodes/ZeroFreeHeight-v1.md#classical_region_descends) — verified, stale
 
-- [`ZetaHadamard.v1.logDeriv_partial_fractions`](docs/nodes/ZetaHadamard-v1.md#logDeriv_partial_fractions) — cited
-
-- [`ZetaLogDeriv.v1.logDeriv_functional_equation`](docs/nodes/ZetaLogDeriv-v1.md#logDeriv_functional_equation) — verified
-
 - [`ZetaLogDerivValues.v1.deriv_logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#deriv_logDeriv_neg_one) — computation
-
-- [`ZetaLogDerivValues.v1.logDeriv_laurent_alternating`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating) — computation
-
-- [`ZetaLogDerivValues.v1.logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_neg_one) — computation
-
-- [`ZetaLogDerivValues.v1.logDeriv_three_halves`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_three_halves) — computation
-
-- [`ZetaLogDerivValues.v1.logDeriv_two`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_two) — computation
 
 - [`ZetaZeroes.v1.exists_ordinate_free_height`](docs/nodes/ZetaZeroes-v1.md#exists_ordinate_free_height) — verified
 
@@ -922,14 +943,22 @@ rather than maintained.
 | [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) | cited | 2 | traced |
 | [`MT.v1.zero_free_region_sharpened`](docs/nodes/MT-v1.md#zero_free_region_sharpened) | cited | 2 | traced |
 | [`PlattTrudgian2021.v1.theorem_1_numerical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_numerical) | cited | 2 | traced |
+| [`PlattZeroSum.v1.inv_ordinate_sum_le`](docs/nodes/PlattZeroSum-v1.md#inv_ordinate_sum_le) | cited | 2 | none |
+| [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) | cited | 2 | none |
+| [`ZeroCount.v1.rvm_error_small`](docs/nodes/ZeroCount-v1.md#rvm_error_small) | cited | 2 | none |
+| [`ZetaHadamard.v1.logDeriv_partial_fractions`](docs/nodes/ZetaHadamard-v1.md#logDeriv_partial_fractions) | cited | 2 | none |
+| [`ZetaLogDerivValues.v1.logDeriv_laurent_alternating`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating) | computation | 2 | none |
+| [`ZetaLogDerivValues.v1.logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_neg_one) | computation | 2 | none |
+| [`ZetaLogDerivValues.v1.logDeriv_three_halves`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_three_halves) | computation | 2 | none |
+| [`ZetaLogDerivValues.v1.logDeriv_two`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_two) | computation | 2 | none |
 | [`Buthe.v1.theorem_2_theta`](docs/nodes/Buthe-v1.md#theorem_2_theta) | cited | 1 | known, not all drawable |
 | [`Buthe.v2.lemma_3_bounds`](docs/nodes/Buthe-v2.md#lemma_3_bounds) | unjustified | 1 | none |
 | [`Buthe.v2.lemma_3_positivity`](docs/nodes/Buthe-v2.md#lemma_3_positivity) | unjustified | 1 | none |
 | [`ButheNumerics.v1.lemma_3_constant_gt_at_10`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_gt_at_10) | computation | 1 | none |
 | [`ButheNumerics.v1.lemma_3_constant_nonpos`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_nonpos) | computation | 1 | none |
 | [`ButheNumerics.v1.li_minus_pi_below_1e7`](docs/nodes/ButheNumerics-v1.md#li_minus_pi_below_1e7) | computation | 1 | none |
-| [`CH2.v1.corollary_1_2_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_2_lambda_sum) | cited | 1 | known, not all drawable |
-| [`CH2.v1.corollary_1_2_psi`](docs/nodes/CH2-v1.md#corollary_1_2_psi) | cited | 1 | known, not all drawable |
+| [`CH2.v1.corollary_1_2_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_2_lambda_sum) | cited | 1 | traced |
+| [`CH2.v1.corollary_1_2_psi`](docs/nodes/CH2-v1.md#corollary_1_2_psi) | cited | 1 | traced |
 | [`ContourIntegration.v1.residue_theorem_rectangle`](docs/nodes/ContourIntegration-v1.md#residue_theorem_rectangle) | unjustified | 1 | none |
 | [`DudekPlattNumerics.v1.pi_two_sided_paper`](docs/nodes/DudekPlattNumerics-v1.md#pi_two_sided_paper) | computation | 1 | known, not all drawable |
 | [`DudekPlattNumerics.v2.pi_two_sided_pnt`](docs/nodes/DudekPlattNumerics-v2.md#pi_two_sided_pnt) | computation | 1 | **not yet traced** |
@@ -957,16 +986,8 @@ rather than maintained.
 | [`GammaAsymptotics.v1.digamma_sub_log_isBigO`](docs/nodes/GammaAsymptotics-v1.md#digamma_sub_log_isBigO) | unjustified | 0 | none |
 | [`LowZeroes.v1.sum_inv_ordinates_below_2e4`](docs/nodes/LowZeroes-v1.md#sum_inv_ordinates_below_2e4) | computation | 0 | none |
 | [`PlattTrudgian2021.v1.theorem_1_classical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_classical) | cited | 0 | traced |
-| [`PlattZeroSum.v1.inv_ordinate_sum_le`](docs/nodes/PlattZeroSum-v1.md#inv_ordinate_sum_le) | cited | 0 | none |
 | [`RosserSchoenfeld.v1.zero_free_region`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region) | cited | 0 | **not yet traced** |
-| [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) | cited | 0 | none |
-| [`ZeroCount.v1.rvm_error_small`](docs/nodes/ZeroCount-v1.md#rvm_error_small) | cited | 0 | none |
-| [`ZetaHadamard.v1.logDeriv_partial_fractions`](docs/nodes/ZetaHadamard-v1.md#logDeriv_partial_fractions) | cited | 0 | none |
 | [`ZetaLogDerivValues.v1.deriv_logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#deriv_logDeriv_neg_one) | computation | 0 | none |
-| [`ZetaLogDerivValues.v1.logDeriv_laurent_alternating`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating) | computation | 0 | none |
-| [`ZetaLogDerivValues.v1.logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_neg_one) | computation | 0 | none |
-| [`ZetaLogDerivValues.v1.logDeriv_three_halves`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_three_halves) | computation | 0 | none |
-| [`ZetaLogDerivValues.v1.logDeriv_two`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_two) | computation | 0 | none |
 
 ## Nodes that state nothing yet
 

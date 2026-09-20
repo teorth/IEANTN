@@ -43,7 +43,7 @@ def rvm_error_bound : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
 
 **Justification `ch2-b1`** — **designated** — literature, Lemma B.1, second bound
 
@@ -72,7 +72,7 @@ def rvm_error_small : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
 
 **Justification `ch2-b1`** — **designated** — literature, Lemma B.1, first bound
 

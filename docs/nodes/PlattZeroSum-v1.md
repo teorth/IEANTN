@@ -43,7 +43,7 @@ def inv_ordinate_sum_le : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
 
 **Justification `ch2-computation`** — **designated** — literature, proof of Proposition prop:vihuela (section 7, 'Sums over non-trivial zeros')
 

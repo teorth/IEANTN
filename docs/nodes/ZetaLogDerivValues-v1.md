@@ -45,7 +45,7 @@ noncomputable def logDeriv_two : Prop :=
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
 
 **Justification `computed`** — **designated** — numerical
 
@@ -74,7 +74,7 @@ noncomputable def logDeriv_three_halves : Prop :=
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
 
 **Justification `computed`** — **designated** — numerical, proof of Lemma 8.1 (`lem:saghar`), the sigma_+ = 3/2 term
 
@@ -105,7 +105,7 @@ noncomputable def logDeriv_neg_one : Prop :=
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
 
 **Justification `computed`** — **designated** — numerical, proof of Lemma 8.5 (`lem:moruno`), through the stated A~(-1)
 
@@ -190,7 +190,7 @@ def logDeriv_laurent_alternating : Prop :=
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
 
 **Justification `ch2-kalmynin`** — **designated** — numerical, Lemma B.6 (`lem:kalmynin`)
 

@@ -42,7 +42,25 @@ conclusions:
     conclusion: digamma_sub_log_isBigO_strip
   - node: CotangentSeries.v1
     conclusion: cot_series_zeta_values
-  imports_status: traced
+  - node: ZeroCount.v1
+    conclusion: rvm_error_bound
+  - node: ZeroCount.v1
+    conclusion: rvm_error_small
+  - node: ZetaLogDeriv.v1
+    conclusion: logDeriv_functional_equation
+  - node: ZetaLogDerivValues.v1
+    conclusion: logDeriv_two
+  - node: ZetaLogDerivValues.v1
+    conclusion: logDeriv_three_halves
+  - node: ZetaLogDerivValues.v1
+    conclusion: logDeriv_neg_one
+  - node: ZetaLogDerivValues.v1
+    conclusion: logDeriv_laurent_alternating
+  - node: ZetaHadamard.v1
+    conclusion: logDeriv_partial_fractions
+  - node: PlattZeroSum.v1
+    conclusion: inv_ordinate_sum_le
+  imports_status: identified
   justifications:
   - id: ch2-paper
     kind: literature
@@ -52,8 +70,12 @@ conclusions:
       Asserted on the authority of the paper, read from arXiv:2512.15709. The Riemann hypothesis up to
       height T is carried as a hypothesis in the statement rather than as an import, and T is
       universally quantified, so this conclusion consumes nothing from the network and applies at
-      whatever height a verification node supplies -- the same shape Buthe2016.v1 uses, and the reason
-      `imports` is a real `none`. NOTE THE MAIN TERM. It is x * (pi/T) * coth(pi/T), not x. Since
+      whatever height a verification node supplies -- the same shape Buthe2016.v1 uses. THE IMPORTS
+      ARE THE PROOF'S, NOT THE STATEMENT'S: the statement consumes nothing from the network, but the
+      Lean route in Solutions/CH2.v1 (and the paper's own proof) rests on the zero count, the value of
+      zeta'/zeta at a few points, the functional equation in logarithmic-derivative form, the
+      Hadamard partial-fraction expansion and Platt's sum over low zeros, so those are drawn as edges.
+      NOTE THE MAIN TERM. It is x * (pi/T) * coth(pi/T), not x. Since
       y*coth(y) = 1 + y^2/3 + O(y^4) that is x to enormous precision at the heights in play, which is
       why Corollary 1.3 can drop it, but dropping it is a step in the paper's argument and not a
       definitional convenience. PrimeNumberTheoremAnd states this as CH2.cor_1_2_a with a `sorry`; its
@@ -63,7 +85,7 @@ conclusions:
   progress:
     solution: Solutions/CH2.v1/
     state: in-progress
-    remaining_holes: 4
+    remaining_holes: 2
 - id: corollary_1_2_lambda_sum
   declaration: CH2.v1.corollary_1_2_lambda_sum
   challenge: CH2.v1.challenge_corollary_1_2_lambda_sum
@@ -72,7 +94,25 @@ conclusions:
     conclusion: digamma_sub_log_isBigO_strip
   - node: CotangentSeries.v1
     conclusion: cot_series_zeta_values
-  imports_status: traced
+  - node: ZeroCount.v1
+    conclusion: rvm_error_bound
+  - node: ZeroCount.v1
+    conclusion: rvm_error_small
+  - node: ZetaLogDeriv.v1
+    conclusion: logDeriv_functional_equation
+  - node: ZetaLogDerivValues.v1
+    conclusion: logDeriv_two
+  - node: ZetaLogDerivValues.v1
+    conclusion: logDeriv_three_halves
+  - node: ZetaLogDerivValues.v1
+    conclusion: logDeriv_neg_one
+  - node: ZetaLogDerivValues.v1
+    conclusion: logDeriv_laurent_alternating
+  - node: ZetaHadamard.v1
+    conclusion: logDeriv_partial_fractions
+  - node: PlattZeroSum.v1
+    conclusion: inv_ordinate_sum_le
+  imports_status: identified
   justifications:
   - id: ch2-paper
     kind: literature
@@ -80,14 +120,14 @@ conclusions:
     locator: Corollary 1.2, second display
     note: >-
       Asserted on the authority of the paper. The companion to the psi bound: the same two constants
-      pi/(T-1) and C_T, divided through by x. Imports `none` for the same reason as above -- the
-      Riemann hypothesis up to T is a hypothesis, not an edge. PrimeNumberTheoremAnd states this as
+      pi/(T-1) and C_T, divided through by x. The Riemann hypothesis up to T is a hypothesis, not an
+      edge; the imports listed are what the proof rests on, as for the psi bound above. PrimeNumberTheoremAnd states this as
       CH2.cor_1_2_b with a `sorry`, and its transcription agrees with this one.
   designated: ch2-paper
   progress:
     solution: Solutions/CH2.v1/
     state: in-progress
-    remaining_holes: 4
+    remaining_holes: 2
 - id: corollary_1_3_psi
   declaration: CH2.v1.corollary_1_3_psi
   challenge: CH2.v1.challenge_corollary_1_3_psi
@@ -119,7 +159,7 @@ conclusions:
   progress:
     solution: Solutions/CH2.v1/
     state: in-progress
-    remaining_holes: 4
+    remaining_holes: 2
 - id: corollary_1_3_lambda_sum
   declaration: CH2.v1.corollary_1_3_lambda_sum
   challenge: CH2.v1.challenge_corollary_1_3_lambda_sum
@@ -147,7 +187,7 @@ conclusions:
   progress:
     solution: Solutions/CH2.v1/
     state: in-progress
-    remaining_holes: 4
+    remaining_holes: 2
 sources:
 - title: "Optimal bounds for sums of non-negative arithmetic functions"
   authors: ["Andres Chirre", "Harald Andres Helfgott"]

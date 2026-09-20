@@ -48,13 +48,13 @@ def corollary_1_2_psi : Prop :=
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v1/Conclusions.lean#L96) |
 | Solution | [`Solutions/CH2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v1) |
 | Evidence | cited (`literature`) |
-| Sources traced | traced |
-| Assumes | [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip), [`CotangentSeries.v1.cot_series_zeta_values`](CotangentSeries-v1.md#cot_series_zeta_values) |
+| Sources traced | identified |
+| Assumes | [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip), [`CotangentSeries.v1.cot_series_zeta_values`](CotangentSeries-v1.md#cot_series_zeta_values), [`ZeroCount.v1.rvm_error_bound`](ZeroCount-v1.md#rvm_error_bound), [`ZeroCount.v1.rvm_error_small`](ZeroCount-v1.md#rvm_error_small), [`ZetaLogDeriv.v1.logDeriv_functional_equation`](ZetaLogDeriv-v1.md#logDeriv_functional_equation), [`ZetaLogDerivValues.v1.logDeriv_two`](ZetaLogDerivValues-v1.md#logDeriv_two), [`ZetaLogDerivValues.v1.logDeriv_three_halves`](ZetaLogDerivValues-v1.md#logDeriv_three_halves), [`ZetaLogDerivValues.v1.logDeriv_neg_one`](ZetaLogDerivValues-v1.md#logDeriv_neg_one), [`ZetaLogDerivValues.v1.logDeriv_laurent_alternating`](ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating), [`ZetaHadamard.v1.logDeriv_partial_fractions`](ZetaHadamard-v1.md#logDeriv_partial_fractions), [`PlattZeroSum.v1.inv_ordinate_sum_le`](PlattZeroSum-v1.md#inv_ordinate_sum_le) |
 | Assumed by | [`CH2.v1.corollary_1_3_psi`](CH2-v1.md#corollary_1_3_psi) |
 
 **Justification `ch2-paper`** — **designated** — literature, Corollary 1.2, first display
 
-> Asserted on the authority of the paper, read from arXiv:2512.15709. The Riemann hypothesis up to height T is carried as a hypothesis in the statement rather than as an import, and T is universally quantified, so this conclusion consumes nothing from the network and applies at whatever height a verification node supplies -- the same shape Buthe2016.v1 uses, and the reason `imports` is a real `none`. NOTE THE MAIN TERM. It is x * (pi/T) * coth(pi/T), not x. Since y*coth(y) = 1 + y^2/3 + O(y^4) that is x to enormous precision at the heights in play, which is why Corollary 1.3 can drop it, but dropping it is a step in the paper's argument and not a definitional convenience. PrimeNumberTheoremAnd states this as CH2.cor_1_2_a with a `sorry`; its transcription agrees with this one, and the check that says so is that C_T evaluates to 113.6689 at T = 3e12, which is the 113.67 the paper prints in Corollary 1.3.
+> Asserted on the authority of the paper, read from arXiv:2512.15709. The Riemann hypothesis up to height T is carried as a hypothesis in the statement rather than as an import, and T is universally quantified, so this conclusion consumes nothing from the network and applies at whatever height a verification node supplies -- the same shape Buthe2016.v1 uses. THE IMPORTS ARE THE PROOF'S, NOT THE STATEMENT'S: the statement consumes nothing from the network, but the Lean route in Solutions/CH2.v1 (and the paper's own proof) rests on the zero count, the value of zeta'/zeta at a few points, the functional equation in logarithmic-derivative form, the Hadamard partial-fraction expansion and Platt's sum over low zeros, so those are drawn as edges. NOTE THE MAIN TERM. It is x * (pi/T) * coth(pi/T), not x. Since y*coth(y) = 1 + y^2/3 + O(y^4) that is x to enormous precision at the heights in play, which is why Corollary 1.3 can drop it, but dropping it is a step in the paper's argument and not a definitional convenience. PrimeNumberTheoremAnd states this as CH2.cor_1_2_a with a `sorry`; its transcription agrees with this one, and the check that says so is that C_T evaluates to 113.6689 at T = 3e12, which is the 113.67 the paper prints in Corollary 1.3.
 
 ### `corollary_1_2_lambda_sum`
 
@@ -80,13 +80,13 @@ def corollary_1_2_lambda_sum : Prop :=
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v1/Conclusions.lean#L107) |
 | Solution | [`Solutions/CH2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v1) |
 | Evidence | cited (`literature`) |
-| Sources traced | traced |
-| Assumes | [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip), [`CotangentSeries.v1.cot_series_zeta_values`](CotangentSeries-v1.md#cot_series_zeta_values) |
+| Sources traced | identified |
+| Assumes | [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip), [`CotangentSeries.v1.cot_series_zeta_values`](CotangentSeries-v1.md#cot_series_zeta_values), [`ZeroCount.v1.rvm_error_bound`](ZeroCount-v1.md#rvm_error_bound), [`ZeroCount.v1.rvm_error_small`](ZeroCount-v1.md#rvm_error_small), [`ZetaLogDeriv.v1.logDeriv_functional_equation`](ZetaLogDeriv-v1.md#logDeriv_functional_equation), [`ZetaLogDerivValues.v1.logDeriv_two`](ZetaLogDerivValues-v1.md#logDeriv_two), [`ZetaLogDerivValues.v1.logDeriv_three_halves`](ZetaLogDerivValues-v1.md#logDeriv_three_halves), [`ZetaLogDerivValues.v1.logDeriv_neg_one`](ZetaLogDerivValues-v1.md#logDeriv_neg_one), [`ZetaLogDerivValues.v1.logDeriv_laurent_alternating`](ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating), [`ZetaHadamard.v1.logDeriv_partial_fractions`](ZetaHadamard-v1.md#logDeriv_partial_fractions), [`PlattZeroSum.v1.inv_ordinate_sum_le`](PlattZeroSum-v1.md#inv_ordinate_sum_le) |
 | Assumed by | [`CH2.v1.corollary_1_3_lambda_sum`](CH2-v1.md#corollary_1_3_lambda_sum) |
 
 **Justification `ch2-paper`** — **designated** — literature, Corollary 1.2, second display
 
-> Asserted on the authority of the paper. The companion to the psi bound: the same two constants pi/(T-1) and C_T, divided through by x. Imports `none` for the same reason as above -- the Riemann hypothesis up to T is a hypothesis, not an edge. PrimeNumberTheoremAnd states this as CH2.cor_1_2_b with a `sorry`, and its transcription agrees with this one.
+> Asserted on the authority of the paper. The companion to the psi bound: the same two constants pi/(T-1) and C_T, divided through by x. The Riemann hypothesis up to T is a hypothesis, not an edge; the imports listed are what the proof rests on, as for the psi bound above. PrimeNumberTheoremAnd states this as CH2.cor_1_2_b with a `sorry`, and its transcription agrees with this one.
 
 ### `corollary_1_3_psi`
 

@@ -412,4 +412,23 @@ theorem corollary_1_2_psi (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (le_of_lt (lt_of_le_of_lt (le_max_right T _) hx))
     (le_of_lt (lt_of_le_of_lt (le_max_left _ _) hx)) hRH
 
+/-- **The node's second conclusion**, `CH2.v1.corollary_1_2_lambda_sum`: `sagaro_one` in the node's
+own words. -/
+theorem corollary_1_2_lambda_sum (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    (h2v : ZetaLogDerivValues.v1.logDeriv_two)
+    (hv : ZetaLogDerivValues.v1.logDeriv_three_halves)
+    (hcs : CotangentSeries.v1.cot_series_zeta_values)
+    (hrvm : ZeroCount.v1.rvm_error_bound) (hsmall : ZeroCount.v1.rvm_error_small)
+    (hplatt : PlattZeroSum.v1.inv_ordinate_sum_le)
+    (hH : ZetaHadamard.v1.logDeriv_partial_fractions) :
+    CH2.v1.corollary_1_2_lambda_sum := by
+  intro T x hT hRH hx
+  rw [CH2.v1.lambdaSum, CH2.v1.CT]
+  exact sagaro_one hfe hdig hk hneg h2v hv hcs hrvm hsmall hplatt hH hT
+    (le_of_lt (lt_of_le_of_lt (le_max_right T _) hx))
+    (le_of_lt (lt_of_le_of_lt (le_max_left _ _) hx)) hRH
+
 end CH2Section9

@@ -63,7 +63,7 @@ noncomputable def logDeriv_partial_fractions : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
 
 **Justification `montgomery-vaughan`** — **designated** — literature, Corollary 10.14
 
