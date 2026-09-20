@@ -119,12 +119,12 @@ def corollary_1_3_psi : Prop :=
 | Solution | [`Solutions/CH2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
-| Assumes | [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to) |
+| Assumes | [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi), [`PlattTrudgian.v1.rh_up_to_exact`](PlattTrudgian-v1.md#rh_up_to_exact), [`Buthe.v1.theorem_2_psi`](Buthe-v1.md#theorem_2_psi) |
 | Assumed by | nothing yet |
 
 **Justification `ch2-paper`** — **designated** — literature, Corollary 1.3, first display
 
-> Asserted on the authority of the paper. Corollary 1.2 at Platt and Trudgian's verified height, which the paper quotes as 3e12 + 1 + sqrt(3)/3 and remarks is in fact 3000175332800; both edges are recorded. The rounding of the height down to 3e12 is the paper's own and is the safe direction, pi/T being decreasing in T. HOLDS FROM x = 1, with no lower threshold, where Corollary 1.2 needs x > max(T, 1e9). Closing that gap is work the paper does and this node does not model, which is why `imports_status` is `traced` rather than `identified`: the inputs are known and written down, but the descent below max(T, 1e9) is not an edge any node currently supplies. TRANSCRIBED FROM THE PAPER, NOT FROM PrimeNumberTheoremAnd. PNT+'s CH2.cor_1_3_a writes the leading constant as pi * 3 * 1e-12 = 9.425e-12, in its blueprint LaTeX as well as its Lean, where the paper has pi/(3e12) = 1.047e-12 -- nine times larger. It is a weaker claim rather than a false one, but it is not the paper's result.
+> Asserted on the authority of the paper. Corollary 1.2 at Platt and Trudgian's verified height. THE HEIGHT MATTERS TO THE LAST UNIT, so the edge is to PlattTrudgian.v1.rh_up_to_exact, the unrounded 3000175332800 of their Theorem 1, not to the rounded 3e12: Corollary 1.2 carries pi/(T-1), and quoting that as pi/(3e12) needs T >= 3e12 + 1. (CH2 itself writes the height as 3e12 + 1 + pi/3, citing Platt-Trudgian; an earlier version of this note miscopied that as sqrt(3)/3. Platt-Trudgian's own Theorem 1 states the exact integer, which is what is recorded.) HOLDS FROM x = 1, with no lower threshold, where Corollary 1.2 needs x > max(T, 1e9). The descent is now drawn: Buthe.v1.theorem_2_psi gives \|x - psi(x)\| <= 0.94 sqrt x for 11 < x <= 10^19, which covers it with room to spare, and below 11 the bound is trivial. `imports_status` stays `traced` until the Lean route in Solutions/CH2.v1 confirms that these are the only inputs. TRANSCRIBED FROM THE PAPER, NOT FROM PrimeNumberTheoremAnd. PNT+'s CH2.cor_1_3_a writes the leading constant as pi * 3 * 1e-12 = 9.425e-12, in its blueprint LaTeX as well as its Lean, where the paper has pi/(3e12) = 1.047e-12 -- nine times larger. It is a weaker claim rather than a false one, but it is not the paper's result.
 
 ### `corollary_1_3_lambda_sum`
 
@@ -151,12 +151,12 @@ def corollary_1_3_lambda_sum : Prop :=
 | Solution | [`Solutions/CH2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v1) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
-| Assumes | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to) |
+| Assumes | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`PlattTrudgian.v1.rh_up_to_exact`](PlattTrudgian-v1.md#rh_up_to_exact), [`Buthe.v1.theorem_2_psi`](Buthe-v1.md#theorem_2_psi) |
 | Assumed by | nothing yet |
 
 **Justification `ch2-paper`** — **designated** — literature, Corollary 1.3, second display
 
-> Asserted on the authority of the paper. The paper writes this with O*, which is exactly the two-sided bound stated here rather than an asymptotic; stating it as an asymptotic would lose the content. TRANSCRIBED FROM THE PAPER. PNT+'s CH2.cor_1_3_b writes the leading constant as pi * sqrt(3) * 1e-12 = 5.441e-12, which agrees neither with the paper's pi/(3e12) = 1.047e-12 nor with PNT+'s own part (a) constant of 9.425e-12. Two statements of one corollary disagreeing with each other is the clearest sign that neither should be copied.
+> Asserted on the authority of the paper. The paper writes this with O*, which is exactly the two-sided bound stated here rather than an asymptotic; stating it as an asymptotic would lose the content. The edges are as for the psi display: the unrounded Platt-Trudgian height, because pi/(T-1) has to be quotable as pi/(3e12), and Buthe.v1.theorem_2_psi, which supplies the descent below max(T, 1e9) -- here through Abel summation, the psi bound on a finite range plus Corollary 1.2 at a small T being enough to pin the sum against log x - gamma. TRANSCRIBED FROM THE PAPER. PNT+'s CH2.cor_1_3_b writes the leading constant as pi * sqrt(3) * 1e-12 = 5.441e-12, which agrees neither with the paper's pi/(3e12) = 1.047e-12 nor with PNT+'s own part (a) constant of 9.425e-12. Two statements of one corollary disagreeing with each other is the clearest sign that neither should be copied.
 
 ## Limitations
 

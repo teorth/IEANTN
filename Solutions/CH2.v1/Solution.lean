@@ -6,6 +6,7 @@ Authors: Terence Tao
 import Section9Limit
 import IEANTN.Nodes.CH2.v1.Conclusions
 import IEANTN.Nodes.PlattTrudgian.v1.Conclusions
+import IEANTN.Nodes.Buthe.v1.Conclusions
 
 /-!
 # Solution: `CH2.v1` — **incomplete, and deliberately so**
@@ -50,9 +51,12 @@ displays are proved below from this node's imports, with no `sorry` between them
 
 ## What is missing
 
-Corollary 1.3, both displays. It is Corollary 1.2 at Platt and Trudgian's verified height together
-with the descent from `x > max(T, 10⁹)` to `x ≥ 1`, which is `lem:pernic` — a computation over
-`1 ≤ x ≤ 10¹³` that no node supplies yet.
+Corollary 1.3, both displays. It is Corollary 1.2 at Platt and Trudgian's verified height —
+`rh_up_to_exact`, the unrounded one, because `π/(T−1)` has to be quotable as `π/(3 · 10¹²)` —
+together with the descent from `x > max(T, 10⁹)` to `x ≥ 1`. The descent needs no new node:
+`Buthe.v1.theorem_2_psi` covers `11 < x ≤ 10¹⁹`, below `11` the bound is trivial, and Corollary 1.2
+at `T = 10⁷` bridges the middle, its `π/(10⁷−1)` fitting inside the `√x` slack for all
+`x ≤ 6.8 · 10¹⁶`.
 -/
 
 theorem CH2.v1.challenge_corollary_1_2_psi
@@ -99,12 +103,14 @@ theorem CH2.v1.challenge_corollary_1_2_lambda_sum
 
 theorem CH2.v1.challenge_corollary_1_3_psi
     (ch2_v1_corollary_1_2_psi : CH2.v1.corollary_1_2_psi)
-    (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to) :
+    (platttrudgian_v1_rh_up_to_exact : PlattTrudgian.v1.rh_up_to_exact)
+    (buthe_v1_theorem_2_psi : Buthe.v1.theorem_2_psi) :
     CH2.v1.corollary_1_3_psi := by
   sorry
 
 theorem CH2.v1.challenge_corollary_1_3_lambda_sum
     (ch2_v1_corollary_1_2_lambda_sum : CH2.v1.corollary_1_2_lambda_sum)
-    (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to) :
+    (platttrudgian_v1_rh_up_to_exact : PlattTrudgian.v1.rh_up_to_exact)
+    (buthe_v1_theorem_2_psi : Buthe.v1.theorem_2_psi) :
     CH2.v1.corollary_1_3_lambda_sum := by
   sorry

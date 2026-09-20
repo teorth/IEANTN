@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-49 node version(s), 93 conclusion(s).  3 state nothing yet.
+49 node version(s), 94 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -16,7 +16,7 @@ adds the environment detail.
 | `asserted` | 1 |
 | `bridged` | 1 |
 | `lean-comparator` | 29 |
-| `literature` | 38 |
+| `literature` | 39 |
 | `none-yet` | 5 |
 | `numerical` | 19 |
 
@@ -46,8 +46,8 @@ adds the environment detail.
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
 | `CH2.v1` | awaiting-solution | `corollary_1_2_psi` | literature | 11 | - |
 | `CH2.v1` | awaiting-solution | `corollary_1_2_lambda_sum` | literature | 11 | - |
-| `CH2.v1` | awaiting-solution | `corollary_1_3_psi` | literature | 2 | - |
-| `CH2.v1` | awaiting-solution | `corollary_1_3_lambda_sum` | literature | 2 | - |
+| `CH2.v1` | awaiting-solution | `corollary_1_3_psi` | literature | 3 | - |
+| `CH2.v1` | awaiting-solution | `corollary_1_3_lambda_sum` | literature | 3 | - |
 | `CH2.v2` | active | `proposition_2_4_upper` | lean-comparator-stale | 0 | #64 |
 | `CH2.v2` | active | `proposition_2_4_lower` | lean-comparator-stale | 0 | #64 |
 | `CH2.v3` | active | `extremal_majorant` | lean-comparator | 0 | #64 |
@@ -93,6 +93,7 @@ adds the environment detail.
 | `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
 | `Platt2017.v1` | stub | `rh_up_to` | numerical | 1 | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
+| `PlattTrudgian.v1` | active | `rh_up_to_exact` | literature | 0 | - |
 | `PlattTrudgian2021.v1` | stub | `theorem_1_classical` | literature | 3 | - |
 | `PlattTrudgian2021.v1` | stub | `theorem_1_numerical` | literature | 3 | - |
 | `PlattZeroSum.v1` | active | `inv_ordinate_sum_le` | literature | 0 | - |
@@ -156,8 +157,8 @@ downstream.
 
 | Conclusion | Dependants |
 |---|---:|
-| `PlattTrudgian.v1.rh_up_to` | 7 |
 | `FKBJ.v1.rh_up_to` | 6 |
+| `PlattTrudgian.v1.rh_up_to` | 5 |
 | `FKS2Numerics.v1.theta_asymp_ge_one_below_e30` | 4 |
 | `FKS2Numerics.v1.nu_asymp_e30_le` | 4 |
 | `FKS2.v2.proposition_13` | 4 |
@@ -177,6 +178,7 @@ downstream.
 | `ZeroCount.v1.rvm_error_bound` | 2 |
 | `PlattZeroSum.v1.inv_ordinate_sum_le` | 2 |
 | `PlattTrudgian2021.v1.theorem_1_numerical` | 2 |
+| `PlattTrudgian.v1.rh_up_to_exact` | 2 |
 | `MT.v1.zero_free_region_sharpened` | 2 |
 | `MT.v1.zero_free_region` | 2 |
 | `Kadiri2005.v1.zero_free_region` | 2 |
@@ -188,6 +190,7 @@ downstream.
 | `DudekPlatt.v3.criterion` | 2 |
 | `CotangentSeries.v1.cot_series_zeta_values` | 2 |
 | `Buthe2016.v1.theorem_2_psi` | 2 |
+| `Buthe.v1.theorem_2_psi` | 2 |
 | `Wedeniwski.v1.rh_up_to` | 1 |
 | `Trudgian2011.v1.integral_S_bound` | 1 |
 | `RosserSchoenfeld.v1.zero_free_region_classical` | 1 |

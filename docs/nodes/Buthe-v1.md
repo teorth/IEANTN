@@ -36,7 +36,7 @@ def theorem_2_psi : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | [`FKBJ.v1.rh_up_to`](FKBJ-v1.md#rh_up_to) |
-| Assumed by | nothing yet |
+| Assumed by | [`CH2.v1.corollary_1_3_lambda_sum`](CH2-v1.md#corollary_1_3_lambda_sum), [`CH2.v1.corollary_1_3_psi`](CH2-v1.md#corollary_1_3_psi) |
 
 **Justification `buthe-paper`** — **designated** — literature, Theorem 2, equation (1.5)
 

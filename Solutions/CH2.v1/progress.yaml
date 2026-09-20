@@ -807,6 +807,37 @@ stages:
       they used to say `imports` is a real none, which was true of the STATEMENT (the Riemann
       hypothesis up to T is a hypothesis, not an edge) but is not true of the proof. Challenge.lean
       was regenerated, fingerprints/state/graph/pages rewritten, and `check` passes.
+      COROLLARY 1.3, THE PLAN, and the node question settled. NO lem:pernic COMPUTATION NODE IS
+      NEEDED: Buthe.v1.theorem_2_psi already gives |x - psi(x)| <= 0.94 sqrt x for 11 < x <= 10^19,
+      which covers the descent with two orders of magnitude to spare against 113.67.
+      WHAT WAS NEEDED was the unrounded Platt-Trudgian height, and it is now stated:
+      PlattTrudgian.v1.rh_up_to_exact = RiemannHypothesisUpTo 3000175332800, added ALONGSIDE the
+      rounded rh_up_to in the same node version rather than as a v2 with a bridge -- the two are one
+      computation and a solution would derive the rounded one in a line. Adding a conclusion left
+      rh_up_to's fingerprint untouched, so no consumer moved.
+      WHY THE LAST UNIT MATTERS: Corollary 1.2 carries pi/(T-1) and Corollary 1.3 quotes pi/(3e12),
+      so T >= 3e12 + 1 is required. At the rounded height the excess is 3.5e-25 x against 0.0011 sqrt x
+      of slack in 113.67, so the corollary would hold only up to about x = 10^41.
+      SOURCE CHECK: Platt-Trudgian's Theorem 1 reads 'The Riemann hypothesis is true up to height
+      3 000 175 332 800. That is, the lowest 12 363 153 437 138 non-trivial zeroes rho have Re rho
+      = 1/2'; the abstract quotes the rounded 3e12. Read from arXiv:2004.09765 on 2026-09-20. CH2
+      itself writes the height as 3e12 + 1 + pi/3; the CH2.v1 yaml had miscopied that as sqrt(3)/3,
+      now corrected.
+      THE PROOF PLAN, THREE RANGES (psi; the Lambda/n case is the same on the top two):
+      (1) x > 3000175332800: Corollary 1.2 at T*. Here pi/(T*-1) is SMALLER than pi/(3e12) by 6.1e-17,
+      which also pays for x((pi/T)coth(pi/T) - 1) <= x (pi/T)^2 ~ 1e-24 x.
+      (2) 10^9 < x <= T*: Corollary 1.2 at T = 10^7 (RH up to 10^7 by RH_mono). The excess
+      pi/(10^7-1) x fits inside the sqrt x slack 113.67 - C_{10^7} = 81.98 whenever sqrt x <= 2.6e8,
+      i.e. x <= 6.8e16.
+      (3) 1 <= x <= 10^9: Buthe for 11 < x; for x <= 11 crude (psi(x) <= x log x gives <= 37 < 113.67).
+      FOR Lambda/n BELOW 10^9, Abel summation against X = 10^10 (Mathlib has
+      NumberTheory/AbelSummation.sum_mul_eq_sub_integral_mul):
+      S(x) - log x + gamma = [S(X) - log X + gamma] - psi(X)/X + psi(x)/x - int_x^X (psi(t)-t)/t^2 dt,
+      bounded by Corollary 1.2 at T = 10^7 plus Buthe on the finite range: about 3.1e-7 + 32.7/sqrt X
+      + 2.8/sqrt x, well under 113.67/sqrt x.
+      THE ONE TIGHT NUMBER: C_T at T* is 113.6695 against the target 113.67, a margin of 5e-4, so
+      log(T*/2pi) needs about six correct digits -- exp_small_le/ge and exp_nat_bounds give that.
+      (At 3e12 it is 113.6690, the figure the node's yaml already records as its transcription check.)
       WHAT REMAINS IN THE NODE: Corollary 1.3, both displays. It is Corollary 1.2 at T = 3e12
       (PlattTrudgian.v1.rh_up_to) plus the descent from x > max(T, 10^9) to x >= 1, which is
       lem:pernic: -sqrt 2 < (psi(x) - x)/sqrt x <= 0.79059275... for 1 <= x <= 10^13, a computation
