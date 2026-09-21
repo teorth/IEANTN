@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | paper |
-| Status | awaiting-solution |
+| Status | active |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -47,14 +47,19 @@ def corollary_1_2_psi : Prop :=
 | Challenge | `CH2.v1.challenge_corollary_1_2_psi` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v1/Conclusions.lean#L96) |
 | Solution | [`Solutions/CH2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v1) |
-| Evidence | cited (`literature`) |
+| Receipt | [`CH2.v1.corollary_1_2_psi.json`](https://github.com/teorth/IEANTN/blob/main/receipts/CH2.v1.corollary_1_2_psi.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | identified |
 | Assumes | [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip), [`CotangentSeries.v1.cot_series_zeta_values`](CotangentSeries-v1.md#cot_series_zeta_values), [`ZeroCount.v1.rvm_error_bound`](ZeroCount-v1.md#rvm_error_bound), [`ZeroCount.v1.rvm_error_small`](ZeroCount-v1.md#rvm_error_small), [`ZetaLogDeriv.v1.logDeriv_functional_equation`](ZetaLogDeriv-v1.md#logDeriv_functional_equation), [`ZetaLogDerivValues.v1.logDeriv_two`](ZetaLogDerivValues-v1.md#logDeriv_two), [`ZetaLogDerivValues.v1.logDeriv_three_halves`](ZetaLogDerivValues-v1.md#logDeriv_three_halves), [`ZetaLogDerivValues.v1.logDeriv_neg_one`](ZetaLogDerivValues-v1.md#logDeriv_neg_one), [`ZetaLogDerivValues.v1.logDeriv_laurent_alternating`](ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating), [`ZetaHadamard.v1.logDeriv_partial_fractions`](ZetaHadamard-v1.md#logDeriv_partial_fractions), [`PlattZeroSum.v1.inv_ordinate_sum_le`](PlattZeroSum-v1.md#inv_ordinate_sum_le) |
 | Assumed by | [`CH2.v1.corollary_1_3_psi`](CH2-v1.md#corollary_1_3_psi) |
 
-**Justification `ch2-paper`** — **designated** — literature, Corollary 1.2, first display
+**Justification `ch2-paper`** — literature, Corollary 1.2, first display
 
 > Asserted on the authority of the paper, read from arXiv:2512.15709. The Riemann hypothesis up to height T is carried as a hypothesis in the statement rather than as an import, and T is universally quantified, so this conclusion consumes nothing from the network and applies at whatever height a verification node supplies -- the same shape Buthe2016.v1 uses. THE IMPORTS ARE THE PROOF'S, NOT THE STATEMENT'S: the statement consumes nothing from the network, but the Lean route in Solutions/CH2.v1 (and the paper's own proof) rests on the zero count, the value of zeta'/zeta at a few points, the functional equation in logarithmic-derivative form, the Hadamard partial-fraction expansion and Platt's sum over low zeros, so those are drawn as edges. NOTE THE MAIN TERM. It is x * (pi/T) * coth(pi/T), not x. Since y*coth(y) = 1 + y^2/3 + O(y^4) that is x to enormous precision at the heights in play, which is why Corollary 1.3 can drop it, but dropping it is a step in the paper's argument and not a definitional convenience. PrimeNumberTheoremAnd states this as CH2.cor_1_2_a with a `sorry`; its transcription agrees with this one, and the check that says so is that C_T evaluates to 113.6689 at T = 3e12, which is the 113.67 the paper prints in Corollary 1.3.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/35558659363
 
 ### `corollary_1_2_lambda_sum`
 
@@ -79,14 +84,19 @@ def corollary_1_2_lambda_sum : Prop :=
 | Challenge | `CH2.v1.challenge_corollary_1_2_lambda_sum` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v1/Conclusions.lean#L107) |
 | Solution | [`Solutions/CH2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v1) |
-| Evidence | cited (`literature`) |
+| Receipt | [`CH2.v1.corollary_1_2_lambda_sum.json`](https://github.com/teorth/IEANTN/blob/main/receipts/CH2.v1.corollary_1_2_lambda_sum.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | identified |
 | Assumes | [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip), [`CotangentSeries.v1.cot_series_zeta_values`](CotangentSeries-v1.md#cot_series_zeta_values), [`ZeroCount.v1.rvm_error_bound`](ZeroCount-v1.md#rvm_error_bound), [`ZeroCount.v1.rvm_error_small`](ZeroCount-v1.md#rvm_error_small), [`ZetaLogDeriv.v1.logDeriv_functional_equation`](ZetaLogDeriv-v1.md#logDeriv_functional_equation), [`ZetaLogDerivValues.v1.logDeriv_two`](ZetaLogDerivValues-v1.md#logDeriv_two), [`ZetaLogDerivValues.v1.logDeriv_three_halves`](ZetaLogDerivValues-v1.md#logDeriv_three_halves), [`ZetaLogDerivValues.v1.logDeriv_neg_one`](ZetaLogDerivValues-v1.md#logDeriv_neg_one), [`ZetaLogDerivValues.v1.logDeriv_laurent_alternating`](ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating), [`ZetaHadamard.v1.logDeriv_partial_fractions`](ZetaHadamard-v1.md#logDeriv_partial_fractions), [`PlattZeroSum.v1.inv_ordinate_sum_le`](PlattZeroSum-v1.md#inv_ordinate_sum_le) |
 | Assumed by | [`CH2.v1.corollary_1_3_lambda_sum`](CH2-v1.md#corollary_1_3_lambda_sum) |
 
-**Justification `ch2-paper`** — **designated** — literature, Corollary 1.2, second display
+**Justification `ch2-paper`** — literature, Corollary 1.2, second display
 
 > Asserted on the authority of the paper. The companion to the psi bound: the same two constants pi/(T-1) and C_T, divided through by x. The Riemann hypothesis up to T is a hypothesis, not an edge; the imports listed are what the proof rests on, as for the psi bound above. PrimeNumberTheoremAnd states this as CH2.cor_1_2_b with a `sorry`, and its transcription agrees with this one.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/35558659363
 
 ### `corollary_1_3_psi`
 
@@ -117,14 +127,19 @@ def corollary_1_3_psi : Prop :=
 | Challenge | `CH2.v1.challenge_corollary_1_3_psi` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v1/Conclusions.lean#L126) |
 | Solution | [`Solutions/CH2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v1) |
-| Evidence | cited (`literature`) |
+| Receipt | [`CH2.v1.corollary_1_3_psi.json`](https://github.com/teorth/IEANTN/blob/main/receipts/CH2.v1.corollary_1_3_psi.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | identified |
 | Assumes | [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi), [`PlattTrudgian.v1.rh_up_to_exact`](PlattTrudgian-v1.md#rh_up_to_exact), [`Buthe.v1.theorem_2_psi`](Buthe-v1.md#theorem_2_psi) |
 | Assumed by | nothing yet |
 
-**Justification `ch2-paper`** — **designated** — literature, Corollary 1.3, first display
+**Justification `ch2-paper`** — literature, Corollary 1.3, first display
 
 > Asserted on the authority of the paper. Corollary 1.2 at Platt and Trudgian's verified height. THE HEIGHT MATTERS TO THE LAST UNIT, so the edge is to PlattTrudgian.v1.rh_up_to_exact, the unrounded 3000175332800 of their Theorem 1, not to the rounded 3e12: Corollary 1.2 carries pi/(T-1), and quoting that as pi/(3e12) needs T >= 3e12 + 1. (CH2 itself writes the height as 3e12 + 1 + pi/3, citing Platt-Trudgian; an earlier version of this note miscopied that as sqrt(3)/3. Platt-Trudgian's own Theorem 1 states the exact integer, which is what is recorded.) HOLDS FROM x = 1, with no lower threshold, where Corollary 1.2 needs x > max(T, 1e9). The descent is now drawn: Buthe.v1.theorem_2_psi gives \|x - psi(x)\| <= 0.94 sqrt x for 11 < x <= 10^19, which covers it with room to spare, and below 11 the bound is trivial. The Lean route in Solutions/CH2.v1 now confirms that these three edges are the only inputs, so `imports_status` is `identified`: for x above 3e12 + 5 it is Corollary 1.2 at that height, down to x > 10^9 it is Corollary 1.2 at T = 10^7 (whose pi/(10^7-1) fits inside the sqrt x slack), then Buthe, then a crude bound below 11. TRANSCRIBED FROM THE PAPER, NOT FROM PrimeNumberTheoremAnd. PNT+'s CH2.cor_1_3_a writes the leading constant as pi * 3 * 1e-12 = 9.425e-12, in its blueprint LaTeX as well as its Lean, where the paper has pi/(3e12) = 1.047e-12 -- nine times larger. It is a weaker claim rather than a false one, but it is not the paper's result.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/35558659363
 
 ### `corollary_1_3_lambda_sum`
 
@@ -149,14 +164,19 @@ def corollary_1_3_lambda_sum : Prop :=
 | Challenge | `CH2.v1.challenge_corollary_1_3_lambda_sum` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v1/Conclusions.lean#L138) |
 | Solution | [`Solutions/CH2.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v1) |
-| Evidence | cited (`literature`) |
+| Receipt | [`CH2.v1.corollary_1_3_lambda_sum.json`](https://github.com/teorth/IEANTN/blob/main/receipts/CH2.v1.corollary_1_3_lambda_sum.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | identified |
 | Assumes | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`PlattTrudgian.v1.rh_up_to_exact`](PlattTrudgian-v1.md#rh_up_to_exact), [`Buthe.v1.theorem_2_psi`](Buthe-v1.md#theorem_2_psi) |
 | Assumed by | nothing yet |
 
-**Justification `ch2-paper`** — **designated** — literature, Corollary 1.3, second display
+**Justification `ch2-paper`** — literature, Corollary 1.3, second display
 
 > Asserted on the authority of the paper. The paper writes this with O*, which is exactly the two-sided bound stated here rather than an asymptotic; stating it as an asymptotic would lose the content. The edges are as for the psi display: the unrounded Platt-Trudgian height, because pi/(T-1) has to be quotable as pi/(3e12), and Buthe.v1.theorem_2_psi, which supplies the descent below max(T, 1e9) -- here through Abel summation, the psi bound on a finite range plus Corollary 1.2 at a small T being enough to pin the sum against log x - gamma. TRANSCRIBED FROM THE PAPER. PNT+'s CH2.cor_1_3_b writes the leading constant as pi * sqrt(3) * 1e-12 = 5.441e-12, which agrees neither with the paper's pi/(3e12) = 1.047e-12 nor with PNT+'s own part (a) constant of 9.425e-12. Two statements of one corollary disagreeing with each other is the clearest sign that neither should be copied.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/35558659363
 
 ## Limitations
 

@@ -15,8 +15,8 @@ adds the environment detail.
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 1 |
-| `lean-comparator` | 29 |
-| `literature` | 39 |
+| `lean-comparator` | 33 |
+| `literature` | 35 |
 | `none-yet` | 5 |
 | `numerical` | 19 |
 
@@ -44,10 +44,10 @@ adds the environment detail.
 | `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
-| `CH2.v1` | awaiting-solution | `corollary_1_2_psi` | literature | 11 | - |
-| `CH2.v1` | awaiting-solution | `corollary_1_2_lambda_sum` | literature | 11 | - |
-| `CH2.v1` | awaiting-solution | `corollary_1_3_psi` | literature | 3 | - |
-| `CH2.v1` | awaiting-solution | `corollary_1_3_lambda_sum` | literature | 3 | - |
+| `CH2.v1` | active | `corollary_1_2_psi` | lean-comparator | 11 | - |
+| `CH2.v1` | active | `corollary_1_2_lambda_sum` | lean-comparator | 11 | - |
+| `CH2.v1` | active | `corollary_1_3_psi` | lean-comparator | 3 | - |
+| `CH2.v1` | active | `corollary_1_3_lambda_sum` | lean-comparator | 3 | - |
 | `CH2.v2` | active | `proposition_2_4_upper` | lean-comparator-stale | 0 | #64 |
 | `CH2.v2` | active | `proposition_2_4_lower` | lean-comparator-stale | 0 | #64 |
 | `CH2.v3` | active | `extremal_majorant` | lean-comparator | 0 | #64 |

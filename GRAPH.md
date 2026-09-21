@@ -58,7 +58,7 @@ graph LR
   NButhe_v2["<b>Buthe.v2</b><br/>2 claims<br/><i>weakest: unjustified</i>"]
   NButhe2016_v1["<b>Buthe2016.v1</b><br/>4 claims<br/><i>weakest: cited</i>"]
   NButheNumerics_v1["<b>ButheNumerics.v1</b><br/>3 claims<br/><i>weakest: computation</i>"]
-  NCH2_v1["<b>CH2.v1</b><br/>4 claims<br/><i>weakest: cited</i>"]
+  NCH2_v1["<b>CH2.v1</b><br/>4 claims<br/><i>weakest: verified</i>"]
   NCH2_v2["<b>CH2.v2</b><br/>2 claims<br/><i>weakest: verified, stale</i>"]
   NCH2_v3["<b>CH2.v3</b><br/>2 claims<br/><i>weakest: verified</i>"]
   NCH2_v4["<b>CH2.v4</b><br/>2 claims<br/><i>weakest: verified, drifted</i>"]
@@ -160,10 +160,10 @@ graph LR
   class NBrown1967_v1,NButhe_v2,NChengGraham2004_v1,NContourIntegration_v1,NCotangentSeries_v1,NGammaAsymptotics_v1,NMTY_v1 none_yet;
   class NCH2_v4 lean_comparator_drifted;
   class NWedeniwski_v1 asserted;
-  class NBKLNW_v1,NButhe_v1,NButhe2016_v1,NCH2_v1,NDudekPlatt_v1,NDusart2018_v1,NFKS_v1,NHiary2016_v1,NKLN_v1,NKadiri2005_v1,NMT_v1,NPlattTrudgian_v1,NPlattTrudgian2021_v1,NPlattZeroSum_v1,NRosserSchoenfeld_v1,NTrudgian2011_v1,NZeroCount_v1,NZetaHadamard_v1 literature;
+  class NBKLNW_v1,NButhe_v1,NButhe2016_v1,NDudekPlatt_v1,NDusart2018_v1,NFKS_v1,NHiary2016_v1,NKLN_v1,NKadiri2005_v1,NMT_v1,NPlattTrudgian_v1,NPlattTrudgian2021_v1,NPlattZeroSum_v1,NRosserSchoenfeld_v1,NTrudgian2011_v1,NZeroCount_v1,NZetaHadamard_v1 literature;
   class NButheNumerics_v1,NDudekPlattNumerics_v1,NDudekPlattNumerics_v2,NFKBJ_v1,NFKS2Numerics_v1,NLowZeroes_v1,NPlatt2015_v1,NPlatt2017_v1,NZetaLogDerivValues_v1 numerical;
   class NCH2_v2,NDudekPlatt_v2,NDudekPlatt_v3,NFKS2_v1,NFKS2_v2,NLcm_v1,NLcm_v2,NPrimeInterval_v1,NZeroFreeHeight_v1 lean_comparator_stale;
-  class NCH2_v3,NGammaAsymptotics_v2,NZetaLogDeriv_v1,NZetaZeroes_v1 lean_comparator;
+  class NCH2_v1,NCH2_v3,NGammaAsymptotics_v2,NZetaLogDeriv_v1,NZetaZeroes_v1 lean_comparator;
   click NBKLNW_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md" _blank
   click NButhe_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md" _blank
   click NButhe_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v2.md" _blank
@@ -257,10 +257,10 @@ graph LR
     ButheNumerics_v1_li_minus_pi_below_1e7["<b>li_minus_pi_below_1e7</b><br/><i>computation</i>"]
   end
   subgraph sgCH2_v1["CH2.v1"]
-    CH2_v1_corollary_1_2_lambda_sum["<b>corollary_1_2_lambda_sum</b><br/><i>cited</i>"]
-    CH2_v1_corollary_1_2_psi["<b>corollary_1_2_psi</b><br/><i>cited</i>"]
-    CH2_v1_corollary_1_3_lambda_sum["<b>corollary_1_3_lambda_sum</b><br/><i>cited</i>"]
-    CH2_v1_corollary_1_3_psi["<b>corollary_1_3_psi</b><br/><i>cited</i>"]
+    CH2_v1_corollary_1_2_lambda_sum["<b>corollary_1_2_lambda_sum</b><br/><i>verified</i>"]
+    CH2_v1_corollary_1_2_psi["<b>corollary_1_2_psi</b><br/><i>verified</i>"]
+    CH2_v1_corollary_1_3_lambda_sum["<b>corollary_1_3_lambda_sum</b><br/><i>verified</i>"]
+    CH2_v1_corollary_1_3_psi["<b>corollary_1_3_psi</b><br/><i>verified</i>"]
   end
   subgraph sgCH2_v2["CH2.v2"]
     CH2_v2_proposition_2_4_lower["<b>proposition_2_4_lower</b><br/><i>verified, stale</i>"]
@@ -564,10 +564,10 @@ graph LR
   class BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2,BRPlatt2015_v1_rh_up_to__bridge_from_platt2017,BRRosserSchoenfeld_v1_zero_free_region_classical__bridge_from_shape,BRWedeniwski_v1_rh_up_to__bridge_from_platt2017 bridge;
   class Wedeniwski_v1_rh_up_to asserted;
   class RosserSchoenfeld_v1_zero_free_region_classical bridged;
-  class CH2_v3_extremal_majorant,CH2_v3_extremal_minorant,GammaAsymptotics_v2_digamma_sub_log_isBigO_strip,ZetaLogDeriv_v1_logDeriv_functional_equation,ZetaZeroes_v1_exists_ordinate_free_height,ZetaZeroes_v1_finite_zeroes_on_compact,ZetaZeroes_v1_no_nontrivial_zeroes_left,ZetaZeroes_v1_zeroes_off_axis_in_strip,ZetaZeroes_v1_zeta_eq_zero_iff_zeta1,ZetaZeroes_v1_zeta_eq_zeta1_div lean_comparator;
+  class CH2_v1_corollary_1_2_lambda_sum,CH2_v1_corollary_1_2_psi,CH2_v1_corollary_1_3_lambda_sum,CH2_v1_corollary_1_3_psi,CH2_v3_extremal_majorant,CH2_v3_extremal_minorant,GammaAsymptotics_v2_digamma_sub_log_isBigO_strip,ZetaLogDeriv_v1_logDeriv_functional_equation,ZetaZeroes_v1_exists_ordinate_free_height,ZetaZeroes_v1_finite_zeroes_on_compact,ZetaZeroes_v1_no_nontrivial_zeroes_left,ZetaZeroes_v1_zeroes_off_axis_in_strip,ZetaZeroes_v1_zeta_eq_zero_iff_zeta1,ZetaZeroes_v1_zeta_eq_zeta1_div lean_comparator;
   class CH2_v4_contour_shift,CH2_v4_contour_shift_holomorphic lean_comparator_drifted;
   class CH2_v2_proposition_2_4_lower,CH2_v2_proposition_2_4_upper,DudekPlatt_v2_ramanujan_inequality_3915,DudekPlatt_v3_criterion,FKS2_v1_corollary_14,FKS2_v1_corollary_22,FKS2_v1_corollary_23,FKS2_v1_corollary_26,FKS2_v2_proposition_13,FKS2_v2_theorem_3,Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap,PrimeInterval_v1_classicalBound_hasPrimeInInterval,PrimeInterval_v1_eTheta_criterion,PrimeInterval_v1_numericalBound_hasPrimeInInterval,PrimeInterval_v1_theta_characterisation,ZeroFreeHeight_v1_classical_region_descends lean_comparator_stale;
-  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,CH2_v1_corollary_1_2_lambda_sum,CH2_v1_corollary_1_2_psi,CH2_v1_corollary_1_3_lambda_sum,CH2_v1_corollary_1_3_psi,DudekPlatt_v1_largest_counterexample_on_rh,DudekPlatt_v1_ramanujan_inequality,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to,PlattTrudgian_v1_rh_up_to_exact,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,PlattZeroSum_v1_inv_ordinate_sum_le,RosserSchoenfeld_v1_zero_free_region,Trudgian2011_v1_integral_S_bound,ZeroCount_v1_rvm_error_bound,ZeroCount_v1_rvm_error_small,ZetaHadamard_v1_logDeriv_partial_fractions literature;
+  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,DudekPlatt_v1_largest_counterexample_on_rh,DudekPlatt_v1_ramanujan_inequality,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to,PlattTrudgian_v1_rh_up_to_exact,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,PlattZeroSum_v1_inv_ordinate_sum_le,RosserSchoenfeld_v1_zero_free_region,Trudgian2011_v1_integral_S_bound,ZeroCount_v1_rvm_error_bound,ZeroCount_v1_rvm_error_small,ZetaHadamard_v1_logDeriv_partial_fractions literature;
   class Buthe_v2_lemma_3_bounds,Buthe_v2_lemma_3_positivity,ContourIntegration_v1_residue_theorem_rectangle,CotangentSeries_v1_cot_series_zeta_values,GammaAsymptotics_v1_digamma_sub_log_isBigO none_yet;
   class ButheNumerics_v1_lemma_3_constant_gt_at_10,ButheNumerics_v1_lemma_3_constant_nonpos,ButheNumerics_v1_li_minus_pi_below_1e7,DudekPlattNumerics_v1_pi_two_sided_paper,DudekPlattNumerics_v2_pi_two_sided_pnt,FKBJ_v1_rh_up_to,FKS2Numerics_v1_corollary_22_mid_range,FKS2Numerics_v1_corollary_23_mid_range,FKS2Numerics_v1_nu_asymp_e30_le,FKS2Numerics_v1_table6_row2_floor,FKS2Numerics_v1_theta_asymp_ge_one_below_e30,LowZeroes_v1_sum_inv_ordinates_below_2e4,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to,ZetaLogDerivValues_v1_deriv_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_laurent_alternating,ZetaLogDerivValues_v1_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_three_halves,ZetaLogDerivValues_v1_logDeriv_two numerical;
   click BKLNW_v1_corollary_5_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#corollary_5_1" _blank
@@ -721,8 +721,8 @@ A line is one claim, indented under whatever assumes it.
 
 - [`Buthe2016.v1.theorem_2_theta`](docs/nodes/Buthe2016-v1.md#theorem_2_theta) — cited
 
-- [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) — cited
-  - [`CH2.v1.corollary_1_2_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_2_lambda_sum) — cited
+- [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) — verified
+  - [`CH2.v1.corollary_1_2_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_2_lambda_sum) — verified
     - [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](docs/nodes/GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip) — verified
     - [`CotangentSeries.v1.cot_series_zeta_values`](docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values) — unjustified
     - [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) — cited
@@ -738,8 +738,8 @@ A line is one claim, indented under whatever assumes it.
   - [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) — cited — *sources known, not all drawable*
     - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
 
-- [`CH2.v1.corollary_1_3_psi`](docs/nodes/CH2-v1.md#corollary_1_3_psi) — cited
-  - [`CH2.v1.corollary_1_2_psi`](docs/nodes/CH2-v1.md#corollary_1_2_psi) — cited
+- [`CH2.v1.corollary_1_3_psi`](docs/nodes/CH2-v1.md#corollary_1_3_psi) — verified
+  - [`CH2.v1.corollary_1_2_psi`](docs/nodes/CH2-v1.md#corollary_1_2_psi) — verified
     - [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](docs/nodes/GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip) — verified
     - [`CotangentSeries.v1.cot_series_zeta_values`](docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values) — unjustified
     - [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) — cited
@@ -963,8 +963,6 @@ rather than maintained.
 | [`ButheNumerics.v1.lemma_3_constant_gt_at_10`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_gt_at_10) | computation | 1 | none |
 | [`ButheNumerics.v1.lemma_3_constant_nonpos`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_nonpos) | computation | 1 | none |
 | [`ButheNumerics.v1.li_minus_pi_below_1e7`](docs/nodes/ButheNumerics-v1.md#li_minus_pi_below_1e7) | computation | 1 | none |
-| [`CH2.v1.corollary_1_2_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_2_lambda_sum) | cited | 1 | traced |
-| [`CH2.v1.corollary_1_2_psi`](docs/nodes/CH2-v1.md#corollary_1_2_psi) | cited | 1 | traced |
 | [`ContourIntegration.v1.residue_theorem_rectangle`](docs/nodes/ContourIntegration-v1.md#residue_theorem_rectangle) | unjustified | 1 | none |
 | [`DudekPlattNumerics.v1.pi_two_sided_paper`](docs/nodes/DudekPlattNumerics-v1.md#pi_two_sided_paper) | computation | 1 | known, not all drawable |
 | [`DudekPlattNumerics.v2.pi_two_sided_pnt`](docs/nodes/DudekPlattNumerics-v2.md#pi_two_sided_pnt) | computation | 1 | **not yet traced** |
@@ -983,8 +981,6 @@ rather than maintained.
 | [`Buthe2016.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_pi) | cited | 0 | none |
 | [`Buthe2016.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_riemann_pi) | cited | 0 | none |
 | [`Buthe2016.v1.theorem_2_theta`](docs/nodes/Buthe2016-v1.md#theorem_2_theta) | cited | 0 | none |
-| [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) | cited | 0 | traced |
-| [`CH2.v1.corollary_1_3_psi`](docs/nodes/CH2-v1.md#corollary_1_3_psi) | cited | 0 | traced |
 | [`DudekPlatt.v1.largest_counterexample_on_rh`](docs/nodes/DudekPlatt-v1.md#largest_counterexample_on_rh) | cited | 0 | known, not all drawable |
 | [`DudekPlatt.v1.ramanujan_inequality`](docs/nodes/DudekPlatt-v1.md#ramanujan_inequality) | cited | 0 | traced |
 | [`FKS.v1.psi_bound_all_x`](docs/nodes/FKS-v1.md#psi_bound_all_x) | cited | 0 | traced |
