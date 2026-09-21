@@ -145,7 +145,6 @@ graph LR
   NPlatt2017_v1 ==>|bridge| NWedeniwski_v1
   style NBKLNW_v1 stroke-dasharray: 8 4;
   style NButhe_v1 stroke-dasharray: 8 4;
-  style NCH2_v1 stroke-dasharray: 8 4;
   style NDudekPlatt_v1 stroke-dasharray: 8 4;
   style NDudekPlattNumerics_v1 stroke-dasharray: 8 4;
   style NDudekPlattNumerics_v2 stroke-dasharray: 2 3;
@@ -540,8 +539,6 @@ graph LR
   style Buthe_v1_theorem_2_psi stroke-dasharray: 8 4;
   style Buthe_v1_theorem_2_theta stroke-dasharray: 8 4;
   style Buthe_v1_theorem_2_theta_lower stroke-dasharray: 8 4;
-  style CH2_v1_corollary_1_3_lambda_sum stroke-dasharray: 8 4;
-  style CH2_v1_corollary_1_3_psi stroke-dasharray: 8 4;
   style DudekPlatt_v1_largest_counterexample_on_rh stroke-dasharray: 8 4;
   style DudekPlattNumerics_v1_pi_two_sided_paper stroke-dasharray: 8 4;
   style DudekPlattNumerics_v2_pi_two_sided_pnt stroke-dasharray: 2 3;
@@ -724,7 +721,7 @@ A line is one claim, indented under whatever assumes it.
 
 - [`Buthe2016.v1.theorem_2_theta`](docs/nodes/Buthe2016-v1.md#theorem_2_theta) — cited
 
-- [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) — cited — *sources known, not all drawable*
+- [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) — cited
   - [`CH2.v1.corollary_1_2_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_2_lambda_sum) — cited
     - [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](docs/nodes/GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip) — verified
     - [`CotangentSeries.v1.cot_series_zeta_values`](docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values) — unjustified
@@ -741,7 +738,7 @@ A line is one claim, indented under whatever assumes it.
   - [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) — cited — *sources known, not all drawable*
     - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
 
-- [`CH2.v1.corollary_1_3_psi`](docs/nodes/CH2-v1.md#corollary_1_3_psi) — cited — *sources known, not all drawable*
+- [`CH2.v1.corollary_1_3_psi`](docs/nodes/CH2-v1.md#corollary_1_3_psi) — cited
   - [`CH2.v1.corollary_1_2_psi`](docs/nodes/CH2-v1.md#corollary_1_2_psi) — cited
     - [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](docs/nodes/GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip) — verified
     - [`CotangentSeries.v1.cot_series_zeta_values`](docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values) — unjustified
@@ -986,8 +983,8 @@ rather than maintained.
 | [`Buthe2016.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_pi) | cited | 0 | none |
 | [`Buthe2016.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_riemann_pi) | cited | 0 | none |
 | [`Buthe2016.v1.theorem_2_theta`](docs/nodes/Buthe2016-v1.md#theorem_2_theta) | cited | 0 | none |
-| [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) | cited | 0 | known, not all drawable |
-| [`CH2.v1.corollary_1_3_psi`](docs/nodes/CH2-v1.md#corollary_1_3_psi) | cited | 0 | known, not all drawable |
+| [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) | cited | 0 | traced |
+| [`CH2.v1.corollary_1_3_psi`](docs/nodes/CH2-v1.md#corollary_1_3_psi) | cited | 0 | traced |
 | [`DudekPlatt.v1.largest_counterexample_on_rh`](docs/nodes/DudekPlatt-v1.md#largest_counterexample_on_rh) | cited | 0 | known, not all drawable |
 | [`DudekPlatt.v1.ramanujan_inequality`](docs/nodes/DudekPlatt-v1.md#ramanujan_inequality) | cited | 0 | traced |
 | [`FKS.v1.psi_bound_all_x`](docs/nodes/FKS-v1.md#psi_bound_all_x) | cited | 0 | traced |

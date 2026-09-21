@@ -807,6 +807,25 @@ stages:
       they used to say `imports` is a real none, which was true of the STATEMENT (the Riemann
       hypothesis up to T is a hypothesis, not an edge) but is not true of the proof. Challenge.lean
       was regenerated, fingerprints/state/graph/pages rewritten, and `check` passes.
+      ALL FOUR CONCLUSIONS ARE PROVED. Solution.lean has no sorry; the four compared theorems
+      depend only on propext, Classical.choice and Quot.sound. What remains is not mathematics but
+      process: Comparator has to verify the node (scripts/ieantn.py verify CH2.v1 --pr 108), which
+      is the maintainer's dispatch, and only the receipt it writes can move the justifications off
+      `literature`. A solution justifies nothing by itself.
+      COROLLARY 1.3, LAMBDA/N DISPLAY: DONE (Section9Cor13Sum.lean). Ranges above 10^9 are as for
+      psi. Below, the sum is pinned against X = 10^10 by Abel summation
+      (Mathlib's sum_mul_eq_sub_sub_integral_mul with c = Lambda, f = t^{-1}):
+      S(x) - log x + gamma = [S(X) - log X + gamma] - (psi(X)/X - 1) + (psi(x)/x - 1)
+        - (int_{Ioc x X} psi(t)/t^2 dt - log(X/x)),
+      the identity being exact once psi t = sum_{k in Icc 0 (floor t)} Lambda k and
+      lambdaSum y = sum_{Ioc 0 (floor y)} Lambda n / n.
+      THE INTEGRAL TERM is bounded WITHOUT computing int t^{-3/2}: on [x, X], |psi(t) - t|/t^2
+      <= 0.94 sqrt t/t^2 <= (0.94/sqrt x) t^{-1}, so the whole thing is (0.94/sqrt x) log(X/x)
+      <= 21.65/sqrt x at X = 10^10. Cruder than the 1.88/sqrt x the exact integral gives, and it
+      costs nothing: the budget at x = 10^9 is 91/sqrt x against 8.3e-4 of x-free error.
+      NUMBERS AT THE BINDING END (x = 10^9): E(X) <= pi/(10^7-1) + 82/10^5 = 8.2e-4, psi endpoints
+      0.94/10^5 and 0.94/sqrt x, integral 21.65/sqrt x; total 8.3e-4 + 22.6/sqrt x, against
+      113.67/sqrt x. It holds for x up to 1.2e10, a factor of 12 beyond where it is used.
       COROLLARY 1.3, PSI DISPLAY: DONE (Section9Cor13.lean, CH2Section9.corollary_1_3_psi, axioms
       propext/choice/Quot.sound). Solution.lean now carries a single sorry, the Lambda/n display.
       THE FOUR RANGES, as planned: x > 3e12 + 5 uses Corollary 1.2 at T = 3e12 + 5; 10^9 < x <=

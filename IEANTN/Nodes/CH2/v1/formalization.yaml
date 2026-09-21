@@ -85,7 +85,7 @@ conclusions:
   progress:
     solution: Solutions/CH2.v1/
     state: in-progress
-    remaining_holes: 2
+    remaining_holes: 0
 - id: corollary_1_2_lambda_sum
   declaration: CH2.v1.corollary_1_2_lambda_sum
   challenge: CH2.v1.challenge_corollary_1_2_lambda_sum
@@ -121,13 +121,14 @@ conclusions:
     note: >-
       Asserted on the authority of the paper. The companion to the psi bound: the same two constants
       pi/(T-1) and C_T, divided through by x. The Riemann hypothesis up to T is a hypothesis, not an
-      edge; the imports listed are what the proof rests on, as for the psi bound above. PrimeNumberTheoremAnd states this as
+      edge; the imports listed are what the proof rests on, as for the psi bound above. PrimeNumberTheoremAnd
+      states this as
       CH2.cor_1_2_b with a `sorry`, and its transcription agrees with this one.
   designated: ch2-paper
   progress:
     solution: Solutions/CH2.v1/
     state: in-progress
-    remaining_holes: 2
+    remaining_holes: 0
 - id: corollary_1_3_psi
   declaration: CH2.v1.corollary_1_3_psi
   challenge: CH2.v1.challenge_corollary_1_3_psi
@@ -138,7 +139,7 @@ conclusions:
     conclusion: rh_up_to_exact
   - node: Buthe.v1
     conclusion: theorem_2_psi
-  imports_status: traced
+  imports_status: identified
   justifications:
   - id: ch2-paper
     kind: literature
@@ -153,8 +154,11 @@ conclusions:
       sqrt(3)/3. Platt-Trudgian's own Theorem 1 states the exact integer, which is what is recorded.)
       HOLDS FROM x = 1, with no lower threshold, where Corollary 1.2 needs x > max(T, 1e9). The descent
       is now drawn: Buthe.v1.theorem_2_psi gives |x - psi(x)| <= 0.94 sqrt x for 11 < x <= 10^19, which
-      covers it with room to spare, and below 11 the bound is trivial. `imports_status` stays `traced`
-      until the Lean route in Solutions/CH2.v1 confirms that these are the only inputs.
+      covers it with room to spare, and below 11 the bound is trivial. The Lean route in
+      Solutions/CH2.v1 now confirms that these three edges are the only inputs, so `imports_status`
+      is `identified`: for x above 3e12 + 5 it is Corollary 1.2 at that height, down to x > 10^9 it
+      is Corollary 1.2 at T = 10^7 (whose pi/(10^7-1) fits inside the sqrt x slack), then Buthe,
+      then a crude bound below 11.
       TRANSCRIBED FROM THE PAPER, NOT FROM PrimeNumberTheoremAnd. PNT+'s CH2.cor_1_3_a writes the
       leading constant as pi * 3 * 1e-12 = 9.425e-12, in its blueprint LaTeX as well as its Lean,
       where the paper has pi/(3e12) = 1.047e-12 -- nine times larger. It is a weaker claim rather than
@@ -163,7 +167,7 @@ conclusions:
   progress:
     solution: Solutions/CH2.v1/
     state: in-progress
-    remaining_holes: 2
+    remaining_holes: 0
 - id: corollary_1_3_lambda_sum
   declaration: CH2.v1.corollary_1_3_lambda_sum
   challenge: CH2.v1.challenge_corollary_1_3_lambda_sum
@@ -174,7 +178,7 @@ conclusions:
     conclusion: rh_up_to_exact
   - node: Buthe.v1
     conclusion: theorem_2_psi
-  imports_status: traced
+  imports_status: identified
   justifications:
   - id: ch2-paper
     kind: literature
@@ -196,7 +200,7 @@ conclusions:
   progress:
     solution: Solutions/CH2.v1/
     state: in-progress
-    remaining_holes: 2
+    remaining_holes: 0
 sources:
 - title: "Optimal bounds for sums of non-negative arithmetic functions"
   authors: ["Andres Chirre", "Harald Andres Helfgott"]
@@ -232,15 +236,20 @@ review:
 
 limitations:
 - >-
-  Every conclusion rests on the cited paper; none is proved in Lean here, and anything downstream
-  inherits that.
+  Every conclusion's DESIGNATED justification is still the cited paper, and anything downstream
+  inherits that. A complete Lean solution now exists at Solutions/CH2.v1 -- all four compared
+  theorems are proved and free of `sorryAx`, on the eleven edges listed above -- but a solution
+  justifies nothing until Comparator has verified it and a receipt records the verdict. Until then
+  the honest reading of these conclusions is unchanged.
 - >-
   Theorem 1.1, the general result these are specialisations of, is NOT stated. It is the natural
   keystone of this family and PrimeNumberTheoremAnd does not state it either -- its CH2.lean carries
   a "TODO: incorporate material from [CH2, Section 6]" where the theorem would go. See #64.
 - >-
-  Corollary 1.3's descent from x > max(T, 1e9) to x >= 1 is work the paper does that no node models,
-  which is what keeps its `imports_status` at `traced`.
+  Corollary 1.3's descent from x > max(T, 1e9) to x >= 1 is work the paper leaves implicit. It is
+  now modelled: Buthe.v1.theorem_2_psi carries 11 < x <= 10^19, Corollary 1.2 at T = 10^7 carries
+  the middle, and below 11 the bound is crude. That is why `imports_status` is now `identified`
+  rather than `traced`.
 - >-
   These estimates are not comparable to the network's other psi bounds by inspection. FKS.v1 and the
   rest have the classical shape A (log x / R)^B exp(-C sqrt(log x / R)) coming from a zero-free

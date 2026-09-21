@@ -3,7 +3,7 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
-import Section9Cor13
+import Section9Cor13Sum
 import IEANTN.Nodes.CH2.v1.Conclusions
 import IEANTN.Nodes.PlattTrudgian.v1.Conclusions
 import IEANTN.Nodes.Buthe.v1.Conclusions
@@ -51,10 +51,12 @@ displays are proved below from this node's imports, with no `sorry` between them
 
 ## What is missing
 
-Corollary 1.3's `∑ Λ(n)/n` display. Its `ψ` display is now proved (`Section9Cor13`), by Corollary
-1.2 at `T = 3 · 10¹² + 5` for `x` above that, at `T = 10⁷` down to `x > 10⁹`, `Buthe.v1` on
-`11 < x ≤ 10⁹` and a trivial bound below `11`. What is left is the same descent for the sum, which
-goes by Abel summation against the `ψ` bound.
+**Nothing.** All four conclusions are proved below, with no `sorry` between them and Mathlib.
+
+Corollary 1.3 is Corollary 1.2 at `T = 3 · 10¹² + 5` for `x` above that height, at `T = 10⁷` down
+to `x > 10⁹`, `Buthe.v1` on `11 < x ≤ 10⁹`, and a crude bound below `11`. For `∑ Λ(n)/n` the last
+range instead pins the sum against `X = 10¹⁰` by Abel summation, where Corollary 1.2 applies
+already.
 -/
 
 theorem CH2.v1.challenge_corollary_1_2_psi
@@ -111,5 +113,6 @@ theorem CH2.v1.challenge_corollary_1_3_lambda_sum
     (ch2_v1_corollary_1_2_lambda_sum : CH2.v1.corollary_1_2_lambda_sum)
     (platttrudgian_v1_rh_up_to_exact : PlattTrudgian.v1.rh_up_to_exact)
     (buthe_v1_theorem_2_psi : Buthe.v1.theorem_2_psi) :
-    CH2.v1.corollary_1_3_lambda_sum := by
-  sorry
+    CH2.v1.corollary_1_3_lambda_sum :=
+  CH2Section9.corollary_1_3_lambda_sum ch2_v1_corollary_1_2_lambda_sum
+    platttrudgian_v1_rh_up_to_exact buthe_v1_theorem_2_psi
