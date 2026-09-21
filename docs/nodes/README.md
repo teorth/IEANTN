@@ -12,7 +12,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`Buthe.v2`](Buthe-v2.md) | pipeline | 2 | unjustified |
 | [`Buthe2016.v1`](Buthe2016-v1.md) | paper | 4 | cited |
 | [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 3 | computation |
-| [`CH2.v1`](CH2-v1.md) | paper | 4 | cited |
+| [`CH2.v1`](CH2-v1.md) | paper | 4 | verified |
 | [`CH2.v2`](CH2-v2.md) | pipeline | 2 | verified, stale |
 | [`CH2.v3`](CH2-v3.md) | pipeline | 2 | verified |
 | [`CH2.v4`](CH2-v4.md) | pipeline | 2 | verified, drifted |
@@ -42,14 +42,16 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`MTY.v1`](MTY-v1.md) | paper | 0 | — |
 | [`Platt2015.v1`](Platt2015-v1.md) | computation | 1 | computation |
 | [`Platt2017.v1`](Platt2017-v1.md) | computation | 1 | computation |
-| [`PlattTrudgian.v1`](PlattTrudgian-v1.md) | computation | 1 | cited |
+| [`PlattTrudgian.v1`](PlattTrudgian-v1.md) | computation | 2 | cited |
 | [`PlattTrudgian2021.v1`](PlattTrudgian2021-v1.md) | paper | 2 | cited |
+| [`PlattZeroSum.v1`](PlattZeroSum-v1.md) | standard | 1 | cited |
 | [`PrimeInterval.v1`](PrimeInterval-v1.md) | pipeline | 4 | verified, stale |
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 2 | cited |
 | [`Trudgian2011.v1`](Trudgian2011-v1.md) | paper | 1 | cited |
 | [`Wedeniwski.v1`](Wedeniwski-v1.md) | computation | 1 | asserted |
 | [`ZeroCount.v1`](ZeroCount-v1.md) | paper | 2 | cited |
 | [`ZeroFreeHeight.v1`](ZeroFreeHeight-v1.md) | folklore | 1 | verified, stale |
+| [`ZetaHadamard.v1`](ZetaHadamard-v1.md) | standard | 1 | cited |
 | [`ZetaLogDeriv.v1`](ZetaLogDeriv-v1.md) | standard | 1 | verified |
 | [`ZetaLogDerivValues.v1`](ZetaLogDerivValues-v1.md) | computation | 5 | computation |
 | [`ZetaZeroes.v1`](ZetaZeroes-v1.md) | standard | 6 | verified |

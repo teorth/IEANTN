@@ -15,19 +15,17 @@
 ## The source
 
 - **The Riemann hypothesis is true up to 3 x 10^12** — David J. Platt, Timothy S. Trudgian. Bull. Lond. Math. Soc. 53 (2021), no. 3, 792-797  
-  _Bibliographic details from PNT+'s references.bib and FKS's reference [26]; the DOI has not been confirmed against the publisher and should be before external use._
+  _Bibliographic details from PNT+'s references.bib and FKS's reference [26]; the DOI has not been confirmed against the publisher and should be before external use. The arXiv version is arXiv:2004.09765, and Theorem 1 and the abstract were read there on 2026-09-20._
 
 ## Conclusions
 
 ### `rh_up_to`
 
-**The verification height.** The Riemann hypothesis holds up to `3 · 10¹²`: `ζ` has no zeroes
-with real part strictly between `1/2` and `1` and imaginary part in `[0, 3 · 10¹²]`.
+**The verification height, rounded.** The Riemann hypothesis holds up to `3 · 10¹²`: `ζ` has no
+zeroes with real part strictly between `1/2` and `1` and imaginary part in `[0, 3 · 10¹²]`.
 
-The paper's own framing is that the first `10¹³` zeros are on the critical line, which pins the
-height at `3.0000000000 · 10¹²`; the round `3 · 10¹²` is what downstream papers quote and use, and
-is what is recorded here. A node wanting the sharper height should say so explicitly rather than
-read it into this one.
+This is the height the abstract quotes and the one downstream papers use. It is `rh_up_to_exact`
+weakened, and is kept as its own conclusion because that is the form consumers cite.
 
 ```lean
 def rh_up_to : Prop :=
@@ -38,15 +36,46 @@ def rh_up_to : Prop :=
 |---|---|
 | Lean name | `PlattTrudgian.v1.rh_up_to` |
 | Challenge | `PlattTrudgian.v1.challenge_rh_up_to` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian/v1/Conclusions.lean#L35) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian/v1/Conclusions.lean#L41) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | nothing recorded |
-| Assumed by | [`CH2.v1.corollary_1_3_lambda_sum`](CH2-v1.md#corollary_1_3_lambda_sum), [`CH2.v1.corollary_1_3_psi`](CH2-v1.md#corollary_1_3_psi), [`FKS.v1.psi_bound_all_x`](FKS-v1.md#psi_bound_all_x), [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`MT.v1.zero_free_region_sharpened`](MT-v1.md#zero_free_region_sharpened), [`PlattTrudgian2021.v1.theorem_1_classical`](PlattTrudgian2021-v1.md#theorem_1_classical), [`PlattTrudgian2021.v1.theorem_1_numerical`](PlattTrudgian2021-v1.md#theorem_1_numerical) |
+| Assumed by | [`FKS.v1.psi_bound_all_x`](FKS-v1.md#psi_bound_all_x), [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`MT.v1.zero_free_region_sharpened`](MT-v1.md#zero_free_region_sharpened), [`PlattTrudgian2021.v1.theorem_1_classical`](PlattTrudgian2021-v1.md#theorem_1_classical), [`PlattTrudgian2021.v1.theorem_1_numerical`](PlattTrudgian2021-v1.md#theorem_1_numerical) |
 
 **Justification `platttrudgian-paper`** — **designated** — literature, the paper's main result
 
 > Asserted on the authority of the paper. This is a very large finite computation and the node is kind: computation accordingly -- it will not carry a Lean solution in any foreseeable sense, and what a formalization offers here is a statement of record with an honest citation rather than a proof. The paper's own framing is that the first 10^13 zeros lie on the critical line; the round 3 x 10^12 recorded here is the height downstream papers quote. Minor: the paper states 'all zeroes beta + i gamma with 0 < gamma <= 3e12 have beta = 1/2', so its range is open at zero, while RiemannHypothesisUpTo quantifies over Im s in [0, T]. Including gamma = 0 is harmless -- zeta has no real zero in (0,1) -- but that is a classical fact and not something this paper proves, so the conclusion is very slightly stronger than its source. Formalizable surface, assessed 2026-08-26. A verification of this kind is not one opaque computation: most of the paper is analysis that could be formalized, and the computational core is small. Recording where the line falls is what lets a reader size the hole rather than guess at it, and is the prerequisite for ever splitting the node into a formal harness, a computational core, and a bridge from the two to the conclusion. Here there is nothing to extract, and that is the finding. The paper is short and its section 'Theory and computation' contains no theorem at all -- it is an account of engineering (Arb in place of MPFI, sampling rates, core hours) resting on one sentence: 'We used the algorithm described in [Platt]', which is Platt2017.v1. So this node is genuinely primitive: its only input is another paper's algorithm, which the network cannot express, and there is no analytic component of its own to split off. It is `traced` rather than `identified` for that reason -- the input is known and is not drawable -- and unlike the others it will stay that way. Note also that the paper's Theorem 1 states the sharper height 3,000,175,332,800 -- 'the lowest 12,363,153,437,138 non-trivial zeroes have Re rho = 1/2'. This node states 3e12, which is implied and is the figure the downstream literature quotes.
+
+### `rh_up_to_exact`
+
+**The verification height, exact.** The Riemann hypothesis holds up to `3 000 175 332 800`.
+
+Theorem 1 of the paper: *"The Riemann hypothesis is true up to height 3 000 175 332 800. That is,
+the lowest 12 363 153 437 138 non-trivial zeroes `ρ` have `ℜρ = 1/2`."* The abstract states the
+rounded `3 · 10¹²` instead, which is why the rounded form is the one usually seen.
+
+The extra `1.75 · 10⁸` is not pedantry. `CH2.v1`'s Corollary 1.2 carries the error term `π/(T−1)`,
+and its Corollary 1.3 quotes that as `π/(3 · 10¹²)`; that step needs `T ≥ 3 · 10¹² + 1`, which the
+rounded height does not give and this one does.
+
+```lean
+def rh_up_to_exact : Prop :=
+  RiemannHypothesisUpTo 3000175332800
+```
+
+| | |
+|---|---|
+| Lean name | `PlattTrudgian.v1.rh_up_to_exact` |
+| Challenge | `PlattTrudgian.v1.challenge_rh_up_to_exact` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PlattTrudgian/v1/Conclusions.lean#L53) |
+| Evidence | cited (`literature`) |
+| Sources traced | traced |
+| Assumes | nothing recorded |
+| Assumed by | [`CH2.v1.corollary_1_3_lambda_sum`](CH2-v1.md#corollary_1_3_lambda_sum), [`CH2.v1.corollary_1_3_psi`](CH2-v1.md#corollary_1_3_psi) |
+
+**Justification `platttrudgian-theorem-1`** — **designated** — literature, Theorem 1
+
+> Asserted on the authority of the paper, and the same computation as `rh_up_to` -- nothing further is being claimed, only the height stated without rounding. Theorem 1 reads, verbatim: 'The Riemann hypothesis is true up to height 3 000 175 332 800. That is, the lowest 12 363 153 437 138 non-trivial zeroes rho have Re rho = 1/2.' The abstract quotes the rounded 3e12 instead, which is why the rounded form is the one the downstream literature carries and why this node states both. Read from the arXiv version, arXiv:2004.09765, on 2026-09-20; the rounded figure in the abstract was checked at the same time. WHY BOTH ARE STATED. The difference of 1.75e8 is invisible to every current consumer but one: CH2.v1's Corollary 1.2 has the error term pi/(T-1) and its Corollary 1.3 quotes that as pi/(3e12), a step that needs T >= 3e12 + 1. The rounded height misses it by one; this one clears it by 1.75e8. `rh_up_to` is this conclusion weakened, so a solution would prove this one and get the other in a line -- which is the reason to keep them in one node rather than split a version off. The same caveat as `rh_up_to` applies about the range at zero: the paper's 0 < gamma is open, `RiemannHypothesisUpTo` includes Im s = 0, and zeta has no real zero in (0,1), so the conclusion is very slightly stronger than its source by a classical fact the paper does not prove.
 
 ## Limitations
 

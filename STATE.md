@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-47 node version(s), 91 conclusion(s).  3 state nothing yet.
+49 node version(s), 94 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -15,8 +15,8 @@ adds the environment detail.
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 1 |
-| `lean-comparator` | 29 |
-| `literature` | 36 |
+| `lean-comparator` | 33 |
+| `literature` | 35 |
 | `none-yet` | 5 |
 | `numerical` | 19 |
 
@@ -44,10 +44,10 @@ adds the environment detail.
 | `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
-| `CH2.v1` | awaiting-solution | `corollary_1_2_psi` | literature | 2 | - |
-| `CH2.v1` | awaiting-solution | `corollary_1_2_lambda_sum` | literature | 2 | - |
-| `CH2.v1` | awaiting-solution | `corollary_1_3_psi` | literature | 2 | - |
-| `CH2.v1` | awaiting-solution | `corollary_1_3_lambda_sum` | literature | 2 | - |
+| `CH2.v1` | active | `corollary_1_2_psi` | lean-comparator | 11 | - |
+| `CH2.v1` | active | `corollary_1_2_lambda_sum` | lean-comparator | 11 | - |
+| `CH2.v1` | active | `corollary_1_3_psi` | lean-comparator | 3 | - |
+| `CH2.v1` | active | `corollary_1_3_lambda_sum` | lean-comparator | 3 | - |
 | `CH2.v2` | active | `proposition_2_4_upper` | lean-comparator-stale | 0 | #64 |
 | `CH2.v2` | active | `proposition_2_4_lower` | lean-comparator-stale | 0 | #64 |
 | `CH2.v3` | active | `extremal_majorant` | lean-comparator | 0 | #64 |
@@ -93,8 +93,10 @@ adds the environment detail.
 | `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
 | `Platt2017.v1` | stub | `rh_up_to` | numerical | 1 | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
+| `PlattTrudgian.v1` | active | `rh_up_to_exact` | literature | 0 | - |
 | `PlattTrudgian2021.v1` | stub | `theorem_1_classical` | literature | 3 | - |
 | `PlattTrudgian2021.v1` | stub | `theorem_1_numerical` | literature | 3 | - |
+| `PlattZeroSum.v1` | active | `inv_ordinate_sum_le` | literature | 0 | - |
 | `PrimeInterval.v1` | active | `theta_characterisation` | lean-comparator-stale | 0 | #53 |
 | `PrimeInterval.v1` | active | `eTheta_criterion` | lean-comparator-stale | 0 | #53 |
 | `PrimeInterval.v1` | active | `numericalBound_hasPrimeInInterval` | lean-comparator-stale | 0 | #53 |
@@ -106,6 +108,7 @@ adds the environment detail.
 | `ZeroCount.v1` | stub | `rvm_error_bound` | literature | 0 | #64 |
 | `ZeroCount.v1` | stub | `rvm_error_small` | literature | 0 | #64 |
 | `ZeroFreeHeight.v1` | active | `classical_region_descends` | lean-comparator-stale | 0 | #30 |
+| `ZetaHadamard.v1` | active | `logDeriv_partial_fractions` | literature | 0 | - |
 | `ZetaLogDeriv.v1` | active | `logDeriv_functional_equation` | lean-comparator | 0 | #64 |
 | `ZetaLogDerivValues.v1` | stub | `logDeriv_two` | numerical | 0 | - |
 | `ZetaLogDerivValues.v1` | stub | `logDeriv_three_halves` | numerical | 0 | - |
@@ -154,8 +157,8 @@ downstream.
 
 | Conclusion | Dependants |
 |---|---:|
-| `PlattTrudgian.v1.rh_up_to` | 7 |
 | `FKBJ.v1.rh_up_to` | 6 |
+| `PlattTrudgian.v1.rh_up_to` | 5 |
 | `FKS2Numerics.v1.theta_asymp_ge_one_below_e30` | 4 |
 | `FKS2Numerics.v1.nu_asymp_e30_le` | 4 |
 | `FKS2.v2.proposition_13` | 4 |
@@ -165,7 +168,17 @@ downstream.
 | `FKS2Numerics.v1.corollary_22_mid_range` | 3 |
 | `FKS2.v2.theorem_3` | 3 |
 | `Buthe.v1.theorem_2_theta_lower` | 3 |
+| `ZetaLogDerivValues.v1.logDeriv_two` | 2 |
+| `ZetaLogDerivValues.v1.logDeriv_three_halves` | 2 |
+| `ZetaLogDerivValues.v1.logDeriv_neg_one` | 2 |
+| `ZetaLogDerivValues.v1.logDeriv_laurent_alternating` | 2 |
+| `ZetaLogDeriv.v1.logDeriv_functional_equation` | 2 |
+| `ZetaHadamard.v1.logDeriv_partial_fractions` | 2 |
+| `ZeroCount.v1.rvm_error_small` | 2 |
+| `ZeroCount.v1.rvm_error_bound` | 2 |
+| `PlattZeroSum.v1.inv_ordinate_sum_le` | 2 |
 | `PlattTrudgian2021.v1.theorem_1_numerical` | 2 |
+| `PlattTrudgian.v1.rh_up_to_exact` | 2 |
 | `MT.v1.zero_free_region_sharpened` | 2 |
 | `MT.v1.zero_free_region` | 2 |
 | `Kadiri2005.v1.zero_free_region` | 2 |
@@ -177,6 +190,7 @@ downstream.
 | `DudekPlatt.v3.criterion` | 2 |
 | `CotangentSeries.v1.cot_series_zeta_values` | 2 |
 | `Buthe2016.v1.theorem_2_psi` | 2 |
+| `Buthe.v1.theorem_2_psi` | 2 |
 | `Wedeniwski.v1.rh_up_to` | 1 |
 | `Trudgian2011.v1.integral_S_bound` | 1 |
 | `RosserSchoenfeld.v1.zero_free_region_classical` | 1 |

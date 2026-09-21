@@ -322,12 +322,149 @@ stages:
       so a sign must go through meromorphicOrderAt_smul.
 
   - stage: "section 6: Theorem 1.1"
-    state: not started, and possibly not needed
+    state: >-
+      IN PROGRESS. Section6.lean now has svm_bounds: for sigma in [0,1), zeta(sigma) /= 0, and any
+      admissible zeta ladder, the two one-sided bounds on sum_{n<=x} Lambda(n) n^{-sigma} obtained
+      from prop_2_4_plus/minus with the reflected Graham-Vaaler approximants, their segment
+      integrals shifted by prop_5_2_zeta_neg. What remains in them is `shiftResidues` (still
+      sumResiduesIn + sumResiduesLim) and the named `shiftError`. Along the way: the lam < 0 Fourier
+      inputs (phiNeg, majorant/minorant, decay, value at 0), sum Lambda(n)/(n log^2 n) < infinity by
+      dyadic blocks from Mathlib's psi <= (log 4 + 4) x, and F as prop_2_4's G.
+      RESIDUES NOW EVALUATED (Section6Res.lean, svm_bounds_explicit). Res F at a zero is minus its
+      multiplicity (tendsto_sub_mul_F, via a general residue-of-logDeriv lemma); the trivial zeros
+      are simple (zetaOrder_trivial, functional equation at 2k+3). Over R minus R_C the residue sum
+      is exactly -zeroTerm, the zetaZeroesSum of Phi_lambda(z(rho)) x^rho over delta < |Im| <= T
+      (sumResiduesIn_band_neg; an identity of tsums, no summability needed; at sigma +- iT the
+      residue is 0 since hTfree forces m = 0). The R_C limit is (T/2pi) F(sigma) x^sigma minus the
+      trivial-zero series trivTerm, which is bounded by (1 + T/4pi) x^-2/(1 - x^-2) through
+      coth y <= 1 + 1/y (imported from Section7). The T/2pi F(sigma) cancels 1/(1-sigma) down to
+      -zeta'/zeta(sigma). The ONE zero-location hypothesis is hRC: zeros of zeta in R_C lie in
+      Re < 0. It implies hdfree. With delta = 1 it needs (a) no zeros with 0 < |Im| <= 1 (ZeroCount
+      at t = 2pi, as planned) and (b) NO REAL ZEROS IN [0,1) -- not in any node or Mathlib. (b) is
+      classical (zeta(s) = s/(s-1) - s int_1^inf {u} u^{-s-1} du < 0 on (0,1)); to be proved or made
+      a small node.
+      ZEROS DONE (Section6Zeros.lean). lem:omlet for lam < 0 (Phi_lambda_omlet: Phi_lambda(z(s)) =
+      -(i/2)(omega+_{T,sigma}(s) + eps i theta_{T,1}(s)) for Im s > 0, with omegaPlus/thetaTS/cTS
+      defined literally as in thm:mainthmB; no pole side condition, junk values agree), eq:Phicong,
+      m(conj rho) = m(rho), finiteness of the band zeros, and abs_re_zeroTerm_le: |Re zero sum| <=
+      zetaZeroesSum over Im in (delta, T] of |omega+ + eps i theta_{T,1}| x^Re rho -- exactly the
+      prop:vihuela quantity, xi = eps. ASSEMBLED as svm_abs_bound:
+      |psi_sigma(x)/x^{1-sigma} - ((pi/T) coth(pi(1-sigma)/T) - zeta'/zeta(sigma) x^{sigma-1})|
+        <= pi/T + (2 pi/(T x)) (Z + (1 + T/4pi) x^-2/(1-x^-2) + E)
+      for sigma in [0,1), given hZ (the vihuela bound, both signs), hE (shiftError, both signs),
+      hTfree, hRC. This is prop:sagaro's shape before the vihuela/hardin/coronidis inputs.
+      STEP 2 DONE (Section6Weight.lean, Section6Contour.lean): norm_intC_le, for delta = 1, T >= 4,
+      x >= 10^6, ||int_C Phi_star(sgn lam z(s)) F(s) x^s ds|| <= (gamma x/log^2 x + 1.8 x/log^3 x)/T.
+      Route: intC_eq_coronidis (Cauchy on the rectangle [-1,1]x[0,1], holomorphy from hRC; the ray is
+      moved by u -> -1-u; Atilde = F off s = 1, a null set on the segment), then coronidis185.
+      THE lem:cothder SNAG IS RESOLVED WITHOUT ITS FIRST HALF. B(W) = (W/2)(coth(W/2)+eps) is
+      1-Lipschitz on the REAL axis (|(u coth u)'| <= 1 there, two one-line exp inequalities) and
+      1.85-Lipschitz on |Im W| <= pi/2 (|(u coth u)'| <= |u| near the imaginary axis, and
+      coth|a| + (|a|+pi/4)/a^2 <= 2.7 for |Re u| >= 1.2). coronidis185 keeps the sharp constant on the
+      segment and the real half-line and pays 1.85 only on the two cot legs (1.85 * 9.42/x <= 18/x).
+      Derivative of B at W = 0 handled by continuity of deriv (B analytic there) and |h'(u)| <= |u|.
+      hRC DISCHARGED for delta = 1 (Section6Hyp.lean, hRC_of_rvm), from two new facts:
+      no_zero_low (ZeroCount.v1.rvm_error_small at t = 2 pi: rvmMain = -1/8 forces N(2 pi) < 7/8,
+      while a zero contributes m >= 1; finiteness via riemannZeta_1's codiscrete zero set, which does
+      not need 1 excluded from the compact set) and riemannZeta_ne_zero_Ico (ZetaReal01.lean):
+      zeta(s) /= 0 for real s in [0,1). THE LATTER NEEDED NO NODE: Mathlib's riemannZeta_0 is entire,
+      ZetaAsymptotics.zeta_limit_aux1 gives riemannZeta_0 = 1 - s int_1^inf {x} x^(-s-1) for real
+      s > 1, the integral is mellin ({x} 1_{x>1}) (-s), holomorphic on Re s > 0 by
+      mellin_differentiableAt_of_isBigO_rpow, and the identity theorem extends the formula; then
+      zeta(s) = s/(s-1) - s * (nonneg) < 0 on (0,1). About 200 lines.
+      IMPORTS TO ADD to CH2.v1's formalization.yaml when the solution is assembled: ZeroCount.v1
+      (rvm_error_small), ZetaLogDeriv.v1, ZetaLogDerivValues.v1, ZetaHadamard.v1, GammaAsymptotics.v2.
+      NEXT: (1) the two horizontal integrals of shiftError via section 8.1 (lem:hardin); (2) discharge hRC (no zeros with 0 < |Im| <= 1 from
+      ZeroCount; no real zeros in [0,1) -- open); (3) sigma -> 1- limit for the Lambda(n)/n case;
+      (4) prop:vihuela (needs lem:adar, lem:salmon, cor:thonny, and Platt's zero list to 2e4).
+      Step 1 of 3 done: Proposition 5.2 for lam < 0, generically (Section5Neg.lean,
+      prop_5_2_neg) and at A = -zeta'/zeta (ZetaInstanceNeg.lean, prop_5_2_zeta_neg, which adds
+      0 <= sigma and zeta(sigma) /= 0). The removable singularities at sigma +- iT are handled by the
+      shift identity Phi_lambda(z(s)) = -Phi_star(1 - z(s)) near sigma + iT (and Phi_star(-1 - z(s))
+      near sigma - iT); the bounds left of sigma come from Approximants' phi_*_bound_left, and the
+      part of the contour right of sigma - 1 is compact and misses every pole. Remaining: the
+      delta = 1 rectangle joining intC to coronidis, and the residue bookkeeping to eq:quentino.
+      Section5.lean and Approximants.lean had their `private` modifiers removed so the lam < 0 files
+      could reuse helpers; nothing else in them changed.
+      THE TARGET FOR STEP 3 IS SMALLER THAN eq:quentino, and here is why. prop:sagaro never keeps
+      the complex-zero sums as main terms: it bounds them in absolute value by prop:vihuela, whose
+      statement is a bound on sum_rho |omega^+(rho) + xi theta_{T,1}(rho) i| for any xi in [-1,1].
+      By lem:omlet, Phi^+-_lambda(z(rho)) = (i sgn lam/2)(omega^+(rho) -+ i sgn lam theta_{T,1}(rho))
+      for Im rho > 0, so |Phi^+-_lambda(z(rho))| = |omega^+ + xi theta i|/2 with xi = -+sgn lam. So
+      what section 6 must deliver is the two ONE-SIDED inequalities from prop_2_4_plus and
+      prop_2_4_minus, each shifted, with (a) the s = 1 and s = sigma residues evaluated exactly --
+      together they give (pi/T)coth(pi(1-sigma)/T) +- pi/T - zeta'/zeta(sigma) x^{sigma-1}, the
+      +-pi/T being the optimal main error term -- and (b) the zero residues bounded by
+      m(rho) |Phi_lambda(z(rho))| x^{Re rho}. The exact eq:quentino split is never needed.
+      TAKE delta = 1. Then no zero of zeta has 0 < |Im| <= delta (the first is at 14.13), so R_C
+      contains only real poles -- sigma, 1 (removable for F) and the trivial zeros -- and every
+      complex zero below T sits in R \ R_C, where sumResiduesIn is a finite sum. It also makes
+      LadderParams.intC and coronidis's contour agree left of Re s = -1 (see above).
+      A SNAG FOR STEP 2, found while planning it. coronidis assumes ||Phi(s)|| <= ||s-1|| on the whole
+      strip Re s <= -1, |Im s| <= 1, with Phi(s) = T Phi_star(sgn lam z(s)). The paper gets this from
+      |Phi_star'| <= 1 on |Re| <= 1/4, i.e. from the FIRST half of lem:cothder,
+      |(z coth z)'| < 1 on |Im z| <= pi/4, which is NOT ported -- only the second half,
+      |(z coth z)'| <= |z| on |Im z| <= pi/2, is. From the second half one gets
+      |Phi(s)| <= |s-1| (1 + |lam|/2 + pi|s-1|/T)/2, which is <= |s-1| only for |s-1| <~ T/pi. The
+      leading gamma x/log^2 x comes from the segment [-1,1], where |s-1| <= 2 and the sharp bound
+      holds; the far pieces have large slack. So the fix is to weaken coronidis's strip hypothesis to
+      ||Phi(s)|| <= K ||s-1|| with a K near 1 on the vertical leg and a cruder K beyond, not to prove
+      the first half of lem:cothder.
     note: >-
-      PNT+ has `TODO: incorporate material from [CH2, Section 6]` where this would go, and its
-      cor_1_2_a is meant to follow from prop_5_2 without it. If that holds here too, the general
-      theorem can be skipped entirely; it is the paper's headline but not on the path to the
-      corollaries. Decide this by working section 7 backwards, not by stating Theorem 1.1 first.
+      THE EARLIER HOPE THAT SECTION 6 COULD BE SKIPPED WAS WRONG. prop_5_2 is the paper's
+      prop:shiftnonneg, which is section 5. Section 6 (prop:ewsai and the proof of thm:mainthmB) is
+      what combines the Fourier inequality -- prop:gennonneg, ported as prop_2_4_plus/minus in
+      Part1Fourier.lean -- with that shift and evaluates the residues, producing eq:quentino, the
+      four-sums formula prop:sagaro consumes. Its content is unavoidable; only its generality is
+      optional.
+      THE PORT COVERS THE WRONG SIGN. prop_5_2_a, prop_5_2 and prop_5_2_zeta all require 0 < lam,
+      and lam = 2 pi (sigma - 1)/T, so they cover sigma > 1 only. Corollary 1.2 needs sigma = 0 (psi)
+      and sigma -> 1- (Lambda(n)/n): BOTH lam < 0, and nothing on the path uses lam > 0. For lam < 0
+      Phi_circ(sgn lam z(s)) has an extra simple pole at s = sigma, inside R_C below the contour; its
+      residue T/(2 pi) is what cancels the 1_{sigma<1}/(1-sigma) of prop:gennonneg and produces the
+      -zeta'/zeta(sigma) x^{sigma-1} term. Phi_star has poles at sigma +- iT, on the horizontal edges,
+      where the combination Phi_lambda is regular.
+      HOW MUCH OF THE lam < 0 CASE EXISTS: prop_5_2_b and prop_5_2_c are sign-generic;
+      norm_Phi_lambda_one_add_I_mul_le_of_neg and its twin give the edge bounds; Approximants has
+      phi_circ_bound_left and phi_star_bound_left; and CH2.v3's solution already builds the lam < 0
+      majorant as refl' (phi_pm |lam| eps), matching Phi_lambda on the segment. WHAT MUST BE REDONE:
+      the four isBoundedNoPolesOn_Phi_*_mul lemmas. For lam > 0 the argument of Phi lies in the upper
+      half-plane and the bounds are uniform on all of R; for lam < 0 they hold only on Re s < sigma,
+      and the strip sigma <= Re s <= 1 needs compactness away from s = sigma and sigma +- iT. Then
+      prop_5_2_a for lam < 0, and ZetaInstance's finiteness and simple-pole lemmas with the extra pole.
+      THE GEOMETRY IS FAVOURABLE: ladder columns are 1, -1, -3, ..., so sigma in [0,1) is never on one;
+      the contour runs at height delta > 0, so sigma is strictly inside R_C and the paper's "lift C
+      slightly" step is not needed; and the poles in R \ R_C are the zeros with delta < |Im| <= T,
+      a FINITE set, so the complex-zero sums are finite and the paper's interchange-of-limits worry
+      (eq:adorno) does not arise for sigma < 1.
+      WHAT IS NOT PORTED AT ALL, the residue bookkeeping: (1) identify Phi_lambda((s-1)/iT) on the
+      segment with the phi_pm fed to prop_2_4 (eq:amfia), with phi_pm(0) = coth(|lam|/2)/2 +- 1/2;
+      (2) lem:omlet, the closed form i sgn(lam)(-theta cot(pi theta)/2 + c/2) +- (1-z)/2 for Im s > 0,
+      and eq:Phicong to fold conjugate zeros into 2 Re; (3) Phi_circ = (coth(w/2) +- 1)/2 to turn the
+      R_C residues into the coth-weighted real-pole sum; (4) translating ResiduePort's sumResiduesIn
+      and sumResiduesLim into sums over zeros with multiplicity and over the real poles
+      {1, sigma, -2, -4, ...}, which needs the residue of zeta'/zeta at a zero to be its order.
+      THREE SIMPLIFICATIONS, TAKEN AS DECISIONS.
+      (a) ONLY sigma < 1. The sigma > 1 case of thm:mainthmB is not on the path; skip it.
+      (b) sigma = 1 BY A LIMIT IN THE FINAL INEQUALITY, NOT IN THE FORMULA. The paper passes
+      sigma -> 1- inside eq:quentino, which needs the eq:adorno dominated-convergence argument. But
+      prop:sagaro's error bound pi/(T-1) + C_T/sqrt(x) does not depend on sigma, so prove prop:sagaro
+      for sigma in [0,1) and let sigma -> 1- at the very end: the left side is a finite sum, continuous
+      in sigma, and Main(x,sigma) -> log x - gamma needs only the Laurent expansion at 1, already in
+      ZetaLogDerivValues.v1 (a_0 = gamma), plus coth y = 1/y + O(y). This removes the hardest analytic
+      step in section 6.
+      (c) STATE IT AT A = -zeta'/zeta, NOT IN GENERALITY. No arbitrary a_n, no arbitrary admissible
+      contour; two-sided inequality form, since prop_2_4_plus and _minus are separate shifts with
+      eps = 1 and eps = -1 and the corollaries only ever need the O* version.
+      A COMPATIBILITY ISSUE WITH SECTION 8.2, AND ITS FIX. prop_5_2's contour term is over
+      LadderParams.intC: up from 1 to 1 + i delta, then out along Im s = delta. coronidis bounds the
+      integral over 1 -> -1 -> -1+i -> -infinity+i. TAKE delta = 1 (allowed: delta in (0, T/4) with
+      T >= 10^7, and no zero has |Im| = 1). The two contours then agree left of Re s = -1 and differ
+      by the boundary of the rectangle [-1,1] x [0,1], on which Phi_star(sgn lam z(s)) F(s) x^s is
+      holomorphic -- F has no poles there, Phi_star's poles are at sigma +- iT -- so one application of
+      Complex.integral_boundary_rect_eq_zero_of_differentiableOn, as in section 8.2, connects them.
+      The Phi fed to coronidis is T * Phi_star(sgn lam (s-1)/(iT)); its hypotheses come from
+      lem:benvenuto2's |Phi_star'| <= 1 on 0 <= Re z <= 1/4, which rests on lem:cothder, already done.
 
   - stage: "sections 7-8: the specialisation to psi"
     state: in progress -- Appendix C plus section 7's preamble done (Section7.lean); sections 7, 8 open
@@ -343,7 +480,30 @@ stages:
       is stated on 0 < x < 1; its case 0 < x <= 1/2 follows from (c) plus
       |1/(x+iy) - 1/x| = |y|/(x|x+iy|), and its case 1/2 <= x < 1 from lem:cothder and the mean
       value inequality along the vertical segment.
-      SECTION 7 PROPER IS NOT STARTED. Its four remaining pieces are lem:trivialzer (the trivial
+      SECTION 7 IS NOW DONE, ENDING IN prop:vihuela (Section7Vihuela.lean, `vihuela`): for T >= 10^7,
+      0 <= sigma < 1, |xi| <= 1, RH up to T and no zero ordinate at T,
+      (2pi/T) sum_{0<gamma<=T} |omega+_{T,sigma}(rho) + xi theta_{T,1}(rho) i|
+        <= (1/2pi) log^2(T/2pi) - (1.001/6pi) log(T/2pi).
+      Inputs: CotangentSeries.v1, ZeroCount.v1 (both halves), PlattZeroSum.v1 (new literature node,
+      2 sum_{0<gamma<=20000} 1/gamma <= 10.3194, the paper's Platt computation).
+      THE COEFFICIENT IS 1.001, NOT THE PAPER'S 1.01, and sigma is restricted to [0,1). Section 9
+      spends the 0.01/6pi slack on terms of size 1e-4 (and on log(2pi)/sqrt(x)), so 1.001 suffices;
+      numerically the margin at T = 10^7 is 0.017 and grows with T.
+      THE ROUTE DIFFERS FROM THE PAPER IN FOUR PLACES, each to avoid a numeric or junk-value obstacle.
+      (1) prop:tritura is proved on [eps, b] with b < 1 (Section7Tritura.lean), because Fweight 1 is a
+      junk value; lem:adar sums over zeros below t1 < T and takes t1 -> T at the end (possible since the
+      zeros are finite and none sits at T). (2) C_1 and C_2 are one-sided and crude: C_1 >= 0.1672
+      from a dozen cotangent-series terms with zeta(2), zeta(4) exact and zeta(2n) >= 1 after
+      (true 0.168938), C_2 <= 0.1729 from zeta(2n) <= zeta(4) (true 0.164184). No Arb. The needed
+      y-coefficient is 2 C_1 >= 1.001/3. (3) lem:tremic is not needed: the [0, eps] and [b, 1] pieces
+      are bounded outright by eps^2/2 and 1 - b. (4) lem:Lehmanmodern never integrates against the
+      step function Q: N(t) - N(t0) is bounded by a smooth majorant inside the integral (legitimate as
+      -phi' >= 0) and integration by parts is done on that. cor:brut is stated from T >= 12 (ZeroCount
+      cannot see that the first zero is at 14.13), lem:cathinv up to a finite height.
+      RH up to T as the Vocabulary defines it excludes only 1/2 < Re < 1; re_eq_half_of_RH reflects
+      0 < Re < 1/2 into it through riemannZeta_one_sub and conjugation.
+      THE PAPER'S OLD NOTE FOLLOWS, KEPT FOR ITS ROADMAP.
+      SECTION 7 PROPER WAS NOT STARTED. Its four remaining pieces are lem:trivialzer (the trivial
       zeros, which needs the residue of -zeta'/zeta at -2n and coth decreasing on (0,infty)),
       cor:thonny (the weight estimate, which is what consumes lem:sibelius and lem:cothder),
       prop:tritura with lem:tremic and lem:konstanz (the integral of
@@ -382,10 +542,352 @@ stages:
       lem:arles, and THE EXPONENTIAL INTEGRAL Ei, which Mathlib does not have at all and which
       lem:rameau and lem:bettnist both use. Ei is the clearest helper-node candidate in the
       section: elementary, absent from Mathlib, and not specific to this paper.
-      SUGGESTED ORDER: 8.2 first, since lem:adamant, lem:ranadi and prop:coronidis are ordinary
-      complex analysis with explicit constants and depend on nothing outside the paper except the
-      functional equation, which is already a node; then Ei; then 8.1, which is where the explicit
-      zeta'/zeta machinery has to be built; then lem:hardin.
+      WHAT MATHLIB'S VON MANGOLDT L-SERIES GIVES, checked rather than assumed. Present and clean:
+      LSeries_vonMangoldt_eq_deriv_riemannZeta_div (L of Lambda at s equals -zeta'/zeta(s) for
+      Re s > 1), LSeriesSummable_vonMangoldt, LSeries.norm_term_le_of_re_le_re (termwise
+      monotonicity of the norms in Re s), and ArithmeticFunction.vonMangoldt_nonneg. Together those
+      give |zeta'/zeta(t)| <= |zeta'/zeta(2)| for real t >= 2 with only plumbing -- the one fiddly
+      step is that the terms at the real point s = 2 are non-negative reals, so the sum of the
+      norms is the norm of the sum.
+      WHAT IS ABSENT IS EVERY NUMERICAL VALUE. Mathlib has no bound for zeta'/zeta at any point, and
+      section 8 needs five of them: zeta'/zeta(2) = -0.5699... for the bound just described,
+      A~(-1) = -1.48505... for lem:moruno, c = zeta'/zeta(-1) - 2 (zeta'/zeta)'(-1) = 3.86102... for
+      lem:arles, |zeta'/zeta(1+sigma_0)| for lem:adioso, and zeta'/zeta(3/2) = -1.50523... for
+      lem:saghar and prop:titch96A. Each is a sum over Lambda(n) n^{-t} or its derivative.
+      SO THIS IS A HELPER NODE, not inline work. Five call sites in one section, all of the same
+      shape, none specific to this paper. It cannot go on ZetaLogDeriv.v1, which is green: adding a
+      conclusion there would invalidate its receipt, verification being all-or-nothing per node.
+      lem:arles needs one more thing of the same kind: A~(s) = sum (-1)^{n+1} a_n (s-1)^n with
+      a_n > 0, which is sign information on the Taylor coefficients of zeta'/zeta + 1/(s-1) at 1.
+      DONE SO FAR IN Section8.lean: lem:adamant, both segments of C_<, and norm_intClt_le, which is
+      the lem:ranadi analogue -- the whole of C_< contributes at most 18/x for x >= 15.
+      SECTION 8.2 IS DONE. Section8.lean, plus DigammaReal.lean. The endpoint is coronidis:
+      for x >= 10^6, ||int_C A~(s) Phi(s) x^s ds|| <= gamma x/log^2 x + 1.8 x/log^3 x, where C is
+      the initial segment 1 -> -1 followed by intClt, the re-routed C_<. Its hypotheses are what
+      the paper's |Phi'| <= 1, Phi(1) = 0 and holomorphy give: DifferentiableOn on Re s < 0,
+      ||Phi(1-t)|| <= t on [0,2], and ||Phi(s)|| <= ||s-1|| on the strip Re s <= -1, |Im s| <= 1.
+      C_< WAS RE-ROUTED THROUGH A VERTICAL LEG. With the paper's 135 degree leg the region between
+      C_< and the real half-line is a rectangle with a corner cut off, so Cauchy would need a
+      triangle too, and Mathlib has the rectangle only. A vertical leg from -1 to -1+i makes the
+      region exactly [-1-R,-1] x [0,1]. The paper's reason for 45 degrees does not apply on this
+      route -- it wants x^s to decay along the leg, which buys powers of log x this route has
+      already given up -- and the cot bound on a vertical leg is EASIER: at Re s = -1,
+      cot(pi s/2) = -i tanh(pi v/2), so |cot| <= 1 outright. The two routes are interchangeable
+      because A~ Phi x^s is holomorphic in the triangle between them; lem:adamant, segC1, segC2 and
+      norm_intClt_le stay in the file, correct and unused, and coronidis_bound takes the middle
+      piece abstractly as M <= 18/x so that either route instantiates it.
+      THE SHIFT IS contour_shift, INSTANTIATED AS shift_Fint. All three side conditions -- the two
+      integrabilities and the vanishing of the left edge -- come off one pointwise bound on the
+      strip: ||G Phi x^s|| <= (A + 3 + u)(3 + u) x^{-1-u} with u = -1 - Re s, collapsed by
+      e^u >= (1 + u/2)^2 to (19 + 4A)/x times e^{-(log x - 1)u}. The left edge needs nothing extra
+      because that bound at u = R does not depend on the height.
+      THE OBSTRUCTION FLAGGED EARLIER DISSOLVED. Bounding G off the real axis needs a COMPLEX
+      digamma asymptotic, and GammaAsymptotics.v2's conclusion is an O-statement with an unnamed
+      constant -- useless for an explicit bound. But the unnamed constant is only ever needed for
+      the two SIDE CONDITIONS, integrability and a limit; the final explicit constant comes from
+      norm_intHoriz_le, on the real axis, where DigammaReal gives |psi - log| <= 1/x with the
+      constant explicit. So the O-form sufficed, and no new Gamma work was required.
+      SPLITTING THE INTEGRAND UNDER THE INTEGRAL SIGN was the last piece of bookkeeping: intClt_eq
+      rewrites A~ = G - (pi/2) cot(pi s/2) on each leg via Gfun_eq, which needs sin(pi s/2) != 0.
+      The vertical leg misses the even integers by its real part (-1) and the horizontal tail by its
+      imaginary part (1), so cot(pi s/2) is continuous along both and the guard is free.
+      THREE DELIBERATE DEPARTURES FROM THE PAPER, each with the downstream slack checked first.
+      (1) lem:ranadi: no powers of log x are kept, since lem:hardin's budget for T >= 10^6 is at
+      least 3.4539/log^2 x against a paper contribution of 0.6978/log^2 x -- the log^3 coefficient
+      tolerates about 39.7 where the paper produces 5/3.
+      (2) lem:arles: a geometric majorant instead of convexity and a tangent line at t = 2. The
+      slopes differ; the leading gamma, the only coefficient with no slack downstream, does not.
+      (3) prop:coronidis is stated for x >= 10^6 rather than x >= 15. At x = 15 the C_< term alone
+      would eat the whole of the paper's 5/3; at 10^6 -- the only range lem:hardin uses, since it
+      assumes x >= T >= 10^6 -- the constant is 1.8 against the paper's 1.667.
+      lem:badabook IS NOT NEEDED on this route, which is why it stayed out of ZetaLogDerivValues.v1:
+      the crude bound on g(t) uses only |zeta'/zeta(t)| <= 0.57, |psi(t) - log t| <= 1/t and
+      log u <= u - 1, where the paper needs the concavity of f + 1/t and the monotonicity of t f(t).
+      DigammaReal.lean IS COPIED FROM GammaAsymptotics.v2's OWN SOLUTION. That node's conclusion is
+      an O-statement with an unnamed constant, useless for an explicit estimate, and a new version
+      of a green node would cost a receipt for no mathematical gain.
+      SECTION 8.1: THE MAP, AND THE CONSTANT BUDGET. The chain is
+      cor:adiaro <- prop:adoro <- lem:saghar <- {prop:titch96A, lem:rameau <- lem:bettnist},
+      with cor:adiaro also resting on cor:zeroinbox <- ZeroCount.v1 (rvm_error_bound,
+      rvm_error_small) and the definition N(t) = main + Q(t).
+      THE ONE GENUINE IMPORT IS THE PARTIAL-FRACTION EXPANSION of zeta'/zeta,
+      zeta'/zeta(s) = sum_rho (1/(s-rho) + 1/rho) - (1/2) psi(s/2+1) - 1/(s-1) + C
+      (Montgomery-Vaughan, Multiplicative Number Theory I, Corollary 10.14; Davenport ch. 12).
+      MATHLIB DOES NOT HAVE IT -- it has discreteness of the zeros (Mathlib.NumberTheory.LSeries.
+      ZetaZeros) and the functional equation, but no Hadamard factorisation of xi.
+      THE NODE NOW EXISTS: ZetaHadamard.v1.logDeriv_partial_fractions, kind `standard`, justified
+      by Montgomery-Vaughan Corollary 10.14. It states the identity taken at TWO POINTS AND
+      SUBTRACTED, which is both what prop:titch96A actually uses and what makes the statement
+      non-vacuous: the unpaired sum over zeros is not absolutely summable, and Lean's tsum of a
+      non-summable family is 0, so the obvious transcription would typecheck and assert nothing.
+      Subtracting makes the terms (w-s)/((s-rho)(w-rho)) = O(1/|rho|^2), so HasSum can be used and
+      carries its own convergence, and the additive constant C cancels. Four hypotheses only:
+      s, w /= 1 and zeta(s), zeta(w) /= 0, the last two also keeping psi(s/2+1) off its poles,
+      which sit exactly at the trivial zeros. Everything else in 8.1 is solution work.
+      THE CONSTANT BUDGET, worked out from section 9 because it decides every choice in 8.1.
+      prop:sagaro needs pi/T' + I-term + (y coth y correction) <= pi/(T-1) with T' >= T - 1/2, so
+      the I-term budget is pi/(T-1) - pi/(T-1/2) = (pi/2)/((T-1)(T-1/2)), i.e. about 1.5708/T^2,
+      less 0.001/T^2 for the coth correction. The I-term is (K_2 + K_3/L) log T'/((T')^2 L^2) with
+      K_2 = 2*13, K_3 = 2*60 in the paper; the binding case is x = T = 10^9, where L = log x =
+      20.7233 and log T' = L too, so the constraint is K_2 + K_3/20.7233 <= 1.5698*20.7233 = 32.53.
+      The paper sits at 26 + 5.79 = 31.79. SO THE SLACK IS 2.3% ON THE TOTAL, but it is all in the
+      log^3 x coefficient: K_3 may rise to 135.6, i.e. lem:hardin's 60 may rise to about 67.9.
+      TRACING THAT BACK: k_{3,1} + k_{3,0}/log T <= 67.9 at log T = 16.118 (T >= 10^7), where
+      k_{3,1} = (8 + C/L) beta_1 + 2 c_{1,1} and k_{3,0} = (8 + C/L) beta_0 + 2 c_{1,0}, with
+      a = 1/4, alpha = 1/8, beta_1 = 0.51937, beta_0 = 3.7806, c_{1,1} = 14.0732, c_{1,0} = 125.66.
+      Restating cor:adiaro for x >= 10^9 rather than x >= 10^6 -- legitimate, prop:sagaro is its
+      only consumer and it has x > max(T, 10^9) -- gives L >= 20.7233 and the budget
+      C <= 498, where C is the log^4 x coefficient of eq:arguc2. The paper has C = 320/3 = 106.7.
+      SO THERE IS A FACTOR OF 4.7 OF ROOM IN THE Ei CONSTANT, and that is what makes lem:bettnist
+      cheap. The paper proves Ei(X) <= (e^X/X)(1 + 1/X + 2/X^2 + (40/3)/X^3) by showing the
+      difference has a single critical point at X = 80/11 and checking it there with Arb; the
+      margin is 0.0034 out of 239.65, a relative 1.4e-5, which would need seven digits of Ei and of
+      gamma -- and Mathlib only has 1/2 < gamma < 2/3. INSTEAD, with alpha = 40 in place of 40/3
+      (so C = 320 instead of 320/3, still under 498), the bound is elementary and needs no
+      numerics at all: substituting w = X - v,
+      int_1^X e^w/w dw = e^X int_0^{X-1} e^{-v}/(X-v) dv, and expanding
+      1/(X-v) = 1/X + v/X^2 + v^2/X^3 + v^3/X^4 + v^4/(X^4 (X-v)) with X - v >= 1 on the range and
+      int_0^{X-1} v^k e^{-v} dv <= k! gives
+      int_1^X e^w/w dw <= e^X (1/X + 1/X^2 + 2/X^3 + 30/X^4).
+      The leftover int_0^1 (e^w - 1)/w dw <= e - 1 costs (e-1) X^4 e^{-X} <= (e-1) * 256/e^4 =
+      8.06, so alpha = 39 already works for every X >= 1; 40 is the round number.
+      GAMMA IS NOT NEEDED EITHER. Define EiAux(X) = int_0^X (e^w - 1)/w dw, so that
+      Ei = gamma + log X + EiAux; the gamma and log X in the paper's eq:arguc1 cancel against the
+      arsinh term, and every term they sit in is O(1/sqrt x), which at x >= 10^9 is 3e-5 against a
+      2/L^2 = 0.0047 that has to be exact. So state eq:arguc2 with EiAux and never mention Ei.
+      END-TO-END CHECK at C = 320: k_{3,1} = 40.32, k_{3,0} = 339.94, k_{3,1} + k_{3,0}/16.118 =
+      61.41 <= 67.9, and K_2 + K_3/L = 24.2 + 5.93 = 30.1 <= 32.53. About 7% of margin.
+      STARTED: Section81.lean has lem:bettnist, as eiAux_le. The five factorial integrals
+      int_0^Y v^k e^{-v} dv <= k! (k = 0..4, one antiderivative each), the substitution and
+      geometric expansion giving int_1^X e^w/w dw <= e^X (1/X + 1/X^2 + 2/X^3 + 30/X^4), the
+      quartic bound X^4 <= 6.5536 e^X (four Taylor terms of e^{X/4}, raised to the fourth power --
+      the truth is 256/e^4 = 4.689 at X = 4, but no monotonicity argument is needed), and
+      EiAux X = int_0^X (e^w - 1)/w dw <= e^X (1/X + 1/X^2 + 2/X^3 + 42/X^4) for X >= 1.
+      42 against the paper's 40/3, well inside the budget of 62.
+      NOTE THE INTEGRABILITY TRAP: (e^w - 1)/w is NOT continuous at 0 in Lean, where it takes the
+      junk value 0/0 = 0 rather than the limit 1. ContinuousOn.intervalIntegrable does not apply on
+      [0,1]; the integrand has to be dominated by the constant e instead.
+      LEM:RAMEAU IS DONE TOO, as `rameau` in Section81.lean: for 0 < eta <= e and L = log x >= 7,
+      int_0^infty u e^{-Lu}/sqrt(eta^2 + (1/2-u)^2) du
+        <= 2/L^2 + 8/L^3 + 336/L^4 + e^{-L/2}(1 + log(1/eta)/2 + (1 + 2/L)/(2 eta L)).
+      THE EXTRA 1 IN THE 1/sqrt(x) COEFFICIENT is where the paper's gamma/2 + log(L/2)/2 goes.
+      Keeping them would need gamma to seven digits; the arsinh already exceeds log(1/eta) by
+      log((1+sqrt(4 eta^2+1))/2) <= log 3.27 <= 3.27/e, and 1/L + |log(1-2/L)|/2 <= 1/7 + 1/5 at
+      L >= 7, so 1 covers everything. It costs nothing: in prop:sagaro the whole 1/sqrt(x) block
+      ends up below 10^{-4}/(6 pi) log(T/2 pi), against a budget set by C_T itself.
+      THE PROOF, in the v = 1/2 - u variable throughout: the integrand becomes
+      e^{-L/2}(1/2 + g(v))/sqrt(eta^2+v^2) with g(v) = (1/2-v)e^{Lv} - 1/2, the constant 1/2 gives
+      the arsinh, and g is bounded by g(v)/v -- except to the right of v = 1/2 - 1/L, where g may
+      turn negative and one drops the -1/2 first, at the cost of -log(1-2/L)/2.
+      g >= 0 LEFT OF THE CUT for a one-line reason the paper does not spell out:
+      e^{Lv}(1-2v) >= (1+Lv)(1-2v) >= 1 exactly when v <= 1/2 - 1/L. No monotonicity of u e^{-Lu}
+      is needed.
+      SECTION 8.1 IS DONE: CH2Section81.hardin (Section81Hardin.lean), axioms propext/choice/Quot.sound only.
+      STATEMENT: T >= 10^7, RiemannHypothesisUpTo T, x >= max(T, 10^9). Then there is t in [T-1/2, T] with
+      no zero of |ordinate| t, and both horizontal integrals of shiftError,
+      int_0^inf u |F(1 - u +- it)| x^{1-u} du, are <= x (12.5 R/L^2 + 62 R/L^3 + 2 (R+10)^2/sqrt x),
+      R = log T, L = log x. Budget check: J + gamma/L^2 + 1.8/L^3 <= 0.748 at the binding case
+      R = L = 20.72, against about 0.785 available in prop:sagaro.
+      FILES: Section81Janframe (Lehman, lem:janframe at a = 1/4, error 0.004); Section81Titch
+      (prop:titch96A at a = 1/4, sigma_+ = 3/2, eps = 0.016; |zeta'/zeta| <= 1.5053 on Re >= 3/2; the
+      digamma difference by the Gauss series; the outer zero sum bounded at every finite stage by
+      janframe, then le_of_tendsto' through ZetaHadamard's HasSum); Section81Saghar (saghar_pt from
+      titch96A, dropping its negative sigma-free part; adioso_pt: |zeta'/zeta(1-u+it)| <= 12 + 2t + u
+      for u >= 3/2, from ZetaLogDeriv.v1 at 1 - s and GammaStrip's crude digamma bounds;
+      saghar_integral with an explicit integrable majorant on all of (0, inf) and rameau per zero);
+      Section81Hardin (pigeonhole, counts, numerics, F(conj s) = conj F(s), assembly).
+      DEPARTURES FROM THE PAPER, all in the 1/sqrt x term, which has enormous slack in prop:sagaro
+      (2K/T^2 against 10^-4 log T): (1) lem:adioso replaced by the crude pointwise bound above, costing
+      9/sqrt x; (2) prop:adoro's continuous pigeonhole replaced by a discrete one: of n + 1 equally
+      spaced points in [T-1/2, T-1/4], n the number of distinct zero ordinates in (T-3/4, T], one is at
+      distance >= 1/(8(n+1)) from all of them, so the 1/sqrt x coefficient is O((log T)^2), not
+      O(log T log log T); (3) the gamma/L^2 and log-coefficient constants are 12.5 and 62 (paper: 51/4,
+      60) with rameau's 336 in place of 320/3.
+      IMPORTS TO ADD for 8.1: ZetaHadamard.v1, ZetaLogDeriv.v1 (already listed), ZetaLogDerivValues.v1.
+      SECTION 9, STEP 1 DONE: CH2Section9.sagaro_at_t (Section9.lean), axioms propext/choice/Quot.sound.
+      svm_abs_bound is now applied. For T >= 10^7 + 1, RiemannHypothesisUpTo T, x >= 10^9, x >= T,
+      0 <= sigma < 1 and zeta(sigma) /= 0, there is t in [T-1/2, T] with
+      |psi_sigma(x)/x^{1-sigma} - ((pi/t) coth(pi(1-sigma)/t) - zeta'/zeta(sigma) x^{sigma-1})|
+        <= pi/t + (log^2(t/2pi)/(2pi) - 1.001 log(t/2pi)/(6pi))/sqrt x
+           + 2 (12.5 log T/L^2 + 62 log T/L^3 + 2(log T+10)^2/sqrt x + gamma/L^2 + 1.8/L^3)/t^2
+           + (2 pi/(t x)) (1 + t/(4 pi)) x^-2/(1 - x^-2).
+      THE LADDER IS BUILT AT THE HARDIN HEIGHT: delta = 1, T := t, abscissas sigmaZeta; hRC from
+      hRC_of_rvm, hTfree from hardin (which gives |Im| /= t, covering the conjugate side).
+      hZ IS VIHUELA: the index sets (Iic 1, Ioc 1 t) and (univ, Ioc 0 t) carry the same zeros --
+      no zero has Re > 1, and none has 0 < Im <= 1 (no_zero_low) -- and under RH every zero has
+      Re rho = 1/2, so the x^{Re rho} weight is exactly sqrt x. Z = sqrt x (t/2pi) V, and
+      (2 pi/(t x)) Z = V/sqrt x.
+      hE IS HARDIN PLUS norm_intC_le: E = (x/(pi t))(J + K) with J the hardin bound and
+      K = gamma/L^2 + 1.8/L^3, so (2 pi/(t x)) E = 2(J + K)/t^2.
+      ONE GAP, DELIBERATE AND RECORDED: the hypothesis is T >= 10^7 + 1, not 10^7, because vihuela
+      is stated for T >= 10^7 and is applied at t >= T - 1/2. Either weaken vihuela to T >= 10^7 - 1
+      (its uses of hT are 1/T <= 1e-7, t0/T <= 0.002 and T/10^7 terms, all with slack, but the
+      literal proofs would need re-tuning) or keep the +1. The paper has the same slip.
+      SECTION 9, STEP 2a DONE: the main term now sits at T (CH2Section9.sagaro_shifted).
+      LEM:COTHDER'S FIRST HALF IS NEEDED AFTER ALL, and is now proved: |(y coth y)'| <= y for y > 0
+      (abs_deriv_ycoth_le). The <= 1 bound already in Section6Weight is useless here: it would cost
+      pi (1/t - 1/T) ~ 1.57/T^2, the entire I-term budget, whereas the |y| bound costs
+      pi^2/(2 t^2 T) ~ 5/T^3.
+      THE PROOF IS TWO LINES OF CALCULUS ONCE sinh w <= w cosh w IS AVAILABLE: that inequality is
+      monotone_of_deriv_nonneg applied to w cosh w - sinh w, whose derivative is w sinh w >= 0 on all
+      of R; then sinh cosh <= v cosh^2 = v(1 + sinh^2) gives (sinh cosh - v)/sinh^2 <= v, and the
+      lower bound 0 is the 2v form of sinh already used for abs_deriv_hcoth_real.
+      THE SHIFT ITSELF is the mean value theorem on [a/T, a/t] with a = pi(1-sigma), via
+      Convex.norm_image_sub_le_of_norm_hasDerivWithin_le, writing (pi/u) coth(a/u) = (pi/a) g(a/u)
+      with g = y coth y. Cost pi a (1/t - 1/T)/t <= pi^2/(2 t^2 T).
+      SECTION 9, STEP 2b DONE: CH2Section9.sagaro, axioms propext/choice/Quot.sound, no sorry.
+      PROP:SAGARO NOW READS, for T >= 10^7 + 1, RiemannHypothesisUpTo T, x >= 10^9, x >= T,
+      0 <= sigma < 1, zeta(sigma) /= 0:
+      |psi_sigma(x)/x^{1-sigma} - ((pi/T) coth(pi(1-sigma)/T) - zeta'/zeta(sigma) x^{sigma-1})|
+        <= pi/(T-1) + (log^2(T/2pi)/(2pi) - log(T/2pi)/(6pi))/sqrt x,
+      which is the paper's statement on this sigma range.
+      HOW THE FOUR ERROR BLOCKS COLLAPSE. Two disjoint budgets, and nothing else is needed.
+      (1) THE 1/sqrt x SIDE is paid for entirely by vihuela's 1.001 against the target's 1:
+      the slack is 0.001 log(t/2pi)/(6 pi) >= 7.5e-4, and what it absorbs is the (log T + 10)^2
+      piece of hardin, 4(log T + 10)^2/t^2 <= 72/T <= 7.2e-6. The passage z = log(t/2pi) to
+      y = log(T/2pi) is free: y^2/(2pi) - y/(6pi) - (z^2/(2pi) - z/(6pi)) = (y-z)((y+z)/(2pi)
+      - 1/(6pi)) >= 0 since y, z >= 14.2.
+      (2) THE pi/T SIDE: pi/(T-1) - pi/(T-1/2) = (pi/2)/((T-1)(T-1/2)) is exactly the budget, and
+      t^2 >= (T-1/2)^2 >= (T-1)(T-1/2), so it suffices that the numerators sum below pi/2 = 1.5708:
+      the I-term 2(12.5 R/L^2 + 62 R/L^3 + gamma/L^2 + 1.8/L^3) <= 1.51 (R <= L, L >= 20.7,
+      gamma < 2/3), the trivial-zero block <= 0.001/t^2 (it is ~1.02/x^3), and the coth shift
+      <= 1e-6/t^2. Total 1.5111 <= 1.5708, about 4% of margin.
+      NUMERIC INPUTS ADDED: log(2pi) <= 1.9, and (log T + 10)^2 <= 9T for T >= 64, which comes from
+      log T = 2 log sqrt T <= 2 sqrt T - 2.
+      MATHLIB NAMING DRIFT COST A ROUND OF FIXES: div_le_div_iff is now div_le_div_iff_0 (subscript
+      zero), div_add_div_same is gone (use add_div backwards), div_le_div_of_nonneg_left takes
+      (0 <= a) (0 < c) (c <= b), and abs_add is abs_add_le.
+      SECTION 9, SIGMA = 1 DONE: CH2Section9.sagaro_one (Section9Limit.lean), axioms
+      propext/choice/Quot.sound, no sorry. For T >= 10^7 + 1, RH up to T, x >= 10^9, x >= T:
+      |sum_{n <= x} Lambda(n)/n - (log x - gamma)| <= pi/(T-1) + C_T/sqrt x.
+      THE LIMIT IS TAKEN ON THE LEFT ONLY, since sagaro's right-hand side has no sigma: le_of_tendsto
+      along nhdsWithin 1 (Iio 1), where the hypotheses 0 <= sigma, sigma < 1 and zeta(sigma) /= 0 all
+      hold eventually (the last by riemannZeta_ne_zero_Ico, already proved for section 6's hRC).
+      THE TWO POLES CANCEL IN THE FORM
+      (pi/T) coth(pi(1-sigma)/T) - zeta'/zeta(sigma) x^{sigma-1}
+        = (g(u) - 1)/(1-sigma) + (1 - x^{sigma-1})/(1-sigma) - (logDeriv zeta_1(sigma)).re x^{sigma-1}
+      with g = y coth y and u = pi(1-sigma)/T. THE THREE INGREDIENTS:
+      (a) |g(u) - 1| <= u^2 for 0 < u <= 1, from 1 <= g(u) <= cosh u <= 1 + u^2 -- the lower bound is
+      sinh w <= w cosh w again, so the sigma = 1 case reuses the lem:cothder work; no MVT needed.
+      (b) (x^{sigma-1} - 1)/(sigma-1) -> log x as a slope (hasDerivAt_iff_tendsto_slope).
+      (c) logDeriv zeta_1 is continuous at 1 with value gamma: MATHLIB ALREADY HAS
+      deriv_riemannZeta_1_one = gamma and riemannZeta_1_one = 1, so this is three lines, and
+      zeta'/zeta(sigma) = logDeriv zeta_1(sigma) + 1/(1-sigma) is CH2ZetaInstance's own identity.
+      NOTE THE DEFINITION OF S: CH2Sol.S is a finite sum sum_{1 <= n <= floor x} a n / n^sigma only
+      for sigma < 1; at sigma >= 1 it switches to the tail sum over n >= x. So the limit has to be
+      taken through the explicit finite sum, not through S itself, and the limit value is
+      sum_{n in Iic (floor x)} Lambda n / n (the n = 0 term is 0/0 = 0, matching the node's lambdaSum).
+      FIRST CONCLUSION PROVED: CH2Section9.corollary_1_2_psi : CH2.v1.corollary_1_2_psi, in the
+      node's own words, axioms propext/choice/Quot.sound, no sorry. It is conditional on the eleven
+      imported node conclusions (hfe, hdig, hk, hneg, h2v, hv, hcs, hrvm, hsmall, hplatt, hH).
+      THE 10^7 + 1 GAP IS CLOSED. prop:vihuela now assumes T >= 10^7 - 1 rather than 10^7, which is
+      what the chain needs since it is applied at the hardin height t >= T - 1/2. Only six numerals
+      moved, all with slack to spare: 1/T <= 1.0000002e-7, t0/T <= 0.0020001, the salmon factor
+      2.3901e-7, (y+1)/T <= 15.31e-7, t0^2/T <= 40.0001, y/T <= 14.31e-7 and the eq:arguc tail
+      6.2200011e-7. The five error allowances (0.016141, 0.000031, 0.000802, 0.0000723, 0.0000037)
+      and their sum 0.01705 are untouched, so the vihuela endgame is unchanged.
+      DOWNSTREAM, sagaro now assumes T >= 10^7 and z = log(t/2pi) >= 13.5 rather than 14.2 (t can
+      now dip half a unit below 10^7, so the clean 10^7 lower bound is gone; 13.5 comes from
+      t >= 10^7/2 and costs nothing, the slack test needing only 5.07e-4 against 7e-4).
+      SAGARO NOW COMES IN TWO FORMS: sagaro_slack keeps 0.0005/sqrt x of the vihuela margin
+      explicit, and sagaro drops it. THE SIGMA = 0 PACKAGING NEEDS THE SLACK: the main term carries
+      -zeta'/zeta(0) x^{-1}, and zeta'/zeta(0) = log 2pi comes straight from Mathlib's
+      deriv_riemannZeta_zero = -log(2pi)/2 and riemannZeta_zero = -1/2. Multiplying the bound by x
+      turns it into an additive log 2pi <= 1.9, paid by 0.0005 sqrt x >= 15.8 at x >= 10^9.
+      Svm 0 x = Chebyshev.psi x is immediate once Ioc 0 (floor x) = Icc 1 (floor x).
+      COROLLARY 1.2 IS CLOSED, BOTH DISPLAYS. Solution.lean now proves
+      CH2.v1.challenge_corollary_1_2_psi and challenge_corollary_1_2_lambda_sum outright (axioms
+      propext/choice/Quot.sound); only the two Corollary 1.3 challenges still carry a sorry.
+      corollary_1_2_lambda_sum is sagaro_one with the hypotheses reshuffled (max T 10^9 < x gives
+      both T <= x and 10^9 <= x) and needs no slack, its main term being log x - gamma.
+      THE REPO SIDE IS SYNCED. CH2.v1's formalization.yaml now lists the eleven edges the proof
+      really rests on -- GammaAsymptotics.v2, CotangentSeries.v1, ZeroCount.v1 (both conclusions),
+      ZetaLogDeriv.v1, ZetaLogDerivValues.v1 (four), ZetaHadamard.v1, PlattZeroSum.v1 -- with
+      imports_status raised from `traced` to `identified`, and the two justification notes corrected:
+      they used to say `imports` is a real none, which was true of the STATEMENT (the Riemann
+      hypothesis up to T is a hypothesis, not an edge) but is not true of the proof. Challenge.lean
+      was regenerated, fingerprints/state/graph/pages rewritten, and `check` passes.
+      ALL FOUR CONCLUSIONS ARE PROVED. Solution.lean has no sorry; the four compared theorems
+      depend only on propext, Classical.choice and Quot.sound. What remains is not mathematics but
+      process: Comparator has to verify the node (scripts/ieantn.py verify CH2.v1 --pr 108), which
+      is the maintainer's dispatch, and only the receipt it writes can move the justifications off
+      `literature`. A solution justifies nothing by itself.
+      COROLLARY 1.3, LAMBDA/N DISPLAY: DONE (Section9Cor13Sum.lean). Ranges above 10^9 are as for
+      psi. Below, the sum is pinned against X = 10^10 by Abel summation
+      (Mathlib's sum_mul_eq_sub_sub_integral_mul with c = Lambda, f = t^{-1}):
+      S(x) - log x + gamma = [S(X) - log X + gamma] - (psi(X)/X - 1) + (psi(x)/x - 1)
+        - (int_{Ioc x X} psi(t)/t^2 dt - log(X/x)),
+      the identity being exact once psi t = sum_{k in Icc 0 (floor t)} Lambda k and
+      lambdaSum y = sum_{Ioc 0 (floor y)} Lambda n / n.
+      THE INTEGRAL TERM is bounded WITHOUT computing int t^{-3/2}: on [x, X], |psi(t) - t|/t^2
+      <= 0.94 sqrt t/t^2 <= (0.94/sqrt x) t^{-1}, so the whole thing is (0.94/sqrt x) log(X/x)
+      <= 21.65/sqrt x at X = 10^10. Cruder than the 1.88/sqrt x the exact integral gives, and it
+      costs nothing: the budget at x = 10^9 is 91/sqrt x against 8.3e-4 of x-free error.
+      NUMBERS AT THE BINDING END (x = 10^9): E(X) <= pi/(10^7-1) + 82/10^5 = 8.2e-4, psi endpoints
+      0.94/10^5 and 0.94/sqrt x, integral 21.65/sqrt x; total 8.3e-4 + 22.6/sqrt x, against
+      113.67/sqrt x. It holds for x up to 1.2e10, a factor of 12 beyond where it is used.
+      COROLLARY 1.3, PSI DISPLAY: DONE (Section9Cor13.lean, CH2Section9.corollary_1_3_psi, axioms
+      propext/choice/Quot.sound). Solution.lean now carries a single sorry, the Lambda/n display.
+      THE FOUR RANGES, as planned: x > 3e12 + 5 uses Corollary 1.2 at T = 3e12 + 5; 10^9 < x <=
+      3e12 + 5 uses it at T = 10^7; 11 < x <= 10^9 is Buthe.v1.theorem_2_psi (0.94 sqrt x); and
+      1 <= x <= 11 is crude -- psi(x) <= 11 log 16 = 44 log 2 <= 31, so |psi - x| <= 31 <= 113.67.
+      T = 3e12 + 5 IS THE RIGHT CHOICE: the condition is pi/(T-1) + (pi/T)^2 <= pi/(3e12), i.e.
+      4(3e12+5)^2 >= pi 3e12 (3e12+4), which holds with 27% to spare at k = 5 and fails at k = 1.
+      Smaller k also means smaller C_T, and C_T is the binding constraint.
+      THE NUMERICS, the part that needed care. C_T(3e12+5) = 113.66888 against the target 113.67,
+      a margin of 1.1e-3, which is 1.3e-4 in y = log(T/2pi) and so six significant digits of both
+      logs. Ten-term Taylor bounds for exp on [0,1] (Real.exp_bound' and Real.sum_le_exp_of_nonneg
+      at n = 10, error ~5e-8) plus e^28 in [1.4462570e12, 1.4462572e12] from exp_nat_bounds give
+      28.7296 <= log(3e12+5) <= 28.7297 and 1.83787 <= log 2pi <= 1.8379, hence y in
+      [26.8917, 26.89183] and C_T <= 113.66968. Margin to 113.67: 3.2e-4.
+      ALSO ADDED: log 10 <= 2.3026 (the earlier log_ten_ge only bounded below), C_T(10^7) <= 82
+      (true 31.698, no precision needed), and mainFactor T = ycoth(pi/T) with
+      1 <= mainFactor T <= 1 + (pi/T)^2 -- the same ycoth bounds the sigma = 1 limit used.
+      WATCH THE REWRITE TRAP that cost two rounds: `rw [hxs]` with hxs : x = sqrt x * sqrt x
+      rewrites x inside sqrt x too, giving sqrt (sqrt x * sqrt x). Feed the identity to nlinarith
+      as a hypothesis instead. Same for `set y := log (T/2pi)` before `rw [CH2.v1.CT]`: unfolding
+      CT introduces fresh occurrences that the earlier `set` cannot have folded.
+      COROLLARY 1.3, THE PLAN, and the node question settled. NO lem:pernic COMPUTATION NODE IS
+      NEEDED: Buthe.v1.theorem_2_psi already gives |x - psi(x)| <= 0.94 sqrt x for 11 < x <= 10^19,
+      which covers the descent with two orders of magnitude to spare against 113.67.
+      WHAT WAS NEEDED was the unrounded Platt-Trudgian height, and it is now stated:
+      PlattTrudgian.v1.rh_up_to_exact = RiemannHypothesisUpTo 3000175332800, added ALONGSIDE the
+      rounded rh_up_to in the same node version rather than as a v2 with a bridge -- the two are one
+      computation and a solution would derive the rounded one in a line. Adding a conclusion left
+      rh_up_to's fingerprint untouched, so no consumer moved.
+      WHY THE LAST UNIT MATTERS: Corollary 1.2 carries pi/(T-1) and Corollary 1.3 quotes pi/(3e12),
+      so T >= 3e12 + 1 is required. At the rounded height the excess is 3.5e-25 x against 0.0011 sqrt x
+      of slack in 113.67, so the corollary would hold only up to about x = 10^41.
+      SOURCE CHECK: Platt-Trudgian's Theorem 1 reads 'The Riemann hypothesis is true up to height
+      3 000 175 332 800. That is, the lowest 12 363 153 437 138 non-trivial zeroes rho have Re rho
+      = 1/2'; the abstract quotes the rounded 3e12. Read from arXiv:2004.09765 on 2026-09-20. CH2
+      itself writes the height as 3e12 + 1 + pi/3; the CH2.v1 yaml had miscopied that as sqrt(3)/3,
+      now corrected.
+      THE PROOF PLAN, THREE RANGES (psi; the Lambda/n case is the same on the top two):
+      (1) x > 3000175332800: Corollary 1.2 at T*. Here pi/(T*-1) is SMALLER than pi/(3e12) by 6.1e-17,
+      which also pays for x((pi/T)coth(pi/T) - 1) <= x (pi/T)^2 ~ 1e-24 x.
+      (2) 10^9 < x <= T*: Corollary 1.2 at T = 10^7 (RH up to 10^7 by RH_mono). The excess
+      pi/(10^7-1) x fits inside the sqrt x slack 113.67 - C_{10^7} = 81.98 whenever sqrt x <= 2.6e8,
+      i.e. x <= 6.8e16.
+      (3) 1 <= x <= 10^9: Buthe for 11 < x; for x <= 11 crude (psi(x) <= x log x gives <= 37 < 113.67).
+      FOR Lambda/n BELOW 10^9, Abel summation against X = 10^10 (Mathlib has
+      NumberTheory/AbelSummation.sum_mul_eq_sub_integral_mul):
+      S(x) - log x + gamma = [S(X) - log X + gamma] - psi(X)/X + psi(x)/x - int_x^X (psi(t)-t)/t^2 dt,
+      bounded by Corollary 1.2 at T = 10^7 plus Buthe on the finite range: about 3.1e-7 + 32.7/sqrt X
+      + 2.8/sqrt x, well under 113.67/sqrt x.
+      THE ONE TIGHT NUMBER: C_T at T* is 113.6695 against the target 113.67, a margin of 5e-4, so
+      log(T*/2pi) needs about six correct digits -- exp_small_le/ge and exp_nat_bounds give that.
+      (At 3e12 it is 113.6690, the figure the node's yaml already records as its transcription check.)
+      WHAT REMAINS IN THE NODE: Corollary 1.3, both displays. It is Corollary 1.2 at T = 3e12
+      (PlattTrudgian.v1.rh_up_to) plus the descent from x > max(T, 10^9) to x >= 1, which is
+      lem:pernic: -sqrt 2 < (psi(x) - x)/sqrt x <= 0.79059275... for 1 <= x <= 10^13, a computation
+      no node supplies yet and the obvious next node to create. Note also that at T = 3e12 the
+      main factor (pi/T) coth(pi/T) has to be dropped down to 1, which is the paper's own step, and
+      that 113.67 >= C_T(3e12) = 113.6689... is the numeric check the node's yaml already records.
+      THE FULL SIGMA RANGE OF prop:sagaro (-1.999 <= sigma <= 100) IS NOT NEEDED BY THIS NODE: the
+      paper's own proof of cor:psi is "just cases sigma = 0 and sigma = 1". sigma in (-2, 0) would
+      only need hsigma0 relaxed in the trivial-zero block; sigma > 1 is lambda > 0 and would need
+      section 6 redone on that branch (prop_5_2_zeta for lambda > 0 exists, the rest does not).
       The route through (c) is worth recording because the paper's is not the shortest.
       A(z) = -(1-z) f(z) with f(z) = 1/(pi z) - cot(pi z), whose Taylor coefficients are
       (2/pi) zeta(2n+2) -- the imported CotangentSeries.v1. Multiplying by (1 - z^2) telescopes the
