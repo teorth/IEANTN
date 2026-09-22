@@ -15,9 +15,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`CH2.v1`](CH2-v1.md) | paper | 4 | verified |
 | [`CH2.v2`](CH2-v2.md) | pipeline | 2 | verified, stale |
 | [`CH2.v3`](CH2-v3.md) | pipeline | 2 | verified |
-| [`CH2.v4`](CH2-v4.md) | pipeline | 2 | verified, drifted |
 | [`ChengGraham2004.v1`](ChengGraham2004-v1.md) | paper | 0 | — |
-| [`ContourIntegration.v1`](ContourIntegration-v1.md) | standard | 1 | unjustified |
 | [`CotangentSeries.v1`](CotangentSeries-v1.md) | standard | 1 | unjustified |
 | [`DudekPlatt.v1`](DudekPlatt-v1.md) | paper | 2 | cited |
 | [`DudekPlatt.v2`](DudekPlatt-v2.md) | paper | 1 | verified, stale |
@@ -55,4 +53,13 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`ZetaLogDeriv.v1`](ZetaLogDeriv-v1.md) | standard | 1 | verified |
 | [`ZetaLogDerivValues.v1`](ZetaLogDerivValues-v1.md) | computation | 5 | computation |
 | [`ZetaZeroes.v1`](ZetaZeroes-v1.md) | standard | 6 | verified |
+
+## Inactive nodes
+
+Retired without a successor: out of the build and the graph, kept on disk. `python scripts/ieantn.py reactivate <node>` restores one.
+
+| Node | Why |
+|---|---|
+| `CH2.v4` | Not currently needed in the network. Built to supply CH2.v1's contour shift, but CH2.v1's solution uses PNT+'s own section 5 ladder machinery instead: it needs the lam < 0 branch and infinitely many trivial-zero poles, which this L-shaped, finitely-many-poles statement cannot express. Nothing imports it. Its verified receipt and solution are kept, in case a future consumer wants the statement. |
+| `ContourIntegration.v1` | Not currently needed in the network. A residue theorem for rectangles, stated once so several nodes could import it; its only consumer was CH2.v4, which is now inactive. Mathlib still lacks the statement, so this is the first thing to reactivate if a future node needs contour integration. |
 

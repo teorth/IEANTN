@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-49 node version(s), 94 conclusion(s).  3 state nothing yet.
+47 node version(s), 91 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -15,9 +15,9 @@ adds the environment detail.
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 1 |
-| `lean-comparator` | 33 |
+| `lean-comparator` | 31 |
 | `literature` | 35 |
-| `none-yet` | 5 |
+| `none-yet` | 4 |
 | `numerical` | 19 |
 
 ## Nodes
@@ -52,10 +52,7 @@ adds the environment detail.
 | `CH2.v2` | active | `proposition_2_4_lower` | lean-comparator-stale | 0 | #64 |
 | `CH2.v3` | active | `extremal_majorant` | lean-comparator | 0 | #64 |
 | `CH2.v3` | active | `extremal_minorant` | lean-comparator | 0 | #64 |
-| `CH2.v4` | active | `contour_shift_holomorphic` | lean-comparator-drifted | 0 | #64 |
-| `CH2.v4` | active | `contour_shift` | lean-comparator-drifted | 1 | #64 |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
-| `ContourIntegration.v1` | awaiting-solution | `residue_theorem_rectangle` | none-yet | 0 | #64 |
 | `CotangentSeries.v1` | awaiting-solution | `cot_series_zeta_values` | none-yet | 0 | - |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
 | `DudekPlatt.v1` | stub | `largest_counterexample_on_rh` | literature | 0 | - |
@@ -132,8 +129,6 @@ node now claims, and only a fresh verification restores it.
 |---|---|---|
 | `CH2.v2.proposition_2_4_lower` | yellow | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
 | `CH2.v2.proposition_2_4_upper` | yellow | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
-| `CH2.v4.contour_shift` | drifted | its own statement changed since verification |
-| `CH2.v4.contour_shift_holomorphic` | drifted | its own statement changed since verification |
 | `DudekPlatt.v2.ramanujan_inequality_3915` | yellow | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
 | `DudekPlatt.v3.criterion` | yellow | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
 | `FKS2.v1.corollary_14` | yellow | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
@@ -200,7 +195,6 @@ downstream.
 | `Dusart2018.v1.proposition_5_4` | 1 |
 | `DudekPlattNumerics.v2.pi_two_sided_pnt` | 1 |
 | `DudekPlattNumerics.v1.pi_two_sided_paper` | 1 |
-| `ContourIntegration.v1.residue_theorem_rectangle` | 1 |
 | `CH2.v1.corollary_1_2_psi` | 1 |
 | `CH2.v1.corollary_1_2_lambda_sum` | 1 |
 | `ButheNumerics.v1.li_minus_pi_below_1e7` | 1 |
@@ -209,3 +203,12 @@ downstream.
 | `Buthe.v2.lemma_3_positivity` | 1 |
 | `Buthe.v2.lemma_3_bounds` | 1 |
 | `Buthe.v1.theorem_2_theta` | 1 |
+
+## Inactive nodes
+
+Retired without a successor: out of the build and the graph, kept on disk. `python scripts/ieantn.py reactivate <node>` restores one.
+
+| Node | Why |
+|---|---|
+| `CH2.v4` | Not currently needed in the network. Built to supply CH2.v1's contour shift, but CH2.v1's solution uses PNT+'s own section 5 ladder machinery instead: it needs the lam < 0 branch and infinitely many trivial-zero poles, which this L-shaped, finitely-many-poles statement cannot express. Nothing imports it. Its verified receipt and solution are kept, in case a future consumer wants the statement. |
+| `ContourIntegration.v1` | Not currently needed in the network. A residue theorem for rectangles, stated once so several nodes could import it; its only consumer was CH2.v4, which is now inactive. Mathlib still lacks the statement, so this is the first thing to reactivate if a future node needs contour integration. |
