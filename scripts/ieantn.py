@@ -33,6 +33,7 @@ None of this runs Comparator.
 from __future__ import annotations
 
 import argparse
+import datetime
 import hashlib
 import json
 import os
@@ -130,7 +131,15 @@ NODE_STATUSES = {
     "awaiting-verification",  # a complete solution exists, but no receipt yet
     "active",
     "deprecated",
+    "inactive",              # retired without a successor: kept on disk, out of the build and graph
 }
+
+#: A node that was built to support another and ended up unused. Unlike `deprecated`, which marks a
+#: node superseded by a newer version and changes nothing mechanically, `inactive` takes the node out
+#: of the network altogether: `load_nodes` leaves it out, so the core build, the graph, STATE, the
+#: pages, the fingerprints and housekeeping all stop seeing it. Its files stay where they are, so
+#: `reactivate` is a status change and a regeneration rather than an archaeology project.
+INACTIVE = "inactive"
 
 IMPORT_RE = re.compile(r"^import\s+(\S+)", re.MULTILINE)
 
@@ -259,14 +268,28 @@ def node_dirs() -> list[pathlib.Path]:
     return sorted(p.parent for p in NODES_DIR.rglob("formalization.yaml"))
 
 
-def load_nodes() -> dict[str, dict]:
-    """node id -> parsed formalization.yaml, with the directory recorded under '_dir'."""
+def is_inactive(node: dict) -> bool:
+    return (node.get("node") or {}).get("status") == INACTIVE
+
+
+def load_nodes(include_inactive: bool = False) -> dict[str, dict]:
+    """node id -> parsed formalization.yaml, with the directory recorded under '_dir'.
+
+    Inactive nodes are left out unless asked for. That one filter is what takes a deactivated node
+    out of the network: the umbrella, check-graph, the fingerprints, STATE, GRAPH, the pages,
+    housekeeping and status all start here, so none of them has to know the status exists.
+    """
     nodes: dict[str, dict] = {}
     for directory in node_dirs():
         data = yaml.safe_load((directory / "formalization.yaml").read_text(encoding="utf-8")) or {}
         data["_dir"] = directory
-        nodes[node_id_of(directory)] = data
+        if include_inactive or not is_inactive(data):
+            nodes[node_id_of(directory)] = data
     return nodes
+
+
+def inactive_nodes() -> dict[str, dict]:
+    return {k: v for k, v in load_nodes(include_inactive=True).items() if is_inactive(v)}
 
 
 def conclusions_of(node: dict) -> list[dict]:
@@ -1119,6 +1142,27 @@ def check_closure() -> bool:
                 "records.",
             )
 
+    # An inactive node is out of the umbrella, so nothing compiles it -- unless something live
+    # imports one of its modules, which would quietly pull it back into the core build. The
+    # yaml-level edge is caught by check-graph; this is the Lean-level one, which the yaml never sees.
+    retired = sorted(inactive_nodes())
+    if retired:
+        prefixes = [f"IEANTN.Nodes.{node_id}" for node_id in retired]
+        live_files = [
+            path
+            for directory in node_dirs()
+            if node_id_of(directory) not in retired
+            for path in sorted(directory.glob("*.lean"))
+        ] + sorted(BRIDGES_DIR.rglob("*.lean"))
+        for path in live_files:
+            for module in imports_of(path):
+                if any(under(module, prefix) for prefix in prefixes):
+                    problems.add(
+                        rel(path),
+                        f"imports `{module}`, which belongs to an inactive node. Reactivate the "
+                        "node or drop the import: an inactive node is meant to be out of the build.",
+                    )
+
     return problems.report("import closure")
 
 
@@ -1159,6 +1203,19 @@ def check_graph() -> bool:
     """
     problems = Problems()
     nodes = load_nodes()
+    inactive = inactive_nodes()
+
+    # Inactive nodes are out of the graph, but not out of review: the one thing asked of them is
+    # to say why, since a directory nobody can account for is exactly what the status exists to
+    # prevent.
+    for node_id, node in sorted(inactive.items()):
+        reason = (node.get("node") or {}).get("inactive_reason")
+        if not isinstance(reason, str) or not reason.strip():
+            problems.add(
+                rel(node["_dir"] / "formalization.yaml"),
+                f"`{node_id}` is inactive but gives no `node.inactive_reason`. Say why it was "
+                "retired, so whoever finds the directory can tell whether to reactivate it.",
+            )
 
     if not nodes:
         print("ok  node graph (no nodes yet)")
@@ -1432,6 +1489,14 @@ def check_graph() -> bool:
                             f"conclusion `{cid}`: import {label} `{value}` is not a Lean name, and "
                             "is written verbatim into the generated challenge",
                         )
+                if target_node not in nodes and target_node in inactive:
+                    problems.add(
+                        where,
+                        f"conclusion `{cid}` imports `{target_node}`, which is inactive and so "
+                        "out of the build. Reactivate it (`python scripts/ieantn.py reactivate "
+                        f"{target_node}`) or drop the edge.",
+                    )
+                    continue
                 if target_node not in nodes:
                     problems.add(where, f"conclusion `{cid}` imports unknown node `{target_node}`")
                     continue
@@ -2561,7 +2626,32 @@ def render_state(nodes: dict[str, dict]) -> str:
             "|---|---:|",
         ]
         lines += [f"| `{key}` | {count} |" for count, key in ranked]
+    lines += inactive_section()
     return "\n".join(lines) + "\n"
+
+
+def inactive_section() -> list[str]:
+    """The inactive nodes, listed so a retired directory is never a mystery.
+
+    They are out of every other table by design; this is the one place they appear.
+    """
+    inactive = inactive_nodes()
+    if not inactive:
+        return []
+    lines = [
+        "",
+        "## Inactive nodes",
+        "",
+        "Retired without a successor: out of the build and the graph, kept on disk. "
+        "`python scripts/ieantn.py reactivate <node>` restores one.",
+        "",
+        "| Node | Why |",
+        "|---|---|",
+    ]
+    for node_id, node in sorted(inactive.items()):
+        reason = " ".join(str((node.get("node") or {}).get("inactive_reason") or "").split())
+        lines.append(f"| `{node_id}` | {reason.replace('|', '/')} |")
+    return lines
 
 
 def state(check_only: bool) -> bool:
@@ -3222,6 +3312,7 @@ def render_pages_index(nodes: dict, index: dict) -> str:
         out.append(f"| [`{node_id}`]({node_id.replace('.', '-')}.md) "
                    f"| {_quote((node.get('node') or {}).get('kind'))} | {len(cs)} "
                    f"| {label if cs else '—'} |")
+    out += inactive_section()
     out.append("")
     return "\n".join(out) + "\n"
 
@@ -3317,6 +3408,8 @@ def state_at(ref: str | None) -> dict:
                 if raw is None:
                     continue
                 data = yaml.safe_load(raw) or {}
+                if is_inactive(data):
+                    continue
                 directory = ROOT / pathlib.PurePosixPath(path).parent
                 data["_dir"] = directory
                 nodes[node_id_of(directory)] = data
@@ -3376,12 +3469,16 @@ def diff(base: str) -> bool:
         new = after["fingerprints"].get(key)
 
         if key not in after["conclusions"]:
-            users = importers_before.get(key, [])
+            # Only importers that survive the change can break. One leaving in the same change --
+            # a node deactivated together with its only consumer -- is not a dangling edge.
+            users = [u for u in importers_before.get(key, []) if u in after["conclusions"]]
             if users:
                 errors.append(
                     f"**`{key}` was removed** but {len(users)} conclusion(s) still import it at "
                     f"the base: {', '.join(f'`{u}`' for u in users)}."
                 )
+            elif key.rsplit(".", 1)[0] in inactive_nodes():
+                notes.append(f"`{key}` deactivated (its node is now inactive); nothing imported it.")
             else:
                 notes.append(f"`{key}` removed; nothing imported it.")
             continue
@@ -3976,6 +4073,108 @@ def deprecate(node_id: str, replacement: str) -> bool:
     return True
 
 
+def deactivate(node_ids: list[str], reason: str) -> bool:
+    """Take nodes out of the network without deleting them.
+
+    For nodes that were built to support something more interesting and ended up unused. Refuses
+    while anything live still imports one of them, since a deactivated node is out of the build and
+    the importer would stop compiling; deactivating several at once is allowed so that a node and
+    the one thing it served can go together.
+    """
+    reason = " ".join(reason.split())
+    if not reason:
+        print("error: say why, with --reason; the reason is what lets someone reactivate it later")
+        return False
+    everything = load_nodes(include_inactive=True)
+    unknown = [n for n in node_ids if n not in everything]
+    if unknown:
+        print(f"error: unknown node(s): {', '.join(unknown)}")
+        return False
+    already = [n for n in node_ids if is_inactive(everything[n])]
+    if already:
+        print(f"error: already inactive: {', '.join(already)}")
+        return False
+
+    going = set(node_ids)
+    blockers = sorted(
+        f"{node_id}.{c.get('id')} -> {d.get('node')}.{d.get('conclusion')}"
+        for node_id, node in everything.items()
+        if node_id not in going and not is_inactive(node)
+        for c in conclusions_of(node)
+        for d in (c.get("imports") or [])
+        if d.get("node") in going
+    )
+    if blockers:
+        print("error: still imported by live conclusions:")
+        for line in blockers:
+            print(f"  {line}")
+        print("deactivate those too, or drop the edges first.")
+        return False
+
+    from ruamel.yaml.scalarstring import FoldedScalarString
+
+    for node_id in node_ids:
+        path = everything[node_id]["_dir"] / "formalization.yaml"
+        writer, data = edit_yaml(path)
+        meta = data["node"]
+        # Insert right after `status`, and move whatever trailed it -- a comment, or the blank line
+        # that separates the `node:` block from the next -- to the last key added, so the block
+        # reads the same as a hand-written one.
+        trailing = meta.ca.items.pop("status", None)
+        at = list(meta).index("status") + 1
+        meta.insert(at, "status_before_deactivation", meta.get("status"))
+        meta.insert(at + 1, "inactive_reason", FoldedScalarString(reason))
+        meta.insert(at + 2, "deactivated", datetime.date.today().isoformat())
+        meta["status"] = INACTIVE
+        if trailing is not None:
+            meta.ca.items["deactivated"] = trailing
+        with path.open("w", encoding="utf-8", newline="\n") as handle:
+            writer.dump(data, handle)
+        print(f"deactivated {node_id}")
+    gen_challenges(check_only=False)
+    print("\nits files are kept; it is out of the umbrella, so the core build no longer compiles it.")
+    print("next: python scripts/ieantn.py fingerprint && python scripts/ieantn.py state && "
+          "python scripts/ieantn.py graph && python scripts/ieantn.py pages && "
+          "python scripts/ieantn.py check")
+    return True
+
+
+def reactivate(node_id: str) -> bool:
+    """Undo `deactivate`: restore the status the node had, and put it back in the network."""
+    everything = load_nodes(include_inactive=True)
+    if node_id not in everything:
+        print(f"error: unknown node `{node_id}`")
+        return False
+    if not is_inactive(everything[node_id]):
+        print(f"error: `{node_id}` is not inactive")
+        return False
+    still_off = sorted(
+        {d.get("node") for c in conclusions_of(everything[node_id])
+         for d in (c.get("imports") or [])
+         if d.get("node") != node_id  # a later conclusion may import an earlier one
+         and d.get("node") in everything and is_inactive(everything[d.get("node")])}
+    )
+    if still_off:
+        print(f"error: `{node_id}` imports inactive {', '.join(still_off)}; reactivate those first")
+        return False
+
+    path = everything[node_id]["_dir"] / "formalization.yaml"
+    writer, data = edit_yaml(path)
+    meta = data["node"]
+    meta["status"] = meta.get("status_before_deactivation") or "active"
+    trailing = meta.ca.items.pop("deactivated", None)
+    for key in ("status_before_deactivation", "inactive_reason", "deactivated"):
+        meta.pop(key, None)
+    if trailing is not None:
+        meta.ca.items["status"] = trailing
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        writer.dump(data, handle)
+    print(f"reactivated {node_id} as `{data['node']['status']}`")
+    gen_challenges(check_only=False)
+    print("next: python scripts/ieantn.py fingerprint && python scripts/ieantn.py check")
+    return True
+
+
 # ---------------------------------------------------------------------------
 
 
@@ -4051,6 +4250,13 @@ def main() -> int:
     retire = sub.add_parser("deprecate")
     retire.add_argument("node", help="e.g. Lcm.v1")
     retire.add_argument("--for", dest="replacement", required=True, help="e.g. Lcm.v2")
+    shelve = sub.add_parser(
+        "deactivate", help="retire nodes with no successor: out of the build and graph, kept on disk"
+    )
+    shelve.add_argument("nodes", nargs="+", help="e.g. CH2.v4 ContourIntegration.v1")
+    shelve.add_argument("--reason", required=True, help="why; recorded in node.inactive_reason")
+    unshelve = sub.add_parser("reactivate", help="undo deactivate")
+    unshelve.add_argument("node", help="e.g. CH2.v4")
 
     args = parser.parse_args()
     if args.command == "check-closure":
@@ -4101,6 +4307,10 @@ def main() -> int:
         return 0 if new_version(args.family) else 1
     if args.command == "deprecate":
         return 0 if deprecate(args.node, args.replacement) else 1
+    if args.command == "deactivate":
+        return 0 if deactivate(args.nodes, args.reason) else 1
+    if args.command == "reactivate":
+        return 0 if reactivate(args.node) else 1
     if args.command == "check":
         return 0 if all(
             [check_closure(), check_graph(), check_pins(), check_receipts(online=False),

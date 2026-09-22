@@ -9,7 +9,14 @@ node:
   family: CH2
   version: v4
   kind: pipeline
-  status: active
+  status: inactive
+  status_before_deactivation: active
+  inactive_reason: >-
+    Not currently needed in the network. Built to supply CH2.v1's contour shift, but CH2.v1's solution
+    uses PNT+'s own section 5 ladder machinery instead: it needs the lam < 0 branch and infinitely many
+    trivial-zero poles, which this L-shaped, finitely-many-poles statement cannot express. Nothing imports
+    it. Its verified receipt and solution are kept, in case a future consumer wants the statement.
+  deactivated: '2026-09-21'
 
 project:
   name: "Chirre-Helfgott's contour shift, on L-shaped contours"

@@ -47,6 +47,18 @@ python scripts/ieantn.py deprecate Lcm.v1 --for Lcm.v2
 migrate dependants onto the newer version and then delete the old one;
 `python scripts/ieantn.py housekeeping` lists what that implies.
 
+A node with **no** successor -- built to support something that ended up going another way -- is
+deactivated rather than deprecated:
+
+```bash
+python scripts/ieantn.py deactivate ContourIntegration.v1 --reason "Not currently needed ..."
+```
+
+`deactivate` does act mechanically. It sets `status: inactive`, records `inactive_reason`,
+`deactivated` and `status_before_deactivation`, and takes the node out of the umbrella, so it is no
+longer built; every other tool then stops seeing it. The files stay, and `reactivate` puts it back.
+CONTRIBUTING.md section 10 has the guards.
+
 Most families will never use it. Versions are *variants*, not a succession: a `paper` version
 faithful to how a source states its result and a `pipeline` version stating a more general form
 both earn their place permanently, and neither obsoletes the other. Deprecate only a version that
@@ -121,7 +133,8 @@ node:
   version: v1
   kind: paper
   status: stub          # template | stub | awaiting-solution | awaiting-verification |
-                        # active | deprecated.  `template` is a hard CI failure.
+                        # active | deprecated | inactive.  `template` is a hard CI failure;
+                        # `inactive` also needs `inactive_reason:` -- see below.
 
 project:
   name: "..."

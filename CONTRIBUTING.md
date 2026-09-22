@@ -513,6 +513,39 @@ Anything goes provided CI passes and a human reviewer confirms that the survivin
 Housekeeping PRs are where the reviewer degradation report matters most, since they are the ones
 that touch enough nodes for the consequences to be hard to hold in your head.
 
+### Deactivating a node
+
+Some nodes are written to support a more interesting one, and the route to that node ends up going
+another way. `deprecate` does not fit them -- it names a successor, and there is none -- and
+deleting them throws away statements, solutions and receipts that a later consumer may want.
+Deactivate them instead:
+
+```bash
+python scripts/ieantn.py deactivate CH2.v4 --reason "Not currently needed in the network. ..."
+python scripts/ieantn.py reactivate CH2.v4
+```
+
+An **inactive** node keeps every file where it is -- `Conclusions.lean`, `Challenge.lean`, its
+solution and its receipts -- but is taken out of the network: it leaves the `IEANTN/Nodes.lean`
+umbrella, so the core build no longer compiles it, and it drops out of the graph, STATE, the node
+pages, the fingerprints and housekeeping. STATE.md and the node index list inactive nodes in a
+section of their own, with the recorded reason, so a retired directory is never a mystery.
+
+The guards:
+
+* **`--reason` is required**, and recorded as `node.inactive_reason`; `check-graph` fails an inactive
+  node that gives none. Say why it was retired and when it would be worth bringing back.
+* **Nothing live may import an inactive node.** `deactivate` refuses while a live conclusion still
+  imports one, but several nodes can be deactivated in one call, so a node and its only consumer
+  can go together. Afterwards `check-graph` fails a yaml edge onto an inactive node, and
+  `check-closure` fails a Lean `import` of one of its modules -- the one way it could otherwise be
+  pulled back into the build.
+* **`reactivate` restores the status the node had** (recorded as `status_before_deactivation`)
+  and refuses while one of its own imports is still inactive; reactivate those first.
+
+Both commands regenerate the challenges and the umbrella. Then run `fingerprint`, `state`,
+`graph`, `pages` and `check` as usual; `diff` reports the node's conclusions as deactivated.
+
 ---
 
 ## The acknowledgement escape hatch
