@@ -107,6 +107,7 @@ graph LR
   NButhe_v2 -->|2| NButhe_v1
   NButhe2016_v1 -->|2| NBKLNW_v1
   NButheNumerics_v1 -->|3| NButhe_v1
+  NCH2_v2 -->|4| NCH2_v1
   NContourIntegration_v1 --> NCH2_v4
   NCotangentSeries_v1 -->|2| NCH2_v1
   NDudekPlatt_v3 --> NDudekPlatt_v1
@@ -443,6 +444,8 @@ graph LR
   ZetaLogDerivValues_v1_logDeriv_laurent_alternating --> CH2_v1_corollary_1_2_lambda_sum
   ZetaHadamard_v1_logDeriv_partial_fractions --> CH2_v1_corollary_1_2_lambda_sum
   PlattZeroSum_v1_inv_ordinate_sum_le --> CH2_v1_corollary_1_2_lambda_sum
+  CH2_v2_proposition_2_4_upper --> CH2_v1_corollary_1_2_lambda_sum
+  CH2_v2_proposition_2_4_lower --> CH2_v1_corollary_1_2_lambda_sum
   GammaAsymptotics_v2_digamma_sub_log_isBigO_strip --> CH2_v1_corollary_1_2_psi
   CotangentSeries_v1_cot_series_zeta_values --> CH2_v1_corollary_1_2_psi
   ZeroCount_v1_rvm_error_bound --> CH2_v1_corollary_1_2_psi
@@ -454,6 +457,8 @@ graph LR
   ZetaLogDerivValues_v1_logDeriv_laurent_alternating --> CH2_v1_corollary_1_2_psi
   ZetaHadamard_v1_logDeriv_partial_fractions --> CH2_v1_corollary_1_2_psi
   PlattZeroSum_v1_inv_ordinate_sum_le --> CH2_v1_corollary_1_2_psi
+  CH2_v2_proposition_2_4_upper --> CH2_v1_corollary_1_2_psi
+  CH2_v2_proposition_2_4_lower --> CH2_v1_corollary_1_2_psi
   CH2_v1_corollary_1_2_lambda_sum --> CH2_v1_corollary_1_3_lambda_sum
   PlattTrudgian_v1_rh_up_to_exact --> CH2_v1_corollary_1_3_lambda_sum
   Buthe_v1_theorem_2_psi --> CH2_v1_corollary_1_3_lambda_sum
@@ -734,6 +739,8 @@ A line is one claim, indented under whatever assumes it.
     - [`ZetaLogDerivValues.v1.logDeriv_laurent_alternating`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating) — computation
     - [`ZetaHadamard.v1.logDeriv_partial_fractions`](docs/nodes/ZetaHadamard-v1.md#logDeriv_partial_fractions) — cited
     - [`PlattZeroSum.v1.inv_ordinate_sum_le`](docs/nodes/PlattZeroSum-v1.md#inv_ordinate_sum_le) — cited
+    - [`CH2.v2.proposition_2_4_upper`](docs/nodes/CH2-v2.md#proposition_2_4_upper) — verified, stale
+    - [`CH2.v2.proposition_2_4_lower`](docs/nodes/CH2-v2.md#proposition_2_4_lower) — verified, stale
   - [`PlattTrudgian.v1.rh_up_to_exact`](docs/nodes/PlattTrudgian-v1.md#rh_up_to_exact) — cited — *sources known, not all drawable*
   - [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) — cited — *sources known, not all drawable*
     - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
@@ -751,13 +758,11 @@ A line is one claim, indented under whatever assumes it.
     - [`ZetaLogDerivValues.v1.logDeriv_laurent_alternating`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating) — computation
     - [`ZetaHadamard.v1.logDeriv_partial_fractions`](docs/nodes/ZetaHadamard-v1.md#logDeriv_partial_fractions) — cited
     - [`PlattZeroSum.v1.inv_ordinate_sum_le`](docs/nodes/PlattZeroSum-v1.md#inv_ordinate_sum_le) — cited
+    - [`CH2.v2.proposition_2_4_upper`](docs/nodes/CH2-v2.md#proposition_2_4_upper) — verified, stale
+    - [`CH2.v2.proposition_2_4_lower`](docs/nodes/CH2-v2.md#proposition_2_4_lower) — verified, stale
   - [`PlattTrudgian.v1.rh_up_to_exact`](docs/nodes/PlattTrudgian-v1.md#rh_up_to_exact) — cited — *sources known, not all drawable*
   - [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) — cited — *sources known, not all drawable*
     - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
-
-- [`CH2.v2.proposition_2_4_lower`](docs/nodes/CH2-v2.md#proposition_2_4_lower) — verified, stale
-
-- [`CH2.v2.proposition_2_4_upper`](docs/nodes/CH2-v2.md#proposition_2_4_upper) — verified, stale
 
 - [`CH2.v3.extremal_majorant`](docs/nodes/CH2-v3.md#extremal_majorant) — verified
 

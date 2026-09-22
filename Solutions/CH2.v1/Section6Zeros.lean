@@ -334,6 +334,8 @@ the shift errors for both signs. -/
 theorem svm_abs_bound
     (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h24u : CH2.v2.proposition_2_4_upper)
+    (h24l : CH2.v2.proposition_2_4_lower)
     {l : CH2.LadderParams} (hsig : l.σ = CH2ZetaInstance.sigmaZeta)
     (hTfree : ∀ z : ℂ, riemannZeta z = 0 → |z.im| ≠ l.T)
     (hRC : ∀ z ∈ l.RC, riemannZeta z = 0 → z.re < 0)
@@ -354,7 +356,7 @@ theorem svm_abs_bound
   have hx1 : 1 < x := by linarith
   have hlam : lamOf l.T σ < 0 := lamOf_neg hT hσ1
   have hσ' : l.sigmaOf (lamOf l.T σ) = σ := sigmaOf_lamOf l hσ1
-  obtain ⟨hup, hlo⟩ := svm_bounds_explicit hfe hdig hsig hTfree hRC hσ0 hσ1 hσζ hx₀ hx
+  obtain ⟨hup, hlo⟩ := svm_bounds_explicit hfe hdig h24u h24l hsig hTfree hRC hσ0 hσ1 hσζ hx₀ hx
   set C := Real.cosh (Real.pi * (1 - σ) / l.T) / Real.sinh (Real.pi * (1 - σ) / l.T) with hC
   set D := (deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re with hD
   set B := (1 + l.T / (4 * Real.pi)) * (x ^ (-2 : ℝ) / (1 - x ^ (-2 : ℝ))) with hB

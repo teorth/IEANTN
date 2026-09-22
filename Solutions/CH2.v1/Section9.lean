@@ -85,6 +85,8 @@ set_option maxHeartbeats 1000000 in
 /-- **`prop:sagaro` at the height chosen by `lem:hardin`.** -/
 theorem sagaro_at_t (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h24u : CH2.v2.proposition_2_4_upper)
+    (h24l : CH2.v2.proposition_2_4_lower)
     (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
     (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
     (h2v : ZetaLogDerivValues.v1.logDeriv_two)
@@ -188,7 +190,7 @@ theorem sagaro_at_t (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
       refine mul_le_mul_of_nonneg_left (by linarith) (by positivity)
     linarith
   -- apply `svm_abs_bound`
-  have hmain := CH2Section6.svm_abs_bound hfe hdig hsig hTfree' hRC hσ0 hσ1 hσζ
+  have hmain := CH2Section6.svm_abs_bound hfe hdig h24u h24l hsig hTfree' hRC hσ0 hσ1 hσζ
     (x₀ := 2) (by norm_num) (by linarith [show (2 : ℝ) < 10 ^ 9 by norm_num]) hZ hE
   rw [hlT] at hmain
   refine ⟨t, ⟨ht1, ht2⟩, hmain.trans (le_of_eq ?_)⟩
@@ -318,6 +320,8 @@ set_option maxHeartbeats 1000000 in
 is still expressed in terms of the chosen `t`. -/
 theorem sagaro_shifted (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h24u : CH2.v2.proposition_2_4_upper)
+    (h24l : CH2.v2.proposition_2_4_lower)
     (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
     (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
     (h2v : ZetaLogDerivValues.v1.logDeriv_two)
@@ -343,7 +347,7 @@ theorem sagaro_shifted (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
               * ((1 + t / (4 * Real.pi)) * (x ^ (-2 : ℝ) / (1 - x ^ (-2 : ℝ))))
           + Real.pi ^ 2 / (2 * t ^ 2 * T) := by
   have hπ := Real.pi_pos
-  obtain ⟨t, ⟨ht1, ht2⟩, hbd⟩ := sagaro_at_t hfe hdig hk hneg h2v hv hcs hrvm hsmall hplatt hH
+  obtain ⟨t, ⟨ht1, ht2⟩, hbd⟩ := sagaro_at_t hfe hdig h24u h24l hk hneg h2v hv hcs hrvm hsmall hplatt hH
     hT hx9 hxT hRH hσ0 hσ1 hσζ
   have ht0 : (0 : ℝ) < t := by
     have : (0 : ℝ) < 10 ^ 7 := by norm_num
@@ -436,6 +440,8 @@ the `1/√x` side and still leaves `0.0005/√x`, which `Corollary 1.2` needs at
 `ζ'/ζ(0) = log 2π`. -/
 theorem sagaro_slack (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h24u : CH2.v2.proposition_2_4_upper)
+    (h24l : CH2.v2.proposition_2_4_lower)
     (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
     (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
     (h2v : ZetaLogDerivValues.v1.logDeriv_two)
@@ -456,7 +462,7 @@ theorem sagaro_slack (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
   have hπ := Real.pi_pos
   have hπ1 := Real.pi_gt_d2
   have hπ2 := Real.pi_lt_d2
-  obtain ⟨t, ⟨ht1, ht2⟩, hbd⟩ := sagaro_shifted hfe hdig hk hneg h2v hv hcs hrvm hsmall hplatt hH
+  obtain ⟨t, ⟨ht1, ht2⟩, hbd⟩ := sagaro_shifted hfe hdig h24u h24l hk hneg h2v hv hcs hrvm hsmall hplatt hH
     hT hx9 hxT hRH hσ0 hσ1 hσζ
   have h107 : (10000000 : ℝ) = (10 : ℝ) ^ 7 := by norm_num
   have h109 : (1000000000 : ℝ) = (10 : ℝ) ^ 9 := by norm_num
@@ -638,6 +644,8 @@ theorem sagaro_slack (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
 /-- **`prop:sagaro`**, in the paper's form: `sagaro_slack` with the margin dropped. -/
 theorem sagaro (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h24u : CH2.v2.proposition_2_4_upper)
+    (h24l : CH2.v2.proposition_2_4_lower)
     (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
     (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
     (h2v : ZetaLogDerivValues.v1.logDeriv_two)
@@ -657,7 +665,7 @@ theorem sagaro (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
             - 1 / (6 * Real.pi) * Real.log (T / (2 * Real.pi))) / Real.sqrt x := by
   have hx0 : (0 : ℝ) < x := by linarith [show (0 : ℝ) < 10 ^ 9 by norm_num]
   have hs0 : (0 : ℝ) < Real.sqrt x := Real.sqrt_pos.mpr hx0
-  have h := sagaro_slack hfe hdig hk hneg h2v hv hcs hrvm hsmall hplatt hH hT hx9 hxT hRH hσ0 hσ1 hσζ
+  have h := sagaro_slack hfe hdig h24u h24l hk hneg h2v hv hcs hrvm hsmall hplatt hH hT hx9 hxT hRH hσ0 hσ1 hσζ
   have hle : (1 / (2 * Real.pi) * Real.log (T / (2 * Real.pi)) ^ 2
         - 1 / (6 * Real.pi) * Real.log (T / (2 * Real.pi)) - 0.0005) / Real.sqrt x
       ≤ (1 / (2 * Real.pi) * Real.log (T / (2 * Real.pi)) ^ 2
