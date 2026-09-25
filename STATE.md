@@ -69,6 +69,8 @@ adds the environment detail.
 | `FKBJ.v1` | active | `rh_up_to` | numerical | 0 | - |
 | `FKS.v1` | active | `psi_bound_all_x` | literature | 3 | - |
 | `FKS.v1` | active | `psi_classical_bound` | literature | 3 | - |
+| `FKS.v1` | active | `rescaled_A_exceeds_printed` | numerical | 0 | - |
+| `FKS.v1` | active | `rescaled_C_is_short_of_two` | numerical | 0 | - |
 | `FKS2.v1` | active | `corollary_14` | lean-comparator-stale | 6 | - |
 | `FKS2.v1` | active | `corollary_22` | lean-comparator-stale | 8 | - |
 | `FKS2.v1` | active | `corollary_23` | lean-comparator-stale | 10 | - |
