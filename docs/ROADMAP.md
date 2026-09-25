@@ -16,7 +16,7 @@ appears here.
 In rough dependency order.
 
 **1. Statement fingerprints.** *Done* — `Tools/Hash.lean` plus `ieantn.py fingerprint`, with the
-results committed to `fingerprints.json`. Structural, not pretty-printed, and Merkle-chained over
+results committed to a `fingerprints.json` in each node's own directory. Structural, not pretty-printed, and Merkle-chained over
 IEANTN's own definitions so a Vocabulary edit propagates. See the module docstring for the one
 kind of change it deliberately cannot see.
 
@@ -53,8 +53,9 @@ request. Fails when a conclusion with downstream importers or a recorded receipt
 place, or when one that is still imported is removed, with `new-version` as the suggested fix and
 `changes/*.yaml` as the override.
 
-Recovering the base state needs no Lean: `fingerprints.json` is committed, so the statements as
-they were are readable with `git show`. That is most of why this is cheap enough to run per PR.
+Recovering the base state needs no Lean: the fingerprints are committed, so the statements as
+they were are readable with `git show` — from each node's file, or from the retired root
+`fingerprints.json` at a commit predating the split, which `state_at` still reads. That is most of why this is cheap enough to run per PR.
 
 **4. The reviewer report.** *Partly done* -- `diff` writes its findings to the job summary, which
 needs no token and no permissions. Still to do: posting it as a PR comment so it appears inline,

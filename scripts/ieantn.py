@@ -14,7 +14,7 @@ routine node-management tasks.
     python scripts/ieantn.py status                  the traffic light for every conclusion
     python scripts/ieantn.py diff --base origin/main what this branch degrades, and for whom
     python scripts/ieantn.py housekeeping            the derived task queue
-    python scripts/ieantn.py state                   refresh the committed STATE.md snapshot
+    python scripts/ieantn.py state                   refresh STATE.md (a view; CI commits it)
     python scripts/ieantn.py check-receipts          every receipt names a real verification run
     python scripts/ieantn.py check                   every check, in --check mode
 
@@ -53,7 +53,13 @@ NODES_DIR = ROOT / "IEANTN" / "Nodes"
 VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
 #: Bridges live inside the library so the core build compiles them; see `check_bridges`.
 BRIDGES_DIR = ROOT / "IEANTN" / "Bridges"
+#: Retired location. Fingerprints now live one file per node, beside the `formalization.yaml`
+#: they describe, so two pull requests touching different nodes cannot collide in one file.
+#: Readers still fall back to this path, so `diff` can recover the state at a commit from before
+#: the split without a special case for "old enough".
 FINGERPRINTS = ROOT / "fingerprints.json"
+#: What that per-node file is called, inside `IEANTN/Nodes/<Family>/<version>/`.
+FINGERPRINTS_NAME = "fingerprints.json"
 STATE = ROOT / "STATE.md"
 GRAPH = ROOT / "GRAPH.md"
 PAGES = ROOT / "docs" / "nodes"
@@ -206,6 +212,19 @@ class Problems:
 
 def rel(path: pathlib.Path) -> str:
     return path.relative_to(ROOT).as_posix()
+
+
+#: Why a stale derived view is a warning rather than a failure. `STATE.md`, `GRAPH.md` and the
+#: pages under `docs/nodes/` are written by `.github/workflows/derived.yml` on every push to
+#: `main`, and by nobody else. They carry no information that is not in the yaml, so a pull
+#: request that regenerated them added nothing to review -- and guaranteed a conflict with every
+#: other open pull request, since every one of them rewrites the same few files. CI is the single
+#: writer precisely so that those conflicts cannot happen.
+DERIVED_NOTE = (
+    "out of date. This is a view, regenerated on `main` by .github/workflows/derived.yml; "
+    "a pull request does not need to include it. `python scripts/ieantn.py {command}` "
+    "refreshes it locally."
+)
 
 
 def under(module: str, root: str) -> bool:
@@ -1724,24 +1743,57 @@ def compute_fingerprints() -> dict[str, str]:
     }
 
 
+def fingerprints_path(directory: pathlib.Path) -> pathlib.Path:
+    """Where one node's fingerprints live: beside its `formalization.yaml`."""
+    return directory / FINGERPRINTS_NAME
+
+
+def fingerprints_by_node(current: dict[str, str]) -> dict[pathlib.Path, dict[str, str]]:
+    """Split a flat `declaration -> digest` map into one map per node directory.
+
+    Keyed by directory, and every live node gets an entry: a node whose conclusions have all gone
+    still needs its file rewritten to `{}` rather than left behind saying something false.
+    """
+    split: dict[pathlib.Path, dict[str, str]] = {}
+    for node_id, node in load_nodes().items():
+        prefix = f"{node_id}."
+        split[node["_dir"]] = {
+            name: digest for name, digest in current.items() if name.startswith(prefix)
+        }
+    return split
+
+
 def fingerprint(check_only: bool) -> bool:
-    """Maintain `fingerprints.json`.
+    """Maintain each node's `fingerprints.json`.
 
     Committing the fingerprints has a purpose beyond bookkeeping: it makes **every change of
     mathematical meaning show up as a diff line**, including ones whose Lean edit looks cosmetic.
     A reviewer can see that a statement moved without having to elaborate anything.
+
+    One file per node, not one for the network. Nothing reads the digests as a whole, so a single
+    file bought nothing and cost a conflict on every pair of branches that added a conclusion --
+    every pair, since the file was sorted by name and both sides wrote into it. Sharded, two
+    branches collide only when they touch the same node, which is a collision worth having.
     """
     current = compute_fingerprints()
-    recorded = json.loads(FINGERPRINTS.read_text(encoding="utf-8")) if FINGERPRINTS.is_file() else {}
+    recorded = recorded_fingerprints()
 
     if not check_only:
-        FINGERPRINTS.write_text(
-            json.dumps(current, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
-        )
+        split = fingerprints_by_node(current)
+        written = 0
+        for directory, digests in sorted(split.items()):
+            path = fingerprints_path(directory)
+            text = json.dumps(digests, indent=2, sort_keys=True) + "\n"
+            if (path.read_text(encoding="utf-8") if path.is_file() else None) != text:
+                path.write_text(text, encoding="utf-8", newline="\n")
+                written += 1
+        if FINGERPRINTS.is_file():
+            FINGERPRINTS.unlink()
+            print(f"removed {rel(FINGERPRINTS)}: fingerprints are per node now")
         for name, digest in sorted(current.items()):
             marker = " " if recorded.get(name) == digest else "*"
             print(f"{marker} {digest[:16]}  {name}")
-        print(f"\nwrote {rel(FINGERPRINTS)}")
+        print(f"\nwrote {written} of {len(split)} node fingerprint files")
         return True
 
     problems = Problems()
@@ -2027,14 +2079,20 @@ def recorded_fingerprints() -> dict[str, str]:
     and CI runs `fingerprint --check` against a real build, so a stale file fails there rather
     than quietly mis-colouring a box here.
 
-    Deliberately not cached. The file is small and a view reads it a few dozen times, which costs
-    nothing measurable; a cache would have to be invalidated when `_set_root` moves underneath it
-    or when the file is rewritten mid-run, and getting that wrong means colouring a box from a
-    fingerprint that is no longer there.
+    Deliberately not cached. The files are small and a view reads them a few dozen times, which
+    costs nothing measurable; a cache would have to be invalidated when `_set_root` moves
+    underneath it or when one is rewritten mid-run, and getting that wrong means colouring a box
+    from a fingerprint that is no longer there.
+
+    Reads the per-node files, and the retired root file as well if a working tree still has one,
+    so that an older checkout reports what it reported then.
     """
-    if not FINGERPRINTS.is_file():
-        return {}
-    return json.loads(FINGERPRINTS.read_text(encoding="utf-8"))
+    merged: dict[str, str] = {}
+    if FINGERPRINTS.is_file():
+        merged.update(json.loads(FINGERPRINTS.read_text(encoding="utf-8")))
+    for path in sorted(NODES_DIR.glob(f"*/*/{FINGERPRINTS_NAME}")) if NODES_DIR.is_dir() else []:
+        merged.update(json.loads(path.read_text(encoding="utf-8")))
+    return merged
 
 
 def receipt_state(conclusion_key: str, conclusion: dict) -> tuple[str, str] | None:
@@ -2654,12 +2712,18 @@ def inactive_section() -> list[str]:
     return lines
 
 
-def state(check_only: bool) -> bool:
+def state(check_only: bool, advisory: bool = False) -> bool:
+    """Refresh `STATE.md`, or check it.
+
+    `advisory` is what `check` passes: a stale view is reported and does not fail the run. See
+    `DERIVED_NOTE`.
+    """
     rendered = render_state(load_nodes())
     if check_only:
         problems = Problems()
         if (STATE.read_text(encoding="utf-8") if STATE.is_file() else "") != rendered:
-            problems.add(rel(STATE), "out of date; run `python scripts/ieantn.py state`")
+            note = DERIVED_NOTE.format(command="state")
+            (problems.warn if advisory else problems.add)(rel(STATE), note)
         return problems.report("network state")
     STATE.write_text(rendered, encoding="utf-8", newline="\n")
     print(f"wrote {rel(STATE)}")
@@ -3317,8 +3381,8 @@ def render_pages_index(nodes: dict, index: dict) -> str:
     return "\n".join(out) + "\n"
 
 
-def pages(check_only: bool) -> bool:
-    """Write (or verify) one page per node."""
+def pages(check_only: bool, advisory: bool = False) -> bool:
+    """Write (or verify) one page per node. `advisory` as in `state`."""
     nodes = load_nodes()
     index = index_conclusions(nodes)
     importers = importers_of(nodes)
@@ -3328,13 +3392,14 @@ def pages(check_only: bool) -> bool:
 
     if check_only:
         problems = Problems()
+        report = problems.warn if advisory else problems.add
         for path, text in sorted(wanted.items()):
             current = path.read_text(encoding="utf-8") if path.is_file() else ""
             if current != text:
-                problems.add(rel(path), "out of date; run `python scripts/ieantn.py pages`")
+                report(rel(path), DERIVED_NOTE.format(command="pages"))
         for path in sorted(PAGES.glob("*.md")) if PAGES.is_dir() else []:
             if path not in wanted:
-                problems.add(rel(path), "no such node; delete it and rerun `pages`")
+                report(rel(path), "no such node any more; `pages` deletes it")
         return problems.report("node pages")
 
     PAGES.mkdir(parents=True, exist_ok=True)
@@ -3348,12 +3413,14 @@ def pages(check_only: bool) -> bool:
     return True
 
 
-def graph(check_only: bool) -> bool:
+def graph(check_only: bool, advisory: bool = False) -> bool:
+    """Refresh `GRAPH.md`, or check it. `advisory` as in `state`."""
     rendered = render_graph(load_nodes())
     if check_only:
         problems = Problems()
         if (GRAPH.read_text(encoding="utf-8") if GRAPH.is_file() else "") != rendered:
-            problems.add(rel(GRAPH), "out of date; run `python scripts/ieantn.py graph`")
+            note = DERIVED_NOTE.format(command="graph")
+            (problems.warn if advisory else problems.add)(rel(GRAPH), note)
         return problems.report("network graph")
     GRAPH.write_text(rendered, encoding="utf-8", newline="\n")
     print(f"wrote {rel(GRAPH)}")
@@ -3386,9 +3453,7 @@ def state_at(ref: str | None) -> dict:
     """
     if ref is None:
         nodes = load_nodes()
-        fingerprints = (
-            json.loads(FINGERPRINTS.read_text(encoding="utf-8")) if FINGERPRINTS.is_file() else {}
-        )
+        fingerprints = recorded_fingerprints()
         receipts = {
             path.stem: json.loads(path.read_text(encoding="utf-8"))
             for path in (RECEIPTS.glob("*.json") if RECEIPTS.is_dir() else [])
@@ -3413,8 +3478,15 @@ def state_at(ref: str | None) -> dict:
                 directory = ROOT / pathlib.PurePosixPath(path).parent
                 data["_dir"] = directory
                 nodes[node_id_of(directory)] = data
-        raw = git_show(ref, "fingerprints.json")
-        fingerprints = json.loads(raw) if raw else {}
+        # Both layouts: per-node files now, one root file at any commit before the split.
+        fingerprints = {}
+        for path in listing:
+            if path == "fingerprints.json" or (
+                path.startswith("IEANTN/Nodes/") and path.endswith(f"/{FINGERPRINTS_NAME}")
+            ):
+                raw = git_show(ref, path)
+                if raw:
+                    fingerprints.update(json.loads(raw))
         receipts = {}
         for path in listing:
             if path.startswith("receipts/") and path.endswith(".json"):
@@ -4312,9 +4384,12 @@ def main() -> int:
     if args.command == "reactivate":
         return 0 if reactivate(args.node) else 1
     if args.command == "check":
+        # The last three are views, not sources: CI regenerates them on `main`, so `check`
+        # reports a stale one and does not fail on it. See DERIVED_NOTE.
         return 0 if all(
             [check_closure(), check_graph(), check_pins(), check_receipts(online=False),
-             gen_challenges(True), state(True), graph(True), pages(True)]
+             gen_challenges(True), state(True, advisory=True), graph(True, advisory=True),
+             pages(True, advisory=True)]
         ) else 1
     return 2
 
