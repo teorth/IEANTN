@@ -58,7 +58,7 @@ def logDeriv_functional_equation : Prop :=
 | Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
 
 **Justification `unjustified`** — none-yet
 

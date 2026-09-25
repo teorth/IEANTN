@@ -65,6 +65,35 @@ conclusions:
       implied and is the figure the downstream literature quotes.
   designated: platttrudgian-paper
   imports_status: traced
+- id: rh_up_to_exact
+  declaration: PlattTrudgian.v1.rh_up_to_exact
+  challenge: PlattTrudgian.v1.challenge_rh_up_to_exact
+  imports: []
+  justifications:
+  - id: platttrudgian-theorem-1
+    kind: literature
+    source: PlattTrudgian
+    locator: Theorem 1
+    note: >-
+      Asserted on the authority of the paper, and the same computation as `rh_up_to` -- nothing further
+      is being claimed, only the height stated without rounding. Theorem 1 reads, verbatim: 'The Riemann
+      hypothesis is true up to height 3 000 175 332 800. That is, the lowest 12 363 153 437 138 non-trivial
+      zeroes rho have Re rho = 1/2.' The abstract quotes the rounded 3e12 instead, which is why the rounded
+      form is the one the downstream literature carries and why this node states both. Read from the arXiv
+      version, arXiv:2004.09765, on 2026-09-20; the rounded figure in the abstract was checked at the
+      same
+      time.
+      WHY BOTH ARE STATED. The difference of 1.75e8 is invisible to every current consumer but one:
+      CH2.v1's Corollary 1.2 has the error term pi/(T-1) and its Corollary 1.3 quotes that as
+      pi/(3e12), a step that needs T >= 3e12 + 1. The rounded height misses it by one; this one clears
+      it by 1.75e8. `rh_up_to` is this conclusion weakened, so a solution would prove this one and get
+      the other in a line -- which is the reason to keep them in one node rather than split a version
+      off.
+      The same caveat as `rh_up_to` applies about the range at zero: the paper's 0 < gamma is open,
+      `RiemannHypothesisUpTo` includes Im s = 0, and zeta has no real zero in (0,1), so the conclusion
+      is very slightly stronger than its source by a classical fact the paper does not prove.
+  designated: platttrudgian-theorem-1
+  imports_status: traced
 sources:
 - title: The Riemann hypothesis is true up to 3 x 10^12
   authors:
@@ -76,7 +105,8 @@ sources:
   relationship: formalizes
   note: >-
     Bibliographic details from PNT+'s references.bib and FKS's reference [26]; the DOI has not been confirmed
-    against the publisher and should be before external use.
+    against the publisher and should be before external use. The arXiv version is arXiv:2004.09765, and
+    Theorem 1 and the abstract were read there on 2026-09-20.
 automation:
   methods:
   - method: agent

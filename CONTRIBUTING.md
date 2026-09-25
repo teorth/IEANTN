@@ -96,23 +96,34 @@ the conclusion, so `python scripts/ieantn.py housekeeping` shows what is claimed
 
 ## Generated files
 
-`Challenge.lean`, `IEANTN/Nodes.lean`, `IEANTN/Bridges.lean`, `fingerprints.json`, `STATE.md`,
-`GRAPH.md` and everything under `docs/nodes/` are generated *and* committed, and CI checks they are
-current.
+Two kinds, and they are committed for different reasons.
 
-**If you hit a merge conflict in any of them, do not resolve it by hand.** Take either side, then
-regenerate:
+**Yours to regenerate and commit:** `Challenge.lean`, `IEANTN/Nodes.lean`, `IEANTN/Bridges.lean`,
+and each node's `fingerprints.json`. These carry information a reviewer needs — a moved fingerprint
+is a changed statement — so they belong in the diff that caused them. The fingerprints live one
+file per node, in the node's own directory, so two branches collide only when they touch the same
+node.
+
+**CI's to regenerate, and not yours to commit:** `STATE.md`, `GRAPH.md` and everything under
+`docs/nodes/`. Every fact in them is already in some `formalization.yaml`, so a pull request
+carrying them adds nothing to review — and conflicts with every other open pull request, since all
+of them rewrite the same few files. `.github/workflows/derived.yml` rewrites them once a change
+reaches `main`. Run `state`, `graph` and `pages` locally whenever you want to see the effect of a
+change; just leave the result out of the commit. `python scripts/ieantn.py check` reports a stale
+view and does not fail on it, and a pull request that includes one fails CI with the command to
+drop it.
+
+**If you hit a merge conflict in a generated file you do commit, do not resolve it by hand.** Take
+either side, then regenerate:
 
 ```bash
 python scripts/ieantn.py gen-challenges
 python scripts/ieantn.py fingerprint
-python scripts/ieantn.py state
-python scripts/ieantn.py graph
 ```
 
 They are committed rather than gitignored on purpose: a change of *meaning* then shows up as a diff
-line even when the Lean edit looks cosmetic, and the `STATE.md` diff says what your change did to
-the network.
+line even when the Lean edit looks cosmetic. `STATE.md` is committed for a different reason — it is
+what a reader browsing the repository opens — which is why CI writes that one and you do not.
 
 ---
 
@@ -512,6 +523,39 @@ Anything goes provided CI passes and a human reviewer confirms that the survivin
 
 Housekeeping PRs are where the reviewer degradation report matters most, since they are the ones
 that touch enough nodes for the consequences to be hard to hold in your head.
+
+### Deactivating a node
+
+Some nodes are written to support a more interesting one, and the route to that node ends up going
+another way. `deprecate` does not fit them -- it names a successor, and there is none -- and
+deleting them throws away statements, solutions and receipts that a later consumer may want.
+Deactivate them instead:
+
+```bash
+python scripts/ieantn.py deactivate CH2.v4 --reason "Not currently needed in the network. ..."
+python scripts/ieantn.py reactivate CH2.v4
+```
+
+An **inactive** node keeps every file where it is -- `Conclusions.lean`, `Challenge.lean`, its
+solution and its receipts -- but is taken out of the network: it leaves the `IEANTN/Nodes.lean`
+umbrella, so the core build no longer compiles it, and it drops out of the graph, STATE, the node
+pages, the fingerprints and housekeeping. STATE.md and the node index list inactive nodes in a
+section of their own, with the recorded reason, so a retired directory is never a mystery.
+
+The guards:
+
+* **`--reason` is required**, and recorded as `node.inactive_reason`; `check-graph` fails an inactive
+  node that gives none. Say why it was retired and when it would be worth bringing back.
+* **Nothing live may import an inactive node.** `deactivate` refuses while a live conclusion still
+  imports one, but several nodes can be deactivated in one call, so a node and its only consumer
+  can go together. Afterwards `check-graph` fails a yaml edge onto an inactive node, and
+  `check-closure` fails a Lean `import` of one of its modules -- the one way it could otherwise be
+  pulled back into the build.
+* **`reactivate` restores the status the node had** (recorded as `status_before_deactivation`)
+  and refuses while one of its own imports is still inactive; reactivate those first.
+
+Both commands regenerate the challenges and the umbrella. Then run `fingerprint`, `state`,
+`graph`, `pages` and `check` as usual; `diff` reports the node's conclusions as deactivated.
 
 ---
 

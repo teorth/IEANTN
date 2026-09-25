@@ -159,6 +159,51 @@ jobs:
       - name: Validate each node
         run: python3 scripts/check_palomar_metadata.py /tmp/pal
 
+  # The one job here that is about the repository's shape rather than its content.
+  #
+  # STATE.md, GRAPH.md and docs/nodes/ are regenerated from the node metadata by
+  # .github/workflows/derived.yml on every push to `main`. A pull request that regenerates them
+  # too adds nothing a reviewer can act on -- the facts are all in the yaml it already contains --
+  # and guarantees a conflict with every other open pull request, because all of them rewrite the
+  # same few files. One writer, no conflicts; this is what keeps it to one writer.
+  derived:
+    name: Derived views are left to CI
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: No pull request writes the generated views
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          changed=$(git diff --name-only "$BASE...HEAD" -- STATE.md GRAPH.md docs/nodes)
+          if [ -z "$changed" ]; then
+            echo "The generated views are untouched, as they should be."
+            exit 0
+          fi
+          echo "::error::This branch changes files that CI generates on \`main\`:"
+          echo "$changed" | sed 's/^/  /'
+          cat <<'MESSAGE'
+
+          STATE.md, GRAPH.md and docs/nodes/ are views of the node metadata, rewritten by
+          .github/workflows/derived.yml once a change reaches `main`. A pull request that carries
+          them conflicts with every other open pull request, over content nobody disagreed about.
+
+          To drop them from this branch:
+
+              git checkout <base> -- STATE.md GRAPH.md docs/nodes
+              git commit -m "Leave the generated views to CI"
+
+          Running `state`, `graph` or `pages` locally is fine -- just do not commit the result.
+          `python scripts/ieantn.py check` reports a stale view and does not fail on one.
+          MESSAGE
+          exit 1
+
   impact:
     name: Network impact
     if: github.event_name == 'pull_request'

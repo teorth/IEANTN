@@ -3,10 +3,17 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
+import IEANTN.Nodes.Buthe.v1.Conclusions
 import IEANTN.Nodes.CH2.v1.Conclusions
+import IEANTN.Nodes.CH2.v2.Conclusions
 import IEANTN.Nodes.CotangentSeries.v1.Conclusions
 import IEANTN.Nodes.GammaAsymptotics.v2.Conclusions
 import IEANTN.Nodes.PlattTrudgian.v1.Conclusions
+import IEANTN.Nodes.PlattZeroSum.v1.Conclusions
+import IEANTN.Nodes.ZeroCount.v1.Conclusions
+import IEANTN.Nodes.ZetaHadamard.v1.Conclusions
+import IEANTN.Nodes.ZetaLogDeriv.v1.Conclusions
+import IEANTN.Nodes.ZetaLogDerivValues.v1.Conclusions
 
 /-!
 # Challenge: `CH2.v1`
@@ -21,24 +28,48 @@ How each conclusion is justified is recorded in `formalization.yaml`, not here.
 
 theorem CH2.v1.challenge_corollary_1_2_psi
     (gammaasymptotics_v2_digamma_sub_log_isbigo_strip : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
-    (cotangentseries_v1_cot_series_zeta_values : CotangentSeries.v1.cot_series_zeta_values) :
+    (cotangentseries_v1_cot_series_zeta_values : CotangentSeries.v1.cot_series_zeta_values)
+    (zerocount_v1_rvm_error_bound : ZeroCount.v1.rvm_error_bound)
+    (zerocount_v1_rvm_error_small : ZeroCount.v1.rvm_error_small)
+    (zetalogderiv_v1_logderiv_functional_equation : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (zetalogderivvalues_v1_logderiv_two : ZetaLogDerivValues.v1.logDeriv_two)
+    (zetalogderivvalues_v1_logderiv_three_halves : ZetaLogDerivValues.v1.logDeriv_three_halves)
+    (zetalogderivvalues_v1_logderiv_neg_one : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    (zetalogderivvalues_v1_logderiv_laurent_alternating : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (zetahadamard_v1_logderiv_partial_fractions : ZetaHadamard.v1.logDeriv_partial_fractions)
+    (plattzerosum_v1_inv_ordinate_sum_le : PlattZeroSum.v1.inv_ordinate_sum_le)
+    (ch2_v2_proposition_2_4_upper : CH2.v2.proposition_2_4_upper)
+    (ch2_v2_proposition_2_4_lower : CH2.v2.proposition_2_4_lower) :
     CH2.v1.corollary_1_2_psi := by
   sorry
 
 theorem CH2.v1.challenge_corollary_1_2_lambda_sum
     (gammaasymptotics_v2_digamma_sub_log_isbigo_strip : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
-    (cotangentseries_v1_cot_series_zeta_values : CotangentSeries.v1.cot_series_zeta_values) :
+    (cotangentseries_v1_cot_series_zeta_values : CotangentSeries.v1.cot_series_zeta_values)
+    (zerocount_v1_rvm_error_bound : ZeroCount.v1.rvm_error_bound)
+    (zerocount_v1_rvm_error_small : ZeroCount.v1.rvm_error_small)
+    (zetalogderiv_v1_logderiv_functional_equation : ZetaLogDeriv.v1.logDeriv_functional_equation)
+    (zetalogderivvalues_v1_logderiv_two : ZetaLogDerivValues.v1.logDeriv_two)
+    (zetalogderivvalues_v1_logderiv_three_halves : ZetaLogDerivValues.v1.logDeriv_three_halves)
+    (zetalogderivvalues_v1_logderiv_neg_one : ZetaLogDerivValues.v1.logDeriv_neg_one)
+    (zetalogderivvalues_v1_logderiv_laurent_alternating : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
+    (zetahadamard_v1_logderiv_partial_fractions : ZetaHadamard.v1.logDeriv_partial_fractions)
+    (plattzerosum_v1_inv_ordinate_sum_le : PlattZeroSum.v1.inv_ordinate_sum_le)
+    (ch2_v2_proposition_2_4_upper : CH2.v2.proposition_2_4_upper)
+    (ch2_v2_proposition_2_4_lower : CH2.v2.proposition_2_4_lower) :
     CH2.v1.corollary_1_2_lambda_sum := by
   sorry
 
 theorem CH2.v1.challenge_corollary_1_3_psi
     (ch2_v1_corollary_1_2_psi : CH2.v1.corollary_1_2_psi)
-    (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to) :
+    (platttrudgian_v1_rh_up_to_exact : PlattTrudgian.v1.rh_up_to_exact)
+    (buthe_v1_theorem_2_psi : Buthe.v1.theorem_2_psi) :
     CH2.v1.corollary_1_3_psi := by
   sorry
 
 theorem CH2.v1.challenge_corollary_1_3_lambda_sum
     (ch2_v1_corollary_1_2_lambda_sum : CH2.v1.corollary_1_2_lambda_sum)
-    (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to) :
+    (platttrudgian_v1_rh_up_to_exact : PlattTrudgian.v1.rh_up_to_exact)
+    (buthe_v1_theorem_2_psi : Buthe.v1.theorem_2_psi) :
     CH2.v1.corollary_1_3_lambda_sum := by
   sorry

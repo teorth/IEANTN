@@ -15,11 +15,11 @@ project:
   name: "Computed facts about the low-lying zeroes of zeta"
   description: >-
     Facts about the low zeroes of the Riemann zeta function that come from a computation over a list
-    of them rather than from an argument. At present one: the sum of reciprocal ordinates below
+    of them rather than from an argument. Currently two: the sum of reciprocal ordinates below
     height 2 x 10^4, which Chirre-Helfgott compute from David Platt's zero data and use in the proof
     of their Proposition on the contribution of the zeroes -- the step that produces C_T, the
-    square-root constant in CH2.v1's corollaries. Without it that constant cannot be obtained; no
-    amount of analysis substitutes for knowing where the low zeroes actually are.
+    square-root constant in CH2.v1's corollaries; and a lower bound on the first nontrivial ordinate,
+    which ZeroFreeHeight needs to push a classical region below exp(2/R).
   authors: ["Terence Tao"]
   license: "Apache-2.0"
   responsible_maintainers: ["Terence Tao"]
@@ -58,6 +58,28 @@ conclusions:
       change of one numeral rather than of shape.
       Imports `none`, and that is a real none: a fact about zeta with no network input.
   designated: ch2-platt-computation
+
+- id: no_zeroes_below_first_ordinate
+  issue: 64
+  declaration: LowZeroes.v1.no_zeroes_below_first_ordinate
+  challenge: LowZeroes.v1.challenge_no_zeroes_below_first_ordinate
+  imports: []
+  imports_status: none
+  justifications:
+  - id: first-ordinate-computation
+    kind: numerical
+    source: CH2
+    locator: the first nontrivial zero ordinate, as used throughout the explicit-formula literature
+    note: >-
+      Asserted as a numerical fact about zeta: there are no zeroes with 0 < Im rho < 14.134725.
+      The digits are the standard truncation of the first nontrivial ordinate 14.1347251417...,
+      stated on an open interval with a margin 0 site so that widening later is a one-numeral
+      change. Stated as an empty zero set rather than as zetaN = 0: zetaN is a tsum, whose junk
+      value for a non-summable family is 0, so the counting form would hold vacuously where the
+      empty-set form does not, and a consumer would have to prove finiteness before it said
+      anything. ZeroFreeHeight's module docstring and this node's limitations both name
+      this as the input needed to push a classical region below exp(2/R). Imports none.
+  designated: first-ordinate-computation
 
 sources:
 - title: "Optimal bounds for sums of non-negative arithmetic functions"
@@ -108,13 +130,13 @@ limitations:
   list is not a node, and this conclusion cannot be checked against anything the repository holds. If
   more facts come to rest on the same data, a node for the data itself would be the right structure.
 - >-
-  ONE FACT ONLY, at one height. The node is named for the class because it is intended to grow --
-  the ordinate of the first zero, 14.134725..., would sharpen ZeroFreeHeight, and further
-  reciprocal-power sums over low zeroes appear throughout the explicit-formula literature -- but
-  today it holds exactly one conclusion and a consumer wanting anything else will not find it.
+  TWO FACTS, both from low-lying zero data. Further reciprocal-power sums over low zeroes appear
+  throughout the explicit-formula literature and belong here when a consumer needs them; a consumer
+  wanting anything else will not find it yet.
 - >-
-  The value is a truncation, so the bracket is 10^-6 wide. That is the precision CH2 print, not the
-  precision of the computation, and a consumer needing more must go back to the data rather than to
-  this node.
+  The reciprocal-sum value is a truncation, so the bracket is 10^-6 wide. That is the precision CH2
+  print, not the precision of the computation, and a consumer needing more must go back to the data
+  rather than to this node. The first-ordinate bound truncates the same way: it is a safe lower
+  bound on the actual ordinate, not an equality.
 - >-
   No novelty is claimed. The computation is Chirre and Helfgott's, over Platt's data.

@@ -505,7 +505,8 @@ class TestReceiptHealthInTheViews(FixtureRepo):
         self.write_node(
             node_id, LITERATURE.replace("kind: literature", "kind: lean-comparator"))
         key = f"{node_id}.main"
-        (self.root / "fingerprints.json").write_text(
+        family, version = node_id.rsplit(".", 1)
+        (self.root / "IEANTN" / "Nodes" / family / version / "fingerprints.json").write_text(
             json.dumps({key: "digest-as-built"}), encoding="utf-8")
         if receipt:
             (self.root / "receipts").mkdir(exist_ok=True)
@@ -1538,6 +1539,153 @@ class TestDeprecateGuards(FixtureRepo):
             self.assertFalse(ieantn.deprecate("A.v1", "A.v2"))
 
 
+class TestInactiveNodes(FixtureRepo):
+    """`inactive`: retired without a successor, out of the build and the graph, kept on disk."""
+
+    def write_inactive(self, node_id: str, conclusions: str = LITERATURE,
+                       reason: str | None = "Built for a consumer that never used it.") -> None:
+        directory = self.write_node(node_id, conclusions, status="inactive")
+        if reason is not None:
+            path = directory / "formalization.yaml"
+            text = path.read_text(encoding="utf-8").replace(
+                "  status: inactive\n", f"  status: inactive\n  inactive_reason: \"{reason}\"\n"
+            )
+            path.write_text(text, encoding="utf-8")
+
+    def test_load_nodes_leaves_inactive_out_by_default(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_inactive("B.v1")
+        self.assertEqual(set(ieantn.load_nodes()), {"A.v1"})
+        self.assertEqual(set(ieantn.load_nodes(include_inactive=True)), {"A.v1", "B.v1"})
+        self.assertEqual(set(ieantn.inactive_nodes()), {"B.v1"})
+
+    def test_an_inactive_node_must_say_why(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_inactive("B.v1", reason=None)
+        self.assertFalse(ieantn.check_graph())
+
+    def test_an_inactive_node_with_a_reason_passes(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_inactive("B.v1")
+        self.assertTrue(ieantn.check_graph())
+
+    def test_importing_an_inactive_node_fails_and_says_so(self) -> None:
+        self.write_inactive("Upstream.v1")
+        self.write_node("Down.v1", IMPORTING)
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            self.assertFalse(ieantn.check_graph())
+        self.assertIn("inactive", printed.getvalue())
+        self.assertIn("reactivate", printed.getvalue())
+
+    def test_the_umbrella_leaves_an_inactive_node_out(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_inactive("B.v1")
+        self.generate()
+        umbrella = (self.root / "IEANTN" / "Nodes.lean").read_text(encoding="utf-8")
+        self.assertIn("IEANTN.Nodes.A.v1.Challenge", umbrella)
+        self.assertNotIn("IEANTN.Nodes.B.v1", umbrella)
+
+    def test_a_live_lean_import_of_an_inactive_module_fails_closure(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_inactive("B.v1")
+        self.write_bridge("import IEANTN.Nodes.B.v1.Conclusions\n")
+        self.assertFalse(ieantn.check_closure())
+
+    def test_an_inactive_node_may_import_another_inactive_one(self) -> None:
+        self.write_inactive("Upstream.v1")
+        directory = self.write_node("Down.v1", IMPORTING, status="inactive")
+        path = directory / "formalization.yaml"
+        path.write_text(
+            path.read_text(encoding="utf-8").replace(
+                "  status: inactive\n", "  status: inactive\n  inactive_reason: \"Unused.\"\n"
+            ),
+            encoding="utf-8",
+        )
+        (directory / "Conclusions.lean").write_text(
+            "import IEANTN.Nodes.Upstream.v1.Conclusions\n\nnamespace Down.v1\n\n"
+            "def main : Prop := True\n\nend Down.v1\n",
+            encoding="utf-8",
+        )
+        self.assertTrue(ieantn.check_closure())
+        self.assertTrue(ieantn.check_graph())
+
+    def test_state_and_the_pages_index_list_inactive_nodes(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.write_inactive("B.v1", reason="Superseded in practice by A.")
+        nodes = ieantn.load_nodes()
+        state = ieantn.render_state(nodes)
+        self.assertIn("## Inactive nodes", state)
+        self.assertIn("`B.v1`", state)
+        self.assertIn("Superseded in practice by A.", state)
+        index = ieantn.render_pages_index(nodes, ieantn.index_conclusions(nodes))
+        self.assertIn("## Inactive nodes", index)
+        self.assertNotIn("(B-v1.md)", index)
+
+    def test_deactivate_refuses_while_a_live_node_imports_it(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        self.write_node("Down.v1", IMPORTING)
+        self.assertFalse(ieantn.deactivate(["Upstream.v1"], "Unused."))
+        self.assertEqual(ieantn.inactive_nodes(), {})
+
+    def test_deactivate_takes_a_node_and_its_only_consumer_together(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        self.write_node("Down.v1", IMPORTING)
+        self.assertTrue(ieantn.deactivate(["Upstream.v1", "Down.v1"], "Neither is needed."))
+        self.assertEqual(set(ieantn.inactive_nodes()), {"Upstream.v1", "Down.v1"})
+        self.assertEqual(ieantn.load_nodes(), {})
+        meta = ieantn.load_nodes(include_inactive=True)["Down.v1"]["node"]
+        self.assertEqual(meta["inactive_reason"], "Neither is needed.")
+        self.assertEqual(meta["status_before_deactivation"], "active")
+        self.assertTrue(ieantn.check_graph())
+
+    def test_deactivate_needs_a_reason(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.assertFalse(ieantn.deactivate(["A.v1"], "   "))
+
+    def test_reactivate_restores_the_previous_status(self) -> None:
+        self.write_node("A.v1", LITERATURE, status="awaiting-solution")
+        self.assertTrue(ieantn.deactivate(["A.v1"], "Parked."))
+        self.assertTrue(ieantn.reactivate("A.v1"))
+        meta = ieantn.load_nodes()["A.v1"]["node"]
+        self.assertEqual(meta["status"], "awaiting-solution")
+        for key in ("inactive_reason", "status_before_deactivation", "deactivated"):
+            self.assertNotIn(key, meta)
+
+    def test_reactivate_allows_a_node_that_imports_itself(self) -> None:
+        """CH2.v1's Corollary 1.3 imports its own Corollary 1.2; that is not a blocker."""
+        self.write_node("A.v1", """
+- id: main
+  declaration: {node}.main
+  challenge: {node}.challenge_main
+  imports: []
+  justifications:
+    - id: paper
+      kind: literature
+  designated: paper
+- id: later
+  declaration: {node}.later
+  challenge: {node}.challenge_later
+  imports:
+    - node: A.v1
+      conclusion: main
+  justifications:
+    - id: paper
+      kind: literature
+  designated: paper
+""")
+        self.assertTrue(ieantn.deactivate(["A.v1"], "Parked."))
+        self.assertTrue(ieantn.reactivate("A.v1"))
+
+    def test_reactivate_refuses_while_an_import_is_still_inactive(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        self.write_node("Down.v1", IMPORTING)
+        self.assertTrue(ieantn.deactivate(["Upstream.v1", "Down.v1"], "Parked."))
+        self.assertFalse(ieantn.reactivate("Down.v1"))
+        self.assertTrue(ieantn.reactivate("Upstream.v1"))
+        self.assertTrue(ieantn.reactivate("Down.v1"))
+
+
 class TestTablesFile(FixtureRepo):
     """`Tables.lean`: a node's bulk data, kept out of the file a human audits.
 
@@ -2402,6 +2550,109 @@ class TestState(FixtureRepo):
         text = (self.root / "STATE.md").read_text(encoding="utf-8")
         self.assertIn("#42", text)
         self.assertIn("| `Upstream.v1.main` | 1 |", text)
+
+
+class TestFingerprintSharding(FixtureRepo):
+    """Fingerprints live one file per node, beside the yaml they describe.
+
+    They were one file at the root, which meant every branch that added a conclusion wrote into
+    the same sorted map -- so any two such branches conflicted, every time, in a file whose
+    content neither of them had really disagreed about.
+    """
+
+    def test_recorded_fingerprints_merges_the_per_node_files(self) -> None:
+        for node_id, digest in (("A.v1", "aaa"), ("B.v1", "bbb")):
+            directory = self.write_node(node_id, LITERATURE)
+            (directory / "fingerprints.json").write_text(
+                json.dumps({f"{node_id}.main": digest}), encoding="utf-8")
+        self.assertEqual(
+            ieantn.recorded_fingerprints(), {"A.v1.main": "aaa", "B.v1.main": "bbb"})
+
+    def test_the_retired_root_file_is_still_read(self) -> None:
+        """An older checkout has one, and must report what it reported then."""
+        self.write_node("A.v1", LITERATURE)
+        (self.root / "fingerprints.json").write_text(
+            json.dumps({"A.v1.main": "from-the-root-file"}), encoding="utf-8")
+        self.assertEqual(
+            ieantn.recorded_fingerprints(), {"A.v1.main": "from-the-root-file"})
+
+    def test_a_node_file_wins_over_the_retired_root_file(self) -> None:
+        """Mid-migration, the sharded value is the current one."""
+        directory = self.write_node("A.v1", LITERATURE)
+        (self.root / "fingerprints.json").write_text(
+            json.dumps({"A.v1.main": "stale"}), encoding="utf-8")
+        (directory / "fingerprints.json").write_text(
+            json.dumps({"A.v1.main": "current"}), encoding="utf-8")
+        self.assertEqual(ieantn.recorded_fingerprints(), {"A.v1.main": "current"})
+
+    def test_digests_are_split_by_the_node_they_belong_to(self) -> None:
+        first = self.write_node("A.v1", LITERATURE)
+        second = self.write_node("B.v1", LITERATURE)
+        split = ieantn.fingerprints_by_node({"A.v1.main": "aaa", "B.v1.main": "bbb"})
+        self.assertEqual(split[first], {"A.v1.main": "aaa"})
+        self.assertEqual(split[second], {"B.v1.main": "bbb"})
+
+    def test_a_node_with_nothing_to_record_gets_an_empty_map(self) -> None:
+        """So its file is rewritten rather than left behind asserting a conclusion that is gone."""
+        directory = self.write_node("A.v1", LITERATURE)
+        self.assertEqual(ieantn.fingerprints_by_node({"B.v1.main": "bbb"})[directory], {})
+
+    def test_a_version_prefix_does_not_capture_another_version(self) -> None:
+        """`A.v1` and `A.v11` share a prefix; the dot is what keeps them apart."""
+        first = self.write_node("A.v1", LITERATURE)
+        eleventh = self.write_node("A.v11", LITERATURE)
+        split = ieantn.fingerprints_by_node({"A.v1.main": "one", "A.v11.main": "eleven"})
+        self.assertEqual(split[first], {"A.v1.main": "one"})
+        self.assertEqual(split[eleventh], {"A.v11.main": "eleven"})
+
+
+class TestDerivedViewsAreAdvisory(FixtureRepo):
+    """`STATE.md`, `GRAPH.md` and `docs/nodes/` are written by CI on `main`, by nobody else.
+
+    `check` reports a stale one and passes anyway, so that a pull request is never asked to
+    include a file it would then conflict with. Asked directly, `--check` still fails: the
+    workflow that regenerates them needs a way to say "this is not current".
+    """
+
+    def _stale(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        for name in ("STATE.md", "GRAPH.md"):
+            (self.root / name).write_text("stale\n", encoding="utf-8")
+        pages = self.root / "docs" / "nodes"
+        pages.mkdir(parents=True, exist_ok=True)
+        (pages / "A-v1.md").write_text("stale\n", encoding="utf-8")
+
+    def test_state_is_advisory_in_check_and_strict_on_its_own(self) -> None:
+        self._stale()
+        self.assertTrue(ieantn.state(check_only=True, advisory=True))
+        self.assertFalse(ieantn.state(check_only=True))
+
+    def test_graph_is_advisory_in_check_and_strict_on_its_own(self) -> None:
+        self._stale()
+        self.assertTrue(ieantn.graph(check_only=True, advisory=True))
+        self.assertFalse(ieantn.graph(check_only=True))
+
+    def test_pages_are_advisory_in_check_and_strict_on_their_own(self) -> None:
+        self._stale()
+        self.assertTrue(ieantn.pages(check_only=True, advisory=True))
+        self.assertFalse(ieantn.pages(check_only=True))
+
+    def test_an_orphaned_page_is_advisory_too(self) -> None:
+        """A node deleted in a pull request leaves one behind; `main` sweeps it up."""
+        self.write_node("A.v1", LITERATURE)
+        self.assertTrue(ieantn.pages(check_only=False))
+        (self.root / "docs" / "nodes" / "Gone-v1.md").write_text("orphan\n", encoding="utf-8")
+        self.assertTrue(ieantn.pages(check_only=True, advisory=True))
+        self.assertFalse(ieantn.pages(check_only=True))
+
+    def test_the_advice_says_where_the_file_comes_from(self) -> None:
+        """A warning nobody can act on is noise. This one names the workflow and the command."""
+        self._stale()
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            ieantn.state(check_only=True, advisory=True)
+        printed = out.getvalue()
+        self.assertIn("derived.yml", printed)
+        self.assertIn("scripts/ieantn.py state", printed)
 
 
 if __name__ == "__main__":

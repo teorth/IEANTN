@@ -7,29 +7,26 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | Node | Kind | Claims | Weakest evidence |
 |---|---|---:|---|
 | [`BKLNW.v1`](BKLNW-v1.md) | paper | 4 | cited |
+| [`BKLNW.v2`](BKLNW-v2.md) | pipeline | 2 | cited |
+| [`BKLNWNumerics.v1`](BKLNWNumerics-v1.md) | computation | 2 | computation |
 | [`Brown1967.v1`](Brown1967-v1.md) | paper | 0 | — |
-| [`Buthe.v1`](Buthe-v1.md) | paper | 6 | cited |
+| [`Buthe.v1`](Buthe-v1.md) | paper | 7 | cited |
 | [`Buthe.v2`](Buthe-v2.md) | pipeline | 2 | unjustified |
-| [`Buthe2016.v1`](Buthe2016-v1.md) | paper | 4 | cited |
-| [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 3 | computation |
-| [`CH2.v1`](CH2-v1.md) | paper | 4 | cited |
+| [`Buthe2016.v1`](Buthe2016-v1.md) | paper | 6 | cited |
+| [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 4 | computation |
+| [`CH2.v1`](CH2-v1.md) | paper | 4 | verified |
 | [`CH2.v2`](CH2-v2.md) | pipeline | 2 | verified, stale |
 | [`CH2.v3`](CH2-v3.md) | pipeline | 2 | verified |
-| [`CH2.v4`](CH2-v4.md) | pipeline | 2 | verified, drifted |
 | [`ChengGraham2004.v1`](ChengGraham2004-v1.md) | paper | 0 | — |
-| [`ContourIntegration.v1`](ContourIntegration-v1.md) | standard | 1 | unjustified |
 | [`CotangentSeries.v1`](CotangentSeries-v1.md) | standard | 1 | unjustified |
 | [`DudekPlatt.v1`](DudekPlatt-v1.md) | paper | 2 | cited |
 | [`DudekPlatt.v2`](DudekPlatt-v2.md) | paper | 1 | verified, stale |
 | [`DudekPlatt.v3`](DudekPlatt-v3.md) | pipeline | 1 | verified, stale |
-| [`DudekPlatt.v4`](DudekPlatt-v4.md) | paper | 1 | unjustified |
 | [`DudekPlattNumerics.v1`](DudekPlattNumerics-v1.md) | computation | 1 | computation |
 | [`DudekPlattNumerics.v2`](DudekPlattNumerics-v2.md) | computation | 1 | computation |
-| [`DudekPlattNumerics.v3`](DudekPlattNumerics-v3.md) | computation | 1 | computation |
-| [`DudekPlattNumerics.v4`](DudekPlattNumerics-v4.md) | computation | 1 | unjustified |
 | [`Dusart2018.v1`](Dusart2018-v1.md) | paper | 1 | cited |
 | [`FKBJ.v1`](FKBJ-v1.md) | computation | 1 | computation |
-| [`FKS.v1`](FKS-v1.md) | paper | 2 | cited |
+| [`FKS.v1`](FKS-v1.md) | paper | 4 | cited |
 | [`FKS2.v1`](FKS2-v1.md) | paper | 4 | verified, stale |
 | [`FKS2.v2`](FKS2-v2.md) | pipeline | 2 | verified, stale |
 | [`FKS2Numerics.v1`](FKS2Numerics-v1.md) | computation | 5 | computation |
@@ -40,21 +37,31 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`Kadiri2005.v1`](Kadiri2005-v1.md) | paper | 1 | cited |
 | [`Lcm.v1`](Lcm-v1.md) | paper | 1 | verified, stale |
 | [`Lcm.v2`](Lcm-v2.md) | pipeline | 1 | verified, stale |
-| [`LowZeroes.v1`](LowZeroes-v1.md) | computation | 1 | computation |
+| [`LowZeroes.v1`](LowZeroes-v1.md) | computation | 2 | computation |
 | [`MT.v1`](MT-v1.md) | paper | 2 | cited |
-| [`MT.v2`](MT-v2.md) | paper | 1 | cited |
 | [`MTY.v1`](MTY-v1.md) | paper | 0 | — |
 | [`Platt2015.v1`](Platt2015-v1.md) | computation | 1 | computation |
 | [`Platt2017.v1`](Platt2017-v1.md) | computation | 1 | computation |
-| [`PlattTrudgian.v1`](PlattTrudgian-v1.md) | computation | 1 | cited |
+| [`PlattTrudgian.v1`](PlattTrudgian-v1.md) | computation | 2 | cited |
 | [`PlattTrudgian2021.v1`](PlattTrudgian2021-v1.md) | paper | 2 | cited |
+| [`PlattZeroSum.v1`](PlattZeroSum-v1.md) | standard | 1 | cited |
 | [`PrimeInterval.v1`](PrimeInterval-v1.md) | pipeline | 4 | verified, stale |
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 2 | cited |
 | [`Trudgian2011.v1`](Trudgian2011-v1.md) | paper | 1 | cited |
 | [`Wedeniwski.v1`](Wedeniwski-v1.md) | computation | 1 | asserted |
 | [`ZeroCount.v1`](ZeroCount-v1.md) | paper | 2 | cited |
 | [`ZeroFreeHeight.v1`](ZeroFreeHeight-v1.md) | folklore | 1 | verified, stale |
+| [`ZetaHadamard.v1`](ZetaHadamard-v1.md) | standard | 1 | cited |
 | [`ZetaLogDeriv.v1`](ZetaLogDeriv-v1.md) | standard | 1 | verified |
 | [`ZetaLogDerivValues.v1`](ZetaLogDerivValues-v1.md) | computation | 5 | computation |
 | [`ZetaZeroes.v1`](ZetaZeroes-v1.md) | standard | 6 | verified |
+
+## Inactive nodes
+
+Retired without a successor: out of the build and the graph, kept on disk. `python scripts/ieantn.py reactivate <node>` restores one.
+
+| Node | Why |
+|---|---|
+| `CH2.v4` | Not currently needed in the network. Built to supply CH2.v1's contour shift, but CH2.v1's solution uses PNT+'s own section 5 ladder machinery instead: it needs the lam < 0 branch and infinitely many trivial-zero poles, which this L-shaped, finitely-many-poles statement cannot express. Nothing imports it. Its verified receipt and solution are kept, in case a future consumer wants the statement. |
+| `ContourIntegration.v1` | Not currently needed in the network. A residue theorem for rectangles, stated once so several nodes could import it; its only consumer was CH2.v4, which is now inactive. Mathlib still lacks the statement, so this is the first thing to reactivate if a future node needs contour integration. |
 

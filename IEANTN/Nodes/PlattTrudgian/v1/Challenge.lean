@@ -18,3 +18,6 @@ How each conclusion is justified is recorded in `formalization.yaml`, not here.
 
 theorem PlattTrudgian.v1.challenge_rh_up_to : PlattTrudgian.v1.rh_up_to := by
   sorry
+
+theorem PlattTrudgian.v1.challenge_rh_up_to_exact : PlattTrudgian.v1.rh_up_to_exact := by
+  sorry

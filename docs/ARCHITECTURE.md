@@ -221,12 +221,18 @@ matching receipt, and `record-receipt` refuses to receipt any conclusion absent 
 `python scripts/ieantn.py status` grades every receipt against the world as it is now.
 
 So do the generated views. `STATE.md`, `GRAPH.md` and `docs/nodes/` read the committed
-`fingerprints.json` and manifest rather than rebuilding, so they can say what a receipt is
-presently worth without a Lean run — and they say it, rather than reporting the *designated*
-kind and leaving a severed implication looking verified. Because `check` regenerates and
-diffs those files, a pull request that voids a receipt has to carry the voiding in its own
-diff before it can merge. That is a reporting requirement, not a gate on the change itself:
-what decides whether a breaking change may land is `diff` and its `changes/` acknowledgements.
+fingerprints and manifest rather than rebuilding, so they can say what a receipt is presently
+worth without a Lean run — and they say it, rather than reporting the *designated* kind and
+leaving a severed implication looking verified.
+
+Those three are written by `.github/workflows/derived.yml` on `main` and by nobody else, which is
+why `check` reports a stale one without failing and `ci.yml` fails a branch that changes one. They
+were committed *and* rewritten by every branch, so every pair of open pull requests conflicted in
+them, over content neither side disagreed about. A single writer removes the conflict without
+giving up the browsable file. What voids a receipt is still visible in the diff that does it: the
+fingerprints, which a branch does commit, live one file per node for the same reason — two
+branches collide there only when they touch the same node. What decides whether a breaking change
+may land is `diff` and its `changes/` acknowledgements.
 
 ### Two axes, deliberately not collapsed
 

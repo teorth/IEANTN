@@ -14,7 +14,7 @@ routine node-management tasks.
     python scripts/ieantn.py status                  the traffic light for every conclusion
     python scripts/ieantn.py diff --base origin/main what this branch degrades, and for whom
     python scripts/ieantn.py housekeeping            the derived task queue
-    python scripts/ieantn.py state                   refresh the committed STATE.md snapshot
+    python scripts/ieantn.py state                   refresh STATE.md (a view; CI commits it)
     python scripts/ieantn.py check-receipts          every receipt names a real verification run
     python scripts/ieantn.py check                   every check, in --check mode
 
@@ -33,6 +33,7 @@ None of this runs Comparator.
 from __future__ import annotations
 
 import argparse
+import datetime
 import hashlib
 import json
 import os
@@ -52,7 +53,13 @@ NODES_DIR = ROOT / "IEANTN" / "Nodes"
 VOCAB_DIR = ROOT / "IEANTN" / "Vocabulary"
 #: Bridges live inside the library so the core build compiles them; see `check_bridges`.
 BRIDGES_DIR = ROOT / "IEANTN" / "Bridges"
+#: Retired location. Fingerprints now live one file per node, beside the `formalization.yaml`
+#: they describe, so two pull requests touching different nodes cannot collide in one file.
+#: Readers still fall back to this path, so `diff` can recover the state at a commit from before
+#: the split without a special case for "old enough".
 FINGERPRINTS = ROOT / "fingerprints.json"
+#: What that per-node file is called, inside `IEANTN/Nodes/<Family>/<version>/`.
+FINGERPRINTS_NAME = "fingerprints.json"
 STATE = ROOT / "STATE.md"
 GRAPH = ROOT / "GRAPH.md"
 PAGES = ROOT / "docs" / "nodes"
@@ -130,7 +137,15 @@ NODE_STATUSES = {
     "awaiting-verification",  # a complete solution exists, but no receipt yet
     "active",
     "deprecated",
+    "inactive",              # retired without a successor: kept on disk, out of the build and graph
 }
+
+#: A node that was built to support another and ended up unused. Unlike `deprecated`, which marks a
+#: node superseded by a newer version and changes nothing mechanically, `inactive` takes the node out
+#: of the network altogether: `load_nodes` leaves it out, so the core build, the graph, STATE, the
+#: pages, the fingerprints and housekeeping all stop seeing it. Its files stay where they are, so
+#: `reactivate` is a status change and a regeneration rather than an archaeology project.
+INACTIVE = "inactive"
 
 IMPORT_RE = re.compile(r"^import\s+(\S+)", re.MULTILINE)
 
@@ -199,6 +214,19 @@ def rel(path: pathlib.Path) -> str:
     return path.relative_to(ROOT).as_posix()
 
 
+#: Why a stale derived view is a warning rather than a failure. `STATE.md`, `GRAPH.md` and the
+#: pages under `docs/nodes/` are written by `.github/workflows/derived.yml` on every push to
+#: `main`, and by nobody else. They carry no information that is not in the yaml, so a pull
+#: request that regenerated them added nothing to review -- and guaranteed a conflict with every
+#: other open pull request, since every one of them rewrites the same few files. CI is the single
+#: writer precisely so that those conflicts cannot happen.
+DERIVED_NOTE = (
+    "out of date. This is a view, regenerated on `main` by .github/workflows/derived.yml; "
+    "a pull request does not need to include it. `python scripts/ieantn.py {command}` "
+    "refreshes it locally."
+)
+
+
 def under(module: str, root: str) -> bool:
     """Is `module` the module `root`, or one beneath it?
 
@@ -259,14 +287,28 @@ def node_dirs() -> list[pathlib.Path]:
     return sorted(p.parent for p in NODES_DIR.rglob("formalization.yaml"))
 
 
-def load_nodes() -> dict[str, dict]:
-    """node id -> parsed formalization.yaml, with the directory recorded under '_dir'."""
+def is_inactive(node: dict) -> bool:
+    return (node.get("node") or {}).get("status") == INACTIVE
+
+
+def load_nodes(include_inactive: bool = False) -> dict[str, dict]:
+    """node id -> parsed formalization.yaml, with the directory recorded under '_dir'.
+
+    Inactive nodes are left out unless asked for. That one filter is what takes a deactivated node
+    out of the network: the umbrella, check-graph, the fingerprints, STATE, GRAPH, the pages,
+    housekeeping and status all start here, so none of them has to know the status exists.
+    """
     nodes: dict[str, dict] = {}
     for directory in node_dirs():
         data = yaml.safe_load((directory / "formalization.yaml").read_text(encoding="utf-8")) or {}
         data["_dir"] = directory
-        nodes[node_id_of(directory)] = data
+        if include_inactive or not is_inactive(data):
+            nodes[node_id_of(directory)] = data
     return nodes
+
+
+def inactive_nodes() -> dict[str, dict]:
+    return {k: v for k, v in load_nodes(include_inactive=True).items() if is_inactive(v)}
 
 
 def conclusions_of(node: dict) -> list[dict]:
@@ -1119,6 +1161,27 @@ def check_closure() -> bool:
                 "records.",
             )
 
+    # An inactive node is out of the umbrella, so nothing compiles it -- unless something live
+    # imports one of its modules, which would quietly pull it back into the core build. The
+    # yaml-level edge is caught by check-graph; this is the Lean-level one, which the yaml never sees.
+    retired = sorted(inactive_nodes())
+    if retired:
+        prefixes = [f"IEANTN.Nodes.{node_id}" for node_id in retired]
+        live_files = [
+            path
+            for directory in node_dirs()
+            if node_id_of(directory) not in retired
+            for path in sorted(directory.glob("*.lean"))
+        ] + sorted(BRIDGES_DIR.rglob("*.lean"))
+        for path in live_files:
+            for module in imports_of(path):
+                if any(under(module, prefix) for prefix in prefixes):
+                    problems.add(
+                        rel(path),
+                        f"imports `{module}`, which belongs to an inactive node. Reactivate the "
+                        "node or drop the import: an inactive node is meant to be out of the build.",
+                    )
+
     return problems.report("import closure")
 
 
@@ -1159,6 +1222,19 @@ def check_graph() -> bool:
     """
     problems = Problems()
     nodes = load_nodes()
+    inactive = inactive_nodes()
+
+    # Inactive nodes are out of the graph, but not out of review: the one thing asked of them is
+    # to say why, since a directory nobody can account for is exactly what the status exists to
+    # prevent.
+    for node_id, node in sorted(inactive.items()):
+        reason = (node.get("node") or {}).get("inactive_reason")
+        if not isinstance(reason, str) or not reason.strip():
+            problems.add(
+                rel(node["_dir"] / "formalization.yaml"),
+                f"`{node_id}` is inactive but gives no `node.inactive_reason`. Say why it was "
+                "retired, so whoever finds the directory can tell whether to reactivate it.",
+            )
 
     if not nodes:
         print("ok  node graph (no nodes yet)")
@@ -1432,6 +1508,14 @@ def check_graph() -> bool:
                             f"conclusion `{cid}`: import {label} `{value}` is not a Lean name, and "
                             "is written verbatim into the generated challenge",
                         )
+                if target_node not in nodes and target_node in inactive:
+                    problems.add(
+                        where,
+                        f"conclusion `{cid}` imports `{target_node}`, which is inactive and so "
+                        "out of the build. Reactivate it (`python scripts/ieantn.py reactivate "
+                        f"{target_node}`) or drop the edge.",
+                    )
+                    continue
                 if target_node not in nodes:
                     problems.add(where, f"conclusion `{cid}` imports unknown node `{target_node}`")
                     continue
@@ -1659,24 +1743,57 @@ def compute_fingerprints() -> dict[str, str]:
     }
 
 
+def fingerprints_path(directory: pathlib.Path) -> pathlib.Path:
+    """Where one node's fingerprints live: beside its `formalization.yaml`."""
+    return directory / FINGERPRINTS_NAME
+
+
+def fingerprints_by_node(current: dict[str, str]) -> dict[pathlib.Path, dict[str, str]]:
+    """Split a flat `declaration -> digest` map into one map per node directory.
+
+    Keyed by directory, and every live node gets an entry: a node whose conclusions have all gone
+    still needs its file rewritten to `{}` rather than left behind saying something false.
+    """
+    split: dict[pathlib.Path, dict[str, str]] = {}
+    for node_id, node in load_nodes().items():
+        prefix = f"{node_id}."
+        split[node["_dir"]] = {
+            name: digest for name, digest in current.items() if name.startswith(prefix)
+        }
+    return split
+
+
 def fingerprint(check_only: bool) -> bool:
-    """Maintain `fingerprints.json`.
+    """Maintain each node's `fingerprints.json`.
 
     Committing the fingerprints has a purpose beyond bookkeeping: it makes **every change of
     mathematical meaning show up as a diff line**, including ones whose Lean edit looks cosmetic.
     A reviewer can see that a statement moved without having to elaborate anything.
+
+    One file per node, not one for the network. Nothing reads the digests as a whole, so a single
+    file bought nothing and cost a conflict on every pair of branches that added a conclusion --
+    every pair, since the file was sorted by name and both sides wrote into it. Sharded, two
+    branches collide only when they touch the same node, which is a collision worth having.
     """
     current = compute_fingerprints()
-    recorded = json.loads(FINGERPRINTS.read_text(encoding="utf-8")) if FINGERPRINTS.is_file() else {}
+    recorded = recorded_fingerprints()
 
     if not check_only:
-        FINGERPRINTS.write_text(
-            json.dumps(current, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
-        )
+        split = fingerprints_by_node(current)
+        written = 0
+        for directory, digests in sorted(split.items()):
+            path = fingerprints_path(directory)
+            text = json.dumps(digests, indent=2, sort_keys=True) + "\n"
+            if (path.read_text(encoding="utf-8") if path.is_file() else None) != text:
+                path.write_text(text, encoding="utf-8", newline="\n")
+                written += 1
+        if FINGERPRINTS.is_file():
+            FINGERPRINTS.unlink()
+            print(f"removed {rel(FINGERPRINTS)}: fingerprints are per node now")
         for name, digest in sorted(current.items()):
             marker = " " if recorded.get(name) == digest else "*"
             print(f"{marker} {digest[:16]}  {name}")
-        print(f"\nwrote {rel(FINGERPRINTS)}")
+        print(f"\nwrote {written} of {len(split)} node fingerprint files")
         return True
 
     problems = Problems()
@@ -1962,14 +2079,20 @@ def recorded_fingerprints() -> dict[str, str]:
     and CI runs `fingerprint --check` against a real build, so a stale file fails there rather
     than quietly mis-colouring a box here.
 
-    Deliberately not cached. The file is small and a view reads it a few dozen times, which costs
-    nothing measurable; a cache would have to be invalidated when `_set_root` moves underneath it
-    or when the file is rewritten mid-run, and getting that wrong means colouring a box from a
-    fingerprint that is no longer there.
+    Deliberately not cached. The files are small and a view reads them a few dozen times, which
+    costs nothing measurable; a cache would have to be invalidated when `_set_root` moves
+    underneath it or when one is rewritten mid-run, and getting that wrong means colouring a box
+    from a fingerprint that is no longer there.
+
+    Reads the per-node files, and the retired root file as well if a working tree still has one,
+    so that an older checkout reports what it reported then.
     """
-    if not FINGERPRINTS.is_file():
-        return {}
-    return json.loads(FINGERPRINTS.read_text(encoding="utf-8"))
+    merged: dict[str, str] = {}
+    if FINGERPRINTS.is_file():
+        merged.update(json.loads(FINGERPRINTS.read_text(encoding="utf-8")))
+    for path in sorted(NODES_DIR.glob(f"*/*/{FINGERPRINTS_NAME}")) if NODES_DIR.is_dir() else []:
+        merged.update(json.loads(path.read_text(encoding="utf-8")))
+    return merged
 
 
 def receipt_state(conclusion_key: str, conclusion: dict) -> tuple[str, str] | None:
@@ -2561,15 +2684,46 @@ def render_state(nodes: dict[str, dict]) -> str:
             "|---|---:|",
         ]
         lines += [f"| `{key}` | {count} |" for count, key in ranked]
+    lines += inactive_section()
     return "\n".join(lines) + "\n"
 
 
-def state(check_only: bool) -> bool:
+def inactive_section() -> list[str]:
+    """The inactive nodes, listed so a retired directory is never a mystery.
+
+    They are out of every other table by design; this is the one place they appear.
+    """
+    inactive = inactive_nodes()
+    if not inactive:
+        return []
+    lines = [
+        "",
+        "## Inactive nodes",
+        "",
+        "Retired without a successor: out of the build and the graph, kept on disk. "
+        "`python scripts/ieantn.py reactivate <node>` restores one.",
+        "",
+        "| Node | Why |",
+        "|---|---|",
+    ]
+    for node_id, node in sorted(inactive.items()):
+        reason = " ".join(str((node.get("node") or {}).get("inactive_reason") or "").split())
+        lines.append(f"| `{node_id}` | {reason.replace('|', '/')} |")
+    return lines
+
+
+def state(check_only: bool, advisory: bool = False) -> bool:
+    """Refresh `STATE.md`, or check it.
+
+    `advisory` is what `check` passes: a stale view is reported and does not fail the run. See
+    `DERIVED_NOTE`.
+    """
     rendered = render_state(load_nodes())
     if check_only:
         problems = Problems()
         if (STATE.read_text(encoding="utf-8") if STATE.is_file() else "") != rendered:
-            problems.add(rel(STATE), "out of date; run `python scripts/ieantn.py state`")
+            note = DERIVED_NOTE.format(command="state")
+            (problems.warn if advisory else problems.add)(rel(STATE), note)
         return problems.report("network state")
     STATE.write_text(rendered, encoding="utf-8", newline="\n")
     print(f"wrote {rel(STATE)}")
@@ -3222,12 +3376,13 @@ def render_pages_index(nodes: dict, index: dict) -> str:
         out.append(f"| [`{node_id}`]({node_id.replace('.', '-')}.md) "
                    f"| {_quote((node.get('node') or {}).get('kind'))} | {len(cs)} "
                    f"| {label if cs else '—'} |")
+    out += inactive_section()
     out.append("")
     return "\n".join(out) + "\n"
 
 
-def pages(check_only: bool) -> bool:
-    """Write (or verify) one page per node."""
+def pages(check_only: bool, advisory: bool = False) -> bool:
+    """Write (or verify) one page per node. `advisory` as in `state`."""
     nodes = load_nodes()
     index = index_conclusions(nodes)
     importers = importers_of(nodes)
@@ -3237,13 +3392,14 @@ def pages(check_only: bool) -> bool:
 
     if check_only:
         problems = Problems()
+        report = problems.warn if advisory else problems.add
         for path, text in sorted(wanted.items()):
             current = path.read_text(encoding="utf-8") if path.is_file() else ""
             if current != text:
-                problems.add(rel(path), "out of date; run `python scripts/ieantn.py pages`")
+                report(rel(path), DERIVED_NOTE.format(command="pages"))
         for path in sorted(PAGES.glob("*.md")) if PAGES.is_dir() else []:
             if path not in wanted:
-                problems.add(rel(path), "no such node; delete it and rerun `pages`")
+                report(rel(path), "no such node any more; `pages` deletes it")
         return problems.report("node pages")
 
     PAGES.mkdir(parents=True, exist_ok=True)
@@ -3257,12 +3413,14 @@ def pages(check_only: bool) -> bool:
     return True
 
 
-def graph(check_only: bool) -> bool:
+def graph(check_only: bool, advisory: bool = False) -> bool:
+    """Refresh `GRAPH.md`, or check it. `advisory` as in `state`."""
     rendered = render_graph(load_nodes())
     if check_only:
         problems = Problems()
         if (GRAPH.read_text(encoding="utf-8") if GRAPH.is_file() else "") != rendered:
-            problems.add(rel(GRAPH), "out of date; run `python scripts/ieantn.py graph`")
+            note = DERIVED_NOTE.format(command="graph")
+            (problems.warn if advisory else problems.add)(rel(GRAPH), note)
         return problems.report("network graph")
     GRAPH.write_text(rendered, encoding="utf-8", newline="\n")
     print(f"wrote {rel(GRAPH)}")
@@ -3295,9 +3453,7 @@ def state_at(ref: str | None) -> dict:
     """
     if ref is None:
         nodes = load_nodes()
-        fingerprints = (
-            json.loads(FINGERPRINTS.read_text(encoding="utf-8")) if FINGERPRINTS.is_file() else {}
-        )
+        fingerprints = recorded_fingerprints()
         receipts = {
             path.stem: json.loads(path.read_text(encoding="utf-8"))
             for path in (RECEIPTS.glob("*.json") if RECEIPTS.is_dir() else [])
@@ -3317,11 +3473,20 @@ def state_at(ref: str | None) -> dict:
                 if raw is None:
                     continue
                 data = yaml.safe_load(raw) or {}
+                if is_inactive(data):
+                    continue
                 directory = ROOT / pathlib.PurePosixPath(path).parent
                 data["_dir"] = directory
                 nodes[node_id_of(directory)] = data
-        raw = git_show(ref, "fingerprints.json")
-        fingerprints = json.loads(raw) if raw else {}
+        # Both layouts: per-node files now, one root file at any commit before the split.
+        fingerprints = {}
+        for path in listing:
+            if path == "fingerprints.json" or (
+                path.startswith("IEANTN/Nodes/") and path.endswith(f"/{FINGERPRINTS_NAME}")
+            ):
+                raw = git_show(ref, path)
+                if raw:
+                    fingerprints.update(json.loads(raw))
         receipts = {}
         for path in listing:
             if path.startswith("receipts/") and path.endswith(".json"):
@@ -3376,12 +3541,16 @@ def diff(base: str) -> bool:
         new = after["fingerprints"].get(key)
 
         if key not in after["conclusions"]:
-            users = importers_before.get(key, [])
+            # Only importers that survive the change can break. One leaving in the same change --
+            # a node deactivated together with its only consumer -- is not a dangling edge.
+            users = [u for u in importers_before.get(key, []) if u in after["conclusions"]]
             if users:
                 errors.append(
                     f"**`{key}` was removed** but {len(users)} conclusion(s) still import it at "
                     f"the base: {', '.join(f'`{u}`' for u in users)}."
                 )
+            elif key.rsplit(".", 1)[0] in inactive_nodes():
+                notes.append(f"`{key}` deactivated (its node is now inactive); nothing imported it.")
             else:
                 notes.append(f"`{key}` removed; nothing imported it.")
             continue
@@ -3976,6 +4145,107 @@ def deprecate(node_id: str, replacement: str) -> bool:
     return True
 
 
+def deactivate(node_ids: list[str], reason: str) -> bool:
+    """Take nodes out of the network without deleting them.
+
+    For nodes that were built to support something more interesting and ended up unused. Refuses
+    while anything live still imports one of them, since a deactivated node is out of the build and
+    the importer would stop compiling; deactivating several at once is allowed so that a node and
+    the one thing it served can go together.
+    """
+    reason = " ".join(reason.split())
+    if not reason:
+        print("error: say why, with --reason; the reason is what lets someone reactivate it later")
+        return False
+    everything = load_nodes(include_inactive=True)
+    unknown = [n for n in node_ids if n not in everything]
+    if unknown:
+        print(f"error: unknown node(s): {', '.join(unknown)}")
+        return False
+    already = [n for n in node_ids if is_inactive(everything[n])]
+    if already:
+        print(f"error: already inactive: {', '.join(already)}")
+        return False
+
+    going = set(node_ids)
+    blockers = sorted(
+        f"{node_id}.{c.get('id')} -> {d.get('node')}.{d.get('conclusion')}"
+        for node_id, node in everything.items()
+        if node_id not in going and not is_inactive(node)
+        for c in conclusions_of(node)
+        for d in (c.get("imports") or [])
+        if d.get("node") in going
+    )
+    if blockers:
+        print("error: still imported by live conclusions:")
+        for line in blockers:
+            print(f"  {line}")
+        print("deactivate those too, or drop the edges first.")
+        return False
+
+    from ruamel.yaml.scalarstring import FoldedScalarString
+
+    for node_id in node_ids:
+        path = everything[node_id]["_dir"] / "formalization.yaml"
+        writer, data = edit_yaml(path)
+        meta = data["node"]
+        # Insert right after `status`, and move whatever trailed it -- a comment, or the blank line
+        # that separates the `node:` block from the next -- to the last key added, so the block
+        # reads the same as a hand-written one.
+        trailing = meta.ca.items.pop("status", None)
+        at = list(meta).index("status") + 1
+        meta.insert(at, "status_before_deactivation", meta.get("status"))
+        meta.insert(at + 1, "inactive_reason", FoldedScalarString(reason))
+        meta.insert(at + 2, "deactivated", datetime.date.today().isoformat())
+        meta["status"] = INACTIVE
+        if trailing is not None:
+            meta.ca.items["deactivated"] = trailing
+        with path.open("w", encoding="utf-8", newline="\n") as handle:
+            writer.dump(data, handle)
+        print(f"deactivated {node_id}")
+    gen_challenges(check_only=False)
+    print("\nits files are kept; it is out of the umbrella, so the core build no longer compiles it.")
+    print("next: python scripts/ieantn.py fingerprint && python scripts/ieantn.py check")
+    print("      (STATE, GRAPH and the node pages are rewritten on `main` by derived.yml)")
+    return True
+
+
+def reactivate(node_id: str) -> bool:
+    """Undo `deactivate`: restore the status the node had, and put it back in the network."""
+    everything = load_nodes(include_inactive=True)
+    if node_id not in everything:
+        print(f"error: unknown node `{node_id}`")
+        return False
+    if not is_inactive(everything[node_id]):
+        print(f"error: `{node_id}` is not inactive")
+        return False
+    still_off = sorted(
+        {d.get("node") for c in conclusions_of(everything[node_id])
+         for d in (c.get("imports") or [])
+         if d.get("node") != node_id  # a later conclusion may import an earlier one
+         and d.get("node") in everything and is_inactive(everything[d.get("node")])}
+    )
+    if still_off:
+        print(f"error: `{node_id}` imports inactive {', '.join(still_off)}; reactivate those first")
+        return False
+
+    path = everything[node_id]["_dir"] / "formalization.yaml"
+    writer, data = edit_yaml(path)
+    meta = data["node"]
+    meta["status"] = meta.get("status_before_deactivation") or "active"
+    trailing = meta.ca.items.pop("deactivated", None)
+    for key in ("status_before_deactivation", "inactive_reason", "deactivated"):
+        meta.pop(key, None)
+    if trailing is not None:
+        meta.ca.items["status"] = trailing
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        writer.dump(data, handle)
+    print(f"reactivated {node_id} as `{data['node']['status']}`")
+    gen_challenges(check_only=False)
+    print("next: python scripts/ieantn.py fingerprint && python scripts/ieantn.py check")
+    return True
+
+
 # ---------------------------------------------------------------------------
 
 
@@ -4051,6 +4321,13 @@ def main() -> int:
     retire = sub.add_parser("deprecate")
     retire.add_argument("node", help="e.g. Lcm.v1")
     retire.add_argument("--for", dest="replacement", required=True, help="e.g. Lcm.v2")
+    shelve = sub.add_parser(
+        "deactivate", help="retire nodes with no successor: out of the build and graph, kept on disk"
+    )
+    shelve.add_argument("nodes", nargs="+", help="e.g. CH2.v4 ContourIntegration.v1")
+    shelve.add_argument("--reason", required=True, help="why; recorded in node.inactive_reason")
+    unshelve = sub.add_parser("reactivate", help="undo deactivate")
+    unshelve.add_argument("node", help="e.g. CH2.v4")
 
     args = parser.parse_args()
     if args.command == "check-closure":
@@ -4101,10 +4378,17 @@ def main() -> int:
         return 0 if new_version(args.family) else 1
     if args.command == "deprecate":
         return 0 if deprecate(args.node, args.replacement) else 1
+    if args.command == "deactivate":
+        return 0 if deactivate(args.nodes, args.reason) else 1
+    if args.command == "reactivate":
+        return 0 if reactivate(args.node) else 1
     if args.command == "check":
+        # The last three are views, not sources: CI regenerates them on `main`, so `check`
+        # reports a stale one and does not fail on it. See DERIVED_NOTE.
         return 0 if all(
             [check_closure(), check_graph(), check_pins(), check_receipts(online=False),
-             gen_challenges(True), state(True), graph(True), pages(True)]
+             gen_challenges(True), state(True, advisory=True), graph(True, advisory=True),
+             pages(True, advisory=True)]
         ) else 1
     return 2
 

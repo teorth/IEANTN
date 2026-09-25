@@ -9,7 +9,13 @@ node:
   family: ContourIntegration
   version: v1
   kind: standard
-  status: awaiting-solution
+  status: inactive
+  status_before_deactivation: awaiting-solution
+  inactive_reason: >-
+    Not currently needed in the network. A residue theorem for rectangles, stated once so several nodes
+    could import it; its only consumer was CH2.v4, which is now inactive. Mathlib still lacks the statement,
+    so this is the first thing to reactivate if a future node needs contour integration.
+  deactivated: '2026-09-21'
 
 project:
   name: "The residue theorem on a rectangle"

@@ -1,0 +1,70 @@
+# Regenerate the derived views on `main`, and nowhere else.
+#
+# `STATE.md`, `GRAPH.md` and the pages under `docs/nodes/` are views of the node metadata: every
+# fact in them comes from a `formalization.yaml`, and regenerating them is deterministic. They are
+# committed anyway, because they are what a person browsing the repository actually reads.
+#
+# Committed-and-generated is exactly the shape that conflicts. Every branch that touches any node
+# rewrites all three, so any two open pull requests collide in them -- over content neither side
+# disagreed about, which a reviewer then resolves by hand and re-resolves on the next rebase.
+# Making CI the single writer ends that: pull requests leave the views alone (`ci.yml` checks that
+# they did), and this brings them up to date once the change is on `main`.
+#
+# The push below is made with `GITHUB_TOKEN`, and GitHub does not start workflow runs from such a
+# push, so this cannot loop.
+name: Derived views
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Serialised, and never cancelled: two runs pushing to `main` at once is the one way this could
+# lose a regeneration, and a cancelled run leaves the views stale until the next push.
+concurrency:
+  group: derived-views
+  cancel-in-progress: false
+
+jobs:
+  regenerate:
+    name: Regenerate STATE, GRAPH and the node pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Credentials are kept here, unlike the other jobs: this one pushes.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - name: Regenerate
+        run: |
+          set -euo pipefail
+          python3 scripts/ieantn.py state
+          python3 scripts/ieantn.py graph
+          python3 scripts/ieantn.py pages
+      - name: Commit if anything moved
+        run: |
+          set -euo pipefail
+          git add -A -- STATE.md GRAPH.md docs/nodes
+          if git diff --cached --quiet; then
+            echo "The derived views were already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Regenerate the derived views" \
+            -m "STATE.md, GRAPH.md and docs/nodes/ follow from the node metadata; this is .github/workflows/derived.yml keeping them level with it."
+          # Another push may have landed while this ran. A conflict can only be in a generated
+          # file, and the answer to one is to regenerate rather than to pick a side.
+          if ! git pull --rebase origin main; then
+            python3 scripts/ieantn.py state
+            python3 scripts/ieantn.py graph
+            python3 scripts/ieantn.py pages
+            git add -A -- STATE.md GRAPH.md docs/nodes
+            GIT_EDITOR=true git rebase --continue
+          fi
+          git push
