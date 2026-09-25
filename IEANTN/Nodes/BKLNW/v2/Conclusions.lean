@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Taksh Kothari
 -/
 import IEANTN.Vocabulary.ErrorTerms
-import IEANTN.Nodes.BKLNWNumerics.v1.Tables
+import IEANTN.Nodes.BKLNW.v1.Tables
 
 /-!
 # Node `BKLNW.v2`
@@ -12,8 +12,9 @@ import IEANTN.Nodes.BKLNWNumerics.v1.Tables
 Pipeline form of Broadbent–Kadiri–Lumley–Ng–Wilk. `BKLNW.v1` keeps the paper's
 four conclusions together. This version keeps the analytic Corollary 5.1 and
 states the Table 8 tail bound as a consequence of the computation node
-`BKLNWNumerics.v1`, so the table is an import rather than a second copy of the
-data on this family.
+`BKLNWNumerics.v1`, so the *claim* is an import rather than a second copy of it
+on this family. The data stays where it was: `BKLNW.v1.Tables` is the single copy
+of Table 8, and both this node and `BKLNWNumerics.v1` quantify over it.
 -/
 
 namespace BKLNW.v2
@@ -42,13 +43,14 @@ def corollary_5_1 : Prop :=
     Chebyshev.psi x - Chebyshev.theta x <
       (1 + 1.93378e-8) * x ^ ((1 : ℝ) / 2) + a₂ b * x ^ ((1 : ℝ) / 3)
 
-/-- **Table 8 tail**, importing the consecutive-interval table from `BKLNWNumerics`.
+/-- **Table 8 tail**, importing the consecutive-interval claim from `BKLNWNumerics`.
 
 For every entry `(b, ε)` of Table 8, `|ψ(x) − x| ≤ ε · x` for all `e^b ≤ x ≤ e^25000`.
 This is `BKLNW.v1.table8_psi_bound_above`, now a pipeline step from the
-consecutive-row claim plus that the tabulated `ε` decrease. -/
+consecutive-row claim plus that the tabulated `ε` decrease. The rows are
+`BKLNW.v1.table8`, the same list `BKLNWNumerics.v1.table8_psi_bound` quantifies over. -/
 def table8_psi_bound_above : Prop :=
-  ∀ p ∈ BKLNWNumerics.v1.table8, ∀ x : ℝ,
+  ∀ p ∈ BKLNW.v1.table8, ∀ x : ℝ,
     Real.exp (p.1 : ℝ) ≤ x → x ≤ Real.exp 25000 → |Chebyshev.psi x - x| ≤ p.2 * x
 
 end BKLNW.v2

@@ -61,9 +61,20 @@ noncomputable def sum_inv_ordinates_below_2e4 : Prop :=
 **No zeroes below the first nontrivial ordinate.** `ζ` has no zeroes with
 `0 < Im ρ < 14.134725`.
 
-The truncated digits of the first nontrivial zero's imaginary part. Stated via `zetaN` (open at the
-upper end) rather than an equality to the truncated value, so the claim is true of the actual
-ordinate `14.134725…`, and with a `margin 0` site so widening later is a one-numeral change.
+The truncated digits of the first nontrivial zero's imaginary part, `14.1347251417…`. Stated as an
+open interval rather than an equality to the truncated value, so the claim is true of the actual
+ordinate, and with a `margin 0` site so widening later is a one-numeral change.
+
+**Stated as an empty zero set, not as `zetaN _ = 0`.** The two look interchangeable and are not.
+`zetaN` is a `tsum`, and `0` is exactly what a `tsum` returns when the family is not summable, so
+`zetaN T = 0` holds both when there are no zeroes below `T` and when there are infinitely many.
+A consumer could not extract "no zeroes here" from it without first proving the zero set finite,
+which is precisely the content it was supposed to supply. `zetaZeroesIn _ _ = ∅` has no such
+branch: it says what it appears to say. See the junk-value warning on `zetaZeroesSum`.
+
+The real-part set is `Set.univ` and not the critical strip: this rules out *every* zero in the
+range, trivial ones included, and the trivial zeroes are real so none of them is excluded by
+accident.
 
 This is the input `ZeroFreeHeight` needs to push a classical region below `exp(2/R)`: a verified
 RH height only rules out zeroes *off* the critical line, while this rules out *all* zeroes below
@@ -73,14 +84,14 @@ Imports nothing: a bare numerical claim about `ζ`.
 
 ```lean
 noncomputable def no_zeroes_below_first_ordinate : Prop :=
-  zetaN (14.134725 / margin 0) = 0
+  zetaZeroesIn Set.univ (Set.Ioo 0 (14.134725 / margin 0)) = ∅
 ```
 
 | | |
 |---|---|
 | Lean name | `LowZeroes.v1.no_zeroes_below_first_ordinate` |
 | Challenge | `LowZeroes.v1.challenge_no_zeroes_below_first_ordinate` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/LowZeroes/v1/Conclusions.lean#L86) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/LowZeroes/v1/Conclusions.lean#L97) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -88,7 +99,7 @@ noncomputable def no_zeroes_below_first_ordinate : Prop :=
 
 **Justification `first-ordinate-computation`** — **designated** — numerical, the first nontrivial zero ordinate, as used throughout the explicit-formula literature
 
-> Asserted as a numerical fact about zeta: there are no zeroes with 0 < Im rho < 14.134725. The digits are the standard truncation of the first nontrivial ordinate 14.1347251417..., stated via zetaN (open at the upper end) with a margin 0 site so that widening later is a one-numeral change. ZeroFreeHeight's module docstring and this node's limitations both name this as the input needed to push a classical region below exp(2/R). Imports none.
+> Asserted as a numerical fact about zeta: there are no zeroes with 0 < Im rho < 14.134725. The digits are the standard truncation of the first nontrivial ordinate 14.1347251417..., stated on an open interval with a margin 0 site so that widening later is a one-numeral change. Stated as an empty zero set rather than as zetaN = 0: zetaN is a tsum, whose junk value for a non-summable family is 0, so the counting form would hold vacuously where the empty-set form does not, and a consumer would have to prove finiteness before it said anything. ZeroFreeHeight's module docstring and this node's limitations both name this as the input needed to push a classical region below exp(2/R). Imports none.
 
 ## Limitations
 

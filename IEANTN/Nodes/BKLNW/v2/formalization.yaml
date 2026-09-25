@@ -60,8 +60,9 @@ conclusions:
     note: >-
       Follows from BKLNWNumerics.v1.table8_psi_bound together with the
       tabulated ε strictly decreasing, checked on v1 across consecutive
-      pairs. Cutoff e^25000 is the last tabulated b. Data is
-      BKLNWNumerics.v1.table8, not a second Tables.lean on this version.
+      pairs. Cutoff e^25000 is the last tabulated b. The rows are
+      BKLNW.v1.table8 -- the single copy of the data, which both this node
+      and BKLNWNumerics.v1 import rather than transcribe again.
   designated: from-table8
 
 sources:

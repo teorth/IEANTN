@@ -216,7 +216,7 @@ Recorded by the node itself, not derived.
 - Every conclusion rests on the cited paper; none is proved in Lean here.
 - (1.8), (1.9) and (1.10) are stated against li rather than Li, and (1.8) against the Riemann prime-counting function pi* rather than pi. A node consuming them alongside FKS2, which works with Li and pi, must do the conversions rather than assume them away.
 - The import of FKBJ.v1 records a real dependency but understates it: Buthe's algorithm takes the tabulated zeros as input, and the network can state only that there are none off the critical line below that height.
-- Theorem 2 is stated in full, (1.5) through (1.10). Table 1 is now in Tables.lean, and table_1_interval_bounds records Equation (6.2). The sieve bound of Section 6 is still unstated.
+- Theorem 2 is stated in full, (1.5) through (1.10). Table 1 is now in Tables.lean, and table_1_interval_bounds records the reading of Table 1 that Equation (6.2) sits beside. The sieve bound of Section 6 itself -- -0.8 <= R_psi(t) <= 0.81 for 100 <= t <= 5 x 10^10 -- is stated on ButheNumerics.v1.eq_6_2, where the finite computations live, not here.
 - No novelty is claimed. The results are Buthe's.
 
 ## How this node was made

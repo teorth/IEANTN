@@ -45,7 +45,9 @@ conclusions:
         source: BKLNW
         locator: Table 8, read as its Corollary 8.1 reads it
         note: >-
-          Same statement as BKLNW.v1.table8_psi_bound. The tabulated ε(b)
+          Same statement as BKLNW.v1.table8_psi_bound, over the same rows:
+          this node imports BKLNW.v1.Tables rather than carrying a second copy
+          of Table 8, so the two cannot drift apart. The tabulated ε(b)
           are the output of Buthe 2016 Theorem 2, Platt–Trudgian 2021
           Theorem 1, and the algorithm of Buthe 2018 Theorem 1 (not an
           importable proposition). zip/tail is consecutive rows; the last

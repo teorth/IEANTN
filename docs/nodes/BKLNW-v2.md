@@ -36,7 +36,7 @@ def corollary_5_1 : Prop :=
 |---|---|
 | Lean name | `BKLNW.v2.corollary_5_1` |
 | Challenge | `BKLNW.v2.challenge_corollary_5_1` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v2/Conclusions.lean#L40) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v2/Conclusions.lean#L41) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`Buthe.v1.theorem_2_theta_lower`](Buthe-v1.md#theorem_2_theta_lower) |
@@ -48,15 +48,16 @@ def corollary_5_1 : Prop :=
 
 ### `table8_psi_bound_above`
 
-**Table 8 tail**, importing the consecutive-interval table from `BKLNWNumerics`.
+**Table 8 tail**, importing the consecutive-interval claim from `BKLNWNumerics`.
 
 For every entry `(b, ε)` of Table 8, `|ψ(x) − x| ≤ ε · x` for all `e^b ≤ x ≤ e^25000`.
 This is `BKLNW.v1.table8_psi_bound_above`, now a pipeline step from the
-consecutive-row claim plus that the tabulated `ε` decrease.
+consecutive-row claim plus that the tabulated `ε` decrease. The rows are
+`BKLNW.v1.table8`, the same list `BKLNWNumerics.v1.table8_psi_bound` quantifies over.
 
 ```lean
 def table8_psi_bound_above : Prop :=
-  ∀ p ∈ BKLNWNumerics.v1.table8, ∀ x : ℝ,
+  ∀ p ∈ BKLNW.v1.table8, ∀ x : ℝ,
     Real.exp (p.1 : ℝ) ≤ x → x ≤ Real.exp 25000 → |Chebyshev.psi x - x| ≤ p.2 * x
 ```
 
@@ -64,7 +65,7 @@ def table8_psi_bound_above : Prop :=
 |---|---|
 | Lean name | `BKLNW.v2.table8_psi_bound_above` |
 | Challenge | `BKLNW.v2.challenge_table8_psi_bound_above` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v2/Conclusions.lean#L50) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNW/v2/Conclusions.lean#L52) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`BKLNWNumerics.v1.table8_psi_bound`](BKLNWNumerics-v1.md#table8_psi_bound) |
@@ -72,7 +73,7 @@ def table8_psi_bound_above : Prop :=
 
 **Justification `from-table8`** — **designated** — literature, Table 8 in the form used by Corollaries 2.1 and 15.1
 
-> Follows from BKLNWNumerics.v1.table8_psi_bound together with the tabulated ε strictly decreasing, checked on v1 across consecutive pairs. Cutoff e^25000 is the last tabulated b. Data is BKLNWNumerics.v1.table8, not a second Tables.lean on this version.
+> Follows from BKLNWNumerics.v1.table8_psi_bound together with the tabulated ε strictly decreasing, checked on v1 across consecutive pairs. Cutoff e^25000 is the last tabulated b. The rows are BKLNW.v1.table8 -- the single copy of the data, which both this node and BKLNWNumerics.v1 import rather than transcribe again.
 
 ## Limitations
 

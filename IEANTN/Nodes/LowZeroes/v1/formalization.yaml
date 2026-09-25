@@ -73,8 +73,11 @@ conclusions:
     note: >-
       Asserted as a numerical fact about zeta: there are no zeroes with 0 < Im rho < 14.134725.
       The digits are the standard truncation of the first nontrivial ordinate 14.1347251417...,
-      stated via zetaN (open at the upper end) with a margin 0 site so that widening later is a
-      one-numeral change. ZeroFreeHeight's module docstring and this node's limitations both name
+      stated on an open interval with a margin 0 site so that widening later is a one-numeral
+      change. Stated as an empty zero set rather than as zetaN = 0: zetaN is a tsum, whose junk
+      value for a non-summable family is 0, so the counting form would hold vacuously where the
+      empty-set form does not, and a consumer would have to prove finiteness before it said
+      anything. ZeroFreeHeight's module docstring and this node's limitations both name
       this as the input needed to push a classical region below exp(2/R). Imports none.
   designated: first-ordinate-computation
 

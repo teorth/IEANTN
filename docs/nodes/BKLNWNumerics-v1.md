@@ -23,12 +23,13 @@
 **Table 8**: for consecutive entries `(b, ε)` and `(b', ε')` of the table,
 `|ψ(x) − x| ≤ ε · x` for all `e^b ≤ x ≤ e^b'`.
 
-Same reading as `BKLNW.v1.table8_psi_bound` / Corollary 8.1. `zip` with `tail` is
-consecutive entries and says nothing about the last row.
+Same reading as `BKLNW.v1.table8_psi_bound` / Corollary 8.1, over the same rows —
+`BKLNW.v1.table8` is the one copy of the data. `zip` with `tail` is consecutive entries
+and says nothing about the last row.
 
 ```lean
 def table8_psi_bound : Prop :=
-  ∀ p ∈ table8.zip table8.tail, ∀ x : ℝ,
+  ∀ p ∈ BKLNW.v1.table8.zip BKLNW.v1.table8.tail, ∀ x : ℝ,
     Real.exp (p.1.1 : ℝ) ≤ x → x ≤ Real.exp (p.2.1 : ℝ) → |Chebyshev.psi x - x| ≤ p.1.2 * x
 ```
 
@@ -36,7 +37,7 @@ def table8_psi_bound : Prop :=
 |---|---|
 | Lean name | `BKLNWNumerics.v1.table8_psi_bound` |
 | Challenge | `BKLNWNumerics.v1.challenge_table8_psi_bound` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNWNumerics/v1/Conclusions.lean#L26) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNWNumerics/v1/Conclusions.lean#L32) |
 | Evidence | computation (`numerical`) |
 | Sources traced | traced |
 | Assumes | [`Buthe2016.v1.theorem_2_psi`](Buthe2016-v1.md#theorem_2_psi), [`PlattTrudgian2021.v1.theorem_1_numerical`](PlattTrudgian2021-v1.md#theorem_1_numerical) |
@@ -44,7 +45,7 @@ def table8_psi_bound : Prop :=
 
 **Justification `bklnw-table8`** — **designated** — numerical, Table 8, read as its Corollary 8.1 reads it
 
-> Same statement as BKLNW.v1.table8_psi_bound. The tabulated ε(b) are the output of Buthe 2016 Theorem 2, Platt–Trudgian 2021 Theorem 1, and the algorithm of Buthe 2018 Theorem 1 (not an importable proposition). zip/tail is consecutive rows; the last row has no upper endpoint.
+> Same statement as BKLNW.v1.table8_psi_bound, over the same rows: this node imports BKLNW.v1.Tables rather than carrying a second copy of Table 8, so the two cannot drift apart. The tabulated ε(b) are the output of Buthe 2016 Theorem 2, Platt–Trudgian 2021 Theorem 1, and the algorithm of Buthe 2018 Theorem 1 (not an importable proposition). zip/tail is consecutive rows; the last row has no upper endpoint.
 
 ### `theta_error_le_one`
 
@@ -61,7 +62,7 @@ def theta_error_le_one : Prop :=
 |---|---|
 | Lean name | `BKLNWNumerics.v1.theta_error_le_one` |
 | Challenge | `BKLNWNumerics.v1.challenge_theta_error_le_one` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNWNumerics/v1/Conclusions.lean#L33) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/BKLNWNumerics/v1/Conclusions.lean#L39) |
 | Evidence | computation (`numerical`) |
 | Sources traced | identified |
 | Assumes | [`Buthe.v1.theorem_2_theta_lower`](Buthe-v1.md#theorem_2_theta_lower) |
