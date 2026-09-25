@@ -54,10 +54,10 @@ bridge needed together is in the detailed picture below.
 graph LR
   NBKLNW_v1["<b>BKLNW.v1</b><br/>4 claims<br/><i>weakest: cited</i>"]
   NBrown1967_v1["<b>Brown1967.v1</b><br/><i>nothing stated yet</i>"]
-  NButhe_v1["<b>Buthe.v1</b><br/>7 claims<br/><i>weakest: cited</i>"]
+  NButhe_v1["<b>Buthe.v1</b><br/>6 claims<br/><i>weakest: cited</i>"]
   NButhe_v2["<b>Buthe.v2</b><br/>2 claims<br/><i>weakest: unjustified</i>"]
-  NButhe2016_v1["<b>Buthe2016.v1</b><br/>4 claims<br/><i>weakest: cited</i>"]
-  NButheNumerics_v1["<b>ButheNumerics.v1</b><br/>4 claims<br/><i>weakest: computation</i>"]
+  NButhe2016_v1["<b>Buthe2016.v1</b><br/>6 claims<br/><i>weakest: cited</i>"]
+  NButheNumerics_v1["<b>ButheNumerics.v1</b><br/>3 claims<br/><i>weakest: computation</i>"]
   NCH2_v1["<b>CH2.v1</b><br/>4 claims<br/><i>weakest: cited</i>"]
   NCH2_v2["<b>CH2.v2</b><br/>2 claims<br/><i>weakest: verified, stale</i>"]
   NCH2_v3["<b>CH2.v3</b><br/>2 claims<br/><i>weakest: verified</i>"]
@@ -137,6 +137,7 @@ graph LR
   NPlatt2017_v1 ==>|bridge| NWedeniwski_v1
   style NBKLNW_v1 stroke-dasharray: 8 4;
   style NButhe_v1 stroke-dasharray: 8 4;
+  style NButhe2016_v1 stroke-dasharray: 8 4;
   style NCH2_v1 stroke-dasharray: 8 4;
   style NDudekPlatt_v1 stroke-dasharray: 8 4;
   style NDudekPlattNumerics_v1 stroke-dasharray: 8 4;
@@ -225,7 +226,6 @@ graph LR
     BKLNW_v1_theta_error_le_one["<b>theta_error_le_one</b><br/><i>cited</i>"]
   end
   subgraph sgButhe_v1["Buthe.v1"]
-    Buthe_v1_table_1_interval_bounds["<b>table_1_interval_bounds</b><br/><i>cited</i>"]
     Buthe_v1_theorem_2_li_gt_pi["<b>theorem_2_li_gt_pi</b><br/><i>cited</i>"]
     Buthe_v1_theorem_2_li_minus_pi["<b>theorem_2_li_minus_pi</b><br/><i>cited</i>"]
     Buthe_v1_theorem_2_li_minus_riemann_pi["<b>theorem_2_li_minus_riemann_pi</b><br/><i>cited</i>"]
@@ -238,13 +238,14 @@ graph LR
     Buthe_v2_lemma_3_positivity["<b>lemma_3_positivity</b><br/><i>unjustified</i>"]
   end
   subgraph sgButhe2016_v1["Buthe2016.v1"]
+    Buthe2016_v1_theorem_1_table1["<b>theorem_1_table1</b><br/><i>computation</i>"]
+    Buthe2016_v1_theorem_1_table2["<b>theorem_1_table2</b><br/><i>computation</i>"]
     Buthe2016_v1_theorem_2_li_minus_pi["<b>theorem_2_li_minus_pi</b><br/><i>cited</i>"]
     Buthe2016_v1_theorem_2_li_minus_riemann_pi["<b>theorem_2_li_minus_riemann_pi</b><br/><i>cited</i>"]
     Buthe2016_v1_theorem_2_psi["<b>theorem_2_psi</b><br/><i>cited</i>"]
     Buthe2016_v1_theorem_2_theta["<b>theorem_2_theta</b><br/><i>cited</i>"]
   end
   subgraph sgButheNumerics_v1["ButheNumerics.v1"]
-    ButheNumerics_v1_eq_6_2["<b>eq_6_2</b><br/><i>computation</i>"]
     ButheNumerics_v1_lemma_3_constant_gt_at_10["<b>lemma_3_constant_gt_at_10</b><br/><i>computation</i>"]
     ButheNumerics_v1_lemma_3_constant_nonpos["<b>lemma_3_constant_nonpos</b><br/><i>computation</i>"]
     ButheNumerics_v1_li_minus_pi_below_1e7["<b>li_minus_pi_below_1e7</b><br/><i>computation</i>"]
@@ -501,11 +502,11 @@ graph LR
   BRWedeniwski_v1_rh_up_to__bridge_from_platt2017 ==> Wedeniwski_v1_rh_up_to
   style BKLNW_v1_table8_psi_bound stroke-dasharray: 8 4;
   style BKLNW_v1_table8_psi_bound_above stroke-dasharray: 8 4;
-  style Buthe_v1_table_1_interval_bounds stroke-dasharray: 8 4;
   style Buthe_v1_theorem_2_li_minus_riemann_pi stroke-dasharray: 8 4;
   style Buthe_v1_theorem_2_psi stroke-dasharray: 8 4;
   style Buthe_v1_theorem_2_theta stroke-dasharray: 8 4;
   style Buthe_v1_theorem_2_theta_lower stroke-dasharray: 8 4;
+  style Buthe2016_v1_theorem_1_table2 stroke-dasharray: 8 4;
   style CH2_v1_corollary_1_2_lambda_sum stroke-dasharray: 8 4;
   style CH2_v1_corollary_1_2_psi stroke-dasharray: 8 4;
   style CH2_v1_corollary_1_3_lambda_sum stroke-dasharray: 8 4;
@@ -537,14 +538,13 @@ graph LR
   class CH2_v3_extremal_majorant,CH2_v3_extremal_minorant,GammaAsymptotics_v2_digamma_sub_log_isBigO_strip,ZetaLogDeriv_v1_logDeriv_functional_equation,ZetaZeroes_v1_exists_ordinate_free_height,ZetaZeroes_v1_finite_zeroes_on_compact,ZetaZeroes_v1_no_nontrivial_zeroes_left,ZetaZeroes_v1_zeroes_off_axis_in_strip,ZetaZeroes_v1_zeta_eq_zero_iff_zeta1,ZetaZeroes_v1_zeta_eq_zeta1_div lean_comparator;
   class CH2_v4_contour_shift,CH2_v4_contour_shift_holomorphic lean_comparator_drifted;
   class CH2_v2_proposition_2_4_lower,CH2_v2_proposition_2_4_upper,DudekPlatt_v2_ramanujan_inequality_3915,DudekPlatt_v3_criterion,FKS2_v1_corollary_14,FKS2_v1_corollary_22,FKS2_v1_corollary_23,FKS2_v1_corollary_26,FKS2_v2_proposition_13,FKS2_v2_theorem_3,Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap,PrimeInterval_v1_classicalBound_hasPrimeInInterval,PrimeInterval_v1_eTheta_criterion,PrimeInterval_v1_numericalBound_hasPrimeInInterval,PrimeInterval_v1_theta_characterisation,ZeroFreeHeight_v1_classical_region_descends lean_comparator_stale;
-  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_table_1_interval_bounds,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,CH2_v1_corollary_1_2_lambda_sum,CH2_v1_corollary_1_2_psi,CH2_v1_corollary_1_3_lambda_sum,CH2_v1_corollary_1_3_psi,DudekPlatt_v1_largest_counterexample_on_rh,DudekPlatt_v1_ramanujan_inequality,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,RosserSchoenfeld_v1_zero_free_region,Trudgian2011_v1_integral_S_bound,ZeroCount_v1_rvm_error_bound,ZeroCount_v1_rvm_error_small literature;
+  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,CH2_v1_corollary_1_2_lambda_sum,CH2_v1_corollary_1_2_psi,CH2_v1_corollary_1_3_lambda_sum,CH2_v1_corollary_1_3_psi,DudekPlatt_v1_largest_counterexample_on_rh,DudekPlatt_v1_ramanujan_inequality,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,PlattTrudgian_v1_rh_up_to,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,RosserSchoenfeld_v1_zero_free_region,Trudgian2011_v1_integral_S_bound,ZeroCount_v1_rvm_error_bound,ZeroCount_v1_rvm_error_small literature;
   class Buthe_v2_lemma_3_bounds,Buthe_v2_lemma_3_positivity,ContourIntegration_v1_residue_theorem_rectangle,CotangentSeries_v1_cot_series_zeta_values,GammaAsymptotics_v1_digamma_sub_log_isBigO none_yet;
-  class ButheNumerics_v1_eq_6_2,ButheNumerics_v1_lemma_3_constant_gt_at_10,ButheNumerics_v1_lemma_3_constant_nonpos,ButheNumerics_v1_li_minus_pi_below_1e7,DudekPlattNumerics_v1_pi_two_sided_paper,DudekPlattNumerics_v2_pi_two_sided_pnt,FKBJ_v1_rh_up_to,FKS2Numerics_v1_corollary_22_mid_range,FKS2Numerics_v1_corollary_23_mid_range,FKS2Numerics_v1_nu_asymp_e30_le,FKS2Numerics_v1_table6_row2_floor,FKS2Numerics_v1_theta_asymp_ge_one_below_e30,LowZeroes_v1_sum_inv_ordinates_below_2e4,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to,ZetaLogDerivValues_v1_deriv_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_laurent_alternating,ZetaLogDerivValues_v1_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_three_halves,ZetaLogDerivValues_v1_logDeriv_two numerical;
+  class Buthe2016_v1_theorem_1_table1,Buthe2016_v1_theorem_1_table2,ButheNumerics_v1_lemma_3_constant_gt_at_10,ButheNumerics_v1_lemma_3_constant_nonpos,ButheNumerics_v1_li_minus_pi_below_1e7,DudekPlattNumerics_v1_pi_two_sided_paper,DudekPlattNumerics_v2_pi_two_sided_pnt,FKBJ_v1_rh_up_to,FKS2Numerics_v1_corollary_22_mid_range,FKS2Numerics_v1_corollary_23_mid_range,FKS2Numerics_v1_nu_asymp_e30_le,FKS2Numerics_v1_table6_row2_floor,FKS2Numerics_v1_theta_asymp_ge_one_below_e30,LowZeroes_v1_sum_inv_ordinates_below_2e4,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to,ZetaLogDerivValues_v1_deriv_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_laurent_alternating,ZetaLogDerivValues_v1_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_three_halves,ZetaLogDerivValues_v1_logDeriv_two numerical;
   click BKLNW_v1_corollary_5_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#corollary_5_1" _blank
   click BKLNW_v1_table8_psi_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound" _blank
   click BKLNW_v1_table8_psi_bound_above href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound_above" _blank
   click BKLNW_v1_theta_error_le_one href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#theta_error_le_one" _blank
-  click Buthe_v1_table_1_interval_bounds href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#table_1_interval_bounds" _blank
   click Buthe_v1_theorem_2_li_gt_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi" _blank
   click Buthe_v1_theorem_2_li_minus_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi" _blank
   click Buthe_v1_theorem_2_li_minus_riemann_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi" _blank
@@ -553,11 +553,12 @@ graph LR
   click Buthe_v1_theorem_2_theta_lower href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_theta_lower" _blank
   click Buthe_v2_lemma_3_bounds href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v2.md#lemma_3_bounds" _blank
   click Buthe_v2_lemma_3_positivity href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v2.md#lemma_3_positivity" _blank
+  click Buthe2016_v1_theorem_1_table1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md#theorem_1_table1" _blank
+  click Buthe2016_v1_theorem_1_table2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md#theorem_1_table2" _blank
   click Buthe2016_v1_theorem_2_li_minus_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_pi" _blank
   click Buthe2016_v1_theorem_2_li_minus_riemann_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_riemann_pi" _blank
   click Buthe2016_v1_theorem_2_psi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md#theorem_2_psi" _blank
   click Buthe2016_v1_theorem_2_theta href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md#theorem_2_theta" _blank
-  click ButheNumerics_v1_eq_6_2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ButheNumerics-v1.md#eq_6_2" _blank
   click ButheNumerics_v1_lemma_3_constant_gt_at_10 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ButheNumerics-v1.md#lemma_3_constant_gt_at_10" _blank
   click ButheNumerics_v1_lemma_3_constant_nonpos href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ButheNumerics-v1.md#lemma_3_constant_nonpos" _blank
   click ButheNumerics_v1_li_minus_pi_below_1e7 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ButheNumerics-v1.md#li_minus_pi_below_1e7" _blank
@@ -666,8 +667,6 @@ A line is one claim, indented under whatever assumes it.
       - [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) — computation — *sources known, not all drawable*
         - [`Trudgian2011.v1.integral_S_bound`](docs/nodes/Trudgian2011-v1.md#integral_S_bound) — cited — *sources not traced*
 
-- [`Buthe.v1.table_1_interval_bounds`](docs/nodes/Buthe-v1.md#table_1_interval_bounds) — cited — *sources known, not all drawable*
-
 - [`Buthe.v1.theorem_2_li_gt_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi) — cited
   - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
   - [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) — cited — *sources known, not all drawable*
@@ -689,13 +688,15 @@ A line is one claim, indented under whatever assumes it.
 - [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) — cited — *sources known, not all drawable*
   - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
 
+- [`Buthe2016.v1.theorem_1_table1`](docs/nodes/Buthe2016-v1.md#theorem_1_table1) — computation
+
+- [`Buthe2016.v1.theorem_1_table2`](docs/nodes/Buthe2016-v1.md#theorem_1_table2) — computation — *sources known, not all drawable*
+
 - [`Buthe2016.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_pi) — cited
 
 - [`Buthe2016.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_riemann_pi) — cited
 
 - [`Buthe2016.v1.theorem_2_theta`](docs/nodes/Buthe2016-v1.md#theorem_2_theta) — cited
-
-- [`ButheNumerics.v1.eq_6_2`](docs/nodes/ButheNumerics-v1.md#eq_6_2) — computation
 
 - [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) — cited — *sources known, not all drawable*
   - [`CH2.v1.corollary_1_2_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_2_lambda_sum) — cited — *sources known, not all drawable*
@@ -935,15 +936,15 @@ rather than maintained.
 | [`Wedeniwski.v1.rh_up_to`](docs/nodes/Wedeniwski-v1.md#rh_up_to) | asserted | 1 | **not yet traced** |
 | [`BKLNW.v1.table8_psi_bound`](docs/nodes/BKLNW-v1.md#table8_psi_bound) | cited | 0 | known, not all drawable |
 | [`BKLNW.v1.table8_psi_bound_above`](docs/nodes/BKLNW-v1.md#table8_psi_bound_above) | cited | 0 | known, not all drawable |
-| [`Buthe.v1.table_1_interval_bounds`](docs/nodes/Buthe-v1.md#table_1_interval_bounds) | cited | 0 | known, not all drawable |
 | [`Buthe.v1.theorem_2_li_gt_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi) | cited | 0 | traced |
 | [`Buthe.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi) | cited | 0 | traced |
 | [`Buthe.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi) | cited | 0 | known, not all drawable |
 | [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) | cited | 0 | known, not all drawable |
+| [`Buthe2016.v1.theorem_1_table1`](docs/nodes/Buthe2016-v1.md#theorem_1_table1) | computation | 0 | none |
+| [`Buthe2016.v1.theorem_1_table2`](docs/nodes/Buthe2016-v1.md#theorem_1_table2) | computation | 0 | known, not all drawable |
 | [`Buthe2016.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_pi) | cited | 0 | none |
 | [`Buthe2016.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_riemann_pi) | cited | 0 | none |
 | [`Buthe2016.v1.theorem_2_theta`](docs/nodes/Buthe2016-v1.md#theorem_2_theta) | cited | 0 | none |
-| [`ButheNumerics.v1.eq_6_2`](docs/nodes/ButheNumerics-v1.md#eq_6_2) | computation | 0 | none |
 | [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) | cited | 0 | known, not all drawable |
 | [`CH2.v1.corollary_1_3_psi`](docs/nodes/CH2-v1.md#corollary_1_3_psi) | cited | 0 | known, not all drawable |
 | [`DudekPlatt.v1.largest_counterexample_on_rh`](docs/nodes/DudekPlatt-v1.md#largest_counterexample_on_rh) | cited | 0 | known, not all drawable |

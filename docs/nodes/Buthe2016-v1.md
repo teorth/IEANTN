@@ -37,7 +37,7 @@ def theorem_2_psi : Prop :=
 |---|---|
 | Lean name | `Buthe2016.v1.theorem_2_psi` |
 | Challenge | `Buthe2016.v1.challenge_theorem_2_psi` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe2016/v1/Conclusions.lean#L60) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe2016/v1/Conclusions.lean#L65) |
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -64,7 +64,7 @@ def theorem_2_theta : Prop :=
 |---|---|
 | Lean name | `Buthe2016.v1.theorem_2_theta` |
 | Challenge | `Buthe2016.v1.challenge_theorem_2_theta` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe2016/v1/Conclusions.lean#L68) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe2016/v1/Conclusions.lean#L73) |
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -93,7 +93,7 @@ def theorem_2_li_minus_riemann_pi : Prop :=
 |---|---|
 | Lean name | `Buthe2016.v1.theorem_2_li_minus_riemann_pi` |
 | Challenge | `Buthe2016.v1.challenge_theorem_2_li_minus_riemann_pi` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe2016/v1/Conclusions.lean#L78) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe2016/v1/Conclusions.lean#L83) |
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -122,7 +122,7 @@ def theorem_2_li_minus_pi : Prop :=
 |---|---|
 | Lean name | `Buthe2016.v1.theorem_2_li_minus_pi` |
 | Challenge | `Buthe2016.v1.challenge_theorem_2_li_minus_pi` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe2016/v1/Conclusions.lean#L88) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe2016/v1/Conclusions.lean#L93) |
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -132,13 +132,70 @@ def theorem_2_li_minus_pi : Prop :=
 
 > Asserted on the authority of the paper, transcribed from arXiv:1410.7015v4. Imports none, and this is a real `none` rather than an untraced `undetermined`: Theorem 2 is stated as a conditional, universally quantified in the height T with the verification as a hypothesis, so a consumer supplies it rather than this node importing one. The paper notes that Platt's verification (T about 3.061e10) instantiates it, which is Platt2015.v1 -- but that is an instantiation a consumer makes, not a dependency of the statement. The paper's headline. Stated against li, the un-offset logarithmic integral, not Li.
 
+### `theorem_1_table1`
+
+**Theorem 1, as Table 1 records it.** If the Riemann hypothesis holds up to the row's height
+`T`, then `|ψ(x) − x| ≤ δ₀ x` for every `x ≥ e^b`.
+
+This is a different shape from Theorem 2: a plain relative error `δ₀`, not Schoenfeld's
+`√x (log x)² / (8π)`. Theorem 1 itself is parameterised by the Logan kernel; the table is the
+output the paper actually uses, and is what a consumer can cite without that vocabulary.
+
+Each `δ₀` carries `margin 0` — a site, not a weakening — because the entries are computed upper
+bounds for `e^{αε}(ℰ₁+ℰ₂+ℰ₃)`, not displayed closed forms.
+
+```lean
+def theorem_1_table1 : Prop :=
+  ∀ p ∈ table1, RiemannHypothesisUpTo p.2.1 → ∀ x : ℝ, Real.exp (p.1 : ℝ) ≤ x →
+    |Chebyshev.psi x - x| ≤ margin 0 * p.2.2 * x
+```
+
+| | |
+|---|---|
+| Lean name | `Buthe2016.v1.theorem_1_table1` |
+| Challenge | `Buthe2016.v1.challenge_theorem_1_table1` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe2016/v1/Conclusions.lean#L106) |
+| Evidence | computation (`numerical`) |
+| Sources traced | none |
+| Assumes | nothing recorded |
+| Assumed by | nothing yet |
+
+**Justification `buthe2016-table1`** — **designated** — numerical, Theorem 1, via Table 1
+
+> The tabulated output of Theorem 1 at heights up to 3.061e10, transcribed from arXiv:1410.7015. Kind `numerical` because each delta_0 is a computed upper bound for e^{alpha epsilon}(E1+E2+E3), not a closed-form argument. Imports none: the verification height T is a hypothesis on each row, the same shape as this node's Theorem 2. The Logan-kernel statement of Theorem 1 is not recorded here -- the table is the part that can be stated without new Vocabulary. margin 0 is a site on the computed constants.
+
+### `theorem_1_table2`
+
+**Theorem 1, as Table 2 records it.** Same claim as `theorem_1_table1`, at the larger
+verification heights of the paper's Table 2 (up to `2.445 × 10¹²`).
+
+```lean
+def theorem_1_table2 : Prop :=
+  ∀ p ∈ table2, RiemannHypothesisUpTo p.2.1 → ∀ x : ℝ, Real.exp (p.1 : ℝ) ≤ x →
+    |Chebyshev.psi x - x| ≤ margin 0 * p.2.2 * x
+```
+
+| | |
+|---|---|
+| Lean name | `Buthe2016.v1.theorem_1_table2` |
+| Challenge | `Buthe2016.v1.challenge_theorem_1_table2` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe2016/v1/Conclusions.lean#L112) |
+| Evidence | computation (`numerical`) |
+| Sources traced | traced |
+| Assumes | nothing recorded |
+| Assumed by | nothing yet |
+
+**Justification `buthe2016-table2`** — **designated** — numerical, Theorem 1, via Table 2
+
+> Same claim as theorem_1_table1, at the paper's Table 2 heights (up to 2.445e12). The paper attributes that height to Gourdon (2004). The network has no node for that computation, so the verification remains a hypothesis and the import status is `traced` rather than `none`: the input is known and named, but is not yet an edge.
+
 ## Limitations
 
 Recorded by the node itself, not derived.
 
 - Every conclusion rests on the cited paper; none is proved in Lean here.
-- All four are stated against li rather than Li, as the paper states them. A node consuming them alongside FKS2, which works with Li, must do the conversion; li 2 is about 1.045 and the bounds are of size sqrt(x) log x / (8 pi).
-- Theorem 1 of the paper, an explicit bound with a different shape, is not stated; nothing in the network consumes it yet.
+- The four Theorem 2 conclusions are stated against li rather than Li, as the paper states them. A node consuming them alongside FKS2, which works with Li, must do the conversion; li 2 is about 1.045 and the bounds are of size sqrt(x) log x / (8 pi).
+- Theorem 1 is stated through Tables 1 and 2, not in the Logan-kernel form of the theorem display. That form needs Vocabulary this node does not yet justify promoting. Table 2's height 2.445e12 is Gourdon (2004), which is not a node.
 - No novelty is claimed. The results are Buthe's.
 
 ## How this node was made

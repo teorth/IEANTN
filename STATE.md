@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-47 node version(s), 92 conclusion(s).  3 state nothing yet.
+47 node version(s), 93 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -16,9 +16,9 @@ adds the environment detail.
 | `asserted` | 1 |
 | `bridged` | 1 |
 | `lean-comparator` | 29 |
-| `literature` | 37 |
+| `literature` | 36 |
 | `none-yet` | 5 |
-| `numerical` | 20 |
+| `numerical` | 21 |
 
 ## Nodes
 
@@ -35,17 +35,17 @@ adds the environment detail.
 | `Buthe.v1` | active | `theorem_2_li_minus_riemann_pi` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_li_minus_pi` | literature | 5 | - |
 | `Buthe.v1` | active | `theorem_2_li_gt_pi` | literature | 4 | - |
-| `Buthe.v1` | active | `table_1_interval_bounds` | literature | 0 | - |
 | `Buthe.v2` | awaiting-solution | `lemma_3_bounds` | none-yet | 0 | #56 |
 | `Buthe.v2` | awaiting-solution | `lemma_3_positivity` | none-yet | 0 | #56 |
 | `Buthe2016.v1` | stub | `theorem_2_psi` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_theta` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_li_minus_riemann_pi` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_li_minus_pi` | literature | 0 | - |
+| `Buthe2016.v1` | stub | `theorem_1_table1` | numerical | 0 | - |
+| `Buthe2016.v1` | stub | `theorem_1_table2` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
-| `ButheNumerics.v1` | stub | `eq_6_2` | numerical | 0 | - |
 | `CH2.v1` | awaiting-solution | `corollary_1_2_psi` | literature | 2 | - |
 | `CH2.v1` | awaiting-solution | `corollary_1_2_lambda_sum` | literature | 2 | - |
 | `CH2.v1` | awaiting-solution | `corollary_1_3_psi` | literature | 2 | - |
