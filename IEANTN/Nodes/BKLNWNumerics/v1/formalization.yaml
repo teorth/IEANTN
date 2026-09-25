@@ -1,0 +1,98 @@
+# Node metadata for `BKLNWNumerics.v1`.  See docs/NODES.md.
+#
+# Table 8 (consecutive-interval reading) and the Eθ ≤ 1 range FKS2 consumes.
+# Analytic Corollary 5.1 stays on BKLNW.v1 / BKLNW.v2.
+version: "v0.4"
+
+node:
+  id: BKLNWNumerics.v1
+  family: BKLNWNumerics
+  version: v1
+  kind: computation
+  status: stub
+
+project:
+  name: "BKLNW Table 8 and the small-range Eθ bound"
+  description: >-
+    Computation node for Broadbent–Kadiri–Lumley–Ng–Wilk Table 8 (read as
+    Corollary 8.1 reads it) and the Eθ(x) ≤ 1 bound on [2, e^30] that FKS2
+    Corollary 14 uses. Copied from BKLNW.v1 so the paper node is not also
+    the numerical source. BKLNW.v1 is left unchanged.
+  authors: ["Taksh Kothari"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Taksh"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11Y70"]
+
+conclusions:
+  - id: table8_psi_bound
+    declaration: BKLNWNumerics.v1.table8_psi_bound
+    challenge: BKLNWNumerics.v1.challenge_table8_psi_bound
+    imports:
+      - node: Buthe2016.v1
+        conclusion: theorem_2_psi
+      - node: PlattTrudgian2021.v1
+        conclusion: theorem_1_numerical
+    imports_status: traced
+    justifications:
+      - id: bklnw-table8
+        kind: numerical
+        source: BKLNW
+        locator: Table 8, read as its Corollary 8.1 reads it
+        note: >-
+          Same statement as BKLNW.v1.table8_psi_bound. The tabulated ε(b)
+          are the output of Buthe 2016 Theorem 2, Platt–Trudgian 2021
+          Theorem 1, and the algorithm of Buthe 2018 Theorem 1 (not an
+          importable proposition). zip/tail is consecutive rows; the last
+          row has no upper endpoint.
+    designated: bklnw-table8
+  - id: theta_error_le_one
+    declaration: BKLNWNumerics.v1.theta_error_le_one
+    challenge: BKLNWNumerics.v1.challenge_theta_error_le_one
+    imports:
+      - node: Buthe.v1
+        conclusion: theorem_2_theta_lower
+    imports_status: identified
+    justifications:
+      - id: bklnw-tables-13-14
+        kind: numerical
+        source: BKLNW
+        locator: Tables 13 and 14, as used in FKS2 Corollary 14
+        note: >-
+          Same statement as BKLNW.v1.theta_error_le_one: Eθ(x) ≤ 1 on
+          [2, e^30]. Transcribed from FKS2's use of those tables, not
+          re-read off the printed tables.
+    designated: bklnw-tables-13-14
+
+sources:
+  - title: "Sharper bounds for the Chebyshev function theta(x)"
+    authors: ["Samuel Broadbent", "Habiba Kadiri", "Allysa Lumley", "Nathan Ng", "Kirsten Wilk"]
+    type: "paper"
+    id: "https://doi.org/10.1090/mcom/3643"
+    location: "Math. Comp. 90 (2021), no. 331, 2281-2315"
+    relationship: formalizes
+
+automation:
+  methods:
+    - method: manual
+      role: >-
+        Split the table-driven claims off BKLNW.v1 onto a computation node.
+        Statements copied; no independent numerical verification.
+
+review:
+  status: self-assessed
+  reviewers: ["Taksh"]
+
+limitations:
+  - >-
+    Table 8 values are taken from the paper, not recomputed.
+  - >-
+    theta_error_le_one follows FKS2's reading of Tables 13 and 14.
+  - >-
+    BKLNW.v1 still carries the same conclusions; this node is the split
+    requested so a pipeline version can import numerics without editing v1.
