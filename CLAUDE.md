@@ -48,10 +48,15 @@ breaks the architecture silently and CI will reject it.
   `python scripts/ieantn.py new-version <Family>`. CI enforces this. See NODES.md.
 - **Never write a receipt, and never set `justification: lean-comparator` by hand.** Receipts are
   written by the verification workflow; one you can write attests nothing.
-- **Never hand-edit a generated file.** `Challenge.lean` and `fingerprints.json` are regenerated
-  and diffed in CI.
+- **Never hand-edit a generated file.** `Challenge.lean` and each node's `fingerprints.json` are
+  regenerated and diffed in CI.
 - **After changing a conclusion, run `python scripts/ieantn.py fingerprint`** and commit the
-  result. Cosmetic edits will not change it; a change of meaning will, which is the point.
+  result — it lives in the node's own directory. Cosmetic edits will not change it; a change of
+  meaning will, which is the point.
+- **Do not commit `STATE.md`, `GRAPH.md` or `docs/nodes/`.** They are views, rewritten on `main`
+  by `.github/workflows/derived.yml`, and a pull request carrying them conflicts with every other
+  open one. Regenerate them locally as much as you like; leave them out of the commit. CI fails a
+  pull request that includes them, and `check` reports a stale one without failing.
 
 ## Build
 

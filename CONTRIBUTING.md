@@ -96,23 +96,34 @@ the conclusion, so `python scripts/ieantn.py housekeeping` shows what is claimed
 
 ## Generated files
 
-`Challenge.lean`, `IEANTN/Nodes.lean`, `IEANTN/Bridges.lean`, `fingerprints.json`, `STATE.md`,
-`GRAPH.md` and everything under `docs/nodes/` are generated *and* committed, and CI checks they are
-current.
+Two kinds, and they are committed for different reasons.
 
-**If you hit a merge conflict in any of them, do not resolve it by hand.** Take either side, then
-regenerate:
+**Yours to regenerate and commit:** `Challenge.lean`, `IEANTN/Nodes.lean`, `IEANTN/Bridges.lean`,
+and each node's `fingerprints.json`. These carry information a reviewer needs — a moved fingerprint
+is a changed statement — so they belong in the diff that caused them. The fingerprints live one
+file per node, in the node's own directory, so two branches collide only when they touch the same
+node.
+
+**CI's to regenerate, and not yours to commit:** `STATE.md`, `GRAPH.md` and everything under
+`docs/nodes/`. Every fact in them is already in some `formalization.yaml`, so a pull request
+carrying them adds nothing to review — and conflicts with every other open pull request, since all
+of them rewrite the same few files. `.github/workflows/derived.yml` rewrites them once a change
+reaches `main`. Run `state`, `graph` and `pages` locally whenever you want to see the effect of a
+change; just leave the result out of the commit. `python scripts/ieantn.py check` reports a stale
+view and does not fail on it, and a pull request that includes one fails CI with the command to
+drop it.
+
+**If you hit a merge conflict in a generated file you do commit, do not resolve it by hand.** Take
+either side, then regenerate:
 
 ```bash
 python scripts/ieantn.py gen-challenges
 python scripts/ieantn.py fingerprint
-python scripts/ieantn.py state
-python scripts/ieantn.py graph
 ```
 
 They are committed rather than gitignored on purpose: a change of *meaning* then shows up as a diff
-line even when the Lean edit looks cosmetic, and the `STATE.md` diff says what your change did to
-the network.
+line even when the Lean edit looks cosmetic. `STATE.md` is committed for a different reason — it is
+what a reader browsing the repository opens — which is why CI writes that one and you do not.
 
 ---
 

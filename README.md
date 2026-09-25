@@ -34,8 +34,9 @@ IEANTN/Nodes/<Family>/<version>/ Conclusions.lean, Challenge.lean, formalization
 IEANTN/Bridges/<Family>/         proofs that one version's conclusions imply another's
 Solutions/<Family>.<version>/    proofs — separate Lake projects, not in the core build
 receipts/                        one JSON file per Lean-verified conclusion
-fingerprints.json, STATE.md,     generated and committed, so a change of meaning is a diff line
-GRAPH.md, docs/nodes/
+<node>/fingerprints.json         generated and committed, so a change of meaning is a diff line
+STATE.md, GRAPH.md, docs/nodes/  views of the metadata, written by CI on `main` — see
+                                 CONTRIBUTING.md; do not commit them from a branch
 docs/                            ARCHITECTURE.md, NODES.md, ROADMAP.md, SOURCES.md,
                                  SOLUTIONS.md
 ```

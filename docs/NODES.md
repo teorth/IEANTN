@@ -343,7 +343,9 @@ incomplete.
    `IEANTN/Nodes.lean` and `IEANTN/Bridges.lean`.
 4. Every `formalization.yaml` passes Palomar's current validator.
 5. The import graph is acyclic, and so is justification transport along *designated* bridges.
-6. Every conclusion's statement fingerprint matches `fingerprints.json`, and `STATE.md` is current.
+6. Every conclusion's statement fingerprint matches its node's `fingerprints.json`. `STATE.md`,
+   `GRAPH.md` and `docs/nodes/` are not checked on a branch: CI regenerates them on `main`, and a
+   branch that changes them fails instead.
 7. No conclusion that other nodes depend on has been edited in place, and none still imported has
    been removed (`ieantn.py diff`, in the `Network impact` job).
 8. Every `lean-comparator` justification has a matching file in `receipts/`, every receipt names a
