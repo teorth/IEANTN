@@ -4205,9 +4205,8 @@ def deactivate(node_ids: list[str], reason: str) -> bool:
         print(f"deactivated {node_id}")
     gen_challenges(check_only=False)
     print("\nits files are kept; it is out of the umbrella, so the core build no longer compiles it.")
-    print("next: python scripts/ieantn.py fingerprint && python scripts/ieantn.py state && "
-          "python scripts/ieantn.py graph && python scripts/ieantn.py pages && "
-          "python scripts/ieantn.py check")
+    print("next: python scripts/ieantn.py fingerprint && python scripts/ieantn.py check")
+    print("      (STATE, GRAPH and the node pages are rewritten on `main` by derived.yml)")
     return True
 
 
