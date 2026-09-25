@@ -24,3 +24,6 @@ theorem ButheNumerics.v1.challenge_li_minus_pi_below_1e7 : ButheNumerics.v1.li_m
 
 theorem ButheNumerics.v1.challenge_lemma_3_constant_gt_at_10 : ButheNumerics.v1.lemma_3_constant_gt_at_10 := by
   sorry
+
+theorem ButheNumerics.v1.challenge_eq_6_2 : ButheNumerics.v1.eq_6_2 := by
+  sorry

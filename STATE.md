@@ -18,7 +18,7 @@ adds the environment detail.
 | `lean-comparator` | 29 |
 | `literature` | 37 |
 | `none-yet` | 5 |
-| `numerical` | 19 |
+| `numerical` | 20 |
 
 ## Nodes
 
@@ -45,6 +45,7 @@ adds the environment detail.
 | `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
+| `ButheNumerics.v1` | stub | `eq_6_2` | numerical | 0 | - |
 | `CH2.v1` | awaiting-solution | `corollary_1_2_psi` | literature | 2 | - |
 | `CH2.v1` | awaiting-solution | `corollary_1_2_lambda_sum` | literature | 2 | - |
 | `CH2.v1` | awaiting-solution | `corollary_1_3_psi` | literature | 2 | - |
