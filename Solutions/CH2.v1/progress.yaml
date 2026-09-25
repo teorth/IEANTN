@@ -807,6 +807,21 @@ stages:
       they used to say `imports` is a real none, which was true of the STATEMENT (the Riemann
       hypothesis up to T is a hypothesis, not an edge) but is not true of the proof. Challenge.lean
       was regenerated, fingerprints/state/graph/pages rewritten, and `check` passes.
+      CH2.v2 IS NOW A REAL EDGE (after the first verification). svm_bounds used to call the proof
+      of Proposition 2.4 in Part1Fourier directly; it now takes CH2.v2.proposition_2_4_upper and
+      _lower as imported hypotheses, through two adapters in Section6 (prop_2_4_plus_of_v2,
+      prop_2_4_minus_of_v2) that restate the node's conclusions in exactly prop_2_4_plus's signature.
+      They agree DEFINITIONALLY -- CH2.v2's own solution proves the node statements from these by
+      `exact`, and the adapters go the other way, so each is a one-line term. The two hypotheses are
+      threaded through the eleven theorems from svm_bounds up to the corollaries. Part1Fourier still
+      proves Proposition 2.4 and is still imported, because it also DEFINES `S`, on which Svm is built;
+      only the proof half is now redundant, and removing it would mean splitting that file.
+      CH2.v3 IS NOT AN EDGE AND CANNOT BE AS STATED: it asserts that an extremal approximant exists,
+      but sections 5-6 shift a contour through the specific function's meromorphic continuation, and
+      an existentially given function has none. See the node's limitations.
+      RE-VERIFICATION IS DUE but not urgent: the old receipt proved the corollaries from a subset of
+      the new hypotheses, so it still implies the new (weaker) challenge, and `status` stays green
+      while noting that the receipt attests the previous commit.
       ALL FOUR CONCLUSIONS ARE PROVED. Solution.lean has no sorry; the four compared theorems
       depend only on propext, Classical.choice and Quot.sound. What remains is not mathematics but
       process: Comparator has to verify the node (scripts/ieantn.py verify CH2.v1 --pr 108), which

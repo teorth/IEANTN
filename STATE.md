@@ -44,8 +44,8 @@ adds the environment detail.
 | `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
-| `CH2.v1` | active | `corollary_1_2_psi` | lean-comparator | 11 | - |
-| `CH2.v1` | active | `corollary_1_2_lambda_sum` | lean-comparator | 11 | - |
+| `CH2.v1` | active | `corollary_1_2_psi` | lean-comparator | 13 | - |
+| `CH2.v1` | active | `corollary_1_2_lambda_sum` | lean-comparator | 13 | - |
 | `CH2.v1` | active | `corollary_1_3_psi` | lean-comparator | 3 | - |
 | `CH2.v1` | active | `corollary_1_3_lambda_sum` | lean-comparator | 3 | - |
 | `CH2.v2` | active | `proposition_2_4_upper` | lean-comparator-stale | 0 | #64 |
@@ -184,6 +184,8 @@ downstream.
 | `FKS2Numerics.v1.corollary_23_mid_range` | 2 |
 | `DudekPlatt.v3.criterion` | 2 |
 | `CotangentSeries.v1.cot_series_zeta_values` | 2 |
+| `CH2.v2.proposition_2_4_upper` | 2 |
+| `CH2.v2.proposition_2_4_lower` | 2 |
 | `Buthe2016.v1.theorem_2_psi` | 2 |
 | `Buthe.v1.theorem_2_psi` | 2 |
 | `Wedeniwski.v1.rh_up_to` | 1 |

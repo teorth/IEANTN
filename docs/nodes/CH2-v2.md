@@ -53,7 +53,7 @@ def proposition_2_4_upper : Prop :=
 | Receipt state | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
 
 **Justification `unjustified`** — none-yet
 
@@ -92,7 +92,7 @@ def proposition_2_4_lower : Prop :=
 | Receipt state | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
 
 **Justification `unjustified`** — none-yet
 

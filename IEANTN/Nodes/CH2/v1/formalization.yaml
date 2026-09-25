@@ -60,6 +60,10 @@ conclusions:
     conclusion: logDeriv_partial_fractions
   - node: PlattZeroSum.v1
     conclusion: inv_ordinate_sum_le
+  - node: CH2.v2
+    conclusion: proposition_2_4_upper
+  - node: CH2.v2
+    conclusion: proposition_2_4_lower
   imports_status: identified
   justifications:
   - id: ch2-paper
@@ -111,6 +115,10 @@ conclusions:
     conclusion: logDeriv_partial_fractions
   - node: PlattZeroSum.v1
     conclusion: inv_ordinate_sum_le
+  - node: CH2.v2
+    conclusion: proposition_2_4_upper
+  - node: CH2.v2
+    conclusion: proposition_2_4_lower
   imports_status: identified
   justifications:
   - id: ch2-paper
@@ -237,6 +245,16 @@ limitations:
   theorems are proved and free of `sorryAx`, on the eleven edges listed above -- but a solution
   justifies nothing until Comparator has verified it and a receipt records the verdict. Until then
   the honest reading of these conclusions is unchanged.
+- >-
+  Of the family's other versions, only CH2.v2 is an edge. Proposition 2.4 (CH2.v2) is imported and
+  used as stated: the solution applies it to the explicit majorant and minorant through a two-line
+  adapter, the statements agreeing definitionally. CH2.v3 is NOT an edge, and cannot be as stated:
+  it asserts that an extremal approximant EXISTS, while sections 5-6 evaluate the main term by
+  shifting a contour through the specific Graham-Vaaler function's meromorphic continuation -- the
+  (pi/T) coth(pi(1-sigma)/T) main term and the zero terms come from its explicit residues -- and an
+  existentially given function has no continuation to shift through. So the solution constructs
+  the function itself (Approximants.lean, the same construction CH2.v3's solution verifies). The
+  contour shift is PNT+'s own section 5, not CH2.v4, which is inactive for that reason.
 - >-
   Theorem 1.1, the general result these are specialisations of, is NOT stated. It is the natural
   keystone of this family and PrimeNumberTheoremAnd does not state it either -- its CH2.lean carries
