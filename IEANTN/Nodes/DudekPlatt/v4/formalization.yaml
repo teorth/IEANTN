@@ -2,7 +2,8 @@
 #
 # Ramanujan's inequality above exp(9401), from Dudek-Platt's own footnote 1 pairing (a = 3130,
 # R = 6.315) run through the REPAIRED DudekPlatt.v3 criterion. A variant of v1/v2/v3, not a
-# successor -- all four stay. `status: stub` until the solution below is verified.
+# successor -- all four stay. `awaiting-verification`: the solution is complete and typechecks,
+# and what it is waiting for is a Comparator receipt.
 version: "v0.4"
 
 node:
@@ -10,7 +11,7 @@ node:
   family: DudekPlatt
   version: v4
   kind: paper
-  status: stub
+  status: awaiting-verification
 
 project:
   name: "Ramanujan's inequality at Dudek-Platt's footnote-improved threshold, repaired"
