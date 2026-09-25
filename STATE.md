@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-47 node version(s), 91 conclusion(s).  3 state nothing yet.
+47 node version(s), 92 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -15,9 +15,9 @@ adds the environment detail.
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 1 |
-| `lean-comparator` | 31 |
-| `literature` | 35 |
-| `none-yet` | 4 |
+| `lean-comparator` | 29 |
+| `literature` | 37 |
+| `none-yet` | 5 |
 | `numerical` | 19 |
 
 ## Nodes
@@ -35,6 +35,7 @@ adds the environment detail.
 | `Buthe.v1` | active | `theorem_2_li_minus_riemann_pi` | literature | 1 | - |
 | `Buthe.v1` | active | `theorem_2_li_minus_pi` | literature | 5 | - |
 | `Buthe.v1` | active | `theorem_2_li_gt_pi` | literature | 4 | - |
+| `Buthe.v1` | active | `table_1_interval_bounds` | literature | 0 | - |
 | `Buthe.v2` | awaiting-solution | `lemma_3_bounds` | none-yet | 0 | #56 |
 | `Buthe.v2` | awaiting-solution | `lemma_3_positivity` | none-yet | 0 | #56 |
 | `Buthe2016.v1` | stub | `theorem_2_psi` | literature | 0 | - |
@@ -44,15 +45,18 @@ adds the environment detail.
 | `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
-| `CH2.v1` | active | `corollary_1_2_psi` | lean-comparator | 13 | - |
-| `CH2.v1` | active | `corollary_1_2_lambda_sum` | lean-comparator | 13 | - |
-| `CH2.v1` | active | `corollary_1_3_psi` | lean-comparator | 3 | - |
-| `CH2.v1` | active | `corollary_1_3_lambda_sum` | lean-comparator | 3 | - |
+| `CH2.v1` | awaiting-solution | `corollary_1_2_psi` | literature | 2 | - |
+| `CH2.v1` | awaiting-solution | `corollary_1_2_lambda_sum` | literature | 2 | - |
+| `CH2.v1` | awaiting-solution | `corollary_1_3_psi` | literature | 2 | - |
+| `CH2.v1` | awaiting-solution | `corollary_1_3_lambda_sum` | literature | 2 | - |
 | `CH2.v2` | active | `proposition_2_4_upper` | lean-comparator-stale | 0 | #64 |
 | `CH2.v2` | active | `proposition_2_4_lower` | lean-comparator-stale | 0 | #64 |
 | `CH2.v3` | active | `extremal_majorant` | lean-comparator | 0 | #64 |
 | `CH2.v3` | active | `extremal_minorant` | lean-comparator | 0 | #64 |
+| `CH2.v4` | active | `contour_shift_holomorphic` | lean-comparator-drifted | 0 | #64 |
+| `CH2.v4` | active | `contour_shift` | lean-comparator-drifted | 1 | #64 |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
+| `ContourIntegration.v1` | awaiting-solution | `residue_theorem_rectangle` | none-yet | 0 | #64 |
 | `CotangentSeries.v1` | awaiting-solution | `cot_series_zeta_values` | none-yet | 0 | - |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
 | `DudekPlatt.v1` | stub | `largest_counterexample_on_rh` | literature | 0 | - |
@@ -90,10 +94,8 @@ adds the environment detail.
 | `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
 | `Platt2017.v1` | stub | `rh_up_to` | numerical | 1 | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
-| `PlattTrudgian.v1` | active | `rh_up_to_exact` | literature | 0 | - |
 | `PlattTrudgian2021.v1` | stub | `theorem_1_classical` | literature | 3 | - |
 | `PlattTrudgian2021.v1` | stub | `theorem_1_numerical` | literature | 3 | - |
-| `PlattZeroSum.v1` | active | `inv_ordinate_sum_le` | literature | 0 | - |
 | `PrimeInterval.v1` | active | `theta_characterisation` | lean-comparator-stale | 0 | #53 |
 | `PrimeInterval.v1` | active | `eTheta_criterion` | lean-comparator-stale | 0 | #53 |
 | `PrimeInterval.v1` | active | `numericalBound_hasPrimeInInterval` | lean-comparator-stale | 0 | #53 |
@@ -105,7 +107,6 @@ adds the environment detail.
 | `ZeroCount.v1` | stub | `rvm_error_bound` | literature | 0 | #64 |
 | `ZeroCount.v1` | stub | `rvm_error_small` | literature | 0 | #64 |
 | `ZeroFreeHeight.v1` | active | `classical_region_descends` | lean-comparator-stale | 0 | #30 |
-| `ZetaHadamard.v1` | active | `logDeriv_partial_fractions` | literature | 0 | - |
 | `ZetaLogDeriv.v1` | active | `logDeriv_functional_equation` | lean-comparator | 0 | #64 |
 | `ZetaLogDerivValues.v1` | stub | `logDeriv_two` | numerical | 0 | - |
 | `ZetaLogDerivValues.v1` | stub | `logDeriv_three_halves` | numerical | 0 | - |
@@ -129,6 +130,8 @@ node now claims, and only a fresh verification restores it.
 |---|---|---|
 | `CH2.v2.proposition_2_4_lower` | yellow | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
 | `CH2.v2.proposition_2_4_upper` | yellow | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
+| `CH2.v4.contour_shift` | drifted | its own statement changed since verification |
+| `CH2.v4.contour_shift_holomorphic` | drifted | its own statement changed since verification |
 | `DudekPlatt.v2.ramanujan_inequality_3915` | yellow | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
 | `DudekPlatt.v3.criterion` | yellow | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
 | `FKS2.v1.corollary_14` | yellow | verified under Mathlib 5b1c36187593 -> 71a80585ee49 |
@@ -152,8 +155,8 @@ downstream.
 
 | Conclusion | Dependants |
 |---|---:|
+| `PlattTrudgian.v1.rh_up_to` | 7 |
 | `FKBJ.v1.rh_up_to` | 6 |
-| `PlattTrudgian.v1.rh_up_to` | 5 |
 | `FKS2Numerics.v1.theta_asymp_ge_one_below_e30` | 4 |
 | `FKS2Numerics.v1.nu_asymp_e30_le` | 4 |
 | `FKS2.v2.proposition_13` | 4 |
@@ -163,17 +166,7 @@ downstream.
 | `FKS2Numerics.v1.corollary_22_mid_range` | 3 |
 | `FKS2.v2.theorem_3` | 3 |
 | `Buthe.v1.theorem_2_theta_lower` | 3 |
-| `ZetaLogDerivValues.v1.logDeriv_two` | 2 |
-| `ZetaLogDerivValues.v1.logDeriv_three_halves` | 2 |
-| `ZetaLogDerivValues.v1.logDeriv_neg_one` | 2 |
-| `ZetaLogDerivValues.v1.logDeriv_laurent_alternating` | 2 |
-| `ZetaLogDeriv.v1.logDeriv_functional_equation` | 2 |
-| `ZetaHadamard.v1.logDeriv_partial_fractions` | 2 |
-| `ZeroCount.v1.rvm_error_small` | 2 |
-| `ZeroCount.v1.rvm_error_bound` | 2 |
-| `PlattZeroSum.v1.inv_ordinate_sum_le` | 2 |
 | `PlattTrudgian2021.v1.theorem_1_numerical` | 2 |
-| `PlattTrudgian.v1.rh_up_to_exact` | 2 |
 | `MT.v1.zero_free_region_sharpened` | 2 |
 | `MT.v1.zero_free_region` | 2 |
 | `Kadiri2005.v1.zero_free_region` | 2 |
@@ -184,10 +177,7 @@ downstream.
 | `FKS2Numerics.v1.corollary_23_mid_range` | 2 |
 | `DudekPlatt.v3.criterion` | 2 |
 | `CotangentSeries.v1.cot_series_zeta_values` | 2 |
-| `CH2.v2.proposition_2_4_upper` | 2 |
-| `CH2.v2.proposition_2_4_lower` | 2 |
 | `Buthe2016.v1.theorem_2_psi` | 2 |
-| `Buthe.v1.theorem_2_psi` | 2 |
 | `Wedeniwski.v1.rh_up_to` | 1 |
 | `Trudgian2011.v1.integral_S_bound` | 1 |
 | `RosserSchoenfeld.v1.zero_free_region_classical` | 1 |
@@ -197,6 +187,7 @@ downstream.
 | `Dusart2018.v1.proposition_5_4` | 1 |
 | `DudekPlattNumerics.v2.pi_two_sided_pnt` | 1 |
 | `DudekPlattNumerics.v1.pi_two_sided_paper` | 1 |
+| `ContourIntegration.v1.residue_theorem_rectangle` | 1 |
 | `CH2.v1.corollary_1_2_psi` | 1 |
 | `CH2.v1.corollary_1_2_lambda_sum` | 1 |
 | `ButheNumerics.v1.li_minus_pi_below_1e7` | 1 |
@@ -205,12 +196,3 @@ downstream.
 | `Buthe.v2.lemma_3_positivity` | 1 |
 | `Buthe.v2.lemma_3_bounds` | 1 |
 | `Buthe.v1.theorem_2_theta` | 1 |
-
-## Inactive nodes
-
-Retired without a successor: out of the build and the graph, kept on disk. `python scripts/ieantn.py reactivate <node>` restores one.
-
-| Node | Why |
-|---|---|
-| `CH2.v4` | Not currently needed in the network. Built to supply CH2.v1's contour shift, but CH2.v1's solution uses PNT+'s own section 5 ladder machinery instead: it needs the lam < 0 branch and infinitely many trivial-zero poles, which this L-shaped, finitely-many-poles statement cannot express. Nothing imports it. Its verified receipt and solution are kept, in case a future consumer wants the statement. |
-| `ContourIntegration.v1` | Not currently needed in the network. A residue theorem for rectangles, stated once so several nodes could import it; its only consumer was CH2.v4, which is now inactive. Mathlib still lacks the statement, so this is the first thing to reactivate if a future node needs contour integration. |

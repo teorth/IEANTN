@@ -239,6 +239,21 @@ conclusions:
       nodes and this is `identified`. Whether the Rosser-Schoenfeld citation is an alternative route or
       a step inside that clause has not been determined here, and is worth settling.
   designated: buthe-paper
+- id: table_1_interval_bounds
+  declaration: Buthe.v1.table_1_interval_bounds
+  challenge: Buthe.v1.challenge_table_1_interval_bounds
+  imports_status: traced
+  justifications:
+  - id: buthe-paper
+    kind: literature
+    source: Buthe
+    locator: Table 1, Equation (6.2)
+    note: >-
+      Asserted on the authority of the paper. The entries are in Tables.lean, copied from the PNT+
+      transcription of Table 1 (31 rows) and checked at the first and last printed blocks. Equation
+      (6.2) is the paper's own reading of the table: each row (x, M-, M+) bounds (t - psi(t))/sqrt(t)
+      on [x, 2x]. No external node is an input; the table is Buthe's computation.
+  designated: buthe-paper
 sources:
 - title: An analytic method for bounding psi(x)
   authors:
@@ -280,8 +295,7 @@ limitations:
   zeros as input, and the network can state only that there are none off the critical line below that
   height.
 - >-
-  Theorem 2 is now stated in full, (1.5) through (1.10). The paper's other results -- the sieve bound
-  of Section 6 and the Table 1 data that PNT+ formalizes -- are not stated; the table is the natural first
-  use of a Tables.lean in this node.
+  Theorem 2 is stated in full, (1.5) through (1.10). Table 1 is now in Tables.lean, and
+  table_1_interval_bounds records Equation (6.2). The sieve bound of Section 6 is still unstated.
 - >-
   No novelty is claimed. The results are Buthe's.
