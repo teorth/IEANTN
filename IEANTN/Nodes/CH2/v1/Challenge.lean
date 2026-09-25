@@ -5,6 +5,7 @@ Authors: Terence Tao
 -/
 import IEANTN.Nodes.Buthe.v1.Conclusions
 import IEANTN.Nodes.CH2.v1.Conclusions
+import IEANTN.Nodes.CH2.v2.Conclusions
 import IEANTN.Nodes.CotangentSeries.v1.Conclusions
 import IEANTN.Nodes.GammaAsymptotics.v2.Conclusions
 import IEANTN.Nodes.PlattTrudgian.v1.Conclusions
@@ -36,7 +37,9 @@ theorem CH2.v1.challenge_corollary_1_2_psi
     (zetalogderivvalues_v1_logderiv_neg_one : ZetaLogDerivValues.v1.logDeriv_neg_one)
     (zetalogderivvalues_v1_logderiv_laurent_alternating : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
     (zetahadamard_v1_logderiv_partial_fractions : ZetaHadamard.v1.logDeriv_partial_fractions)
-    (plattzerosum_v1_inv_ordinate_sum_le : PlattZeroSum.v1.inv_ordinate_sum_le) :
+    (plattzerosum_v1_inv_ordinate_sum_le : PlattZeroSum.v1.inv_ordinate_sum_le)
+    (ch2_v2_proposition_2_4_upper : CH2.v2.proposition_2_4_upper)
+    (ch2_v2_proposition_2_4_lower : CH2.v2.proposition_2_4_lower) :
     CH2.v1.corollary_1_2_psi := by
   sorry
 
@@ -51,7 +54,9 @@ theorem CH2.v1.challenge_corollary_1_2_lambda_sum
     (zetalogderivvalues_v1_logderiv_neg_one : ZetaLogDerivValues.v1.logDeriv_neg_one)
     (zetalogderivvalues_v1_logderiv_laurent_alternating : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
     (zetahadamard_v1_logderiv_partial_fractions : ZetaHadamard.v1.logDeriv_partial_fractions)
-    (plattzerosum_v1_inv_ordinate_sum_le : PlattZeroSum.v1.inv_ordinate_sum_le) :
+    (plattzerosum_v1_inv_ordinate_sum_le : PlattZeroSum.v1.inv_ordinate_sum_le)
+    (ch2_v2_proposition_2_4_upper : CH2.v2.proposition_2_4_upper)
+    (ch2_v2_proposition_2_4_lower : CH2.v2.proposition_2_4_lower) :
     CH2.v1.corollary_1_2_lambda_sum := by
   sorry
 

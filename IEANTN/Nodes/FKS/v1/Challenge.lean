@@ -32,3 +32,9 @@ theorem FKS.v1.challenge_psi_classical_bound
     (platttrudgian_v1_rh_up_to : PlattTrudgian.v1.rh_up_to) :
     FKS.v1.psi_classical_bound := by
   sorry
+
+theorem FKS.v1.challenge_rescaled_A_exceeds_printed : FKS.v1.rescaled_A_exceeds_printed := by
+  sorry
+
+theorem FKS.v1.challenge_rescaled_C_is_short_of_two : FKS.v1.rescaled_C_is_short_of_two := by
+  sorry

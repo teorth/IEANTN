@@ -73,7 +73,7 @@ def theorem_1_numerical : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`MT.v1.zero_free_region`](MT-v1.md#zero_free_region), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to), [`KLN.v1.zero_density`](KLN-v1.md#zero_density) |
-| Assumed by | [`BKLNW.v1.table8_psi_bound`](BKLNW-v1.md#table8_psi_bound), [`BKLNW.v1.table8_psi_bound_above`](BKLNW-v1.md#table8_psi_bound_above) |
+| Assumed by | [`BKLNW.v1.table8_psi_bound`](BKLNW-v1.md#table8_psi_bound), [`BKLNW.v1.table8_psi_bound_above`](BKLNW-v1.md#table8_psi_bound_above), [`BKLNWNumerics.v1.table8_psi_bound`](BKLNWNumerics-v1.md#table8_psi_bound) |
 
 **Justification `pt2021-paper`** — **designated** — literature, Theorem 1, the numerical half, over Table 1
 

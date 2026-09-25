@@ -105,6 +105,40 @@ conclusions:
       the statement. The paper's headline. Stated against li, the un-offset logarithmic integral, not
       Li.
   designated: buthe2016-paper
+- id: theorem_1_table1
+  declaration: Buthe2016.v1.theorem_1_table1
+  challenge: Buthe2016.v1.challenge_theorem_1_table1
+  imports: []
+  imports_status: none
+  justifications:
+  - id: buthe2016-table1
+    kind: numerical
+    source: Buthe2016
+    locator: Theorem 1, via Table 1
+    note: >-
+      The tabulated output of Theorem 1 at heights up to 3.061e10, transcribed from arXiv:1410.7015.
+      Kind `numerical` because each delta_0 is a computed upper bound for e^{alpha epsilon}(E1+E2+E3),
+      not a closed-form argument. Imports none: the verification height T is a hypothesis on each row,
+      the same shape as this node's Theorem 2. The Logan-kernel statement of Theorem 1 is not recorded
+      here -- the table is the part that can be stated without new Vocabulary. margin 0 is a site on
+      the computed constants.
+  designated: buthe2016-table1
+- id: theorem_1_table2
+  declaration: Buthe2016.v1.theorem_1_table2
+  challenge: Buthe2016.v1.challenge_theorem_1_table2
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: buthe2016-table2
+    kind: numerical
+    source: Buthe2016
+    locator: Theorem 1, via Table 2
+    note: >-
+      Same claim as theorem_1_table1, at the paper's Table 2 heights (up to 2.445e12). The paper
+      attributes that height to Gourdon (2004). The network has no node for that computation, so the
+      verification remains a hypothesis and the import status is `traced` rather than `none`: the
+      input is known and named, but is not yet an edge.
+  designated: buthe2016-table2
 sources:
 - title: Estimating pi(x) and related functions under partial RH assumptions
   authors:
@@ -137,11 +171,12 @@ limitations:
 - >-
   Every conclusion rests on the cited paper; none is proved in Lean here.
 - >-
-  All four are stated against li rather than Li, as the paper states them. A node consuming them alongside
-  FKS2, which works with Li, must do the conversion; li 2 is about 1.045 and the bounds are of size sqrt(x)
-  log x / (8 pi).
+  The four Theorem 2 conclusions are stated against li rather than Li, as the paper states them. A node
+  consuming them alongside FKS2, which works with Li, must do the conversion; li 2 is about 1.045 and
+  the bounds are of size sqrt(x) log x / (8 pi).
 - >-
-  Theorem 1 of the paper, an explicit bound with a different shape, is not stated; nothing in the network
-  consumes it yet.
+  Theorem 1 is stated through Tables 1 and 2, not in the Logan-kernel form of the theorem display. That
+  form needs Vocabulary this node does not yet justify promoting. Table 2's height 2.445e12 is Gourdon
+  (2004), which is not a node.
 - >-
   No novelty is claimed. The results are Buthe's.

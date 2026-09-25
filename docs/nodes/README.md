@@ -7,11 +7,13 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | Node | Kind | Claims | Weakest evidence |
 |---|---|---:|---|
 | [`BKLNW.v1`](BKLNW-v1.md) | paper | 4 | cited |
+| [`BKLNW.v2`](BKLNW-v2.md) | pipeline | 2 | cited |
+| [`BKLNWNumerics.v1`](BKLNWNumerics-v1.md) | computation | 2 | computation |
 | [`Brown1967.v1`](Brown1967-v1.md) | paper | 0 | — |
-| [`Buthe.v1`](Buthe-v1.md) | paper | 6 | cited |
+| [`Buthe.v1`](Buthe-v1.md) | paper | 7 | cited |
 | [`Buthe.v2`](Buthe-v2.md) | pipeline | 2 | unjustified |
-| [`Buthe2016.v1`](Buthe2016-v1.md) | paper | 4 | cited |
-| [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 3 | computation |
+| [`Buthe2016.v1`](Buthe2016-v1.md) | paper | 6 | cited |
+| [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 4 | computation |
 | [`CH2.v1`](CH2-v1.md) | paper | 4 | verified |
 | [`CH2.v2`](CH2-v2.md) | pipeline | 2 | verified, stale |
 | [`CH2.v3`](CH2-v3.md) | pipeline | 2 | verified |
@@ -24,7 +26,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`DudekPlattNumerics.v2`](DudekPlattNumerics-v2.md) | computation | 1 | computation |
 | [`Dusart2018.v1`](Dusart2018-v1.md) | paper | 1 | cited |
 | [`FKBJ.v1`](FKBJ-v1.md) | computation | 1 | computation |
-| [`FKS.v1`](FKS-v1.md) | paper | 2 | cited |
+| [`FKS.v1`](FKS-v1.md) | paper | 4 | cited |
 | [`FKS2.v1`](FKS2-v1.md) | paper | 4 | verified, stale |
 | [`FKS2.v2`](FKS2-v2.md) | pipeline | 2 | verified, stale |
 | [`FKS2Numerics.v1`](FKS2Numerics-v1.md) | computation | 5 | computation |
@@ -35,7 +37,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`Kadiri2005.v1`](Kadiri2005-v1.md) | paper | 1 | cited |
 | [`Lcm.v1`](Lcm-v1.md) | paper | 1 | verified, stale |
 | [`Lcm.v2`](Lcm-v2.md) | pipeline | 1 | verified, stale |
-| [`LowZeroes.v1`](LowZeroes-v1.md) | computation | 1 | computation |
+| [`LowZeroes.v1`](LowZeroes-v1.md) | computation | 2 | computation |
 | [`MT.v1`](MT-v1.md) | paper | 2 | cited |
 | [`MTY.v1`](MTY-v1.md) | paper | 0 | — |
 | [`Platt2015.v1`](Platt2015-v1.md) | computation | 1 | computation |

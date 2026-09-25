@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import IEANTN.Vocabulary.ErrorTerms
+import IEANTN.Nodes.Buthe.v1.Tables
 
 /-!
 # Node `Buthe.v1`
@@ -72,5 +73,16 @@ Together with (1.9) this makes the bound two-sided, which is what a statement ab
 needs. Büthe notes that it also pushes the lower bound for the Skewes number to `10¹⁹`. -/
 def theorem_2_li_gt_pi : Prop :=
   ∀ x : ℝ, 2 ≤ x → x ≤ 10 ^ (19 : ℕ) → 0 < li x - primeCounting x
+
+/-- **Table 1 / Equation (6.2).** If `(x, M⁻, M⁺)` is a row of Table 1, then
+`M⁻ ≤ (t − ψ(t)) / √t ≤ M⁺` for every `t ∈ [x, 2x]`.
+
+This is the claim *about* `Tables.lean`, the same shape as PNT+'s `eq_6_2`. The last row's
+`2x` exceeds `10¹⁹`; the table still records it because that is what the paper prints. -/
+def table_1_interval_bounds : Prop :=
+  ∀ p ∈ table_1, ∀ t : ℝ,
+    p.1 ≤ t → t ≤ 2 * p.1 →
+      p.2.1 ≤ (t - Chebyshev.psi t) / Real.sqrt t ∧
+        (t - Chebyshev.psi t) / Real.sqrt t ≤ p.2.2
 
 end Buthe.v1

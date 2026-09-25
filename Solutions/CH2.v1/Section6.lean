@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Terence Tao
 -/
 import ZetaInstanceNeg
+import IEANTN.Nodes.CH2.v2.Conclusions
 
 /-!
 # Section 6: from the Fourier inequality and the contour shift to the explicit formula
@@ -23,6 +24,67 @@ This file does that at `A = -ζ'/ζ` and for `σ < 1` only, which is all Corolla
 -/
 
 open Real Complex MeasureTheory FourierTransform
+
+
+/-! ### Proposition 2.4, from the imported node
+
+`svm_bounds` feeds Proposition 2.4 its approximants. It used to call the proof in `Part1Fourier`
+directly; it now takes the result as an imported conclusion, `CH2.v2.proposition_2_4_upper` and
+`_lower`, so that CH2.v1's graph shows the edge. The adapters below restate the node's conclusions
+in exactly the signature of `prop_2_4_plus` and `prop_2_4_minus`. They agree definitionally --
+CH2.v2's own solution proves the node's statements from these by `exact`, and this goes the other
+way -- so the adapter is the node's conclusion, repackaged.
+-/
+
+namespace CH2Sol
+
+open Real MeasureTheory FourierTransform Chebyshev Asymptotics
+open ArithmeticFunction hiding log
+open Complex hiding log
+
+theorem prop_2_4_plus_of_v2 (h : CH2.v2.proposition_2_4_upper) {a : ℕ → ℝ} (ha_pos : ∀ n, a n ≥ 0)
+    {T β σ : ℝ} (hT : 0 < T) (hβ : 1 < β) (hσ : σ ≠ 1)
+    (ha : Summable (fun n : ℕ ↦ ‖(a n : ℂ)‖ / (n * Real.log n ^ β)))
+    {G : ℂ → ℂ} (hG : ContinuousOn G { z | z.re ≥ 1 ∧ z.im ∈ Set.Icc (-T) T })
+    (hG' : Set.EqOn G (fun s ↦ ∑' n, a n / (n ^ s : ℂ) - 1 / (s - 1)) { z | z.re > 1 })
+    {φ_plus : ℝ → ℂ} (hφ_mes : Measurable φ_plus) (hφ_int : Integrable φ_plus)
+    (hφ_cont : ContinuousAt φ_plus 0)
+    (hφ_supp : ∀ x, x ∉ Set.Icc (-1) 1 → φ_plus x = 0)
+    (hφ_Fourier : ∃ C : ℝ, ∀ y : ℝ, y ≠ 0 → ‖𝓕 φ_plus y‖ ≤ C / |y| ^ β)
+    (hI_le_Fourier : ∀ y : ℝ,
+      let lambda := (2 * π * (σ - 1)) / T
+      I' lambda y ≤ (𝓕 φ_plus y).re)
+    (x : ℝ) (hx : 1 ≤ x) :
+    S a σ x ≤
+      ((2 * π * (x ^ (1 - σ) : ℝ) / T) * φ_plus 0).re +
+      (x ^ (-σ) : ℝ) / T *
+        (∫ t in Set.Icc (-T) T, φ_plus (t/T) * G (1 + t * I) * (x ^ (1 + t * I))).re -
+      if σ < 1 then 1 / (1 - σ) else 0 :=
+  h a T β σ G φ_plus x ⟨ha_pos, ha⟩ hT hβ hσ ⟨hG, hG'⟩
+    ⟨hφ_mes, hφ_int, hφ_cont, hφ_supp, hφ_Fourier⟩ hI_le_Fourier hx
+
+theorem prop_2_4_minus_of_v2 (h : CH2.v2.proposition_2_4_lower) {a : ℕ → ℝ} (ha_pos : ∀ n, a n ≥ 0)
+    {T β σ : ℝ} (hT : 0 < T) (hβ : 1 < β) (hσ : σ ≠ 1)
+    (ha : Summable (fun n ↦ ‖(a n : ℂ)‖ / (n * Real.log n ^ β)))
+    {G : ℂ → ℂ} (hG : ContinuousOn G { z | z.re ≥ 1 ∧ z.im ∈ Set.Icc (-T) T })
+    (hG' : Set.EqOn G (fun s ↦ ∑' n, a n / (n ^ s : ℂ) - 1 / (s - 1)) { z | z.re > 1 })
+    {φ_minus : ℝ → ℂ} (hφ_mes : Measurable φ_minus) (hφ_int : Integrable φ_minus)
+    (hφ_cont : ContinuousAt φ_minus 0)
+    (hφ_supp : ∀ x, x ∉ Set.Icc (-1) 1 → φ_minus x = 0)
+    (hφ_Fourier : ∃ C : ℝ, ∀ y : ℝ, y ≠ 0 → ‖𝓕 φ_minus y‖ ≤ C / |y| ^ β)
+    (hFourier_le_I : ∀ y : ℝ,
+      let lambda := (2 * π * (σ - 1)) / T
+      (𝓕 φ_minus y).re ≤ I' lambda y)
+    {x : ℝ} (hx : 1 ≤ x) :
+    S a σ x ≥
+      ((2 * π * (x ^ (1 - σ) : ℝ) / T) * φ_minus 0).re +
+      (x ^ (-σ) : ℝ) / T *
+        (∫ t in Set.Icc (-T) T, φ_minus (t/T) * G (1 + t * I) * (x ^ (1 + t * I))).re -
+      if σ < 1 then 1 / (1 - σ) else 0 :=
+  h a T β σ G φ_minus x ⟨ha_pos, ha⟩ hT hβ hσ ⟨hG, hG'⟩
+    ⟨hφ_mes, hφ_int, hφ_cont, hφ_supp, hφ_Fourier⟩ hFourier_le_I hx
+
+end CH2Sol
 
 namespace CH2Section6
 
@@ -352,6 +414,8 @@ residue sum, still in `sumResiduesIn` form, and the explicit error. -/
 theorem svm_bounds
     (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h24u : CH2.v2.proposition_2_4_upper)
+    (h24l : CH2.v2.proposition_2_4_lower)
     {l : CH2.LadderParams} (hsig : l.σ = CH2ZetaInstance.sigmaZeta)
     (hTfree : ∀ z : ℂ, riemannZeta z = 0 → |z.im| ≠ l.T)
     (hdfree : ∀ z : ℂ, riemannZeta z = 0 → |z.im| ≠ l.δ)
@@ -413,7 +477,7 @@ theorem svm_bounds
     rw [show (2 * (π : ℂ)) = ((2 * π : ℝ) : ℂ) by push_cast; ring, Complex.re_ofReal_mul]
   have hσne : σ ≠ 1 := hσ1.ne
   constructor
-  · have hP := CH2Sol.prop_2_4_plus (a := fun n ↦ ArithmeticFunction.vonMangoldt n) ha_pos
+  · have hP := CH2Sol.prop_2_4_plus_of_v2 h24u (a := fun n ↦ ArithmeticFunction.vonMangoldt n) ha_pos
       hT (by norm_num : (1 : ℝ) < 2) hσne hsumm hGc hGe
       (phiNeg_measurable hν 1) (phiNeg_integrable hν 1) (phiNeg_continuousAt hν 1)
       (fun x hx ↦ phiNeg_zero_outside |lam| 1 hx) (phiNeg_fourier_decay hν (Or.inl rfl))
@@ -439,7 +503,7 @@ theorem svm_bounds
       ring
     rw [hphi] at hP
     linarith [hP, h2, e1, e2]
-  · have hM := CH2Sol.prop_2_4_minus (a := fun n ↦ ArithmeticFunction.vonMangoldt n) ha_pos
+  · have hM := CH2Sol.prop_2_4_minus_of_v2 h24l (a := fun n ↦ ArithmeticFunction.vonMangoldt n) ha_pos
       hT (by norm_num : (1 : ℝ) < 2) hσne hsumm hGc hGe
       (phiNeg_measurable hν (-1)) (phiNeg_integrable hν (-1)) (phiNeg_continuousAt hν (-1))
       (fun x hx ↦ phiNeg_zero_outside |lam| (-1) hx) (phiNeg_fourier_decay hν (Or.inr rfl))

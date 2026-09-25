@@ -261,6 +261,8 @@ set_option maxHeartbeats 1000000 in
 `CH2Section9.sagaro`, whose right-hand side does not involve `σ`. -/
 theorem sagaro_one (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h24u : CH2.v2.proposition_2_4_upper)
+    (h24l : CH2.v2.proposition_2_4_lower)
     (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
     (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
     (h2v : ZetaLogDerivValues.v1.logDeriv_two)
@@ -284,7 +286,7 @@ theorem sagaro_one (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (eventually_gt_nhds (show (0 : ℝ) < 1 by norm_num)).filter_mono nhdsWithin_le_nhds]
     with σ hσ hσ0
   have hσ1 : σ < 1 := hσ
-  exact sagaro hfe hdig hk hneg h2v hv hcs hrvm hsmall hplatt hH hT hx9 hxT hRH hσ0.le hσ1
+  exact sagaro hfe hdig h24u h24l hk hneg h2v hv hcs hrvm hsmall hplatt hH hT hx9 hxT hRH hσ0.le hσ1
     (CH2ZetaReal.riemannZeta_ne_zero_Ico hσ0.le hσ1)
 
 /-! ### `prop:sagaro` at `σ = 0`: Corollary 1.2 for `ψ` -/
@@ -315,6 +317,8 @@ main term's `-ζ'/ζ(0) x^{-1} = -log(2π)/x` is paid for by the `0.0005/√x` t
 keeps back. -/
 theorem corollary_1_2_psi_at (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h24u : CH2.v2.proposition_2_4_upper)
+    (h24l : CH2.v2.proposition_2_4_lower)
     (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
     (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
     (h2v : ZetaLogDerivValues.v1.logDeriv_two)
@@ -335,7 +339,7 @@ theorem corollary_1_2_psi_at (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation
   have hζ0 : riemannZeta ((0 : ℝ) : ℂ) ≠ 0 := by
     rw [Complex.ofReal_zero, riemannZeta_zero]
     norm_num
-  have h := sagaro_slack hfe hdig hk hneg h2v hv hcs hrvm hsmall hplatt hH hT hx9 hxT hRH
+  have h := sagaro_slack hfe hdig h24u h24l hk hneg h2v hv hcs hrvm hsmall hplatt hH hT hx9 hxT hRH
     (σ := 0) le_rfl (by norm_num) hζ0
   -- rewrite the `σ = 0` main term
   rw [Svm_zero, Complex.ofReal_zero, logDeriv_zeta_zero] at h
@@ -398,6 +402,8 @@ theorem corollary_1_2_psi_at (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation
 conclusions. -/
 theorem corollary_1_2_psi (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h24u : CH2.v2.proposition_2_4_upper)
+    (h24l : CH2.v2.proposition_2_4_lower)
     (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
     (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
     (h2v : ZetaLogDerivValues.v1.logDeriv_two)
@@ -408,7 +414,7 @@ theorem corollary_1_2_psi (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hH : ZetaHadamard.v1.logDeriv_partial_fractions) :
     CH2.v1.corollary_1_2_psi := by
   intro T x hT hRH hx
-  exact corollary_1_2_psi_at hfe hdig hk hneg h2v hv hcs hrvm hsmall hplatt hH hT
+  exact corollary_1_2_psi_at hfe hdig h24u h24l hk hneg h2v hv hcs hrvm hsmall hplatt hH hT
     (le_of_lt (lt_of_le_of_lt (le_max_right T _) hx))
     (le_of_lt (lt_of_le_of_lt (le_max_left _ _) hx)) hRH
 
@@ -416,6 +422,8 @@ theorem corollary_1_2_psi (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
 own words. -/
 theorem corollary_1_2_lambda_sum (hfe : ZetaLogDeriv.v1.logDeriv_functional_equation)
     (hdig : GammaAsymptotics.v2.digamma_sub_log_isBigO_strip)
+    (h24u : CH2.v2.proposition_2_4_upper)
+    (h24l : CH2.v2.proposition_2_4_lower)
     (hk : ZetaLogDerivValues.v1.logDeriv_laurent_alternating)
     (hneg : ZetaLogDerivValues.v1.logDeriv_neg_one)
     (h2v : ZetaLogDerivValues.v1.logDeriv_two)
@@ -427,7 +435,7 @@ theorem corollary_1_2_lambda_sum (hfe : ZetaLogDeriv.v1.logDeriv_functional_equa
     CH2.v1.corollary_1_2_lambda_sum := by
   intro T x hT hRH hx
   rw [CH2.v1.lambdaSum, CH2.v1.CT]
-  exact sagaro_one hfe hdig hk hneg h2v hv hcs hrvm hsmall hplatt hH hT
+  exact sagaro_one hfe hdig h24u h24l hk hneg h2v hv hcs hrvm hsmall hplatt hH hT
     (le_of_lt (lt_of_le_of_lt (le_max_right T _) hx))
     (le_of_lt (lt_of_le_of_lt (le_max_left _ _) hx)) hRH
 

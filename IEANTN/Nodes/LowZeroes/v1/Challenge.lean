@@ -18,3 +18,6 @@ How each conclusion is justified is recorded in `formalization.yaml`, not here.
 
 theorem LowZeroes.v1.challenge_sum_inv_ordinates_below_2e4 : LowZeroes.v1.sum_inv_ordinates_below_2e4 := by
   sorry
+
+theorem LowZeroes.v1.challenge_no_zeroes_below_first_ordinate : LowZeroes.v1.no_zeroes_below_first_ordinate := by
+  sorry

@@ -12,11 +12,12 @@ import IEANTN.Vocabulary.Numerics
 Facts about the low-lying zeroes of `ζ` that come from a computation over a list of them rather
 than from an argument.
 
-At present there is one: the sum of the reciprocal ordinates below height `2 × 10⁴`, which
+At present there are two: the sum of the reciprocal ordinates below height `2 × 10⁴`, which
 Chirre–Helfgott compute from David Platt's zero data and use in the proof of their Proposition
 `vihuela` — the bound on the contribution of the zeros that produces `C_T`, the `√x` constant in
-`CH2.v1`'s corollaries. Without it that constant cannot be obtained; no amount of analysis
-substitutes for knowing where the low zeroes actually are.
+`CH2.v1`'s corollaries — and a lower bound on the first nontrivial ordinate, which `ZeroFreeHeight`
+needs to push a classical region below `exp(2/R)`. Without the reciprocal sum that constant cannot
+be obtained; no amount of analysis substitutes for knowing where the low zeroes actually are.
 
 ## Why this is a `computation` node and not a `paper` one
 
@@ -28,11 +29,11 @@ re-establishing it means re-running something rather than re-reading something.
 
 ## Intended to grow
 
-Deliberately named for the class rather than the single fact. Other things about the low zeroes are
-wanted elsewhere in the network and belong here when someone needs them — the ordinate of the first
-zero, `14.134725…`, would sharpen `ZeroFreeHeight`, and further reciprocal-power sums appear
-throughout the explicit-formula literature. Adding a conclusion here is cheaper than a new node each
-time, and keeps the provenance — Platt's data — in one place.
+Deliberately named for the class rather than the single fact. Further reciprocal-power sums appear
+throughout the explicit-formula literature and belong here when someone needs them. Adding a
+conclusion here is cheaper than a new node each time, and keeps the provenance — Platt's data — in
+one place. The first-ordinate lower bound below is the piece `ZeroFreeHeight` needs to push a
+classical region below `exp(2/R)`.
 
 ## The `margin` sites
 
@@ -69,5 +70,31 @@ noncomputable def sum_inv_ordinates_below_2e4 : Prop :=
     2 * zetaZeroesSum Set.univ (Set.Ioc (0 : ℝ) (2 * 10 ^ (4 : ℕ)))
         (fun ρ ↦ 1 / (ρ : ℂ).im)
       ≤ margin 0 * 10.319318
+
+/-- **No zeroes below the first nontrivial ordinate.** `ζ` has no zeroes with
+`0 < Im ρ < 14.134725`.
+
+The truncated digits of the first nontrivial zero's imaginary part, `14.1347251417…`. Stated as an
+open interval rather than an equality to the truncated value, so the claim is true of the actual
+ordinate, and with a `margin 0` site so widening later is a one-numeral change.
+
+**Stated as an empty zero set, not as `zetaN _ = 0`.** The two look interchangeable and are not.
+`zetaN` is a `tsum`, and `0` is exactly what a `tsum` returns when the family is not summable, so
+`zetaN T = 0` holds both when there are no zeroes below `T` and when there are infinitely many.
+A consumer could not extract "no zeroes here" from it without first proving the zero set finite,
+which is precisely the content it was supposed to supply. `zetaZeroesIn _ _ = ∅` has no such
+branch: it says what it appears to say. See the junk-value warning on `zetaZeroesSum`.
+
+The real-part set is `Set.univ` and not the critical strip: this rules out *every* zero in the
+range, trivial ones included, and the trivial zeroes are real so none of them is excluded by
+accident.
+
+This is the input `ZeroFreeHeight` needs to push a classical region below `exp(2/R)`: a verified
+RH height only rules out zeroes *off* the critical line, while this rules out *all* zeroes below
+the first ordinate.
+
+Imports nothing: a bare numerical claim about `ζ`. -/
+noncomputable def no_zeroes_below_first_ordinate : Prop :=
+  zetaZeroesIn Set.univ (Set.Ioo 0 (14.134725 / margin 0)) = ∅
 
 end LowZeroes.v1
