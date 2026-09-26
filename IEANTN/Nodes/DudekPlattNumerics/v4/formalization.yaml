@@ -12,7 +12,7 @@ node:
   family: DudekPlattNumerics
   version: v4
   kind: computation
-  status: awaiting-verification
+  status: active
 
 project:
   name: "The explicit pi estimate behind Dudek-Platt's footnote threshold, formalized"
@@ -77,12 +77,11 @@ conclusions:
       see MT.v2's own formalization.yaml. This solution is therefore conditional on that one cited
       result exactly as its import declares -- proving the calculus around a literature input is not
       the same as proving the input, and this note does not claim the latter.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/36206201094'
+  designated: comparator
 
-  progress:
-    solution: Solutions/DudekPlattNumerics.v4/
-    state: in-progress
-    remaining_holes: 0
 sources:
 - title: "On solving a curious inequality of Ramanujan"
   authors: ["Adrian W. Dudek", "David J. Platt"]
