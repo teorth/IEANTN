@@ -37,11 +37,12 @@ conclusions:
     conclusion: zero_free_region_sharpened
   - node: PlattTrudgian.v1
     conclusion: rh_up_to
+  imports_status: traced
   justifications:
   - id: fks-paper
     kind: literature
     source: FKS
-    locator: arXiv:2204.02588v2, Corollary 1.4 (preprint numbering, checked)
+    locator: Corollary 1.4, in the published version and in arXiv:2204.02588v2 and v3 alike
     note: >-
       Asserted on the authority of the paper, and transcribed from the preprint in the paper's own normalisation
       rather than converted to the admissible-bound shape. The conversion is not free: with R = 5.5666305
@@ -54,8 +55,10 @@ conclusions:
       two are recorded as edges. The third is now recorded too, at the point where the error FKS reports
       actually bites: KLN.v1 states the subconvexity bound of its Lemma 3.2 with FKS's corrected constant
       0.77 rather than the printed 0.63, which is the value FKS itself uses. KLN's Theorem 1.1 and its
-      numerical density tables remain unstated, because their constants were computed with the erroneous
-      value and nobody has published recomputed ones. FKS's other Kadiri-Lumley-Ng reference [19], the
+      numerical density tables remain unstated. Not because nobody has recomputed them -- FKS does,
+      in its Tables 7 and 8, at a1 = 0.77 and H0 = 3 x 10^12 ("we provided updated parameters optimized
+      for H0 = 3 . 10^12") -- but because what FKS publishes are parameters for its own restatement,
+      Theorem 2.7, rather than a reissue of KLN's tables, as KLN.v1's own limitations already say. FKS's other Kadiri-Lumley-Ng reference [19], the
       unpublished preprint 'Bounding psi(x) with zero-density', is NOT an input: Lemma 2.5, the sums-over-zeros
       estimate, is proved in FKS itself and the preprint is cited as attribution. It is background, not
       an edge. Absolute values, checked against the rendered page. FKS (1.1) defines E_psi(x) = |(psi(x)
@@ -161,7 +164,9 @@ review:
   status: self-assessed
   reviewers: ["Terence Tao"]
   notes: >-
-    Bibliographic details taken from blueprint/src/references.bib in PrimeNumberTheoremAnd
+    Bibliographic details confirmed against Crossref (DOI 10.1016/j.jmaa.2023.127426: title, the three
+    authors, vol. 527 no. 2, article 127426, November 2023) and the page count against the published
+    article, which is 28 pages. Originally taken from blueprint/src/references.bib in PrimeNumberTheoremAnd
     rather than from the printed paper. The published JMAA version is now held in the library;
     verify them against it before this node is cited externally or used as the basis for a
     submission. That check would also settle the numbering discrepancy noted below.
