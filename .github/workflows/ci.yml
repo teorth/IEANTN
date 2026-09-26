@@ -168,7 +168,10 @@ jobs:
   # same few files. One writer, no conflicts; this is what keeps it to one writer.
   derived:
     name: Derived views are left to CI
-    if: github.event_name == 'pull_request'
+    # `derived/**` is the exception, and the only one: a branch reserved for refreshing the views
+    # themselves. It exists because `main` is behind a ruleset that requires a pull request, so
+    # even the single writer has to come through one.
+    if: github.event_name == 'pull_request' && !startsWith(github.head_ref, 'derived/')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

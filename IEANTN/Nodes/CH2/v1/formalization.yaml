@@ -87,7 +87,7 @@ conclusions:
       at T = 3e12, which is the 113.67 the paper prints in Corollary 1.3.
   - id: comparator
     kind: lean-comparator
-    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/35558659363'
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/36147450269'
   designated: comparator
 - id: corollary_1_2_lambda_sum
   declaration: CH2.v1.corollary_1_2_lambda_sum
@@ -133,7 +133,7 @@ conclusions:
       CH2.cor_1_2_b with a `sorry`, and its transcription agrees with this one.
   - id: comparator
     kind: lean-comparator
-    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/35558659363'
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/36147450269'
   designated: comparator
 - id: corollary_1_3_psi
   declaration: CH2.v1.corollary_1_3_psi
@@ -171,7 +171,7 @@ conclusions:
       a false one, but it is not the paper's result.
   - id: comparator
     kind: lean-comparator
-    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/35558659363'
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/36147450269'
   designated: comparator
 - id: corollary_1_3_lambda_sum
   declaration: CH2.v1.corollary_1_3_lambda_sum
@@ -202,7 +202,7 @@ conclusions:
       with each other is the clearest sign that neither should be copied.
   - id: comparator
     kind: lean-comparator
-    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/35558659363'
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/36147450269'
   designated: comparator
 
 sources:
