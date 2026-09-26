@@ -59,7 +59,7 @@ def corollary_1_2_psi : Prop :=
 
 **Justification `comparator`** — **designated** — lean-comparator
 
-> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/35558659363
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/36147450269
 
 ### `corollary_1_2_lambda_sum`
 
@@ -96,7 +96,7 @@ def corollary_1_2_lambda_sum : Prop :=
 
 **Justification `comparator`** — **designated** — lean-comparator
 
-> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/35558659363
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/36147450269
 
 ### `corollary_1_3_psi`
 
@@ -139,7 +139,7 @@ def corollary_1_3_psi : Prop :=
 
 **Justification `comparator`** — **designated** — lean-comparator
 
-> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/35558659363
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/36147450269
 
 ### `corollary_1_3_lambda_sum`
 
@@ -176,7 +176,7 @@ def corollary_1_3_lambda_sum : Prop :=
 
 **Justification `comparator`** — **designated** — lean-comparator
 
-> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/35558659363
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/36147450269
 
 ## Limitations
 
