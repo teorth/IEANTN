@@ -6,11 +6,11 @@
     "mathlib_rev": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6"
   },
   "repository": {
-    "commit": "5ad2d5927814b43e2d362d779472243d6d8bf314"
+    "commit": "6410bf4fe85fc7d830fa4afdb8b50b5dfbb54cbe"
   },
   "run": {
-    "recorded_at": "2026-09-21T04:19:01Z",
-    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/35558659363"
+    "recorded_at": "2026-09-26T00:21:42Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/36147450269"
   },
   "schema": 2,
   "solution": {
@@ -18,6 +18,8 @@
   },
   "statement": {
     "CH2.v1.corollary_1_2_lambda_sum": "66b1033ed015cadad1c1bb6fb32e814929be7a28f99b1d479b51a381baae7b23",
+    "CH2.v2.proposition_2_4_lower": "879a82e8a29d7bf3a0c3cc4847380a530d236d20cf952ad5cf90a64087b8eea7",
+    "CH2.v2.proposition_2_4_upper": "74358eca0c837cb10263a159fea46718745128ed7905166607682f1d468e94f2",
     "CotangentSeries.v1.cot_series_zeta_values": "916996a4e1b7d92d2b145c817d4ef186f7df1204ad5c48f785ab4d2095bf8264",
     "GammaAsymptotics.v2.digamma_sub_log_isBigO_strip": "2933d1b5fe8c739d2a61d31b81fa7a19197a34762d2cbae46bbd9101c5f2c070",
     "PlattZeroSum.v1.inv_ordinate_sum_le": "842fe3c7d06aff318699e7f400e3f84dc56fa71f89fa09c3450c6b72eb31a154",
