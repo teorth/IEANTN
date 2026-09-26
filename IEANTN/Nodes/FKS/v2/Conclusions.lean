@@ -29,9 +29,10 @@ published threshold.
 **The rescaling.** `FKS.v1`'s notes record that `psi_classical_bound` is *not* derivable from
 `psi_bound_all_x` by rescaling: at `R = 5.5666305`, `9.22022 R^{3/2} = 121.09602174…` overshoots
 the printed `121.096`, and `0.8476836 √R = 1.99999992…` falls short of the printed `2`, both in the
-strengthening direction. True, and it is the wrong direction to test. **The paper derives the
-all-`x` bound from the classical one**, and says so in the proof of Corollary 1.4: *"We now simply
-verify that `121.096/5.5666305^{3/2} < 9.22022` to complete the result."* Those same two
+strengthening direction. True, and it is the wrong direction to test. **Where the paper uses the
+classical form, it derives the all-`x` bound from it**: the proof of Lemma 5.3, the step of the
+proof of Corollary 1.4 that covers `2100 < log x ≤ 200000`, ends *"We now simply verify that
+`121.096/5.5666305^{3/2} < 9.22022` to complete the result."* Those same two
 inequalities, read the other way, are exactly what that derivation needs, and
 `IEANTN/Bridges/FKS/ClassicalToAllX.lean` carries it out. So `psi_bound_all_x` is not a second
 thing to take on trust: it follows from the classical bound, and no `margin` index is involved.
@@ -52,8 +53,10 @@ full list of inputs, four of which are not network edges and cannot be.
 The published version numbers the all-`x` bound **Corollary 1.4**, and has no Corollary 1.3; the
 "Corollary 1.3" that `FKS2` cites is the arXiv v1 number, from a version whose constant was
 `9.22106` rather than `9.22022`. The classical form with `A = 121.096` is not a numbered statement
-in any version: it is established inside the proof of Corollary 1.4, and the largest "Bound on `A`"
-in the table in the proof of Lemma 5.3 is that value.
+in any version. In arXiv v2 and v3 it appears only inside the proof of Lemma 5.3, which checks it on
+`2100 < log x ≤ 200000` (`121.096` is the largest "Bound on `A`" in that proof's table); the
+proof of Corollary 1.4 then covers `log x > 200000` by Theorem 1.2 and `log x ≤ 2100` by
+Lemma 5.2. Lemma numbers are arXiv v3's.
 -/
 
 namespace FKS.v2
@@ -67,7 +70,7 @@ open IEANTN
 Identical to `FKS.v1.psi_bound_all_x`, and kept in the paper's own normalisation so the
 transcription can be checked against the printed statement by eye. What changed is its standing:
 it is `bridged` from `psi_classical_bound` below rather than cited, because that is the direction
-the paper's own proof runs. -/
+the paper's own proof runs where it uses the classical form (Lemma 5.3). -/
 def psi_bound_all_x : Prop :=
   ∀ x > (2 : ℝ), Eψ x < 9.22022 * (Real.log x) ^ ((3 : ℝ) / 2) *
     Real.exp (-0.8476836 * Real.sqrt (Real.log x))
