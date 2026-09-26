@@ -1,0 +1,30 @@
+{
+  "challenge": "DudekPlatt.v4.challenge_ramanujan_inequality_9401",
+  "conclusion": "DudekPlatt.v4.ramanujan_inequality_9401",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6"
+  },
+  "repository": {
+    "commit": "2916810a2cf3678813b6dac10b86628bcb32c98c"
+  },
+  "run": {
+    "recorded_at": "2026-09-26T00:48:19Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/36205434681"
+  },
+  "schema": 2,
+  "solution": {
+    "project": "Solutions/DudekPlatt.v4"
+  },
+  "statement": {
+    "DudekPlatt.v3.criterion": "c97db9a5c2d3dc385af1f67b804e8d1fa26d309b5831e45679c3b5243fdd6aaa",
+    "DudekPlatt.v4.ramanujan_inequality_9401": "1165f0821612abc6ec3533b4b3016e30ad4531d38e0093ca5c37e92ea4b57637",
+    "DudekPlattNumerics.v3.pi_two_sided_footnote": "7083947079a2b0903e0573cfab5903c2e28f6526df99144c4330f10a090494e4"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}

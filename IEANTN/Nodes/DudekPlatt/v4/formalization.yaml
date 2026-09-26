@@ -11,7 +11,7 @@ node:
   family: DudekPlatt
   version: v4
   kind: paper
-  status: awaiting-verification
+  status: active
 
 project:
   name: "Ramanujan's inequality at Dudek-Platt's footnote-improved threshold, repaired"
@@ -70,7 +70,10 @@ conclusions:
       log x = 9401 -- a large margin compared to DudekPlatt.v2's 0.4989 at its own threshold, and in
       sharp contrast to the SAME condition FAILING by about 0.89 at DudekPlattNumerics.v1's parameters
       at DudekPlatt.v1's printed threshold.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/36205434681'
+  designated: comparator
 
 sources:
 - title: "On solving a curious inequality of Ramanujan"
