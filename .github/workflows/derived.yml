@@ -1,4 +1,4 @@
-# Regenerate the derived views on `main`, and nowhere else.
+# Regenerate the derived views, and offer them to `main` as a pull request.
 #
 # `STATE.md`, `GRAPH.md` and the pages under `docs/nodes/` are views of the node metadata: every
 # fact in them comes from a `formalization.yaml`, and regenerating them is deterministic. They are
@@ -8,10 +8,19 @@
 # rewrites all three, so any two open pull requests collide in them -- over content neither side
 # disagreed about, which a reviewer then resolves by hand and re-resolves on the next rebase.
 # Making CI the single writer ends that: pull requests leave the views alone (`ci.yml` checks that
-# they did), and this brings them up to date once the change is on `main`.
+# they did), and this refreshes them once a change reaches `main`.
 #
-# The push below is made with `GITHUB_TOKEN`, and GitHub does not start workflow runs from such a
-# push, so this cannot loop.
+# It cannot push to `main` itself. The `main` ruleset requires a pull request, and its bypass list
+# can only name roles, deploy keys and a couple of Copilot actors -- GitHub does not offer
+# `github-actions[bot]` as a bypass actor on a personal repository. So this opens a pull request
+# from `derived/views` instead, which `ci.yml`'s guard exempts by prefix.
+#
+# **Its checks will not run, and that is expected.** GitHub starts no workflow run from an event
+# caused by `GITHUB_TOKEN`, so neither the branch push nor the pull request below triggers CI, and
+# the three required checks stay unreported. Merging therefore takes the admin override. For a diff
+# that contains only regenerated views this is the right trade: the alternative is a credential in
+# repository secrets that can write to `main`, which is precisely what `verify.yml` is built to
+# avoid. Anyone who wants the checks can push the branch by hand -- a human push does trigger them.
 name: Derived views
 
 on:
@@ -21,12 +30,16 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
-# Serialised, and never cancelled: two runs pushing to `main` at once is the one way this could
+# Serialised, and never cancelled: two runs racing on the same branch is the one way this could
 # lose a regeneration, and a cancelled run leaves the views stale until the next push.
 concurrency:
   group: derived-views
   cancel-in-progress: false
+
+env:
+  BRANCH: derived/views
 
 jobs:
   regenerate:
@@ -34,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      # Credentials are kept here, unlike the other jobs: this one pushes.
+      # Credentials are kept here, unlike the other jobs: this one pushes a branch.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
@@ -46,25 +59,45 @@ jobs:
           python3 scripts/ieantn.py state
           python3 scripts/ieantn.py graph
           python3 scripts/ieantn.py pages
-      - name: Commit if anything moved
+      - name: Offer the refresh as a pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           git add -A -- STATE.md GRAPH.md docs/nodes
           if git diff --cached --quiet; then
             echo "The derived views were already current."
+            # Nothing to offer, so withdraw any refresh still standing from an earlier run: its
+            # content is now on `main` by another route, and a pull request that would change
+            # nothing is worse than none.
+            if gh pr list --head "$BRANCH" --state open --json number --jq '.[].number' | grep -q .; then
+              gh pr close "$BRANCH" --delete-branch \
+                --comment "Superseded: \`main\` already carries these views."
+            fi
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Regenerate the derived views" \
+          git commit -m "Refresh the derived views" \
             -m "STATE.md, GRAPH.md and docs/nodes/ follow from the node metadata; this is .github/workflows/derived.yml keeping them level with it."
-          # Another push may have landed while this ran. A conflict can only be in a generated
-          # file, and the answer to one is to regenerate rather than to pick a side.
-          if ! git pull --rebase origin main; then
-            python3 scripts/ieantn.py state
-            python3 scripts/ieantn.py graph
-            python3 scripts/ieantn.py pages
-            git add -A -- STATE.md GRAPH.md docs/nodes
-            GIT_EDITOR=true git rebase --continue
+          # Force, because the branch is rebuilt from `main` on every run and holds nothing else.
+          git push --force origin "HEAD:refs/heads/$BRANCH"
+          if gh pr list --head "$BRANCH" --state open --json number --jq '.[].number' | grep -q .; then
+            echo "The open refresh now carries the newest views."
+            exit 0
           fi
-          git push
+          gh pr create --base "${{ github.event.repository.default_branch }}" --head "$BRANCH" \
+            --title "Refresh the derived views" \
+            --body "$(cat <<'BODY'
+          Generated, not written: `state`, `graph` and `pages`, and nothing else. Every fact here
+          comes from a `formalization.yaml` already on `main`.
+
+          **The required checks will not report on this pull request.** GitHub starts no workflow
+          run from an event caused by `GITHUB_TOKEN`, so opening it triggered nothing. Merging takes
+          the admin override, which is the intended cost: the alternative is a credential in
+          repository secrets that can write to `main`.
+
+          This branch is rebuilt from `main` on every push and force-pushed, so it always shows the
+          current views. If it ever needs real checks, push it by hand — a human push triggers them.
+          BODY
+          )"
