@@ -7,14 +7,14 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-53 node version(s), 106 conclusion(s).  3 state nothing yet.
+54 node version(s), 108 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
 | Designated justification | Conclusions |
 |---|---:|
 | `asserted` | 1 |
-| `bridged` | 1 |
+| `bridged` | 3 |
 | `lean-comparator` | 33 |
 | `literature` | 39 |
 | `none-yet` | 4 |
@@ -77,6 +77,8 @@ adds the environment detail.
 | `FKS.v1` | active | `psi_classical_bound` | literature | 3 | - |
 | `FKS.v1` | active | `rescaled_A_exceeds_printed` | numerical | 0 | - |
 | `FKS.v1` | active | `rescaled_C_is_short_of_two` | numerical | 0 | - |
+| `FKS.v2` | awaiting-solution | `psi_bound_all_x` | bridged | 3 | - |
+| `FKS.v2` | awaiting-solution | `psi_classical_bound` | bridged | 3 | - |
 | `FKS2.v1` | active | `corollary_14` | lean-comparator-stale | 6 | - |
 | `FKS2.v1` | active | `corollary_22` | lean-comparator-stale | 8 | - |
 | `FKS2.v1` | active | `corollary_23` | lean-comparator-stale | 10 | - |
@@ -167,9 +169,11 @@ downstream.
 
 | Conclusion | Dependants |
 |---|---:|
+| `PlattTrudgian.v1.rh_up_to` | 7 |
 | `FKBJ.v1.rh_up_to` | 6 |
-| `PlattTrudgian.v1.rh_up_to` | 5 |
 | `Buthe.v1.theorem_2_theta_lower` | 5 |
+| `MT.v1.zero_free_region_sharpened` | 4 |
+| `KLN.v1.subconvexity_bound` | 4 |
 | `FKS2Numerics.v1.theta_asymp_ge_one_below_e30` | 4 |
 | `FKS2Numerics.v1.nu_asymp_e30_le` | 4 |
 | `FKS2.v2.proposition_13` | 4 |
@@ -192,10 +196,8 @@ downstream.
 | `ZeroCount.v1.rvm_error_bound` | 2 |
 | `PlattZeroSum.v1.inv_ordinate_sum_le` | 2 |
 | `PlattTrudgian.v1.rh_up_to_exact` | 2 |
-| `MT.v1.zero_free_region_sharpened` | 2 |
 | `Kadiri2005.v1.zero_free_region` | 2 |
 | `KLN.v1.zero_density` | 2 |
-| `KLN.v1.subconvexity_bound` | 2 |
 | `GammaAsymptotics.v2.digamma_sub_log_isBigO_strip` | 2 |
 | `FKS2Numerics.v1.table6_row2_floor` | 2 |
 | `FKS2Numerics.v1.corollary_23_mid_range` | 2 |

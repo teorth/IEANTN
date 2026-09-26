@@ -82,7 +82,7 @@ def zero_free_region_sharpened : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`Kadiri2005.v1.zero_free_region`](Kadiri2005-v1.md#zero_free_region), [`PlattTrudgian.v1.rh_up_to`](PlattTrudgian-v1.md#rh_up_to) |
-| Assumed by | [`FKS.v1.psi_bound_all_x`](FKS-v1.md#psi_bound_all_x), [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound) |
+| Assumed by | [`FKS.v1.psi_bound_all_x`](FKS-v1.md#psi_bound_all_x), [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`FKS.v2.psi_bound_all_x`](FKS-v2.md#psi_bound_all_x), [`FKS.v2.psi_classical_bound`](FKS-v2.md#psi_classical_bound) |
 
 **Justification `mt-paper`** — **designated** — literature, Section 6.1
 

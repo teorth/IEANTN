@@ -44,7 +44,7 @@ def subconvexity_bound : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`Hiary2016.v1.zeta_half_line_bound`](Hiary2016-v1.md#zeta_half_line_bound) |
-| Assumed by | [`FKS.v1.psi_bound_all_x`](FKS-v1.md#psi_bound_all_x), [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound) |
+| Assumed by | [`FKS.v1.psi_bound_all_x`](FKS-v1.md#psi_bound_all_x), [`FKS.v1.psi_classical_bound`](FKS-v1.md#psi_classical_bound), [`FKS.v2.psi_bound_all_x`](FKS-v2.md#psi_bound_all_x), [`FKS.v2.psi_classical_bound`](FKS-v2.md#psi_classical_bound) |
 
 **Justification `kln-paper`** — **designated** — literature, Lemma 3.2, equation (3.2), with the constant corrected
 
