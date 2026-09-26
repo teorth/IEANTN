@@ -1,0 +1,255 @@
+# Node metadata for `DudekPlattNumerics.v3`.  See docs/NODES.md.
+#
+# The two-sided pi estimate at Dudek-Platt's own footnote 1 parameters (a = 3130, R = 6.315)
+# rather than their main-text choice (v1) or PrimeNumberTheoremAnd's (v2). A variant, not a
+# successor -- all three stay. `status: stub`: conclusion stated, no Lean solution intended, same
+# as v1.
+version: "v0.4"
+
+node:
+  id: DudekPlattNumerics.v3
+  family: DudekPlattNumerics
+  version: v3
+  kind: computation
+  status: stub
+
+project:
+  name: "The explicit pi estimate behind Dudek-Platt's footnote threshold"
+  description: >-
+    The two-sided bound on pi(x) that DudekPlatt.v4's repaired criterion needs to recover issue #63's
+    target, at Dudek and Platt's own footnote 1 parameters a = 3130, R = 6.315 (Mossinghoff-Trudgian's
+    improved zero-free region) rather than the paper's main-text a = 3223, R = 6.455 (DudekPlattNumerics.v1)
+    or PrimeNumberTheoremAnd's constants (.v2). Same shape of claim as both: pi(x) lies within
+    3010.333 x/(log x)^6 and 3250.488 x/(log x)^6 of the fifth partial sum of li's asymptotic expansion,
+    for x above exp(9400). The footnote itself prints only the final, unrepaired threshold exp(9394);
+    these m_a, M_a, x_a are computed here from the paper's own eq. (8)-(9), not printed by it.
+  authors: ["Sebastián Rodrigo (AI-assisted)"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11Y70"]
+
+conclusions:
+- id: pi_two_sided_footnote
+  issue: 63
+  declaration: DudekPlattNumerics.v3.pi_two_sided_footnote
+  challenge: DudekPlattNumerics.v3.challenge_pi_two_sided_footnote
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: dudek-platt-footnote-computation
+    kind: numerical
+    source: DudekPlatt
+    locator: "Footnote 1 (published version), applying eq. (8)-(9) at a = 3130, R = 6.315"
+    note: >-
+      The constants come from evaluating the paper's own eq. (8)-(9) at a chosen a, exactly as
+      DudekPlattNumerics.v1 does at a = 3223, so `numerical`. Footnote 1 (published Exp. Math. version,
+      already transcribed onto DudekPlattNumerics.v1's own limitations) states: "Mossinghoff-Trudgian's
+      improved R = 6.315 can be used with a = 3130 to prove Theorem 1.2 for all x >= exp(9394)." The
+      footnote prints only that final, UNREPAIRED threshold -- not the intermediate x_a, m_a, M_a a
+      reader would need to re-run the repaired DudekPlatt.v3.criterion at this (a, R) pair, which is
+      what this node supplies.
+
+      M_a, m_a were computed independently from the paper's own eq. (8)-(9) at a = 3130, y_a = 9400,
+      giving M_a = 3250.48765504753... and m_a = -3010.33299900407..., with the two terms of each
+      formula carrying x_a or sqrt(x_a) in the denominator of order exp(-9400)/exp(-4700), utterly
+      negligible next to a three-decimal rounding. Rounded conservatively (M_a UP to 3250.488,
+      m_a DOWN to -3010.333, both safe directions for an upper/lower bound coefficient respectively).
+      The same formula, evaluated instead at the paper's own printed a = 3223, y_a = 9656.8, reproduces
+      the paper's own printed M_a = 3343.48, m_a = -3103.33 to stated precision -- a check that the
+      formula's arithmetic is transcribed faithfully. That evaluation alone is NOT a certified
+      derivation: eq. (8)-(9) apply a theta-error bound valid only above x_a inside a partial-summation
+      integral starting at t = 2, and an earlier draft of this note additionally used a mis-normalized
+      crossing function (subtracting log(a) instead of the correct log(C/(a R^(1/4))), C = sqrt(8/17pi))
+      to argue x_a = exp(9400) lies past the theta-bound's crossing point. Both gaps are repaired in
+      README.md, which works from Mossinghoff-Trudgian's Corollary 1 directly: it shows the auxiliary
+      function f_R(u) = C (u/R)^(1/4) exp(-sqrt(u/R)) u^5 is strictly decreasing for u > 441R/4 ~ 696.23
+      (a fact the withdrawn crossing function shared and which remains correct), certifies
+      f_R(9400) < 3110 < 3130 directly from the R = 6.315 formula with no root-finding, and then bounds
+      the ENTIRE partial-summation integral -- not just its tail above x_a -- via an explicit split at
+      x^(99/100), an elementary theta(t) <= t log t bound below the split, and Corollary 1 above it.
+      The result, certified in exact rational arithmetic by certificate.py, is a two-sided pi(x) bound
+      for every real x >= exp(9400) that implies the M_a = 3250.488, m_a = -3010.333 above with about
+      20 coefficient units of slack in each direction -- so this node's stated Prop is unchanged, and
+      is now backed by a stronger, independently-checked fact rather than by evaluating eq. (8)-(9) and
+      asserting the omission is harmless.
+
+      R = 6.315 is independently traceable to Mossinghoff-Trudgian (2015), the SAME paper MT.v1 already
+      holds, Section 7 Corollary 1: |theta(x) - x| <= x sqrt(8/17pi) X^(1/2) exp(-X), X = sqrt(log x / 6.315),
+      for x >= 149, proved from that paper's own Theorem 1 (MT.v1.zero_free_region, R0 = 5.573412). That
+      proof, and Theorem 1 itself, CONSUMES an established, computationally verified height T0 = 3.06e10
+      (the paper's own Section 3; MT.v1.zero_free_region already imports Platt2015.v1.rh_up_to, which is
+      exactly this height) -- "unconditional" means the height is established, not absent, unlike MT.v1's
+      other conclusion zero_free_region_sharpened, whose larger 3e11 height was, at publication, merely
+      announced. This is at least as well-attested provenance as DudekPlattNumerics.v1's own R = 6.455,
+      which traces to Trudgian solo (arXiv:1401.2689) -- fetched and checked directly this session,
+      p. 2: "Let the Riemann hypothesis be true up to height H: by Platt [15] we have H = 3.061e10",
+      the very same established height, for an analogous conversion -- and to a paper this network does
+      not hold as a node at all.
+
+      `traced`, not `identified`, for the same reason v1's R = 6.455 isn't an edge either: MT.v1 states
+      only its Theorem 1 and the Section 6.1 sharpened form, not Corollary 1, and even if it did, the
+      theta(x)-x -> pi(x) partial-summation conversion actually used here (the paper's own eq. (8)-(9))
+      is not itself represented as a node. Do not cite MT.v1 as an import for this reason -- it would be
+      a numeral match, not an earned edge. A future MT.v2 stating Corollary 1 would upgrade this half of
+      the provenance to `identified`; the partial-summation half would still need its own node.
+  - id: bridge-from-v4
+    kind: bridged
+    from: DudekPlattNumerics.v4.pi_two_sided_footnote
+    bridge: IEANTN/Bridges/DudekPlattNumerics/V4ToV3.lean
+    note: >-
+      A second, independent ground, added for issue #63: DudekPlattNumerics.v4 restates this exact
+      conclusion (same mainTerm, same threshold exp(9400), same constants 3010.333/3250.488) and
+      proves it in Lean from the explicit literature premise MT.v2.corollary_1 (Mossinghoff-Trudgian's
+      Section 7 Corollary 1) rather than from certificate.py's numerical check -- see
+      DudekPlattNumerics.v4's own formalization.yaml for that solution's own justification chain and
+      what MT.v2.corollary_1 itself still rests on. The bridge only equates the two mainTerm spellings
+      and is compiled by the core build, so it cannot silently stop being a proof. Not designated: it
+      still bottoms out in an explicit, unproved literature premise rather than in nothing, so the
+      direct numerical certificate above stays the ground of record; this entry records that a
+      literature-grounded alternative now exists and is machine-checked to imply the same statement.
+  designated: dudek-platt-footnote-computation
+
+sources:
+- title: "On solving a curious inequality of Ramanujan"
+  authors: ["Adrian W. Dudek", "David J. Platt"]
+  type: "paper"
+  id: "https://doi.org/10.1080/10586458.2014.990118"
+  location: "Exp. Math. 24 (2015), no. 3, 289-294"
+  relationship: formalizes
+  note: >-
+    Footnote 1 names a = 3130, R = 6.315 and the final unrepaired threshold exp(9394). The published
+    version is held in the library and is where the footnote itself was read (see
+    DudekPlattNumerics.v1's own source note) -- CHECKED DIRECTLY THIS SESSION: the freely available
+    arXiv v1 preprint (arxiv.org/abs/1407.1901, fetched and parsed in full) does contain "Trudgian"
+    (citing his solo arXiv:1401.2689 as reference [8], pp. 4 and 11), but does NOT contain footnote 1
+    itself, or the words "Mossinghoff", "improved" or "9394" anywhere; the footnote's own substance is
+    published-journal-only. So its exact wording still rests on the maintainer's own reading of the
+    paywalled version, exactly as DudekPlattNumerics.v1 already records, and this node does not
+    strengthen that provenance. What WAS independently confirmed against the freely available arXiv
+    preprint, fetched and read in full this session: eq. (8)-(9) themselves, used here to compute
+    m_a, M_a, are present verbatim in that preprint (Section 2.3, immediately after Lemma 2.1's
+    proof) -- transcribed character-for-character, including the auxiliary constant
+    A = sum_{k=1}^5 k!/log^(k+1)(2) ~= 1266.08, and independently confirmed to reproduce the paper's
+    own printed a = 3223 case (Ma = 3343.48, ma = -3103.33) before being trusted at the footnote's
+    a = 3130. So the FORMULA is directly and independently sourced; only the (a, R) PAIR and the
+    final exp(9394) threshold it names rest on the published footnote's authority.
+- title: "Nonnegative trigonometric polynomials and a zero-free region for the Riemann zeta-function"
+  authors: ["Michael J. Mossinghoff", "Timothy S. Trudgian"]
+  type: "paper"
+  id: "arXiv:1410.3926"
+  location: "J. Number Theory 157 (2015), 329-349"
+  relationship: background
+  note: >-
+    The same paper MT.v1 already holds (its zero_free_region is this paper's Theorem 1). Section 7,
+    Corollary 1 is the independently-verified, open-access source of R = 6.315, fetched and read in
+    full this session (arxiv.org/pdf/1410.3926): its own proof reads "Theorem 1 can be used, as in
+    [19, p. 2], to show that there are no zeros ... in the region sigma >= 1 - 1/(6.315 log|t/17|),
+    t >= 24. The statement then follows from the arguments in [19]" -- i.e. it repeats Trudgian's own
+    (arXiv:1401.2689) R = 6.455 conversion recipe verbatim, substituting MT's own improved classical
+    constant R0 = 5.573412 (their Theorem 1) for Kadiri's raw 5.69693. Theorem 1 itself (Section 3,
+    also fetched and read directly) consumes an ESTABLISHED height, T0 = 3.06e10 (Platt2015.v1.rh_up_to,
+    already an import of MT.v1.zero_free_region) -- unconditional because that height is established,
+    not because no finite-height input was used; see the justification note above. Not yet a network
+    conclusion -- MT.v1 states only Theorem 1 and the Section 6.1 sharpened form -- so this is
+    `background`, not an import; see the justification note above for why the edge is not yet drawable
+    even if MT.v1 gained it.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Sonnet 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Used DudekPlattNumerics.v1's existing maintainer transcription of the paper's published
+      footnote 1 (the journal footnote itself was not independently obtained by this method; see
+      the source note below) together with eq. (8)-(9), independently inspected directly from the
+      open-access arXiv preprint, evaluated them at the footnote's (a, R) pair, chose a
+      safely-rounded x_a above the theta-bound's crossing point, and traced R = 6.315 to its
+      independent open-access source, under the direction of the maintainer. No proof is claimed.
+  - method: agent
+    models: ["Claude Sonnet 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Repair pass for issue #63, applying corrections identified by an independent review: replaced
+      the mis-normalized crossing function and the unaddressed [2, x_a] integration range with an
+      exact-rational-certified derivation (README.md, certificate.py) built directly from
+      Mossinghoff-Trudgian's Corollary 1, and corrected the R = 6.315 provenance note to reflect that
+      MT's Theorem 1 consumes an established, non-open verification height rather than none, under the
+      direction of the maintainer. The node's stated Prop and constants (m = -3010.333, M = 3250.488,
+      x_a = exp(9400)) are unchanged; no proof beyond the exact-rational certificate is claimed.
+
+review:
+  status: self-assessed
+  notes: >-
+    This new node has been checked by its contributing agent and by this repository's mechanical
+    checks (certificate.py, fingerprint/graph/closure checks) only; no maintainer or other human
+    review has been recorded for it, and none is implied by omitting a `reviewers` field -- that
+    review is pending ordinary pull-request review. Independently recomputed M_a, m_a from eq. (8)-(9) at a = 3130, y_a = 9400 and cross-checked the
+    same formula against the paper's own already-committed a = 3223 case (DudekPlattNumerics.v1):
+    it reproduces the paper's printed M_a = 3343.48, m_a = -3103.33 to stated precision, confirming
+    formula fidelity before trusting the new numbers. Eq. (8)-(9) themselves were then checked
+    directly against the freely available Dudek-Platt arXiv v1 preprint (fetched and parsed in full
+    this session): present verbatim, including the auxiliary constant A. The SAME fetch also settled
+    an open question precisely rather than by assumption: the preprint contains "Trudgian" (pp. 4, 11,
+    citing his solo paper) but does NOT contain footnote 1 itself or any of "Mossinghoff", "improved",
+    "9394" -- the footnote's own substance is published-journal-only, so its exact wording is not
+    independently obtainable from open access and still rests on the maintainer's own reading recorded
+    on DudekPlattNumerics.v1. R = 6.315's citation to Mossinghoff-Trudgian (2015) Section 7 Corollary 1
+    was checked against THAT paper's own freely available arXiv preprint directly, confirming it is the
+    same paper MT.v1 cites and that Corollary 1 rests on that paper's Theorem 1, which in turn consumes
+    the established height T0 = 3.06e10 (Platt2015.v1.rh_up_to), not the RH-height-dependent Section 6.1
+    form. The theta-bound crossing point (eq. 6-7) was independently re-derived from the preprint's own
+    PRE-log inequality (cancelling the shared factor of x from both sides before substituting x = e^y),
+    not merely copied: the resulting root-finding computation gives y = 9392.86092006083... at
+    a = 3130, R = 6.315, matching the docstring's claim to 10 decimal places, and its
+    `log(e*x_a) = y+1 = 9393.86` rounds to the footnote's own printed final answer exp(9394), a strong
+    independent triangulation. The same method applied to the paper's own a = 3223, R = 6.455 case
+    gives a crossing of 9656.12, about 0.68 below the paper's own chosen x_a = exp(9656.8) --
+    consistent with the paper choosing a modest safety margin above the bare crossing, the same style
+    of choice this node makes (7.14 units) at x_a = exp(9400). This root-finding computation is
+    corroborating evidence only, not the node's certified derivation: an independent review of issue
+    #63 found the crossing FUNCTION as originally written here mis-normalized (subtracting log(a)
+    instead of log(C/(a R^(1/4)))) and, correctly evaluated, well short of a crossing at y = 9400 --
+    the root-finding value above, from a directly re-derived pre-log inequality, was never affected by
+    that mistake, but the docstring's post-log g(y) formula was. README.md and certificate.py, added by
+    the repair, replace that argument with an exact, non-root-finding monotonicity bound
+    (f_R(9400) < 3110 < 3130), certify the previously-unaddressed [2, x_a] integration range, and
+    correct this note's and the sources' "no partial-RH-verification height" language to reflect that
+    MT's Theorem 1 consumes the established T0 = 3.06e10, exactly as re-confirmed above.
+
+limitations:
+- >-
+  A computation asserted on the paper's own footnote authority for the (a, R) pair, same tier as
+  DudekPlattNumerics.v1's main-text constants, though the resulting pi(x) estimate itself is now
+  independently derived from Mossinghoff-Trudgian's open-access Corollary 1 rather than from the
+  footnote's bare assertion (see README.md). Nothing here is proved in Lean: README.md is written
+  mathematics and certificate.py checks its numerical inequalities in exact rational arithmetic, which
+  is stronger than an asserted evaluation but not a Lean proof or a Comparator receipt. Rests, like v1,
+  on Trudgian-style explicit theta error terms rather than on arithmetic over a finite window.
+- >-
+  R = 6.315 is not yet a drawable graph edge to MT.v1, even though it is now precisely traced to that
+  paper's own Section 7 Corollary 1 (built unconditionally on MT.v1.zero_free_region): MT.v1 does not
+  currently state Corollary 1, and the theta-to-pi partial-summation conversion this node applies is
+  itself not a node. This is the SAME structural gap DudekPlattNumerics.v1 has for its own R = 6.455 --
+  if anything this node's R is better attested, since v1's traces to a paper (Trudgian solo,
+  arXiv:1401.2689) that is not held in this network at all.
+- >-
+  The published Dudek-Platt footnote's exact wording is transcribed from the maintainer's own reading
+  of the paywalled Exp. Math. version, recorded independently in DudekPlattNumerics.v1, DudekPlatt.v1
+  and DudekPlatt.v2's own formalization notes; this node adds independent, open-access corroboration
+  of the R = 6.315 NUMBER itself via Mossinghoff-Trudgian's freely available arXiv preprint, but does
+  not itself obtain a copy of the journal footnote's exact text.
+- >-
+  x_a = exp(9400) is a safely-rounded choice, not the footnote's own exp(9394) and not a numerically
+  optimized endpoint: the true theta-bound crossing at these (a, R) is approximately y = 9392.86, and
+  9400 was chosen to leave clear, monotone-argument-backed margin rather than to sit as close to the
+  crossing as possible. A tighter x_a is possible but was deliberately not pursued, since the margin
+  this node needs to recover exp(9658) is already large (see DudekPlatt.v4).
+- >-
+  No novelty is claimed. The results are Dudek and Platt's, and Mossinghoff and Trudgian's.

@@ -1,0 +1,29 @@
+{
+  "challenge": "DudekPlattNumerics.v4.challenge_pi_two_sided_footnote",
+  "conclusion": "DudekPlattNumerics.v4.pi_two_sided_footnote",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6"
+  },
+  "repository": {
+    "commit": "e160d0ac2ef232e1146e3c222f0a05fd3207a372"
+  },
+  "run": {
+    "recorded_at": "2026-09-26T01:04:04Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/36206201094"
+  },
+  "schema": 2,
+  "solution": {
+    "project": "Solutions/DudekPlattNumerics.v4"
+  },
+  "statement": {
+    "DudekPlattNumerics.v4.pi_two_sided_footnote": "48fbab19c23b185a56d2361613fbcc5843cd8af56562e23642238097bc55075f",
+    "MT.v2.corollary_1": "fd8432a8bf921596c2dfcef6790d99d925be8160e80bb8f820c89658e30ce72d"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}

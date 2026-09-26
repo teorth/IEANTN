@@ -1,0 +1,20 @@
+name = "solution_DudekPlatt_v4"
+defaultTargets = ["Solution", "Endpoint"]
+
+# The core library, for the node's `Conclusions` and `IEANTN.Bridges.DudekPlatt.V4ToV1`. Add
+# whatever else the proof needs -- PNT+, LeanCert, PrimeCert -- here rather than in the core
+# lakefile.
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+# Not part of what Comparator compares (see `comparator.json`, unchanged): a second, ordinary
+# target composing `Solution`'s own theorem with the core `V4ToV1` bridge into the closed `.v1`
+# endpoint, reproducible by an ordinary `lake build` in this project alone. See `Endpoint.lean`.
+[[lean_lib]]
+name = "Endpoint"
+roots = ["Endpoint"]
