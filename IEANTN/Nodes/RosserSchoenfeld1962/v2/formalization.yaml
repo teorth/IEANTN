@@ -1,0 +1,93 @@
+version: v0.4
+node:
+  id: RosserSchoenfeld1962.v2
+  family: RosserSchoenfeld1962
+  version: v2
+  kind: paper
+  status: awaiting-verification
+project:
+  name: 'Rosser-Schoenfeld 1962: maximum of psi(x)/x at 113'
+  description: The maximum-at-113 clause of Theorem 12, and a separately identified explicit
+    uniqueness refinement. Equation (3.35) remains in v1. The new Lean proof reuses the
+    solution-local RS12 certificates and recurrence from v1; the core depends only on Mathlib.
+  authors:
+  - Håkon Xue-Lønmo
+  license: Apache-2.0
+  responsible_maintainers:
+  - Håkon Xue-Lønmo
+repository:
+  role: substantive-development
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11N05
+conclusions:
+- id: psi_ratio_maximum_at_113
+  declaration: RosserSchoenfeld1962.v2.psi_ratio_maximum_at_113
+  challenge: RosserSchoenfeld1962.v2.challenge_psi_ratio_maximum_at_113
+  imports: []
+  imports_status: none
+  justifications:
+  - id: rs1962-paper
+    kind: literature
+    source: https://doi.org/10.1215/ijm/1255631807
+    locator: Theorem 12, maximum clause, p. 71; proof discussion on pp. 77-78
+    note: The printed source says the quotient takes its maximum at 113. It does not explicitly
+      assert uniqueness. No Comparator justification or author-created receipt is supplied.
+  designated: rs1962-paper
+  progress:
+    solution: Solutions/RosserSchoenfeld1962.v2/
+    state: in-progress
+    remaining_holes: 0
+- id: psi_ratio_unique_maximum_at_113
+  declaration: RosserSchoenfeld1962.v2.psi_ratio_unique_maximum_at_113
+  challenge: RosserSchoenfeld1962.v2.challenge_psi_ratio_unique_maximum_at_113
+  imports: []
+  imports_status: none
+  justifications:
+  - id: awaiting-verification
+    kind: none-yet
+  designated: awaiting-verification
+  progress:
+    solution: Solutions/RosserSchoenfeld1962.v2/
+    state: in-progress
+    remaining_holes: 0
+sources:
+- title: Approximate formulas for some functions of prime numbers
+  authors:
+  - J. Barkley Rosser
+  - Lowell Schoenfeld
+  type: paper
+  id: https://doi.org/10.1215/ijm/1255631807
+  location: Illinois Journal of Mathematics 6(1) (1962), 64-94
+  relationship: formalizes
+  note: Visually audited printed p. 71 and the proof on pp. 77-78. The first conclusion records the
+    maximum clause; the second explicitly records uniqueness, which is not explicitly asserted in
+    the source. No novelty claim is made.
+related_formalizations:
+- id:
+    https://github.com/hakonlonmo/PrimeNumberTheoremAnd/tree/81eca5aa3fa4779883a9aeba18e49087c5366e0f
+  relationship: port/adaptation
+  note: The pinned upstream proves only equation (3.35). Its IEANTN port in v1 supplies the reused
+    proof infrastructure. The maximum and uniqueness proof in v2 is new Lean work.
+automation:
+  methods:
+  - method: agent
+    models:
+    - GPT-6 (OpenAI)
+    framework: OpenAI Codex
+    role: Lean proof, certificate reuse, source audit, metadata, and local validation under human
+      direction.
+review:
+  status: self-assessed
+  reviewers:
+  - OpenAI Codex
+  notes: Source audit and local Lean validation by Codex; no independent human review or Comparator
+    verification is claimed.
+limitations:
+- Uniqueness is an explicit refinement of the printed claim; no mathematical novelty is claimed.
+- The solution reuses the unchanged RS12 library from the merged v1 port (PR 125).
+  Its private source interface is pinned to the canonical upstream commit in provenance.json.
+- Local checks do not replace maintainer-side Comparator verification. No receipt is created and
+  lean-comparator is not designated.
