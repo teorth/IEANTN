@@ -17,6 +17,8 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`CH2.v1`](CH2-v1.md) | paper | 4 | verified |
 | [`CH2.v2`](CH2-v2.md) | pipeline | 2 | verified, stale |
 | [`CH2.v3`](CH2-v3.md) | pipeline | 2 | verified |
+| [`Chebyshev.v1`](Chebyshev-v1.md) | paper | 5 | verified |
+| [`ChebyshevNumerics.v1`](ChebyshevNumerics-v1.md) | computation | 1 | computation |
 | [`ChengGraham2004.v1`](ChengGraham2004-v1.md) | paper | 0 | — |
 | [`CotangentSeries.v1`](CotangentSeries-v1.md) | standard | 1 | unjustified |
 | [`DudekPlatt.v1`](DudekPlatt-v1.md) | paper | 2 | cited |
@@ -36,21 +38,26 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`FKS2Numerics.v1`](FKS2Numerics-v1.md) | computation | 5 | computation |
 | [`GammaAsymptotics.v1`](GammaAsymptotics-v1.md) | standard | 1 | unjustified |
 | [`GammaAsymptotics.v2`](GammaAsymptotics-v2.md) | standard | 1 | verified |
+| [`Goldbach.v1`](Goldbach-v1.md) | paper | 6 | verified |
 | [`Hiary2016.v1`](Hiary2016-v1.md) | paper | 1 | cited |
 | [`KLN.v1`](KLN-v1.md) | paper | 2 | cited |
 | [`Kadiri2005.v1`](Kadiri2005-v1.md) | paper | 1 | cited |
+| [`KadiriLumley.v1`](KadiriLumley-v1.md) | paper | 2 | cited |
 | [`Lcm.v1`](Lcm-v1.md) | paper | 1 | verified, stale |
 | [`Lcm.v2`](Lcm-v2.md) | pipeline | 1 | verified, stale |
 | [`LowZeroes.v1`](LowZeroes-v1.md) | computation | 2 | computation |
 | [`MT.v1`](MT-v1.md) | paper | 2 | cited |
 | [`MT.v2`](MT-v2.md) | paper | 1 | cited |
 | [`MTY.v1`](MTY-v1.md) | paper | 0 | — |
+| [`OliveiraESilva2014.v1`](OliveiraESilva2014-v1.md) | computation | 1 | computation |
 | [`Platt2015.v1`](Platt2015-v1.md) | computation | 1 | computation |
 | [`Platt2017.v1`](Platt2017-v1.md) | computation | 1 | computation |
 | [`PlattTrudgian.v1`](PlattTrudgian-v1.md) | computation | 2 | cited |
 | [`PlattTrudgian2021.v1`](PlattTrudgian2021-v1.md) | paper | 2 | cited |
 | [`PlattZeroSum.v1`](PlattZeroSum-v1.md) | standard | 1 | cited |
 | [`PrimeInterval.v1`](PrimeInterval-v1.md) | pipeline | 4 | verified, stale |
+| [`RamareSaouter2003.v1`](RamareSaouter2003-v1.md) | paper | 1 | cited |
+| [`Richstein2001.v1`](Richstein2001-v1.md) | computation | 1 | computation |
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 2 | cited |
 | [`Trudgian2011.v1`](Trudgian2011-v1.md) | paper | 1 | cited |
 | [`Wedeniwski.v1`](Wedeniwski-v1.md) | computation | 1 | asserted |

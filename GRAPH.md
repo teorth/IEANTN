@@ -63,6 +63,8 @@ graph LR
   NCH2_v1["<b>CH2.v1</b><br/>4 claims<br/><i>weakest: verified</i>"]
   NCH2_v2["<b>CH2.v2</b><br/>2 claims<br/><i>weakest: verified, stale</i>"]
   NCH2_v3["<b>CH2.v3</b><br/>2 claims<br/><i>weakest: verified</i>"]
+  NChebyshev_v1["<b>Chebyshev.v1</b><br/>5 claims<br/><i>weakest: verified</i>"]
+  NChebyshevNumerics_v1["<b>ChebyshevNumerics.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NChengGraham2004_v1["<b>ChengGraham2004.v1</b><br/><i>nothing stated yet</i>"]
   NCotangentSeries_v1["<b>CotangentSeries.v1</b><br/>1 claim<br/><i>weakest: unjustified</i>"]
   NDudekPlatt_v1["<b>DudekPlatt.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
@@ -82,21 +84,26 @@ graph LR
   NFKS2Numerics_v1["<b>FKS2Numerics.v1</b><br/>5 claims<br/><i>weakest: computation</i>"]
   NGammaAsymptotics_v1["<b>GammaAsymptotics.v1</b><br/>1 claim<br/><i>weakest: unjustified</i>"]
   NGammaAsymptotics_v2["<b>GammaAsymptotics.v2</b><br/>1 claim<br/><i>weakest: verified</i>"]
+  NGoldbach_v1["<b>Goldbach.v1</b><br/>6 claims<br/><i>weakest: verified</i>"]
   NHiary2016_v1["<b>Hiary2016.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NKLN_v1["<b>KLN.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NKadiri2005_v1["<b>Kadiri2005.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
+  NKadiriLumley_v1["<b>KadiriLumley.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NLcm_v1["<b>Lcm.v1</b><br/>1 claim<br/><i>weakest: verified, stale</i>"]
   NLcm_v2["<b>Lcm.v2</b><br/>1 claim<br/><i>weakest: verified, stale</i>"]
   NLowZeroes_v1["<b>LowZeroes.v1</b><br/>2 claims<br/><i>weakest: computation</i>"]
   NMT_v1["<b>MT.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NMT_v2["<b>MT.v2</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NMTY_v1["<b>MTY.v1</b><br/><i>nothing stated yet</i>"]
+  NOliveiraESilva2014_v1["<b>OliveiraESilva2014.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NPlatt2015_v1["<b>Platt2015.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NPlatt2017_v1["<b>Platt2017.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NPlattTrudgian_v1["<b>PlattTrudgian.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NPlattTrudgian2021_v1["<b>PlattTrudgian2021.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NPlattZeroSum_v1["<b>PlattZeroSum.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NPrimeInterval_v1["<b>PrimeInterval.v1</b><br/>4 claims<br/><i>weakest: verified, stale</i>"]
+  NRamareSaouter2003_v1["<b>RamareSaouter2003.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
+  NRichstein2001_v1["<b>Richstein2001.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NRosserSchoenfeld_v1["<b>RosserSchoenfeld.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NTrudgian2011_v1["<b>Trudgian2011.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NWedeniwski_v1["<b>Wedeniwski.v1</b><br/>1 claim<br/><i>weakest: asserted</i>"]
@@ -117,6 +124,7 @@ graph LR
   NButhe2016_v1 --> NBKLNWNumerics_v1
   NButheNumerics_v1 -->|3| NButhe_v1
   NCH2_v2 -->|4| NCH2_v1
+  NChebyshevNumerics_v1 --> NChebyshev_v1
   NCotangentSeries_v1 -->|2| NCH2_v1
   NDudekPlatt_v3 --> NDudekPlatt_v1
   NDudekPlatt_v3 --> NDudekPlatt_v2
@@ -135,11 +143,13 @@ graph LR
   NKLN_v1 -->|2| NFKS_v2
   NKLN_v1 -->|2| NPlattTrudgian2021_v1
   NKadiri2005_v1 -->|2| NMT_v1
+  NKadiriLumley_v1 -->|2| NGoldbach_v1
   NMT_v1 -->|2| NFKS_v1
   NMT_v1 -->|2| NFKS_v2
   NMT_v1 --> NMT_v2
   NMT_v1 -->|2| NPlattTrudgian2021_v1
   NMT_v2 --> NDudekPlattNumerics_v4
+  NOliveiraESilva2014_v1 -->|2| NGoldbach_v1
   NPlatt2015_v1 --> NMT_v1
   NPlatt2017_v1 --> NKLN_v1
   NPlattTrudgian_v1 -->|2| NCH2_v1
@@ -150,6 +160,8 @@ graph LR
   NPlattTrudgian2021_v1 -->|2| NBKLNW_v1
   NPlattTrudgian2021_v1 --> NBKLNWNumerics_v1
   NPlattZeroSum_v1 -->|2| NCH2_v1
+  NRamareSaouter2003_v1 -->|3| NGoldbach_v1
+  NRichstein2001_v1 --> NGoldbach_v1
   NRosserSchoenfeld_v1 --> NKadiri2005_v1
   NTrudgian2011_v1 --> NPlatt2017_v1
   NWedeniwski_v1 --> NKadiri2005_v1
@@ -175,19 +187,21 @@ graph LR
   style NFKBJ_v1 stroke-dasharray: 8 4;
   style NFKS_v2 stroke-dasharray: 8 4;
   style NHiary2016_v1 stroke-dasharray: 8 4;
+  style NKadiriLumley_v1 stroke-dasharray: 2 3;
   style NPlatt2015_v1 stroke-dasharray: 8 4;
   style NPlatt2017_v1 stroke-dasharray: 8 4;
   style NPlattTrudgian_v1 stroke-dasharray: 8 4;
+  style NRamareSaouter2003_v1 stroke-dasharray: 2 3;
   style NRosserSchoenfeld_v1 stroke-dasharray: 2 3;
   style NTrudgian2011_v1 stroke-dasharray: 2 3;
   style NWedeniwski_v1 stroke-dasharray: 2 3;
   class NBrown1967_v1,NButhe_v2,NChengGraham2004_v1,NCotangentSeries_v1,NGammaAsymptotics_v1,NMTY_v1 none_yet;
   class NWedeniwski_v1 asserted;
-  class NBKLNW_v1,NBKLNW_v2,NButhe_v1,NButhe2016_v1,NDudekPlatt_v1,NDusart2018_v1,NFKS_v1,NHiary2016_v1,NKLN_v1,NKadiri2005_v1,NMT_v1,NMT_v2,NPlattTrudgian_v1,NPlattTrudgian2021_v1,NPlattZeroSum_v1,NRosserSchoenfeld_v1,NTrudgian2011_v1,NZeroCount_v1,NZetaHadamard_v1 literature;
-  class NBKLNWNumerics_v1,NButheNumerics_v1,NDudekPlattNumerics_v1,NDudekPlattNumerics_v2,NDudekPlattNumerics_v3,NFKBJ_v1,NFKS2Numerics_v1,NLowZeroes_v1,NPlatt2015_v1,NPlatt2017_v1,NZetaLogDerivValues_v1 numerical;
+  class NBKLNW_v1,NBKLNW_v2,NButhe_v1,NButhe2016_v1,NDudekPlatt_v1,NDusart2018_v1,NFKS_v1,NHiary2016_v1,NKLN_v1,NKadiri2005_v1,NKadiriLumley_v1,NMT_v1,NMT_v2,NPlattTrudgian_v1,NPlattTrudgian2021_v1,NPlattZeroSum_v1,NRamareSaouter2003_v1,NRosserSchoenfeld_v1,NTrudgian2011_v1,NZeroCount_v1,NZetaHadamard_v1 literature;
+  class NBKLNWNumerics_v1,NButheNumerics_v1,NChebyshevNumerics_v1,NDudekPlattNumerics_v1,NDudekPlattNumerics_v2,NDudekPlattNumerics_v3,NFKBJ_v1,NFKS2Numerics_v1,NLowZeroes_v1,NOliveiraESilva2014_v1,NPlatt2015_v1,NPlatt2017_v1,NRichstein2001_v1,NZetaLogDerivValues_v1 numerical;
   class NFKS_v2 bridged;
   class NCH2_v2,NDudekPlatt_v2,NDudekPlatt_v3,NFKS2_v1,NFKS2_v2,NLcm_v1,NLcm_v2,NPrimeInterval_v1,NZeroFreeHeight_v1 lean_comparator_stale;
-  class NCH2_v1,NCH2_v3,NDudekPlatt_v4,NDudekPlattNumerics_v4,NGammaAsymptotics_v2,NZetaLogDeriv_v1,NZetaZeroes_v1 lean_comparator;
+  class NCH2_v1,NCH2_v3,NChebyshev_v1,NDudekPlatt_v4,NDudekPlattNumerics_v4,NGammaAsymptotics_v2,NGoldbach_v1,NZetaLogDeriv_v1,NZetaZeroes_v1 lean_comparator;
   click NBKLNW_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md" _blank
   click NBKLNW_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v2.md" _blank
   click NBKLNWNumerics_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNWNumerics-v1.md" _blank
@@ -198,6 +212,8 @@ graph LR
   click NCH2_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v1.md" _blank
   click NCH2_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v2.md" _blank
   click NCH2_v3 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v3.md" _blank
+  click NChebyshev_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Chebyshev-v1.md" _blank
+  click NChebyshevNumerics_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ChebyshevNumerics-v1.md" _blank
   click NCotangentSeries_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CotangentSeries-v1.md" _blank
   click NDudekPlatt_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v1.md" _blank
   click NDudekPlatt_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v2.md" _blank
@@ -216,20 +232,25 @@ graph LR
   click NFKS2Numerics_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md" _blank
   click NGammaAsymptotics_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/GammaAsymptotics-v1.md" _blank
   click NGammaAsymptotics_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/GammaAsymptotics-v2.md" _blank
+  click NGoldbach_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md" _blank
   click NHiary2016_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Hiary2016-v1.md" _blank
   click NKLN_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/KLN-v1.md" _blank
   click NKadiri2005_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Kadiri2005-v1.md" _blank
+  click NKadiriLumley_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/KadiriLumley-v1.md" _blank
   click NLcm_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Lcm-v1.md" _blank
   click NLcm_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Lcm-v2.md" _blank
   click NLowZeroes_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/LowZeroes-v1.md" _blank
   click NMT_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v1.md" _blank
   click NMT_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v2.md" _blank
+  click NOliveiraESilva2014_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/OliveiraESilva2014-v1.md" _blank
   click NPlatt2015_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Platt2015-v1.md" _blank
   click NPlatt2017_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Platt2017-v1.md" _blank
   click NPlattTrudgian_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian-v1.md" _blank
   click NPlattTrudgian2021_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian2021-v1.md" _blank
   click NPlattZeroSum_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattZeroSum-v1.md" _blank
   click NPrimeInterval_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PrimeInterval-v1.md" _blank
+  click NRamareSaouter2003_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RamareSaouter2003-v1.md" _blank
+  click NRichstein2001_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Richstein2001-v1.md" _blank
   click NRosserSchoenfeld_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v1.md" _blank
   click NTrudgian2011_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Trudgian2011-v1.md" _blank
   click NWedeniwski_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Wedeniwski-v1.md" _blank
@@ -311,6 +332,16 @@ graph LR
     CH2_v3_extremal_majorant["<b>extremal_majorant</b><br/><i>verified</i>"]
     CH2_v3_extremal_minorant["<b>extremal_minorant</b><br/><i>verified</i>"]
   end
+  subgraph sgChebyshev_v1["Chebyshev.v1"]
+    Chebyshev_v1_constant_bounds["<b>constant_bounds</b><br/><i>verified</i>"]
+    Chebyshev_v1_psi_le_small["<b>psi_le_small</b><br/><i>verified</i>"]
+    Chebyshev_v1_psi_lower["<b>psi_lower</b><br/><i>verified</i>"]
+    Chebyshev_v1_psi_upper["<b>psi_upper</b><br/><i>verified</i>"]
+    Chebyshev_v1_psi_upper_clean["<b>psi_upper_clean</b><br/><i>verified</i>"]
+  end
+  subgraph sgChebyshevNumerics_v1["ChebyshevNumerics.v1"]
+    ChebyshevNumerics_v1_psi_le_below_11723["<b>psi_le_below_11723</b><br/><i>computation</i>"]
+  end
   subgraph sgCotangentSeries_v1["CotangentSeries.v1"]
     CotangentSeries_v1_cot_series_zeta_values["<b>cot_series_zeta_values</b><br/><i>unjustified</i>"]
   end
@@ -378,6 +409,14 @@ graph LR
   subgraph sgGammaAsymptotics_v2["GammaAsymptotics.v2"]
     GammaAsymptotics_v2_digamma_sub_log_isBigO_strip["<b>digamma_sub_log_isBigO_strip</b><br/><i>verified</i>"]
   end
+  subgraph sgGoldbach_v1["Goldbach.v1"]
+    Goldbach_v1_even_and_gaps_imply_odd["<b>even_and_gaps_imply_odd</b><br/><i>verified</i>"]
+    Goldbach_v1_even_implies_odd["<b>even_implies_odd</b><br/><i>verified</i>"]
+    Goldbach_v1_even_up_to_30["<b>even_up_to_30</b><br/><i>verified</i>"]
+    Goldbach_v1_odd_up_to_1_1325e26["<b>odd_up_to_1_1325e26</b><br/><i>verified</i>"]
+    Goldbach_v1_odd_up_to_kadiri_lumley["<b>odd_up_to_kadiri_lumley</b><br/><i>verified</i>"]
+    Goldbach_v1_odd_up_to_ramare_saouter["<b>odd_up_to_ramare_saouter</b><br/><i>verified</i>"]
+  end
   subgraph sgHiary2016_v1["Hiary2016.v1"]
     Hiary2016_v1_zeta_half_line_bound["<b>zeta_half_line_bound</b><br/><i>cited</i>"]
   end
@@ -387,6 +426,10 @@ graph LR
   end
   subgraph sgKadiri2005_v1["Kadiri2005.v1"]
     Kadiri2005_v1_zero_free_region["<b>zero_free_region</b><br/><i>cited</i>"]
+  end
+  subgraph sgKadiriLumley_v1["KadiriLumley.v1"]
+    KadiriLumley_v1_prime_in_interval_above_exp_59["<b>prime_in_interval_above_exp_59</b><br/><i>cited</i>"]
+    KadiriLumley_v1_prime_in_interval_above_exp_60["<b>prime_in_interval_above_exp_60</b><br/><i>cited</i>"]
   end
   subgraph sgLcm_v1["Lcm.v1"]
     Lcm_v1_lcmUpto_not_highlyAbundant["<b>lcmUpto_not_highlyAbundant</b><br/><i>verified, stale</i>"]
@@ -404,6 +447,9 @@ graph LR
   end
   subgraph sgMT_v2["MT.v2"]
     MT_v2_corollary_1["<b>corollary_1</b><br/><i>cited</i>"]
+  end
+  subgraph sgOliveiraESilva2014_v1["OliveiraESilva2014.v1"]
+    OliveiraESilva2014_v1_even_up_to_4e18["<b>even_up_to_4e18</b><br/><i>computation</i>"]
   end
   subgraph sgPlatt2015_v1["Platt2015.v1"]
     Platt2015_v1_rh_up_to["<b>rh_up_to</b><br/><i>computation</i>"]
@@ -427,6 +473,12 @@ graph LR
     PrimeInterval_v1_eTheta_criterion["<b>eTheta_criterion</b><br/><i>verified, stale</i>"]
     PrimeInterval_v1_numericalBound_hasPrimeInInterval["<b>numericalBound_hasPrimeInInterval</b><br/><i>verified, stale</i>"]
     PrimeInterval_v1_theta_characterisation["<b>theta_characterisation</b><br/><i>verified, stale</i>"]
+  end
+  subgraph sgRamareSaouter2003_v1["RamareSaouter2003.v1"]
+    RamareSaouter2003_v1_prime_in_short_interval["<b>prime_in_short_interval</b><br/><i>cited</i>"]
+  end
+  subgraph sgRichstein2001_v1["Richstein2001.v1"]
+    Richstein2001_v1_even_up_to_4e14["<b>even_up_to_4e14</b><br/><i>computation</i>"]
   end
   subgraph sgRosserSchoenfeld_v1["RosserSchoenfeld.v1"]
     RosserSchoenfeld_v1_zero_free_region["<b>zero_free_region</b><br/><i>cited</i>"]
@@ -522,6 +574,7 @@ graph LR
   CH2_v1_corollary_1_2_psi --> CH2_v1_corollary_1_3_psi
   PlattTrudgian_v1_rh_up_to_exact --> CH2_v1_corollary_1_3_psi
   Buthe_v1_theorem_2_psi --> CH2_v1_corollary_1_3_psi
+  ChebyshevNumerics_v1_psi_le_below_11723 --> Chebyshev_v1_psi_upper_clean
   DudekPlattNumerics_v1_pi_two_sided_paper --> DudekPlatt_v1_ramanujan_inequality
   DudekPlatt_v3_criterion --> DudekPlatt_v1_ramanujan_inequality
   DudekPlatt_v3_criterion --> DudekPlatt_v2_ramanujan_inequality_3915
@@ -575,6 +628,14 @@ graph LR
   FKS2Numerics_v1_corollary_23_mid_range --> FKS2_v1_corollary_26
   FKS2_v2_proposition_13 --> FKS2_v1_corollary_26
   FKS2_v2_theorem_3 --> FKS2_v1_corollary_26
+  OliveiraESilva2014_v1_even_up_to_4e18 --> Goldbach_v1_odd_up_to_1_1325e26
+  RamareSaouter2003_v1_prime_in_short_interval --> Goldbach_v1_odd_up_to_1_1325e26
+  OliveiraESilva2014_v1_even_up_to_4e18 --> Goldbach_v1_odd_up_to_kadiri_lumley
+  KadiriLumley_v1_prime_in_interval_above_exp_59 --> Goldbach_v1_odd_up_to_kadiri_lumley
+  KadiriLumley_v1_prime_in_interval_above_exp_60 --> Goldbach_v1_odd_up_to_kadiri_lumley
+  RamareSaouter2003_v1_prime_in_short_interval --> Goldbach_v1_odd_up_to_kadiri_lumley
+  Richstein2001_v1_even_up_to_4e14 --> Goldbach_v1_odd_up_to_ramare_saouter
+  RamareSaouter2003_v1_prime_in_short_interval --> Goldbach_v1_odd_up_to_ramare_saouter
   Hiary2016_v1_zeta_half_line_bound --> KLN_v1_subconvexity_bound
   Platt2017_v1_rh_up_to --> KLN_v1_zero_density
   RosserSchoenfeld_v1_zero_free_region_classical --> Kadiri2005_v1_zero_free_region
@@ -634,10 +695,13 @@ graph LR
   style FKS_v2_psi_bound_all_x stroke-dasharray: 8 4;
   style FKS_v2_psi_classical_bound stroke-dasharray: 8 4;
   style Hiary2016_v1_zeta_half_line_bound stroke-dasharray: 8 4;
+  style KadiriLumley_v1_prime_in_interval_above_exp_59 stroke-dasharray: 2 3;
+  style KadiriLumley_v1_prime_in_interval_above_exp_60 stroke-dasharray: 2 3;
   style Platt2015_v1_rh_up_to stroke-dasharray: 8 4;
   style Platt2017_v1_rh_up_to stroke-dasharray: 8 4;
   style PlattTrudgian_v1_rh_up_to stroke-dasharray: 8 4;
   style PlattTrudgian_v1_rh_up_to_exact stroke-dasharray: 8 4;
+  style RamareSaouter2003_v1_prime_in_short_interval stroke-dasharray: 2 3;
   style RosserSchoenfeld_v1_zero_free_region stroke-dasharray: 2 3;
   style Trudgian2011_v1_integral_S_bound stroke-dasharray: 2 3;
   style Wedeniwski_v1_rh_up_to stroke-dasharray: 2 3;
@@ -653,11 +717,11 @@ graph LR
   class BRDudekPlatt_v1_ramanujan_inequality__bridge_from_v4,BRDudekPlattNumerics_v3_pi_two_sided_footnote__bridge_from_v4,BRFKS_v2_psi_bound_all_x__rescaled_from_classical,BRFKS_v2_psi_classical_bound__threshold_from_v1,BRLcm_v1_lcmUpto_not_highlyAbundant__bridge_from_v2,BRPlatt2015_v1_rh_up_to__bridge_from_platt2017,BRRosserSchoenfeld_v1_zero_free_region_classical__bridge_from_shape,BRWedeniwski_v1_rh_up_to__bridge_from_platt2017 bridge;
   class Wedeniwski_v1_rh_up_to asserted;
   class FKS_v2_psi_bound_all_x,FKS_v2_psi_classical_bound,RosserSchoenfeld_v1_zero_free_region_classical bridged;
-  class CH2_v1_corollary_1_2_lambda_sum,CH2_v1_corollary_1_2_psi,CH2_v1_corollary_1_3_lambda_sum,CH2_v1_corollary_1_3_psi,CH2_v3_extremal_majorant,CH2_v3_extremal_minorant,DudekPlatt_v4_ramanujan_inequality_9401,DudekPlattNumerics_v4_pi_two_sided_footnote,GammaAsymptotics_v2_digamma_sub_log_isBigO_strip,ZetaLogDeriv_v1_logDeriv_functional_equation,ZetaZeroes_v1_exists_ordinate_free_height,ZetaZeroes_v1_finite_zeroes_on_compact,ZetaZeroes_v1_no_nontrivial_zeroes_left,ZetaZeroes_v1_zeroes_off_axis_in_strip,ZetaZeroes_v1_zeta_eq_zero_iff_zeta1,ZetaZeroes_v1_zeta_eq_zeta1_div lean_comparator;
+  class CH2_v1_corollary_1_2_lambda_sum,CH2_v1_corollary_1_2_psi,CH2_v1_corollary_1_3_lambda_sum,CH2_v1_corollary_1_3_psi,CH2_v3_extremal_majorant,CH2_v3_extremal_minorant,Chebyshev_v1_constant_bounds,Chebyshev_v1_psi_le_small,Chebyshev_v1_psi_lower,Chebyshev_v1_psi_upper,Chebyshev_v1_psi_upper_clean,DudekPlatt_v4_ramanujan_inequality_9401,DudekPlattNumerics_v4_pi_two_sided_footnote,GammaAsymptotics_v2_digamma_sub_log_isBigO_strip,Goldbach_v1_even_and_gaps_imply_odd,Goldbach_v1_even_implies_odd,Goldbach_v1_even_up_to_30,Goldbach_v1_odd_up_to_1_1325e26,Goldbach_v1_odd_up_to_kadiri_lumley,Goldbach_v1_odd_up_to_ramare_saouter,ZetaLogDeriv_v1_logDeriv_functional_equation,ZetaZeroes_v1_exists_ordinate_free_height,ZetaZeroes_v1_finite_zeroes_on_compact,ZetaZeroes_v1_no_nontrivial_zeroes_left,ZetaZeroes_v1_zeroes_off_axis_in_strip,ZetaZeroes_v1_zeta_eq_zero_iff_zeta1,ZetaZeroes_v1_zeta_eq_zeta1_div lean_comparator;
   class CH2_v2_proposition_2_4_lower,CH2_v2_proposition_2_4_upper,DudekPlatt_v2_ramanujan_inequality_3915,DudekPlatt_v3_criterion,FKS2_v1_corollary_14,FKS2_v1_corollary_22,FKS2_v1_corollary_23,FKS2_v1_corollary_26,FKS2_v2_proposition_13,FKS2_v2_theorem_3,Lcm_v1_lcmUpto_not_highlyAbundant,Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap,PrimeInterval_v1_classicalBound_hasPrimeInInterval,PrimeInterval_v1_eTheta_criterion,PrimeInterval_v1_numericalBound_hasPrimeInInterval,PrimeInterval_v1_theta_characterisation,ZeroFreeHeight_v1_classical_region_descends lean_comparator_stale;
-  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,BKLNW_v2_corollary_5_1,BKLNW_v2_table8_psi_bound_above,Buthe_v1_table_1_interval_bounds,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,DudekPlatt_v1_largest_counterexample_on_rh,DudekPlatt_v1_ramanujan_inequality,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,MT_v2_corollary_1,PlattTrudgian_v1_rh_up_to,PlattTrudgian_v1_rh_up_to_exact,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,PlattZeroSum_v1_inv_ordinate_sum_le,RosserSchoenfeld_v1_zero_free_region,Trudgian2011_v1_integral_S_bound,ZeroCount_v1_rvm_error_bound,ZeroCount_v1_rvm_error_small,ZetaHadamard_v1_logDeriv_partial_fractions literature;
+  class BKLNW_v1_corollary_5_1,BKLNW_v1_table8_psi_bound,BKLNW_v1_table8_psi_bound_above,BKLNW_v1_theta_error_le_one,BKLNW_v2_corollary_5_1,BKLNW_v2_table8_psi_bound_above,Buthe_v1_table_1_interval_bounds,Buthe_v1_theorem_2_li_gt_pi,Buthe_v1_theorem_2_li_minus_pi,Buthe_v1_theorem_2_li_minus_riemann_pi,Buthe_v1_theorem_2_psi,Buthe_v1_theorem_2_theta,Buthe_v1_theorem_2_theta_lower,Buthe2016_v1_theorem_2_li_minus_pi,Buthe2016_v1_theorem_2_li_minus_riemann_pi,Buthe2016_v1_theorem_2_psi,Buthe2016_v1_theorem_2_theta,DudekPlatt_v1_largest_counterexample_on_rh,DudekPlatt_v1_ramanujan_inequality,Dusart2018_v1_proposition_5_4,FKS_v1_psi_bound_all_x,FKS_v1_psi_classical_bound,Hiary2016_v1_zeta_half_line_bound,KLN_v1_subconvexity_bound,KLN_v1_zero_density,Kadiri2005_v1_zero_free_region,KadiriLumley_v1_prime_in_interval_above_exp_59,KadiriLumley_v1_prime_in_interval_above_exp_60,MT_v1_zero_free_region,MT_v1_zero_free_region_sharpened,MT_v2_corollary_1,PlattTrudgian_v1_rh_up_to,PlattTrudgian_v1_rh_up_to_exact,PlattTrudgian2021_v1_theorem_1_classical,PlattTrudgian2021_v1_theorem_1_numerical,PlattZeroSum_v1_inv_ordinate_sum_le,RamareSaouter2003_v1_prime_in_short_interval,RosserSchoenfeld_v1_zero_free_region,Trudgian2011_v1_integral_S_bound,ZeroCount_v1_rvm_error_bound,ZeroCount_v1_rvm_error_small,ZetaHadamard_v1_logDeriv_partial_fractions literature;
   class Buthe_v2_lemma_3_bounds,Buthe_v2_lemma_3_positivity,CotangentSeries_v1_cot_series_zeta_values,GammaAsymptotics_v1_digamma_sub_log_isBigO none_yet;
-  class BKLNWNumerics_v1_table8_psi_bound,BKLNWNumerics_v1_theta_error_le_one,Buthe2016_v1_theorem_1_table1,Buthe2016_v1_theorem_1_table2,ButheNumerics_v1_eq_6_2,ButheNumerics_v1_lemma_3_constant_gt_at_10,ButheNumerics_v1_lemma_3_constant_nonpos,ButheNumerics_v1_li_minus_pi_below_1e7,DudekPlattNumerics_v1_pi_two_sided_paper,DudekPlattNumerics_v2_pi_two_sided_pnt,DudekPlattNumerics_v3_pi_two_sided_footnote,FKBJ_v1_rh_up_to,FKS_v1_rescaled_A_exceeds_printed,FKS_v1_rescaled_C_is_short_of_two,FKS2Numerics_v1_corollary_22_mid_range,FKS2Numerics_v1_corollary_23_mid_range,FKS2Numerics_v1_nu_asymp_e30_le,FKS2Numerics_v1_table6_row2_floor,FKS2Numerics_v1_theta_asymp_ge_one_below_e30,LowZeroes_v1_no_zeroes_below_first_ordinate,LowZeroes_v1_sum_inv_ordinates_below_2e4,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to,ZetaLogDerivValues_v1_deriv_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_laurent_alternating,ZetaLogDerivValues_v1_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_three_halves,ZetaLogDerivValues_v1_logDeriv_two numerical;
+  class BKLNWNumerics_v1_table8_psi_bound,BKLNWNumerics_v1_theta_error_le_one,Buthe2016_v1_theorem_1_table1,Buthe2016_v1_theorem_1_table2,ButheNumerics_v1_eq_6_2,ButheNumerics_v1_lemma_3_constant_gt_at_10,ButheNumerics_v1_lemma_3_constant_nonpos,ButheNumerics_v1_li_minus_pi_below_1e7,ChebyshevNumerics_v1_psi_le_below_11723,DudekPlattNumerics_v1_pi_two_sided_paper,DudekPlattNumerics_v2_pi_two_sided_pnt,DudekPlattNumerics_v3_pi_two_sided_footnote,FKBJ_v1_rh_up_to,FKS_v1_rescaled_A_exceeds_printed,FKS_v1_rescaled_C_is_short_of_two,FKS2Numerics_v1_corollary_22_mid_range,FKS2Numerics_v1_corollary_23_mid_range,FKS2Numerics_v1_nu_asymp_e30_le,FKS2Numerics_v1_table6_row2_floor,FKS2Numerics_v1_theta_asymp_ge_one_below_e30,LowZeroes_v1_no_zeroes_below_first_ordinate,LowZeroes_v1_sum_inv_ordinates_below_2e4,OliveiraESilva2014_v1_even_up_to_4e18,Platt2015_v1_rh_up_to,Platt2017_v1_rh_up_to,Richstein2001_v1_even_up_to_4e14,ZetaLogDerivValues_v1_deriv_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_laurent_alternating,ZetaLogDerivValues_v1_logDeriv_neg_one,ZetaLogDerivValues_v1_logDeriv_three_halves,ZetaLogDerivValues_v1_logDeriv_two numerical;
   click BKLNW_v1_corollary_5_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#corollary_5_1" _blank
   click BKLNW_v1_table8_psi_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound" _blank
   click BKLNW_v1_table8_psi_bound_above href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound_above" _blank
@@ -693,6 +757,12 @@ graph LR
   click CH2_v2_proposition_2_4_upper href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v2.md#proposition_2_4_upper" _blank
   click CH2_v3_extremal_majorant href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v3.md#extremal_majorant" _blank
   click CH2_v3_extremal_minorant href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v3.md#extremal_minorant" _blank
+  click Chebyshev_v1_constant_bounds href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Chebyshev-v1.md#constant_bounds" _blank
+  click Chebyshev_v1_psi_le_small href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Chebyshev-v1.md#psi_le_small" _blank
+  click Chebyshev_v1_psi_lower href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Chebyshev-v1.md#psi_lower" _blank
+  click Chebyshev_v1_psi_upper href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Chebyshev-v1.md#psi_upper" _blank
+  click Chebyshev_v1_psi_upper_clean href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Chebyshev-v1.md#psi_upper_clean" _blank
+  click ChebyshevNumerics_v1_psi_le_below_11723 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ChebyshevNumerics-v1.md#psi_le_below_11723" _blank
   click CotangentSeries_v1_cot_series_zeta_values href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values" _blank
   click DudekPlatt_v1_largest_counterexample_on_rh href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v1.md#largest_counterexample_on_rh" _blank
   click DudekPlatt_v1_ramanujan_inequality href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v1.md#ramanujan_inequality" _blank
@@ -724,10 +794,18 @@ graph LR
   click FKS2Numerics_v1_theta_asymp_ge_one_below_e30 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30" _blank
   click GammaAsymptotics_v1_digamma_sub_log_isBigO href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/GammaAsymptotics-v1.md#digamma_sub_log_isBigO" _blank
   click GammaAsymptotics_v2_digamma_sub_log_isBigO_strip href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip" _blank
+  click Goldbach_v1_even_and_gaps_imply_odd href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md#even_and_gaps_imply_odd" _blank
+  click Goldbach_v1_even_implies_odd href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md#even_implies_odd" _blank
+  click Goldbach_v1_even_up_to_30 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md#even_up_to_30" _blank
+  click Goldbach_v1_odd_up_to_1_1325e26 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md#odd_up_to_1_1325e26" _blank
+  click Goldbach_v1_odd_up_to_kadiri_lumley href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md#odd_up_to_kadiri_lumley" _blank
+  click Goldbach_v1_odd_up_to_ramare_saouter href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md#odd_up_to_ramare_saouter" _blank
   click Hiary2016_v1_zeta_half_line_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Hiary2016-v1.md#zeta_half_line_bound" _blank
   click KLN_v1_subconvexity_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/KLN-v1.md#subconvexity_bound" _blank
   click KLN_v1_zero_density href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/KLN-v1.md#zero_density" _blank
   click Kadiri2005_v1_zero_free_region href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Kadiri2005-v1.md#zero_free_region" _blank
+  click KadiriLumley_v1_prime_in_interval_above_exp_59 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/KadiriLumley-v1.md#prime_in_interval_above_exp_59" _blank
+  click KadiriLumley_v1_prime_in_interval_above_exp_60 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/KadiriLumley-v1.md#prime_in_interval_above_exp_60" _blank
   click Lcm_v1_lcmUpto_not_highlyAbundant href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Lcm-v1.md#lcmUpto_not_highlyAbundant" _blank
   click Lcm_v2_lcmUpto_not_highlyAbundant_of_primeGap href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Lcm-v2.md#lcmUpto_not_highlyAbundant_of_primeGap" _blank
   click LowZeroes_v1_no_zeroes_below_first_ordinate href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/LowZeroes-v1.md#no_zeroes_below_first_ordinate" _blank
@@ -735,6 +813,7 @@ graph LR
   click MT_v1_zero_free_region href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v1.md#zero_free_region" _blank
   click MT_v1_zero_free_region_sharpened href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v1.md#zero_free_region_sharpened" _blank
   click MT_v2_corollary_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v2.md#corollary_1" _blank
+  click OliveiraESilva2014_v1_even_up_to_4e18 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/OliveiraESilva2014-v1.md#even_up_to_4e18" _blank
   click Platt2015_v1_rh_up_to href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Platt2015-v1.md#rh_up_to" _blank
   click Platt2017_v1_rh_up_to href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Platt2017-v1.md#rh_up_to" _blank
   click PlattTrudgian_v1_rh_up_to href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian-v1.md#rh_up_to" _blank
@@ -746,6 +825,8 @@ graph LR
   click PrimeInterval_v1_eTheta_criterion href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PrimeInterval-v1.md#eTheta_criterion" _blank
   click PrimeInterval_v1_numericalBound_hasPrimeInInterval href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PrimeInterval-v1.md#numericalBound_hasPrimeInInterval" _blank
   click PrimeInterval_v1_theta_characterisation href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PrimeInterval-v1.md#theta_characterisation" _blank
+  click RamareSaouter2003_v1_prime_in_short_interval href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval" _blank
+  click Richstein2001_v1_even_up_to_4e14 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Richstein2001-v1.md#even_up_to_4e14" _blank
   click RosserSchoenfeld_v1_zero_free_region href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v1.md#zero_free_region" _blank
   click RosserSchoenfeld_v1_zero_free_region_classical href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v1.md#zero_free_region_classical" _blank
   click Trudgian2011_v1_integral_S_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Trudgian2011-v1.md#integral_S_bound" _blank
@@ -895,6 +976,17 @@ A line is one claim, indented under whatever assumes it.
 
 - [`CH2.v3.extremal_minorant`](docs/nodes/CH2-v3.md#extremal_minorant) — verified
 
+- [`Chebyshev.v1.constant_bounds`](docs/nodes/Chebyshev-v1.md#constant_bounds) — verified
+
+- [`Chebyshev.v1.psi_le_small`](docs/nodes/Chebyshev-v1.md#psi_le_small) — verified
+
+- [`Chebyshev.v1.psi_lower`](docs/nodes/Chebyshev-v1.md#psi_lower) — verified
+
+- [`Chebyshev.v1.psi_upper`](docs/nodes/Chebyshev-v1.md#psi_upper) — verified
+
+- [`Chebyshev.v1.psi_upper_clean`](docs/nodes/Chebyshev-v1.md#psi_upper_clean) — verified
+  - [`ChebyshevNumerics.v1.psi_le_below_11723`](docs/nodes/ChebyshevNumerics-v1.md#psi_le_below_11723) — computation
+
 - [`DudekPlatt.v1.largest_counterexample_on_rh`](docs/nodes/DudekPlatt-v1.md#largest_counterexample_on_rh) — cited — *sources known, not all drawable*
 
 - [`DudekPlatt.v1.ramanujan_inequality`](docs/nodes/DudekPlatt-v1.md#ramanujan_inequality) — cited
@@ -1039,6 +1131,26 @@ A line is one claim, indented under whatever assumes it.
 
 - [`GammaAsymptotics.v1.digamma_sub_log_isBigO`](docs/nodes/GammaAsymptotics-v1.md#digamma_sub_log_isBigO) — unjustified
 
+- [`Goldbach.v1.even_and_gaps_imply_odd`](docs/nodes/Goldbach-v1.md#even_and_gaps_imply_odd) — verified
+
+- [`Goldbach.v1.even_implies_odd`](docs/nodes/Goldbach-v1.md#even_implies_odd) — verified
+
+- [`Goldbach.v1.even_up_to_30`](docs/nodes/Goldbach-v1.md#even_up_to_30) — verified
+
+- [`Goldbach.v1.odd_up_to_1_1325e26`](docs/nodes/Goldbach-v1.md#odd_up_to_1_1325e26) — verified
+  - [`OliveiraESilva2014.v1.even_up_to_4e18`](docs/nodes/OliveiraESilva2014-v1.md#even_up_to_4e18) — computation
+  - [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) — cited — *sources not traced*
+
+- [`Goldbach.v1.odd_up_to_kadiri_lumley`](docs/nodes/Goldbach-v1.md#odd_up_to_kadiri_lumley) — verified
+  - [`OliveiraESilva2014.v1.even_up_to_4e18`](docs/nodes/OliveiraESilva2014-v1.md#even_up_to_4e18) — computation
+  - [`KadiriLumley.v1.prime_in_interval_above_exp_59`](docs/nodes/KadiriLumley-v1.md#prime_in_interval_above_exp_59) — cited — *sources not traced*
+  - [`KadiriLumley.v1.prime_in_interval_above_exp_60`](docs/nodes/KadiriLumley-v1.md#prime_in_interval_above_exp_60) — cited — *sources not traced*
+  - [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) — cited — *sources not traced*
+
+- [`Goldbach.v1.odd_up_to_ramare_saouter`](docs/nodes/Goldbach-v1.md#odd_up_to_ramare_saouter) — verified
+  - [`Richstein2001.v1.even_up_to_4e14`](docs/nodes/Richstein2001-v1.md#even_up_to_4e14) — computation
+  - [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) — cited — *sources not traced*
+
 - [`Lcm.v1.lcmUpto_not_highlyAbundant`](docs/nodes/Lcm-v1.md#lcmUpto_not_highlyAbundant) — verified, stale
   - [`Dusart2018.v1.proposition_5_4`](docs/nodes/Dusart2018-v1.md#proposition_5_4) — cited — *sources not traced*
 
@@ -1107,12 +1219,14 @@ rather than maintained.
 | [`FKS2Numerics.v1.corollary_22_mid_range`](docs/nodes/FKS2Numerics-v1.md#corollary_22_mid_range) | computation | 3 | none |
 | [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) | cited | 3 | traced |
 | [`PlattTrudgian2021.v1.theorem_1_numerical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_numerical) | cited | 3 | traced |
+| [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) | cited | 3 | **not yet traced** |
 | [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) | cited | 2 | known, not all drawable |
 | [`CotangentSeries.v1.cot_series_zeta_values`](docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values) | unjustified | 2 | none |
 | [`FKS2Numerics.v1.corollary_23_mid_range`](docs/nodes/FKS2Numerics-v1.md#corollary_23_mid_range) | computation | 2 | none |
 | [`FKS2Numerics.v1.table6_row2_floor`](docs/nodes/FKS2Numerics-v1.md#table6_row2_floor) | computation | 2 | none |
 | [`KLN.v1.zero_density`](docs/nodes/KLN-v1.md#zero_density) | cited | 2 | traced |
 | [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) | cited | 2 | traced |
+| [`OliveiraESilva2014.v1.even_up_to_4e18`](docs/nodes/OliveiraESilva2014-v1.md#even_up_to_4e18) | computation | 2 | none |
 | [`PlattTrudgian.v1.rh_up_to_exact`](docs/nodes/PlattTrudgian-v1.md#rh_up_to_exact) | cited | 2 | known, not all drawable |
 | [`PlattZeroSum.v1.inv_ordinate_sum_le`](docs/nodes/PlattZeroSum-v1.md#inv_ordinate_sum_le) | cited | 2 | none |
 | [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) | cited | 2 | none |
@@ -1129,14 +1243,18 @@ rather than maintained.
 | [`ButheNumerics.v1.lemma_3_constant_gt_at_10`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_gt_at_10) | computation | 1 | none |
 | [`ButheNumerics.v1.lemma_3_constant_nonpos`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_nonpos) | computation | 1 | none |
 | [`ButheNumerics.v1.li_minus_pi_below_1e7`](docs/nodes/ButheNumerics-v1.md#li_minus_pi_below_1e7) | computation | 1 | none |
+| [`ChebyshevNumerics.v1.psi_le_below_11723`](docs/nodes/ChebyshevNumerics-v1.md#psi_le_below_11723) | computation | 1 | none |
 | [`DudekPlattNumerics.v1.pi_two_sided_paper`](docs/nodes/DudekPlattNumerics-v1.md#pi_two_sided_paper) | computation | 1 | known, not all drawable |
 | [`DudekPlattNumerics.v2.pi_two_sided_pnt`](docs/nodes/DudekPlattNumerics-v2.md#pi_two_sided_pnt) | computation | 1 | **not yet traced** |
 | [`DudekPlattNumerics.v3.pi_two_sided_footnote`](docs/nodes/DudekPlattNumerics-v3.md#pi_two_sided_footnote) | computation | 1 | known, not all drawable |
 | [`Dusart2018.v1.proposition_5_4`](docs/nodes/Dusart2018-v1.md#proposition_5_4) | cited | 1 | **not yet traced** |
 | [`Hiary2016.v1.zeta_half_line_bound`](docs/nodes/Hiary2016-v1.md#zeta_half_line_bound) | cited | 1 | known, not all drawable |
+| [`KadiriLumley.v1.prime_in_interval_above_exp_59`](docs/nodes/KadiriLumley-v1.md#prime_in_interval_above_exp_59) | cited | 1 | **not yet traced** |
+| [`KadiriLumley.v1.prime_in_interval_above_exp_60`](docs/nodes/KadiriLumley-v1.md#prime_in_interval_above_exp_60) | cited | 1 | **not yet traced** |
 | [`MT.v2.corollary_1`](docs/nodes/MT-v2.md#corollary_1) | cited | 1 | traced |
 | [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) | computation | 1 | known, not all drawable |
 | [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) | computation | 1 | known, not all drawable |
+| [`Richstein2001.v1.even_up_to_4e14`](docs/nodes/Richstein2001-v1.md#even_up_to_4e14) | computation | 1 | none |
 | [`RosserSchoenfeld.v1.zero_free_region_classical`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region_classical) | bridged | 1 | none |
 | [`Trudgian2011.v1.integral_S_bound`](docs/nodes/Trudgian2011-v1.md#integral_S_bound) | cited | 1 | **not yet traced** |
 | [`Wedeniwski.v1.rh_up_to`](docs/nodes/Wedeniwski-v1.md#rh_up_to) | asserted | 1 | **not yet traced** |

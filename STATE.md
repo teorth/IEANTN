@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-54 node version(s), 108 conclusion(s).  3 state nothing yet.
+61 node version(s), 125 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -15,10 +15,10 @@ adds the environment detail.
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 3 |
-| `lean-comparator` | 33 |
-| `literature` | 39 |
+| `lean-comparator` | 44 |
+| `literature` | 42 |
 | `none-yet` | 4 |
-| `numerical` | 28 |
+| `numerical` | 31 |
 
 ## Nodes
 
@@ -60,6 +60,12 @@ adds the environment detail.
 | `CH2.v2` | active | `proposition_2_4_lower` | lean-comparator-stale | 0 | #64 |
 | `CH2.v3` | active | `extremal_majorant` | lean-comparator | 0 | #64 |
 | `CH2.v3` | active | `extremal_minorant` | lean-comparator | 0 | #64 |
+| `Chebyshev.v1` | active | `constant_bounds` | lean-comparator | 0 | - |
+| `Chebyshev.v1` | active | `psi_lower` | lean-comparator | 0 | - |
+| `Chebyshev.v1` | active | `psi_upper` | lean-comparator | 0 | - |
+| `Chebyshev.v1` | active | `psi_le_small` | lean-comparator | 0 | - |
+| `Chebyshev.v1` | active | `psi_upper_clean` | lean-comparator | 1 | - |
+| `ChebyshevNumerics.v1` | active | `psi_le_below_11723` | numerical | 0 | - |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `CotangentSeries.v1` | awaiting-solution | `cot_series_zeta_values` | none-yet | 0 | - |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
@@ -92,10 +98,18 @@ adds the environment detail.
 | `FKS2Numerics.v1` | stub | `corollary_23_mid_range` | numerical | 0 | - |
 | `GammaAsymptotics.v1` | awaiting-solution | `digamma_sub_log_isBigO` | none-yet | 0 | #64 |
 | `GammaAsymptotics.v2` | active | `digamma_sub_log_isBigO_strip` | lean-comparator | 0 | #64 |
+| `Goldbach.v1` | active | `even_implies_odd` | lean-comparator | 0 | - |
+| `Goldbach.v1` | active | `even_and_gaps_imply_odd` | lean-comparator | 0 | - |
+| `Goldbach.v1` | active | `even_up_to_30` | lean-comparator | 0 | - |
+| `Goldbach.v1` | active | `odd_up_to_ramare_saouter` | lean-comparator | 2 | - |
+| `Goldbach.v1` | active | `odd_up_to_1_1325e26` | lean-comparator | 2 | - |
+| `Goldbach.v1` | active | `odd_up_to_kadiri_lumley` | lean-comparator | 4 | - |
 | `Hiary2016.v1` | stub | `zeta_half_line_bound` | literature | 0 | - |
 | `KLN.v1` | active | `subconvexity_bound` | literature | 1 | - |
 | `KLN.v1` | active | `zero_density` | literature | 1 | - |
 | `Kadiri2005.v1` | stub | `zero_free_region` | literature | 2 | - |
+| `KadiriLumley.v1` | active | `prime_in_interval_above_exp_59` | literature | 0 | - |
+| `KadiriLumley.v1` | active | `prime_in_interval_above_exp_60` | literature | 0 | - |
 | `Lcm.v1` | active | `lcmUpto_not_highlyAbundant` | lean-comparator-stale | 1 | - |
 | `Lcm.v2` | active | `lcmUpto_not_highlyAbundant_of_primeGap` | lean-comparator-stale | 0 | #10 |
 | `LowZeroes.v1` | stub | `sum_inv_ordinates_below_2e4` | numerical | 0 | #64 |
@@ -104,6 +118,7 @@ adds the environment detail.
 | `MT.v1` | active | `zero_free_region_sharpened` | literature | 2 | - |
 | `MT.v2` | active | `corollary_1` | literature | 1 | #63 |
 | `MTY.v1` | stub | *(none yet)* | - | - | - |
+| `OliveiraESilva2014.v1` | active | `even_up_to_4e18` | numerical | 0 | - |
 | `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
 | `Platt2017.v1` | stub | `rh_up_to` | numerical | 1 | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
@@ -115,6 +130,8 @@ adds the environment detail.
 | `PrimeInterval.v1` | active | `eTheta_criterion` | lean-comparator-stale | 0 | #53 |
 | `PrimeInterval.v1` | active | `numericalBound_hasPrimeInInterval` | lean-comparator-stale | 0 | #53 |
 | `PrimeInterval.v1` | active | `classicalBound_hasPrimeInInterval` | lean-comparator-stale | 0 | #53 |
+| `RamareSaouter2003.v1` | active | `prime_in_short_interval` | literature | 0 | - |
+| `Richstein2001.v1` | active | `even_up_to_4e14` | numerical | 0 | - |
 | `RosserSchoenfeld.v1` | stub | `zero_free_region` | literature | 0 | - |
 | `RosserSchoenfeld.v1` | stub | `zero_free_region_classical` | bridged | 0 | - |
 | `Trudgian2011.v1` | stub | `integral_S_bound` | literature | 0 | - |
@@ -180,6 +197,7 @@ downstream.
 | `FKS.v1.psi_classical_bound` | 4 |
 | `BKLNW.v1.theta_error_le_one` | 4 |
 | `BKLNW.v1.corollary_5_1` | 4 |
+| `RamareSaouter2003.v1.prime_in_short_interval` | 3 |
 | `PlattTrudgian2021.v1.theorem_1_numerical` | 3 |
 | `MT.v1.zero_free_region` | 3 |
 | `FKS2Numerics.v1.corollary_22_mid_range` | 3 |
@@ -196,6 +214,7 @@ downstream.
 | `ZeroCount.v1.rvm_error_bound` | 2 |
 | `PlattZeroSum.v1.inv_ordinate_sum_le` | 2 |
 | `PlattTrudgian.v1.rh_up_to_exact` | 2 |
+| `OliveiraESilva2014.v1.even_up_to_4e18` | 2 |
 | `Kadiri2005.v1.zero_free_region` | 2 |
 | `KLN.v1.zero_density` | 2 |
 | `GammaAsymptotics.v2.digamma_sub_log_isBigO_strip` | 2 |
@@ -208,14 +227,18 @@ downstream.
 | `Wedeniwski.v1.rh_up_to` | 1 |
 | `Trudgian2011.v1.integral_S_bound` | 1 |
 | `RosserSchoenfeld.v1.zero_free_region_classical` | 1 |
+| `Richstein2001.v1.even_up_to_4e14` | 1 |
 | `Platt2017.v1.rh_up_to` | 1 |
 | `Platt2015.v1.rh_up_to` | 1 |
 | `MT.v2.corollary_1` | 1 |
+| `KadiriLumley.v1.prime_in_interval_above_exp_60` | 1 |
+| `KadiriLumley.v1.prime_in_interval_above_exp_59` | 1 |
 | `Hiary2016.v1.zeta_half_line_bound` | 1 |
 | `Dusart2018.v1.proposition_5_4` | 1 |
 | `DudekPlattNumerics.v3.pi_two_sided_footnote` | 1 |
 | `DudekPlattNumerics.v2.pi_two_sided_pnt` | 1 |
 | `DudekPlattNumerics.v1.pi_two_sided_paper` | 1 |
+| `ChebyshevNumerics.v1.psi_le_below_11723` | 1 |
 | `CH2.v1.corollary_1_2_psi` | 1 |
 | `CH2.v1.corollary_1_2_lambda_sum` | 1 |
 | `ButheNumerics.v1.li_minus_pi_below_1e7` | 1 |
