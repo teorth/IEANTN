@@ -58,3 +58,6 @@ theorem Buthe.v1.challenge_theorem_2_li_gt_pi
 
 theorem Buthe.v1.challenge_table_1_interval_bounds : Buthe.v1.table_1_interval_bounds := by
   sorry
+
+theorem Buthe.v1.challenge_table_2_interval_bounds : Buthe.v1.table_2_interval_bounds := by
+  sorry

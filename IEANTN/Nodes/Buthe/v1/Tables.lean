@@ -11,9 +11,12 @@ import IEANTN.Vocabulary.ErrorTerms
 Data from Büthe, *An analytic method for bounding ψ(x)*, Math. Comp. **87** (2018), 1991–2009.
 Data only — what is claimed *about* it is in `Conclusions.lean`.
 
-Transcribed from the same list already in PrimeNumberTheoremAnd (`Buthe.table_1`), which matches
-the printed Table 1 of arXiv:1511.02032v2: upper and lower bounds `M±_ψ(x)` for
-`(t − ψ(t)) / √t` on each dyadic interval `[x, 2x]`.
+Table 1 matches the PNT+ transcription (`Buthe.table_1`) and the printed Table 1 of
+arXiv:1511.02032v2: upper and lower bounds `M±_ψ(x)` for `(t − ψ(t)) / √t` on each dyadic
+interval `[x, 2x]`.
+
+Table 2 is the matching table for `(li(t) − π*(t)) · (log t) / √t`, read from the same preprint's
+Table 2; PNT+ does not carry it.
 -/
 
 namespace Buthe.v1
@@ -61,6 +64,49 @@ def table_1 : List (ℝ × ℝ × ℝ) :=
     (128 * 10 ^ 16, -0.94, 0.75),
     (256 * 10 ^ 16, -0.82, 0.86),
     (512 * 10 ^ 16, -0.83, 0.94)
+  ]
+
+/-- **Table 2**: rows `(x, M⁻_{π*}(x), M⁺_{π*}(x))`.
+
+If `(x, M⁻, M⁺)` is a row, then `M⁻ ≤ (li(t) − π*(t)) · (log t) / √t ≤ M⁺` for all `t ∈ [x, 2x]`.
+The paper reads Theorem 2's equation (1.8) for `x ≥ 10⁷` off these bounds together with its
+Lemma 2; the last three rows again start past where `2x` sits inside `10¹⁹`.
+
+Transcribed from arXiv:1511.02032v2 Table 2. Cross-checked at the first and last printed blocks
+(`10¹⁰`, `−0.87`, `0.95` and `512 · 10¹⁶`, `−0.88`, `0.99`). -/
+def table_2 : List (ℝ × ℝ × ℝ) :=
+  [
+    (10 ^ 10, -0.87, 0.95),
+    (2 * 10 ^ 10, -0.84, 0.73),
+    (4 * 10 ^ 10, -0.82, 0.89),
+    (8 * 10 ^ 10, -0.89, 0.95),
+    (16 * 10 ^ 10, -0.97, 0.76),
+    (32 * 10 ^ 10, -0.96, 0.86),
+    (64 * 10 ^ 10, -0.74, 0.82),
+    (10 ^ 12, -0.88, 0.89),
+    (2 * 10 ^ 12, -0.87, 0.84),
+    (4 * 10 ^ 12, -0.81, 0.81),
+    (8 * 10 ^ 12, -0.87, 0.84),
+    (16 * 10 ^ 12, -0.87, 0.76),
+    (32 * 10 ^ 12, -0.74, 1),
+    (64 * 10 ^ 12, -0.85, 0.84),
+    (10 ^ 14, -0.86, 0.79),
+    (2 * 10 ^ 14, -0.67, 0.83),
+    (4 * 10 ^ 14, -0.72, 0.80),
+    (8 * 10 ^ 14, -0.87, 0.95),
+    (16 * 10 ^ 14, -0.72, 0.93),
+    (32 * 10 ^ 14, -0.80, 0.92),
+    (64 * 10 ^ 14, -0.79, 0.72),
+    (10 ^ 16, -0.94, 0.80),
+    (2 * 10 ^ 16, -0.93, 0.76),
+    (4 * 10 ^ 16, -0.71, 0.79),
+    (8 * 10 ^ 16, -0.88, 0.83),
+    (16 * 10 ^ 16, -0.77, 0.98),
+    (32 * 10 ^ 16, -0.84, 0.77),
+    (64 * 10 ^ 16, -1, 0.88),
+    (128 * 10 ^ 16, -1, 0.80),
+    (256 * 10 ^ 16, -0.87, 0.91),
+    (512 * 10 ^ 16, -0.88, 0.99)
   ]
 
 end Buthe.v1

@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Terence Tao
+Authors: Terence Tao, Taksh Kothari
 -/
 import IEANTN.Vocabulary.ErrorTerms
 import IEANTN.Nodes.Buthe.v1.Tables
@@ -84,5 +84,17 @@ def table_1_interval_bounds : Prop :=
     p.1 ≤ t → t ≤ 2 * p.1 →
       p.2.1 ≤ (t - Chebyshev.psi t) / Real.sqrt t ∧
         (t - Chebyshev.psi t) / Real.sqrt t ≤ p.2.2
+
+/-- **Table 2.** If `(x, M⁻, M⁺)` is a row of Table 2, then
+`M⁻ ≤ (li(t) − π*(t)) · (log t) / √t ≤ M⁺` for every `t ∈ [x, 2x]`.
+
+This is the claim *about* Table 2. The paper reads Theorem 2's equation (1.8) for `x ≥ 10⁷`
+from these bounds together with its Lemma 2; below `10⁷` it checks directly (see
+`ButheNumerics.v1`). -/
+def table_2_interval_bounds : Prop :=
+  ∀ p ∈ table_2, ∀ t : ℝ,
+    p.1 ≤ t → t ≤ 2 * p.1 →
+      p.2.1 ≤ (li t - riemannPrimeCounting t) * Real.log t / Real.sqrt t ∧
+        (li t - riemannPrimeCounting t) * Real.log t / Real.sqrt t ≤ p.2.2
 
 end Buthe.v1
