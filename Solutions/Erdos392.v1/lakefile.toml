@@ -1,0 +1,20 @@
+name = "solution_Erdos392_v1"
+defaultTargets = ["PiBounds", "Erdos392Dev", "Solution"]
+
+# The core library, for the node's `Conclusions`. Add whatever else the proof needs --
+# PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+[[lean_lib]]
+name = "PiBounds"
+roots = ["PiBounds"]
+
+[[lean_lib]]
+name = "Erdos392Dev"
+roots = ["Erdos392Dev"]

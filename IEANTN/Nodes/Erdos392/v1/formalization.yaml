@@ -1,0 +1,167 @@
+# Node metadata for `Erdos392.v1`.  See docs/NODES.md.
+#
+# Imports nothing, and that is worth a note: the development this comes from uses the Prime Number
+# Theorem twice, both times for an upper bound on pi that Mathlib's Chebyshev bound supplies. See
+# the Conclusions module docstring.
+version: "v0.4"
+
+node:
+  id: Erdos392.v1
+  family: Erdos392
+  version: v1
+  kind: paper
+  status: awaiting-verification
+
+project:
+  name: "Erdos problem 392: decomposing a factorial into few factors of size at most n^2"
+  description: >-
+    Write A(n) for the least t such that n! is a product of t integers each at most n^2. Erdos asked
+    whether A(n) = n/2 - n/(2 log n) + o(n/log n); it is. This node states both halves --
+    factors_le_n_sq, the upper bound, which is the content, and factors_le_n_sq_lower, the counting
+    argument that matches it -- together with factors_le_n, the intermediate result bounding the
+    number of factors of size at most n by n - n/log n + o(n/log n), from which the upper bound
+    follows by pairing. Nothing here is conditional: the chain from Mathlib to the asymptotic is
+    proof, not citation.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11A51", "11N56"]
+
+conclusions:
+- id: factors_le_n
+  declaration: Erdos392.v1.factors_le_n
+  challenge: Erdos392.v1.challenge_factors_le_n
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      A Lean proof is in Solutions/Erdos392.v1, awaiting a Comparator receipt. Imports nothing, and
+      the none is real: the only non-elementary input is an upper bound on pi(x), and Mathlib's
+      Chebyshev.eventually_primeCounting_le supplies it. PrimeNumberTheoremAnd uses the Prime Number
+      Theorem here instead, which is more than the argument needs and which its own blueprint note
+      says is optional.
+  designated: unjustified
+  progress:
+    solution: Solutions/Erdos392.v1/
+    state: in-progress
+    remaining_holes: 0
+- id: factors_le_n_sq
+  declaration: Erdos392.v1.factors_le_n_sq
+  challenge: Erdos392.v1.challenge_factors_le_n_sq
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      A Lean proof is in Solutions/Erdos392.v1, awaiting a Comparator receipt. The upper half of the
+      asymptotic the problem asks about, obtained from factors_le_n by pairing factors. Imports
+      nothing.
+  designated: unjustified
+  progress:
+    solution: Solutions/Erdos392.v1/
+    state: in-progress
+    remaining_holes: 0
+- id: factors_le_n_sq_lower
+  declaration: Erdos392.v1.factors_le_n_sq_lower
+  challenge: Erdos392.v1.challenge_factors_le_n_sq_lower
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      A Lean proof is in Solutions/Erdos392.v1, awaiting a Comparator receipt. Unlike the other two
+      conclusions this is NOT a port: PrimeNumberTheoremAnd proves only the upper bound, and a node
+      stating half of a two-sided asymptotic invites exactly the misreading this network exists to
+      prevent. The proof is four lines of counting on top of Mathlib's effective Stirling bound
+      Stirling.le_log_factorial_stirling, and is stated for every n >= 2 rather than eventually.
+  designated: unjustified
+
+  progress:
+    solution: Solutions/Erdos392.v1/
+    state: in-progress
+    remaining_holes: 0
+sources:
+- title: "Erdos problem 392, forum thread"
+  authors: ["folklore"]
+  type: "web discussion"
+  id: "https://www.erdosproblems.com/forum/thread/392#post-2696"
+  location: "erdosproblems.com forum, thread 392, post 2696"
+  relationship: formalizes
+  note: >-
+    The argument formalized here, as PrimeNumberTheoremAnd's own section comment records: its proof
+    is adapted from this post. The problem statement itself is at
+    https://www.erdosproblems.com/392, which records the problem as proved and the proof as
+    Lean-verified.
+
+- title: "Decomposing a factorial into large factors"
+  authors: ["Boris Alexeev", "Evan Conway", "Matthieu Rosenfeld", "Andrew V. Sutherland", "Terence Tao",
+    "Markus Uhr", "Kevin Ventullo"]
+  type: "paper"
+  id: "arXiv:2503.20170"
+  location: "arXiv:2503.20170, submitted 26 March 2025"
+  relationship: background
+  note: >-
+    Named by PNT+ as the inspiration for the method. Recorded as background rather than as what is
+    formalized, because it solves a different problem: it studies t(N), the largest t such that N!
+    is a product of exactly N integers all at least t, which is the dual question to the one here.
+    Author list and date confirmed against the arXiv abstract page.
+
+related_formalizations:
+- id: "https://github.com/AlexKontorovich/PrimeNumberTheoremAnd"
+  relationship: builds-on
+  note: >-
+    PrimeNumberTheoremAnd/IEANTN/Erdos392.lean is where the two upper bounds come from, and the
+    solution is a port of it. Three differences. Its dependency on the Prime Number Theorem is
+    replaced by Mathlib's Chebyshev bound on pi, which is all the argument uses and which makes this
+    node unconditional. Its statement of the n^2 bound places the cardinality bound inside the
+    quantifier over factors, which is equivalent only because the product condition forces a
+    nonempty index type; the statement here does not need that argument. And the lower bound, which
+    PNT+ does not prove, is added so that the node states the problem rather than half of it.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Ported the two upper bounds from PrimeNumberTheoremAnd under the direction of the maintainer,
+      rewired their use of the Prime Number Theorem onto Mathlib's Chebyshev bound, replaced the one
+      LeanCert-backed log bound they consume with a proof from Mathlib, restated them without the
+      quantifier trap, and wrote the lower bound, which is new here rather than ported. The
+      mathematics of the upper bounds and their tactic scripts are PNT+'s. Three of its tactic steps
+      needed repair against this Mathlib, none of them mathematical: a renamed lemma
+      (prod_le_prod became prod_le_prod0 for the nonnegativity-guarded form), two names made
+      ambiguous by importing Mathlib wholesale, and one simp set that no longer decomposes a
+      Finset.filter membership.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    The two upper bounds are transcribed from the PNT+ development; the lower bound is written here
+    and is the only part of this node not derived from it. The problem statement was read from
+    erdosproblems.com/392, which states it for factors of size at most n^2, matching
+    factors_le_n_sq. The PNT+ dependency was traced by hand: pi_alt' is the only name Erdos392.lean
+    takes from outside Mathlib and its own file, and it is used at exactly two places.
+
+limitations:
+- >-
+  The upper bounds are asymptotic. Each says "for every epsilon > 0, eventually in n", with no
+  effective threshold, so neither says anything about any particular n. The lower bound is
+  effective, holding for every n >= 2.
+- >-
+  The lower bound is not a port and has had no review beyond the maintainer's. It is four lines of
+  counting, but it is the one part of this node with no upstream to compare against.
+- >-
+  No novelty is claimed. The upper bounds are the forum argument, formalized in PNT+ before this;
+  the lower bound is the standard counting observation that anyone posing the problem would make.
