@@ -1,0 +1,279 @@
+{
+  "source_repository": "https://github.com/hakonlonmo/PrimeNumberTheoremAnd",
+  "source_commit": "81eca5aa3fa4779883a9aeba18e49087c5366e0f",
+  "files": [
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/Constants.lean",
+      "target": "RS12/Constants.lean",
+      "source_sha256": "2df17022f458fff263aca519c41ca5b3ba87cabbf413b5ffa00a9dbed451ee45"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/Factorial.lean",
+      "target": "RS12/Factorial.lean",
+      "source_sha256": "9e0e4dcae66adea0bb6c55f0ae09c9b14e0081ff8f047472d139969b9b9acfdc"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialBound.lean",
+      "target": "RS12/FactorialBound.lean",
+      "source_sha256": "cb9f54f16173d97292442b28c90bae50adea884fb10d398f097308f5f4011cc6"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData.lean",
+      "target": "RS12/FactorialData.lean",
+      "source_sha256": "85cdcb9f16d81a635ef7df3b9b5bc005bfadf2295075f46a26301c0f54d8addb"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData00.lean",
+      "target": "RS12/FactorialData00.lean",
+      "source_sha256": "907e1d7686f33af337f74536f3de0b9ff4a7b9b6fc27e3ff58bb675630677716"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData01.lean",
+      "target": "RS12/FactorialData01.lean",
+      "source_sha256": "6cf1587b94898c6a8948ac62364c35e443b03cfe6b02868ecff9a03e79b066f8"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData02.lean",
+      "target": "RS12/FactorialData02.lean",
+      "source_sha256": "d0ef7449c003bff47a0f2fa45ff4b13c22cc6d4b664c7fddfa78f98684876510"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData03.lean",
+      "target": "RS12/FactorialData03.lean",
+      "source_sha256": "90049dc8c2e653610ff1aa3250b3ef3a706dc65b34c172f5625eca9118748149"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData04.lean",
+      "target": "RS12/FactorialData04.lean",
+      "source_sha256": "15383ed3ede8b3713935206001dddc7bdd12d481144abad27d3b4184bc352d60"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData05.lean",
+      "target": "RS12/FactorialData05.lean",
+      "source_sha256": "edc31305ce58a1fa4ce44da05115d28b63139a341ee3aa47e6cb9467710dd4c2"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData06.lean",
+      "target": "RS12/FactorialData06.lean",
+      "source_sha256": "8a6bbba411cffd1e64bffb1bc53a8d67db88d3a8b4b6ca96a13156113fd10b9c"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData07.lean",
+      "target": "RS12/FactorialData07.lean",
+      "source_sha256": "1bb6a638c76c1e0086aa918ea7987bd0c1152a70c85bb5f72e0b7b977550d84d"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData08.lean",
+      "target": "RS12/FactorialData08.lean",
+      "source_sha256": "4154cc76a09458de3953a89a7f7405d6324c88a5706c035bc6a3099dbe1254ea"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData09.lean",
+      "target": "RS12/FactorialData09.lean",
+      "source_sha256": "ad82c3b7a50839bc9b47979f020413e81af0516ac9c83c0bab75cbf338c61f64"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData10.lean",
+      "target": "RS12/FactorialData10.lean",
+      "source_sha256": "d8b8f768902c7d504e92927e8f4689a2688d963ed542c069c44ff7d31bb72e7a"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialData11.lean",
+      "target": "RS12/FactorialData11.lean",
+      "source_sha256": "950d763a68bfa7598f6da19bf9e6b68d7919677e24680086f2106748ca051463"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FactorialUpper.lean",
+      "target": "RS12/FactorialUpper.lean",
+      "source_sha256": "f81cd18d37994ddbd8fcdafa65abe604a6f5fe16cef57e029c772dc1ffbd8c02"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FiniteBridge.lean",
+      "target": "RS12/FiniteBridge.lean",
+      "source_sha256": "30ffbd27d29605481c1b0d180977bbf03f20d0a642ea9f450d571995cdfe2772"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/FixedCheck.lean",
+      "target": "RS12/FixedCheck.lean",
+      "source_sha256": "3d4b0ec76f1701352dc5cc7fc03e9e9a2ce5e2f00354a1e75b56d39ae1cd6be0"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/KernelLogs.lean",
+      "target": "RS12/KernelLogs.lean",
+      "source_sha256": "3e45b321e801f162b24ca5393846bba4a19202ee2bef42ee8608a0926e9e190b"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/Period.lean",
+      "target": "RS12/Period.lean",
+      "source_sha256": "9276434b9864af0913d5633972354fc37a8faeb63bc933be81a6b7119df2e548"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/Proof.lean",
+      "target": "RS12/Proof.lean",
+      "source_sha256": "7d8de9a4f2919bee43871a12eeda9e0ea27ce7e3dabd695d1462f6b50d027273"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData00.lean",
+      "target": "RS12/PsiData00.lean",
+      "source_sha256": "d531416c5f4a831fdcab65ae7967ee2c357a2183c6ec7fafd46e7e478a49f541"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData01.lean",
+      "target": "RS12/PsiData01.lean",
+      "source_sha256": "be18375a1cda9da3310c698601f4534a78e54380e82d838afe0c1365af44dd72"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData02.lean",
+      "target": "RS12/PsiData02.lean",
+      "source_sha256": "beaadd8ba716364b6f6fd2097a675dd2893d98415aa1998eff385a9955352976"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData03.lean",
+      "target": "RS12/PsiData03.lean",
+      "source_sha256": "13c87913ea56e0c2dcccabe50ca30f5130fc97a7cc9909b8c04cb5d1e7b7e7a0"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData04.lean",
+      "target": "RS12/PsiData04.lean",
+      "source_sha256": "db9c7ab063bcff1601cb053b8bb13fbb0ac6f9d15047fc4c2ab156a558f62811"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData05.lean",
+      "target": "RS12/PsiData05.lean",
+      "source_sha256": "05e2710c34e36403195c677837e8f4920eea5bd7f19386167997eeea5cb70709"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData06.lean",
+      "target": "RS12/PsiData06.lean",
+      "source_sha256": "bec7b22d5a7bf192b94ad14b1c5235d33f8b3a201d640cb56d1103ee59e88061"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData07.lean",
+      "target": "RS12/PsiData07.lean",
+      "source_sha256": "d3ee82a8f56a50e675e02fee6f1ec58195f95898d9a5ca181923fdd3915a3e76"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData08.lean",
+      "target": "RS12/PsiData08.lean",
+      "source_sha256": "57ddb31b2560f19e3f509422ac8d9461338015e60ed5ac5a57d00e28a75cc1ba"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData09.lean",
+      "target": "RS12/PsiData09.lean",
+      "source_sha256": "93ff9ec5de0c2b908cabf077d9aff352872d05978f2221b4ab8b6d8611899741"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData10.lean",
+      "target": "RS12/PsiData10.lean",
+      "source_sha256": "2ac45734263e1f65cc822dd249b3a4c146f271e10e9a5f67083d4577e3d06fa4"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData11.lean",
+      "target": "RS12/PsiData11.lean",
+      "source_sha256": "1cafeec6b84e73056491488b44f12947574dc19c4c9a19c35f23c8ab620be9b8"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData12.lean",
+      "target": "RS12/PsiData12.lean",
+      "source_sha256": "348d85542a9c5899a1c362599d1d9f2156eed77d169bb94ac845e7ec0d240cc9"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData13.lean",
+      "target": "RS12/PsiData13.lean",
+      "source_sha256": "2b62fd64cd5321990c98313d46628b7d392de1b8ea0878bc1f5da55060b77d13"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData14.lean",
+      "target": "RS12/PsiData14.lean",
+      "source_sha256": "3ee11e11c4254986e762da7ef9b6036b294d533cdea12f1abac1338a3f2391e1"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData15.lean",
+      "target": "RS12/PsiData15.lean",
+      "source_sha256": "f5619349751719b3fabfd1a7f015f783aa75f1bb529f057a772f50974bd368fe"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData16.lean",
+      "target": "RS12/PsiData16.lean",
+      "source_sha256": "70bffe1498ebf4e10752c84d436eb8d9483c8281985c0e2a6d994006221f511b"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData17.lean",
+      "target": "RS12/PsiData17.lean",
+      "source_sha256": "0e8e6076ff247122bb3c004feec0fbd1cebc0d8e7bf0bb33102afdc2356a98b0"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData18.lean",
+      "target": "RS12/PsiData18.lean",
+      "source_sha256": "6e2813e4152a6529ac905ef5708660dfe98d00e5798f71f0538a6daccae81452"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiData19.lean",
+      "target": "RS12/PsiData19.lean",
+      "source_sha256": "2b9a649e08a4cdf05ab0d973927ed554d4423304fe659db3331dc8d89bf18e45"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiFinite.lean",
+      "target": "RS12/PsiFinite.lean",
+      "source_sha256": "f4f2c380e9b986f6df68ada31be27d512e375cfe913617ab4935709a6dd37bf9"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiFiniteBase.lean",
+      "target": "RS12/PsiFiniteBase.lean",
+      "source_sha256": "9a321c23bb7bda5a13ba736e81142ec9b75d4f5175b95d2f8ca7c60d38ca6e1f"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiInteger.lean",
+      "target": "RS12/PsiInteger.lean",
+      "source_sha256": "b6a3fa8ec9d389db362495f9a417c8e851b8cf5e7c6b91beb1d94c5ad6b664fe"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiRecurrence.lean",
+      "target": "RS12/PsiRecurrence.lean",
+      "source_sha256": "f1ead0982b8aee56d1d0072dd90f8efd679b3d0801024e220f32e6b62f1ac58a"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/PsiWitness.lean",
+      "target": "RS12/PsiWitness.lean",
+      "source_sha256": "a86cfb753ba50a503e7448defad7cd63bd4b0631bab704a85dfeda0468a5318d"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/Small.lean",
+      "target": "RS12/Small.lean",
+      "source_sha256": "eca27db08e8974cbc773f51f94485488cde1ed6e791224109a08a6ed52141b45"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/Weights.lean",
+      "target": "RS12/Weights.lean",
+      "source_sha256": "ea79b9b8bc92f469485c5c9fc51db6613556b8bd55ada9eb89107777dc0d668b"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/Chebyshev.lean",
+      "target": "RS12/Chebyshev.lean",
+      "source_sha256": "c32a859c7fe8834a1f970bcb630cdc5b5f4c31894bd3c38254809f63ac19faee",
+      "extracted_declarations": [
+        "Chebyshev.T",
+        "Chebyshev.T.le",
+        "Chebyshev.T.ge",
+        "Chebyshev.T.eq_sum_Lambda",
+        "Chebyshev.E",
+        "Chebyshev.T.weighted_eq_sum",
+        "Chebyshev.e",
+        "Chebyshev.U_bound.lemma_2"
+      ]
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RosserSchoenfeldPrime_tables.lean",
+      "target": "RS12/Tables.lean",
+      "source_sha256": "1e7ab7380aba60b3cbf8f26a9913ea58e2403d8228b72e25f00601711db9c35b"
+    },
+    {
+      "source": "PrimeNumberTheoremAnd/ZetaBounds.lean",
+      "target": "RS12/Chebyshev.lean",
+      "source_sha256": "aab01d422c0190b95dade7873261943997c554d55fcc9fff94a39005e5b5ad5a",
+      "extracted_declarations": [
+        "Finset.Ioc_eq_Icc"
+      ]
+    }
+  ]
+}

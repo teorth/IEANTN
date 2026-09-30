@@ -1,0 +1,105 @@
+# Node metadata for `RosserSchoenfeld1962.v1`. See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: RosserSchoenfeld1962.v1
+  family: RosserSchoenfeld1962
+  version: v1
+  kind: paper
+  status: awaiting-verification
+
+project:
+  name: "Rosser-Schoenfeld 1962: equation (3.35) in Theorem 12"
+  description: >-
+    Equation (3.35) of Theorem 12: psi(x) < 1.03883 x for every positive real x.
+    The solution is a port of the completed PNT+ formalization at commit 81eca5a,
+    retaining its kernel-checked finite certificate through 500000 and weighted-factorial
+    recurrence. The theorem's separate maximum-at-113 assertion is outside this node's scope.
+  authors: ["Akula"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Akula"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05"]
+
+conclusions:
+- id: equation_3_35
+  declaration: RosserSchoenfeld1962.v1.equation_3_35
+  challenge: RosserSchoenfeld1962.v1.challenge_equation_3_35
+  imports: []
+  imports_status: none
+  justifications:
+  - id: rs1962-paper
+    kind: literature
+    source: "https://doi.org/10.1215/ijm/1255631807"
+    locator: "Theorem 12, equation (3.35), p. 71; proof on pp. 77-80"
+    note: >-
+      The bound is recorded on the authority of the 1962 paper until the IEANTN
+      verification workflow accepts the solution. The port proves an unconditional
+      theorem with no node hypotheses: its finite arithmetic and logarithm bounds
+      are checked in Lean, and it needs no numerical or zero-verification assumption.
+      No Comparator justification or receipt is supplied by the author.
+  designated: rs1962-paper
+
+  progress:
+    solution: Solutions/RosserSchoenfeld1962.v1/
+    state: in-progress
+    remaining_holes: 0
+sources:
+- title: "Approximate formulas for some functions of prime numbers"
+  authors: ["J. Barkley Rosser", "Lowell Schoenfeld"]
+  type: paper
+  id: "https://doi.org/10.1215/ijm/1255631807"
+  location: "Illinois Journal of Mathematics 6(1) (1962), 64-94"
+  relationship: formalizes
+  note: >-
+    The rendered scan was checked at p. 64 for the definition of psi and at p. 71 for
+    Theorem 12. This node represents precisely (3.35), with strict inequality and x > 0;
+    the preceding maximum-at-113 clause is not proved by the pinned upstream theorem
+    and is not included. This is a different paper from the 1975 RosserSchoenfeld.v1 node.
+
+related_formalizations:
+- id: "https://github.com/hakonlonmo/PrimeNumberTheoremAnd/tree/81eca5aa3fa4779883a9aeba18e49087c5366e0f"
+  relationship: "port/adaptation"
+  note: >-
+    Read-only port source, obtained from ~/src/PNT-current at exactly this commit.
+    RS_prime.theorem_12 proves (3.35) using finite certificates through 500000,
+    psi(x) <= 1.021 x + psi(x/60) for x >= 500000, and strong induction.
+    Solutions/RosserSchoenfeld1962.v1/progress.yaml records the pruned import closure,
+    certificate provenance, and compatibility changes. Later cutoff experiments are excluded.
+
+automation:
+  methods:
+  - method: agent
+    models: ["gpt-6-astra (OpenAI)"]
+    framework: "OpenAI Codex"
+    role: >-
+      Substantial upstream Lean proof development with xhigh reasoning under human direction.
+      Codex also assisted this IEANTN port, source-statement audit, metadata, and local checks.
+  - method: chat
+    framework: "OpenAI ChatGPT"
+    role: >-
+      Upstream proof-strategy discussion, review, and migration planning under human direction.
+      The specific ChatGPT model was not recorded.
+
+review:
+  status: self-assessed
+  reviewers: ["OpenAI Codex"]
+  notes: >-
+    Automated source audit against the rendered 1962 paper and the pinned upstream Lean
+    declaration. No independent human review or IEANTN Comparator verification is claimed.
+
+limitations:
+- >-
+  Only Theorem 12's displayed bound (3.35) is represented; its maximum-at-113 assertion
+  is outside this port's scope.
+- >-
+  Local Lean checks are not an IEANTN verification receipt. Maintainer-dispatched
+  Comparator verification remains necessary before designating a Lean justification.
+- >-
+  No mathematical novelty is claimed. The result is Rosser and Schoenfeld's, and the
+  Lean proof is adapted from the already verified PNT+ development.

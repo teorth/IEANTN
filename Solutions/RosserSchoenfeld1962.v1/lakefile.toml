@@ -1,0 +1,26 @@
+name = "solution_RosserSchoenfeld1962_v1"
+defaultTargets = ["Solution"]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+
+# Only the solution depends on LeanCert; the core remains Mathlib-only.
+[[require]]
+name = "leancert"
+git = "https://github.com/alerad/leancert.git"
+rev = "6b11513512c9d27183fb4725bfc291ab38b4a6d7"
+
+# Lake visits later requirements first: inherit IEANTN's Mathlib and support-package pins.
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+[[lean_lib]]
+name = "RS12"
+roots = ["RS12.Proof"]
+globs = ["RS12.*"]

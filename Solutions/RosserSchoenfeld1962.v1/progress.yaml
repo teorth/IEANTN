@@ -1,0 +1,239 @@
+# Port plan and audit record; prose with structure, as described in docs/SOLUTIONS.md.
+# The tooling owns remaining_holes in the node metadata; do not maintain a second count here.
+solution: Solutions/RosserSchoenfeld1962.v1/
+state: in-progress
+phase: awaiting-comparator-verification
+
+source:
+  repository: https://github.com/hakonlonmo/PrimeNumberTheoremAnd
+  local_checkout: ~/src/PNT-current
+  commit: 81eca5aa3fa4779883a9aeba18e49087c5366e0f
+  short_commit: 81eca5a
+  access: >-
+    Read only, through git show and git ls-tree at the pinned commit. No working-tree
+    source, later commit, cutoff experiment, or scratch proof is used.
+  theorem: RS_prime.theorem_12
+  theorem_file: PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RosserSchoenfeldPrime.lean
+  development_directory: PrimeNumberTheoremAnd/IEANTN/RosserSchoenfeld/RS12/
+  upstream_toolchain: leanprover/lean4:v4.32.2
+  upstream_mathlib: 905b95818eb32af7874a58b427f50c1711a5e96c
+  upstream_leancert: 6b11513512c9d27183fb4725bfc291ab38b4a6d7
+
+targets:
+  - conclusion: RosserSchoenfeld1962.v1.equation_3_35
+    compared_theorem: RosserSchoenfeld1962.v1.challenge_equation_3_35
+    upstream: RS_prime.theorem_12
+    upstream_state: proved
+    upstream_axioms: [propext, Classical.choice, Quot.sound]
+    statement_match: >-
+      Exact for equation (3.35). The upstream theorem takes an implicit real x and a proof
+      of 0 < x, and concludes Chebyshev.psi x < RS_prime.c₀ * x. The definition of c₀ is
+      1.03883. The node quantifies explicitly over x and writes the same constant directly.
+      The adapter only introduces x and its positivity proof; it changes no bound or endpoint.
+    proof_structure: >-
+      Certify the range 0 < x <= 500000. Above that, use
+      psi(x) <= 1.021*x + psi(x/60), then strong induction on the natural floor of x.
+      The strict margin is 1.03883 - (1.021 + 1.03883/60) = 3097/6000000 > 0.
+
+statement_audit:
+  source: https://doi.org/10.1215/ijm/1255631807
+  scan: http://denise.vella.chemla.free.fr/Rosser-Schoenfeld-1962.pdf
+  method: >-
+    Downloaded the original article's scan outside the repository, extracted text to locate
+    the passages, then rendered and visually read printed pp. 64 and 71 (PDF pages 1 and 8)
+    before writing the conclusion. Bibliography checked against the publisher's DOI record.
+  confirmed_correct:
+    - >-
+      Theorem 12, equation (3.35), p. 71, states psi(x) < 1.03883 x for 0 < x.
+      Both inequalities are strict, x is real, and there is no additional hypothesis.
+    - >-
+      Page 64 defines psi(x) as the logarithm of the least common multiple of positive
+      integers <= x, and sets it to zero for x < 2. Thus an integer endpoint is included
+      with full weight, including at prime powers; there is no half-weight convention.
+    - >-
+      Mathlib's Chebyshev.psi is the sum of von Mangoldt over Ioc 0 (Nat.floor x).
+      Its psi_eq_log_lcmUpto and psi_eq_psi_coe_floor identify this with the paper's
+      definition, and psi_eq_zero_of_lt_two gives the small-x convention. IEANTN's
+      Vocabulary.ErrorTerms already uses this exact function in Eψ. No new definition
+      in Vocabulary or Conclusions is required.
+  discrepancy:
+    - >-
+      The complete printed Theorem 12 ALSO asserts that psi(x)/x attains its maximum
+      at x = 113. RS_prime.theorem_12 proves only the bound (3.35). This was reported
+      before porting. The node deliberately represents the requested displayed bound,
+      named equation_3_35, with the omitted clause explicit in Conclusions.lean and formalization.yaml;
+      no claim is made that the maximum assertion has been formalized.
+
+upstream_closure:
+  method: >-
+    Followed imports recursively using only git blobs at 81eca5a, then read the actual
+    theorem and its dependencies to prune imports at their origin. External Mathlib and
+    LeanCert modules are excluded from the following PNT+ module/line counts.
+  raw_source_theorem_module: {modules: 86, lines: 125846}
+  raw_rs12_proof_module: {modules: 82, lines: 118936}
+  retained_rs12: {modules: 49, lines: 92459}
+  retained_support:
+    - >-
+      ZetaBounds.lean: the two-line Finset.Ioc_eq_Icc identity, used by the factorial
+      sum rewrites. This is the only declaration retained from the analytic imports.
+    - >-
+      Chebyshev.lean: T, T.le, T.ge, T.eq_sum_Lambda, E, T.weighted_eq_sum,
+      e, and U_bound.lemma_2. These are the factorial estimates and weighted identity
+      actually consumed by RS12, and need only Mathlib after extraction.
+    - >-
+      RosserSchoenfeldPrime_tables.lean: the definition RS_prime.c₀ := 1.03883.
+    - >-
+      RosserSchoenfeldPrime.lean: the two-line RS_prime.theorem_12 wrapper only.
+  excluded:
+    - MediumPNT and the unrelated theorems in RosserSchoenfeldPrime.lean
+    - SecondaryDefinitions, PrimaryDefinitions, Consequences, Wiener, and zeta machinery
+    - LogTables and its unrelated numerical estimates
+    - LeanArchitect imports, blueprint attributes, and blueprint comments
+  external_dependencies:
+    - >-
+      IEANTN at ../.., for the small node conclusion, with the repository's exact
+      Lean 4.34.0-rc2 toolchain and Mathlib pin. Core dependencies are unchanged.
+    - >-
+      LeanCert, solution only, initially pinned to the same commit used by the validated
+      upstream. Only the certified psi checker and rational Taylor-logarithm API are
+      imported. Any compatibility adaptation will be recorded below.
+
+trusted_numerics:
+  assumptions: none
+  factorial_certificates: >-
+    FactorialData00--FactorialData11 certify one period [0, 360360) of the fixed integer
+    weighted-floor function, in leaves of at most 250 inputs. The weights, their
+    denominator 1000000, and the recurrence contraction 60 are unchanged.
+  psi_certificates: >-
+    PsiFiniteBase certifies the accumulator at 600. PsiData00--PsiData19 cover the
+    integers 601 through 500000, preserving all 1998 witness arrays and prefix checks.
+    The final accumulator is 5793100 and each integer bound uses coefficient 1.038829.
+  logarithms_and_small_range: >-
+    KernelLogs verifies six rational Taylor-logarithm endpoints. Small uses LeanCert's
+    rational psi checker through 600. All closed computations use decide +kernel,
+    never native_decide or externally asserted numerical results.
+  trust_boundary: >-
+    Python only supplies certificate data and Lean source. The soundness theorems and
+    all certificate checks are verified by Lean. No numerical node hypothesis is added.
+
+file_layout:
+  core: >-
+    IEANTN/Nodes/RosserSchoenfeld1962/v1 contains Conclusions.lean, formalization.yaml,
+    generated Challenge.lean, and generated fingerprints.json. It imports Mathlib only.
+  solution: >-
+    Solution.lean contains only the Comparator-facing adapter. RS12/ keeps every
+    upstream RS12 module boundary, with Chebyshev.lean and Tables.lean for the extracted
+    support. Proof.lean also retains the small RS_prime.theorem_12 wrapper.
+  rs12_support_modules:
+    - Constants
+    - Factorial
+    - FactorialBound
+    - FactorialData
+    - FactorialUpper
+    - FiniteBridge
+    - FixedCheck
+    - KernelLogs
+    - Period
+    - Proof
+    - PsiFinite
+    - PsiFiniteBase
+    - PsiInteger
+    - PsiRecurrence
+    - PsiWitness
+    - Small
+    - Weights
+  generated_modules: >-
+    FactorialData00--FactorialData11, FactorialData, PsiData00--PsiData19,
+    PsiFiniteBase, and PsiFinite: 35 modules total, including the 32 heavy shards.
+    All belong to the solution, never to the core node.
+
+adaptations:
+  - >-
+    Following the statement audit and human steering, the IEANTN conclusion is named
+    equation_3_35 and its challenge is challenge_equation_3_35. The ported upstream
+    interface RS_prime.theorem_12 keeps its name and statement.
+  - Relocate imports to solution-local RS12 modules.
+  - Remove LeanArchitect metadata without changing proof terms or certificate data.
+  - Add copyright and provenance headers.
+  - >-
+    Prune broad PNT+ support imports by extracting the eight required Chebyshev declarations
+    and the elementary Finset.Ioc_eq_Icc identity from ZetaBounds.
+  - Introduce the explicit real argument in the one-line Comparator-facing adapter.
+
+dependency_compatibility:
+  precedents_inspected:
+    - Solutions/Lcm.v1/lakefile.toml
+    - Solutions/Lcm.v2/lakefile.toml
+    - Solutions/FKS2.v1/lakefile.toml
+    - Solutions/FKS2.v2/lakefile.toml
+    - Solutions/GammaAsymptotics.v2/lakefile.toml
+  finding: >-
+    These solutions depend on IEANTN by the path ../.. and use the core's toolchain and
+    Mathlib revision. All existing solution lakefiles were also searched: none provides
+    a separate external LeanCert dependency precedent. There is no precedent here for
+    moving a solution to the upstream PNT+ toolchain or moving the core to accommodate it.
+  decision: >-
+    Retain the validated LeanCert pin 6b11513512c9d27183fb4725bfc291ab38b4a6d7 and test
+    its required ten-module closure on the core toolchain. Put the IEANTN requirement
+    after LeanCert: Lake resolves later requirements first, so the core's Mathlib and
+    all eight support-package pins take precedence. This fixes manifest resolution
+    without changing LeanCert, the core, or any RS12 mathematical or certificate content.
+  result: >-
+    The complete required LeanCert closure builds on Lean 4.34.0-rc2 at the original pin.
+    No LeanCert source patch or revision change is needed. The compiler reports only
+    existing deprecation warnings. The solution manifest's Mathlib and eight support
+    package revisions match the core manifest exactly.
+
+validation:
+  state: local-checks-passed
+  completed:
+    - Core lake build (3856 jobs) and the fingerprint executable build (7698 jobs).
+    - Generated equation_3_35 challenge and node-local fingerprint.
+    - Palomar metadata validation using validator commit a59f25bd8a66bf6faf3a4f4260d412989c0185ea.
+    - All 35 generated certificate modules match the pinned upstream after documented transformations.
+    - >-
+      All 49 retained RS12 modules match the pinned source after import relocation,
+      metadata removal, headers, and the documented RS_prime.theorem_12 alias.
+    - The required LeanCert dependency closure builds without source changes.
+    - ieantn.py check passes in the canonical upstream repository context.
+    - >-
+      The sequential solution build and final ordinary lake build pass (3592 jobs).
+      All 12 factorial shards and all 20 psi shards are kernel checked on the core toolchain.
+    - >-
+      ieantn.py progress RosserSchoenfeld1962.v1 --write reports the compared theorem proved
+      and writes the derived hole count to formalization.yaml.
+    - >-
+      Separate Lean environments importing Challenge and Solution give identical pp.all
+      types for RosserSchoenfeld1962.v1.challenge_equation_3_35. An explicit example also
+      checks its type as forall x : Real, 0 < x -> Chebyshev.psi x < 1.03883 * x.
+    - >-
+      Final generated-challenge and fingerprint checks pass. git diff --check and the
+      staged whitespace check pass. The changed scope is only this node, its separate
+      solution, and the generated IEANTN/Nodes.lean umbrella import. The 1975 node,
+      Vocabulary, core dependency pins, receipts, global views, and PNT+ source are unchanged.
+  audited_axioms:
+    RosserSchoenfeld1962.v1.challenge_equation_3_35: [propext, Classical.choice, Quot.sound]
+    RS_prime.theorem_12: [propext, Classical.choice, Quot.sound]
+  fork_receipt_context: >-
+    The checkout's origin is hakonlonmo/IEANTN, whereas existing committed receipts
+    identify teorth/IEANTN. A plain check therefore reports pre-existing receipt repository
+    mismatches. A command-local Git URL rewrite to the canonical upstream lets the same
+    check validate those receipts in their recorded context. No receipt, script, or saved
+    Git remote was changed. The only remaining check warnings concern existing metadata
+    and intentionally uncommitted generated global views.
+  check_command: >-
+    GIT_CONFIG_COUNT=1
+    GIT_CONFIG_KEY_0=url.https://github.com/teorth/IEANTN.git.insteadOf
+    GIT_CONFIG_VALUE_0=https://github.com/hakonlonmo/IEANTN.git
+    python scripts/ieantn.py check
+  required:
+    - Core lake build and ieantn.py check
+    - Generated challenges and fingerprints current
+    - Separate solution lake build and ieantn.py progress --write
+    - Identical pp.all types in separate challenge and solution environments
+    - Final axiom list exactly propext, Classical.choice, Quot.sound, without sorryAx
+    - Generated certificates agree with the pinned upstream after documented transformations
+    - git diff --check and scope audit
+  comparator: >-
+    Maintainer-side verification remains a separate step. Do not create a receipt or
+    designate lean-comparator locally; the workflow owns both operations.
