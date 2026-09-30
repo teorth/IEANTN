@@ -1082,6 +1082,47 @@ class TestProgressMarker(FixtureRepo):
         self.assertIn("no solution", printed.getvalue())
 
 
+class TestSolutionHoles(FixtureRepo):
+    """Lake validates its configuration; the progress probe must still check proof files."""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.write_node("A.v1", LITERATURE)
+        self.write_comparator_config("A.v1")
+        self.directory = self.root / "Solutions" / "A.v1"
+        for name in ("lakefile.lean", "Solution.lean", "Aux.lean"):
+            (self.directory / name).write_text("-- fixture\n", encoding="utf-8")
+
+    def test_lake_config_is_not_reelaborated_as_a_proof_but_holes_are_detected(self) -> None:
+        """Regression: ordinary Lean cannot elaborate Lake's configuration commands."""
+        name = "A.v1.challenge_main"
+
+        def fake_run(args: list[str], **_kwargs):
+            if args == ["lake", "build"]:
+                return ieantn.subprocess.CompletedProcess(args, 0, "", "")
+            if args[-1] == "lakefile.lean":
+                return ieantn.subprocess.CompletedProcess(
+                    args, 1, "lakefile.lean:1:0: error: Lake command unavailable\n", "")
+            if args[-1] == "Aux.lean":
+                output = "Aux.lean:3:0: warning: declaration uses 'sorry'\n"
+            elif args[-1] == "_ieantn_axioms.lean":
+                output = f"'{name}' depends on axioms: [propext, sorryAx]\n"
+            else:
+                self.assertEqual(args[-1], "Solution.lean")
+                output = ""
+            return ieantn.subprocess.CompletedProcess(args, 0, output, "")
+
+        with unittest.mock.patch.object(ieantn.subprocess, "run", fake_run):
+            result = ieantn.solution_holes("A.v1")
+        self.assertEqual(result, (True, ["Aux.lean:3"], {name: False}))
+
+    def test_failed_lake_build_still_blocks_the_progress_probe(self) -> None:
+        failed = ieantn.subprocess.CompletedProcess(["lake", "build"], 1, "", "bad config")
+        with unittest.mock.patch.object(ieantn.subprocess, "run", return_value=failed) as run:
+            self.assertEqual(ieantn.solution_holes("A.v1"), (False, [], {}))
+        self.assertEqual(run.call_count, 1)
+
+
 class TestAxiomReportParsing(unittest.TestCase):
     """`#print axioms` wraps, and the wrap hid `sorryAx`.
 

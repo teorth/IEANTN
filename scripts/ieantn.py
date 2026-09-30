@@ -841,6 +841,10 @@ def solution_holes(node: str) -> tuple[bool, list[str], dict[str, bool]] | None:
     # the root reports zero while three theorems are plainly open. That is what this did first.
     holes: list[str] = []
     for source in sorted(directory.glob("*.lean")):
+        # Lake already elaborated its configuration during the successful build above.
+        # Its DSL commands are not available to an ordinary `lake env lean` proof probe.
+        if source.name == "lakefile.lean":
+            continue
         fresh = subprocess.run(["lake", "env", "lean", source.name], cwd=directory,
                                capture_output=True, text=True, encoding="utf-8", errors="replace")
         seen_output = (fresh.stdout or "") + (fresh.stderr or "")
