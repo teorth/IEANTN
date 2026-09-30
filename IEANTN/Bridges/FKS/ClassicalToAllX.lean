@@ -11,7 +11,7 @@ import IEANTN.Bridges.FKS.ThresholdTwo
 The node records its two conclusions as independent, and the note on `psi_bound_all_x` explains
 why rescaling it into `psi_classical_bound` cannot close: both roundings go the strengthening way.
 For the same reason they go the *weakening* way in the other direction, which is the one the paper
-takes in its proof of Corollary 1.4 ("`121.096 / 5.5666305^{3/2} < 9.22022`"). With `q = √R` and
+takes in the proof of its Lemma 5.3 ("`121.096 / 5.5666305^{3/2} < 9.22022`"). With `q = √R` and
 `w = √(log x / R)`, so that `√(log x) = q w`:
 
 * `121.096 < 9.22022 q³`, since `9.22022 R^{3/2} = 121.09602174…`;
@@ -74,7 +74,7 @@ lemma admissibleBound_lt_all_x {x : ℝ} (hx : 1 < x) :
 
 /-- **The bridge.** `FKS.v1.psi_classical_bound`, stated from `x₀ = e³⁰`, implies
 `FKS.v2.psi_bound_all_x`: the all-`x` bound is the classical one rescaled, which is the direction
-the paper's own proof of Corollary 1.4 takes. The statement is `FKS.v1.psi_bound_all_x`'s as well,
+the paper's own proof of Lemma 5.3 takes. The statement is `FKS.v1.psi_bound_all_x`'s as well,
 so this also re-grounds that conclusion, and nothing here needs a `margin` index. -/
 theorem psi_bound_all_x_from_classical (h : FKS.v1.psi_classical_bound) :
     FKS.v2.psi_bound_all_x := by
