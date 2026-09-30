@@ -24,6 +24,11 @@ theorem BKLNW.v1.challenge_corollary_5_1
     BKLNW.v1.corollary_5_1 := by
   sorry
 
+theorem BKLNW.v1.challenge_corollary_5_1_above
+    (buthe_v1_theorem_2_theta_lower : Buthe.v1.theorem_2_theta_lower) :
+    BKLNW.v1.corollary_5_1_above := by
+  sorry
+
 theorem BKLNW.v1.challenge_table8_psi_bound
     (buthe2016_v1_theorem_2_psi : Buthe2016.v1.theorem_2_psi)
     (platttrudgian2021_v1_theorem_1_numerical : PlattTrudgian2021.v1.theorem_1_numerical) :

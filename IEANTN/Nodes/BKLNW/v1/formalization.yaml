@@ -61,6 +61,25 @@ conclusions:
       so it is not an import.
   designated: bklnw-paper
   imports_status: identified
+- id: corollary_5_1_above
+  declaration: BKLNW.v1.corollary_5_1_above
+  challenge: BKLNW.v1.challenge_corollary_5_1_above
+  imports:
+  - node: Buthe.v1
+    conclusion: theorem_2_theta_lower
+  justifications:
+  - id: bklnw-paper
+    kind: literature
+    source: BKLNW
+    locator: Corollary 5.1, equations (2.10) to (2.12), b > 38 log 10
+    note: >-
+      Asserted on the authority of the paper, transcribed from arXiv:2002.11068v2. The high branch
+      of (2.11): a1(b) = 1 + eps(b/2) with eps read from Table 8, while a2(b) keeps the fixed
+      leading factor of (2.12). Quantified over Table 8 rows (beta, eps) with b = 2*beta so that
+      eps(b/2) is an exact table entry. The low branch corollary_5_1 is unchanged. Imports match
+      the low branch: Buthe.v1.theorem_2_theta_lower via the paper's use of [4, Equation (1.7)].
+  designated: bklnw-paper
+  imports_status: identified
 - id: table8_psi_bound
   declaration: BKLNW.v1.table8_psi_bound
   challenge: BKLNW.v1.challenge_table8_psi_bound
@@ -198,8 +217,8 @@ limitations:
 - >-
   Every conclusion rests on the cited paper; none is proved in Lean here.
 - >-
-  corollary_5_1 is stated on 7 <= b <= 38 log 10 only. Table 8 is now present, so the b > 38 log 10 branch
-  can be stated when something needs it.
+  corollary_5_1 is stated on 7 <= b <= 38 log 10; corollary_5_1_above states the complementary
+  b > 38 log 10 branch with a1(b) = 1 + eps(b/2) from Table 8.
 - >-
   The Table 8 conclusions import Buthe2016.v1 and PlattTrudgian2021.v1, but the third input -- the algorithm
   of Buthe 2018's Theorem 1 -- is not a proposition and can never be an edge. The tabulated values are

@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Terence Tao
+Authors: Terence Tao, Taksh Kothari
 -/
 import IEANTN.Vocabulary.ErrorTerms
 import IEANTN.Nodes.BKLNW.v1.Tables
@@ -22,10 +22,11 @@ other. `FKS2`'s Proposition 13 is stated in terms of the coefficients below.
 only; what is claimed about it is `table8_psi_bound` and `table8_psi_bound_above` below.
 
 Corollary 5.1's coefficient `a₁(b)` is defined by cases — the constant `1 + 1.93378 · 10⁻⁸` for
-`b ≤ 38 log 10`, and `1 + ε(b/2)` read from Table 8 above it. The conclusion below still states
-only the `b ≤ 38 log 10` branch, where every constant is explicit; the threshold is
+`b ≤ 38 log 10`, and `1 + ε(b/2)` read from Table 8 above it. `corollary_5_1` states the low
+branch, where every constant is explicit; `corollary_5_1_above` states the high branch, reading
+`ε` from consecutive Table 8 rows with `b = 2 · (tabulated abscissa)`. The threshold is
 `38 log 10 ≈ 87.4982` and every current consumer sits well below it (`FKS2`'s Corollary 14 uses
-`x₀ = e³⁰`). Now that the table is present the other branch can be added when something needs it.
+`x₀ = e³⁰`), but the high branch is now named so a future consumer does not have to invent it.
 
 -/
 
@@ -48,7 +49,10 @@ Corollary 2.1:
 The paper's proof of Corollary 5.1 writes `1 + 1.15177·10⁻⁸` for this leading factor while the
 displayed equation (2.12) writes `1 + 1.93378·10⁻⁸`. The displayed statement is transcribed here,
 being the claim; the discrepancy is recorded in the node's metadata and is worth resolving against
-the published version. -/
+the published version.
+
+Note that (2.12) keeps this fixed leading factor even on the high branch of (2.11): only `a₁`
+switches to `1 + ε(b/2)`. -/
 noncomputable def a₂ (b : ℝ) : ℝ :=
   (1 + 1.93378e-8) * max (f (Real.exp b)) (f ((2 : ℝ) ^ (⌊b / Real.log 2⌋₊ + 1)))
 
@@ -64,6 +68,20 @@ def corollary_5_1 : Prop :=
   ∀ b : ℝ, 7 ≤ b → b ≤ 38 * Real.log 10 → ∀ x ≥ Real.exp b,
     Chebyshev.psi x - Chebyshev.theta x <
       (1 + 1.93378e-8) * x ^ ((1 : ℝ) / 2) + a₂ b * x ^ ((1 : ℝ) / 3)
+
+/-- **Corollary 5.1**, high branch: `a₁(b) = 1 + ε(b/2)` from Table 8.
+
+For each Table 8 row `(β, ε)` with `b := 2β > 38 log 10`, and every `x ≥ e^b`,
+`ψ(x) − θ(x) < (1 + ε) √x + a₂(b) x^{1/3}`.
+
+Quantified over the tabulated abscissae so `ε(b/2)` is an exact table entry rather than an
+interpolated value. The low branch `corollary_5_1` is untouched: FKS2 receipts pin it. -/
+def corollary_5_1_above : Prop :=
+  ∀ p ∈ table8,
+    38 * Real.log 10 < (2 : ℝ) * p.1 →
+    ∀ x ≥ Real.exp ((2 : ℝ) * p.1),
+      Chebyshev.psi x - Chebyshev.theta x <
+        (1 + p.2) * x ^ ((1 : ℝ) / 2) + a₂ ((2 : ℝ) * p.1) * x ^ ((1 : ℝ) / 3)
 
 /-- **Table 8**: for consecutive entries `(b, ε)` and `(b', ε')` of the table,
 `|ψ(x) − x| ≤ ε · x` for all `e^b ≤ x ≤ e^b'`.
