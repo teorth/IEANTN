@@ -30,6 +30,7 @@ import IEANTN.Nodes.DudekPlattNumerics.v2.Challenge
 import IEANTN.Nodes.DudekPlattNumerics.v3.Challenge
 import IEANTN.Nodes.DudekPlattNumerics.v4.Challenge
 import IEANTN.Nodes.Dusart2018.v1.Challenge
+import IEANTN.Nodes.Erdos392.v1.Challenge
 import IEANTN.Nodes.FKBJ.v1.Challenge
 import IEANTN.Nodes.FKS.v1.Challenge
 import IEANTN.Nodes.FKS.v2.Challenge

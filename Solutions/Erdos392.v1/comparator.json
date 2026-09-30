@@ -1,0 +1,15 @@
+{
+  "challenge_module": "IEANTN.Nodes.Erdos392.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "Erdos392.v1.challenge_factors_le_n",
+    "Erdos392.v1.challenge_factors_le_n_sq",
+    "Erdos392.v1.challenge_factors_le_n_sq_lower"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
