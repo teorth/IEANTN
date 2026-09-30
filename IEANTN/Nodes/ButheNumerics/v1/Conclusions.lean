@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Terence Tao
+Authors: Terence Tao, Taksh Kothari
 -/
 import IEANTN.Vocabulary.ErrorTerms
 import IEANTN.Vocabulary.PrimeCounting
@@ -133,5 +133,19 @@ def eq_6_2 : Prop :=
   ∀ t : ℝ, 100 ≤ t → t ≤ 5 * 10 ^ (10 : ℕ) →
     -0.8 ≤ (t - Chebyshev.psi t) / Real.sqrt t ∧
       (t - Chebyshev.psi t) / Real.sqrt t ≤ 0.81
+
+/-- **Theorem 2's equation (1.8), on the range the paper checks directly.**
+
+`|li(x) − π*(x)| < √x / log x` for `2 ≤ x ≤ 10⁷`.
+
+The paper obtains (1.8) for `x ≥ 10⁷` from Table 2 together with Lemma 2, and says the remaining
+values "can again be checked by a direct computation". That direct check is the twin of
+`li_minus_pi_below_1e7` for (1.9), and is stated here so (1.8)'s inputs are fully named.
+
+Carries a `margin 0` factor — see `IEANTN.margin`. -/
+noncomputable def li_minus_riemann_pi_below_1e7 : Prop :=
+  ∀ x : ℝ, 2 ≤ x → x ≤ 10 ^ (7 : ℕ) →
+    |li x - riemannPrimeCounting x| <
+      margin 0 * (Real.sqrt x / Real.log x)
 
 end ButheNumerics.v1

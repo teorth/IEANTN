@@ -112,6 +112,22 @@ conclusions:
       Section 6 that Buthe.v1's limitations list as unstated; it lives on this node because it is a
       computation, not an analytic claim.
   designated: buthe-computation
+- id: li_minus_riemann_pi_below_1e7
+  declaration: ButheNumerics.v1.li_minus_riemann_pi_below_1e7
+  challenge: ButheNumerics.v1.challenge_li_minus_riemann_pi_below_1e7
+  imports: []
+  imports_status: none
+  justifications:
+  - id: buthe-computation
+    kind: numerical
+    source: Buthe
+    locator: Proof of Theorem 2, equation (1.8) -- direct check below 10^7
+    note: >-
+      A finite check rather than an argument, so `numerical`. Buthe obtains (1.8) for x >= 10^7
+      from Table 2 and Lemma 2, and says the remaining values can again be checked by a direct
+      computation. That direct check is stated here, the twin of li_minus_pi_below_1e7 for (1.9).
+      Imports `none`: a bounded-range computation consumes no other result in the network.
+  designated: buthe-computation
 
 sources:
 - title: "An analytic method for bounding psi(x)"
@@ -165,8 +181,9 @@ limitations:
   That is correct -- A varies with a -- but it is the kind of pair that invites a misreading, so they
   are stated separately rather than as one parameterised claim.
 - >-
-  The paper's Table 2, and the direct checks behind (1.5), (1.6), (1.7) and (1.8), are not stated. They
-  are equally computational, but nothing yet needs them separated: those four equations are consumed as
-  stated on Buthe.v1 rather than derived from anything.
+  The direct check behind (1.8) below 10^7 is stated here as li_minus_riemann_pi_below_1e7.
+  The paper's Table 2 (the input to (1.8) above 10^7) and the direct checks behind (1.5), (1.6)
+  and (1.7) remain elsewhere or unstated: those equations are consumed as stated on Buthe.v1
+  rather than derived here.
 - >-
   No novelty is claimed. The results are Buthe's.
