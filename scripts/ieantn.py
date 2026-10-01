@@ -1918,6 +1918,8 @@ def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str], *,
     a real clone and does ask.
     """
     recorded = receipt.get("statement") or {}
+    if conclusion_key not in recorded:
+        return "BROKEN", f"receipt records no fingerprint for `{conclusion_key}`"
     commit = (receipt.get("repository") or {}).get("commit")
     churn: str | None = None
     for name, digest in sorted(recorded.items()):
