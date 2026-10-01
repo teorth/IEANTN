@@ -4153,6 +4153,8 @@ def deactivate(node_ids: list[str], reason: str) -> bool:
     the importer would stop compiling; deactivating several at once is allowed so that a node and
     the one thing it served can go together.
     """
+    # Process each node once so repeated CLI arguments cannot overwrite its saved status.
+    node_ids = list(dict.fromkeys(node_ids))
     reason = " ".join(reason.split())
     if not reason:
         print("error: say why, with --reason; the reason is what lets someone reactivate it later")
