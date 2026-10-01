@@ -147,7 +147,7 @@ NODE_STATUSES = {
 #: `reactivate` is a status change and a regeneration rather than an archaeology project.
 INACTIVE = "inactive"
 
-IMPORT_RE = re.compile(r"^import\s+(\S+)", re.MULTILINE)
+IMPORT_RE = re.compile(r"^[ \t]*import\s+(\S+)", re.MULTILINE)
 
 #: What may appear as a conclusion id, or as either half of an import reference. These strings are
 #: interpolated verbatim into generated Lean, so anything not an identifier is either a typo or an
@@ -260,12 +260,16 @@ def strip_lean_comments(text: str) -> str:
     index, depth, length = 0, 0, len(text)
     while index < length:
         if text.startswith("/-", index):
+            out.append("  ")
             depth += 1
             index += 2
         elif depth and text.startswith("-/", index):
+            out.append("  ")
             depth -= 1
             index += 2
         elif depth:
+            # Comments are whitespace: preserve token boundaries and line starts.
+            out.append("\n" if text[index] == "\n" else " ")
             index += 1
         elif text.startswith("--", index):
             newline = text.find("\n", index)
