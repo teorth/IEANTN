@@ -1943,7 +1943,8 @@ def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str], *,
 
     environment = receipt.get("environment") or {}
     current = current_environment()
-    if environment.get("mathlib_rev") == current["mathlib_rev"]:
+    if (environment.get("mathlib_rev") == current["mathlib_rev"]
+            and environment.get("lean_toolchain") == current["lean_toolchain"]):
         return "green", "verified against the current environment"
 
     recorded_toolchain = environment.get("lean_toolchain", "?")
@@ -1957,7 +1958,7 @@ def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str], *,
 def environment_gap(recorded: dict, current: dict) -> str:
     """Say which part of the environment moved, rather than always naming the toolchain.
 
-    THE TEST ABOVE IS ON `mathlib_rev`; the message used to report the *toolchain*. A Mathlib bump
+    The message used to report only the *toolchain*. A Mathlib bump
     that keeps the toolchain therefore printed `verified under v4.34.0-rc2, now v4.34.0-rc2` --
     the same string twice, which reads as a bug in this script rather than as a stale receipt, and
     hides the revision that actually moved. Every conclusion verified before the September 2026
