@@ -4084,7 +4084,9 @@ def new_version(family: str) -> bool:
         # Only this family's own version references may be bumped. A blanket `v1` -> `v2`
         # would also rewrite the *imported* nodes' versions, silently repointing the new node
         # at versions of its dependencies that may not exist.
-        text = text.replace(old_id, new_id)
+        text = re.sub(
+            rf"(?<![\w']){re.escape(old_id)}(?![\w'])", new_id, text
+        )
         (target / name).write_text(text, encoding="utf-8", newline="\n")
 
     metadata = target / "formalization.yaml"
