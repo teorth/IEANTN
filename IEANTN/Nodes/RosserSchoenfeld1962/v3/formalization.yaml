@@ -1,0 +1,71 @@
+version: v0.4
+node:
+  id: RosserSchoenfeld1962.v3
+  family: RosserSchoenfeld1962
+  version: v3
+  kind: paper
+  status: awaiting-verification
+project:
+  name: 'Rosser-Schoenfeld 1962: equation (3.8) in Corollary 3'
+  description: 'Equation (3.8) of Corollary 3: 3x/(5 log x) < pi(2x)-pi(x) for every real x >= 41/2. An
+    unconditional Lean proof combines kernel-checked prime witnesses below 4096 with elementary weighted
+    factorial estimates, Mathlib''s Costa-Pereira inequality, and the unchanged proved equation-(3.35)
+    library from v1.'
+  authors:
+  - Håkon Xue-Lønmo
+  license: Apache-2.0
+  responsible_maintainers:
+  - Håkon Xue-Lønmo
+repository:
+  role: substantive-development
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11N05
+conclusions:
+- id: equation_3_8
+  declaration: RosserSchoenfeld1962.v3.equation_3_8
+  challenge: RosserSchoenfeld1962.v3.challenge_equation_3_8
+  imports: []
+  imports_status: none
+  justifications:
+  - id: rs1962-paper
+    kind: literature
+    source: https://doi.org/10.1215/ijm/1255631807
+    locator: Corollary 3, equation (3.8), p. 69
+    note: The source derives the corollaries from preceding estimates, with remaining finite ranges
+      checked against Lehmer's table. The local unconditional proof uses a different elementary
+      finite/analytic split and has only the standard three Lean axioms. No IEANTN node conclusion
+      is assumed. Comparator verification remains pending; no receipt is supplied by the author.
+  designated: rs1962-paper
+  progress:
+    solution: Solutions/RosserSchoenfeld1962.v3/
+    state: in-progress
+    remaining_holes: 0
+sources:
+- title: Approximate formulas for some functions of prime numbers
+  authors:
+  - J. Barkley Rosser
+  - Lowell Schoenfeld
+  type: paper
+  id: https://doi.org/10.1215/ijm/1255631807
+  location: Illinois Journal of Mathematics 6(1) (1962), 64-94
+  relationship: formalizes
+  note: The rendered p. 69 was audited for the strict bound and threshold 20 1/2; p. 64 defines pi
+    using primes <= x. Theorem 2 and finite prime tables supply the historical route.
+automation:
+  methods:
+  - method: agent
+    framework: OpenAI Codex
+    role: Source and dependency audit, Lean proof development, and local checks under human
+      direction.
+review:
+  status: self-assessed
+  reviewers:
+  - OpenAI Codex
+  notes: Automated audit against the rendered source; no independent human review or Comparator
+    verification claimed.
+limitations:
+- Local checks do not replace maintainer-side Comparator verification. No receipt is supplied by the
+  author.
