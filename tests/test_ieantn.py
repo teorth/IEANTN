@@ -2508,6 +2508,17 @@ class TestPins(FixtureRepo):
     def test_no_script_is_not_a_failure(self) -> None:
         self.assertTrue(ieantn.check_pins())
 
+    def test_a_missing_toolchain_file_fails_instead_of_raising(self) -> None:
+        self._script("leanprover/lean4:v4.34.0-rc2")
+        (self.root / "lean-toolchain").unlink()
+        self.assertFalse(ieantn.check_pins())
+
+    def test_a_non_object_manifest_does_not_crash_the_environment(self) -> None:
+        (self.root / "lake-manifest.json").write_text("[]", encoding="utf-8")
+        environment = ieantn.current_environment()
+        self.assertIsNone(environment["mathlib_rev"])
+        self.assertIsInstance(environment["lean_toolchain"], str)
+
 
 class TestRecordReceipt(FixtureRepo):
     """`record-receipt` writes the receipt *and* designates it.
