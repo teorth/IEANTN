@@ -38,14 +38,18 @@ def equation_3_35 : Prop :=
 | Challenge | `RosserSchoenfeld1962.v1.challenge_equation_3_35` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/RosserSchoenfeld1962/v1/Conclusions.lean#L26) |
 | Solution | [`Solutions/RosserSchoenfeld1962.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/RosserSchoenfeld1962.v1) |
-| Evidence | cited (`literature`) |
+| Evidence | lean, noncompliant (`lean-noncompliant`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | nothing yet |
 
-**Justification `rs1962-paper`** — **designated** — literature, Theorem 12, equation (3.35), p. 71; proof on pp. 77-80
+**Justification `rs12-port`** — **designated** — lean-noncompliant
 
-> The bound is recorded on the authority of the 1962 paper until the IEANTN verification workflow accepts the solution. The port proves an unconditional theorem with no node hypotheses: its finite arithmetic and logarithm bounds are checked in Lean, and it needs no numerical or zero-verification assumption. No Comparator justification or receipt is supplied by the author.
+> The proof is complete and in this repository, at Solutions/RosserSchoenfeld1962.v1. Its progress.yaml records the solution building on the core toolchain, the compared theorem auditing to exactly propext, Classical.choice and Quot.sound, every closed computation done by `decide +kernel` rather than `native_decide`, and identical `pp.all` types in separate challenge and solution environments. What is absent is a receipt, for two reasons, neither of them about the mathematics. Its finite certificates come from LeanCert at alerad/leancert@6b11513512c9d27183fb4725bfc291ab38b4a6d7, the first third-party package any solution here has required, and the network has not decided whether a verification run may fetch one; and its 32 certificate shards need the sequential build in the solution's scripts/build_sequential.py to fit in memory, where scripts/verify-comparator.sh runs an ordinary `lake build`. Both are tracked in issue 164. ROADMAP's tier A argument holds that a certificate re-checked inside Lean leaves the trusted base entirely and should earn an ordinary lean-comparator receipt, so this is expected to be a wait rather than a verdict.
+
+**Justification `rs1962-paper`** — literature, Theorem 12, equation (3.35), p. 71; proof on pp. 77-80
+
+> The spare: the 1962 paper proves the bound, and the claim stands on its authority whatever becomes of the port. The port itself proves an unconditional theorem with no node hypotheses: its finite arithmetic and logarithm bounds are checked in Lean, and it needs no numerical or zero-verification assumption. No Comparator justification or receipt is supplied by the author.
 
 ## Limitations
 
