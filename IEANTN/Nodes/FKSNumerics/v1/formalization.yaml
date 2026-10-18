@@ -1,0 +1,173 @@
+# Node metadata for `FKSNumerics.v1`.  See docs/NODES.md.
+#
+# The numerical side of FKS's classical bound: the step-function interpolation in the proof of
+# Lemma 5.3 on [e^2100, e^200000], and, provisionally, Theorem 1.2 at the row x0 = e^200000 of its
+# table. The analysis stays on the FKS family.
+version: "v0.4"
+
+node:
+  id: FKSNumerics.v1
+  family: FKSNumerics
+  version: v1
+  kind: computation
+  status: stub
+
+project:
+  name: "FKS's finite numerical checks"
+  description: >-
+    The numerical claims that Fiori, Kadiri and Swidinsky's classical bound on E_psi rests on above
+    e^2100: the bounded-range interpolation between e^2100 and e^200000, and the table value of
+    Theorem 1.2 beyond it. Same paper as FKS.v1 and FKS.v2, different kind of claim: the first is a
+    computation someone ran, not an argument a referee read, and keeping the two apart lets a
+    consumer see which half of its trust is which.
+  authors: ["Marcos Adriano"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Marcos Adriano"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M06", "11Y35"]
+
+conclusions:
+  - id: psi_classical_mid_range
+    declaration: FKSNumerics.v1.psi_classical_mid_range
+    challenge: FKSNumerics.v1.challenge_psi_classical_mid_range
+    imports: []
+    imports_status: none
+    justifications:
+      - id: fks-lemma-5-3-interpolation
+        kind: numerical
+        source: FKS
+        locator: >-
+          the proof of Lemma 5.3 (arXiv:2204.02588 v2 and v3 numbering): its grid, its table, and
+          the check 121.096 (b_{i+1}/R)^{3/2} exp(-2 sqrt(b_{i+1}/R)) > eps(exp(b_i))
+        note: >-
+          The proof of Lemma 5.3 divides [2100, 200000] into points b_i, with the step sizes of its
+          table (49 400 points), and verifies 121.096 (b_{i+1}/R)^{3/2} exp(-2 sqrt(b_{i+1}/R)) >
+          eps(exp(b_i)), where eps(x0) is Theorem 1.1's bound, E_psi(x) <= eps(x0) for all x >= x0.
+          The comparison function decreases for log x > 9R/4, so each check covers
+          b_i <= log x <= b_{i+1}, and together they cover the closed window. The paper reports "over
+          4000 cpu/hours on various machines in the Westgrid computing cluster". The lemma's printed
+          statement is the rescaled form, 9.22022 (log x)^{3/2} exp(-0.8476836 sqrt(log x)) on
+          2100 < log x <= 200000; the classical form with 121.096 is what the proof checks, and
+          121.096 is the largest "Bound on A" in its table, on 7250 <= log x < 8250.
+
+          Imports none: a bounded-range numerical claim consumes nothing from the network, which is
+          how FKS2Numerics.v1.corollary_22_mid_range records FKS2's interpolation over these same
+          subdivisions. The paper's route to the values runs through Theorem 1.1, whose inputs are
+          H0 = 3 x 10^12 (PlattTrudgian.v1), R = 5.5666305 (MT.v1), the zero-density bound of its
+          Theorem 2.7 with the subconvexity constant 0.77 (KLN.v1), Dudek's explicit Perron formula
+          under Cully-Hugill and Johnston's hypotheses, the N(T) bound of its Lemma 2.1 (Rosser's
+          constants or Hasanalizade, Shen and Wong's, a difference the paper calls negligible), and
+          S0(T0) from Platt's zeros via LMFDB. Those are how the computation was made feasible, not
+          premises of the bounded-range claim.
+    designated: fks-lemma-5-3-interpolation
+  - id: psi_classical_above_e200000
+    declaration: FKSNumerics.v1.psi_classical_above_e200000
+    challenge: FKSNumerics.v1.challenge_psi_classical_above_e200000
+    imports:
+      - node: KLN.v1
+        conclusion: subconvexity_bound
+      - node: MT.v1
+        conclusion: zero_free_region_sharpened
+      - node: PlattTrudgian.v1
+        conclusion: rh_up_to
+    imports_status: traced
+    justifications:
+      - id: fks-theorem-1-2-row
+        kind: literature
+        source: FKS
+        locator: >-
+          Theorem 1.2 (arXiv:2204.02588 v2 and v3 numbering) and its table of A(x0), the row
+          log x0 = 200000
+        note: >-
+          Theorem 1.2: for log x0 > 1000 and R <= 5.573412 a zero-free-region constant,
+          E_psi(x) <= A(x0) (log x/R)^{3/2} exp(-2 sqrt(log x/R)) for all x >= x0, with A(x0) given
+          by the paper's formula; "each pair (x0, A(x0))" of its table gives such a bound with
+          R = 5.5666305. The row log x0 = 200000 has A = 121.0360 in v2 and v3 alike, and the proof
+          of Corollary 1.4 uses exactly this for log x > 200000.
+
+          Unlike the middle range, this quantifies over all x >= e^200000 and rests on analytic
+          inputs, so it is traced rather than none, as DudekPlattNumerics.v1 draws the line. Edges:
+          the zero-free region (MT.v1); the verification height H0, which enters A(x0) through
+          B1(H0, T) (PlattTrudgian.v1); and the zero-density constants c1 = 17.4194 and
+          c2 = 2.9089 on sigma in [0.9, 1] from Theorem 2.7 (KLN.v1). Not edges: Dudek's Perron
+          formula under Cully-Hugill and Johnston's hypotheses, the N(T) bound of Lemma 2.1, and
+          S0(T0) from Platt's zeros via LMFDB.
+
+          Provisional home, as proposed on issue #52. Theorem 1.2 is analysis; once a pipeline node
+          states it with A(x0) as a function, this conclusion should shrink to the evaluation
+          A(e^200000) <= 121.0360, which is what belongs on a computation node.
+    designated: fks-theorem-1-2-row
+
+sources:
+  - title: "Sharper bounds for the Chebyshev function psi(x)"
+    authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]
+    type: "paper"
+    id: "arXiv:2204.02588"
+    location: >-
+      arXiv:2204.02588v3, the version revised for J. Math. Anal. Appl. 527 (2023), Paper No. 127426;
+      the proof of Lemma 5.3, Theorem 1.2 and its table of A(x0)
+    relationship: formalizes
+    note: >-
+      The same paper as FKS.v1 and FKS.v2, split by the kind of claim rather than by the source. Read
+      from the LaTeX source of arXiv v2 and v3, which agree on the proof of Lemma 5.3 and its table
+      up to typesetting, and on the row log x0 = 200000 of the table of A(x0). v2's source notes that
+      the proof and table of Lemma 5.3 were updated after the first submission, so arXiv v1 may
+      differ. The published version was not consulted for this node.
+
+automation:
+  methods:
+    - method: agent
+      role: >-
+        Done with the help of AI tools, under the direction of the author: read the proof of Lemma
+        5.3, Theorem 1.2 and its table in the LaTeX source of both arXiv versions, stated the two
+        claims, and checked the Lemma 5.3 table's internal consistency in 50-digit arithmetic (see
+        the review notes). No proof in Lean is claimed, and the paper's computation was not re-run.
+
+review:
+  status: self-assessed
+  reviewers: ["Marcos Adriano"]
+  notes: >-
+    The Lemma 5.3 table was extracted from the LaTeX source of arXiv v2 and v3 rather than retyped,
+    and is identical in both. Checked in 50-digit arithmetic. The seven ranges are contiguous and
+    cover [2100, 200000]. The ratio column, f(b)/f(b + step), was recomputed at every grid point:
+    its maximum sits at the first point of each range, and every printed value covers it. The "Bound
+    on A" column covers the product of the two printed maxima in six of the seven rows; on
+    8250 <= log x < 9000 the product is 120.9134 against a printed 120.913, a rounding of the
+    printed 120.805, far below 121.096. At the 26 points of [2100, 200000) where Theorem 1.1's own
+    table prints eps(x0), the proof's inequality holds at all 26. At 24 of them the implied eps/f is
+    at most the printed maximum of its range; at log x0 = 9000 and 100000 it is above it (119.477
+    against 119.416, and 84.833 against 84.520). That table's caption says its sigma_2 is "only
+    optimized to 5 digits", which is consistent with the Lemma 5.3 run having used sharper
+    parameters. With that table's values, 121.096 still holds with room, but the last range's own
+    96.522 would not (96.85), which is one reason the per-range constants are not stated. Finally,
+    121.096 / R^{3/2} = 9.2202183441... < 9.22022, and 121.0360 <= 121.096, so the two conclusions
+    together cover the classical bound above e^2100.
+
+limitations:
+  - >-
+    Both claims are asserted on the paper's authority. Nothing here is proved in Lean, and the
+    computation has not been re-run: only the Lemma 5.3 table's printed summary was checked for
+    internal consistency.
+  - >-
+    The middle range is stated folded with the largest per-range constant, 121.096. The per-range
+    constants are not stated, because nothing in the network consumes them.
+  - >-
+    psi_classical_above_e200000 is analysis, not computation, and is here provisionally: once a
+    pipeline node states Theorem 1.2 with A(x0) as a function, it should shrink to the evaluation
+    A(e^200000) <= 121.0360.
+  - >-
+    The middle window is closed at e^2100 although the printed lemma opens there. The proof's grid
+    starts at b = 2100, so the endpoint is checked.
+  - >-
+    Both conclusions carry an explicit IEANTN.margin 0 factor. Since margin 0 = 1 they say exactly
+    what they would say without it. They have no room for a deeper margin: the consumer's constant
+    121.096 is itself the largest entry of the Lemma 5.3 table, and 121.096 / 121.0360 = 1.0005 is
+    less than margin 1 = 1.001, so raising either index breaks the assembly of the classical bound
+    unless the constants are recomputed with more digits.
+  - >-
+    No novelty is claimed. The computation and the theorem are the paper's.
