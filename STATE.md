@@ -16,7 +16,8 @@ adds the environment detail.
 | `asserted` | 1 |
 | `bridged` | 3 |
 | `lean-comparator` | 47 |
-| `literature` | 45 |
+| `lean-noncompliant` | 1 |
+| `literature` | 44 |
 | `none-yet` | 4 |
 | `numerical` | 32 |
 
@@ -140,7 +141,7 @@ adds the environment detail.
 | `Richstein2001.v1` | active | `even_up_to_4e14` | numerical | 0 | - |
 | `RosserSchoenfeld.v1` | stub | `zero_free_region` | literature | 0 | - |
 | `RosserSchoenfeld.v1` | stub | `zero_free_region_classical` | bridged | 0 | - |
-| `RosserSchoenfeld1962.v1` | awaiting-verification | `equation_3_35` | literature | 0 | - |
+| `RosserSchoenfeld1962.v1` | awaiting-verification | `equation_3_35` | lean-noncompliant | 0 | #164 |
 | `Trudgian2011.v1` | stub | `integral_S_bound` | literature | 0 | - |
 | `Wedeniwski.v1` | stub | `rh_up_to` | asserted | 0 | - |
 | `ZeroCount.v1` | stub | `rvm_error_bound` | literature | 0 | #64 |

@@ -60,7 +60,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`RamareSaouter2003.v1`](RamareSaouter2003-v1.md) | paper | 1 | cited |
 | [`Richstein2001.v1`](Richstein2001-v1.md) | computation | 1 | computation |
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 2 | cited |
-| [`RosserSchoenfeld1962.v1`](RosserSchoenfeld1962-v1.md) | paper | 1 | cited |
+| [`RosserSchoenfeld1962.v1`](RosserSchoenfeld1962-v1.md) | paper | 1 | lean, noncompliant |
 | [`Trudgian2011.v1`](Trudgian2011-v1.md) | paper | 1 | cited |
 | [`Wedeniwski.v1`](Wedeniwski-v1.md) | computation | 1 | asserted |
 | [`ZeroCount.v1`](ZeroCount-v1.md) | paper | 2 | cited |
