@@ -2803,6 +2803,15 @@ class TestFingerprintSharding(FixtureRepo):
             json.dumps({"A.v1.main": "current"}), encoding="utf-8")
         self.assertEqual(ieantn.recorded_fingerprints(), {"A.v1.main": "current"})
 
+    def test_a_non_object_fingerprint_file_does_not_crash(self) -> None:
+        """A list, or a digest that is not a string, used to raise out of status and pages."""
+        directory = self.write_node("A.v1", LITERATURE)
+        (directory / "fingerprints.json").write_text("[1, 2]", encoding="utf-8")
+        self.assertEqual(ieantn.recorded_fingerprints(), {})
+        (directory / "fingerprints.json").write_text(
+            json.dumps({"A.v1.main": 1, "A.v1.other": "ok"}), encoding="utf-8")
+        self.assertEqual(ieantn.recorded_fingerprints(), {"A.v1.other": "ok"})
+
     def test_digests_are_split_by_the_node_they_belong_to(self) -> None:
         first = self.write_node("A.v1", LITERATURE)
         second = self.write_node("B.v1", LITERATURE)

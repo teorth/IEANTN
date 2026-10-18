@@ -2247,11 +2247,33 @@ def recorded_fingerprints() -> dict[str, str]:
     so that an older checkout reports what it reported then.
     """
     merged: dict[str, str] = {}
-    if FINGERPRINTS.is_file():
-        merged.update(json.loads(FINGERPRINTS.read_text(encoding="utf-8")))
-    for path in sorted(NODES_DIR.glob(f"*/*/{FINGERPRINTS_NAME}")) if NODES_DIR.is_dir() else []:
-        merged.update(json.loads(path.read_text(encoding="utf-8")))
+    paths = [FINGERPRINTS] if FINGERPRINTS.is_file() else []
+    if NODES_DIR.is_dir():
+        paths += sorted(NODES_DIR.glob(f"*/*/{FINGERPRINTS_NAME}"))
+    for path in paths:
+        merged.update(_fingerprint_entries(path))
     return merged
+
+
+def _fingerprint_entries(path: pathlib.Path) -> dict[str, str]:
+    """String digests from one fingerprint file.
+
+    A file that is not a JSON object, or that stores a non-string digest, used to raise out of
+    `status` and `pages` -- or, for a number, to crash later on `digest[:16]`. Dropping those
+    entries makes `fingerprint --check` report the conclusion as unrecorded, which is the failure
+    the check already has a name for.
+    """
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return {}
+    if not isinstance(data, dict):
+        return {}
+    return {
+        key: value
+        for key, value in data.items()
+        if isinstance(key, str) and isinstance(value, str)
+    }
 
 
 def receipt_state(conclusion_key: str, conclusion: dict) -> tuple[str, str] | None:
