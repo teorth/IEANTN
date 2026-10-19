@@ -265,16 +265,61 @@ def imports_of(path: pathlib.Path) -> list[str]:
     return IMPORT_RE.findall(strip_lean_comments(path.read_text(encoding="utf-8")))
 
 
+def _char_literal_length(text: str, index: int) -> int:
+    """Length of a Lean character literal at `index`, or 0 if this quote is not one.
+
+    A name suffix (`Nat.succ'`) is not a literal. `'a'` and `'\\n'` are. Getting this wrong in
+    either direction lets a quote swallow the next import or invent a comment delimiter.
+    """
+    if index and (text[index - 1].isalnum() or text[index - 1] in "_'"):
+        return 0
+    if index + 2 < len(text) and text[index + 1] != "\\" and text[index + 2] == "'":
+        return 3
+    if index + 3 < len(text) and text[index + 1] == "\\" and text[index + 3] == "'":
+        return 4
+    return 0
+
+
 def strip_lean_comments(text: str) -> str:
     """Lean source with `--` line comments and nested `/- -/` blocks removed.
 
     Needed because a plain search for `sorry` also matches the word in prose. The docstring of an
     Examples file explaining *why* it may not contain `sorry` is not a `sorry`, and a check that
     cannot tell the difference is worse than none: it trains people to work around it.
+
+    String and character literals are blanked, not scanned. A `/-` or `--` inside `"..."` is text,
+    and treating it as a comment delimiter hides whatever follows -- including a real import --
+    until a later `-/` that was never opened. The word `sorry` inside a string is not a hole.
     """
     out: list[str] = []
     index, depth, length = 0, 0, len(text)
+
+    def blank_string() -> None:
+        nonlocal index
+        out.append(" ")
+        index += 1
+        while index < length:
+            if text[index] == "\\" and index + 1 < length:
+                out.append("  ")
+                index += 2
+                continue
+            if text[index] == '"':
+                out.append(" ")
+                index += 1
+                return
+            out.append("\n" if text[index] == "\n" else " ")
+            index += 1
+
     while index < length:
+        if depth == 0 and text[index] == '"':
+            blank_string()
+            continue
+        if depth == 0 and text[index] == "'":
+            width = _char_literal_length(text, index)
+            if width:
+                out.append(" " * width)
+                index += width
+                continue
         if text.startswith("/-", index):
             out.append("  ")
             depth += 1
@@ -480,7 +525,11 @@ def check_pins() -> bool:
             "repository's toolchain",
         )
     else:
-        current = (ROOT / "lean-toolchain").read_text(encoding="utf-8").strip()
+        toolchain_path = ROOT / "lean-toolchain"
+        if not toolchain_path.is_file():
+            problems.add(rel(ROOT), "has no `lean-toolchain`, so the verification pin cannot be checked")
+            return problems.report("verification pins")
+        current = toolchain_path.read_text(encoding="utf-8").strip()
         if declared.group(1) != current:
             problems.add(
                 rel(VERIFY_SCRIPT),
@@ -1943,18 +1992,35 @@ def fingerprint(check_only: bool) -> bool:
 
 
 def current_environment() -> dict:
-    """The environment a verification run today would happen in."""
-    manifest = json.loads((ROOT / "lake-manifest.json").read_text(encoding="utf-8"))
-    mathlib = next(
-        (
-            package.get("rev")
-            for package in manifest.get("packages", [])
-            if package.get("name") == "mathlib"
-        ),
-        None,
+    """The environment a verification run today would happen in.
+
+    A missing toolchain file, or a manifest that is not an object, used to raise here. `status`
+    and receipt grading both call this, so a bad checkout became a traceback instead of a stale
+    or unknown environment.
+    """
+    manifest_path = ROOT / "lake-manifest.json"
+    mathlib = None
+    if manifest_path.is_file():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            manifest = None
+        packages = manifest.get("packages", []) if isinstance(manifest, dict) else []
+        if isinstance(packages, list):
+            mathlib = next(
+                (
+                    package.get("rev")
+                    for package in packages
+                    if isinstance(package, dict) and package.get("name") == "mathlib"
+                ),
+                None,
+            )
+    toolchain_path = ROOT / "lean-toolchain"
+    toolchain = (
+        toolchain_path.read_text(encoding="utf-8").strip() if toolchain_path.is_file() else None
     )
     return {
-        "lean_toolchain": (ROOT / "lean-toolchain").read_text(encoding="utf-8").strip(),
+        "lean_toolchain": toolchain,
         "mathlib_rev": mathlib,
     }
 
@@ -2247,11 +2313,33 @@ def recorded_fingerprints() -> dict[str, str]:
     so that an older checkout reports what it reported then.
     """
     merged: dict[str, str] = {}
-    if FINGERPRINTS.is_file():
-        merged.update(json.loads(FINGERPRINTS.read_text(encoding="utf-8")))
-    for path in sorted(NODES_DIR.glob(f"*/*/{FINGERPRINTS_NAME}")) if NODES_DIR.is_dir() else []:
-        merged.update(json.loads(path.read_text(encoding="utf-8")))
+    paths = [FINGERPRINTS] if FINGERPRINTS.is_file() else []
+    if NODES_DIR.is_dir():
+        paths += sorted(NODES_DIR.glob(f"*/*/{FINGERPRINTS_NAME}"))
+    for path in paths:
+        merged.update(_fingerprint_entries(path))
     return merged
+
+
+def _fingerprint_entries(path: pathlib.Path) -> dict[str, str]:
+    """String digests from one fingerprint file.
+
+    A file that is not a JSON object, or that stores a non-string digest, used to raise out of
+    `status` and `pages` -- or, for a number, to crash later on `digest[:16]`. Dropping those
+    entries makes `fingerprint --check` report the conclusion as unrecorded, which is the failure
+    the check already has a name for.
+    """
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return {}
+    if not isinstance(data, dict):
+        return {}
+    return {
+        key: value
+        for key, value in data.items()
+        if isinstance(key, str) and isinstance(value, str)
+    }
 
 
 def receipt_state(conclusion_key: str, conclusion: dict) -> tuple[str, str] | None:
