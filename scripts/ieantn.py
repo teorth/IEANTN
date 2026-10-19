@@ -525,7 +525,11 @@ def check_pins() -> bool:
             "repository's toolchain",
         )
     else:
-        current = (ROOT / "lean-toolchain").read_text(encoding="utf-8").strip()
+        toolchain_path = ROOT / "lean-toolchain"
+        if not toolchain_path.is_file():
+            problems.add(rel(ROOT), "has no `lean-toolchain`, so the verification pin cannot be checked")
+            return problems.report("verification pins")
+        current = toolchain_path.read_text(encoding="utf-8").strip()
         if declared.group(1) != current:
             problems.add(
                 rel(VERIFY_SCRIPT),
@@ -1988,18 +1992,35 @@ def fingerprint(check_only: bool) -> bool:
 
 
 def current_environment() -> dict:
-    """The environment a verification run today would happen in."""
-    manifest = json.loads((ROOT / "lake-manifest.json").read_text(encoding="utf-8"))
-    mathlib = next(
-        (
-            package.get("rev")
-            for package in manifest.get("packages", [])
-            if package.get("name") == "mathlib"
-        ),
-        None,
+    """The environment a verification run today would happen in.
+
+    A missing toolchain file, or a manifest that is not an object, used to raise here. `status`
+    and receipt grading both call this, so a bad checkout became a traceback instead of a stale
+    or unknown environment.
+    """
+    manifest_path = ROOT / "lake-manifest.json"
+    mathlib = None
+    if manifest_path.is_file():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            manifest = None
+        packages = manifest.get("packages", []) if isinstance(manifest, dict) else []
+        if isinstance(packages, list):
+            mathlib = next(
+                (
+                    package.get("rev")
+                    for package in packages
+                    if isinstance(package, dict) and package.get("name") == "mathlib"
+                ),
+                None,
+            )
+    toolchain_path = ROOT / "lean-toolchain"
+    toolchain = (
+        toolchain_path.read_text(encoding="utf-8").strip() if toolchain_path.is_file() else None
     )
     return {
-        "lean_toolchain": (ROOT / "lean-toolchain").read_text(encoding="utf-8").strip(),
+        "lean_toolchain": toolchain,
         "mathlib_rev": mathlib,
     }
 
