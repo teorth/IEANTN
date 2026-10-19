@@ -5,6 +5,7 @@ Authors: Terence Tao
 -/
 import Mathlib.Analysis.Complex.CauchyIntegral
 import Mathlib.MeasureTheory.Integral.CircleIntegral
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 
 /-!
 # Node `ContourIntegration.v1`
@@ -84,5 +85,19 @@ def residue_theorem_rectangle : Prop :=
         + Complex.I * (∫ y : ℝ in z.im..w.im, f (w.re + y * Complex.I))
         - Complex.I * (∫ y : ℝ in z.im..w.im, f (z.re + y * Complex.I))
         = ∑ ρ ∈ P, (∮ ζ in C(ρ, r), f ζ)
+
+/-- The base of the induction: a rectangle with no holes.
+
+Mathlib's Cauchy theorem on a rectangle is this identity with the right-hand side removed.
+`residue_theorem_rectangle` at `P = ∅` is that theorem, because the sum over an empty set of
+singularities is zero and deleting nothing from the rectangle leaves the rectangle. The inductive
+step, punching one disc out and replacing it by a circle integral, is not this lemma. -/
+theorem boundary_integral_zero_of_holomorphic (z w : ℂ) (f : ℂ → ℂ)
+    (H : DifferentiableOn ℂ f (Set.uIcc z.re w.re ×ℂ Set.uIcc z.im w.im)) :
+    (∫ x : ℝ in z.re..w.re, f (x + z.im * I))
+      - (∫ x : ℝ in z.re..w.re, f (x + w.im * I))
+      + I * (∫ y : ℝ in z.im..w.im, f (w.re + y * I))
+      - I * (∫ y : ℝ in z.im..w.im, f (z.re + y * I)) = 0 := by
+  simpa using Complex.integral_boundary_rect_eq_zero_of_differentiableOn f z w H
 
 end ContourIntegration.v1
