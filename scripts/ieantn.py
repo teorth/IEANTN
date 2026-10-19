@@ -265,16 +265,61 @@ def imports_of(path: pathlib.Path) -> list[str]:
     return IMPORT_RE.findall(strip_lean_comments(path.read_text(encoding="utf-8")))
 
 
+def _char_literal_length(text: str, index: int) -> int:
+    """Length of a Lean character literal at `index`, or 0 if this quote is not one.
+
+    A name suffix (`Nat.succ'`) is not a literal. `'a'` and `'\\n'` are. Getting this wrong in
+    either direction lets a quote swallow the next import or invent a comment delimiter.
+    """
+    if index and (text[index - 1].isalnum() or text[index - 1] in "_'"):
+        return 0
+    if index + 2 < len(text) and text[index + 1] != "\\" and text[index + 2] == "'":
+        return 3
+    if index + 3 < len(text) and text[index + 1] == "\\" and text[index + 3] == "'":
+        return 4
+    return 0
+
+
 def strip_lean_comments(text: str) -> str:
     """Lean source with `--` line comments and nested `/- -/` blocks removed.
 
     Needed because a plain search for `sorry` also matches the word in prose. The docstring of an
     Examples file explaining *why* it may not contain `sorry` is not a `sorry`, and a check that
     cannot tell the difference is worse than none: it trains people to work around it.
+
+    String and character literals are blanked, not scanned. A `/-` or `--` inside `"..."` is text,
+    and treating it as a comment delimiter hides whatever follows -- including a real import --
+    until a later `-/` that was never opened. The word `sorry` inside a string is not a hole.
     """
     out: list[str] = []
     index, depth, length = 0, 0, len(text)
+
+    def blank_string() -> None:
+        nonlocal index
+        out.append(" ")
+        index += 1
+        while index < length:
+            if text[index] == "\\" and index + 1 < length:
+                out.append("  ")
+                index += 2
+                continue
+            if text[index] == '"':
+                out.append(" ")
+                index += 1
+                return
+            out.append("\n" if text[index] == "\n" else " ")
+            index += 1
+
     while index < length:
+        if depth == 0 and text[index] == '"':
+            blank_string()
+            continue
+        if depth == 0 and text[index] == "'":
+            width = _char_literal_length(text, index)
+            if width:
+                out.append(" " * width)
+                index += width
+                continue
         if text.startswith("/-", index):
             out.append("  ")
             depth += 1
