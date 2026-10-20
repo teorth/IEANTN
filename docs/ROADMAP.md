@@ -417,8 +417,11 @@ unproved-in-Lean leaves must not grow**. A restatement is supposed to say the sa
 not to quietly acquire a new assumption. If the "refactor" leaves `X.v1` resting on more than it
 did before, it is not a restatement at all — it is an amendment wearing a bridge.
 
-This is mechanically checkable, and should be part of the breaking-change work (piece 3): compute
-the leaf set before and after and require containment.
+This is mechanically checkable. `ieantn.py diff` computes the leaf set before and after for every
+conclusion whose designated justification is `bridged` on both sides, or becomes `bridged`, and
+fails when the new set is not contained in the old one. A smaller set is reported, not failed:
+discharging an assumption is what a restatement is for. A conclusion that did not exist at the
+base has no previous set, so a new bridged node is not held to one.
 
 The concrete case that made it visible: an early sketch of `Lcm.v2` would have needed a numerical
 side condition awkward enough to want its own `computation` node — but `Lcm.v1` needs no
