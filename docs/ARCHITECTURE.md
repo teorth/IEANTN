@@ -485,10 +485,14 @@ solution composing the per-node solutions along the way — *"the main results o
 this RH verification, this table computation, and this folklore lemma."* That is the artifact worth
 registering.
 
-`python scripts/ieantn.py spinoff <conclusion> --out <dir>` builds it, for the **one-level** case:
-a conclusion whose unjustified leaves are all among its own direct imports. Deeper graphs need the
-per-node solutions composed, which is not implemented; the command refuses rather than emitting
-something that looks complete. *(planned: the composing case.)*
+`python scripts/ieantn.py spinoff <conclusion> --out <dir>` builds it. When every unjustified leaf
+is a direct import, the Solution is that node's challenge theorem applied to those hypotheses.
+When the leaves sit further down, it composes the designated path: each `lean-comparator` step is
+its challenge theorem, and each `bridged` step is the one theorem in the recorded bridge file
+whose conclusion is that declaration and whose hypotheses are themselves conclusions. A citation
+that still imports something is refused. Assuming it would drop those dependencies, and there is
+no proof to apply. The command still does not invent `lakefile.toml`, `lake-manifest.json` or the
+limitations prose.
 
 What it does is inline. A Palomar Challenge's import closure must be Lean core and Mathlib only, so
 the emitted Challenge cannot `import IEANTN.Vocabulary`; instead `Tools/Spinoff.lean` walks the
@@ -561,9 +565,9 @@ python scripts/ieantn.py deprecate        # mark a version for retirement
 the verification workflow, and a receipt you can write attests nothing.
 
 **Not yet built**, and tracked in [ROADMAP.md](ROADMAP.md): the reviewer report as a pull request
-comment rather than a job summary; a `/verify` comment trigger; the Palomar spin-off generator;
-visualisation; and verification methods beyond Comparator. The `receipts/` ruleset is not pending
-but unavailable, and provenance replaced it -- see above.
+comment rather than a job summary; a `/verify` comment trigger; and verification methods beyond
+Comparator. The `receipts/` ruleset is not pending but unavailable, and provenance replaced it --
+see above.
 
 **The Comparator path is exercised end to end**: `Lcm.v1` carries a receipt written by the
 verification workflow, and `status` grades it against the current environment.
