@@ -1,0 +1,81 @@
+# Node metadata for `PrimesBetweenCubes.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: PrimesBetweenCubes.v1
+  family: PrimesBetweenCubes
+  version: v1
+  kind: paper
+  status: stub
+
+project:
+  name: "A prime between successive cubes past exp(exp(32.76))"
+  description: >-
+    The explicit threshold Mossinghoff, Trudgian and Yang record for a prime between n^3 and
+    (n+1)^3, obtained by feeding their zero-free region into Cully-Hugill's argument.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05"]
+
+conclusions:
+- id: prime_between_successive_cubes
+  declaration: PrimesBetweenCubes.v1.prime_between_successive_cubes
+  challenge: PrimesBetweenCubes.v1.challenge_prime_between_successive_cubes
+  imports:
+  - node: MTY.v1
+    conclusion: korobov_vinogradov_region
+  imports_status: traced
+  justifications:
+  - id: mty-application
+    kind: literature
+    source: MTY
+    locator: section "Some immediate applications"
+    note: >-
+      Read from arXiv:2212.06867. Dudek used Ford's region to get n >= exp(exp(33.3)). Cully-Hugill
+      improved that to exp(exp(32.892)). MTY writes that substituting their Theorem Main into
+      Cully-Hugill section 4 with alpha = 1/3 + 10^{-13} gives n >= exp(exp(32.76)). Asserted on
+      that calculation as printed. The zero-free region it consumes is drawn as
+      MTY.v1.korobov_vinogradov_region. The status stays traced: Cully-Hugill's section 4 is the
+      other input, and that argument is not a node. The substitution itself was not re-run.
+  designated: mty-application
+
+sources:
+- title: "Explicit zero-free regions for the Riemann zeta-function"
+  authors: ["Michael J. Mossinghoff", "Timothy S. Trudgian", "Andrew Yang"]
+  type: "paper"
+  id: "https://arxiv.org/abs/2212.06867"
+  location: "arXiv:2212.06867, section Some immediate applications"
+  relationship: formalizes
+  note: >-
+    The threshold is MTY's. The underlying prime-between-cubes argument is Cully-Hugill's, as
+    cited there.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Transcribed the prime-between-cubes threshold from the MTY preprint and recorded its
+      dependence on the Korobov-Vinogradov region.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    The sentence was read from the preprint. The arithmetic that turns alpha = 1/3 + 10^{-13}
+    into 32.76 was not re-run.
+
+limitations:
+- >-
+  The substitution into Cully-Hugill was not repeated. The number 32.76 is the one the preprint
+  prints.
+- >-
+  No novelty is claimed.
