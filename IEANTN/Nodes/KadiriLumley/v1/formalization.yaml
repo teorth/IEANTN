@@ -128,5 +128,19 @@ limitations:
   assumes is not recorded.
 - >-
   The two older conclusions were first transcribed from PrimeNumberTheoremAnd. Table 2 has since
-  been read from arXiv:1407.7902. The integers 1946282821 and 1966196911 agree with that table.
-  The columns other than the threshold and Δ are still not stated. They are inputs of the method.
+  been read from arXiv:1407.7902, and every row of it checked against the published Integers 14
+  (2014) A61, which is the source cited here: all twenty Δ agree, so nothing rests on the
+  preprint. The integers 1946282821 and 1966196911 are the rows at log x₀ = 59 and 60. The
+  columns other than the threshold and Δ are still not stated. They are inputs of the method.
+- >-
+  The paper disagrees with itself at the log x₀ = 60 row, in the published version as well as the
+  preprint. Table 2 prints Δ = 1 966 196 911, and Corollary 1.2 states its conclusion as
+  1 966 196 911 · 4·10¹⁸ = 7.864…·10²⁷ — but the proof of that corollary, in the section
+  "Verification of the Ternary Goldbach Conjecture", writes "from Table 2, we have that for
+  x = e⁶⁰ and Δ = 1 966 090 061", citing the table for a number the table does not contain.
+  Three places give 1 966 196 911 against one giving 1 966 090 061, so the single occurrence in
+  the proof is read here as a typo, and both `prime_in_interval_above_exp_60` and `table_2` state
+  the table value. Note which way the risk runs: the table value is the LARGER Δ, hence the
+  narrower interval and the stronger claim. If the proof's figure is the correct one, this node
+  asserts slightly more than the paper proves — by a relative 5.4·10⁻⁵, which is far inside the
+  slack of the one consumer, `Goldbach.v1.odd_up_to_kadiri_lumley`.
