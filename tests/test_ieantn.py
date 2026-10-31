@@ -2508,6 +2508,17 @@ class TestPins(FixtureRepo):
     def test_no_script_is_not_a_failure(self) -> None:
         self.assertTrue(ieantn.check_pins())
 
+    def test_a_missing_toolchain_file_fails_instead_of_raising(self) -> None:
+        self._script("leanprover/lean4:v4.34.0-rc2")
+        (self.root / "lean-toolchain").unlink()
+        self.assertFalse(ieantn.check_pins())
+
+    def test_a_non_object_manifest_does_not_crash_the_environment(self) -> None:
+        (self.root / "lake-manifest.json").write_text("[]", encoding="utf-8")
+        environment = ieantn.current_environment()
+        self.assertIsNone(environment["mathlib_rev"])
+        self.assertIsInstance(environment["lean_toolchain"], str)
+
 
 class TestRecordReceipt(FixtureRepo):
     """`record-receipt` writes the receipt *and* designates it.
@@ -2802,6 +2813,15 @@ class TestFingerprintSharding(FixtureRepo):
         (directory / "fingerprints.json").write_text(
             json.dumps({"A.v1.main": "current"}), encoding="utf-8")
         self.assertEqual(ieantn.recorded_fingerprints(), {"A.v1.main": "current"})
+
+    def test_a_non_object_fingerprint_file_does_not_crash(self) -> None:
+        """A list, or a digest that is not a string, used to raise out of status and pages."""
+        directory = self.write_node("A.v1", LITERATURE)
+        (directory / "fingerprints.json").write_text("[1, 2]", encoding="utf-8")
+        self.assertEqual(ieantn.recorded_fingerprints(), {})
+        (directory / "fingerprints.json").write_text(
+            json.dumps({"A.v1.main": 1, "A.v1.other": "ok"}), encoding="utf-8")
+        self.assertEqual(ieantn.recorded_fingerprints(), {"A.v1.other": "ok"})
 
     def test_digests_are_split_by_the_node_they_belong_to(self) -> None:
         first = self.write_node("A.v1", LITERATURE)
