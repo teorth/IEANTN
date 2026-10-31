@@ -20,7 +20,7 @@ namespace MTY.v1
 
 open IEANTN
 
-/-- **Theorem thmClassical.** No zeros of `ζ(σ + it)` for `|t| ≥ 2` and
+/-- **Theorem 1.3** (`thmClassical`). No zeros of `ζ(σ + it)` for `|t| ≥ 2` and
 `σ ≥ 1 - 1/(5.558691 log |t|)`.
 
 The classical shape, so a consumer of `Kadiri2005.v1.zero_free_region` can be pointed here by a
@@ -28,7 +28,7 @@ bridge. Smaller `R` is stronger: `5.558691` improves Mossinghoff–Trudgian's `5
 def classical_zero_free_region : Prop :=
   ClassicalZeroFreeRegion 5.558691 2
 
-/-- **Theorem Main.** No zeros of `ζ(σ + it)` for `|t| ≥ 3` and
+/-- **Theorem 1.1** (`Main`). No zeros of `ζ(σ + it)` for `|t| ≥ 3` and
 `σ ≥ 1 - 1/(55.241 (log |t|)^{2/3} (log log |t|)^{1/3})`.
 
 The preprint's closed inequality (`σ ≥`) is kept. `log log t` is only asked for `t ≥ 3`, where
@@ -42,7 +42,7 @@ def korobov_vinogradov_region : Prop :=
 noncomputable def intermediateHeight (t : ℝ) : ℝ :=
   (27 / 164) * Real.log t + 7.096
 
-/-- **Theorem thmIntZFR.** No zeros for `|t| ≥ exp(1000)` and
+/-- **Theorem 1.4** (`thmIntZFR`). No zeros for `|t| ≥ exp(1000)` and
 `σ > 1 - 0.05035 / h(t) + 0.0349 / h(t)²`, with `h` as above.
 
 The preprint's inequality is strict (`σ >`). Stating `≥` would claim a boundary the theorem does
