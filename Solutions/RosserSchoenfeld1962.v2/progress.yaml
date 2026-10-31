@@ -1,0 +1,168 @@
+solution: Solutions/RosserSchoenfeld1962.v2/
+state: complete
+phase: awaiting-verification
+
+base:
+  branch: rosser-schoenfeld-1962-max113-pr
+  upstream_main: ef21db9ba5dceffd976da71e24f8497b3a13f798
+  v1_source_commit: 6664139ccebea21ecdb9bd94539fc75d77564794
+  v1_merge_commit: e4123d4b16c21fc4df4f4f4706884bb57396833d
+  historical_audit_commit: 1c8c208b5c029cd6b08aac82efac705679f8db5f
+  progress_tooling_merge_commit: 8c7e963031ccb4fb16d02adfd30ca1037eb2ffee
+  note: >-
+    PRs 125 and 126 are merged into this upstream base. Only the v2 theorem commit was
+    cherry-picked onto upstream/main; the earlier v1 and generic tooling commits are not
+    part of this PR. All 51 reused RS12 files and their recorded SHA256 hashes are identical
+    at the historical audit commit and canonical merged v1 source. The historical commit
+    is informational only; no executable check requires it. The later upstream v1 trust
+    metadata update is preserved. No v1 source or archival branch is changed.
+
+statement_audit:
+  source: https://doi.org/10.1215/ijm/1255631807
+  scan: http://denise.vella.chemla.free.fr/Rosser-Schoenfeld-1962.pdf
+  wording: >-
+    Printed Theorem 12, p. 71, says the quotient psi(x)/x takes its maximum at x = 113,
+    then gives equation (3.35). It does not explicitly say the maximum is unique.
+  proof_locator: >-
+    Pages 77-78 discuss verification through 2000 using Gram's table and a bound of
+    1.03882 x beyond 2000; they place the maximum value strictly between 1.03882 and
+    1.03883. The range above 10^8 is reduced to Table I, justified in Section 6.
+    The maximum clause and equation (3.35) are distinct parts of Theorem 12.
+  conclusions:
+    maximum: >-
+      RosserSchoenfeld1962.v2.psi_ratio_maximum_at_113 is the sourced claim, over all
+      positive real arguments using Mathlib's full-weight prime-power endpoint convention.
+    uniqueness: >-
+      RosserSchoenfeld1962.v2.psi_ratio_unique_maximum_at_113 is an explicit uniqueness refinement, formally stronger
+      than the printed wording. Its designated justification remains none-yet until verification.
+      No mathematical novelty is claimed.
+  unchanged: >-
+    RosserSchoenfeld1962.v1.equation_3_35 and RS_prime.theorem_12 retain their original
+    meanings and source files. The pinned PNT+ theorem proves only equation (3.35).
+
+architecture:
+  node: RosserSchoenfeld1962.v2
+  rationale: >-
+    Versions are variants in IEANTN. Two separate conclusions distinguish the historical
+    maximum claim from uniqueness, and leave the merged v1 conclusion immutable.
+  core: Mathlib.NumberTheory.Chebyshev only; no new Vocabulary definitions.
+  reuse: >-
+    The v2 Lake project declares an RS12 library with srcDir pointing at the unchanged
+    sibling v1 sources, and uses the same pinned LeanCert dependency. Requiring the
+    entire v1 project would shadow v2's Solution module in lake env lean, so only the
+    RS12 sources are exposed. No v1 source file or conclusion is modified.
+    The core does not depend on either solution. The original 51 RS12 modules, including all witness and factorial data,
+    are checked against canonical merged commit 6664139ccebea21ecdb9bd94539fc75d77564794
+    by scripts/generate_adapters.py --check, without needing the old development history.
+  duplication: >-
+    No large certificate data is duplicated. Shifted.lean adapts the roughly 60-line
+    witness soundness and range-join proofs to carry an arbitrary additive offset.
+    SmallChecker.lean adapts its factor-witness convention and soundness argument to
+    verify a finer logarithm bound from supplied binary exponents.
+    Generated adapters reference all 1998 existing checked witness leaves and propagate
+    the stronger invariant. Private.lean resolves their pinned private names to ordinary
+    Lean constants; it asserts no fact and introduces no axiom. Changes to this private
+    source interface require deliberate regeneration and revalidation.
+
+proof:
+  historical_comparison: >-
+    The paper uses 0..2000, 2000..50653, 50653..10^8, and Table I beyond.
+    Lean uses 0..600, 601..500000, and the recurrence beyond 500000. The cutoff 2000
+    is historical; 600 is inherited from the earlier finite-certificate architecture
+    and supplies the seed for the witness certificates; 500000 is the finite-certificate/
+    recurrence handoff. The formal proof is mathematically different while proving the
+    same maximum statement. No mathematical novelty is claimed.
+  principal_target: 113 * psi(x) < x * psi(113) for x > 0 and x != 113
+  finite_seed: >-
+    A kernel-checked integer LCM comparison gives 2^169*(12774/10000) <= lcmUpto(113).
+    Two rational Taylor logarithm intervals at depth 20 then prove
+    113*1.03882 < psi(113). For the small upper bounds, refine v1's binary-length method
+    from eighth powers to 256th powers, with the already certified log(2) upper bound.
+    The generated data supplies 600 factor/exponent triples in 12 blocks. The checker
+    verifies p^256 < 2^u by exact integer arithmetic, without trusting a computed logarithm.
+    A proved checker verifies every integer prefix through 600, skipping only 113 for
+    the strict slope comparison. Its endpoint gives psi(600) <= 219418*693148/256000000,
+    below 594.10. This leaves more than five units of slack in v1's seed
+    6919*693148/8000000. All computations use decide +kernel.
+  finite_propagation: >-
+    The same v1 witness checks now yield psi(n)+5 <= 1.038829*n for 600 < n <= 500000.
+    Since 0.000009*n <= 4.5 in this range, this gives psi(n) < 1.03882*n, hence the strict
+    symbolic comparison. The rational separator is not substituted for the exact optimum.
+  real_extension: >-
+    Use psi(x)=psi(floor x). For floor x other than 0 or 113, the strict integer bound
+    and floor x <= x suffice. For floor x=0 use psi(x)=0 and positivity of psi(113).
+    For floor x=113 and x!=113, use 113<x and the same positivity.
+  tail: >-
+    For x>=500000, reuse the recurrence and apply the existing equation-(3.35) theorem
+    at x/60. Their combination is strictly below 1.03882*x. Thus no new strong induction
+    or new tail certificate is needed. This reuses the already kernel-checked induction
+    behind RS_prime.theorem_12 and does not change its meaning.
+  ratios: >-
+    Equality at 113 gives the non-strict global bound. Positive-denominator cross
+    multiplication derives both public ratio formulations from the strict internal theorem.
+
+trust:
+  new_numerical_assumptions: none
+  checks: decide +kernel, with soundness proved in Lean
+  provenance: >-
+    scripts/generate_adapters.py --check compares generated adapters, their SHA256
+    inventory, and every reused RS12 source against the v1 base. The existing v1
+    scripts/check_certificates.py checks the 35 original generated modules against
+    read-only PNT+ commit 81eca5aa3fa4779883a9aeba18e49087c5366e0f.
+  comparator: >-
+    Maintainer-side Comparator verification is separate. No author-written receipt and
+    no manually designated lean-comparator justification.
+
+validation:
+  state: passed
+  revalidated_on: '2026-10-31'
+  core_build: lake build, 3875 jobs
+  solution_build: lake build, 3619 jobs, including the reused RS12 certificates
+  generated_challenges: ieantn.py gen-challenges --check passed
+  fingerprints: ieantn.py fingerprint --check passed
+  provenance: >-
+    generate_adapters.py --check verified all 22 generated modules and all 51 reused
+    sources against the canonical merged v1 commit. The v1 check_certificates.py verified the 35 inherited
+    certificate modules against the pinned PNT+ source after relocation.
+  progress: >-
+    The unmodified upstream ieantn.py progress RosserSchoenfeld1962.v2 reports zero
+    declarations using sorry and both compared theorems proved. This confirms the
+    remaining_holes values already recorded in node metadata.
+  exact_types: >-
+    Separate imports of Challenge and Solution, with pp.all enabled, give byte-identical
+    printed types for both compared declarations.
+  module_resolution: >-
+    lake env lean --deps on a plain import Solution selects v2's own Solution.olean.
+    The Lake source path exposes the sibling v1 RS12 sources within the reconstructed
+    worktree; no archival checkout is needed. The lakefile.lean architecture is unchanged.
+  axiom_audit:
+    observed_for_each: [propext, Classical.choice, Quot.sound]
+    declarations:
+      - RosserSchoenfeld1962.v2.challenge_psi_ratio_maximum_at_113
+      - RosserSchoenfeld1962.v2.challenge_psi_ratio_unique_maximum_at_113
+      - RS12Max113.psi_strict_maximum
+      - RS12Max113.psi_maximum
+      - RS12Max113.psi_113_lower
+      - RS12Max113.psi_600_seed
+      - RS12Max113.checkSmall_sound
+      - RS12Max113.shifted_sound
+      - RS_prime.theorem_12
+  metadata: check_palomar_metadata.py passed against validator 14aa8d6b3c2f14a8540605e37144560b9a00e7e7
+  network: >-
+    ieantn.py check passed with the canonical teorth/IEANTN receipt context. Expected
+    stale derived-view warnings remain; STATE.md, GRAPH.md, and docs/nodes are not edited.
+  tooling: >-
+    PR 126 is already merged upstream. Its progress probe leaves lakefile.lean validation
+    to the successful Lake build. No separate progress-workflow prerequisite remains,
+    and no generic tooling changes are included in this theorem PR. All 310 tooling tests
+    pass with the repository's required Python dependencies installed.
+  scope: >-
+    The complete diff is limited to the v2 node and solution, its generated umbrella
+    import. The v1 node and solution
+    are unchanged; dependency entries and the toolchain match v1. git diff --check passed.
+    The Lean proof files, certificate data, public names, fingerprints, and Lake layout
+    are byte-identical to the completed archival v2 result. The network impact report
+    lists only the two new v2 conclusions.
+  submission: >-
+    Prepared locally for human inspection. Maintainer-side Comparator verification
+    remains separate; no verification receipt or remote submission is supplied.
