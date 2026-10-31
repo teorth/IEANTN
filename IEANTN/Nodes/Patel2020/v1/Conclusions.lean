@@ -5,6 +5,7 @@ Authors: Terence Tao
 -/
 import Mathlib.Analysis.Calculus.ContDiff.Defs
 import Mathlib.Analysis.Calculus.Deriv.Basic
+import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 import Mathlib.Topology.Algebra.InfiniteSum.Basic
@@ -35,7 +36,9 @@ noncomputable def distToInteger (x : ℝ) : ℝ :=
 `|ζ(1+it)| ≤ min(log t, (1/2) log t + 1.93, (1/5) log t + 44.02)`.
 
 The "in particular" tail `t ≥ 8.261…·10^60` is the third term alone, so it is not a second
-claim. -/
+claim. The preprint proves the `(1/2) log t + 1.93` branch for `t ≥ 47`. It only improves
+on `log t` for `t > exp(3.86) = 47.465…`, so the `log t` branch already covers the smaller
+values of `t`. -/
 def zeta_one_bound : Prop :=
   ∀ t : ℝ, 3 ≤ t →
     ‖riemannZeta (1 + t * I)‖ ≤
@@ -45,26 +48,33 @@ def zeta_one_bound : Prop :=
 is monotonic, and `‖f'‖ ≥ 1/U` there for some `U > 0`, then the exponential sum over the integers
 in `(a, b]` is at most `(2/π) U`.
 
+The derivative is taken within `(a, b]`, matching the `ContDiffOn` hypothesis even when the
+ambient derivative does not exist at an endpoint.
+
 The preprint's sum is indexed by `n ∈ (a, b]`. That is the integers `n` with `⌊a⌋ + 1 ≤ n ≤ ⌊b⌋`. -/
 def cheng_graham_lemma_2 : Prop :=
   ∀ (f : ℝ → ℝ) (a b U : ℝ), 0 < U →
     ContDiffOn ℝ 1 f (Set.Ioc a b) →
-    (MonotoneOn (deriv f) (Set.Ioc a b) ∨ AntitoneOn (deriv f) (Set.Ioc a b)) →
-    (∀ x ∈ Set.Ioc a b, U⁻¹ ≤ distToInteger (deriv f x)) →
+    (MonotoneOn (derivWithin f (Set.Ioc a b)) (Set.Ioc a b) ∨
+      AntitoneOn (derivWithin f (Set.Ioc a b)) (Set.Ioc a b)) →
+    (∀ x ∈ Set.Ioc a b, U⁻¹ ≤ distToInteger (derivWithin f (Set.Ioc a b) x)) →
     ‖∑ n ∈ Finset.Icc (⌊a⌋ + 1) ⌊b⌋, exp (2 * π * I * f n)‖ ≤ (2 / π) * U
 
 /-- **Corrected Cheng–Graham Lemma 3.** If `1/W ≤ |f''| ≤ 1/V` on `[N+1, N+L]` with `V < W` and
 `W > 1`, then
 `|∑_{n=N+1}^{N+L} exp(2πi f(n))| ≤ 2 (L/V + 2) (2 √(W/π) + 1)`.
 
+The second derivative is taken within `[N+1, N+L]`, matching the `ContDiffOn` hypothesis.
+
 The preprint remarks that the leading term of the incorrect lemma is off by `√2`. The slight
 Platt–Trudgian sharpening printed just after this lemma is a different inequality and is not
 folded in. -/
 def cheng_graham_lemma_3 : Prop :=
   ∀ (f : ℝ → ℝ) (N L : ℕ) (V W : ℝ), 0 < V → V < W → 1 < W →
-    ContDiffOn ℝ 2 f (Set.Icc (N + 1) (N + L)) →
+    ContDiffOn ℝ 2 f (Set.Icc ((N + 1 : ℕ) : ℝ) ((N + L : ℕ) : ℝ)) →
     (∀ x ∈ Set.Icc ((N + 1 : ℕ) : ℝ) ((N + L : ℕ) : ℝ),
-      W⁻¹ ≤ |iteratedDeriv 2 f x| ∧ |iteratedDeriv 2 f x| ≤ V⁻¹) →
+      W⁻¹ ≤ |iteratedDerivWithin 2 f (Set.Icc ((N + 1 : ℕ) : ℝ) ((N + L : ℕ) : ℝ)) x| ∧
+      |iteratedDerivWithin 2 f (Set.Icc ((N + 1 : ℕ) : ℝ) ((N + L : ℕ) : ℝ)) x| ≤ V⁻¹) →
     ‖∑ n ∈ Finset.Icc (N + 1) (N + L), exp (2 * π * I * f n)‖ ≤
       2 * ((L : ℝ) / V + 2) * (2 * Real.sqrt (W / π) + 1)
 
