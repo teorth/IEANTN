@@ -3867,7 +3867,10 @@ def diff(base: str) -> bool:
                 message += f" It no longer rests on {lost}."
             message += (
                 " A restatement must not rest on more than it did. Discharge the new "
-                "assumptions, or do not designate the bridge."
+                "assumptions, or do not designate the bridge: designate the weaker evidence "
+                "the node actually has, which costs nothing and says the true thing. This is "
+                "the one `diff` error a `changes/*.yaml` acknowledgement does not cover -- see "
+                "docs/ROADMAP.md."
             )
             errors.append(message)
         elif removed:

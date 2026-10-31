@@ -68,6 +68,40 @@ class TestBridgeLeafSet(_DiffGit):
         self.assertIn("Extra.v1.main", text)
         self.assertIn("Mid.v1.main", text)
 
+    def test_an_acknowledgement_does_not_excuse_it(self) -> None:
+        """The one `diff` error with no override, which is policy -- see docs/ROADMAP.md.
+
+        Every other error is a conclusion edited in place, where a reviewer can weigh landing
+        it against what it breaks. Here there is nothing to weigh: a restatement that rests on
+        a new assumption is not a restatement, and the node should designate the weaker
+        evidence it really has. An acknowledgement would record a bridge the network keeps
+        trusting while knowing it transports less than it claims.
+        """
+        self.write_node("Leaf.v1", LITERATURE)
+        self.write_node("A.v1", bridged("Leaf.v1.main"))
+        self.commit_all("base")
+        self.write_node("Extra.v1", LITERATURE)
+        self.write_node("Mid.v1", importing("Extra.v1"))
+        self.write_node("A.v1", bridged("Mid.v1.main"))
+        changes = self.root / "changes"
+        changes.mkdir()
+        (changes / "bridge.yaml").write_text(
+            "acknowledge:\n"
+            "  - conclusion: A.v1.main\n"
+            "    effect: receipt-voided\n"
+            "    reason: >-\n"
+            "      Acknowledging it must not help: this check has no override.\n",
+            encoding="utf-8")
+        # The acknowledgement is read -- an edit in place would be excused by it ...
+        self.assertEqual(
+            ieantn.acknowledged(),
+            {"A.v1.main": "Acknowledging it must not help: this check has no override."})
+        # ... and the leaf set still fails the branch.
+        text = self.report()
+        self.assertFalse(self._last_ok)
+        self.assertIn("gained unproved assumptions", text)
+        self.assertIn("does not cover", text)
+
     def test_discharging_an_assumption_is_a_note(self) -> None:
         self.write_node("Extra.v1", LITERATURE)
         self.write_node("Mid.v1", importing("Extra.v1"))

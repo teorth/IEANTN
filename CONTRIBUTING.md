@@ -591,6 +591,13 @@ CI cross-checks this against its own computation, so it cannot be written withou
 actually broke. It is an override, not a routine step: if you find yourself writing one often, you
 are editing where you should be versioning.
 
+**One failure has no acknowledgement**: a designated `bridged` justification whose leaf set grew,
+reported as "gained unproved assumptions". Every other error here is a conclusion edited in place,
+where the question is whether landing it is worth what it breaks downstream — a judgement a
+reviewer can make. That one is not a judgement call: a restatement resting on an assumption the
+original did not is not a restatement. Designate the weaker evidence the node really has instead.
+[docs/ROADMAP.md](docs/ROADMAP.md) gives the reasoning.
+
 ## Disclose AI assistance
 
 Say so in the PR body — one line is enough (`Made with Claude Code`, or the tool's own
