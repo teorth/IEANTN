@@ -21,3 +21,6 @@ theorem KadiriLumley.v1.challenge_prime_in_interval_above_exp_59 : KadiriLumley.
 
 theorem KadiriLumley.v1.challenge_prime_in_interval_above_exp_60 : KadiriLumley.v1.prime_in_interval_above_exp_60 := by
   sorry
+
+theorem KadiriLumley.v1.challenge_table_2 : KadiriLumley.v1.table_2 := by
+  sorry

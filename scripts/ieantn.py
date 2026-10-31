@@ -4011,47 +4011,417 @@ def slice_source(text: str, decl: dict, prefix: str) -> tuple[str, str]:
     return body, namespace
 
 
+def _ident_boundary(code: str, index: int, word: str) -> bool:
+    if not code.startswith(word, index):
+        return False
+    if index and (code[index - 1].isalnum() or code[index - 1] in "_'"):
+        return False
+    after = index + len(word)
+    return after >= len(code) or not (code[after].isalnum() or code[after] in "_'")
+
+
+def _skip_ws(code: str, index: int) -> int:
+    while index < len(code) and code[index].isspace():
+        index += 1
+    return index
+
+
+def _read_lean_name(code: str, index: int) -> tuple[str, int]:
+    if index >= len(code) or not (code[index].isalpha() or code[index] == "_"):
+        return "", index
+    end = index + 1
+    while end < len(code) and (code[end].isalnum() or code[end] in "_'."):
+        end += 1
+    return code[index:end], end
+
+
+def _skip_string(code: str, index: int) -> int:
+    index += 1
+    while index < len(code):
+        if code[index] == "\\":
+            index += 2
+            continue
+        if code[index] == '"':
+            return index + 1
+        index += 1
+    return len(code)
+
+
+def _balanced_group(code: str, index: int) -> tuple[str, int]:
+    closing = {"(": ")", "[": "]", "{": "}"}
+    start = index
+    stack = [closing[code[index]]]
+    index += 1
+    while index < len(code) and stack:
+        if code[index] == '"':
+            index = _skip_string(code, index)
+            continue
+        if code[index] in closing:
+            stack.append(closing[code[index]])
+        elif code[index] == stack[-1]:
+            stack.pop()
+        index += 1
+    return code[start:index], index
+
+
+def _split_top_colon(text: str) -> tuple[str, str] | None:
+    closing = {"(": ")", "[": "]", "{": "}"}
+    stack: list[str] = []
+    index = 0
+    while index < len(text):
+        if text[index] == '"':
+            index = _skip_string(text, index)
+            continue
+        if text[index] in closing:
+            stack.append(closing[text[index]])
+        elif stack and text[index] == stack[-1]:
+            stack.pop()
+        elif text[index] == ":" and not stack:
+            return text[:index], text[index + 1:]
+        index += 1
+    return None
+
+
+def _until_assign(code: str, index: int) -> tuple[str, int]:
+    closing = {"(": ")", "[": "]", "{": "}"}
+    stack: list[str] = []
+    start = index
+    while index < len(code):
+        if code.startswith(":=", index) and not stack:
+            return code[start:index], index
+        if code[index] == '"':
+            index = _skip_string(code, index)
+            continue
+        if code[index] in closing:
+            stack.append(closing[code[index]])
+        elif stack and code[index] == stack[-1]:
+            stack.pop()
+        index += 1
+    return code[start:], len(code)
+
+
+def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, list[str]]]:
+    """Theorems whose conclusion is exactly `target` and whose hypotheses are known declarations.
+
+    A dotted name at the top level is used as written. A short name is prefixed with the
+    namespaces open around it. A dotted name inside a namespace is skipped: which full name Lean
+    would assign is not something to guess. Only a single explicit `(name : type)` binder is
+    accepted, and only when `type` is one of `known`. An implicit binder or a side condition
+    disqualifies that theorem.
+    """
+    code = strip_lean_comments(text)
+    stack: list[str] = []
+    found: list[tuple[str, list[str]]] = []
+    index, length = 0, len(code)
+    while index < length:
+        if _ident_boundary(code, index, "namespace"):
+            index = _skip_ws(code, index + len("namespace"))
+            name, index = _read_lean_name(code, index)
+            stack.extend(part for part in name.split(".") if part)
+            continue
+        if _ident_boundary(code, index, "end"):
+            index = _skip_ws(code, index + len("end"))
+            name, next_index = _read_lean_name(code, index)
+            if name:
+                parts = [part for part in name.split(".") if part]
+                if len(stack) >= len(parts) and stack[-len(parts):] == parts:
+                    del stack[-len(parts):]
+                elif stack:
+                    stack.pop()
+                index = next_index
+            elif stack:
+                stack.pop()
+            else:
+                index += 1
+            continue
+        if not _ident_boundary(code, index, "theorem"):
+            index += 1
+            continue
+        index = _skip_ws(code, index + len("theorem"))
+        declared, index = _read_lean_name(code, index)
+        ambiguous = "." in declared and bool(stack)
+        if "." in declared or not stack:
+            full_name = declared
+        else:
+            full_name = ".".join([*stack, declared])
+        index = _skip_ws(code, index)
+        binders: list[str] = []
+        usable = bool(declared) and not ambiguous
+        while index < length and code[index] in "({[":
+            if code[index] != "(":
+                usable = False
+                break
+            group, index = _balanced_group(code, index)
+            split = _split_top_colon(group[1:-1])
+            if split is None:
+                usable = False
+                break
+            binder_name, binder_type = split
+            if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", binder_name.strip()):
+                usable = False
+                break
+            binders.append(" ".join(binder_type.split()))
+            index = _skip_ws(code, index)
+        if index < length and code[index] == ":":
+            conclusion, index = _until_assign(code, index + 1)
+        else:
+            conclusion, index = _until_assign(code, index)
+            usable = False
+        conclusion = " ".join(conclusion.split())
+        if (
+            usable
+            and conclusion == target
+            and all(binder in known for binder in binders)
+        ):
+            found.append((full_name, binders))
+        if code.startswith(":=", index):
+            index += 2
+    return found
+
+
+def import_keys_of(conclusion: dict) -> list[str]:
+    return [
+        f"{dependency.get('node')}.{dependency.get('conclusion')}"
+        for dependency in (conclusion.get("imports") or [])
+    ]
+
+
+def hypothesis_of(key: str) -> str:
+    node_id, conclusion_id = key.rsplit(".", 1)
+    return hypothesis_name({"node": node_id, "conclusion": conclusion_id})
+
+
+def rewrite_vendored_imports(text: str, stems: dict[str, str]) -> str:
+    """Repoint imports of a solution's own files at the directory they were copied into.
+
+    Positions come from the comment-stripped text, which keeps the same length, so the
+    replacement lands on the import the reader wrote and not on one mentioned in a comment.
+    """
+    stripped = strip_lean_comments(text)
+    pieces: list[str] = []
+    cursor = 0
+    for match in IMPORT_RE.finditer(stripped):
+        module = match.group(1)
+        head, dot, tail = module.partition(".")
+        if head not in stems:
+            continue
+        start, end = match.span(1)
+        pieces.append(text[cursor:start])
+        pieces.append(stems[head] + (dot + tail if dot else ""))
+        cursor = end
+    if not pieces:
+        return text
+    pieces.append(text[cursor:])
+    return "".join(pieces)
+
+
+def vendored_module(node_id: str, stem: str) -> str:
+    return f"vendored.{node_id}.{stem}"
+
+
+def vendor_solution(node_id: str, target: pathlib.Path) -> None:
+    """Copy one node's solution under `vendored/<Family>/<version>/`.
+
+    `Solution.lean` becomes `NodeSolution.lean` so the wrapper can keep the name `Solution`.
+    Imports of sibling files are rewritten to that directory; an import that should have moved
+    and did not is a failure, not a successful copy of a file that no longer resolves.
+    """
+    solution_dir = SOLUTIONS / node_id
+    destination = target.joinpath("vendored", *node_id.split("."))
+    destination.mkdir(parents=True, exist_ok=True)
+    files = sorted(path for path in solution_dir.glob("*.lean"))
+    stems = {
+        path.stem: vendored_module(node_id, "NodeSolution" if path.name == "Solution.lean" else path.stem)
+        for path in files
+    }
+    for path in files:
+        original = path.read_text(encoding="utf-8")
+        local = [
+            module for module in IMPORT_RE.findall(strip_lean_comments(original))
+            if module.split(".", 1)[0] in stems
+        ]
+        rewritten = rewrite_vendored_imports(original, stems)
+        if local and rewritten == original:
+            sys.exit(
+                f"error: {rel(path)} imports `{local[0]}`, and copying it under vendored/ "
+                "did not rewrite that import."
+            )
+        name = "NodeSolution.lean" if path.name == "Solution.lean" else path.name
+        (destination / name).write_text(rewritten, encoding="utf-8", newline="\n")
+
+
+def plan_composition(index: dict, key: str) -> tuple[dict | None, str | None]:
+    """How to prove `key` from its unjustified leaves, or why that cannot be emitted.
+
+    A `lean-comparator` step is its solution's challenge theorem, applied to its imports.
+    A `bridged` step is the one theorem in the bridge file whose conclusion is that
+    declaration and whose hypotheses are themselves conclusions. Anything else is a
+    hypothesis only when it imports nothing. A citation that still depends on something
+    is a gap: assuming it would drop those dependencies, and there is no proof to compose.
+    """
+    if key not in index:
+        return None, (
+            f"error: unknown conclusion `{key}`; try `python scripts/ieantn.py report`"
+        )
+    node_id, conclusion = index[key]
+    kind = (designated_of(conclusion) or {}).get("kind")
+    if kind not in VERIFIED_KINDS and kind != "bridged":
+        return None, (
+            f"error: `{key}` designates `{kind}`, so there is no Lean proof to "
+            "submit. Palomar records a verified formalization, not a claim."
+        )
+
+    declarations: dict[str, list[str]] = {}
+    for conclusion_key, (_, item) in index.items():
+        declaration = item.get("declaration")
+        if isinstance(declaration, str):
+            declarations.setdefault(declaration, []).append(conclusion_key)
+    known = set(declarations)
+
+    leaves: list[str] = []
+    vendors: list[str] = []
+    bridge_modules: list[str] = []
+    bridge_calls: dict[str, tuple[str, list[str]]] = {}
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def walk(current: str) -> str | None:
+        if current in visited:
+            return None
+        if current in visiting:
+            return f"error: `{current}` sits on a cycle, so there is no order to compose it in."
+        if current not in index:
+            return f"error: `{current}` is not a conclusion in this network."
+        visiting.add(current)
+        current_node, current_conclusion = index[current]
+        justification = designated_of(current_conclusion) or {}
+        current_kind = justification.get("kind")
+        dependencies = import_keys_of(current_conclusion)
+        if current_kind in VERIFIED_KINDS:
+            health = receipt_state(current, current_conclusion)
+            if health is not None and health[0] == "BROKEN":
+                return f"error: `{current}` has no standing verification receipt: {health[1]}"
+            if not (SOLUTIONS / current_node / "Solution.lean").is_file():
+                return f"error: no solution at {rel(SOLUTIONS / current_node)}"
+            vendors.append(current_node)
+            for dependency in dependencies:
+                error = walk(dependency)
+                if error:
+                    return error
+        elif current_kind == "bridged":
+            relative = justification.get("bridge")
+            if not isinstance(relative, str):
+                return f"error: `{current}` names no bridge file that exists."
+            bridge_path = ROOT / relative
+            if not bridge_path.is_file():
+                return f"error: `{current}` names no bridge file that exists."
+            target_decl = current_conclusion.get("declaration")
+            if not isinstance(target_decl, str):
+                return f"error: `{current}` has no declaration to match a bridge theorem against."
+            matches = bridge_theorems(bridge_path.read_text(encoding="utf-8"), target_decl, known)
+            if len(matches) != 1:
+                return (
+                    f"error: `{relative}` has {len(matches)} theorems whose conclusion is "
+                    f"`{target_decl}` and whose hypotheses are conclusions of this network. "
+                    "Refusing to guess an application."
+                )
+            full_name, binder_types = matches[0]
+            binder_keys: list[str] = []
+            for binder_type in binder_types:
+                owners = declarations.get(binder_type, [])
+                if len(owners) != 1:
+                    return (
+                        f"error: `{relative}` hypothesis `{binder_type}` names "
+                        f"{len(owners)} conclusions. Refusing to guess which."
+                    )
+                binder_keys.append(owners[0])
+            bridge_calls[current] = (full_name, binder_keys)
+            module = relative[:-5] if relative.endswith(".lean") else relative
+            bridge_modules.append(module.replace("/", "."))
+            for source in [*bridge_sources(justification), *dependencies, *binder_keys]:
+                error = walk(source)
+                if error:
+                    return error
+        elif dependencies:
+            listed = ", ".join(f"`{item}`" for item in dependencies)
+            return (
+                f"error: `{current}` is `{current_kind}` and still imports {listed}. "
+                "That is a gap in the proof, not a hypothesis: a citation in the middle "
+                "has nothing to compose, and assuming it would drop what it depends on."
+            )
+        else:
+            leaves.append(current)
+        visiting.remove(current)
+        visited.add(current)
+        return None
+
+    error = walk(key)
+    if error:
+        return None, error
+
+    ordered = sorted(set(leaves))
+    one_level = kind in VERIFIED_KINDS and set(import_keys_of(conclusion)) == set(ordered)
+
+    def apply(name: str, arguments: list[str]) -> str:
+        if not arguments:
+            return name
+        return f"({name} {' '.join(arguments)})"
+
+    if one_level:
+        # The single application is written the way it always was: the theorem, then the
+        # hypotheses in sorted order, with no extra parentheses. A reader diffing a one-level
+        # submission against the previous generator should see the same proof line.
+        arguments = " ".join(hypothesis_of(leaf) for leaf in ordered)
+        term = f"{node_id}.challenge_{conclusion.get('id')}"
+        if arguments:
+            term += " " + arguments
+    else:
+        def term_for(current: str) -> str:
+            if current in set(ordered):
+                return hypothesis_of(current)
+            current_node, current_conclusion = index[current]
+            current_kind = (designated_of(current_conclusion) or {}).get("kind")
+            if current_kind in VERIFIED_KINDS:
+                return apply(
+                    f"{current_node}.challenge_{current_conclusion.get('id')}",
+                    [term_for(item) for item in import_keys_of(current_conclusion)],
+                )
+            full_name, binder_keys = bridge_calls[current]
+            return apply(full_name, [term_for(item) for item in binder_keys])
+
+        term = term_for(key)
+
+    return {
+        "leaves": ordered,
+        "term": term,
+        "vendors": sorted(set(vendors)),
+        "bridge_modules": sorted(set(bridge_modules)),
+        "one_level": one_level,
+        "node_id": node_id,
+        "conclusion": conclusion,
+    }, None
+
+
+
 def spinoff(key: str, out: str, compile_check: bool) -> bool:
     """Emit one conclusion as a self-contained Palomar submission.
 
     See docs/ARCHITECTURE.md section 7. The Challenge inlines every IEANTN definition the statement
-    needs, so its import closure is Mathlib-only as Palomar requires; the Solution reaches the real
-    proof by depending on this repository.
+    needs, so its import closure is Mathlib-only as Palomar requires. The Solution is the one-level
+    case when every hypothesis is a direct import, and otherwise the composition of the designated
+    path: each verified node's challenge theorem applied to the steps above it, and each bridge
+    applied to the conclusions its theorem actually takes.
     """
     nodes = load_nodes()
     index = index_conclusions(nodes)
-    if key not in index:
-        print(f"error: unknown conclusion `{key}`; try `python scripts/ieantn.py report`")
+    plan, error = plan_composition(index, key)
+    if error or plan is None:
+        print(error)
         return False
-    node_id, conclusion = index[key]
+    node_id = plan["node_id"]
+    conclusion = plan["conclusion"]
     cid = conclusion.get("id")
-
-    designated = designated_of(conclusion) or {}
-    if designated.get("kind") not in VERIFIED_KINDS:
-        print(f"error: `{key}` designates `{designated.get('kind')}`, so there is no Lean proof to "
-              "submit. Palomar records a verified formalization, not a claim.")
-        return False
-    health = receipt_state(key, conclusion)
-    if health is not None and health[0] == "BROKEN":
-        print(f"error: `{key}` has no standing verification receipt: {health[1]}")
-        return False
-
-    # Multi-level composition -- chaining several nodes' solutions into one -- is the part of
-    # ARCHITECTURE section 7 that is not built. Refuse rather than emit something that looks
-    # complete and is not.
-    leaves = sorted(set(unjustified_leaves(index, key)))
-    direct = {f"{d.get('node')}.{d.get('conclusion')}" for d in (conclusion.get("imports") or [])}
-    deeper = [leaf for leaf in leaves if leaf not in direct]
-    if deeper:
-        print(f"error: `{key}` rests on {', '.join(deeper)}, which are not among its direct "
-              "imports. Emitting that needs the per-node solutions composed along the way, which "
-              "is not implemented; only a one-level spin-off is supported today.")
-        return False
-
-    solution_dir = SOLUTIONS / node_id
-    if not (solution_dir / "Solution.lean").is_file():
-        print(f"error: no solution at {rel(solution_dir)}")
-        return False
+    leaves = plan["leaves"]
 
     wanted = [conclusion.get("declaration")] + [index[leaf][1].get("declaration") for leaf in leaves]
     finished = subprocess.run(
@@ -4137,15 +4507,19 @@ What the statement rests on:
     (target / "Challenge.lean").write_text(challenge, encoding="utf-8", newline="\n")
 
     # --- Solution --------------------------------------------------------------------------
-    vendored = sorted("NodeSolution" if path.stem == "Solution" else path.stem
-                      for path in solution_dir.glob("*.lean"))
-    arguments = " ".join(
-        hypothesis_name({"node": leaf.rsplit(".", 1)[0], "conclusion": leaf.rsplit(".", 1)[1]})
-        for leaf in leaves)
-    solution = (
-        LICENCE_HEADER
-        + "".join(f"import {stem}\n" for stem in vendored)
-        + f"""
+    proof = f"""
+theorem {SPINOFF_NAMESPACE}.main{binders} :
+    {statement} :=
+  {plan["term"]}
+"""
+    if plan["one_level"]:
+        solution_dir = SOLUTIONS / node_id
+        vendored = sorted("NodeSolution" if path.stem == "Solution" else path.stem
+                          for path in solution_dir.glob("*.lean"))
+        solution = (
+            LICENCE_HEADER
+            + "".join(f"import {stem}\n" for stem in vendored)
+            + f"""
 /-!
 # Solution: `{key}`
 
@@ -4155,20 +4529,38 @@ The proof is `{node_id}.challenge_{cid}`, vendored from the node's solution proj
 file only renames it into the namespace the Challenge uses, which exists so that the compared name
 does not collide with the sorried challenge the source repository generates for its own build.
 -/
+"""
+            + proof)
+        (target / "Solution.lean").write_text(solution, encoding="utf-8", newline="\n")
+        for path in solution_dir.glob("*.lean"):
+            if path.name != "Solution.lean":
+                (target / path.name).write_text(path.read_text(encoding="utf-8"),
+                                                encoding="utf-8", newline="\n")
+        vendor = solution_dir / "Solution.lean"
+        (target / "NodeSolution.lean").write_text(vendor.read_text(encoding="utf-8"),
+                                                  encoding="utf-8", newline="\n")
+    else:
+        for vendor_id in plan["vendors"]:
+            vendor_solution(vendor_id, target)
+        imported = [vendored_module(vendor_id, "NodeSolution") for vendor_id in plan["vendors"]]
+        imported += plan["bridge_modules"]
+        solution = (
+            LICENCE_HEADER
+            + "".join(f"import {module}\n" for module in imported)
+            + f"""
+/-!
+# Solution: `{key}`
 
-theorem {SPINOFF_NAMESPACE}.main{binders} :
-    {statement} :=
-  {node_id}.challenge_{cid}{(' ' + arguments) if arguments else ''}
-""")
-    (target / "Solution.lean").write_text(solution, encoding="utf-8", newline="\n")
+**Generated file** -- regenerated by `python scripts/ieantn.py spinoff {key}`.
 
-    for path in solution_dir.glob("*.lean"):
-        if path.name != "Solution.lean":
-            (target / path.name).write_text(path.read_text(encoding="utf-8"),
-                                            encoding="utf-8", newline="\n")
-    vendor = solution_dir / "Solution.lean"
-    (target / "NodeSolution.lean").write_text(vendor.read_text(encoding="utf-8"),
-                                              encoding="utf-8", newline="\n")
+The proof composes the designated path. Each verified node contributes its challenge theorem,
+vendored under `vendored/`. A bridge contributes the theorem in the core library whose conclusion
+is that node's declaration. The names stay the ones Comparator compared, so this file only applies
+them.
+-/
+"""
+            + proof)
+        (target / "Solution.lean").write_text(solution, encoding="utf-8", newline="\n")
 
     (target / "comparator.json").write_text(
         json.dumps({
@@ -4194,7 +4586,12 @@ theorem {SPINOFF_NAMESPACE}.main{binders} :
     print("  1. lakefile.toml -- this needs a pinned git dependency on the source repository")
     print("  2. lake-manifest.json -- commit the one Lake resolves")
     print("  3. formalization.yaml -- start from the node's, drop `node` and `conclusions`, and")
-    print("     add a limitation naming each hypothesis above")
+    if leaves:
+        print("     add a limitation naming each hypothesis:")
+        for leaf in leaves:
+            print(f"       - {leaf}")
+    else:
+        print("     there are no hypotheses to name in the limitations")
     print("  4. validate: see the `palomar-submission` skill for running Palomar's own validator")
     if compile_check:
         # The Challenge imports Mathlib and nothing else, so this repository's own
