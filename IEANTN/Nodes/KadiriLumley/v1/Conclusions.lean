@@ -56,4 +56,32 @@ def prime_in_interval_above_exp_60 : Prop :=
   ∀ x : ℝ, exp 60 ≤ x →
     ∃ p : ℕ, Nat.Prime p ∧ x * (1 - 1 / 1966196911) < p ∧ (p : ℝ) < x
 
+/-- One row of Table 2, as printed in arXiv:1407.7902 and in Integers A61.
+
+The first row's threshold is `4 · 10^18`, whose logarithm is about `42.8328`. Every later row's
+threshold is `exp n` for the integer in the `log x₀` column. `Δ` is the integer in the last
+column. The columns `m`, `δ`, `T₁`, `σ₀` and `a` are the method that produces `Δ`. Theorem 1.1
+does not quantify over them, so they are not part of the statement. -/
+def Table2Row := ℕ × ℕ
+
+/-- Table 2 of Kadiri–Lumley, `(n, Δ)` with threshold `exp n`, except the opening row. -/
+def table2ExpRows : List Table2Row :=
+  [(43, 38753947), (44, 61162616), (45, 95381241), (46, 148306019), (47, 227619375),
+    (48, 346582570), (49, 518958776), (50, 753575355), (51, 1037917449), (52, 1313524036),
+    (53, 1524171138), (54, 1670398039), (55, 1770251249), (56, 1838818070), (57, 1886389443),
+    (58, 1920768795), (59, 1946282821), (60, 1966196911), (150, 2442159714)]
+
+/-- **Theorem 1.1, for every row of Table 2.**
+
+For the opening row, every `x ≥ 4 · 10^18` has a prime in `(x(1 − 1/36082898), x)`. For each
+later row `(n, Δ)`, every `x ≥ exp n` has a prime in `(x(1 − 1/Δ), x)`. The interval is open on
+the right, as in the two rows already stated. The table caption says `x ≥ x₀`. The theorem
+display says `x > x₀`. The closed form is the one the caption prints, and it matches the two
+conclusions above, which are the rows `n = 59` and `n = 60` of this list. -/
+def table_2 : Prop :=
+  (∀ x : ℝ, 4 * 10 ^ 18 ≤ x →
+    ∃ p : ℕ, Nat.Prime p ∧ x * (1 - 1 / 36082898) < p ∧ (p : ℝ) < x) ∧
+  ∀ n Δ, (n, Δ) ∈ table2ExpRows → ∀ x : ℝ, exp (n : ℝ) ≤ x →
+    ∃ p : ℕ, Nat.Prime p ∧ x * (1 - 1 / (Δ : ℕ)) < p ∧ (p : ℝ) < x
+
 end KadiriLumley.v1
