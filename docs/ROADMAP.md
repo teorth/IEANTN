@@ -107,16 +107,17 @@ the solution directory and the receipt. Mermaid renders natively on GitHub, so n
 hosting -- which is also why doc-gen4 was considered and dropped; see the `ieantn` skill for the
 reasoning.
 
-**9. The Palomar spin-off generator.** *Partly done* -- `ieantn.py spinoff <conclusion> --out <dir>`
-emits a self-contained submission for the one-level case, where every transitive unjustified leaf is
-also a direct import. It inlines the node's definitions so the Challenge's closure is Mathlib-only,
-takes each leaf as a hypothesis, and vendors the node's solution.
+**9. The Palomar spin-off generator.** *Done for the composition, not for the project files* --
+`ieantn.py spinoff <conclusion> --out <dir>` emits a self-contained submission. The one-level case,
+where every unjustified leaf is a direct import, vendors that one solution and applies its
+challenge theorem. A deeper graph composes the designated path, vendoring each verified node's
+solution under `vendored/` and applying a bridge by the one theorem in its file that states the
+conclusion. A citation in the middle is refused.
 
-Two things it deliberately does not do. It refuses the multi-level case rather than emitting
-something incomplete: composing several nodes' solutions into one is the harder half of section 7
-and is still open. And it stops short of `lakefile.toml`, `lake-manifest.json` and
-`formalization.yaml`, printing what remains -- those need a pinned dependency on a *published*
-commit and a limitations section naming the hypotheses, neither of which a generator should invent.
+It still stops short of `lakefile.toml`, `lake-manifest.json` and `formalization.yaml`, printing
+what remains -- those need a pinned dependency on a *published* commit and a limitations section
+naming the hypotheses, neither of which a generator should invent. The hypotheses themselves are
+printed, because that list is derived.
 
 The route not taken is worth recording. Pretty-printing the elaborated definitions is the obvious
 way to inline them and produces correct, unreadable output -- `LE.le 5 c` for `5 ≤ c` -- because a
