@@ -1,0 +1,80 @@
+solution: Solutions/RosserSchoenfeld1962.v3/
+state: complete
+phase: awaiting-verification
+source:
+  paper: Rosser and Schoenfeld, Approximate formulas for some functions of prime numbers (1962)
+  equation: Corollary 3, equation (3.8), p. 69
+  doi: https://doi.org/10.1215/ijm/1255631807
+  scan: https://denisevellachemla.eu/Rosser-Schoenfeld-1962.pdf
+target: RosserSchoenfeld1962.v3.challenge_equation_3_8
+statement_audit:
+  confirmed: Strict inequality for real x >= 41/2; pi counts primes <= x.
+  rendered_pages:
+  - 64
+  - 69
+  - 82
+  discrepancy: None in equation (3.8).
+architecture:
+  version: v3 is a separate paper variant; v1 and v2 retain their meanings and proofs.
+  core: Only IEANTN.Vocabulary.PrimeCounting; no heavy proof code.
+  node_hypotheses: []
+  dependency_classification: 'B: v1 proof library required; no v2 dependency.'
+strategy:
+  finite: Checked prime witnesses on a rational interval covering 41/2 <= x < 4096.
+  tail: Weighted factorials give psi(y) >= 0.92*y - 5*log(y) - 1. Combine with the existing proved
+    psi(x) < 1.03883*x and Mathlib's proved Costa-Pereira psi-theta inequality at y=2*x, bounding
+    each of the three psi terms by 1.03883*sqrt(y). Bound the log-weighted prime interval sum above
+    by (pi(2*x)-pi(x))*log(2*x).
+dependencies:
+- IEANTN Vocabulary definition of primeCounting; no conclusion assumed.
+- Sibling v1 RS12 proof library from public IEANTN merge e4123d4b16c21fc4df4f4f4706884bb57396833d.
+  The proof of equation (3.35) is used directly; no node conclusion is assumed.
+- LeanCert 6b11513512c9d27183fb4725bfc291ab38b4a6d7, same as v1. Exact rational logarithm endpoints
+  are kernel-checked.
+- Selected elementary weighted-factorial proofs adapted from public PNT+ commit 81eca5aa3fa4779883a9aeba18e49087c5366e0f.
+  The dyadic specialization uses separately attributed workspace material; see provenance.json.
+trust:
+  opaque_numerics: none
+  comparator: Pending; no receipt is created or justification designated by the author.
+cutoff_audit:
+  choice: 4096 = 64^2 is a convenient sufficient cutoff, not an optimal one.
+  forcing_step: For s=sqrt(x)>=64, Costa-Pereira plus the v1 upper bound gives psi(2*x)-theta(2*x)
+    < 3*1.03883*sqrt(2*x) <= 3*1.03883*(3/2)*s < (19/4)*s <= (19/256)*x. The last conversion uses
+    s>=64 and determines the chosen cutoff.
+  logarithmic_error: log(2*x)<=5*s/32, from log(t)<=t-1 applied at t=s/64 and log(2)<0.6931471808.
+    Then 5*log(2*x)+1 < x/50; at s=64 its sufficient comparison is 51<81.92.
+  theta_margin: 1.84-1.03883-19/256-1/50 = 0.70695125. This exceeds 0.7 by 5561/800000, a margin
+    of 28.47232 at x=4096.
+  target_margin: At x=4096=2^12, (3*x/(5*log(x)))*log(2*x)=(13/20)*x=0.65*x, leaving 0.05*x=204.8
+    below the 0.7*x comparison line.
+finite_certificates:
+  intervals: 48
+  supplied_primes: 3356
+  maximum_list_length: 323
+  kernel_batch_size: 64
+  arithmetic: Boolean trial division through Nat.sqrt(p), with a soundness theorem derived from Nat.prime_def_le_sqrt;
+    adjacent strict ordering certifies distinctness. Integer endpoint checks place each witness in
+    (x,2*x] on the half-open rational interval. Exact integer inequalities compare the witness count
+    with a certified lower bound for log(x). No completeness of the witness lists is assumed or needed.
+  generator: scripts/generate_finite.py; --check verifies reproducibility, not mathematical truth.
+  truth_check: All 48 data modules and Interval.Finite have built successfully in Lean.
+authorship:
+  contributor: Håkon Xue-Lønmo
+  adapted_proofs:
+  - 'Interval/Lower.lean: Håkon Xue-Lønmo, PNT+ contributors'
+  - 'Interval/Dyadic.lean: PNT+ contributors'
+  generated_files: IEANTN contributors header emitted by scripts/generate_finite.py; no individual
+    authorship assigned to data shards.
+  automation: OpenAI Codex; see formalization.yaml and provenance.json.
+validation_commands:
+  core: lake build
+  solution: python3 Solutions/RosserSchoenfeld1962.v3/scripts/build_sequential.py
+  progress: python3 scripts/ieantn.py progress RosserSchoenfeld1962.v3
+  challenges: python3 scripts/ieantn.py gen-challenges --check
+  fingerprints: python3 scripts/ieantn.py fingerprint --check
+  provenance: python3 Solutions/RosserSchoenfeld1962.v3/scripts/check_provenance.py --canonical
+  generated_certificates: python3 Solutions/RosserSchoenfeld1962.v3/scripts/generate_finite.py --check
+  types: Compare pp.all theorem types in separate Challenge and Solution environments.
+  axioms: 'Audit all compared theorems, principal internal theorems, and certificate theorems; permitted:
+    propext, Classical.choice, Quot.sound.'
+  comparator: Separate maintainer workflow; no author-supplied receipt.
