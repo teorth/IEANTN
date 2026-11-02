@@ -1,0 +1,14 @@
+{
+  "challenge_module": "IEANTN.Nodes.FKS.v3.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "FKS.v3.challenge_psi_bound_all_x",
+    "FKS.v3.challenge_psi_classical_bound"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
