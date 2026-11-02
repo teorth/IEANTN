@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | paper |
-| Status | awaiting-verification |
+| Status | active |
 | Maintainers | Akula |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -39,18 +39,23 @@ def equation_3_35 : Prop :=
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/RosserSchoenfeld1962/v1/Conclusions.lean#L26) |
 | Solution | [`Solutions/RosserSchoenfeld1962.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/RosserSchoenfeld1962.v1) |
 | Builds on | [`leancert`](https://github.com/alerad/leancert/tree/6b11513512c9d27183fb4725bfc291ab38b4a6d7) `6b1151351` |
-| Evidence | lean, noncompliant (`lean-noncompliant`) |
+| Receipt | [`RosserSchoenfeld1962.v1.equation_3_35.json`](https://github.com/teorth/IEANTN/blob/main/receipts/RosserSchoenfeld1962.v1.equation_3_35.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | nothing yet |
 
-**Justification `rs12-port`** — **designated** — lean-noncompliant
+**Justification `rs12-port`** — lean-noncompliant
 
 > The proof is complete and in this repository, at Solutions/RosserSchoenfeld1962.v1. Its progress.yaml records the solution building on the core toolchain, the compared theorem auditing to exactly propext, Classical.choice and Quot.sound, every closed computation done by `decide +kernel` rather than `native_decide`, and identical `pp.all` types in separate challenge and solution environments. What is absent is a receipt, and the reason is no longer a question of policy. Resting on a package outside Mathlib is permitted, provided the pin is a full commit fetched over https and the core's own pins are untouched: this solution's LeanCert dependency, alerad/leancert@6b11513512c9d27183fb4725bfc291ab38b4a6d7, satisfies all three, `check` enforces them, and a receipt would record it under solution.dependencies. That was settled in issue 164, along the line Palomar's specification draws for the same Comparator -- proof-only dependencies may be broader, but remain pinned and confined -- and the confinement, a Mathlib-only Challenge closure, holds here because the challenge lives in the core. What remains is arithmetic rather than principle: the 32 certificate shards need the sequential build in the solution's scripts/build_sequential.py to fit in memory, where scripts/verify-comparator.sh runs an ordinary `lake build`. Until a run is attempted, nobody knows whether that is a real obstacle or an hour of compute.
 
 **Justification `rs1962-paper`** — literature, Theorem 12, equation (3.35), p. 71; proof on pp. 77-80
 
 > The spare: the 1962 paper proves the bound, and the claim stands on its authority whatever becomes of the port. The port itself proves an unconditional theorem with no node hypotheses: its finite arithmetic and logarithm bounds are checked in Lean, and it needs no numerical or zero-verification assumption. No Comparator justification or receipt is supplied by the author.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/41398695824
 
 ## Limitations
 
