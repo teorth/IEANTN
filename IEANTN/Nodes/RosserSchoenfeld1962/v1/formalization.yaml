@@ -42,15 +42,18 @@ conclusions:
       theorem auditing to exactly propext, Classical.choice and Quot.sound, every closed
       computation done by `decide +kernel` rather than `native_decide`, and identical
       `pp.all` types in separate challenge and solution environments. What is absent is a
-      receipt, for two reasons, neither of them about the mathematics. Its finite
-      certificates come from LeanCert at alerad/leancert@6b11513512c9d27183fb4725bfc291ab38b4a6d7,
-      the first third-party package any solution here has required, and the network has not
-      decided whether a verification run may fetch one; and its 32 certificate shards need
-      the sequential build in the solution's scripts/build_sequential.py to fit in memory,
-      where scripts/verify-comparator.sh runs an ordinary `lake build`. Both are tracked in
-      issue 164. ROADMAP's tier A argument holds that a certificate re-checked inside Lean
-      leaves the trusted base entirely and should earn an ordinary lean-comparator receipt,
-      so this is expected to be a wait rather than a verdict.
+      receipt, and the reason is no longer a question of policy. Resting on a package
+      outside Mathlib is permitted, provided the pin is a full commit fetched over https
+      and the core's own pins are untouched: this solution's LeanCert dependency,
+      alerad/leancert@6b11513512c9d27183fb4725bfc291ab38b4a6d7, satisfies all three, `check`
+      enforces them, and a receipt would record it under solution.dependencies. That was
+      settled in issue 164, along the line Palomar's specification draws for the same
+      Comparator -- proof-only dependencies may be broader, but remain pinned and confined --
+      and the confinement, a Mathlib-only Challenge closure, holds here because the challenge
+      lives in the core. What remains is arithmetic rather than principle: the 32 certificate
+      shards need the sequential build in the solution's scripts/build_sequential.py to fit in
+      memory, where scripts/verify-comparator.sh runs an ordinary `lake build`. Until a run is
+      attempted, nobody knows whether that is a real obstacle or an hour of compute.
   - id: rs1962-paper
     kind: literature
     source: "https://doi.org/10.1215/ijm/1255631807"

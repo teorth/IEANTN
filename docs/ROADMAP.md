@@ -170,7 +170,10 @@ revision. The privilege split in `verify.yml` already has the right shape.
 ### Two tiers, and only one of them is dangerous
 
 **Tier A — the backend produces a certificate that Lean re-checks.** This is the LeanCert and
-PrimeCert pattern, and the one to build first. Generate outside, verify inside: the external run
+PrimeCert pattern, and the one to build first. **Settled, as of issue #164**: a solution may be
+verified while resting on such a package, provided the dependency is pinned; see ARCHITECTURE
+section 3 for what `check` requires and what the receipt records. The argument below is the one
+that settled it. Generate outside, verify inside: the external run
 emits a Bernstein certificate, an interval enclosure, a factorisation witness, and a *Lean* solution
 checks it. **The backend then leaves the trusted base entirely** — a bug in it causes a failed
 build, not an unsound theorem — and the receipt stays a `lean-comparator` receipt, because that is
