@@ -22,6 +22,7 @@ import importlib.util
 import io
 import json
 import pathlib
+import re
 import tempfile
 import textwrap
 import unittest
@@ -195,6 +196,23 @@ class FixtureRepo(unittest.TestCase):
             encoding="utf-8",
         )
         return directory
+
+    def border(self, key: str) -> str:
+        """How `key`'s box is outlined on the drawn page, whether it is drawn or listed.
+
+        `imports_status` shows as the border in both places, and the two renderings spell it
+        differently -- a dash pattern in the SVG, a border style in the CSS of the list -- so a
+        test about the distinction should not have to know which one it got.
+        """
+        page = ieantn.render_graph_page(ieantn.load_nodes())
+        self.assertIn(f'data-key="{key}"', page)
+        drawn = re.search(
+            rf'data-key="{re.escape(key)}"(?:(?!</g>).)*?stroke-dasharray="([^"]*)"',
+            page, re.S)
+        if drawn:
+            return ieantn.BORDER_STYLE.get(drawn.group(1), drawn.group(1))
+        listed = re.search(rf'data-key="{re.escape(key)}"[^>]*--edge:([a-z]+)', page)
+        return listed.group(1) if listed else "solid"
 
     def write_comparator_config(self, node_id: str, theorem_names: list[str] | None = None) -> None:
         """The solution config naming what Comparator was asked to check.
@@ -484,11 +502,9 @@ class TestImportStatus(FixtureRepo):
 
     def test_the_graph_dashes_only_undetermined_boxes(self) -> None:
         self._with(None, imports=False)
-        rendered = ieantn.render_graph(ieantn.load_nodes())
-        self.assertIn("style A_2e_v1_2e_main stroke-dasharray: 2 3", rendered)
+        self.assertEqual(self.border("A.v1.main"), "dotted")
         self._with("none", imports=False)
-        rendered = ieantn.render_graph(ieantn.load_nodes())
-        self.assertNotIn("style A_2e_v1_2e_main stroke-dasharray", rendered)
+        self.assertEqual(self.border("A.v1.main"), "solid")
 
 
 class TestReceiptHealthInTheViews(FixtureRepo):
@@ -615,11 +631,17 @@ class TestNodeOverview(FixtureRepo):
         self.assertIn("style NUpstream_2e_v1 stroke-dasharray", self._overview())
 
     def test_both_pictures_are_in_the_page(self) -> None:
+        """The overview stays in Markdown, where it still renders. The full-resolution one is a
+        link, because at 63,621 characters GitHub's Mermaid viewer refused it."""
         self.write_node("Upstream.v1", LITERATURE)
         rendered = ieantn.render_graph(ieantn.load_nodes())
         self.assertIn("## The network at a glance", rendered)
+        self.assertIn('NUpstream_2e_v1["<b>Upstream.v1</b>', rendered)
         self.assertIn("## Every claim", rendered)
-        self.assertIn('subgraph sgUpstream_2e_v1["Upstream.v1"]', rendered)
+        self.assertIn("docs/graph.html", rendered)
+        page = ieantn.render_graph_page(ieantn.load_nodes())
+        self.assertIn("Every claim", page)
+        self.assertIn("Node versions", page)
 
 
 class TestBridgesInTheGraph(FixtureRepo):
@@ -651,19 +673,21 @@ class TestBridgesInTheGraph(FixtureRepo):
         found = ieantn.bridges_in(nodes)
         self.assertEqual(len(found), 1)
         self.assertEqual(sorted(found[0]["premises"]), ["Up.v1.main", "Up2.v1.main"])
-        rendered = ieantn.render_graph(nodes)
-        self.assertIn("Up_2e_v1_2e_main ==> BR", rendered)
-        self.assertIn("Up2_2e_v1_2e_main ==> BR", rendered)
+        page = ieantn.render_graph_page(nodes)
+        bridge = found[0]["id"]
+        self.assertIn(f'data-from="Up.v1.main" data-to="{bridge}"', page)
+        self.assertIn(f'data-from="Up2.v1.main" data-to="{bridge}"', page)
 
     def test_the_bridge_node_is_a_hexagon_named_for_its_file(self) -> None:
-        rendered = ieantn.render_graph(self._bridged(["Up.v1.main"]))
-        self.assertIn('{{"<b>Sewn</b>', rendered)
+        page = ieantn.render_graph_page(self._bridged(["Up.v1.main"]))
+        self.assertIn("<polygon", page)
+        self.assertIn(">Sewn</text>", page)
 
     def test_a_bridge_that_is_not_designated_says_so(self) -> None:
         """A spare ground is still real evidence and still worth drawing, but a reader should not
         mistake it for the one the claim currently rests on."""
-        rendered = ieantn.render_graph(self._bridged(["Up.v1.main"]))
-        self.assertIn("<i>spare</i>", rendered)
+        page = ieantn.render_graph_page(self._bridged(["Up.v1.main"]))
+        self.assertIn("bridge (spare)", page)
 
     def test_the_overview_shows_a_bridge_between_the_nodes(self) -> None:
         nodes = self._bridged(["Up.v1.main"])
@@ -716,8 +740,12 @@ class TestDeclarationLinks(FixtureRepo):
         self.write_node("A.v1", LITERATURE)
         self._lean("def main : Prop := True" + chr(10))
         rendered = ieantn.render_graph(ieantn.load_nodes())
-        self.assertIn("click A_2e_v1_2e_main href", rendered)
+        self.assertIn("click NA_2e_v1 href", rendered)
         self.assertIn("[`A.v1.main`](", rendered)
+        # Per conclusion the link now lives on the drawn page, as an SVG anchor.
+        page = ieantn.render_graph_page(ieantn.load_nodes())
+        self.assertIn('data-key="A.v1.main"', page)
+        self.assertIn(ieantn.node_page_url("A.v1", anchor="main", absolute=True), page)
 
 
 class TestNodePages(FixtureRepo):
@@ -1002,9 +1030,8 @@ class TestTracedStatus(FixtureRepo):
     def test_the_graph_dots_traced_and_dashes_undetermined(self) -> None:
         """Three states, three renderings; collapsing any two loses the distinction."""
         self._with("traced")
-        rendered = ieantn.render_graph(ieantn.load_nodes())
-        self.assertIn("style A_2e_v1_2e_main stroke-dasharray: 8 4", rendered)
-        self.assertNotIn("style A_2e_v1_2e_main stroke-dasharray: 2 3", rendered)
+        self.assertEqual(self.border("A.v1.main"), "dashed")
+        self.assertEqual(self.border("Upstream.v1.main"), "dotted")
 
     def test_traced_is_not_queued_by_housekeeping(self) -> None:
         """Some missing edges await a node that could exist and some await one that never can;
@@ -1246,17 +1273,22 @@ class TestGraphPage(FixtureRepo):
 
     def test_it_draws_an_edge_for_each_import(self) -> None:
         self._chain()
-        rendered = ieantn.render_graph(ieantn.load_nodes())
-        self.assertIn("Upstream_2e_v1_2e_main --> A_2e_v1_2e_main", rendered)
+        page = ieantn.render_graph_page(ieantn.load_nodes())
+        self.assertIn('data-from="Upstream.v1.main" data-to="A.v1.main"', page)
 
     def test_distinct_valid_conclusion_keys_remain_distinct_in_mermaid(self) -> None:
         keys = ["A.v1.v1_main", "A_v1.v1.main"]
         self.assertNotEqual(ieantn.mermaid_id(keys[0]), ieantn.mermaid_id(keys[1]))
         self.write_node("A.v1", LITERATURE.replace("main", "v1_main"))
         self.write_node("A_v1.v1", LITERATURE)
-        rendered = ieantn.render_graph(ieantn.load_nodes())
+        # The drawn page uses the key verbatim, so there is nothing to collide; the overview
+        # still sanitises node ids, and that is where the collision was found.
+        page = ieantn.render_graph_page(ieantn.load_nodes())
         for key in keys:
-            self.assertIn(f"click {ieantn.mermaid_id(key)} href", rendered)
+            self.assertIn(f'data-key="{key}"', page)
+        rendered = ieantn.render_graph(ieantn.load_nodes())
+        for node_id in ("A.v1", "A_v1.v1"):
+            self.assertIn(f"click N{ieantn.mermaid_id(node_id)} href", rendered)
 
     def test_mermaid_escaping_cannot_collide_with_literal_escape_text(self) -> None:
         keys = ["A.v1.main-x", "A.v1.main_x", "A.v1.main_2d_x", "A.v1.main:x"]

@@ -1,6 +1,7 @@
 # Regenerate the derived views, and offer them to `main` as a pull request.
 #
-# `STATE.md`, `GRAPH.md` and the pages under `docs/nodes/` are views of the node metadata: every
+# `STATE.md`, `GRAPH.md`, `docs/graph.html` and the pages under `docs/nodes/` are views
+# of the node metadata: every
 # fact in them comes from a `formalization.yaml`, and regenerating them is deterministic. They are
 # committed anyway, because they are what a person browsing the repository actually reads.
 #
@@ -64,7 +65,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          git add -A -- STATE.md GRAPH.md docs/nodes
+          git add -A -- STATE.md GRAPH.md docs/graph.html docs/nodes
           if git diff --cached --quiet; then
             echo "The derived views were already current."
             # Nothing to offer, so withdraw any refresh still standing from an earlier run: its
@@ -79,7 +80,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Refresh the derived views" \
-            -m "STATE.md, GRAPH.md and docs/nodes/ follow from the node metadata; this is .github/workflows/derived.yml keeping them level with it."
+            -m "STATE.md, GRAPH.md, docs/graph.html and docs/nodes/ follow from the node metadata; this is .github/workflows/derived.yml keeping them level with it."
           # Force, because the branch is rebuilt from `main` on every run and holds nothing else.
           git push --force origin "HEAD:refs/heads/$BRANCH"
           if gh pr list --head "$BRANCH" --state open --json number --jq '.[].number' | grep -q .; then
