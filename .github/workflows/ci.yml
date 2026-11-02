@@ -161,7 +161,8 @@ jobs:
 
   # The one job here that is about the repository's shape rather than its content.
   #
-  # STATE.md, GRAPH.md and docs/nodes/ are regenerated from the node metadata by
+  # STATE.md, GRAPH.md, docs/graph.html and docs/nodes/ are regenerated from the node
+  # metadata by
   # .github/workflows/derived.yml on every push to `main`. A pull request that regenerates them
   # too adds nothing a reviewer can act on -- the facts are all in the yaml it already contains --
   # and guarantees a conflict with every other open pull request, because all of them rewrite the
@@ -184,7 +185,7 @@ jobs:
           BASE: ${{ github.event.pull_request.base.sha }}
         run: |
           set -euo pipefail
-          changed=$(git diff --name-only "$BASE...HEAD" -- STATE.md GRAPH.md docs/nodes)
+          changed=$(git diff --name-only "$BASE...HEAD" -- STATE.md GRAPH.md docs/graph.html docs/nodes)
           if [ -z "$changed" ]; then
             echo "The generated views are untouched, as they should be."
             exit 0
@@ -193,13 +194,14 @@ jobs:
           echo "$changed" | sed 's/^/  /'
           cat <<'MESSAGE'
 
-          STATE.md, GRAPH.md and docs/nodes/ are views of the node metadata, rewritten by
+          STATE.md, GRAPH.md, docs/graph.html and docs/nodes/ are views of the node
+          metadata, rewritten by
           .github/workflows/derived.yml once a change reaches `main`. A pull request that carries
           them conflicts with every other open pull request, over content nobody disagreed about.
 
           To drop them from this branch:
 
-              git checkout <base> -- STATE.md GRAPH.md docs/nodes
+              git checkout <base> -- STATE.md GRAPH.md docs/graph.html docs/nodes
               git commit -m "Leave the generated views to CI"
 
           Running `state`, `graph` or `pages` locally is fine -- just do not commit the result.

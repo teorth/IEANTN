@@ -63,6 +63,11 @@ FINGERPRINTS = ROOT / "fingerprints.json"
 FINGERPRINTS_NAME = "fingerprints.json"
 STATE = ROOT / "STATE.md"
 GRAPH = ROOT / "GRAPH.md"
+#: The same graph drawn, because Markdown can no longer hold it: GitHub renders Mermaid
+#: through a sandboxed viewer that refuses a diagram over 50,000 characters, and the
+#: conclusion-level graph passed that at 63,621. Laid out here rather than in the browser so
+#: the file stays byte-for-byte reproducible, which is what lets CI diff it like the others.
+GRAPH_PAGE = ROOT / "docs" / "graph.html"
 PAGES = ROOT / "docs" / "nodes"
 VERIFY_SCRIPT = ROOT / "scripts" / "verify-comparator.sh"
 RECEIPTS = ROOT / "receipts"
@@ -180,6 +185,7 @@ def _set_root(path: pathlib.Path) -> None:
     the tooling cannot be pointed somewhere unexpected by accident.
     """
     global ROOT, NODES_DIR, VOCAB_DIR, BRIDGES_DIR, FINGERPRINTS, STATE, GRAPH, PAGES, VERIFY_SCRIPT
+    global GRAPH_PAGE
     global RECEIPTS, CHANGES, SOLUTIONS
     ROOT = path
     NODES_DIR = ROOT / "IEANTN" / "Nodes"
@@ -189,6 +195,7 @@ def _set_root(path: pathlib.Path) -> None:
     FINGERPRINTS = ROOT / "fingerprints.json"
     STATE = ROOT / "STATE.md"
     GRAPH = ROOT / "GRAPH.md"
+    GRAPH_PAGE = ROOT / "docs" / "graph.html"
     VERIFY_SCRIPT = ROOT / "scripts" / "verify-comparator.sh"
     RECEIPTS = ROOT / "receipts"
     CHANGES = ROOT / "changes"
@@ -3107,6 +3114,180 @@ def declaration_url(key: str) -> str | None:
 BRIDGE_STYLE = ("#8250df", "#fbefff")
 
 
+#: The page's stylesheet. Inline, and no web fonts: the file has to work opened
+#: from a clone with no network, which is most of why nothing is loaded from a CDN.
+GRAPH_PAGE_CSS = """\
+:root { color-scheme: light; --ink: #1f2328; --quiet: #57606a; --line: #d0d7de;
+  --bg: #ffffff; --panel: #f6f8fa; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 0 20px 56px; background: var(--bg); color: var(--ink);
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+header, nav, .controls, main, footer { max-width: 1180px; margin: 0 auto; }
+header { padding: 28px 0 8px; }
+h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: -0.01em; }
+header p { margin: 4px 0; color: var(--quiet); font-size: 13px; }
+a { color: #0969da; }
+code { font: 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: var(--panel); padding: 2px 5px; border-radius: 5px; }
+.tabs { display: flex; gap: 6px; margin: 18px 0 0; border-bottom: 1px solid var(--line); }
+.tabs button { appearance: none; border: 1px solid transparent; border-bottom: none;
+  background: none; font: inherit; font-weight: 600; color: var(--quiet);
+  padding: 9px 15px; border-radius: 8px 8px 0 0; cursor: pointer; margin-bottom: -1px; }
+.tabs button.on { color: var(--ink); background: var(--bg);
+  border-color: var(--line); }
+.controls { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center;
+  padding: 14px 0 6px; font-size: 13px; }
+.find input { font: inherit; padding: 6px 10px; border: 1px solid var(--line);
+  border-radius: 7px; min-width: 15rem; }
+fieldset { border: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap;
+  gap: 4px 14px; align-items: center; }
+legend { float: left; margin-right: 12px; color: var(--quiet); padding: 0; }
+.swatch { display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  white-space: nowrap; }
+.swatch::after { content: ""; width: 11px; height: 11px; border-radius: 3px;
+  background: var(--fill); border: 1.5px solid var(--stroke); }
+.zoom button { font: inherit; min-width: 2em; padding: 4px 8px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+h2 { font-size: 19px; margin: 24px 0 4px; }
+h3 { font-size: 15px; margin: 26px 0 4px; }
+.count { color: var(--quiet); font-weight: 400; }
+.blurb { margin: 0 0 12px; color: var(--quiet); font-size: 13px; max-width: 62em; }
+.scroll { overflow: auto; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--panel); padding: 8px; max-height: 78vh; }
+.drawing { display: block; }
+.drawing text { font: 600 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-anchor: middle; fill: var(--ink); pointer-events: none; }
+.drawing text.bottom { font-weight: 400; font-size: 11px; fill: var(--quiet); }
+.drawing a { text-decoration: none; }
+.box, .edge { transition: opacity .12s ease-out; }
+.box.dim { opacity: .13; }
+.edge.dim { opacity: .07; }
+.box:hover rect, .box:hover polygon { filter: brightness(.96); }
+ul.alone { list-style: none; display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 0; padding: 0; }
+ul.alone li { border: 1.5px var(--edge, solid) var(--stroke); background: var(--fill);
+  border-radius: 7px; padding: 4px 9px; }
+ul.alone a { color: var(--ink); text-decoration: none;
+  font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+ul.alone a:hover { text-decoration: underline; }
+.note { color: var(--quiet); font-size: 13px; }
+footer { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--line);
+  color: var(--quiet); font-size: 13px; }
+footer h2 { font-size: 15px; color: var(--ink); margin-top: 18px; }
+footer dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px;
+  margin: 8px 0 0; }
+footer dt { font-weight: 600; color: var(--ink); }
+footer dd { margin: 0; }
+"""
+
+
+#: Search, evidence filter, tab switch, zoom. ES5 and no libraries, for the same
+#: reason. The drawing is static SVG underneath, so none of this is load-bearing:
+#: with scripting off the picture is still there and still correct.
+GRAPH_PAGE_SCRIPT = """\
+(function () {
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.box'));
+  var edges = Array.prototype.slice.call(document.querySelectorAll('.edge'));
+  var find = document.getElementById('find');
+  var toggles = Array.prototype.slice.call(
+    document.querySelectorAll('[data-kind-toggle]'));
+
+  function apply() {
+    var needle = find.value.trim().toLowerCase();
+    var hidden = {};
+    toggles.forEach(function (box) {
+      if (!box.checked) { hidden[box.getAttribute('data-kind-toggle')] = true; }
+    });
+    var shown = {};
+    boxes.forEach(function (box) {
+      var key = box.getAttribute('data-key');
+      var off = hidden[box.getAttribute('data-kind')] === true ||
+        (needle !== '' && key.toLowerCase().indexOf(needle) === -1);
+      box.classList.toggle('dim', off);
+      if (!off) { shown[key] = true; }
+    });
+    // An edge is only as visible as the boxes it joins, or it would point at nothing.
+    edges.forEach(function (edge) {
+      edge.classList.toggle('dim', !(shown[edge.getAttribute('data-from')] &&
+        shown[edge.getAttribute('data-to')]));
+    });
+  }
+
+  find.addEventListener('input', apply);
+  toggles.forEach(function (box) { box.addEventListener('change', apply); });
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-tab]'),
+    function (button) {
+      button.addEventListener('click', function () {
+        var want = button.getAttribute('data-tab');
+        Array.prototype.forEach.call(document.querySelectorAll('[data-tab]'),
+          function (other) {
+            var on = other === button;
+            other.classList.toggle('on', on);
+            other.setAttribute('aria-selected', on ? 'true' : 'false');
+          });
+        Array.prototype.forEach.call(document.querySelectorAll('.panel'),
+          function (panel) { panel.hidden = panel.id !== 'panel-' + want; });
+      });
+    });
+
+  var scale = 1;
+  function zoom(factor) {
+    scale = factor === 'reset' ? 1 :
+      Math.min(2.5, Math.max(0.25, scale * parseFloat(factor)));
+    Array.prototype.forEach.call(document.querySelectorAll('.drawing'),
+      function (svg) {
+        var width = parseFloat(svg.getAttribute('data-width'));
+        svg.setAttribute('width', Math.round(width * scale));
+        svg.removeAttribute('height');
+      });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-zoom]'),
+    function (button) {
+      button.addEventListener('click', function () {
+        zoom(button.getAttribute('data-zoom'));
+      });
+    });
+}());
+"""
+
+
+#: The legend, which is the condensed form of what GRAPH.md says at length.
+GRAPH_PAGE_LEGEND = """\
+  <h2>How to read it</h2>
+  <p>The colour of a box is the kind of evidence behind the step from its assumptions to its
+  claim, and only green was checked by Lean here. Everything else is a leaf of the trust
+  graph &mdash; something the network takes on faith, however reasonably &mdash; and the point of
+  drawing it is that you can see exactly which.</p>
+  <dl>
+    <dt>Solid green</dt><dd>A verification receipt that still stands.</dd>
+    <dt>Pale green</dt><dd><em>Stale</em>: only the environment has moved on, so re-running is
+      bookkeeping.</dd>
+    <dt>Grey-green</dt><dd><em>Drifted</em>: the statement itself changed since verification, so
+      the checked implication no longer reaches what the node claims. Ranked below a bare
+      assertion for that reason.</dd>
+    <dt>Dashed border</dt><dd>The inputs are known and written down, but at least one is not the
+      sort of thing an arrow can carry &mdash; an algorithm, a data set, a paper nobody has made
+      a node of yet.</dd>
+    <dt>Dotted border</dt><dd>Nobody has yet worked out what the claim assumes.</dd>
+    <dt>Hexagon</dt><dd>A bridge: the step itself, proved in Lean and recompiled on every push.
+      Drawn as a box rather than an arrow because a bridge may have several premises at once,
+      which an arrow cannot say.</dd>
+  </dl>
+  <p>Every box links to its node's page, which carries the Lean spelling of the claim, its
+  docstring, and everything recorded about why it should be believed.</p>
+"""
+
+
+#: The dash patterns of `imports_status`, as CSS border styles: the list of boxes that stand
+#: alone has no arrows to carry the distinction, so its borders are all that is left to say it.
+BORDER_STYLE = {"2 3": "dotted", "8 4": "dashed", "": "solid"}
+
+#: What a hexagon is called in the evidence filter, where it sits beside the evidence kinds
+#: without being one: a bridge is a step, not a grade of belief.
+BRIDGE_LABEL = "bridge (a proved step)"
+
+
 def bridges_in(nodes: dict) -> list[dict]:
     """Every bridge in the network, as premises -> conclusion.
 
@@ -3277,6 +3458,9 @@ def render_graph(nodes: dict[str, dict]) -> str:
         "it is ranked below an assertion accordingly: nothing short of a fresh Comparator run",
         "brings it back. `python scripts/ieantn.py status` says which claim moved.",
         "",
+        "The diagram here carries the colours. The border and the hexagon described next are on",
+        "the drawn page, which has the room for them.",
+        "",
         "The border says how completely the arrows into a box tell the story, and the more broken",
         "it is the less they say. **Solid**: they tell all of it. **Dashed**: the inputs are known",
         "and written down, but at least one is not the sort of thing an arrow can carry — an",
@@ -3302,9 +3486,6 @@ def render_graph(nodes: dict[str, dict]) -> str:
     class_defs = [
         f"  classDef {mermaid_id(kind)} fill:{fill},stroke:{stroke},color:#1f2328;"
         for kind, (_, stroke, fill) in EVIDENCE_STYLE.items()]
-    bridge_class_def = (f"  classDef bridge fill:{BRIDGE_STYLE[1]},stroke:{BRIDGE_STYLE[0]},"
-                        "color:#1f2328,stroke-width:2px;")
-
     lines += [
         "## The network at a glance",
         "",
@@ -3324,62 +3505,22 @@ def render_graph(nodes: dict[str, dict]) -> str:
     lines += [
         "## Every claim",
         "",
-        "The same graph at full resolution, grouped by node. This is the one that is true rather",
-        "than the one that is legible; when they disagree, believe this one.",
+        "At full resolution the graph is **drawn** rather than written: see",
+        f"[docs/graph.html]({REPOSITORY_URL}/blob/main/docs/graph.html), which carries this graph",
+        "per conclusion and the one above per node version, with a search box, a filter by kind of",
+        "evidence, and a link from every box to the page for its node.",
+        "",
+        "It is a file rather than a block here because this one outgrew what Markdown can show.",
+        "GitHub renders Mermaid through a sandboxed viewer that refuses a diagram over 50,000",
+        "characters, and the conclusion-level graph reached 63,621 -- so what a reader got was an",
+        "error where the picture should have been. The drawn page has no such ceiling, and the",
+        "layout is computed when the file is generated, so it is as reproducible as the Markdown",
+        "was: `python scripts/ieantn.py graph` writes both, and CI diffs both.",
+        "",
+        "Open it from a clone, or enable GitHub Pages for `docs/` to have it at a URL. The two",
+        "tables below say the same thing in text, and need nothing but this file.",
         "",
     ]
-    lines += ["```mermaid", "graph LR"]
-    for node_id in sorted(nodes):
-        keys = [k for k in sorted(index) if k.rsplit(".", 1)[0] == node_id]
-        if not keys:
-            continue
-        lines.append(f'  subgraph sg{mermaid_id(node_id)}["{node_id}"]')
-        for key in keys:
-            _, conclusion = index[key]
-            kind = display_kind(key, conclusion)
-            label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
-            cid = key.rsplit(".", 1)[1]
-            lines.append(f'    {mermaid_id(key)}["<b>{cid}</b><br/><i>{label}</i>"]')
-        lines.append("  end")
-    for key in sorted(index):
-        _, conclusion = index[key]
-        for dependency in conclusion.get("imports") or []:
-            source = f"{dependency.get('node')}.{dependency.get('conclusion')}"
-            if source in index:
-                lines.append(f"  {mermaid_id(source)} --> {mermaid_id(key)}")
-    bridges = bridges_in(nodes)
-    for bridge in bridges:
-        if bridge["conclusion"] not in index:
-            continue
-        stem = pathlib.PurePosixPath(bridge["file"]).stem or "bridge"
-        role = "" if bridge["designated"] else "<br/><i>spare</i>"
-        bid = "BR" + mermaid_id(bridge["id"])
-        lines.append(f'  {bid}{{{{"<b>{stem}</b>{role}"}}}}')
-        for premise in bridge["premises"]:
-            if premise in index:
-                lines.append(f"  {mermaid_id(premise)} ==> {bid}")
-        lines.append(f"  {bid} ==> {mermaid_id(bridge['conclusion'])}")
-
-    for key in sorted(index):
-        status = import_status(index[key][1])
-        # The pattern tracks how much of the story the arrows tell: solid says all of it, a
-        # clear dash says most, fine dots say none. More uncertainty, more broken border.
-        if status == "undetermined":
-            lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 2 3;")
-        elif status == "traced":
-            lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 8 4;")
-    seen_kinds = {display_kind(k, c) for k, (_, c) in index.items()}
-    lines += class_defs + [bridge_class_def]
-    bridge_ids = ["BR" + mermaid_id(b["id"]) for b in bridges if b["conclusion"] in index]
-    if bridge_ids:
-        lines.append(f"  class {','.join(bridge_ids)} bridge;")
-    for kind in sorted(seen_kinds):
-        members = [mermaid_id(k) for k in sorted(index)
-                   if display_kind(k, index[k][1]) == kind]
-        if members:
-            lines.append(f"  class {','.join(members)} {mermaid_id(kind)};")
-    lines += click_lines(index)
-    lines += ["```", ""]
 
     # --- what it rests on --------------------------------------------------------------
     roots = sorted(key for key in index if not importers.get(key))
@@ -3690,17 +3831,363 @@ def pages(check_only: bool, advisory: bool = False) -> bool:
     return True
 
 
+# ---------------------------------------------------------------------------
+# The drawn graph: docs/graph.html
+# ---------------------------------------------------------------------------
+
+#: Geometry of a drawing, in SVG user units. A box holds `Family.v1` over a conclusion id at
+#: 12px, and that is what sets the column pitch.
+BOX_WIDTH, BOX_HEIGHT = 208, 46
+COLUMN_GAP, ROW_GAP, MARGIN = 76, 16, 28
+
+#: Barycentre sweeps. Four is where the crossing count stops improving on a graph this shape,
+#: and a fixed number is what keeps the output reproducible.
+LAYOUT_SWEEPS = 4
+
+
+def layered_layout(vertices: list[str], edges: list[tuple[str, str]],
+                   rank: dict[str, tuple]) -> dict[str, tuple[int, int]]:
+    """Place a DAG in columns: `(layer, slot)` for every vertex.
+
+    Layer by longest path, so an arrow always points rightwards and its reach says how much of
+    the network stands behind the claim at its head. Slots within a column are then ordered by
+    the mean slot of each vertex's neighbours -- the barycentre heuristic, swept down and up --
+    which is the cheap standard way to pull connected boxes level and take out crossings.
+
+    **Deterministic**, which is the requirement that chose this over laying out in the browser:
+    a view this repository commits has to be diffable, so every tie breaks on `rank`, the sweep
+    count is fixed, and nothing consults a set's iteration order.
+    """
+    predecessors: dict[str, list[str]] = {vertex: [] for vertex in vertices}
+    successors: dict[str, list[str]] = {vertex: [] for vertex in vertices}
+    for source, target in edges:
+        if source in predecessors and target in predecessors:
+            successors[source].append(target)
+            predecessors[target].append(source)
+
+    layer: dict[str, int] = {}
+
+    def depth(vertex: str, stack: frozenset) -> int:
+        if vertex in layer:
+            return layer[vertex]
+        # `check_graph` rejects an import cycle, so this cannot happen in a network that passes
+        # the checks. Guard anyway: a drawing command is not where anyone wants to meet one.
+        if vertex in stack:
+            return 0
+        found = 0
+        for source in predecessors[vertex]:
+            found = max(found, 1 + depth(source, stack | {vertex}))
+        layer[vertex] = found
+        return found
+
+    ordered = sorted(vertices, key=lambda vertex: rank[vertex])
+    for vertex in ordered:
+        depth(vertex, frozenset())
+
+    columns: dict[int, list[str]] = {}
+    for vertex in ordered:
+        columns.setdefault(layer[vertex], []).append(vertex)
+    slot = {vertex: index for column in columns.values()
+            for index, vertex in enumerate(column)}
+
+    for sweep in range(LAYOUT_SWEEPS):
+        downward = sweep % 2 == 0
+        neighbours = predecessors if downward else successors
+        for index in sorted(columns, reverse=not downward):
+            def centre(vertex: str) -> float:
+                near = [slot[other] for other in neighbours[vertex] if other in slot]
+                return sum(near) / len(near) if near else float(slot[vertex])
+            columns[index].sort(key=lambda vertex: (centre(vertex), rank[vertex]))
+            for position, vertex in enumerate(columns[index]):
+                slot[vertex] = position
+
+    return {vertex: (layer[vertex], slot[vertex]) for vertex in vertices}
+
+
+def html_escape(value) -> str:
+    """Text safe in element content and in a double-quoted attribute."""
+    return (str(value).replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;").replace('"', "&quot;"))
+
+
+def render_drawing(boxes: list[dict], edges: list[dict]) -> str:
+    """One `<svg>`: the boxes placed, and the edges between them.
+
+    Static. The search, the filters and the zoom on the page are enhancements over this, so the
+    picture is still there with JavaScript off -- which is also what makes it renderable straight
+    from a blob view or an offline clone.
+    """
+    placement = layered_layout(
+        [box["key"] for box in boxes],
+        [(edge["from"], edge["to"]) for edge in edges],
+        {box["key"]: box["rank"] for box in boxes},
+    )
+    at = {}
+    for box in boxes:
+        layer, slot = placement[box["key"]]
+        at[box["key"]] = (MARGIN + layer * (BOX_WIDTH + COLUMN_GAP),
+                          MARGIN + slot * (BOX_HEIGHT + ROW_GAP))
+    width = max((x for x, _ in at.values()), default=0) + BOX_WIDTH + MARGIN
+    height = max((y for _, y in at.values()), default=0) + BOX_HEIGHT + MARGIN
+
+    out = [
+        f'<svg class="drawing" viewBox="0 0 {width} {height}" width="{width}" '
+        f'height="{height}" data-width="{width}" xmlns="http://www.w3.org/2000/svg" '
+        f'role="img" aria-label="The network as a layered graph">',
+        '  <defs>',
+        '    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7"',
+        '        markerHeight="7" orient="auto-start-reverse">',
+        '      <path d="M 0 0 L 8 4 L 0 8 z" fill="#57606a"/>',
+        '    </marker>',
+        '    <marker id="arrow-bridge" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6"',
+        '        markerHeight="6" orient="auto-start-reverse">',
+        f'      <path d="M 0 0 L 8 4 L 0 8 z" fill="{BRIDGE_STYLE[0]}"/>',
+        '    </marker>',
+        '  </defs>',
+        '  <g class="edges" fill="none">',
+    ]
+    for edge in sorted(edges, key=lambda e: (e["from"], e["to"])):
+        if edge["from"] not in at or edge["to"] not in at:
+            continue
+        x1, y1 = at[edge["from"]]
+        x2, y2 = at[edge["to"]]
+        start = (x1 + BOX_WIDTH, y1 + BOX_HEIGHT / 2)
+        end = (x2, y2 + BOX_HEIGHT / 2)
+        reach = max((end[0] - start[0]) * 0.45, 24)
+        bridge = edge.get("bridge")
+        out.append(
+            f'    <path class="edge{" bridge" if bridge else ""}" '
+            f'd="M {start[0]:.0f} {start[1]:.0f} C {start[0] + reach:.0f} {start[1]:.0f}, '
+            f'{end[0] - reach:.0f} {end[1]:.0f}, {end[0]:.0f} {end[1]:.0f}" '
+            f'stroke="{BRIDGE_STYLE[0] if bridge else "#57606a"}" '
+            f'stroke-width="{2.4 if bridge else 1.2}" '
+            f'marker-end="url(#{"arrow-bridge" if bridge else "arrow"})" '
+            f'data-from="{html_escape(edge["from"])}" data-to="{html_escape(edge["to"])}"/>')
+    out.append('  </g>')
+
+    for box in sorted(boxes, key=lambda b: b["rank"]):
+        x, y = at[box["key"]]
+        dash = f' stroke-dasharray="{box["dash"]}"' if box.get("dash") else ""
+        shape = (
+            f'<polygon points="{x + 14},{y} {x + BOX_WIDTH - 14},{y} '
+            f'{x + BOX_WIDTH},{y + BOX_HEIGHT / 2:.0f} {x + BOX_WIDTH - 14},{y + BOX_HEIGHT} '
+            f'{x + 14},{y + BOX_HEIGHT} {x},{y + BOX_HEIGHT / 2:.0f}" '
+            f'fill="{box["fill"]}" stroke="{box["stroke"]}" stroke-width="1.5"{dash}/>'
+            if box.get("shape") == "hexagon" else
+            f'<rect x="{x}" y="{y}" width="{BOX_WIDTH}" height="{BOX_HEIGHT}" rx="7" '
+            f'fill="{box["fill"]}" stroke="{box["stroke"]}" stroke-width="1.5"{dash}/>')
+        out += [
+            f'  <g class="box" data-key="{html_escape(box["key"])}" '
+            f'data-kind="{html_escape(box["kind"])}">',
+            f'    <title>{html_escape(box["title"])}</title>',
+            f'    <a href="{html_escape(box["href"])}" target="_blank" rel="noopener">',
+            f'      {shape}',
+            f'      <text x="{x + BOX_WIDTH / 2:.0f}" y="{y + 19}" class="top">'
+            f'{html_escape(box["top"])}</text>',
+            f'      <text x="{x + BOX_WIDTH / 2:.0f}" y="{y + 34}" class="bottom">'
+            f'{html_escape(box["bottom"])}</text>',
+            '    </a>',
+            '  </g>',
+        ]
+    out.append('</svg>')
+    return "\n".join(out)
+
+
+def graph_boxes(nodes: dict, index: dict, level: str) -> tuple[list[dict], list[dict]]:
+    """The boxes and edges of one drawing: `claims` per conclusion, `nodes` per node version."""
+    boxes: list[dict] = []
+    edges: list[dict] = []
+    if level == "claims":
+        for key in sorted(index):
+            node_id, conclusion = index[key]
+            kind = display_kind(key, conclusion)
+            label, stroke, fill = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
+            status = import_status(conclusion)
+            boxes.append({
+                "key": key, "rank": (node_id, key), "kind": kind,
+                "top": node_id, "bottom": key.rsplit(".", 1)[1],
+                "fill": fill, "stroke": stroke,
+                "dash": {"undetermined": "2 3", "traced": "8 4"}.get(status, ""),
+                "href": node_page_url(node_id, anchor=key.rsplit(".", 1)[1], absolute=True),
+                "title": f"{key}\nevidence: {label}\nimports: {status}",
+            })
+            for dependency in conclusion.get("imports") or []:
+                source = f"{dependency.get('node')}.{dependency.get('conclusion')}"
+                if source in index:
+                    edges.append({"from": source, "to": key})
+        for bridge in bridges_in(nodes):
+            if bridge["conclusion"] not in index:
+                continue
+            stem = pathlib.PurePosixPath(bridge["file"]).stem or bridge["id"]
+            boxes.append({
+                "key": bridge["id"], "rank": ("~bridge", bridge["id"]), "kind": "bridge",
+                "top": stem, "bottom": "bridge" if bridge["designated"] else "bridge (spare)",
+                "fill": BRIDGE_STYLE[1], "stroke": BRIDGE_STYLE[0], "dash": "",
+                "shape": "hexagon",
+                "href": f"{REPOSITORY_URL}/blob/main/{bridge['file']}",
+                "title": f"{bridge['file']}\nproves: {bridge['conclusion']}\n"
+                         f"from: {', '.join(bridge['premises'])}",
+            })
+            for premise in bridge["premises"]:
+                if premise in index:
+                    edges.append({"from": premise, "to": bridge["id"], "bridge": True})
+            edges.append({"from": bridge["id"], "to": bridge["conclusion"], "bridge": True})
+    else:
+        for node_id in sorted(nodes):
+            conclusions = conclusions_of(nodes[node_id])
+            kind = weakest_kind(node_id, conclusions) if conclusions else "none-yet"
+            label, stroke, fill = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
+            count = len(conclusions)
+            boxes.append({
+                "key": node_id, "rank": (node_id,), "kind": kind,
+                "top": node_id,
+                "bottom": f"{count} claim{'' if count == 1 else 's'} · {label}",
+                "fill": fill, "stroke": stroke, "dash": "",
+                "href": node_page_url(node_id, absolute=True),
+                "title": f"{node_id}\nweakest evidence: {label}\n{count} conclusion(s)",
+            })
+        seen = set()
+        for key in sorted(index):
+            node_id, conclusion = index[key]
+            for dependency in conclusion.get("imports") or []:
+                source = f"{dependency.get('node')}.{dependency.get('conclusion')}"
+                if source in index:
+                    pair = (index[source][0], node_id)
+                    if pair[0] != pair[1] and pair not in seen:
+                        seen.add(pair)
+                        edges.append({"from": pair[0], "to": pair[1]})
+    return boxes, edges
+
+
+def render_graph_page(nodes: dict[str, dict]) -> str:
+    """`docs/graph.html`: both graphs, drawn, with the boxes that stand alone listed beside them.
+
+    Two things the Mermaid blocks could not do. It holds a network this size -- the conclusion
+    graph had outgrown what GitHub will render -- and it separates the claims that take part in
+    the dependency structure from the ones that do not. Forty-one of the conclusions have no edge
+    at all in either direction; drawing them among the rest cost most of the width and told a
+    reader nothing, so they are a list under the picture instead.
+    """
+    index = index_conclusions(nodes)
+    panels = []
+    for level, heading, blurb in (
+        ("claims", "Every claim",
+         "One box per conclusion, grouped left to right by what it rests on. A thin arrow "
+         "means the box at its head <em>assumes</em> the box at its tail; a thick arrow runs "
+         "through a hexagon, which is a bridge proved in Lean."),
+        ("nodes", "Node versions",
+         "The same thing with each node version as one box, summarised by its weakest "
+         "conclusion. Edges between conclusions of the same node version are not drawn."),
+    ):
+        boxes, edges = graph_boxes(nodes, index, level)
+        linked = {edge["from"] for edge in edges} | {edge["to"] for edge in edges}
+        drawn = [box for box in boxes if box["key"] in linked]
+        alone = [box for box in boxes if box["key"] not in linked]
+        panel = [
+            f'<section class="panel" id="panel-{level}"'
+            f'{"" if level == "claims" else " hidden"}>',
+            f'  <h2>{heading}</h2>',
+            f'  <p class="blurb">{blurb}</p>',
+            f'  <div class="scroll">{render_drawing(drawn, edges) if drawn else ""}</div>',
+        ]
+        if alone:
+            panel += [
+                f'  <h3>Stands alone <span class="count">{len(alone)}</span></h3>',
+                '  <p class="blurb">Nothing in the network imports these, and they import '
+                'nothing. That is not a defect -- an unconditional theorem has nothing to '
+                'assume -- but it is why they are not in the picture.</p>',
+                '  <ul class="alone">',
+            ]
+            for box in sorted(alone, key=lambda b: b["rank"]):
+                panel.append(
+                    f'    <li class="box" data-key="{html_escape(box["key"])}" '
+                    f'data-kind="{html_escape(box["kind"])}" '
+                    f'style="--fill:{box["fill"]};--stroke:{box["stroke"]};'
+                    f'--edge:{BORDER_STYLE.get(box.get("dash", ""), "solid")}">'
+                    f'<a href="{html_escape(box["href"])}" target="_blank" rel="noopener">'
+                    f'{html_escape(box["key"])}</a></li>')
+            panel.append('  </ul>')
+        panel.append('</section>')
+        panels += panel
+
+    kinds = sorted({box["kind"] for level in ("claims", "nodes")
+                    for box in graph_boxes(nodes, index, level)[0]})
+    toggles = []
+    for kind in kinds:
+        label = (BRIDGE_LABEL if kind == "bridge"
+                 else EVIDENCE_STYLE.get(kind, (kind, "", ""))[0])
+        _, stroke, fill = (BRIDGE_STYLE[0], BRIDGE_STYLE[0], BRIDGE_STYLE[1]) \
+            if kind == "bridge" else EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
+        toggles.append(
+            f'      <label class="swatch" style="--fill:{fill};--stroke:{stroke}">'
+            f'<input type="checkbox" checked data-kind-toggle="{html_escape(kind)}">'
+            f'{html_escape(label)}</label>')
+
+    return "\n".join([
+        "<!doctype html>",
+        '<html lang="en">',
+        "<head>",
+        '<meta charset="utf-8">',
+        '<meta name="viewport" content="width=device-width, initial-scale=1">',
+        "<title>IEANTN · the network</title>",
+        f"<style>{GRAPH_PAGE_CSS}</style>",
+        "</head>",
+        "<body>",
+        "<header>",
+        "  <h1>The network</h1>",
+        "  <p><strong>Generated file &mdash; do not edit.</strong> Regenerated by "
+        "<code>python scripts/ieantn.py graph</code>.</p>",
+        f'  <p class="links"><a href="{REPOSITORY_URL}/blob/main/GRAPH.md">GRAPH.md</a> for the '
+        f'same content as prose and tables · <a href="{REPOSITORY_URL}/blob/main/STATE.md">'
+        f'STATE.md</a> · <a href="nodes/README.md">the node pages</a> · '
+        f'<a href="{REPOSITORY_URL}/blob/main/docs/ARCHITECTURE.md">ARCHITECTURE.md</a></p>',
+        "</header>",
+        '<nav class="tabs" role="tablist">',
+        '  <button data-tab="claims" class="on" aria-selected="true">Every claim</button>',
+        '  <button data-tab="nodes" aria-selected="false">Node versions</button>',
+        "</nav>",
+        '<form class="controls" onsubmit="return false">',
+        '  <label class="find">Find <input type="search" id="find" '
+        'placeholder="Buthe, psi, FKS2.v1 ..." autocomplete="off"></label>',
+        '  <fieldset><legend>Evidence</legend>',
+        *toggles,
+        "  </fieldset>",
+        '  <span class="zoom">Zoom <button data-zoom="0.8" type="button">&minus;</button>'
+        '<button data-zoom="1.25" type="button">+</button>'
+        '<button data-zoom="reset" type="button">reset</button></span>',
+        "</form>",
+        '<noscript><p class="note">The pictures below are plain SVG and need no JavaScript; '
+        "only the search, the evidence filter and the zoom do.</p></noscript>",
+        "<main>",
+        *panels,
+        "</main>",
+        f"<footer>{GRAPH_PAGE_LEGEND}</footer>",
+        f"<script>{GRAPH_PAGE_SCRIPT}</script>",
+        "</body>",
+        "</html>",
+        "",
+    ])
+
+
 def graph(check_only: bool, advisory: bool = False) -> bool:
-    """Refresh `GRAPH.md`, or check it. `advisory` as in `state`."""
-    rendered = render_graph(load_nodes())
+    """Refresh `GRAPH.md` and `docs/graph.html`, or check them. `advisory` as in `state`.
+
+    Two files from one command, because they are two renderings of one thing and a reader who
+    found them disagreeing would have no way to tell which was stale.
+    """
+    nodes = load_nodes()
+    wanted = {GRAPH: render_graph(nodes), GRAPH_PAGE: render_graph_page(nodes)}
     if check_only:
         problems = Problems()
-        if (GRAPH.read_text(encoding="utf-8") if GRAPH.is_file() else "") != rendered:
-            note = DERIVED_NOTE.format(command="graph")
-            (problems.warn if advisory else problems.add)(rel(GRAPH), note)
+        for path, rendered in wanted.items():
+            if (path.read_text(encoding="utf-8") if path.is_file() else "") != rendered:
+                note = DERIVED_NOTE.format(command="graph")
+                (problems.warn if advisory else problems.add)(rel(path), note)
         return problems.report("network graph")
-    GRAPH.write_text(rendered, encoding="utf-8", newline="\n")
-    print(f"wrote {rel(GRAPH)}")
+    for path, rendered in wanted.items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(rendered, encoding="utf-8", newline="\n")
+        print(f"wrote {rel(path)}")
     return True
 
 
