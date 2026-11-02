@@ -41,6 +41,7 @@ import pathlib
 import re
 import subprocess
 import tempfile
+import textwrap
 import time
 import sys
 
@@ -3910,6 +3911,45 @@ def html_escape(value) -> str:
             .replace(">", "&gt;").replace('"', "&quot;"))
 
 
+#: How much prose a tooltip gets. Enough for the statement and the sentence that qualifies it;
+#: a docstring runs to 1,950 characters at the longest, and a tooltip is not where to read that.
+SUMMARY_BUDGET = 420
+
+
+def summary_text(text: str, budget: int = SUMMARY_BUDGET) -> str:
+    """A docstring or description, folded into a few lines a tooltip can show.
+
+    Whole paragraphs, because the first one is usually a fragment: a conclusion docstring tends
+    to open with a bolded name and run the statement itself onto the next paragraph, so cutting
+    at the first blank line would show `**Chebyshev's upper bound.** For every x >= 30,` and stop
+    there. Paragraphs are taken until the budget is spent, and an ellipsis admits what was left.
+
+    Wrapped here rather than left to the tooltip, which does not reliably wrap, and stripped of
+    the `**` that marks bold in prose nobody is rendering. Backticks stay: they are what tells a
+    reader that `psi` is the Lean name rather than the letter.
+    """
+    paragraphs = [" ".join(block.split())
+                  for block in (text or "").strip().split("\n\n") if block.strip()]
+    kept: list[str] = []
+    spent = 0
+    for paragraph in paragraphs:
+        remaining = budget - spent
+        if remaining < 60:
+            kept.append("...")
+            break
+        if len(paragraph) > remaining:
+            # Shorten the paragraph that crosses the line rather than dropping it. Dropping it
+            # cost `KadiriLumley.v1.table_2` everything after its opening clause, because what it
+            # had to say came after the first blank line and did not fit whole.
+            kept.append(textwrap.shorten(paragraph, width=remaining, placeholder=" ..."))
+            break
+        kept.append(paragraph)
+        spent += len(paragraph)
+    folded = "\n\n".join(kept).replace("**", "")
+    return "\n".join(textwrap.fill(block, width=78) if block != "..." else block
+                      for block in folded.split("\n\n"))
+
+
 def render_drawing(boxes: list[dict], edges: list[dict]) -> str:
     """One `<svg>`: the boxes placed, and the edges between them.
 
@@ -4009,7 +4049,11 @@ def graph_boxes(nodes: dict, index: dict, level: str) -> tuple[list[dict], list[
                 "fill": fill, "stroke": stroke,
                 "dash": {"undetermined": "2 3", "traced": "8 4"}.get(status, ""),
                 "href": node_page_url(node_id, anchor=key.rsplit(".", 1)[1], absolute=True),
-                "title": f"{key}\nevidence: {label}\nimports: {status}",
+                # The claim's own docstring, not the node's description: at this resolution a box
+                # is one conclusion, and the node's paragraph would say the same thing over every
+                # box of the node while describing none of them.
+                "title": f"{key}\nevidence: {label}\nimports: {status}\n\n"
+                         + summary_text(read_declaration(node_id, key.rsplit(".", 1)[1])[0]),
             })
             for dependency in conclusion.get("imports") or []:
                 source = f"{dependency.get('node')}.{dependency.get('conclusion')}"
@@ -4044,7 +4088,9 @@ def graph_boxes(nodes: dict, index: dict, level: str) -> tuple[list[dict], list[
                 "bottom": f"{count} claim{'' if count == 1 else 's'} · {label}",
                 "fill": fill, "stroke": stroke, "dash": "",
                 "href": node_page_url(node_id, absolute=True),
-                "title": f"{node_id}\nweakest evidence: {label}\n{count} conclusion(s)",
+                "title": f"{node_id}\nweakest evidence: {label}\n{count} conclusion(s)\n\n"
+                         + summary_text((nodes[node_id].get("project") or {})
+                                        .get("description") or ""),
             })
         seen = set()
         for key in sorted(index):
@@ -4069,6 +4115,8 @@ def render_graph_page(nodes: dict[str, dict]) -> str:
     reader nothing, so they are a list under the picture instead.
     """
     index = index_conclusions(nodes)
+    # Once per level, not once per use: filling the tooltips reads every `Conclusions.lean`.
+    drawings = {level: graph_boxes(nodes, index, level) for level in ("claims", "nodes")}
     panels = []
     for level, heading, blurb in (
         ("claims", "Every claim",
@@ -4079,7 +4127,7 @@ def render_graph_page(nodes: dict[str, dict]) -> str:
          "The same thing with each node version as one box, summarised by its weakest "
          "conclusion. Edges between conclusions of the same node version are not drawn."),
     ):
-        boxes, edges = graph_boxes(nodes, index, level)
+        boxes, edges = drawings[level]
         linked = {edge["from"] for edge in edges} | {edge["to"] for edge in edges}
         drawn = [box for box in boxes if box["key"] in linked]
         alone = [box for box in boxes if box["key"] not in linked]
@@ -4104,14 +4152,14 @@ def render_graph_page(nodes: dict[str, dict]) -> str:
                     f'data-kind="{html_escape(box["kind"])}" '
                     f'style="--fill:{box["fill"]};--stroke:{box["stroke"]};'
                     f'--edge:{BORDER_STYLE.get(box.get("dash", ""), "solid")}">'
-                    f'<a href="{html_escape(box["href"])}" target="_blank" rel="noopener">'
+                    f'<a href="{html_escape(box["href"])}" target="_blank" rel="noopener" '
+                    f'title="{html_escape(box["title"])}">'
                     f'{html_escape(box["key"])}</a></li>')
             panel.append('  </ul>')
         panel.append('</section>')
         panels += panel
 
-    kinds = sorted({box["kind"] for level in ("claims", "nodes")
-                    for box in graph_boxes(nodes, index, level)[0]})
+    kinds = sorted({box["kind"] for boxes, _ in drawings.values() for box in boxes})
     toggles = []
     for kind in kinds:
         label = (BRIDGE_LABEL if kind == "bridge"

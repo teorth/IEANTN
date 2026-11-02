@@ -158,3 +158,72 @@ class TestDrawnPage(FixtureRepo):
             encoding="utf-8")
         page = ieantn.render_graph_page(ieantn.load_nodes())
         self.assertNotIn("<script>alert", page)
+class TestHoverText(FixtureRepo):
+    """A box says what it claims, not only what it is called.
+
+    The prose is already written -- a conclusion's docstring is where its informal statement
+    lives, and a node's `project.description` is the paragraph the Palomar metadata carries --
+    so the drawing can show it for the price of putting it in a `<title>`.
+    """
+
+    def write_docstring(self, node_id: str, cid: str, doc: str) -> None:
+        directory = self.root / "IEANTN" / "Nodes" / node_id.replace(".", "/")
+        (directory / "Conclusions.lean").write_text(
+            f"import IEANTN.Vocabulary\n\nnamespace {node_id}\n\n"
+            f"/-- {doc} -/\ndef {cid} : Prop := True\n\nend {node_id}\n",
+            encoding="utf-8")
+
+    def test_a_claim_carries_its_own_docstring(self) -> None:
+        """Not the node's description: at this resolution a box is one conclusion, and the node's
+        paragraph would repeat over every box of the node while describing none of them."""
+        self.write_node("A.v1", LITERATURE)
+        self.write_docstring("A.v1", "main", "**The claim.** Something true,\n\nand why.")
+        page = ieantn.render_graph_page(ieantn.load_nodes())
+        # Paragraphs stay on their own lines, which is how a formula on the line after its
+        # lead-in should read, and the bold markers are gone.
+        self.assertIn("The claim. Something true," + chr(10) + "and why.", page)
+
+    def test_a_node_version_carries_its_description(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        page = ieantn.render_graph_page(ieantn.load_nodes())
+        self.assertIn("Fixture node.", page)
+
+    def test_a_box_that_stands_alone_gets_the_same_hovertext(self) -> None:
+        """It is listed rather than drawn, which must not cost it its summary."""
+        self.write_node("A.v1", LITERATURE)
+        self.write_docstring("A.v1", "main", "Only in the list.")
+        page = ieantn.render_graph_page(ieantn.load_nodes())
+        self.assertIn("Stands alone", page)
+        self.assertRegex(page, r'<li class="box" data-key="A\.v1\.main".*?title="[^"]*'
+                               r'Only in the list\.')
+
+
+class TestSummaryText(FixtureRepo):
+    def test_it_takes_whole_paragraphs_not_the_first_line(self) -> None:
+        """A conclusion docstring tends to open with a bolded name and run the statement onto the
+        next paragraph, so stopping at the first blank line shows a fragment ending in a comma."""
+        folded = ieantn.summary_text("**Chebyshev's upper bound.** For every x >= 30,"
+                                     "\n\npsi(x) <= 6 a x / 5.")
+        self.assertIn("For every x >= 30,", folded)
+        self.assertIn("psi(x) <= 6 a x / 5.", folded)
+
+    def test_a_paragraph_that_does_not_fit_is_shortened_not_dropped(self) -> None:
+        """Dropping it cost `KadiriLumley.v1.table_2` everything it had to say."""
+        folded = ieantn.summary_text("Short opener." + "\n\n" + "word " * 400)
+        self.assertIn("Short opener.", folded)
+        self.assertIn("word", folded.split("Short opener.")[1])
+        self.assertTrue(folded.endswith("..."))
+
+    def test_it_is_wrapped_because_a_tooltip_is_not_reliably_wrapped(self) -> None:
+        folded = ieantn.summary_text("word " * 200)
+        self.assertTrue(all(len(line) <= 78 for line in folded.splitlines()), folded)
+
+    def test_bold_markers_go_and_backticks_stay(self) -> None:
+        """Nobody is rendering the Markdown, but a backtick still says `psi` is a Lean name."""
+        folded = ieantn.summary_text("**Bold.** The `psi` function.")
+        self.assertNotIn("**", folded)
+        self.assertIn("`psi`", folded)
+
+    def test_it_survives_an_empty_docstring(self) -> None:
+        self.assertEqual(ieantn.summary_text(""), "")
+        self.assertEqual(ieantn.summary_text(None), "")
