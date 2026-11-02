@@ -20,6 +20,9 @@ reaches what the node now claims. That is not a weaker verification but an absen
 it is ranked below an assertion accordingly: nothing short of a fresh Comparator run
 brings it back. `python scripts/ieantn.py status` says which claim moved.
 
+The diagram here carries the colours. The border and the hexagon described next are on
+the drawn page, which has the room for them.
+
 The border says how completely the arrows into a box tell the story, and the more broken
 it is the less they say. **Solid**: they tell all of it. **Dashed**: the inputs are known
 and written down, but at least one is not the sort of thing an arrow can carry — an
@@ -89,7 +92,7 @@ graph LR
   NHiary2016_2e_v1["<b>Hiary2016.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NKLN_2e_v1["<b>KLN.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NKadiri2005_2e_v1["<b>Kadiri2005.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
-  NKadiriLumley_2e_v1["<b>KadiriLumley.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
+  NKadiriLumley_2e_v1["<b>KadiriLumley.v1</b><br/>3 claims<br/><i>weakest: cited</i>"]
   NLcm_2e_v1["<b>Lcm.v1</b><br/>1 claim<br/><i>weakest: verified, stale</i>"]
   NLcm_2e_v2["<b>Lcm.v2</b><br/>1 claim<br/><i>weakest: verified, stale</i>"]
   NLowZeroes_2e_v1["<b>LowZeroes.v1</b><br/>2 claims<br/><i>weakest: computation</i>"]
@@ -106,7 +109,7 @@ graph LR
   NRamareSaouter2003_2e_v1["<b>RamareSaouter2003.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NRichstein2001_2e_v1["<b>Richstein2001.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NRosserSchoenfeld_2e_v1["<b>RosserSchoenfeld.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
-  NRosserSchoenfeld1962_2e_v1["<b>RosserSchoenfeld1962.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
+  NRosserSchoenfeld1962_2e_v1["<b>RosserSchoenfeld1962.v1</b><br/>1 claim<br/><i>weakest: lean, noncompliant</i>"]
   NTrudgian2011_2e_v1["<b>Trudgian2011.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NWedeniwski_2e_v1["<b>Wedeniwski.v1</b><br/>1 claim<br/><i>weakest: asserted</i>"]
   NZeroCount_2e_v1["<b>ZeroCount.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
@@ -200,8 +203,9 @@ graph LR
   style NWedeniwski_2e_v1 stroke-dasharray: 2 3;
   class NBrown1967_2e_v1,NButhe_2e_v2,NChengGraham2004_2e_v1,NCotangentSeries_2e_v1,NGammaAsymptotics_2e_v1,NMTY_2e_v1 none_2d_yet;
   class NWedeniwski_2e_v1 asserted;
-  class NBKLNW_2e_v1,NBKLNW_2e_v2,NButhe_2e_v1,NButhe2016_2e_v1,NDudekPlatt_2e_v1,NDusart2018_2e_v1,NFKS_2e_v1,NHiary2016_2e_v1,NKLN_2e_v1,NKadiri2005_2e_v1,NKadiriLumley_2e_v1,NMT_2e_v1,NMT_2e_v2,NPlattTrudgian_2e_v1,NPlattTrudgian2021_2e_v1,NPlattZeroSum_2e_v1,NRamareSaouter2003_2e_v1,NRosserSchoenfeld_2e_v1,NRosserSchoenfeld1962_2e_v1,NTrudgian2011_2e_v1,NZeroCount_2e_v1,NZetaHadamard_2e_v1 literature;
+  class NBKLNW_2e_v1,NBKLNW_2e_v2,NButhe_2e_v1,NButhe2016_2e_v1,NDudekPlatt_2e_v1,NDusart2018_2e_v1,NFKS_2e_v1,NHiary2016_2e_v1,NKLN_2e_v1,NKadiri2005_2e_v1,NKadiriLumley_2e_v1,NMT_2e_v1,NMT_2e_v2,NPlattTrudgian_2e_v1,NPlattTrudgian2021_2e_v1,NPlattZeroSum_2e_v1,NRamareSaouter2003_2e_v1,NRosserSchoenfeld_2e_v1,NTrudgian2011_2e_v1,NZeroCount_2e_v1,NZetaHadamard_2e_v1 literature;
   class NBKLNWNumerics_2e_v1,NButheNumerics_2e_v1,NChebyshevNumerics_2e_v1,NDudekPlattNumerics_2e_v1,NDudekPlattNumerics_2e_v2,NDudekPlattNumerics_2e_v3,NFKBJ_2e_v1,NFKS2Numerics_2e_v1,NLowZeroes_2e_v1,NOliveiraESilva2014_2e_v1,NPlatt2015_2e_v1,NPlatt2017_2e_v1,NRichstein2001_2e_v1,NZetaLogDerivValues_2e_v1 numerical;
+  class NRosserSchoenfeld1962_2e_v1 lean_2d_noncompliant;
   class NFKS_2e_v2 bridged;
   class NCH2_2e_v2,NDudekPlatt_2e_v2,NDudekPlatt_2e_v3,NFKS2_2e_v1,NFKS2_2e_v2,NLcm_2e_v1,NLcm_2e_v2,NPrimeInterval_2e_v1,NZeroFreeHeight_2e_v1 lean_2d_comparator_2d_stale;
   class NCH2_2e_v1,NCH2_2e_v3,NChebyshev_2e_v1,NDudekPlatt_2e_v4,NDudekPlattNumerics_2e_v4,NErdos392_2e_v1,NGammaAsymptotics_2e_v2,NGoldbach_2e_v1,NZetaLogDeriv_2e_v1,NZetaZeroes_2e_v1 lean_2d_comparator;
@@ -278,604 +282,20 @@ graph LR
 
 ## Every claim
 
-The same graph at full resolution, grouped by node. This is the one that is true rather
-than the one that is legible; when they disagree, believe this one.
+At full resolution the graph is **drawn** rather than written: see
+[docs/graph.html](https://github.com/teorth/IEANTN/blob/main/docs/graph.html), which carries this graph
+per conclusion and the one above per node version, with a search box, a filter by kind of
+evidence, and a link from every box to the page for its node.
 
-```mermaid
-graph LR
-  subgraph sgBKLNW_2e_v1["BKLNW.v1"]
-    BKLNW_2e_v1_2e_corollary_5f_5_5f_1["<b>corollary_5_1</b><br/><i>cited</i>"]
-    BKLNW_2e_v1_2e_corollary_5f_5_5f_1_5f_above["<b>corollary_5_1_above</b><br/><i>cited</i>"]
-    BKLNW_2e_v1_2e_table8_5f_psi_5f_bound["<b>table8_psi_bound</b><br/><i>cited</i>"]
-    BKLNW_2e_v1_2e_table8_5f_psi_5f_bound_5f_above["<b>table8_psi_bound_above</b><br/><i>cited</i>"]
-    BKLNW_2e_v1_2e_theta_5f_error_5f_le_5f_one["<b>theta_error_le_one</b><br/><i>cited</i>"]
-  end
-  subgraph sgBKLNW_2e_v2["BKLNW.v2"]
-    BKLNW_2e_v2_2e_corollary_5f_5_5f_1["<b>corollary_5_1</b><br/><i>cited</i>"]
-    BKLNW_2e_v2_2e_table8_5f_psi_5f_bound_5f_above["<b>table8_psi_bound_above</b><br/><i>cited</i>"]
-  end
-  subgraph sgBKLNWNumerics_2e_v1["BKLNWNumerics.v1"]
-    BKLNWNumerics_2e_v1_2e_table8_5f_psi_5f_bound["<b>table8_psi_bound</b><br/><i>computation</i>"]
-    BKLNWNumerics_2e_v1_2e_theta_5f_error_5f_le_5f_one["<b>theta_error_le_one</b><br/><i>computation</i>"]
-  end
-  subgraph sgButhe_2e_v1["Buthe.v1"]
-    Buthe_2e_v1_2e_table_5f_1_5f_interval_5f_bounds["<b>table_1_interval_bounds</b><br/><i>cited</i>"]
-    Buthe_2e_v1_2e_table_5f_2_5f_interval_5f_bounds["<b>table_2_interval_bounds</b><br/><i>cited</i>"]
-    Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_gt_5f_pi["<b>theorem_2_li_gt_pi</b><br/><i>cited</i>"]
-    Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_pi["<b>theorem_2_li_minus_pi</b><br/><i>cited</i>"]
-    Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_riemann_5f_pi["<b>theorem_2_li_minus_riemann_pi</b><br/><i>cited</i>"]
-    Buthe_2e_v1_2e_theorem_5f_2_5f_psi["<b>theorem_2_psi</b><br/><i>cited</i>"]
-    Buthe_2e_v1_2e_theorem_5f_2_5f_theta["<b>theorem_2_theta</b><br/><i>cited</i>"]
-    Buthe_2e_v1_2e_theorem_5f_2_5f_theta_5f_lower["<b>theorem_2_theta_lower</b><br/><i>cited</i>"]
-  end
-  subgraph sgButhe_2e_v2["Buthe.v2"]
-    Buthe_2e_v2_2e_lemma_5f_3_5f_bounds["<b>lemma_3_bounds</b><br/><i>unjustified</i>"]
-    Buthe_2e_v2_2e_lemma_5f_3_5f_positivity["<b>lemma_3_positivity</b><br/><i>unjustified</i>"]
-  end
-  subgraph sgButhe2016_2e_v1["Buthe2016.v1"]
-    Buthe2016_2e_v1_2e_theorem_5f_1_5f_table1["<b>theorem_1_table1</b><br/><i>computation</i>"]
-    Buthe2016_2e_v1_2e_theorem_5f_1_5f_table2["<b>theorem_1_table2</b><br/><i>computation</i>"]
-    Buthe2016_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_pi["<b>theorem_2_li_minus_pi</b><br/><i>cited</i>"]
-    Buthe2016_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_riemann_5f_pi["<b>theorem_2_li_minus_riemann_pi</b><br/><i>cited</i>"]
-    Buthe2016_2e_v1_2e_theorem_5f_2_5f_psi["<b>theorem_2_psi</b><br/><i>cited</i>"]
-    Buthe2016_2e_v1_2e_theorem_5f_2_5f_theta["<b>theorem_2_theta</b><br/><i>cited</i>"]
-  end
-  subgraph sgButheNumerics_2e_v1["ButheNumerics.v1"]
-    ButheNumerics_2e_v1_2e_eq_5f_6_5f_2["<b>eq_6_2</b><br/><i>computation</i>"]
-    ButheNumerics_2e_v1_2e_lemma_5f_3_5f_constant_5f_gt_5f_at_5f_10["<b>lemma_3_constant_gt_at_10</b><br/><i>computation</i>"]
-    ButheNumerics_2e_v1_2e_lemma_5f_3_5f_constant_5f_nonpos["<b>lemma_3_constant_nonpos</b><br/><i>computation</i>"]
-    ButheNumerics_2e_v1_2e_li_5f_minus_5f_pi_5f_below_5f_1e7["<b>li_minus_pi_below_1e7</b><br/><i>computation</i>"]
-    ButheNumerics_2e_v1_2e_li_5f_minus_5f_riemann_5f_pi_5f_below_5f_1e7["<b>li_minus_riemann_pi_below_1e7</b><br/><i>computation</i>"]
-  end
-  subgraph sgCH2_2e_v1["CH2.v1"]
-    CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum["<b>corollary_1_2_lambda_sum</b><br/><i>verified</i>"]
-    CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi["<b>corollary_1_2_psi</b><br/><i>verified</i>"]
-    CH2_2e_v1_2e_corollary_5f_1_5f_3_5f_lambda_5f_sum["<b>corollary_1_3_lambda_sum</b><br/><i>verified</i>"]
-    CH2_2e_v1_2e_corollary_5f_1_5f_3_5f_psi["<b>corollary_1_3_psi</b><br/><i>verified</i>"]
-  end
-  subgraph sgCH2_2e_v2["CH2.v2"]
-    CH2_2e_v2_2e_proposition_5f_2_5f_4_5f_lower["<b>proposition_2_4_lower</b><br/><i>verified, stale</i>"]
-    CH2_2e_v2_2e_proposition_5f_2_5f_4_5f_upper["<b>proposition_2_4_upper</b><br/><i>verified, stale</i>"]
-  end
-  subgraph sgCH2_2e_v3["CH2.v3"]
-    CH2_2e_v3_2e_extremal_5f_majorant["<b>extremal_majorant</b><br/><i>verified</i>"]
-    CH2_2e_v3_2e_extremal_5f_minorant["<b>extremal_minorant</b><br/><i>verified</i>"]
-  end
-  subgraph sgChebyshev_2e_v1["Chebyshev.v1"]
-    Chebyshev_2e_v1_2e_constant_5f_bounds["<b>constant_bounds</b><br/><i>verified</i>"]
-    Chebyshev_2e_v1_2e_psi_5f_le_5f_small["<b>psi_le_small</b><br/><i>verified</i>"]
-    Chebyshev_2e_v1_2e_psi_5f_lower["<b>psi_lower</b><br/><i>verified</i>"]
-    Chebyshev_2e_v1_2e_psi_5f_upper["<b>psi_upper</b><br/><i>verified</i>"]
-    Chebyshev_2e_v1_2e_psi_5f_upper_5f_clean["<b>psi_upper_clean</b><br/><i>verified</i>"]
-  end
-  subgraph sgChebyshevNumerics_2e_v1["ChebyshevNumerics.v1"]
-    ChebyshevNumerics_2e_v1_2e_psi_5f_le_5f_below_5f_11723["<b>psi_le_below_11723</b><br/><i>computation</i>"]
-  end
-  subgraph sgCotangentSeries_2e_v1["CotangentSeries.v1"]
-    CotangentSeries_2e_v1_2e_cot_5f_series_5f_zeta_5f_values["<b>cot_series_zeta_values</b><br/><i>unjustified</i>"]
-  end
-  subgraph sgDudekPlatt_2e_v1["DudekPlatt.v1"]
-    DudekPlatt_2e_v1_2e_largest_5f_counterexample_5f_on_5f_rh["<b>largest_counterexample_on_rh</b><br/><i>cited</i>"]
-    DudekPlatt_2e_v1_2e_ramanujan_5f_inequality["<b>ramanujan_inequality</b><br/><i>cited</i>"]
-  end
-  subgraph sgDudekPlatt_2e_v2["DudekPlatt.v2"]
-    DudekPlatt_2e_v2_2e_ramanujan_5f_inequality_5f_3915["<b>ramanujan_inequality_3915</b><br/><i>verified, stale</i>"]
-  end
-  subgraph sgDudekPlatt_2e_v3["DudekPlatt.v3"]
-    DudekPlatt_2e_v3_2e_criterion["<b>criterion</b><br/><i>verified, stale</i>"]
-  end
-  subgraph sgDudekPlatt_2e_v4["DudekPlatt.v4"]
-    DudekPlatt_2e_v4_2e_ramanujan_5f_inequality_5f_9401["<b>ramanujan_inequality_9401</b><br/><i>verified</i>"]
-  end
-  subgraph sgDudekPlattNumerics_2e_v1["DudekPlattNumerics.v1"]
-    DudekPlattNumerics_2e_v1_2e_pi_5f_two_5f_sided_5f_paper["<b>pi_two_sided_paper</b><br/><i>computation</i>"]
-  end
-  subgraph sgDudekPlattNumerics_2e_v2["DudekPlattNumerics.v2"]
-    DudekPlattNumerics_2e_v2_2e_pi_5f_two_5f_sided_5f_pnt["<b>pi_two_sided_pnt</b><br/><i>computation</i>"]
-  end
-  subgraph sgDudekPlattNumerics_2e_v3["DudekPlattNumerics.v3"]
-    DudekPlattNumerics_2e_v3_2e_pi_5f_two_5f_sided_5f_footnote["<b>pi_two_sided_footnote</b><br/><i>computation</i>"]
-  end
-  subgraph sgDudekPlattNumerics_2e_v4["DudekPlattNumerics.v4"]
-    DudekPlattNumerics_2e_v4_2e_pi_5f_two_5f_sided_5f_footnote["<b>pi_two_sided_footnote</b><br/><i>verified</i>"]
-  end
-  subgraph sgDusart2018_2e_v1["Dusart2018.v1"]
-    Dusart2018_2e_v1_2e_proposition_5f_5_5f_4["<b>proposition_5_4</b><br/><i>cited</i>"]
-  end
-  subgraph sgErdos392_2e_v1["Erdos392.v1"]
-    Erdos392_2e_v1_2e_factors_5f_le_5f_n["<b>factors_le_n</b><br/><i>verified</i>"]
-    Erdos392_2e_v1_2e_factors_5f_le_5f_n_5f_sq["<b>factors_le_n_sq</b><br/><i>verified</i>"]
-    Erdos392_2e_v1_2e_factors_5f_le_5f_n_5f_sq_5f_lower["<b>factors_le_n_sq_lower</b><br/><i>verified</i>"]
-  end
-  subgraph sgFKBJ_2e_v1["FKBJ.v1"]
-    FKBJ_2e_v1_2e_rh_5f_up_5f_to["<b>rh_up_to</b><br/><i>computation</i>"]
-  end
-  subgraph sgFKS_2e_v1["FKS.v1"]
-    FKS_2e_v1_2e_psi_5f_bound_5f_all_5f_x["<b>psi_bound_all_x</b><br/><i>cited</i>"]
-    FKS_2e_v1_2e_psi_5f_classical_5f_bound["<b>psi_classical_bound</b><br/><i>cited</i>"]
-    FKS_2e_v1_2e_rescaled_5f_A_5f_exceeds_5f_printed["<b>rescaled_A_exceeds_printed</b><br/><i>computation</i>"]
-    FKS_2e_v1_2e_rescaled_5f_C_5f_is_5f_short_5f_of_5f_two["<b>rescaled_C_is_short_of_two</b><br/><i>computation</i>"]
-  end
-  subgraph sgFKS_2e_v2["FKS.v2"]
-    FKS_2e_v2_2e_psi_5f_bound_5f_all_5f_x["<b>psi_bound_all_x</b><br/><i>bridged</i>"]
-    FKS_2e_v2_2e_psi_5f_classical_5f_bound["<b>psi_classical_bound</b><br/><i>bridged</i>"]
-  end
-  subgraph sgFKS2_2e_v1["FKS2.v1"]
-    FKS2_2e_v1_2e_corollary_5f_14["<b>corollary_14</b><br/><i>verified, stale</i>"]
-    FKS2_2e_v1_2e_corollary_5f_22["<b>corollary_22</b><br/><i>verified, stale</i>"]
-    FKS2_2e_v1_2e_corollary_5f_23["<b>corollary_23</b><br/><i>verified, stale</i>"]
-    FKS2_2e_v1_2e_corollary_5f_26["<b>corollary_26</b><br/><i>verified, stale</i>"]
-  end
-  subgraph sgFKS2_2e_v2["FKS2.v2"]
-    FKS2_2e_v2_2e_proposition_5f_13["<b>proposition_13</b><br/><i>verified, stale</i>"]
-    FKS2_2e_v2_2e_theorem_5f_3["<b>theorem_3</b><br/><i>verified, stale</i>"]
-  end
-  subgraph sgFKS2Numerics_2e_v1["FKS2Numerics.v1"]
-    FKS2Numerics_2e_v1_2e_corollary_5f_22_5f_mid_5f_range["<b>corollary_22_mid_range</b><br/><i>computation</i>"]
-    FKS2Numerics_2e_v1_2e_corollary_5f_23_5f_mid_5f_range["<b>corollary_23_mid_range</b><br/><i>computation</i>"]
-    FKS2Numerics_2e_v1_2e_nu_5f_asymp_5f_e30_5f_le["<b>nu_asymp_e30_le</b><br/><i>computation</i>"]
-    FKS2Numerics_2e_v1_2e_table6_5f_row2_5f_floor["<b>table6_row2_floor</b><br/><i>computation</i>"]
-    FKS2Numerics_2e_v1_2e_theta_5f_asymp_5f_ge_5f_one_5f_below_5f_e30["<b>theta_asymp_ge_one_below_e30</b><br/><i>computation</i>"]
-  end
-  subgraph sgGammaAsymptotics_2e_v1["GammaAsymptotics.v1"]
-    GammaAsymptotics_2e_v1_2e_digamma_5f_sub_5f_log_5f_isBigO["<b>digamma_sub_log_isBigO</b><br/><i>unjustified</i>"]
-  end
-  subgraph sgGammaAsymptotics_2e_v2["GammaAsymptotics.v2"]
-    GammaAsymptotics_2e_v2_2e_digamma_5f_sub_5f_log_5f_isBigO_5f_strip["<b>digamma_sub_log_isBigO_strip</b><br/><i>verified</i>"]
-  end
-  subgraph sgGoldbach_2e_v1["Goldbach.v1"]
-    Goldbach_2e_v1_2e_even_5f_and_5f_gaps_5f_imply_5f_odd["<b>even_and_gaps_imply_odd</b><br/><i>verified</i>"]
-    Goldbach_2e_v1_2e_even_5f_implies_5f_odd["<b>even_implies_odd</b><br/><i>verified</i>"]
-    Goldbach_2e_v1_2e_even_5f_up_5f_to_5f_30["<b>even_up_to_30</b><br/><i>verified</i>"]
-    Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_1_5f_1325e26["<b>odd_up_to_1_1325e26</b><br/><i>verified</i>"]
-    Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_kadiri_5f_lumley["<b>odd_up_to_kadiri_lumley</b><br/><i>verified</i>"]
-    Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_ramare_5f_saouter["<b>odd_up_to_ramare_saouter</b><br/><i>verified</i>"]
-  end
-  subgraph sgHiary2016_2e_v1["Hiary2016.v1"]
-    Hiary2016_2e_v1_2e_zeta_5f_half_5f_line_5f_bound["<b>zeta_half_line_bound</b><br/><i>cited</i>"]
-  end
-  subgraph sgKLN_2e_v1["KLN.v1"]
-    KLN_2e_v1_2e_subconvexity_5f_bound["<b>subconvexity_bound</b><br/><i>cited</i>"]
-    KLN_2e_v1_2e_zero_5f_density["<b>zero_density</b><br/><i>cited</i>"]
-  end
-  subgraph sgKadiri2005_2e_v1["Kadiri2005.v1"]
-    Kadiri2005_2e_v1_2e_zero_5f_free_5f_region["<b>zero_free_region</b><br/><i>cited</i>"]
-  end
-  subgraph sgKadiriLumley_2e_v1["KadiriLumley.v1"]
-    KadiriLumley_2e_v1_2e_prime_5f_in_5f_interval_5f_above_5f_exp_5f_59["<b>prime_in_interval_above_exp_59</b><br/><i>cited</i>"]
-    KadiriLumley_2e_v1_2e_prime_5f_in_5f_interval_5f_above_5f_exp_5f_60["<b>prime_in_interval_above_exp_60</b><br/><i>cited</i>"]
-  end
-  subgraph sgLcm_2e_v1["Lcm.v1"]
-    Lcm_2e_v1_2e_lcmUpto_5f_not_5f_highlyAbundant["<b>lcmUpto_not_highlyAbundant</b><br/><i>verified, stale</i>"]
-  end
-  subgraph sgLcm_2e_v2["Lcm.v2"]
-    Lcm_2e_v2_2e_lcmUpto_5f_not_5f_highlyAbundant_5f_of_5f_primeGap["<b>lcmUpto_not_highlyAbundant_of_primeGap</b><br/><i>verified, stale</i>"]
-  end
-  subgraph sgLowZeroes_2e_v1["LowZeroes.v1"]
-    LowZeroes_2e_v1_2e_no_5f_zeroes_5f_below_5f_first_5f_ordinate["<b>no_zeroes_below_first_ordinate</b><br/><i>computation</i>"]
-    LowZeroes_2e_v1_2e_sum_5f_inv_5f_ordinates_5f_below_5f_2e4["<b>sum_inv_ordinates_below_2e4</b><br/><i>computation</i>"]
-  end
-  subgraph sgMT_2e_v1["MT.v1"]
-    MT_2e_v1_2e_zero_5f_free_5f_region["<b>zero_free_region</b><br/><i>cited</i>"]
-    MT_2e_v1_2e_zero_5f_free_5f_region_5f_sharpened["<b>zero_free_region_sharpened</b><br/><i>cited</i>"]
-  end
-  subgraph sgMT_2e_v2["MT.v2"]
-    MT_2e_v2_2e_corollary_5f_1["<b>corollary_1</b><br/><i>cited</i>"]
-  end
-  subgraph sgOliveiraESilva2014_2e_v1["OliveiraESilva2014.v1"]
-    OliveiraESilva2014_2e_v1_2e_even_5f_up_5f_to_5f_4e18["<b>even_up_to_4e18</b><br/><i>computation</i>"]
-  end
-  subgraph sgPlatt2015_2e_v1["Platt2015.v1"]
-    Platt2015_2e_v1_2e_rh_5f_up_5f_to["<b>rh_up_to</b><br/><i>computation</i>"]
-  end
-  subgraph sgPlatt2017_2e_v1["Platt2017.v1"]
-    Platt2017_2e_v1_2e_rh_5f_up_5f_to["<b>rh_up_to</b><br/><i>computation</i>"]
-  end
-  subgraph sgPlattTrudgian_2e_v1["PlattTrudgian.v1"]
-    PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to["<b>rh_up_to</b><br/><i>cited</i>"]
-    PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to_5f_exact["<b>rh_up_to_exact</b><br/><i>cited</i>"]
-  end
-  subgraph sgPlattTrudgian2021_2e_v1["PlattTrudgian2021.v1"]
-    PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_classical["<b>theorem_1_classical</b><br/><i>cited</i>"]
-    PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_numerical["<b>theorem_1_numerical</b><br/><i>cited</i>"]
-  end
-  subgraph sgPlattZeroSum_2e_v1["PlattZeroSum.v1"]
-    PlattZeroSum_2e_v1_2e_inv_5f_ordinate_5f_sum_5f_le["<b>inv_ordinate_sum_le</b><br/><i>cited</i>"]
-  end
-  subgraph sgPrimeInterval_2e_v1["PrimeInterval.v1"]
-    PrimeInterval_2e_v1_2e_classicalBound_5f_hasPrimeInInterval["<b>classicalBound_hasPrimeInInterval</b><br/><i>verified, stale</i>"]
-    PrimeInterval_2e_v1_2e_eTheta_5f_criterion["<b>eTheta_criterion</b><br/><i>verified, stale</i>"]
-    PrimeInterval_2e_v1_2e_numericalBound_5f_hasPrimeInInterval["<b>numericalBound_hasPrimeInInterval</b><br/><i>verified, stale</i>"]
-    PrimeInterval_2e_v1_2e_theta_5f_characterisation["<b>theta_characterisation</b><br/><i>verified, stale</i>"]
-  end
-  subgraph sgRamareSaouter2003_2e_v1["RamareSaouter2003.v1"]
-    RamareSaouter2003_2e_v1_2e_prime_5f_in_5f_short_5f_interval["<b>prime_in_short_interval</b><br/><i>cited</i>"]
-  end
-  subgraph sgRichstein2001_2e_v1["Richstein2001.v1"]
-    Richstein2001_2e_v1_2e_even_5f_up_5f_to_5f_4e14["<b>even_up_to_4e14</b><br/><i>computation</i>"]
-  end
-  subgraph sgRosserSchoenfeld_2e_v1["RosserSchoenfeld.v1"]
-    RosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region["<b>zero_free_region</b><br/><i>cited</i>"]
-    RosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region_5f_classical["<b>zero_free_region_classical</b><br/><i>bridged</i>"]
-  end
-  subgraph sgRosserSchoenfeld1962_2e_v1["RosserSchoenfeld1962.v1"]
-    RosserSchoenfeld1962_2e_v1_2e_equation_5f_3_5f_35["<b>equation_3_35</b><br/><i>cited</i>"]
-  end
-  subgraph sgTrudgian2011_2e_v1["Trudgian2011.v1"]
-    Trudgian2011_2e_v1_2e_integral_5f_S_5f_bound["<b>integral_S_bound</b><br/><i>cited</i>"]
-  end
-  subgraph sgWedeniwski_2e_v1["Wedeniwski.v1"]
-    Wedeniwski_2e_v1_2e_rh_5f_up_5f_to["<b>rh_up_to</b><br/><i>asserted</i>"]
-  end
-  subgraph sgZeroCount_2e_v1["ZeroCount.v1"]
-    ZeroCount_2e_v1_2e_rvm_5f_error_5f_bound["<b>rvm_error_bound</b><br/><i>cited</i>"]
-    ZeroCount_2e_v1_2e_rvm_5f_error_5f_small["<b>rvm_error_small</b><br/><i>cited</i>"]
-  end
-  subgraph sgZeroFreeHeight_2e_v1["ZeroFreeHeight.v1"]
-    ZeroFreeHeight_2e_v1_2e_classical_5f_region_5f_descends["<b>classical_region_descends</b><br/><i>verified, stale</i>"]
-  end
-  subgraph sgZetaHadamard_2e_v1["ZetaHadamard.v1"]
-    ZetaHadamard_2e_v1_2e_logDeriv_5f_partial_5f_fractions["<b>logDeriv_partial_fractions</b><br/><i>cited</i>"]
-  end
-  subgraph sgZetaLogDeriv_2e_v1["ZetaLogDeriv.v1"]
-    ZetaLogDeriv_2e_v1_2e_logDeriv_5f_functional_5f_equation["<b>logDeriv_functional_equation</b><br/><i>verified</i>"]
-  end
-  subgraph sgZetaLogDerivValues_2e_v1["ZetaLogDerivValues.v1"]
-    ZetaLogDerivValues_2e_v1_2e_deriv_5f_logDeriv_5f_neg_5f_one["<b>deriv_logDeriv_neg_one</b><br/><i>computation</i>"]
-    ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_laurent_5f_alternating["<b>logDeriv_laurent_alternating</b><br/><i>computation</i>"]
-    ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_neg_5f_one["<b>logDeriv_neg_one</b><br/><i>computation</i>"]
-    ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_three_5f_halves["<b>logDeriv_three_halves</b><br/><i>computation</i>"]
-    ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_two["<b>logDeriv_two</b><br/><i>computation</i>"]
-  end
-  subgraph sgZetaZeroes_2e_v1["ZetaZeroes.v1"]
-    ZetaZeroes_2e_v1_2e_exists_5f_ordinate_5f_free_5f_height["<b>exists_ordinate_free_height</b><br/><i>verified</i>"]
-    ZetaZeroes_2e_v1_2e_finite_5f_zeroes_5f_on_5f_compact["<b>finite_zeroes_on_compact</b><br/><i>verified</i>"]
-    ZetaZeroes_2e_v1_2e_no_5f_nontrivial_5f_zeroes_5f_left["<b>no_nontrivial_zeroes_left</b><br/><i>verified</i>"]
-    ZetaZeroes_2e_v1_2e_zeroes_5f_off_5f_axis_5f_in_5f_strip["<b>zeroes_off_axis_in_strip</b><br/><i>verified</i>"]
-    ZetaZeroes_2e_v1_2e_zeta_5f_eq_5f_zero_5f_iff_5f_zeta1["<b>zeta_eq_zero_iff_zeta1</b><br/><i>verified</i>"]
-    ZetaZeroes_2e_v1_2e_zeta_5f_eq_5f_zeta1_5f_div["<b>zeta_eq_zeta1_div</b><br/><i>verified</i>"]
-  end
-  Buthe_2e_v1_2e_theorem_5f_2_5f_theta_5f_lower --> BKLNW_2e_v1_2e_corollary_5f_5_5f_1
-  Buthe_2e_v1_2e_theorem_5f_2_5f_theta_5f_lower --> BKLNW_2e_v1_2e_corollary_5f_5_5f_1_5f_above
-  Buthe2016_2e_v1_2e_theorem_5f_2_5f_psi --> BKLNW_2e_v1_2e_table8_5f_psi_5f_bound
-  PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_numerical --> BKLNW_2e_v1_2e_table8_5f_psi_5f_bound
-  Buthe2016_2e_v1_2e_theorem_5f_2_5f_psi --> BKLNW_2e_v1_2e_table8_5f_psi_5f_bound_5f_above
-  PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_numerical --> BKLNW_2e_v1_2e_table8_5f_psi_5f_bound_5f_above
-  Buthe_2e_v1_2e_theorem_5f_2_5f_theta_5f_lower --> BKLNW_2e_v1_2e_theta_5f_error_5f_le_5f_one
-  Buthe_2e_v1_2e_theorem_5f_2_5f_theta_5f_lower --> BKLNW_2e_v2_2e_corollary_5f_5_5f_1
-  BKLNWNumerics_2e_v1_2e_table8_5f_psi_5f_bound --> BKLNW_2e_v2_2e_table8_5f_psi_5f_bound_5f_above
-  Buthe2016_2e_v1_2e_theorem_5f_2_5f_psi --> BKLNWNumerics_2e_v1_2e_table8_5f_psi_5f_bound
-  PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_numerical --> BKLNWNumerics_2e_v1_2e_table8_5f_psi_5f_bound
-  Buthe_2e_v1_2e_theorem_5f_2_5f_theta_5f_lower --> BKLNWNumerics_2e_v1_2e_theta_5f_error_5f_le_5f_one
-  FKBJ_2e_v1_2e_rh_5f_up_5f_to --> Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_gt_5f_pi
-  Buthe_2e_v1_2e_theorem_5f_2_5f_theta_5f_lower --> Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_gt_5f_pi
-  Buthe_2e_v2_2e_lemma_5f_3_5f_positivity --> Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_gt_5f_pi
-  ButheNumerics_2e_v1_2e_lemma_5f_3_5f_constant_5f_gt_5f_at_5f_10 --> Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_gt_5f_pi
-  FKBJ_2e_v1_2e_rh_5f_up_5f_to --> Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_pi
-  Buthe_2e_v1_2e_theorem_5f_2_5f_theta --> Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_pi
-  ButheNumerics_2e_v1_2e_lemma_5f_3_5f_constant_5f_nonpos --> Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_pi
-  ButheNumerics_2e_v1_2e_li_5f_minus_5f_pi_5f_below_5f_1e7 --> Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_pi
-  Buthe_2e_v2_2e_lemma_5f_3_5f_bounds --> Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_pi
-  FKBJ_2e_v1_2e_rh_5f_up_5f_to --> Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_riemann_5f_pi
-  FKBJ_2e_v1_2e_rh_5f_up_5f_to --> Buthe_2e_v1_2e_theorem_5f_2_5f_psi
-  FKBJ_2e_v1_2e_rh_5f_up_5f_to --> Buthe_2e_v1_2e_theorem_5f_2_5f_theta
-  FKBJ_2e_v1_2e_rh_5f_up_5f_to --> Buthe_2e_v1_2e_theorem_5f_2_5f_theta_5f_lower
-  GammaAsymptotics_2e_v2_2e_digamma_5f_sub_5f_log_5f_isBigO_5f_strip --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  CotangentSeries_2e_v1_2e_cot_5f_series_5f_zeta_5f_values --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  ZeroCount_2e_v1_2e_rvm_5f_error_5f_bound --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  ZeroCount_2e_v1_2e_rvm_5f_error_5f_small --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  ZetaLogDeriv_2e_v1_2e_logDeriv_5f_functional_5f_equation --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_two --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_three_5f_halves --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_neg_5f_one --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_laurent_5f_alternating --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  ZetaHadamard_2e_v1_2e_logDeriv_5f_partial_5f_fractions --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  PlattZeroSum_2e_v1_2e_inv_5f_ordinate_5f_sum_5f_le --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  CH2_2e_v2_2e_proposition_5f_2_5f_4_5f_upper --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  CH2_2e_v2_2e_proposition_5f_2_5f_4_5f_lower --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum
-  GammaAsymptotics_2e_v2_2e_digamma_5f_sub_5f_log_5f_isBigO_5f_strip --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  CotangentSeries_2e_v1_2e_cot_5f_series_5f_zeta_5f_values --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  ZeroCount_2e_v1_2e_rvm_5f_error_5f_bound --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  ZeroCount_2e_v1_2e_rvm_5f_error_5f_small --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  ZetaLogDeriv_2e_v1_2e_logDeriv_5f_functional_5f_equation --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_two --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_three_5f_halves --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_neg_5f_one --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_laurent_5f_alternating --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  ZetaHadamard_2e_v1_2e_logDeriv_5f_partial_5f_fractions --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  PlattZeroSum_2e_v1_2e_inv_5f_ordinate_5f_sum_5f_le --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  CH2_2e_v2_2e_proposition_5f_2_5f_4_5f_upper --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  CH2_2e_v2_2e_proposition_5f_2_5f_4_5f_lower --> CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi
-  CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum --> CH2_2e_v1_2e_corollary_5f_1_5f_3_5f_lambda_5f_sum
-  PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to_5f_exact --> CH2_2e_v1_2e_corollary_5f_1_5f_3_5f_lambda_5f_sum
-  Buthe_2e_v1_2e_theorem_5f_2_5f_psi --> CH2_2e_v1_2e_corollary_5f_1_5f_3_5f_lambda_5f_sum
-  CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi --> CH2_2e_v1_2e_corollary_5f_1_5f_3_5f_psi
-  PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to_5f_exact --> CH2_2e_v1_2e_corollary_5f_1_5f_3_5f_psi
-  Buthe_2e_v1_2e_theorem_5f_2_5f_psi --> CH2_2e_v1_2e_corollary_5f_1_5f_3_5f_psi
-  ChebyshevNumerics_2e_v1_2e_psi_5f_le_5f_below_5f_11723 --> Chebyshev_2e_v1_2e_psi_5f_upper_5f_clean
-  DudekPlattNumerics_2e_v1_2e_pi_5f_two_5f_sided_5f_paper --> DudekPlatt_2e_v1_2e_ramanujan_5f_inequality
-  DudekPlatt_2e_v3_2e_criterion --> DudekPlatt_2e_v1_2e_ramanujan_5f_inequality
-  DudekPlatt_2e_v3_2e_criterion --> DudekPlatt_2e_v2_2e_ramanujan_5f_inequality_5f_3915
-  DudekPlattNumerics_2e_v2_2e_pi_5f_two_5f_sided_5f_pnt --> DudekPlatt_2e_v2_2e_ramanujan_5f_inequality_5f_3915
-  DudekPlatt_2e_v3_2e_criterion --> DudekPlatt_2e_v4_2e_ramanujan_5f_inequality_5f_9401
-  DudekPlattNumerics_2e_v3_2e_pi_5f_two_5f_sided_5f_footnote --> DudekPlatt_2e_v4_2e_ramanujan_5f_inequality_5f_9401
-  MT_2e_v2_2e_corollary_5f_1 --> DudekPlattNumerics_2e_v4_2e_pi_5f_two_5f_sided_5f_footnote
-  KLN_2e_v1_2e_subconvexity_5f_bound --> FKS_2e_v1_2e_psi_5f_bound_5f_all_5f_x
-  MT_2e_v1_2e_zero_5f_free_5f_region_5f_sharpened --> FKS_2e_v1_2e_psi_5f_bound_5f_all_5f_x
-  PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to --> FKS_2e_v1_2e_psi_5f_bound_5f_all_5f_x
-  KLN_2e_v1_2e_subconvexity_5f_bound --> FKS_2e_v1_2e_psi_5f_classical_5f_bound
-  MT_2e_v1_2e_zero_5f_free_5f_region_5f_sharpened --> FKS_2e_v1_2e_psi_5f_classical_5f_bound
-  PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to --> FKS_2e_v1_2e_psi_5f_classical_5f_bound
-  KLN_2e_v1_2e_subconvexity_5f_bound --> FKS_2e_v2_2e_psi_5f_bound_5f_all_5f_x
-  MT_2e_v1_2e_zero_5f_free_5f_region_5f_sharpened --> FKS_2e_v2_2e_psi_5f_bound_5f_all_5f_x
-  PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to --> FKS_2e_v2_2e_psi_5f_bound_5f_all_5f_x
-  KLN_2e_v1_2e_subconvexity_5f_bound --> FKS_2e_v2_2e_psi_5f_classical_5f_bound
-  MT_2e_v1_2e_zero_5f_free_5f_region_5f_sharpened --> FKS_2e_v2_2e_psi_5f_classical_5f_bound
-  PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to --> FKS_2e_v2_2e_psi_5f_classical_5f_bound
-  FKS_2e_v1_2e_psi_5f_classical_5f_bound --> FKS2_2e_v1_2e_corollary_5f_14
-  BKLNW_2e_v1_2e_corollary_5f_5_5f_1 --> FKS2_2e_v1_2e_corollary_5f_14
-  BKLNW_2e_v1_2e_theta_5f_error_5f_le_5f_one --> FKS2_2e_v1_2e_corollary_5f_14
-  FKS2Numerics_2e_v1_2e_nu_5f_asymp_5f_e30_5f_le --> FKS2_2e_v1_2e_corollary_5f_14
-  FKS2Numerics_2e_v1_2e_theta_5f_asymp_5f_ge_5f_one_5f_below_5f_e30 --> FKS2_2e_v1_2e_corollary_5f_14
-  FKS2_2e_v2_2e_proposition_5f_13 --> FKS2_2e_v1_2e_corollary_5f_14
-  FKS_2e_v1_2e_psi_5f_classical_5f_bound --> FKS2_2e_v1_2e_corollary_5f_22
-  BKLNW_2e_v1_2e_corollary_5f_5_5f_1 --> FKS2_2e_v1_2e_corollary_5f_22
-  BKLNW_2e_v1_2e_theta_5f_error_5f_le_5f_one --> FKS2_2e_v1_2e_corollary_5f_22
-  FKS2Numerics_2e_v1_2e_nu_5f_asymp_5f_e30_5f_le --> FKS2_2e_v1_2e_corollary_5f_22
-  FKS2Numerics_2e_v1_2e_theta_5f_asymp_5f_ge_5f_one_5f_below_5f_e30 --> FKS2_2e_v1_2e_corollary_5f_22
-  FKS2Numerics_2e_v1_2e_corollary_5f_22_5f_mid_5f_range --> FKS2_2e_v1_2e_corollary_5f_22
-  FKS2_2e_v2_2e_proposition_5f_13 --> FKS2_2e_v1_2e_corollary_5f_22
-  FKS2_2e_v2_2e_theorem_5f_3 --> FKS2_2e_v1_2e_corollary_5f_22
-  FKS_2e_v1_2e_psi_5f_classical_5f_bound --> FKS2_2e_v1_2e_corollary_5f_23
-  BKLNW_2e_v1_2e_corollary_5f_5_5f_1 --> FKS2_2e_v1_2e_corollary_5f_23
-  BKLNW_2e_v1_2e_theta_5f_error_5f_le_5f_one --> FKS2_2e_v1_2e_corollary_5f_23
-  FKS2Numerics_2e_v1_2e_nu_5f_asymp_5f_e30_5f_le --> FKS2_2e_v1_2e_corollary_5f_23
-  FKS2Numerics_2e_v1_2e_theta_5f_asymp_5f_ge_5f_one_5f_below_5f_e30 --> FKS2_2e_v1_2e_corollary_5f_23
-  FKS2Numerics_2e_v1_2e_corollary_5f_22_5f_mid_5f_range --> FKS2_2e_v1_2e_corollary_5f_23
-  FKS2Numerics_2e_v1_2e_table6_5f_row2_5f_floor --> FKS2_2e_v1_2e_corollary_5f_23
-  FKS2Numerics_2e_v1_2e_corollary_5f_23_5f_mid_5f_range --> FKS2_2e_v1_2e_corollary_5f_23
-  FKS2_2e_v2_2e_proposition_5f_13 --> FKS2_2e_v1_2e_corollary_5f_23
-  FKS2_2e_v2_2e_theorem_5f_3 --> FKS2_2e_v1_2e_corollary_5f_23
-  FKS_2e_v1_2e_psi_5f_classical_5f_bound --> FKS2_2e_v1_2e_corollary_5f_26
-  BKLNW_2e_v1_2e_corollary_5f_5_5f_1 --> FKS2_2e_v1_2e_corollary_5f_26
-  BKLNW_2e_v1_2e_theta_5f_error_5f_le_5f_one --> FKS2_2e_v1_2e_corollary_5f_26
-  FKS2Numerics_2e_v1_2e_nu_5f_asymp_5f_e30_5f_le --> FKS2_2e_v1_2e_corollary_5f_26
-  FKS2Numerics_2e_v1_2e_theta_5f_asymp_5f_ge_5f_one_5f_below_5f_e30 --> FKS2_2e_v1_2e_corollary_5f_26
-  FKS2Numerics_2e_v1_2e_corollary_5f_22_5f_mid_5f_range --> FKS2_2e_v1_2e_corollary_5f_26
-  FKS2Numerics_2e_v1_2e_table6_5f_row2_5f_floor --> FKS2_2e_v1_2e_corollary_5f_26
-  FKS2Numerics_2e_v1_2e_corollary_5f_23_5f_mid_5f_range --> FKS2_2e_v1_2e_corollary_5f_26
-  FKS2_2e_v2_2e_proposition_5f_13 --> FKS2_2e_v1_2e_corollary_5f_26
-  FKS2_2e_v2_2e_theorem_5f_3 --> FKS2_2e_v1_2e_corollary_5f_26
-  OliveiraESilva2014_2e_v1_2e_even_5f_up_5f_to_5f_4e18 --> Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_1_5f_1325e26
-  RamareSaouter2003_2e_v1_2e_prime_5f_in_5f_short_5f_interval --> Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_1_5f_1325e26
-  OliveiraESilva2014_2e_v1_2e_even_5f_up_5f_to_5f_4e18 --> Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_kadiri_5f_lumley
-  KadiriLumley_2e_v1_2e_prime_5f_in_5f_interval_5f_above_5f_exp_5f_59 --> Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_kadiri_5f_lumley
-  KadiriLumley_2e_v1_2e_prime_5f_in_5f_interval_5f_above_5f_exp_5f_60 --> Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_kadiri_5f_lumley
-  RamareSaouter2003_2e_v1_2e_prime_5f_in_5f_short_5f_interval --> Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_kadiri_5f_lumley
-  Richstein2001_2e_v1_2e_even_5f_up_5f_to_5f_4e14 --> Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_ramare_5f_saouter
-  RamareSaouter2003_2e_v1_2e_prime_5f_in_5f_short_5f_interval --> Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_ramare_5f_saouter
-  Hiary2016_2e_v1_2e_zeta_5f_half_5f_line_5f_bound --> KLN_2e_v1_2e_subconvexity_5f_bound
-  Platt2017_2e_v1_2e_rh_5f_up_5f_to --> KLN_2e_v1_2e_zero_5f_density
-  RosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region_5f_classical --> Kadiri2005_2e_v1_2e_zero_5f_free_5f_region
-  Wedeniwski_2e_v1_2e_rh_5f_up_5f_to --> Kadiri2005_2e_v1_2e_zero_5f_free_5f_region
-  Dusart2018_2e_v1_2e_proposition_5f_5_5f_4 --> Lcm_2e_v1_2e_lcmUpto_5f_not_5f_highlyAbundant
-  Kadiri2005_2e_v1_2e_zero_5f_free_5f_region --> MT_2e_v1_2e_zero_5f_free_5f_region
-  Platt2015_2e_v1_2e_rh_5f_up_5f_to --> MT_2e_v1_2e_zero_5f_free_5f_region
-  Kadiri2005_2e_v1_2e_zero_5f_free_5f_region --> MT_2e_v1_2e_zero_5f_free_5f_region_5f_sharpened
-  PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to --> MT_2e_v1_2e_zero_5f_free_5f_region_5f_sharpened
-  MT_2e_v1_2e_zero_5f_free_5f_region --> MT_2e_v2_2e_corollary_5f_1
-  Trudgian2011_2e_v1_2e_integral_5f_S_5f_bound --> Platt2017_2e_v1_2e_rh_5f_up_5f_to
-  MT_2e_v1_2e_zero_5f_free_5f_region --> PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_classical
-  PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to --> PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_classical
-  KLN_2e_v1_2e_zero_5f_density --> PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_classical
-  MT_2e_v1_2e_zero_5f_free_5f_region --> PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_numerical
-  PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to --> PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_numerical
-  KLN_2e_v1_2e_zero_5f_density --> PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_numerical
-  BRDudekPlatt_2e_v1_2e_ramanujan_5f_inequality_3a__3a_bridge_2d_from_2d_v4{{"<b>V4ToV1</b><br/><i>spare</i>"}}
-  DudekPlatt_2e_v4_2e_ramanujan_5f_inequality_5f_9401 ==> BRDudekPlatt_2e_v1_2e_ramanujan_5f_inequality_3a__3a_bridge_2d_from_2d_v4
-  BRDudekPlatt_2e_v1_2e_ramanujan_5f_inequality_3a__3a_bridge_2d_from_2d_v4 ==> DudekPlatt_2e_v1_2e_ramanujan_5f_inequality
-  BRDudekPlattNumerics_2e_v3_2e_pi_5f_two_5f_sided_5f_footnote_3a__3a_bridge_2d_from_2d_v4{{"<b>V4ToV3</b><br/><i>spare</i>"}}
-  DudekPlattNumerics_2e_v4_2e_pi_5f_two_5f_sided_5f_footnote ==> BRDudekPlattNumerics_2e_v3_2e_pi_5f_two_5f_sided_5f_footnote_3a__3a_bridge_2d_from_2d_v4
-  BRDudekPlattNumerics_2e_v3_2e_pi_5f_two_5f_sided_5f_footnote_3a__3a_bridge_2d_from_2d_v4 ==> DudekPlattNumerics_2e_v3_2e_pi_5f_two_5f_sided_5f_footnote
-  BRFKS_2e_v2_2e_psi_5f_bound_5f_all_5f_x_3a__3a_rescaled_2d_from_2d_classical{{"<b>ClassicalToAllX</b>"}}
-  FKS_2e_v1_2e_psi_5f_classical_5f_bound ==> BRFKS_2e_v2_2e_psi_5f_bound_5f_all_5f_x_3a__3a_rescaled_2d_from_2d_classical
-  BRFKS_2e_v2_2e_psi_5f_bound_5f_all_5f_x_3a__3a_rescaled_2d_from_2d_classical ==> FKS_2e_v2_2e_psi_5f_bound_5f_all_5f_x
-  BRFKS_2e_v2_2e_psi_5f_classical_5f_bound_3a__3a_threshold_2d_from_2d_v1{{"<b>ThresholdTwo</b>"}}
-  FKS_2e_v1_2e_psi_5f_classical_5f_bound ==> BRFKS_2e_v2_2e_psi_5f_classical_5f_bound_3a__3a_threshold_2d_from_2d_v1
-  BRFKS_2e_v2_2e_psi_5f_classical_5f_bound_3a__3a_threshold_2d_from_2d_v1 ==> FKS_2e_v2_2e_psi_5f_classical_5f_bound
-  BRLcm_2e_v1_2e_lcmUpto_5f_not_5f_highlyAbundant_3a__3a_bridge_2d_from_2d_v2{{"<b>V2ToV1</b><br/><i>spare</i>"}}
-  Lcm_2e_v2_2e_lcmUpto_5f_not_5f_highlyAbundant_5f_of_5f_primeGap ==> BRLcm_2e_v1_2e_lcmUpto_5f_not_5f_highlyAbundant_3a__3a_bridge_2d_from_2d_v2
-  BRLcm_2e_v1_2e_lcmUpto_5f_not_5f_highlyAbundant_3a__3a_bridge_2d_from_2d_v2 ==> Lcm_2e_v1_2e_lcmUpto_5f_not_5f_highlyAbundant
-  BRPlatt2015_2e_v1_2e_rh_5f_up_5f_to_3a__3a_bridge_2d_from_2d_platt2017{{"<b>P2017ToP2015</b><br/><i>spare</i>"}}
-  Platt2017_2e_v1_2e_rh_5f_up_5f_to ==> BRPlatt2015_2e_v1_2e_rh_5f_up_5f_to_3a__3a_bridge_2d_from_2d_platt2017
-  BRPlatt2015_2e_v1_2e_rh_5f_up_5f_to_3a__3a_bridge_2d_from_2d_platt2017 ==> Platt2015_2e_v1_2e_rh_5f_up_5f_to
-  BRRosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region_5f_classical_3a__3a_bridge_2d_from_2d_shape{{"<b>ToClassical</b>"}}
-  RosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region ==> BRRosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region_5f_classical_3a__3a_bridge_2d_from_2d_shape
-  BRRosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region_5f_classical_3a__3a_bridge_2d_from_2d_shape ==> RosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region_5f_classical
-  BRWedeniwski_2e_v1_2e_rh_5f_up_5f_to_3a__3a_bridge_2d_from_2d_platt2017{{"<b>P2017ToWedeniwski</b><br/><i>spare</i>"}}
-  Platt2017_2e_v1_2e_rh_5f_up_5f_to ==> BRWedeniwski_2e_v1_2e_rh_5f_up_5f_to_3a__3a_bridge_2d_from_2d_platt2017
-  BRWedeniwski_2e_v1_2e_rh_5f_up_5f_to_3a__3a_bridge_2d_from_2d_platt2017 ==> Wedeniwski_2e_v1_2e_rh_5f_up_5f_to
-  style BKLNW_2e_v1_2e_table8_5f_psi_5f_bound stroke-dasharray: 8 4;
-  style BKLNW_2e_v1_2e_table8_5f_psi_5f_bound_5f_above stroke-dasharray: 8 4;
-  style BKLNWNumerics_2e_v1_2e_table8_5f_psi_5f_bound stroke-dasharray: 8 4;
-  style Buthe_2e_v1_2e_table_5f_1_5f_interval_5f_bounds stroke-dasharray: 8 4;
-  style Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_riemann_5f_pi stroke-dasharray: 8 4;
-  style Buthe_2e_v1_2e_theorem_5f_2_5f_psi stroke-dasharray: 8 4;
-  style Buthe_2e_v1_2e_theorem_5f_2_5f_theta stroke-dasharray: 8 4;
-  style Buthe_2e_v1_2e_theorem_5f_2_5f_theta_5f_lower stroke-dasharray: 8 4;
-  style Buthe2016_2e_v1_2e_theorem_5f_1_5f_table2 stroke-dasharray: 8 4;
-  style DudekPlatt_2e_v1_2e_largest_5f_counterexample_5f_on_5f_rh stroke-dasharray: 8 4;
-  style DudekPlattNumerics_2e_v1_2e_pi_5f_two_5f_sided_5f_paper stroke-dasharray: 8 4;
-  style DudekPlattNumerics_2e_v2_2e_pi_5f_two_5f_sided_5f_pnt stroke-dasharray: 2 3;
-  style DudekPlattNumerics_2e_v3_2e_pi_5f_two_5f_sided_5f_footnote stroke-dasharray: 8 4;
-  style Dusart2018_2e_v1_2e_proposition_5f_5_5f_4 stroke-dasharray: 2 3;
-  style FKBJ_2e_v1_2e_rh_5f_up_5f_to stroke-dasharray: 8 4;
-  style FKS_2e_v1_2e_psi_5f_bound_5f_all_5f_x stroke-dasharray: 8 4;
-  style FKS_2e_v1_2e_psi_5f_classical_5f_bound stroke-dasharray: 8 4;
-  style FKS_2e_v2_2e_psi_5f_bound_5f_all_5f_x stroke-dasharray: 8 4;
-  style FKS_2e_v2_2e_psi_5f_classical_5f_bound stroke-dasharray: 8 4;
-  style Hiary2016_2e_v1_2e_zeta_5f_half_5f_line_5f_bound stroke-dasharray: 8 4;
-  style KadiriLumley_2e_v1_2e_prime_5f_in_5f_interval_5f_above_5f_exp_5f_59 stroke-dasharray: 2 3;
-  style KadiriLumley_2e_v1_2e_prime_5f_in_5f_interval_5f_above_5f_exp_5f_60 stroke-dasharray: 2 3;
-  style Platt2015_2e_v1_2e_rh_5f_up_5f_to stroke-dasharray: 8 4;
-  style Platt2017_2e_v1_2e_rh_5f_up_5f_to stroke-dasharray: 8 4;
-  style PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to stroke-dasharray: 8 4;
-  style PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to_5f_exact stroke-dasharray: 8 4;
-  style RamareSaouter2003_2e_v1_2e_prime_5f_in_5f_short_5f_interval stroke-dasharray: 2 3;
-  style RosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region stroke-dasharray: 2 3;
-  style Trudgian2011_2e_v1_2e_integral_5f_S_5f_bound stroke-dasharray: 2 3;
-  style Wedeniwski_2e_v1_2e_rh_5f_up_5f_to stroke-dasharray: 2 3;
-  classDef lean_2d_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
-  classDef lean_2d_comparator_2d_stale fill:#e9f7ec,stroke:#2da44e,color:#1f2328;
-  classDef lean_2d_comparator_2d_drifted fill:#eef2ef,stroke:#8b949e,color:#1f2328;
-  classDef lean_2d_noncompliant fill:#eaeef2,stroke:#4f5661,color:#1f2328;
-  classDef numerical fill:#fff8c5,stroke:#9a6700,color:#1f2328;
-  classDef literature fill:#ddf4ff,stroke:#0969da,color:#1f2328;
-  classDef asserted fill:#fff1e5,stroke:#bc4c00,color:#1f2328;
-  classDef bridged fill:#fbefff,stroke:#8250df,color:#1f2328;
-  classDef none_2d_yet fill:#ffebe9,stroke:#cf222e,color:#1f2328;
-  classDef bridge fill:#fbefff,stroke:#8250df,color:#1f2328,stroke-width:2px;
-  class BRDudekPlatt_2e_v1_2e_ramanujan_5f_inequality_3a__3a_bridge_2d_from_2d_v4,BRDudekPlattNumerics_2e_v3_2e_pi_5f_two_5f_sided_5f_footnote_3a__3a_bridge_2d_from_2d_v4,BRFKS_2e_v2_2e_psi_5f_bound_5f_all_5f_x_3a__3a_rescaled_2d_from_2d_classical,BRFKS_2e_v2_2e_psi_5f_classical_5f_bound_3a__3a_threshold_2d_from_2d_v1,BRLcm_2e_v1_2e_lcmUpto_5f_not_5f_highlyAbundant_3a__3a_bridge_2d_from_2d_v2,BRPlatt2015_2e_v1_2e_rh_5f_up_5f_to_3a__3a_bridge_2d_from_2d_platt2017,BRRosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region_5f_classical_3a__3a_bridge_2d_from_2d_shape,BRWedeniwski_2e_v1_2e_rh_5f_up_5f_to_3a__3a_bridge_2d_from_2d_platt2017 bridge;
-  class Wedeniwski_2e_v1_2e_rh_5f_up_5f_to asserted;
-  class FKS_2e_v2_2e_psi_5f_bound_5f_all_5f_x,FKS_2e_v2_2e_psi_5f_classical_5f_bound,RosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region_5f_classical bridged;
-  class CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum,CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi,CH2_2e_v1_2e_corollary_5f_1_5f_3_5f_lambda_5f_sum,CH2_2e_v1_2e_corollary_5f_1_5f_3_5f_psi,CH2_2e_v3_2e_extremal_5f_majorant,CH2_2e_v3_2e_extremal_5f_minorant,Chebyshev_2e_v1_2e_constant_5f_bounds,Chebyshev_2e_v1_2e_psi_5f_le_5f_small,Chebyshev_2e_v1_2e_psi_5f_lower,Chebyshev_2e_v1_2e_psi_5f_upper,Chebyshev_2e_v1_2e_psi_5f_upper_5f_clean,DudekPlatt_2e_v4_2e_ramanujan_5f_inequality_5f_9401,DudekPlattNumerics_2e_v4_2e_pi_5f_two_5f_sided_5f_footnote,Erdos392_2e_v1_2e_factors_5f_le_5f_n,Erdos392_2e_v1_2e_factors_5f_le_5f_n_5f_sq,Erdos392_2e_v1_2e_factors_5f_le_5f_n_5f_sq_5f_lower,GammaAsymptotics_2e_v2_2e_digamma_5f_sub_5f_log_5f_isBigO_5f_strip,Goldbach_2e_v1_2e_even_5f_and_5f_gaps_5f_imply_5f_odd,Goldbach_2e_v1_2e_even_5f_implies_5f_odd,Goldbach_2e_v1_2e_even_5f_up_5f_to_5f_30,Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_1_5f_1325e26,Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_kadiri_5f_lumley,Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_ramare_5f_saouter,ZetaLogDeriv_2e_v1_2e_logDeriv_5f_functional_5f_equation,ZetaZeroes_2e_v1_2e_exists_5f_ordinate_5f_free_5f_height,ZetaZeroes_2e_v1_2e_finite_5f_zeroes_5f_on_5f_compact,ZetaZeroes_2e_v1_2e_no_5f_nontrivial_5f_zeroes_5f_left,ZetaZeroes_2e_v1_2e_zeroes_5f_off_5f_axis_5f_in_5f_strip,ZetaZeroes_2e_v1_2e_zeta_5f_eq_5f_zero_5f_iff_5f_zeta1,ZetaZeroes_2e_v1_2e_zeta_5f_eq_5f_zeta1_5f_div lean_2d_comparator;
-  class CH2_2e_v2_2e_proposition_5f_2_5f_4_5f_lower,CH2_2e_v2_2e_proposition_5f_2_5f_4_5f_upper,DudekPlatt_2e_v2_2e_ramanujan_5f_inequality_5f_3915,DudekPlatt_2e_v3_2e_criterion,FKS2_2e_v1_2e_corollary_5f_14,FKS2_2e_v1_2e_corollary_5f_22,FKS2_2e_v1_2e_corollary_5f_23,FKS2_2e_v1_2e_corollary_5f_26,FKS2_2e_v2_2e_proposition_5f_13,FKS2_2e_v2_2e_theorem_5f_3,Lcm_2e_v1_2e_lcmUpto_5f_not_5f_highlyAbundant,Lcm_2e_v2_2e_lcmUpto_5f_not_5f_highlyAbundant_5f_of_5f_primeGap,PrimeInterval_2e_v1_2e_classicalBound_5f_hasPrimeInInterval,PrimeInterval_2e_v1_2e_eTheta_5f_criterion,PrimeInterval_2e_v1_2e_numericalBound_5f_hasPrimeInInterval,PrimeInterval_2e_v1_2e_theta_5f_characterisation,ZeroFreeHeight_2e_v1_2e_classical_5f_region_5f_descends lean_2d_comparator_2d_stale;
-  class BKLNW_2e_v1_2e_corollary_5f_5_5f_1,BKLNW_2e_v1_2e_corollary_5f_5_5f_1_5f_above,BKLNW_2e_v1_2e_table8_5f_psi_5f_bound,BKLNW_2e_v1_2e_table8_5f_psi_5f_bound_5f_above,BKLNW_2e_v1_2e_theta_5f_error_5f_le_5f_one,BKLNW_2e_v2_2e_corollary_5f_5_5f_1,BKLNW_2e_v2_2e_table8_5f_psi_5f_bound_5f_above,Buthe_2e_v1_2e_table_5f_1_5f_interval_5f_bounds,Buthe_2e_v1_2e_table_5f_2_5f_interval_5f_bounds,Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_gt_5f_pi,Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_pi,Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_riemann_5f_pi,Buthe_2e_v1_2e_theorem_5f_2_5f_psi,Buthe_2e_v1_2e_theorem_5f_2_5f_theta,Buthe_2e_v1_2e_theorem_5f_2_5f_theta_5f_lower,Buthe2016_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_pi,Buthe2016_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_riemann_5f_pi,Buthe2016_2e_v1_2e_theorem_5f_2_5f_psi,Buthe2016_2e_v1_2e_theorem_5f_2_5f_theta,DudekPlatt_2e_v1_2e_largest_5f_counterexample_5f_on_5f_rh,DudekPlatt_2e_v1_2e_ramanujan_5f_inequality,Dusart2018_2e_v1_2e_proposition_5f_5_5f_4,FKS_2e_v1_2e_psi_5f_bound_5f_all_5f_x,FKS_2e_v1_2e_psi_5f_classical_5f_bound,Hiary2016_2e_v1_2e_zeta_5f_half_5f_line_5f_bound,KLN_2e_v1_2e_subconvexity_5f_bound,KLN_2e_v1_2e_zero_5f_density,Kadiri2005_2e_v1_2e_zero_5f_free_5f_region,KadiriLumley_2e_v1_2e_prime_5f_in_5f_interval_5f_above_5f_exp_5f_59,KadiriLumley_2e_v1_2e_prime_5f_in_5f_interval_5f_above_5f_exp_5f_60,MT_2e_v1_2e_zero_5f_free_5f_region,MT_2e_v1_2e_zero_5f_free_5f_region_5f_sharpened,MT_2e_v2_2e_corollary_5f_1,PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to,PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to_5f_exact,PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_classical,PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_numerical,PlattZeroSum_2e_v1_2e_inv_5f_ordinate_5f_sum_5f_le,RamareSaouter2003_2e_v1_2e_prime_5f_in_5f_short_5f_interval,RosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region,RosserSchoenfeld1962_2e_v1_2e_equation_5f_3_5f_35,Trudgian2011_2e_v1_2e_integral_5f_S_5f_bound,ZeroCount_2e_v1_2e_rvm_5f_error_5f_bound,ZeroCount_2e_v1_2e_rvm_5f_error_5f_small,ZetaHadamard_2e_v1_2e_logDeriv_5f_partial_5f_fractions literature;
-  class Buthe_2e_v2_2e_lemma_5f_3_5f_bounds,Buthe_2e_v2_2e_lemma_5f_3_5f_positivity,CotangentSeries_2e_v1_2e_cot_5f_series_5f_zeta_5f_values,GammaAsymptotics_2e_v1_2e_digamma_5f_sub_5f_log_5f_isBigO none_2d_yet;
-  class BKLNWNumerics_2e_v1_2e_table8_5f_psi_5f_bound,BKLNWNumerics_2e_v1_2e_theta_5f_error_5f_le_5f_one,Buthe2016_2e_v1_2e_theorem_5f_1_5f_table1,Buthe2016_2e_v1_2e_theorem_5f_1_5f_table2,ButheNumerics_2e_v1_2e_eq_5f_6_5f_2,ButheNumerics_2e_v1_2e_lemma_5f_3_5f_constant_5f_gt_5f_at_5f_10,ButheNumerics_2e_v1_2e_lemma_5f_3_5f_constant_5f_nonpos,ButheNumerics_2e_v1_2e_li_5f_minus_5f_pi_5f_below_5f_1e7,ButheNumerics_2e_v1_2e_li_5f_minus_5f_riemann_5f_pi_5f_below_5f_1e7,ChebyshevNumerics_2e_v1_2e_psi_5f_le_5f_below_5f_11723,DudekPlattNumerics_2e_v1_2e_pi_5f_two_5f_sided_5f_paper,DudekPlattNumerics_2e_v2_2e_pi_5f_two_5f_sided_5f_pnt,DudekPlattNumerics_2e_v3_2e_pi_5f_two_5f_sided_5f_footnote,FKBJ_2e_v1_2e_rh_5f_up_5f_to,FKS_2e_v1_2e_rescaled_5f_A_5f_exceeds_5f_printed,FKS_2e_v1_2e_rescaled_5f_C_5f_is_5f_short_5f_of_5f_two,FKS2Numerics_2e_v1_2e_corollary_5f_22_5f_mid_5f_range,FKS2Numerics_2e_v1_2e_corollary_5f_23_5f_mid_5f_range,FKS2Numerics_2e_v1_2e_nu_5f_asymp_5f_e30_5f_le,FKS2Numerics_2e_v1_2e_table6_5f_row2_5f_floor,FKS2Numerics_2e_v1_2e_theta_5f_asymp_5f_ge_5f_one_5f_below_5f_e30,LowZeroes_2e_v1_2e_no_5f_zeroes_5f_below_5f_first_5f_ordinate,LowZeroes_2e_v1_2e_sum_5f_inv_5f_ordinates_5f_below_5f_2e4,OliveiraESilva2014_2e_v1_2e_even_5f_up_5f_to_5f_4e18,Platt2015_2e_v1_2e_rh_5f_up_5f_to,Platt2017_2e_v1_2e_rh_5f_up_5f_to,Richstein2001_2e_v1_2e_even_5f_up_5f_to_5f_4e14,ZetaLogDerivValues_2e_v1_2e_deriv_5f_logDeriv_5f_neg_5f_one,ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_laurent_5f_alternating,ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_neg_5f_one,ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_three_5f_halves,ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_two numerical;
-  click BKLNW_2e_v1_2e_corollary_5f_5_5f_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#corollary_5_1" _blank
-  click BKLNW_2e_v1_2e_corollary_5f_5_5f_1_5f_above href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#corollary_5_1_above" _blank
-  click BKLNW_2e_v1_2e_table8_5f_psi_5f_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound" _blank
-  click BKLNW_2e_v1_2e_table8_5f_psi_5f_bound_5f_above href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#table8_psi_bound_above" _blank
-  click BKLNW_2e_v1_2e_theta_5f_error_5f_le_5f_one href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md#theta_error_le_one" _blank
-  click BKLNW_2e_v2_2e_corollary_5f_5_5f_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v2.md#corollary_5_1" _blank
-  click BKLNW_2e_v2_2e_table8_5f_psi_5f_bound_5f_above href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v2.md#table8_psi_bound_above" _blank
-  click BKLNWNumerics_2e_v1_2e_table8_5f_psi_5f_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNWNumerics-v1.md#table8_psi_bound" _blank
-  click BKLNWNumerics_2e_v1_2e_theta_5f_error_5f_le_5f_one href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNWNumerics-v1.md#theta_error_le_one" _blank
-  click Buthe_2e_v1_2e_table_5f_1_5f_interval_5f_bounds href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#table_1_interval_bounds" _blank
-  click Buthe_2e_v1_2e_table_5f_2_5f_interval_5f_bounds href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#table_2_interval_bounds" _blank
-  click Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_gt_5f_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_li_gt_pi" _blank
-  click Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi" _blank
-  click Buthe_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_riemann_5f_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi" _blank
-  click Buthe_2e_v1_2e_theorem_5f_2_5f_psi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_psi" _blank
-  click Buthe_2e_v1_2e_theorem_5f_2_5f_theta href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_theta" _blank
-  click Buthe_2e_v1_2e_theorem_5f_2_5f_theta_5f_lower href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v1.md#theorem_2_theta_lower" _blank
-  click Buthe_2e_v2_2e_lemma_5f_3_5f_bounds href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v2.md#lemma_3_bounds" _blank
-  click Buthe_2e_v2_2e_lemma_5f_3_5f_positivity href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v2.md#lemma_3_positivity" _blank
-  click Buthe2016_2e_v1_2e_theorem_5f_1_5f_table1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md#theorem_1_table1" _blank
-  click Buthe2016_2e_v1_2e_theorem_5f_1_5f_table2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md#theorem_1_table2" _blank
-  click Buthe2016_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_pi" _blank
-  click Buthe2016_2e_v1_2e_theorem_5f_2_5f_li_5f_minus_5f_riemann_5f_pi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md#theorem_2_li_minus_riemann_pi" _blank
-  click Buthe2016_2e_v1_2e_theorem_5f_2_5f_psi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md#theorem_2_psi" _blank
-  click Buthe2016_2e_v1_2e_theorem_5f_2_5f_theta href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md#theorem_2_theta" _blank
-  click ButheNumerics_2e_v1_2e_eq_5f_6_5f_2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ButheNumerics-v1.md#eq_6_2" _blank
-  click ButheNumerics_2e_v1_2e_lemma_5f_3_5f_constant_5f_gt_5f_at_5f_10 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ButheNumerics-v1.md#lemma_3_constant_gt_at_10" _blank
-  click ButheNumerics_2e_v1_2e_lemma_5f_3_5f_constant_5f_nonpos href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ButheNumerics-v1.md#lemma_3_constant_nonpos" _blank
-  click ButheNumerics_2e_v1_2e_li_5f_minus_5f_pi_5f_below_5f_1e7 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ButheNumerics-v1.md#li_minus_pi_below_1e7" _blank
-  click ButheNumerics_2e_v1_2e_li_5f_minus_5f_riemann_5f_pi_5f_below_5f_1e7 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ButheNumerics-v1.md#li_minus_riemann_pi_below_1e7" _blank
-  click CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_lambda_5f_sum href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v1.md#corollary_1_2_lambda_sum" _blank
-  click CH2_2e_v1_2e_corollary_5f_1_5f_2_5f_psi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v1.md#corollary_1_2_psi" _blank
-  click CH2_2e_v1_2e_corollary_5f_1_5f_3_5f_lambda_5f_sum href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum" _blank
-  click CH2_2e_v1_2e_corollary_5f_1_5f_3_5f_psi href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v1.md#corollary_1_3_psi" _blank
-  click CH2_2e_v2_2e_proposition_5f_2_5f_4_5f_lower href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v2.md#proposition_2_4_lower" _blank
-  click CH2_2e_v2_2e_proposition_5f_2_5f_4_5f_upper href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v2.md#proposition_2_4_upper" _blank
-  click CH2_2e_v3_2e_extremal_5f_majorant href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v3.md#extremal_majorant" _blank
-  click CH2_2e_v3_2e_extremal_5f_minorant href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v3.md#extremal_minorant" _blank
-  click Chebyshev_2e_v1_2e_constant_5f_bounds href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Chebyshev-v1.md#constant_bounds" _blank
-  click Chebyshev_2e_v1_2e_psi_5f_le_5f_small href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Chebyshev-v1.md#psi_le_small" _blank
-  click Chebyshev_2e_v1_2e_psi_5f_lower href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Chebyshev-v1.md#psi_lower" _blank
-  click Chebyshev_2e_v1_2e_psi_5f_upper href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Chebyshev-v1.md#psi_upper" _blank
-  click Chebyshev_2e_v1_2e_psi_5f_upper_5f_clean href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Chebyshev-v1.md#psi_upper_clean" _blank
-  click ChebyshevNumerics_2e_v1_2e_psi_5f_le_5f_below_5f_11723 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ChebyshevNumerics-v1.md#psi_le_below_11723" _blank
-  click CotangentSeries_2e_v1_2e_cot_5f_series_5f_zeta_5f_values href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values" _blank
-  click DudekPlatt_2e_v1_2e_largest_5f_counterexample_5f_on_5f_rh href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v1.md#largest_counterexample_on_rh" _blank
-  click DudekPlatt_2e_v1_2e_ramanujan_5f_inequality href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v1.md#ramanujan_inequality" _blank
-  click DudekPlatt_2e_v2_2e_ramanujan_5f_inequality_5f_3915 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v2.md#ramanujan_inequality_3915" _blank
-  click DudekPlatt_2e_v3_2e_criterion href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v3.md#criterion" _blank
-  click DudekPlatt_2e_v4_2e_ramanujan_5f_inequality_5f_9401 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v4.md#ramanujan_inequality_9401" _blank
-  click DudekPlattNumerics_2e_v1_2e_pi_5f_two_5f_sided_5f_paper href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlattNumerics-v1.md#pi_two_sided_paper" _blank
-  click DudekPlattNumerics_2e_v2_2e_pi_5f_two_5f_sided_5f_pnt href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlattNumerics-v2.md#pi_two_sided_pnt" _blank
-  click DudekPlattNumerics_2e_v3_2e_pi_5f_two_5f_sided_5f_footnote href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlattNumerics-v3.md#pi_two_sided_footnote" _blank
-  click DudekPlattNumerics_2e_v4_2e_pi_5f_two_5f_sided_5f_footnote href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlattNumerics-v4.md#pi_two_sided_footnote" _blank
-  click Dusart2018_2e_v1_2e_proposition_5f_5_5f_4 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Dusart2018-v1.md#proposition_5_4" _blank
-  click Erdos392_2e_v1_2e_factors_5f_le_5f_n href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Erdos392-v1.md#factors_le_n" _blank
-  click Erdos392_2e_v1_2e_factors_5f_le_5f_n_5f_sq href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Erdos392-v1.md#factors_le_n_sq" _blank
-  click Erdos392_2e_v1_2e_factors_5f_le_5f_n_5f_sq_5f_lower href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Erdos392-v1.md#factors_le_n_sq_lower" _blank
-  click FKBJ_2e_v1_2e_rh_5f_up_5f_to href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKBJ-v1.md#rh_up_to" _blank
-  click FKS_2e_v1_2e_psi_5f_bound_5f_all_5f_x href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS-v1.md#psi_bound_all_x" _blank
-  click FKS_2e_v1_2e_psi_5f_classical_5f_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS-v1.md#psi_classical_bound" _blank
-  click FKS_2e_v1_2e_rescaled_5f_A_5f_exceeds_5f_printed href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS-v1.md#rescaled_A_exceeds_printed" _blank
-  click FKS_2e_v1_2e_rescaled_5f_C_5f_is_5f_short_5f_of_5f_two href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS-v1.md#rescaled_C_is_short_of_two" _blank
-  click FKS_2e_v2_2e_psi_5f_bound_5f_all_5f_x href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS-v2.md#psi_bound_all_x" _blank
-  click FKS_2e_v2_2e_psi_5f_classical_5f_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS-v2.md#psi_classical_bound" _blank
-  click FKS2_2e_v1_2e_corollary_5f_14 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#corollary_14" _blank
-  click FKS2_2e_v1_2e_corollary_5f_22 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#corollary_22" _blank
-  click FKS2_2e_v1_2e_corollary_5f_23 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#corollary_23" _blank
-  click FKS2_2e_v1_2e_corollary_5f_26 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md#corollary_26" _blank
-  click FKS2_2e_v2_2e_proposition_5f_13 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v2.md#proposition_13" _blank
-  click FKS2_2e_v2_2e_theorem_5f_3 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v2.md#theorem_3" _blank
-  click FKS2Numerics_2e_v1_2e_corollary_5f_22_5f_mid_5f_range href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md#corollary_22_mid_range" _blank
-  click FKS2Numerics_2e_v1_2e_corollary_5f_23_5f_mid_5f_range href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md#corollary_23_mid_range" _blank
-  click FKS2Numerics_2e_v1_2e_nu_5f_asymp_5f_e30_5f_le href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le" _blank
-  click FKS2Numerics_2e_v1_2e_table6_5f_row2_5f_floor href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md#table6_row2_floor" _blank
-  click FKS2Numerics_2e_v1_2e_theta_5f_asymp_5f_ge_5f_one_5f_below_5f_e30 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30" _blank
-  click GammaAsymptotics_2e_v1_2e_digamma_5f_sub_5f_log_5f_isBigO href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/GammaAsymptotics-v1.md#digamma_sub_log_isBigO" _blank
-  click GammaAsymptotics_2e_v2_2e_digamma_5f_sub_5f_log_5f_isBigO_5f_strip href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip" _blank
-  click Goldbach_2e_v1_2e_even_5f_and_5f_gaps_5f_imply_5f_odd href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md#even_and_gaps_imply_odd" _blank
-  click Goldbach_2e_v1_2e_even_5f_implies_5f_odd href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md#even_implies_odd" _blank
-  click Goldbach_2e_v1_2e_even_5f_up_5f_to_5f_30 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md#even_up_to_30" _blank
-  click Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_1_5f_1325e26 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md#odd_up_to_1_1325e26" _blank
-  click Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_kadiri_5f_lumley href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md#odd_up_to_kadiri_lumley" _blank
-  click Goldbach_2e_v1_2e_odd_5f_up_5f_to_5f_ramare_5f_saouter href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Goldbach-v1.md#odd_up_to_ramare_saouter" _blank
-  click Hiary2016_2e_v1_2e_zeta_5f_half_5f_line_5f_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Hiary2016-v1.md#zeta_half_line_bound" _blank
-  click KLN_2e_v1_2e_subconvexity_5f_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/KLN-v1.md#subconvexity_bound" _blank
-  click KLN_2e_v1_2e_zero_5f_density href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/KLN-v1.md#zero_density" _blank
-  click Kadiri2005_2e_v1_2e_zero_5f_free_5f_region href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Kadiri2005-v1.md#zero_free_region" _blank
-  click KadiriLumley_2e_v1_2e_prime_5f_in_5f_interval_5f_above_5f_exp_5f_59 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/KadiriLumley-v1.md#prime_in_interval_above_exp_59" _blank
-  click KadiriLumley_2e_v1_2e_prime_5f_in_5f_interval_5f_above_5f_exp_5f_60 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/KadiriLumley-v1.md#prime_in_interval_above_exp_60" _blank
-  click Lcm_2e_v1_2e_lcmUpto_5f_not_5f_highlyAbundant href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Lcm-v1.md#lcmUpto_not_highlyAbundant" _blank
-  click Lcm_2e_v2_2e_lcmUpto_5f_not_5f_highlyAbundant_5f_of_5f_primeGap href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Lcm-v2.md#lcmUpto_not_highlyAbundant_of_primeGap" _blank
-  click LowZeroes_2e_v1_2e_no_5f_zeroes_5f_below_5f_first_5f_ordinate href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/LowZeroes-v1.md#no_zeroes_below_first_ordinate" _blank
-  click LowZeroes_2e_v1_2e_sum_5f_inv_5f_ordinates_5f_below_5f_2e4 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/LowZeroes-v1.md#sum_inv_ordinates_below_2e4" _blank
-  click MT_2e_v1_2e_zero_5f_free_5f_region href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v1.md#zero_free_region" _blank
-  click MT_2e_v1_2e_zero_5f_free_5f_region_5f_sharpened href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v1.md#zero_free_region_sharpened" _blank
-  click MT_2e_v2_2e_corollary_5f_1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v2.md#corollary_1" _blank
-  click OliveiraESilva2014_2e_v1_2e_even_5f_up_5f_to_5f_4e18 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/OliveiraESilva2014-v1.md#even_up_to_4e18" _blank
-  click Platt2015_2e_v1_2e_rh_5f_up_5f_to href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Platt2015-v1.md#rh_up_to" _blank
-  click Platt2017_2e_v1_2e_rh_5f_up_5f_to href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Platt2017-v1.md#rh_up_to" _blank
-  click PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian-v1.md#rh_up_to" _blank
-  click PlattTrudgian_2e_v1_2e_rh_5f_up_5f_to_5f_exact href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian-v1.md#rh_up_to_exact" _blank
-  click PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_classical href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian2021-v1.md#theorem_1_classical" _blank
-  click PlattTrudgian2021_2e_v1_2e_theorem_5f_1_5f_numerical href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian2021-v1.md#theorem_1_numerical" _blank
-  click PlattZeroSum_2e_v1_2e_inv_5f_ordinate_5f_sum_5f_le href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattZeroSum-v1.md#inv_ordinate_sum_le" _blank
-  click PrimeInterval_2e_v1_2e_classicalBound_5f_hasPrimeInInterval href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PrimeInterval-v1.md#classicalBound_hasPrimeInInterval" _blank
-  click PrimeInterval_2e_v1_2e_eTheta_5f_criterion href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PrimeInterval-v1.md#eTheta_criterion" _blank
-  click PrimeInterval_2e_v1_2e_numericalBound_5f_hasPrimeInInterval href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PrimeInterval-v1.md#numericalBound_hasPrimeInInterval" _blank
-  click PrimeInterval_2e_v1_2e_theta_5f_characterisation href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PrimeInterval-v1.md#theta_characterisation" _blank
-  click RamareSaouter2003_2e_v1_2e_prime_5f_in_5f_short_5f_interval href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval" _blank
-  click Richstein2001_2e_v1_2e_even_5f_up_5f_to_5f_4e14 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Richstein2001-v1.md#even_up_to_4e14" _blank
-  click RosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v1.md#zero_free_region" _blank
-  click RosserSchoenfeld_2e_v1_2e_zero_5f_free_5f_region_5f_classical href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v1.md#zero_free_region_classical" _blank
-  click RosserSchoenfeld1962_2e_v1_2e_equation_5f_3_5f_35 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35" _blank
-  click Trudgian2011_2e_v1_2e_integral_5f_S_5f_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Trudgian2011-v1.md#integral_S_bound" _blank
-  click Wedeniwski_2e_v1_2e_rh_5f_up_5f_to href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Wedeniwski-v1.md#rh_up_to" _blank
-  click ZeroCount_2e_v1_2e_rvm_5f_error_5f_bound href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZeroCount-v1.md#rvm_error_bound" _blank
-  click ZeroCount_2e_v1_2e_rvm_5f_error_5f_small href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZeroCount-v1.md#rvm_error_small" _blank
-  click ZeroFreeHeight_2e_v1_2e_classical_5f_region_5f_descends href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZeroFreeHeight-v1.md#classical_region_descends" _blank
-  click ZetaHadamard_2e_v1_2e_logDeriv_5f_partial_5f_fractions href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaHadamard-v1.md#logDeriv_partial_fractions" _blank
-  click ZetaLogDeriv_2e_v1_2e_logDeriv_5f_functional_5f_equation href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaLogDeriv-v1.md#logDeriv_functional_equation" _blank
-  click ZetaLogDerivValues_2e_v1_2e_deriv_5f_logDeriv_5f_neg_5f_one href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaLogDerivValues-v1.md#deriv_logDeriv_neg_one" _blank
-  click ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_laurent_5f_alternating href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating" _blank
-  click ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_neg_5f_one href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_neg_one" _blank
-  click ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_three_5f_halves href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_three_halves" _blank
-  click ZetaLogDerivValues_2e_v1_2e_logDeriv_5f_two href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_two" _blank
-  click ZetaZeroes_2e_v1_2e_exists_5f_ordinate_5f_free_5f_height href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroes-v1.md#exists_ordinate_free_height" _blank
-  click ZetaZeroes_2e_v1_2e_finite_5f_zeroes_5f_on_5f_compact href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroes-v1.md#finite_zeroes_on_compact" _blank
-  click ZetaZeroes_2e_v1_2e_no_5f_nontrivial_5f_zeroes_5f_left href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroes-v1.md#no_nontrivial_zeroes_left" _blank
-  click ZetaZeroes_2e_v1_2e_zeroes_5f_off_5f_axis_5f_in_5f_strip href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroes-v1.md#zeroes_off_axis_in_strip" _blank
-  click ZetaZeroes_2e_v1_2e_zeta_5f_eq_5f_zero_5f_iff_5f_zeta1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroes-v1.md#zeta_eq_zero_iff_zeta1" _blank
-  click ZetaZeroes_2e_v1_2e_zeta_5f_eq_5f_zeta1_5f_div href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroes-v1.md#zeta_eq_zeta1_div" _blank
-```
+It is a file rather than a block here because this one outgrew what Markdown can show.
+GitHub renders Mermaid through a sandboxed viewer that refuses a diagram over 50,000
+characters, and the conclusion-level graph reached 63,621 -- so what a reader got was an
+error where the picture should have been. The drawn page has no such ceiling, and the
+layout is computed when the file is generated, so it is as reproducible as the Markdown
+was: `python scripts/ieantn.py graph` writes both, and CI diffs both.
+
+Open it from a clone, or enable GitHub Pages for `docs/` to have it at a URL. The two
+tables below say the same thing in text, and need nothing but this file.
 
 ## What each result rests on
 
@@ -1193,6 +613,8 @@ A line is one claim, indented under whatever assumes it.
   - [`Richstein2001.v1.even_up_to_4e14`](docs/nodes/Richstein2001-v1.md#even_up_to_4e14) — computation
   - [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) — cited — *sources not traced*
 
+- [`KadiriLumley.v1.table_2`](docs/nodes/KadiriLumley-v1.md#table_2) — cited — *sources known, not all drawable*
+
 - [`Lcm.v1.lcmUpto_not_highlyAbundant`](docs/nodes/Lcm-v1.md#lcmUpto_not_highlyAbundant) — verified, stale
   - [`Dusart2018.v1.proposition_5_4`](docs/nodes/Dusart2018-v1.md#proposition_5_4) — cited — *sources not traced*
 
@@ -1223,7 +645,7 @@ A line is one claim, indented under whatever assumes it.
 
 - [`RosserSchoenfeld.v1.zero_free_region`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region) — cited — *sources not traced*
 
-- [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) — cited
+- [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) — lean, noncompliant
 
 - [`ZeroFreeHeight.v1.classical_region_descends`](docs/nodes/ZeroFreeHeight-v1.md#classical_region_descends) — verified, stale
 
@@ -1328,11 +750,12 @@ rather than maintained.
 | [`FKS.v2.psi_bound_all_x`](docs/nodes/FKS-v2.md#psi_bound_all_x) | bridged | 0 | known, not all drawable |
 | [`FKS.v2.psi_classical_bound`](docs/nodes/FKS-v2.md#psi_classical_bound) | bridged | 0 | known, not all drawable |
 | [`GammaAsymptotics.v1.digamma_sub_log_isBigO`](docs/nodes/GammaAsymptotics-v1.md#digamma_sub_log_isBigO) | unjustified | 0 | none |
+| [`KadiriLumley.v1.table_2`](docs/nodes/KadiriLumley-v1.md#table_2) | cited | 0 | known, not all drawable |
 | [`LowZeroes.v1.no_zeroes_below_first_ordinate`](docs/nodes/LowZeroes-v1.md#no_zeroes_below_first_ordinate) | computation | 0 | none |
 | [`LowZeroes.v1.sum_inv_ordinates_below_2e4`](docs/nodes/LowZeroes-v1.md#sum_inv_ordinates_below_2e4) | computation | 0 | none |
 | [`PlattTrudgian2021.v1.theorem_1_classical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_classical) | cited | 0 | traced |
 | [`RosserSchoenfeld.v1.zero_free_region`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region) | cited | 0 | **not yet traced** |
-| [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) | cited | 0 | none |
+| [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) | lean, noncompliant | 0 | none |
 | [`ZetaLogDerivValues.v1.deriv_logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#deriv_logDeriv_neg_one) | computation | 0 | none |
 
 ## Nodes that state nothing yet

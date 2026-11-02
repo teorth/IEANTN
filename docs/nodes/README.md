@@ -43,7 +43,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`Hiary2016.v1`](Hiary2016-v1.md) | paper | 1 | cited |
 | [`KLN.v1`](KLN-v1.md) | paper | 2 | cited |
 | [`Kadiri2005.v1`](Kadiri2005-v1.md) | paper | 1 | cited |
-| [`KadiriLumley.v1`](KadiriLumley-v1.md) | paper | 2 | cited |
+| [`KadiriLumley.v1`](KadiriLumley-v1.md) | paper | 3 | cited |
 | [`Lcm.v1`](Lcm-v1.md) | paper | 1 | verified, stale |
 | [`Lcm.v2`](Lcm-v2.md) | pipeline | 1 | verified, stale |
 | [`LowZeroes.v1`](LowZeroes-v1.md) | computation | 2 | computation |
@@ -60,7 +60,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`RamareSaouter2003.v1`](RamareSaouter2003-v1.md) | paper | 1 | cited |
 | [`Richstein2001.v1`](Richstein2001-v1.md) | computation | 1 | computation |
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 2 | cited |
-| [`RosserSchoenfeld1962.v1`](RosserSchoenfeld1962-v1.md) | paper | 1 | cited |
+| [`RosserSchoenfeld1962.v1`](RosserSchoenfeld1962-v1.md) | paper | 1 | lean, noncompliant |
 | [`Trudgian2011.v1`](Trudgian2011-v1.md) | paper | 1 | cited |
 | [`Wedeniwski.v1`](Wedeniwski-v1.md) | computation | 1 | asserted |
 | [`ZeroCount.v1`](ZeroCount-v1.md) | paper | 2 | cited |
