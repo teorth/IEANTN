@@ -3774,14 +3774,41 @@ def state_at(ref: str | None) -> dict:
     conclusions = {}
     for node_id, node in nodes.items():
         for conclusion in conclusions_of(node):
+            designated = designated_of(conclusion) or {}
             conclusions[f"{node_id}.{conclusion.get('id')}"] = {
                 "imports": [
                     f"{d.get('node')}.{d.get('conclusion')}"
                     for d in (conclusion.get("imports") or [])
                 ],
-                "kind": designated_kind(conclusion),
+                "kind": designated.get("kind"),
+                "from": bridge_sources(designated) if designated.get("kind") == "bridged" else [],
             }
     return {"conclusions": conclusions, "fingerprints": fingerprints, "receipts": receipts}
+
+
+def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None) -> list[str]:
+    """The unproved-in-Lean conclusions `key` rests on, from a `state_at` snapshot.
+
+    A `bridged` conclusion contributes nothing of its own: what it rests on is whatever its
+    sources rest on. A `lean-comparator` conclusion is proved in this network. Anything else is a
+    leaf, and imports are walked in every case. Receipt health is not consulted. A severed
+    receipt is a different event, and `diff` already reports it. This is only the shape of the
+    graph, which is why it needs no Lean run.
+    """
+    seen = set() if seen is None else seen
+    if key in seen or key not in conclusions:
+        return []
+    seen.add(key)
+    entry = conclusions[key]
+    found: list[str] = []
+    if entry.get("kind") == "bridged":
+        for source in entry.get("from") or []:
+            found += graph_leaves(conclusions, source, seen)
+    elif entry.get("kind") not in VERIFIED_KINDS:
+        found.append(key)
+    for dependency in entry.get("imports") or []:
+        found += graph_leaves(conclusions, dependency, seen)
+    return found
 
 
 def acknowledged() -> dict[str, str]:
@@ -3908,6 +3935,36 @@ def diff(base: str) -> bool:
             notes.append(
                 "Vocabulary changed, but no conclusion fingerprint moved, so the change is "
                 "additive or cosmetic."
+            )
+
+    # A bridge is a restatement. It may discharge assumptions; it may not acquire any. Comparing
+    # the leaf set before and after is the whole check, and it is a property of the graph, so a
+    # conclusion that did not exist at the base has nothing to compare against.
+    for key, entry in sorted(after["conclusions"].items()):
+        if entry.get("kind") != "bridged" or key not in before["conclusions"]:
+            continue
+        before_leaves = set(graph_leaves(before["conclusions"], key))
+        after_leaves = set(graph_leaves(after["conclusions"], key))
+        added = sorted(after_leaves - before_leaves)
+        removed = sorted(before_leaves - after_leaves)
+        if added:
+            gained = ", ".join(f"`{name}`" for name in added)
+            message = f"**`{key}` gained unproved assumptions** via its bridge: {gained}."
+            if removed:
+                lost = ", ".join(f"`{name}`" for name in removed)
+                message += f" It no longer rests on {lost}."
+            message += (
+                " A restatement must not rest on more than it did. Discharge the new "
+                "assumptions, or do not designate the bridge: designate the weaker evidence "
+                "the node actually has, which costs nothing and says the true thing. This is "
+                "the one `diff` error a `changes/*.yaml` acknowledgement does not cover -- see "
+                "docs/ROADMAP.md."
+            )
+            errors.append(message)
+        elif removed:
+            lost = ", ".join(f"`{name}`" for name in removed)
+            notes.append(
+                f"`{key}` rests on fewer unproved assumptions after its bridge: {lost}."
             )
 
     lines = ["## Network impact", ""]
