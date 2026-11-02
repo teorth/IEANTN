@@ -1285,6 +1285,66 @@ def check_closure() -> bool:
                 "records.",
             )
 
+    # A solution may rest on a package outside Mathlib -- that is settled policy, and the
+    # argument is in ROADMAP's tier A -- on two conditions, which are the ones Palomar's
+    # specification puts on the same Comparator: the dependency is *pinned*, and the Challenge's
+    # own closure stays Mathlib-only, which `check_closure` has always enforced above.
+    #
+    # Pinned means a full commit. A branch pin verifies whatever that branch said on the day, and
+    # a receipt naming it would record a verification nobody can reproduce.
+    for directory in sorted(SOLUTIONS.iterdir()) if SOLUTIONS.is_dir() else []:
+        if not any((directory / name).is_file() for name in ("lakefile.toml", "lakefile.lean")):
+            continue
+        manifest = directory / "lake-manifest.json"
+        if not manifest.is_file():
+            # A warning, not a failure: a solution scaffolded by `new-solution` has no manifest
+            # until someone resolves it, and `check` should not refuse a project on its first day.
+            # Nothing is unpinned here -- nothing is resolved yet.
+            problems.warn(
+                rel(directory),
+                "has no `lake-manifest.json`, so the revisions it would be verified against are "
+                "not written down. Commit the one Lake resolves when you first build it; a "
+                "receipt reads it to record what the proof rested on.",
+            )
+            continue
+        packages = manifest_packages(manifest)
+        core = manifest_packages(ROOT / "lake-manifest.json")
+        for name, package in sorted(packages.items()):
+            if package.get("type") != "git":
+                continue
+            where = f"{rel(manifest)}: package `{name}`"
+            if name in core:
+                # A solution with its own Mathlib is verifying in a different environment from
+                # the one the fingerprints were taken in, which is the thing a receipt's
+                # `environment` is supposed to pin down.
+                if package.get("rev") != core[name].get("rev"):
+                    problems.add(
+                        where,
+                        f"is pinned to `{package.get('rev')}` but the core pins "
+                        f"`{core[name].get('rev')}`. A solution shares the core's environment by "
+                        "taking it as a path dependency; a divergent pin verifies against a "
+                        "different library than the one the fingerprints were taken in. Run "
+                        "`lake update` in the solution against the core's manifest.",
+                    )
+                continue
+            if not PINNED_REV.match(str(package.get("rev") or "")):
+                problems.add(
+                    where,
+                    f"is not pinned to a full commit: `{package.get('rev')}`. An external "
+                    "dependency may be verified against, but a receipt has to name something "
+                    "that cannot move afterwards.",
+                )
+            url = str(package.get("url") or "")
+            host = url.split("//", 1)[-1].split("/", 1)[0]
+            if not url.startswith("https://"):
+                problems.add(where, f"is fetched over `{url}`, which is not https.")
+            elif "@" in host:
+                problems.add(
+                    where,
+                    f"carries credentials in its URL (`{url}`). A pin anyone can fetch is part "
+                    "of what makes a verification reproducible.",
+                )
+
     # An inactive node is out of the umbrella, so nothing compiles it -- unless something live
     # imports one of its modules, which would quietly pull it back into the core build. The
     # yaml-level edge is caught by check-graph; this is the Lean-level one, which the yaml never sees.
@@ -1991,6 +2051,52 @@ def fingerprint(check_only: bool) -> bool:
 # ---------------------------------------------------------------------------
 
 
+#: A pinned revision: a full, lowercase Git commit. A branch or a tag names whatever it names
+#: today, so it pins nothing; Palomar's specification requires a full commit for the same reason.
+PINNED_REV = re.compile(r"^[0-9a-f]{40}$")
+
+
+def manifest_packages(path: pathlib.Path) -> dict[str, dict]:
+    """`name -> package` from a `lake-manifest.json`, or `{}` if it cannot be read.
+
+    Defensive in the same way `current_environment` is: a manifest is a generated file that a
+    half-finished `lake update` can leave malformed, and a reporting command is not the place to
+    discover it.
+    """
+    if not path.is_file():
+        return {}
+    try:
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return {}
+    packages = manifest.get("packages") if isinstance(manifest, dict) else None
+    if not isinstance(packages, list):
+        return {}
+    return {package["name"]: package for package in packages
+            if isinstance(package, dict) and isinstance(package.get("name"), str)}
+
+
+def solution_dependencies(node_id: str) -> list[dict]:
+    """What a solution's proof rests on beyond what the core already pins.
+
+    Derived from the solution's committed `lake-manifest.json` rather than restated in the node
+    metadata, so there is one source of truth for a pin and no way for the two to drift.
+
+    *Beyond the core* is the operative phrase. A solution resolves its own copy of Mathlib and the
+    eight packages Mathlib brings, and those are the core's pins, already recorded in the receipt's
+    environment. What matters here is what a solution adds -- LeanCert, PrimeCert, PNT+ -- because
+    that is the part of the trusted base a reader of the receipt would not otherwise know about.
+    The path dependency on the core itself is not an addition and is left out.
+    """
+    core = manifest_packages(ROOT / "lake-manifest.json")
+    added = manifest_packages(SOLUTIONS / node_id / "lake-manifest.json")
+    return [
+        {"name": name, "url": package.get("url"), "rev": package.get("rev")}
+        for name, package in sorted(added.items())
+        if name not in core and package.get("type") == "git"
+    ]
+
+
 def current_environment() -> dict:
     """The environment a verification run today would happen in.
 
@@ -2627,7 +2733,11 @@ def record_receipt(node_id: str, solution: str, run_url: str, stamp: str) -> boo
             "environment": current_environment(),
             "repository": {"commit": repository_commit()},
             "tools": verification_tools(),
-            "solution": {"project": solution},
+            # What the proof rested on beyond Mathlib, read from the solution's manifest at
+            # the moment of verification. Without it a receipt records that a proof was checked
+            # but not what was trusted in order to check it.
+            "solution": {"project": solution,
+                         "dependencies": solution_dependencies(node_id)},
             "run": {"workflow_run": run_url, "recorded_at": stamp},
         }
         path = receipt_path(key)
@@ -3575,6 +3685,15 @@ def render_node_page(node_id: str, nodes: dict, index: dict, importers: dict) ->
         if (solution / "Solution.lean").is_file():
             out.append(f"| Solution | [`Solutions/{node_id}`]"
                        f"({REPOSITORY_URL}/tree/main/Solutions/{node_id}) |")
+            # What the proof rests on beyond Mathlib. A reader deciding what a receipt is worth
+            # should not have to open a manifest to find out that the finite range was certified
+            # by a package this repository does not control.
+            external = solution_dependencies(node_id)
+            if external:
+                out.append("| Builds on | " + ", ".join(
+                    f"[`{item['name']}`]({item['url'].removesuffix('.git')}/tree/{item['rev']})"
+                    f" `{str(item['rev'])[:9]}`" if item.get("url") and item.get("rev")
+                    else f"`{item['name']}`" for item in external) + " |")
         receipt = RECEIPTS / f"{key}.json"
         if receipt.is_file():
             out.append(f"| Receipt | [`{receipt.name}`]"
