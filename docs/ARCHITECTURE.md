@@ -243,7 +243,8 @@ matching receipt, and `record-receipt` refuses to receipt any conclusion absent 
 
 `python scripts/ieantn.py status` grades every receipt against the world as it is now.
 
-So do the generated views. `STATE.md`, `GRAPH.md` and `docs/nodes/` read the committed
+So do the generated views. `STATE.md`, `GRAPH.md`, `docs/graph.html` and `docs/nodes/` read the
+committed
 fingerprints and manifest rather than rebuilding, so they can say what a receipt is presently
 worth without a Lean run — and they say it, rather than reporting the *designated* kind and
 leaving a severed implication looking verified.

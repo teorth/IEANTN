@@ -104,8 +104,8 @@ is a changed statement — so they belong in the diff that caused them. The fing
 file per node, in the node's own directory, so two branches collide only when they touch the same
 node.
 
-**CI's to regenerate, and not yours to commit:** `STATE.md`, `GRAPH.md` and everything under
-`docs/nodes/`. Every fact in them is already in some `formalization.yaml`, so a pull request
+**CI's to regenerate, and not yours to commit:** `STATE.md`, `GRAPH.md`, `docs/graph.html` and
+everything under `docs/nodes/`. Every fact in them is already in some `formalization.yaml`, so a pull request
 carrying them adds nothing to review — and conflicts with every other open pull request, since all
 of them rewrite the same few files. `.github/workflows/derived.yml` rewrites them once a change
 reaches `main`. Run `state`, `graph` and `pages` locally whenever you want to see the effect of a
@@ -254,8 +254,8 @@ Editing metadata, notes or the solution is fine; editing a *statement* throws th
 So make the branch's statements final before step 2.
 
 **Expect a commit you did not write.** The receipt job commits `receipts/`, `IEANTN/Nodes/`,
-`STATE.md`, `GRAPH.md` and `docs/nodes/` as `ieantn-verifier[bot]`. It regenerates all three derived
-files because designating a `lean-comparator` justification changes the node's evidence kind, and a
+`STATE.md`, `GRAPH.md`, `docs/graph.html` and `docs/nodes/` as `ieantn-verifier[bot]`. It
+regenerates every derived file because designating a `lean-comparator` justification changes the node's evidence kind, and a
 receipt whose own pull request failed CI would be self-defeating. Push without pulling first and you
 will be rejected.
 
