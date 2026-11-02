@@ -1,7 +1,6 @@
 # Node metadata for `MTY.v1`.  See docs/NODES.md.
 #
-# A stub: the paper is in scope and cited, and no claim has been transcribed from it yet.
-# `conclusions` is deliberately empty -- see the module docstring in Conclusions.lean.
+# The three explicit regions from arXiv:2212.06867. Theorem Main2 is omitted; see limitations.
 version: "v0.4"
 
 node:
@@ -30,7 +29,56 @@ classification:
   arxiv: [math.NT]
   msc2020: ["11M26"]
 
-conclusions: []
+conclusions:
+- id: classical_zero_free_region
+  declaration: MTY.v1.classical_zero_free_region
+  challenge: MTY.v1.challenge_classical_zero_free_region
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: mty-classical
+    kind: literature
+    source: MTY
+    locator: Theorem thmClassical
+    note: >-
+      Read from arXiv:2212.06867, Zerofree_MTY_v10_arXiv_TTsub.tex, Theorem thmClassical: no zeros
+      for |t| >= 2 and sigma >= 1 - 1/(5.558691 log|t|). The abstract states the same pair of
+      constants. The proof uses the Platt-Trudgian verification of RH up to 3e12 and the Jang-Kwon
+      smoothing; neither is an edge yet. Asserted on the paper's authority.
+  designated: mty-classical
+- id: korobov_vinogradov_region
+  declaration: MTY.v1.korobov_vinogradov_region
+  challenge: MTY.v1.challenge_korobov_vinogradov_region
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: mty-korobov
+    kind: literature
+    source: MTY
+    locator: Theorem Main
+    note: >-
+      Read from the same source, Theorem Main: no zeros for |t| >= 3 and
+      sigma >= 1 - 1/(55.241 (log|t|)^{2/3} (log log|t|)^{1/3}). The closed inequality is the one
+      printed. Asserted on the paper's authority. The argument uses a trigonometric polynomial,
+      intermediate regions, and a verified height; those inputs are named in the preprint's
+      discussion of Theorem Main and are not drawn as edges.
+  designated: mty-korobov
+- id: intermediate_zero_free_region
+  declaration: MTY.v1.intermediate_zero_free_region
+  challenge: MTY.v1.challenge_intermediate_zero_free_region
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: mty-intermediate
+    kind: literature
+    source: MTY
+    locator: Theorem thmIntZFR
+    note: >-
+      Read from the same source, Theorem thmIntZFR: no zeros for |t| >= exp(1000) and
+      sigma > 1 - 0.05035/h(t) + 0.0349/h(t)^2, with h(t) = (27/164) log|t| + 7.096. The inequality
+      on sigma is strict in the preprint and is stated that way. Asserted on the paper's authority.
+  designated: mty-intermediate
+
 
 sources:
 - title: "Explicit zero-free regions for the Riemann zeta-function"
@@ -70,7 +118,9 @@ review:
 
 limitations:
 - >-
-  This node states nothing. It exists so that the network records the paper as in scope,
-  and so that the housekeeping queue asks for conclusions.
+  Theorem Main2 (constant 48.1588, "for sufficiently large |t|") is not stated. The preprint gives
+  no explicit threshold, and a made-up cutoff would not be the theorem.
+- >-
+  Only positive t is quantified, as in ClassicalZeroFreeRegion. The preprint writes |t|.
 - >-
   No novelty is claimed. The results are the cited authors'.

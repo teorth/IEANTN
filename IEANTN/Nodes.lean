@@ -60,6 +60,7 @@ import IEANTN.Nodes.PlattTrudgian2021.v1.Challenge
 import IEANTN.Nodes.PlattZeroSum.v1.Challenge
 import IEANTN.Nodes.PrimeInterval.v1.Challenge
 import IEANTN.Nodes.PrimeInterval.v1.Examples
+import IEANTN.Nodes.PrimesBetweenCubes.v1.Challenge
 import IEANTN.Nodes.RamareSaouter2003.v1.Challenge
 import IEANTN.Nodes.Richstein2001.v1.Challenge
 import IEANTN.Nodes.RosserSchoenfeld.v1.Challenge
