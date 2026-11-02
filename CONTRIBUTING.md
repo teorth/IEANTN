@@ -295,10 +295,14 @@ conclusion should point at. You can re-designate afterwards; that is an ordinary
 
 Some complete proofs cannot be given a receipt as they stand. Either they use an axiom Comparator
 does not permit — `native_decide` goes through `Lean.ofReduceBool` — or the verification workflow
-cannot be run on them: a dependency the network has not admitted to its trust base, such as a
-third-party LeanCert or PrimeCert pin, or a build no runner will finish. Nothing need be wrong with
-such a proof; what is outstanding is usually a policy question rather than a defect in the
-solution.
+cannot be run on them, usually because no runner will finish the build. Nothing need be wrong with
+such a proof.
+
+**An external dependency is not one of these cases.** A solution may be verified while resting on a
+package outside Mathlib — LeanCert, PrimeCert, PNT+ — as long as the dependency is pinned to a full
+commit, fetched over https without credentials, and leaves the core's own pins alone. `check`
+enforces all three, the receipt records what was trusted, and the node page shows it as
+**Builds on**. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) section 3.
 
 Designate `kind: lean-noncompliant` for it. Say in the justification's `note` exactly what the
 obstruction is, and record the `issue` where removing it is tracked. The node then reads as what it
