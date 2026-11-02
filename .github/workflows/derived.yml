@@ -1,46 +1,72 @@
-# Regenerate the derived views, and offer them to `main` as a pull request.
+# Regenerate the derived views and push them to `main`.
 #
-# `STATE.md`, `GRAPH.md`, `docs/graph.html` and the pages under `docs/nodes/` are views
-# of the node metadata: every
-# fact in them comes from a `formalization.yaml`, and regenerating them is deterministic. They are
-# committed anyway, because they are what a person browsing the repository actually reads.
+# `STATE.md`, `GRAPH.md`, `docs/graph.html` and the pages under `docs/nodes/` are views of the node
+# metadata: every fact in them comes from a `formalization.yaml`, and regenerating them is
+# deterministic. They are committed anyway, because they are what a person browsing the repository
+# actually reads.
 #
 # Committed-and-generated is exactly the shape that conflicts. Every branch that touches any node
-# rewrites all three, so any two open pull requests collide in them -- over content neither side
+# rewrites all of them, so any two open pull requests collide -- over content neither side
 # disagreed about, which a reviewer then resolves by hand and re-resolves on the next rebase.
 # Making CI the single writer ends that: pull requests leave the views alone (`ci.yml` checks that
 # they did), and this refreshes them once a change reaches `main`.
 #
-# It cannot push to `main` itself. The `main` ruleset requires a pull request, and its bypass list
-# can only name roles, deploy keys and a couple of Copilot actors -- GitHub does not offer
-# `github-actions[bot]` as a bypass actor on a personal repository. So this opens a pull request
-# from `derived/views` instead, which `ci.yml`'s guard exempts by prefix.
+# It pushes to `main` directly, with a deploy key. The `main` ruleset requires a pull request and
+# its bypass list can only name roles, deploy keys and a couple of Copilot actors -- GitHub does
+# not offer `github-actions[bot]` on a personal repository -- so a deploy key is the one mechanism
+# that lets the single writer actually write.
 #
-# **Its checks will not run, and that is expected.** GitHub starts no workflow run from an event
-# caused by `GITHUB_TOKEN`, so neither the branch push nor the pull request below triggers CI, and
-# the three required checks stay unreported. Merging therefore takes the admin override. For a diff
-# that contains only regenerated views this is the right trade: the alternative is a credential in
-# repository secrets that can write to `main`, which is precisely what `verify.yml` is built to
-# avoid. Anyone who wants the checks can push the branch by hand -- a human push does trigger them.
+# **An earlier version of this file argued the other way, and the argument is worth keeping**: a
+# credential in repository secrets that can write to `main` is precisely what `verify.yml` is built
+# to avoid. What changed is not the principle but which job it applies to. `verify.yml` elaborates
+# a contributor's Lean, which is arbitrary code execution by a stranger, so a credential anywhere
+# near it is one a malicious solution can steal. This job triggers on a push to `main` and runs
+# nothing but `scripts/ieantn.py` as it stands on `main` -- code that has already been reviewed and
+# merged. Anyone able to add a step here to exfiltrate the key could merge to `main` regardless.
+#
+# What it cost before was three manual interventions per push, forever: a pull request whose checks
+# GitHub refused to start (no workflow runs from a `GITHUB_TOKEN` event), an approval click, and an
+# admin-override merge -- for a diff nobody disagreed with.
+#
+# Two things keep the new arrangement narrow:
+#
+#   * the credential is a deploy key, not a PAT. It can write Git objects to this one repository,
+#     and cannot touch the API, another repository, or the account. (`PAT_TOKEN`, which
+#     `intentions.yml` uses, is a classic PAT and deliberately not reused here.)
+#   * the push is refused unless the staged diff is confined to the view paths. The job checks its
+#     own diff rather than asking a reader to trust that it stages only what it claims.
+#
+# To revoke: delete the deploy key under Settings -> Deploy keys and the `DERIVED_VIEWS_SSH_KEY`
+# secret. The views then stop refreshing -- `check` reports them stale, without failing -- until
+# this file is changed back to opening a pull request.
 name: Derived views
 
 on:
   push:
     branches: [main]
+    # A deploy-key push *does* start workflows, where a `GITHUB_TOKEN` push did not. Without this
+    # the job's own push would retrigger it; the second run would find the views current and stop,
+    # so the loop is finite, but it is one wasted run on every refresh.
+    paths-ignore:
+      - STATE.md
+      - GRAPH.md
+      - docs/graph.html
+      - docs/nodes/**
   workflow_dispatch:
 
+# The deploy key does the writing, so `GITHUB_TOKEN` needs nothing beyond reading the checkout.
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
-# Serialised, and never cancelled: two runs racing on the same branch is the one way this could
-# lose a regeneration, and a cancelled run leaves the views stale until the next push.
+# Serialised, and never cancelled: two runs racing to push the same views is the one way this could
+# lose a regeneration, and a cancelled run leaves them stale until the next push.
 concurrency:
   group: derived-views
   cancel-in-progress: false
 
+#: Everything this job is allowed to write. Used both to stage and to check what was staged.
 env:
-  BRANCH: derived/views
+  VIEWS: STATE.md GRAPH.md docs/graph.html docs/nodes
 
 jobs:
   regenerate:
@@ -48,57 +74,68 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      # Credentials are kept here, unlike the other jobs: this one pushes a branch.
+      - name: The deploy key has to be configured
+        env:
+          KEY: ${{ secrets.DERIVED_VIEWS_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${KEY}" ]; then
+            echo '::error::DERIVED_VIEWS_SSH_KEY is not set, so the views cannot be pushed.'
+            echo "Generate a keypair, add the public half as a deploy key with write access,"
+            echo "and store the private half as that secret. The header of this file says why."
+            exit 1
+          fi
+      # Credentials are kept here, unlike the other jobs: this one pushes.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ssh-key: ${{ secrets.DERIVED_VIEWS_SSH_KEY }}
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
       - run: pip install pyyaml
-      - name: Regenerate
+      - name: Regenerate, and push if anything moved
         run: |
           set -euo pipefail
-          python3 scripts/ieantn.py state
-          python3 scripts/ieantn.py graph
-          python3 scripts/ieantn.py pages
-      - name: Offer the refresh as a pull request
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          git add -A -- STATE.md GRAPH.md docs/graph.html docs/nodes
-          if git diff --cached --quiet; then
-            echo "The derived views were already current."
-            # Nothing to offer, so withdraw any refresh still standing from an earlier run: its
-            # content is now on `main` by another route, and a pull request that would change
-            # nothing is worse than none.
-            if gh pr list --head "$BRANCH" --state open --json number --jq '.[].number' | grep -q .; then
-              gh pr close "$BRANCH" --delete-branch \
-                --comment "Superseded: \`main\` already carries these views."
-            fi
-            exit 0
-          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Refresh the derived views" \
-            -m "STATE.md, GRAPH.md, docs/graph.html and docs/nodes/ follow from the node metadata; this is .github/workflows/derived.yml keeping them level with it."
-          # Force, because the branch is rebuilt from `main` on every run and holds nothing else.
-          git push --force origin "HEAD:refs/heads/$BRANCH"
-          if gh pr list --head "$BRANCH" --state open --json number --jq '.[].number' | grep -q .; then
-            echo "The open refresh now carries the newest views."
-            exit 0
-          fi
-          gh pr create --base "${{ github.event.repository.default_branch }}" --head "$BRANCH" \
-            --title "Refresh the derived views" \
-            --body "$(cat <<'BODY'
-          Generated, not written: `state`, `graph` and `pages`, and nothing else. Every fact here
-          comes from a `formalization.yaml` already on `main`.
 
-          **The required checks will not report on this pull request.** GitHub starts no workflow
-          run from an event caused by `GITHUB_TOKEN`, so opening it triggered nothing. Merging takes
-          the admin override, which is the intended cost: the alternative is a credential in
-          repository secrets that can write to `main`.
+          # Three attempts, because `main` can move between the checkout and the push. Rebasing a
+          # commit of generated files would be the wrong fix -- the views are a pure function of
+          # `main`, so the right recovery is to take the new `main` and generate them again.
+          for attempt in 1 2 3; do
+            python3 scripts/ieantn.py state
+            python3 scripts/ieantn.py graph
+            python3 scripts/ieantn.py pages
 
-          This branch is rebuilt from `main` on every push and force-pushed, so it always shows the
-          current views. If it ever needs real checks, push it by hand — a human push triggers them.
-          BODY
-          )"
+            git add -A -- ${VIEWS}
+            if git diff --cached --quiet; then
+              echo "The derived views were already current."
+              exit 0
+            fi
+
+            # The job writes views and nothing else. Checking the staged paths is what makes that
+            # a property of the run rather than a promise in a comment -- and what stops a bug
+            # anywhere above from pushing a source change to `main` unreviewed.
+            stray=$(git diff --cached --name-only \
+              | grep -vE '^(STATE\.md|GRAPH\.md|docs/graph\.html|docs/nodes/)' || true)
+            if [ -n "${stray}" ]; then
+              echo "::error::refusing to push: the staged diff leaves the generated views."
+              echo "${stray}" | sed 's/^/  /'
+              exit 1
+            fi
+
+            git commit -q -m "Refresh the derived views" \
+              -m "STATE.md, GRAPH.md, docs/graph.html and docs/nodes/ follow from the node metadata; this is .github/workflows/derived.yml keeping them level with it."
+            if git push origin HEAD:main; then
+              echo "Pushed the refreshed views."
+              exit 0
+            fi
+
+            echo "::warning::main moved while this ran; regenerating against it (attempt ${attempt})."
+            git reset --hard HEAD~1
+            git fetch origin main
+            git reset --hard origin/main
+          done
+
+          echo "::error::could not push the views after three attempts."
+          exit 1
