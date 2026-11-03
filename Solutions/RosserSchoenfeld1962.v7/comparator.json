@@ -1,0 +1,13 @@
+{
+  "challenge_module": "IEANTN.Nodes.RosserSchoenfeld1962.v7.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "RosserSchoenfeld1962.v7.challenge_equation_3_9"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

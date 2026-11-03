@@ -1,0 +1,69 @@
+version: v0.4
+node:
+  id: RosserSchoenfeld1962.v7
+  family: RosserSchoenfeld1962
+  version: v7
+  kind: paper
+  status: awaiting-verification
+project:
+  name: 'Rosser-Schoenfeld 1962: Corollary 3 equation (3.9)'
+  description: An unconditional Lean proof of the complete two-sided inequality (3.9), for real x >
+    1. Positivity uses Mathlib’s Bertrand theorem; the upper bound uses binomial coefficients above
+    1024 and kernel-checked prime counts below.
+  authors:
+  - Håkon Xue-Lønmo
+  license: Apache-2.0
+  responsible_maintainers:
+  - Håkon Xue-Lønmo
+repository:
+  role: substantive-development
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11N05
+conclusions:
+- id: equation_3_9
+  declaration: RosserSchoenfeld1962.v7.equation_3_9
+  challenge: RosserSchoenfeld1962.v7.challenge_equation_3_9
+  imports: []
+  imports_status: none
+  justifications:
+  - id: pending-verification
+    kind: none-yet
+    note: Complete unconditional Lean solution prepared for official Comparator verification; no
+      receipt claimed.
+  designated: pending-verification
+  progress:
+    solution: Solutions/RosserSchoenfeld1962.v7/
+    state: in-progress
+    remaining_holes: 0
+sources:
+- title: Approximate formulas for some functions of prime numbers
+  authors:
+  - J. Barkley Rosser
+  - Lowell Schoenfeld
+  type: paper
+  id: https://doi.org/10.1215/ijm/1255631807
+  location: Illinois Journal of Mathematics 6(1) (1962), 64–94; Corollary 3 equation (3.9), p. 69
+  relationship: formalizes
+  note: The paper identifies the left side as Bertrand’s postulate and the right side as Finsler’s
+    bound, extended to real x, with uncovered ranges checked from prime tables. This proof uses
+    Mathlib’s Bertrand theorem and an elementary binomial upper bound with a finite floor-based
+    computation.
+automation:
+  methods:
+  - method: agent
+    framework: OpenAI Codex
+    role: Lean proof development, source comparison, integration and local validation under human
+      direction.
+review:
+  status: self-assessed
+  reviewers:
+  - OpenAI Codex
+  notes: No independent human review or official Comparator verification claimed.
+limitations:
+- The same historical statement is proved by a different formal proof; no mathematical novelty is
+  claimed.
+- No previous IEANTN theorem is a logical dependency. The finite computation uses Mathlib’s binary
+  primality and is rechecked in the Lean kernel.
