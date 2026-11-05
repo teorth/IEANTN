@@ -34,20 +34,6 @@ class TestSpinoffLayout(FixtureRepo):
             self.assertTrue(ieantn.spinoff("A.v1.main", "export", False))
         return self.root / "export"
 
-    def test_wrapper_imports_vendored_proof_without_importing_itself(self):
-        target = self.emit()
-        imports = ieantn.imports_of(target / "Solution.lean")
-        self.assertEqual(imports, ["Helper", "NodeSolution"])
-        self.assertIn("theorem A.v1.challenge_main", (target / "NodeSolution.lean").read_text())
-        self.assertIn("namespace A.v1\n", (target / "Challenge.lean").read_text())
-        self.assertIn("end A.v1\n", (target / "Challenge.lean").read_text())
-
-    def test_fully_qualified_definition_does_not_emit_unmatched_end(self):
-        target = self.emit(global_name=True)
-        challenge = (target / "Challenge.lean").read_text()
-        self.assertNotIn("\nend ", challenge)
-        self.assertIn("def A.v1.main : Prop := True", challenge)
-
     def test_one_level_export_preserves_nested_helpers(self):
         target = self.emit(nested=True)
         self.assertEqual(ieantn.imports_of(target / "Solution.lean"),
@@ -104,6 +90,21 @@ class TestSpinoffLayout(FixtureRepo):
         copied = target / "vendored" / "A" / "v1"
         self.assertEqual([p.relative_to(copied).as_posix() for p in copied.rglob("*.lean")],
                          ["NodeSolution.lean"])
+
+    def test_wrapper_imports_vendored_proof_without_importing_itself(self):
+        target = self.emit()
+        imports = ieantn.imports_of(target / "Solution.lean")
+        self.assertEqual(imports, ["Helper", "NodeSolution"])
+        self.assertIn("theorem A.v1.challenge_main", (target / "NodeSolution.lean").read_text())
+        self.assertIn("namespace A.v1\n", (target / "Challenge.lean").read_text())
+        self.assertIn("end A.v1\n", (target / "Challenge.lean").read_text())
+
+    def test_fully_qualified_definition_does_not_emit_unmatched_end(self):
+        target = self.emit(global_name=True)
+        challenge = (target / "Challenge.lean").read_text()
+        self.assertNotIn("\nend ", challenge)
+        self.assertIn("def A.v1.main : Prop := True", challenge)
+
 
 
 def _decl() -> dict:
