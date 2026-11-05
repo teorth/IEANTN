@@ -76,7 +76,7 @@ namespace CH2.v3
 open Real MeasureTheory FourierTransform Complex
 
 /-- **The extremal majorant.** For every non-zero `lambda` and every `β ∈ (1, 2]` there is a
-function `φ` band-limited to `[-1, 1]` whose Fourier transform **majorizes** the truncated
+function `φ` supported on `[-1, 1]` whose band-limited Fourier transform **majorizes** the truncated
 exponential `truncExp lambda`, with `φ 0 = 1/(1 - e^{-|lambda|})` and `L¹` error exactly
 `1/(1 - e^{-|lambda|}) - 1/|lambda|`.
 
@@ -99,7 +99,8 @@ def extremal_majorant : Prop :=
       ∫ y : ℝ, ((𝓕 φ y).re - CH2.v2.truncExp lambda y)
         = 1 / (1 - Real.exp (-|lambda|)) - 1 / |lambda|
 
-/-- **The extremal minorant.** The same with the inequality reversed: `𝓕 φ` **minorizes**
+/-- **The extremal minorant.** The same support condition on `φ`, with the inequality reversed:
+the band-limited Fourier transform `𝓕 φ` **minorizes**
 `truncExp lambda`, with `φ 0 = 1/(e^{|lambda|} - 1)` and `L¹` error exactly
 `1/|lambda| - 1/(e^{|lambda|} - 1)`.
 

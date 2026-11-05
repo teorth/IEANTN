@@ -48,8 +48,8 @@ def eTheta_criterion : Prop :=
   ∀ x h : ℝ, 0 < x → 0 < h →
     x * IEANTN.Eθ x + (x + h) * IEANTN.Eθ (x + h) < h → IEANTN.HasPrimeInInterval x h
 
-/-- The numerical-bound route: if `Eθ` is at most the constant `ε` throughout `[x₀, ∞)` and
-`(2x + h) * ε < h`, there is a prime in `(x, x + h]`.
+/-- The numerical-bound route: if `Eθ` is at most the constant `ε` throughout `[x₀, ∞)`,
+`0 < h`, `x₀ ≤ x`, `0 < x` and `(2x + h) * ε < h`, there is a prime in `(x, x + h]`.
 
 Immediate from `eTheta_criterion` once both `Eθ x` and `Eθ (x + h)` are bounded by the same `ε`,
 which is exactly what `IEANTN.HasNumericalBound` gives once `x ≥ x₀`. Once `x` is at or beyond the

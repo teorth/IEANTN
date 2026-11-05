@@ -84,11 +84,12 @@ def IsPoleFreePart (a : ℕ → ℝ) (G : ℂ → ℂ) (T : ℝ) : Prop :=
   ContinuousOn G {z : ℂ | 1 ≤ z.re ∧ z.im ∈ Set.Icc (-T) T} ∧
     Set.EqOn G (fun s ↦ (∑' n : ℕ, (a n : ℂ) / (n : ℂ) ^ s) - 1 / (s - 1)) {z : ℂ | 1 < z.re}
 
-/-- `φ` is band-limited to `[−1, 1]`, integrable, continuous at `0`, with Fourier transform decaying
+/-- `φ` is supported on `[−1, 1]`, integrable, continuous at `0`, with Fourier transform decaying
 like `|y|^{−β}`.
 
-"Band-limited" is the constraint that makes the method work: `φ` supported on `[−1, 1]` means its
-Fourier transform is entire of exponential type, and only the zeros below height `T` can matter. -/
+The name refers to the band-limited approximant `𝓕 φ`, not to `φ`: compact support of `φ`
+provides the frequency restriction on its Fourier transform. Only spectral information below
+height `T` is needed in the proposition below. -/
 def IsBandLimited (φ : ℝ → ℂ) (β : ℝ) : Prop :=
   Measurable φ ∧ Integrable φ ∧ ContinuousAt φ 0 ∧
     (∀ x, x ∉ Set.Icc (-1 : ℝ) 1 → φ x = 0) ∧
@@ -102,7 +103,8 @@ noncomputable def mainExpression (G : ℂ → ℂ) (φ : ℝ → ℂ) (T σ x : 
           φ (t / T) * G (1 + t * Complex.I) * (x : ℂ) ^ (1 + t * Complex.I)).re)
     - if σ < 1 then 1 / (1 - σ) else 0
 
-/-- **Proposition 2.4, the majorant half.** If `φ` is band-limited with
+/-- **Proposition 2.4, the majorant half.** If `φ` is supported on `[−1, 1]` and satisfies
+`IsBandLimited φ β`, with
 `truncExp (2π(σ−1)/T) y ≤ (𝓕 φ y).re` for every `y` — that is, `𝓕 φ` **majorizes** the truncated
 exponential — then `partialSum a σ x` is at most `mainExpression`.
 
