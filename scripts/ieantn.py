@@ -5600,21 +5600,14 @@ def deactivate(node_ids: list[str], reason: str) -> bool:
         if node_id not in going and not is_inactive(node)
         for target in referenced_nodes(node) & going
     )
-    # A bridge whose target is going out with the node is not a live consumer of it: a node and
-    # the bridge that justifies it are deactivated together or not at all.
-    going_bridges = {
-        (ROOT / justification["bridge"]).resolve()
-        for node_id in going
-        for conclusion in conclusions_of(everything[node_id])
-        for justification in justifications_of(conclusion)
-        if justification.get("kind") == "bridged" and justification.get("bridge")
-    }
+    # Bridges remain in the core umbrella even when their target node retires.
+    # Their imports must be migrated or removed before deactivation, including
+    # imports in bridges recorded by the nodes being deactivated themselves.
     live_files = [
         path for node_id, node in everything.items()
         if node_id not in going and not is_inactive(node)
         for path in node["_dir"].glob("*.lean")
-    ] + [path for path in BRIDGES_DIR.rglob("*.lean")
-         if path.resolve() not in going_bridges]
+    ] + list(BRIDGES_DIR.rglob("*.lean"))
     blockers += _lean_import_blockers(live_files, going)
     if blockers:
         print("error: still imported or referenced by live nodes:")
