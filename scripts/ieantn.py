@@ -342,7 +342,11 @@ def strip_lean_comments(text: str) -> str:
             index += 1
         elif text.startswith("--", index):
             newline = text.find("\n", index)
-            index = length if newline < 0 else newline
+            comment_end = length if newline < 0 else newline
+            # Vendoring applies matches from this text to the original source.
+            # Keep offsets stable for line comments just as for block comments.
+            out.append(" " * (comment_end - index))
+            index = comment_end
         else:
             out.append(text[index])
             index += 1
