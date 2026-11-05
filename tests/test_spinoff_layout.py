@@ -8,14 +8,17 @@ from test_ieantn import LITERATURE, FixtureRepo, bridged, ieantn, importing
 
 
 class TestSpinoffLayout(FixtureRepo):
-    def emit(self, global_name=False):
+    def emit(self, global_name=False, nested=False):
         self.write_node("A.v1", LITERATURE)
         nodes = ieantn.load_nodes()
         nodes["A.v1"]["conclusions"][0]["justifications"][0]["kind"] = "lean-comparator"
         solution = self.root / "Solutions" / "A.v1"
         solution.mkdir(parents=True)
-        (solution / "Solution.lean").write_text("import Helper\ntheorem A.v1.challenge_main : A.v1.main := trivial\n")
-        (solution / "Helper.lean").write_text("import IEANTN.Nodes.A.v1.Conclusions\n")
+        helper = "Helpers.Inner" if nested else "Helper"
+        (solution / "Solution.lean").write_text(f"import {helper}\ntheorem A.v1.challenge_main : A.v1.main := trivial\n")
+        helper_file = solution.joinpath(*helper.split(".")).with_suffix(".lean")
+        helper_file.parent.mkdir(parents=True, exist_ok=True)
+        helper_file.write_text("import IEANTN.Nodes.A.v1.Conclusions\n")
         source = self.root / "IEANTN" / "Nodes" / "A" / "v1" / "Conclusions.lean"
         name = "A.v1.main" if global_name else "main"
         source.write_text(f"import Mathlib\ndef {name} : Prop := True\n")
@@ -44,6 +47,63 @@ class TestSpinoffLayout(FixtureRepo):
         challenge = (target / "Challenge.lean").read_text()
         self.assertNotIn("\nend ", challenge)
         self.assertIn("def A.v1.main : Prop := True", challenge)
+
+    def test_one_level_export_preserves_nested_helpers(self):
+        target = self.emit(nested=True)
+        self.assertEqual(ieantn.imports_of(target / "Solution.lean"),
+                         ["Helpers.Inner", "NodeSolution"])
+        self.assertTrue((target / "Helpers" / "Inner.lean").is_file())
+        self.assertEqual(ieantn.imports_of(target / "NodeSolution.lean"), ["Helpers.Inner"])
+
+    def test_composed_vendor_preserves_nested_paths_and_rewrites_exact_modules(self):
+        directory = self.root / "Solutions" / "A.v1"
+        sources = {
+            "Solution.lean": "import Helpers.Types\nimport Solution.Extra\nimport Helpers.Solution\n",
+            "Helpers/Types.lean": "import Solution.Extra\n",
+            "Solution/Extra.lean": "import Mathlib\n",
+            "Helpers/Solution.lean": "import Helpers.Types\n",
+            ".lake/packages/dependency/Poison.lean": "import NeverCopy\n",
+            "lakefile.lean": "import Lake\n",
+        }
+        for name, text in sources.items():
+            path = directory / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text)
+        target = self.root / "export"
+        ieantn.vendor_solution("A.v1", target)
+        copied = target / "vendored" / "A" / "v1"
+        self.assertEqual(ieantn.imports_of(copied / "NodeSolution.lean"),
+                         ["vendored.A.v1.Helpers.Types", "vendored.A.v1.Solution.Extra",
+                          "vendored.A.v1.Helpers.Solution"])
+        self.assertEqual(ieantn.imports_of(copied / "Helpers" / "Types.lean"),
+                         ["vendored.A.v1.Solution.Extra"])
+        self.assertEqual(ieantn.imports_of(copied / "Helpers" / "Solution.lean"),
+                         ["vendored.A.v1.Helpers.Types"])
+        self.assertEqual(sorted(p.relative_to(copied).as_posix() for p in copied.rglob("*.lean")),
+                         ["Helpers/Solution.lean", "Helpers/Types.lean", "NodeSolution.lean",
+                          "Solution/Extra.lean"])
+
+    def test_node_solution_collision_is_refused_without_overwriting_a_helper(self):
+        directory = self.root / "Solutions" / "A.v1"
+        directory.mkdir(parents=True)
+        (directory / "Solution.lean").write_text("import NodeSolution\n")
+        (directory / "NodeSolution.lean").write_text("def helper := 1\n")
+        target = self.root / "export"
+        with self.assertRaisesRegex(SystemExit, "NodeSolution"):
+            ieantn.vendor_solution("A.v1", target)
+        self.assertFalse((target / "vendored" / "A" / "v1" / "NodeSolution.lean").exists())
+
+    def test_nested_output_is_not_copied_back_into_itself(self):
+        directory = self.root / "Solutions" / "A.v1"
+        directory.mkdir(parents=True)
+        (directory / "Solution.lean").write_text("theorem result : True := trivial\n")
+        target = directory / "export"
+        target.mkdir()
+        (target / "Challenge.lean").write_text("def not_a_source := True\n")
+        ieantn.vendor_solution("A.v1", target)
+        copied = target / "vendored" / "A" / "v1"
+        self.assertEqual([p.relative_to(copied).as_posix() for p in copied.rglob("*.lean")],
+                         ["NodeSolution.lean"])
 
 
 def _decl() -> dict:
@@ -93,6 +153,23 @@ class TestComposition(FixtureRepo):
         challenge = (self.root / "export" / "Challenge.lean").read_text(encoding="utf-8")
         self.assertIn("leaf_v1_main : Leaf.v1.main", challenge)
         self.assertNotIn("b_v1_main", challenge)
+
+    def test_composed_export_keeps_each_nodes_nested_helpers_separate(self) -> None:
+        self.write_node("Leaf.v1", LITERATURE)
+        for node, dependency in [("B.v1", "Leaf.v1"), ("A.v1", "B.v1")]:
+            self.write_node(node, importing(dependency).replace("kind: none-yet", "kind: lean-comparator"))
+            self.put_solution(node, f"import Shared.Proof\ntheorem {node}.challenge_main := True.intro\n")
+            helper = self.root / "Solutions" / node / "Shared" / "Proof.lean"
+            helper.parent.mkdir()
+            helper.write_text(f"def {node}.marker := True\n")
+        ok, text = self.spin()
+        self.assertTrue(ok, text)
+        for node in ["A.v1", "B.v1"]:
+            copied = (self.root / "export" / "vendored").joinpath(*node.split("."))
+            self.assertEqual(ieantn.imports_of(copied / "NodeSolution.lean"),
+                             [f"vendored.{node}.Shared.Proof"])
+            self.assertEqual((copied / "Shared" / "Proof.lean").read_text(),
+                             f"def {node}.marker := True\n")
         self.assertIn("- Leaf.v1.main", text)
         self.assertFalse((self.root / "export" / "lakefile.toml").exists())
 
