@@ -814,6 +814,7 @@ def verify(node: str, branch: str, dispatch: bool, precheck: bool = True,
         print("no `origin` remote; cannot find the run")
         return False
 
+    run_id = None
     if dispatch:
         # Two guards before spending someone's approval. A dispatch that cannot succeed is not
         # free: the gate exists so that a human looks at the branch, and an hour of compute follows.
@@ -864,10 +865,22 @@ def verify(node: str, branch: str, dispatch: bool, precheck: bool = True,
             print(f"dispatch failed: {started.stderr.strip()}")
             return False
         print(f"dispatched verify.yml for {node} on {branch}")
+        # `gh workflow run` returns the created run's URL. Looking up the latest run instead
+        # can select another contributor's dispatch, or an old success before ours is listed.
+        created = re.search(
+            rf"https://github\.com/{re.escape(repository)}/actions/runs/(\d+)(?=\s|$)",
+            started.stdout or "", re.IGNORECASE,
+        )
+        if created is None:
+            print("the dispatch succeeded, but gh returned no run URL; cannot follow it reliably.")
+            print("open this repository's Actions page to find the run; no other run was followed.")
+            return False
+        run_id = created.group(1)
         time.sleep(5)
 
-    run_id = _gh_json(["run", "list", "--workflow=verify.yml", "--limit", "1",
-                       "--json", "databaseId", "--jq", ".[0].databaseId"])
+    if not dispatch:
+        run_id = _gh_json(["run", "list", "--workflow=verify.yml", "--limit", "1",
+                           "--json", "databaseId", "--jq", ".[0].databaseId"])
     if not run_id:
         print("no verification run found")
         return False
