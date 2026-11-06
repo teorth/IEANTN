@@ -5,8 +5,8 @@ Target core commit: `466b41b28ecc224398cf53a99c5fe9618131398b`.
 Completed on 2026-11-06:
 
 - Generated the psi-only challenge with `ieantn.py gen-challenges`.
-- The complete `ieantn.py check` command passed (the pending solution manifest,
-  absent issue number, and derived views produce advisory warnings).
+- The complete `ieantn.py check` command passed (the absent issue number and
+  derived views produce advisory warnings).
 - `ieantn.py check-graph` passed. It warns that the new pending conclusion has
   no issue number yet; no issue or verification receipt has been fabricated.
 - `ieantn.py check-closure` passed, initially with the expected warning that a
@@ -41,16 +41,21 @@ Completed on 2026-11-06:
   two direct replacements by existing APIs, and the earlier import rename.
   This scan does not establish complete compatibility: signatures, tactics,
   visibility, and elaboration still require the full solution build.
+- The complete pinned core `lake build ieantn_hash` and default `lake build`
+  passed. The resumed hash-executable build completed 7736 jobs in 2091 seconds.
+- The unmodified `ieantn.py fingerprint` generator passed. It wrote exactly
+  one new fingerprint file, for `RosserSchoenfeld.v2`; every existing node's
+  fingerprint remained unchanged.
+- Resolved the solution's Lake manifest with the pinned compiler. Its toolchain
+  and every shared Git package revision match the core, including Mathlib
+  `71a80585ee495fc24472fd0eaffc89d94e4fd8d6`.
 
-A local core-toolchain `lake build ieantn_hash` attempt reached its 1800-second
-runtime limit while compiling pre-existing IEANTN nodes. It reported no Lean
-error before the timeout. The core build, fingerprint generation, and solution
-manifest resolution were not completed by this attempt.
+An earlier core build reached its 1800-second local runtime limit without a
+Lean error. The successful resumed build and generated files above supersede
+that incomplete attempt; the earlier attempt is not counted as a pass.
 
 Still pending at this checkpoint:
 
-- The full core build and generated statement fingerprints.
-- Resolution and commitment of the solution's matching Lake manifest.
 - Full solution compilation on the core's pinned toolchain and Mathlib.
 - IEANTN's official Comparator workflow and its receipt.
 

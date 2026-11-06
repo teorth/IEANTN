@@ -79,6 +79,10 @@ IEANTN vocabulary/conclusion. Its current status is recorded in `validation.md`.
 These checks do not replace the full solution build on Lean 4.34 or the official
 Comparator workflow.
 
+The full pinned core build and the official fingerprint generator also pass.
+Only this new node's fingerprint was added; existing fingerprints are unchanged.
+The committed solution manifest matches every shared core package revision.
+
 The compatibility changes retain every original theorem statement. They rename
 `Integrability.Log` to its older module name `Integrability.LogMeromorphic`,
 supply namespaced conjugation/arctan/Gamma lemmas, and use the existing general
@@ -98,8 +102,8 @@ python3 scripts/ieantn.py check
 python3 -m unittest discover -s tests
 ```
 
-From this directory, resolve dependencies using the core's manifest, then run
-`lake build`. Its toolchain and shared package revisions must equal the core.
+From this directory, run `lake build` using the committed manifest. Its toolchain
+and shared package revisions match the core.
 The 99 numerical certificate modules may require a substantial fresh replay.
 
 After opening the PR and completing the compatibility build, a maintainer runs
