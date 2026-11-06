@@ -38,8 +38,10 @@ conclusions:
       An external proof on Lean 4.35.0 has passed independent Comparator replay with
       only propext, Classical.choice, and Quot.sound. That replay is not an IEANTN
       receipt. The source is pinned in Solutions/RosserSchoenfeld.v2/README.md.
-      Compatibility with the core Lean 4.34.0-rc2 and Mathlib revision, the finite-RH
-      vocabulary adapter, and IEANTN Comparator verification remain to be completed.
+      The exact finite-RH vocabulary adapter and network theorem also compile on
+      Lean 4.35.0 with only those three axioms. Compatibility with the core Lean
+      4.34.0-rc2 and Mathlib revision, and IEANTN Comparator verification, remain
+      to be completed.
   designated: integration-pending
 
 sources:

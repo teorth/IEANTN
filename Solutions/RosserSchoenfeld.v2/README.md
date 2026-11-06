@@ -66,6 +66,13 @@ core's Lean 4.34.0-rc2 and Mathlib
 `validation.md` records the checks actually completed, separately from the
 upstream proof's status. No author-written verification receipt is supplied.
 
+The new `Solution.lean`, including the finite-RH vocabulary adapter and the exact
+network theorem, has separately compiled in the original Lean 4.35.0 environment
+against the actual copied IEANTN vocabulary and conclusion. Its transitive-axiom
+check lists only `propext`, `Classical.choice`, and `Quot.sound` for both theorems.
+This auxiliary check is distinct from the core-toolchain build and official
+Comparator verification still required above.
+
 The first source compatibility change is an import rename:
 `Integrability.Log` becomes `Integrability.LogMeromorphic` at the core Mathlib
 pin. Its patch and hashes are recorded. No mathematical statement is weakened.
