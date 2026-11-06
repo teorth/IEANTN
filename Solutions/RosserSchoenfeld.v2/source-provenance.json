@@ -69,7 +69,13 @@
       "upstream_git_blob_sha1": "dd40abc2b1a0d997f3f748c4fecaaf85ab479889",
       "upstream_sha256": "4451c45cff2e7fb019ae851a9936b641842fc89d1de07a09c2c47ad82f4da378",
       "bytes": 24046,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Use checked Mathlib-4.34 compatibility helpers or the equivalent existing API for a newer Mathlib lemma. All mathematical theorem statements are unchanged; see compatibility-provenance.json.",
+          "patch": "adaptations/HardyFirstZero-Phase-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "036c40987e6187881aa99c32fb75295e89ec750b8d4f681571c0c3ee4c00af49"
     },
     {
       "module": "HardyFirstZero.Spine",
@@ -290,7 +296,13 @@
       "upstream_git_blob_sha1": "e288a91b77c8e61b3b38c15f74a1d2d833a7e42d",
       "upstream_sha256": "b975d6fe6e528875e3ba132fdd07a746c150ec224e7ddd6accda4bdb45b4e177",
       "bytes": 33453,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Use checked Mathlib-4.34 compatibility helpers or the equivalent existing API for a newer Mathlib lemma. All mathematical theorem statements are unchanged; see compatibility-provenance.json.",
+          "patch": "adaptations/RHHeight-LegSupport-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "ff2d1ae82be0039437eac69144499a73c79986d0e293b44ba0561c33e9577d98"
     },
     {
       "module": "RHHeight.LegsArg",
@@ -1161,7 +1173,13 @@
       "upstream_git_blob_sha1": "242e7c239d9c7a78f8b1067ce67dbd10ed903a1e",
       "upstream_sha256": "10d00089baa867c8c3dfa150ff8be77d1c81c722e8ef1dfb71fd4addf1b2363c",
       "bytes": 6938,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Use checked Mathlib-4.34 compatibility helpers or the equivalent existing API for a newer Mathlib lemma. All mathematical theorem statements are unchanged; see compatibility-provenance.json.",
+          "patch": "adaptations/RSBounds-BacklundFunctionalStrip-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "a54def3e217b39ad7d13a92fb8cd3853be02695aea8f596484bf355eb2760fe6"
     },
     {
       "module": "RSBounds.BacklundGammaBaseline",
@@ -1512,7 +1530,13 @@
       "upstream_git_blob_sha1": "9d4d21796b16a2e84865954601e433297f7eb501",
       "upstream_sha256": "85ec91b5ba621456c7aef3cfee32c898656777f7eecaca863b58358000b41b79",
       "bytes": 12244,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Use checked Mathlib-4.34 compatibility helpers or the equivalent existing API for a newer Mathlib lemma. All mathematical theorem statements are unchanged; see compatibility-provenance.json.",
+          "patch": "adaptations/RSBounds-BacklundReflection-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "3389456b6048e333ee679573f65bb8d57c94e8f031772dc246057fa3f2b5a699"
     },
     {
       "module": "RSBounds.BacklundRightArc",
@@ -1577,7 +1601,13 @@
       "upstream_git_blob_sha1": "7d45ee5db446a1f3bb6d044e33c6f186b356d8f0",
       "upstream_sha256": "1d2772a7ea925142fc804cc66218338da91f2b815b6e5d33b309d60acae75f12",
       "bytes": 16091,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Use checked Mathlib-4.34 compatibility helpers or the equivalent existing API for a newer Mathlib lemma. All mathematical theorem statements are unchanged; see compatibility-provenance.json.",
+          "patch": "adaptations/RSBounds-BacklundStripNormalizer-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "b9b227e657a2e30757f75656d3aa7c9bc66ac898ab8884d0552d5841996c5e6e"
     },
     {
       "module": "RSBounds.BacklundTrapezoid",
@@ -2344,7 +2374,13 @@
       "upstream_git_blob_sha1": "1247bd897deb475752ce3592b5454b252ba4310f",
       "upstream_sha256": "eaaab1415167e813d1e322a23c2ad7e07425b003e49859add10326d3fe081ea1",
       "bytes": 39070,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Use checked Mathlib-4.34 compatibility helpers or the equivalent existing API for a newer Mathlib lemma. All mathematical theorem statements are unchanged; see compatibility-provenance.json.",
+          "patch": "adaptations/TernaryGoldbach-Explicit-Digamma-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "2f8d0d96120b5f721cfc185cb510f9df25dac62edace858b9331c572c774f477"
     },
     {
       "module": "TernaryGoldbach.Explicit.ExplicitFormula",
@@ -2552,7 +2588,13 @@
       "upstream_git_blob_sha1": "35fe2f1f10662ca2f4ad5bf65635bce226fb5cc8",
       "upstream_sha256": "d5c7c512e06b21a1d07d150cd8174138df2cd80bb0de6aaa05a9508a0ebe6207",
       "bytes": 45189,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Use checked Mathlib-4.34 compatibility helpers or the equivalent existing API for a newer Mathlib lemma. All mathematical theorem statements are unchanged; see compatibility-provenance.json.",
+          "patch": "adaptations/TernaryGoldbach-Explicit-XiPartial-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "96457e09cf87a64e4d6a915b039926e4862ed4ab7c593963a12837eedf67b069"
     },
     {
       "module": "TernaryGoldbach.Explicit.ZeroCount",
@@ -2727,7 +2769,13 @@
       "upstream_git_blob_sha1": "eff1e351418c2971afd3b09fe1de28e4d351d5b0",
       "upstream_sha256": "dbbaf5ebba80315278e9e287dd363877d76272d89db3ef330c8fd7fd691a0823",
       "bytes": 5686,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Use checked Mathlib-4.34 compatibility helpers or the equivalent existing API for a newer Mathlib lemma. All mathematical theorem statements are unchanged; see compatibility-provenance.json.",
+          "patch": "adaptations/TernaryGoldbach-Prelim-PlancherelReal-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "1830a023903faae1e057d80d63e3cf122608de8b89077cd9f1d387109819a9b1"
     },
     {
       "module": "TernaryGoldbach.Prelim.RamareHarm",

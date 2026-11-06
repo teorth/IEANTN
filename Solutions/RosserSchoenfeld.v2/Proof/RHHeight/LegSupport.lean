@@ -1,5 +1,6 @@
 module
 
+public import RSBoundsCompat.Arctan
 public import HardyTenZeros.TenSupport
 
 @[expose] public section
@@ -659,7 +660,7 @@ theorem arg_mem_of_box {B : ComplexInterval} {z : ℂ} (hB : B.contains z) (hre 
       rw [← Complex.tan_arg, Real.arctan_tan h1 h2]
     rw [harg]
     have hq : z.im / z.re ≤ 0 := div_nonpos_of_nonpos_of_nonneg hzim hzre.le
-    refine le_trans ?_ (Real.self_le_arctan hq)
+    refine le_trans ?_ (RSBoundsCompat.Real.self_le_arctan hq)
     push_cast
     rw [div_le_div_iff₀ hrl0 hzre]
     nlinarith [mul_nonneg (sub_nonneg.mpr hilo) hzre.le,

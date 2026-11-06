@@ -31,7 +31,21 @@ def main() -> None:
             f"Inventory mismatch: unrecorded={sorted(actual_files - recorded)}, "
             f"missing={sorted(recorded - actual_files)}"
         )
-    print(f"Matched all {len(recorded)} vendored source files and hashes.")
+    compatibility = json.loads((root / "compatibility-provenance.json").read_text(encoding="utf-8"))
+    helpers = set()
+    for item in compatibility["files"]:
+        path = item["path"]
+        if path in helpers:
+            raise SystemExit(f"Duplicate compatibility entry: {path}")
+        helpers.add(path)
+        if hashlib.sha256((root / path).read_bytes()).hexdigest() != item["sha256"]:
+            raise SystemExit(f"Compatibility source hash mismatch: {path}")
+    actual_helpers = {
+        str(path.relative_to(root)) for path in (root / "RSBoundsCompat").rglob("*.lean")
+    }
+    if actual_helpers != helpers:
+        raise SystemExit("Compatibility helper inventory mismatch")
+    print(f"Matched all {len(recorded)} vendored sources and {len(helpers)} compatibility helpers.")
 
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+import RSBoundsCompat.GammaDeriv
 import Mathlib.Analysis.SpecialFunctions.Gamma.Digamma
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
@@ -261,7 +262,7 @@ theorem digamma_eq_integral {s : ℂ} (hs : 1 / 2 < s.re) :
       ∫ u : ℝ in Ioi 0, ((Real.exp (-u) : ℂ) - ((1 + u : ℝ) : ℂ) ^ (-s)) / u := by
   have hs0 : 0 < s.re := by linarith
   have hΓ : Complex.Gamma s ≠ 0 := Complex.Gamma_ne_zero_of_re_pos hs0
-  have hd := (Complex.hasDerivAt_Gamma_of_re_pos hs0).deriv
+  have hd := (RSBoundsCompat.Complex.hasDerivAt_Gamma_of_re_pos hs0).deriv
   -- `Γ'(s) = ∫∫ F`
   have hA : deriv Complex.Gamma s = ∫ t : ℝ in Ioi 0, ∫ u : ℝ in Ioi 0, digF s (t, u) := by
     rw [hd]

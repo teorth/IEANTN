@@ -1,3 +1,4 @@
+import RSBoundsCompat.Arctan
 import Mathlib.Analysis.Complex.ExponentialBounds
 import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
@@ -66,7 +67,7 @@ theorem correctionExponent_nonpos {σ t : ℝ} (hσ0 : 0 ≤ σ) (hσ1 : σ ≤ 
     (ht : 0 < t) : correctionExponent σ t ≤ 0 := by
   have hlog : 0 ≤ Real.log (1 + (σ / t) ^ 2) :=
     Real.log_nonneg (by nlinarith [sq_nonneg (σ / t)])
-  have ha := Real.arctan_le_self (div_nonneg hσ0 ht.le)
+  have ha := RSBoundsCompat.Real.arctan_le_self (div_nonneg hσ0 ht.le)
   have hm := mul_le_mul_of_nonneg_left ha (show 0 ≤ t / 2 by positivity)
   have he : t / 2 * (σ / t) = σ / 2 := by field_simp
   rw [he] at hm
@@ -152,7 +153,7 @@ theorem logModulus_upper {σ t : ℝ} (hσ0 : 0 ≤ σ) (hσ1 : σ ≤ 1)
     linarith
   have ha0 : 0 ≤ Real.arctan (σ / t) := Real.arctan_nonneg.mpr (by positivity)
   have ha1 : Real.arctan (σ / t) ≤ 1 / t :=
-    (Real.arctan_le_self (by positivity)).trans
+    (RSBoundsCompat.Real.arctan_le_self (by positivity)).trans
       (div_le_div_of_nonneg_right hσ1 ht0.le)
   have ha2 : Real.arctan (σ / t) ^ 2 ≤ 1 / t ^ 2 := by
     have hsq : Real.arctan (σ / t) ^ 2 ≤ (1 / t) ^ 2 := by nlinarith

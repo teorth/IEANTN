@@ -6,9 +6,10 @@ Adapted from gersh/ternary-goldbach-lean commit
 27df23af6a712895f22204d0d81102baa74f0ebe:
 BacklundEBound.lean, BacklundCompletedZetaConj.lean, and
 ZetaInterlacingAssembly.lean. This selective port uses Mathlib's existing
-completedRiemannZeta_conj and deriv_conj_conj, avoiding the external
+RSBoundsCompat.completedRiemannZeta_conj and deriv_conj_conj, avoiding the external
 count/convexity import closure. See docs/BacklundReflectionReuse.md.
 -/
+import RSBoundsCompat.ZetaConjugation
 import Mathlib.Analysis.Calculus.Deriv.Star
 import Mathlib.Analysis.Calculus.LogDeriv
 import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
@@ -69,14 +70,14 @@ theorem logDeriv_completedZeta_conj (s : ℂ) :
   have hf : (starRingEnd ℂ ∘ completedRiemannZeta ∘ starRingEnd ℂ) =
       completedRiemannZeta := by
     funext w
-    simp [Function.comp, completedRiemannZeta_conj]
+    simp [Function.comp, RSBoundsCompat.completedRiemannZeta_conj]
   have hd := deriv_conj_conj (f := completedRiemannZeta)
   rw [hf] at hd
   have h2 : deriv completedRiemannZeta (starRingEnd ℂ s) =
       starRingEnd ℂ (deriv completedRiemannZeta s) := by
     rw [congrFun hd (starRingEnd ℂ s)]
     simp [Function.comp]
-  rw [logDeriv_apply, logDeriv_apply, h2, completedRiemannZeta_conj, map_div₀]
+  rw [logDeriv_apply, logDeriv_apply, h2, RSBoundsCompat.completedRiemannZeta_conj, map_div₀]
 
 theorem im_logDeriv_completedZeta_reflect (σ T : ℝ) (hT : T ≠ 0) :
     (logDeriv completedRiemannZeta ((1 - σ : ℝ) + T * Complex.I)).im

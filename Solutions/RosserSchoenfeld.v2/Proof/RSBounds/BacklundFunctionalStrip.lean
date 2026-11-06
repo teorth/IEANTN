@@ -14,7 +14,8 @@ theorem norm_cos_le_cosh_im (z : ℂ) : ‖Complex.cos z‖ ≤ Real.cosh z.im :
       gcongr
       exact norm_add_le _ _
     _ = Real.cosh z.im := by
-      rw [Complex.norm_exp_mul_I, Complex.norm_exp_mul_I, Complex.neg_im, neg_neg,
+      rw [Complex.norm_exp, Complex.mul_I_re, Complex.norm_exp, Complex.mul_I_re,
+        Complex.neg_im, neg_neg,
         Real.cosh_eq]
       ring
 

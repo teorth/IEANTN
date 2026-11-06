@@ -56,7 +56,9 @@ theorem fourierL2_ae_eq {f : ℝ → ℂ} (h1 : Integrable f) (h2 : MemLp f 2) :
       refine Integrable.mono' (g'.integrable.norm.mul_const (∫ x, ‖f x‖))
         ((g'.continuous.smul hcont).aestronglyMeasurable) (Filter.Eventually.of_forall fun x => ?_)
       rw [norm_smul]
-      exact mul_le_mul_of_nonneg_left (Real.norm_fourier_le_integral_norm f x) (norm_nonneg _)
+      exact mul_le_mul_of_nonneg_left
+        (VectorFourier.norm_fourierIntegral_le_integral_norm 𝐞 volume (innerₗ ℝ) f x)
+        (norm_nonneg _)
     have e3 : ∫ x, g x • ((G : ℝ → ℂ) x - 𝓕 f x) =
         (∫ x, g' x • (G : ℝ → ℂ) x) - ∫ x, g' x • 𝓕 f x := by
       have hfun : (fun x => g x • ((G : ℝ → ℂ) x - 𝓕 f x)) =

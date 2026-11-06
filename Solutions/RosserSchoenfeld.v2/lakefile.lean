@@ -5,7 +5,11 @@ package solution_RosserSchoenfeld_v2
 
 require IEANTN from "../.."
 
-@[default_target] lean_lib Solution
+@[default_target] lean_lib Solution where
+  globs := #[.submodules `Solution]
+
+lean_lib RSBoundsCompat where
+  globs := #[.submodules `RSBoundsCompat]
 
 -- Only the source dependency closure of the psi theorem is vendored. The
 -- libraries are outside the default core build and use the core Mathlib pin.
