@@ -1,0 +1,55 @@
+solution: Solutions/RosserSchoenfeld1962.v5/
+state: locally-validated
+source:
+  repository: https://github.com/hakonlonmo/PrimeNumberTheoremAnd
+  checkout_base_commit: 81eca5aa3fa4779883a9aeba18e49087c5366e0f
+  note: The new files are a working-tree snapshot, pinned individually by provenance.json.
+targets:
+- challenge: RosserSchoenfeld1962.v5.challenge_equation_5_4
+  upstream: RS5Historical.equation54
+  upstream_status: Completed and manually axiom-audited by the human before this port.
+statement_audit:
+  status: confirmed_correct
+  source: https://doi.org/10.1215/ijm/1255631807
+  scan: https://denisevellachemla.eu/Rosser-Schoenfeld-1962.pdf
+  details: Rendered original pp. 64, 71 and 77 checked against the Lean statements. The paper defines
+    psi and theta with inclusive upper endpoints, as does Mathlib. The maximum is non-strict without uniqueness;
+    (3.36) and (5.4) are strict on x > 0. Theorem 25 includes x = 1 and has theta <= psi with a strict
+    upper bound. All displayed decimals are exact rationals; its logarithmic constant is not rounded.
+upstream_closure:
+  ported_files: 1
+  reused_rs12_files: 51
+  note: The broad PNT+ RS12 import is replaced at the import boundary. No PNT+ dependency, unrelated historical
+    theorem, or generated Challenge enters the solution.
+trusted_numerics: None. Rational certificates are checked in the Lean kernel; LeanCert is a solution-only
+  pinned dependency.
+file_layout: Solution.lean contains only Comparator adapters. Port retains upstream module boundaries.
+  The sibling v1 RS12 library is exposed via srcDir, with outputs in this project.
+order:
+- Audit statements
+- Port the pruned source closure
+- Build sequentially
+- Check exact challenge types and axioms
+- Generate fingerprints and run repository checks
+validation:
+  core_build: passed
+  solution_build: passed (sequential cold build, then ordinary lake build)
+  types: Every Comparator-facing declaration has an identical pp.all type in separate challenge and solution
+    environments.
+  axioms:
+  - propext
+  - Classical.choice
+  - Quot.sound
+  progress: ieantn.py progress --write derived zero holes for every compared theorem.
+  source_inventory: check_port.py passed, including comparison with the read-only PNT+ snapshot.
+  inherited_certificates: All 35 certificate modules match PNT+ at the pinned 81eca5a commit after relocation.
+  palomar_validator: Passed current contract at 14aa8d6b3c2f14a8540605e37144560b9a00e7e7.
+  official_verification: Pending; the inherited LeanCert and runner-memory questions are tracked in teorth/IEANTN#164.
+    No receipt is created here.
+  network_check: ieantn.py check passed in the canonical teorth/IEANTN receipt context. Derived views
+    are left to CI.
+  generated_files: Repository-generated challenge and fingerprint checks passed. Earlier node statements
+    and fingerprints are unchanged.
+proof_route: Reuse theta_le_psi and the actual v1 RS12 proof, comparing the exact coefficients 1.03883
+  < 1.11 for x > 0. This is the completed PNT+ proof, rather than the historical route through Theorems
+  25 and 18.
