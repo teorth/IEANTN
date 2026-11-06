@@ -34,9 +34,11 @@ import IEANTN.Nodes.Erdos392.v1.Challenge
 import IEANTN.Nodes.FKBJ.v1.Challenge
 import IEANTN.Nodes.FKS.v1.Challenge
 import IEANTN.Nodes.FKS.v2.Challenge
+import IEANTN.Nodes.FKS.v3.Challenge
 import IEANTN.Nodes.FKS2.v1.Challenge
 import IEANTN.Nodes.FKS2.v2.Challenge
 import IEANTN.Nodes.FKS2Numerics.v1.Challenge
+import IEANTN.Nodes.FKSNumerics.v1.Challenge
 import IEANTN.Nodes.GammaAsymptotics.v1.Challenge
 import IEANTN.Nodes.GammaAsymptotics.v2.Challenge
 import IEANTN.Nodes.Goldbach.v1.Challenge
