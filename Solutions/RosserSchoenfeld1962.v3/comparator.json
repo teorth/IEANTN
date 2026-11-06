@@ -1,0 +1,6 @@
+{
+  "challenge_module": "IEANTN.Nodes.RosserSchoenfeld1962.v3.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": ["RosserSchoenfeld1962.v3.challenge_equation_3_8"],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]
+}
