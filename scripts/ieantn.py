@@ -956,16 +956,21 @@ def solution_holes(node: str) -> tuple[bool, list[str], dict[str, bool]] | None:
     # the warnings are simply absent and a count taken from them silently reads zero -- which is
     # exactly what this reported the first time it was run against a scaffolded solution with three
     # open goals. `lake env lean` re-elaborates and always emits them.
-    # Every top-level file, not just the compared one. A solution is split across files for build
+    # Every local proof file, not just the compared one. A solution is split across files for build
     # time -- see docs/SOLUTIONS.md -- so the holes are usually in a sibling, and elaborating only
     # the root reports zero while three theorems are plainly open. That is what this did first.
     holes: list[str] = []
-    for source in sorted(directory.glob("*.lean")):
+    for source in sorted(directory.rglob("*.lean")):
+        relative = source.relative_to(directory)
+        # Dependencies and build trees belong to their own projects, not to this solution.
+        if any(part.startswith(".") for part in relative.parts):
+            continue
         # Lake already elaborated its configuration during the successful build above.
         # Its DSL commands are not available to an ordinary `lake env lean` proof probe.
         if source.name == "lakefile.lean":
             continue
-        fresh = subprocess.run(["lake", "env", "lean", source.name], cwd=directory,
+        source_name = relative.as_posix()
+        fresh = subprocess.run(["lake", "env", "lean", source_name], cwd=directory,
                                capture_output=True, text=True, encoding="utf-8", errors="replace")
         seen_output = (fresh.stdout or "") + (fresh.stderr or "")
         # An elaboration that FAILED emits no `declaration uses` warnings, so scanning only for
@@ -974,7 +979,7 @@ def solution_holes(node: str) -> tuple[bool, list[str], dict[str, bool]] | None:
         # on Windows turned four open goals into a clean bill of health, and `--write` would have
         # recorded `remaining_holes: 0` on the node. Treat it as unbuildable instead.
         if fresh.returncode != 0 or re.search(r"^error:|: error:", seen_output, re.MULTILINE):
-            print(f"  re-elaborating {source.name} failed, so its holes cannot be counted:")
+            print(f"  re-elaborating {source_name} failed, so its holes cannot be counted:")
             for line in seen_output.splitlines()[:3]:
                 # Lean's output carries goal characters like U+22A2 that a cp1252 console cannot
                 # encode, and an uncaught UnicodeEncodeError here would replace a useful diagnostic
@@ -982,7 +987,7 @@ def solution_holes(node: str) -> tuple[bool, list[str], dict[str, bool]] | None:
                 print("    " + line.encode("ascii", "replace").decode("ascii"))
             return (False, [], {})
         holes += [
-            f"{pathlib.PurePosixPath(m.group(1)).name}:{m.group(2)}"
+            f"{source_name}:{m.group(2)}"
             for m in re.finditer(r"([^\s:]+):(\d+):\d+: warning: declaration uses", seen_output)
         ]
     holes = sorted(set(holes))
