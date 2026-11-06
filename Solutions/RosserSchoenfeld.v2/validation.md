@@ -30,6 +30,11 @@ Completed on 2026-11-06:
 - Inspected all direct Mathlib imports. One renamed module was identified and
   adapted: `Integrability.Log` to `Integrability.LogMeromorphic`.
 
+A local core-toolchain `lake build ieantn_hash` attempt reached its 1800-second
+runtime limit while compiling pre-existing IEANTN nodes. It reported no Lean
+error before the timeout. The core build, fingerprint generation, and solution
+manifest resolution were not completed by this attempt.
+
 Still pending at this checkpoint:
 
 - Core compilation and generated statement fingerprints.
