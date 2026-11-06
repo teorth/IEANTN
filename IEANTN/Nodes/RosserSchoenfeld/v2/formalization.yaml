@@ -1,0 +1,84 @@
+version: "v0.4"
+
+node:
+  id: RosserSchoenfeld.v2
+  family: RosserSchoenfeld
+  version: v2
+  kind: paper
+  status: awaiting-solution
+
+project:
+  name: "Rosser-Schoenfeld: the b = 23 Chebyshev-psi bound"
+  description: >-
+    The strict error bound |psi(x) - x| < 0.00020211 x for x >= exp(23),
+    assuming RH through height 1894439. The finite-RH assumption is explicit.
+    Integration of the independently replayed external Lean proof is in progress.
+  authors: ["IEANTN contributors"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["IEANTN contributors"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M26"]
+
+conclusions:
+- id: psi_error_b23
+  declaration: RosserSchoenfeld.v2.psi_error_b23
+  challenge: RosserSchoenfeld.v2.challenge_psi_error_b23
+  imports: []
+  imports_status: none
+  justifications:
+  - id: integration-pending
+    kind: none-yet
+    note: >-
+      The conclusion is conditional: a consumer supplies RiemannHypothesisUpTo 1894439.
+      An external proof on Lean 4.35.0 has passed independent Comparator replay with
+      only propext, Classical.choice, and Quot.sound. That replay is not an IEANTN
+      receipt. The source is pinned in Solutions/RosserSchoenfeld.v2/README.md.
+      Compatibility with the core Lean 4.34.0-rc2 and Mathlib revision, the finite-RH
+      vocabulary adapter, and IEANTN Comparator verification remain to be completed.
+  designated: integration-pending
+
+sources:
+- title: "Sharper bounds for the Chebyshev functions theta(x) and psi(x)"
+  authors: ["J. Barkley Rosser", "Lowell Schoenfeld"]
+  type: paper
+  id: "https://doi.org/10.1090/S0025-5718-1975-0457373-7"
+  location: "Math. Comp. 29 (1975), 243-269; Lemmas 7-9 and Theorem 4"
+  relationship: adapts
+  note: >-
+    The proof retains the quartic smoothing, delta = 0.0000211, finite-RH height,
+    threshold exp(23), and final 1975 constant. It uses 29 certified zeros and eight
+    cancellation subbands instead of the paper's 57-zero head computation.
+- title: "RSBounds: the proved b = 23 psi estimate"
+  authors: ["RSBounds contributors"]
+  type: software
+  id: "https://github.com/Garald1/PrimeNumberTheoremAnd/tree/087f4418a84516a34cddaa8883062abfd0fc7e4e/Projects/RSBounds"
+  location: "RSBounds/RosserSchoenfeld1975.lean, theorem psi_error_b23"
+  relationship: adapts
+  note: >-
+    Original implementation and independent replay evidence, pinned before the
+    IEANTN integration. Its finite-RH predicate is converted to the network vocabulary.
+
+automation:
+  methods:
+  - method: agent
+    models: ["GPT-6 (OpenAI)"]
+    framework: "OpenAI Codex"
+    role: >-
+      Prepared the conditional node and integration of the published RSBounds proof.
+
+review:
+  status: self-assessed
+  reviewers: ["OpenAI Codex"]
+  notes: >-
+    Integration is in progress; no IEANTN verification receipt or human review is claimed.
+
+limitations:
+- "RH through height 1894439 remains an explicit assumption."
+- "The external Lean 4.35.0 replay does not establish compatibility with IEANTN's pinned environment."
+- "This node asserts neither an unconditional psi bound nor the 1976 constant 0.00020171."
+- "No novelty is claimed; the argument adapts Rosser and Schoenfeld's quartic method."

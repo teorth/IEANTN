@@ -1,0 +1,5 @@
+--- upstream/TernaryGoldbach/Prelim/PNTMertens.lean
++++ Proof/TernaryGoldbach/Prelim/PNTMertens.lean
+@@ -19,1 +19,1 @@
+-import Mathlib.Analysis.SpecialFunctions.Integrability.Log
++import Mathlib.Analysis.SpecialFunctions.Integrability.LogMeromorphic

@@ -1,0 +1,3318 @@
+{
+  "description": "Exact source-only dependency closure of RSBounds.RosserSchoenfeld1975. These hashes establish source provenance, not a Lean verification receipt.",
+  "source_toolchain": "leanprover/lean4:v4.35.0",
+  "source_mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "target_toolchain": "leanprover/lean4:v4.34.0-rc2",
+  "target_mathlib": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6",
+  "root_module": "RSBounds.RosserSchoenfeld1975",
+  "files": [
+    {
+      "module": "HardyFirstZero.BoxSupport",
+      "path": "Proof/HardyFirstZero/BoxSupport.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyFirstZero/BoxSupport.lean"
+      },
+      "upstream_git_blob_sha1": "028568ea7f4f0133c38c8fcd9a6e55f5a5fb67a8",
+      "upstream_sha256": "b92b761c27449deb2b96d8a845dd6d53d6f1bd22985a480d583a22620701f1dd",
+      "bytes": 6178,
+      "adaptations": []
+    },
+    {
+      "module": "HardyFirstZero.Boxes",
+      "path": "Proof/HardyFirstZero/Boxes.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyFirstZero/Boxes.lean"
+      },
+      "upstream_git_blob_sha1": "2c27c5e6c01d6affcc37484b8e67133aeab21382",
+      "upstream_sha256": "fe6334f2eaebcf706c519962dfa36919dacbe8abaa256ec4cd84168581ca05bc",
+      "bytes": 46285,
+      "adaptations": []
+    },
+    {
+      "module": "HardyFirstZero.EulerMaclaurin",
+      "path": "Proof/HardyFirstZero/EulerMaclaurin.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyFirstZero/EulerMaclaurin.lean"
+      },
+      "upstream_git_blob_sha1": "ab039bc4b050d9947ebf9853e3348140416e8c42",
+      "upstream_sha256": "85cc5968d3ad87b0a215046b76bfcd9f2630bacd22d470a67664b86a424ca375",
+      "bytes": 26323,
+      "adaptations": []
+    },
+    {
+      "module": "HardyFirstZero.FirstZero",
+      "path": "Proof/HardyFirstZero/FirstZero.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyFirstZero/FirstZero.lean"
+      },
+      "upstream_git_blob_sha1": "fd56d795d6121f9e960b8743de1b37149d6a876a",
+      "upstream_sha256": "277985ab298d1a6b9fe1acd74e3fe1b5eee8a4d88140c00088759c209bd9817c",
+      "bytes": 4643,
+      "adaptations": []
+    },
+    {
+      "module": "HardyFirstZero.Phase",
+      "path": "Proof/HardyFirstZero/Phase.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyFirstZero/Phase.lean"
+      },
+      "upstream_git_blob_sha1": "dd40abc2b1a0d997f3f748c4fecaaf85ab479889",
+      "upstream_sha256": "4451c45cff2e7fb019ae851a9936b641842fc89d1de07a09c2c47ad82f4da378",
+      "bytes": 24046,
+      "adaptations": []
+    },
+    {
+      "module": "HardyFirstZero.Spine",
+      "path": "Proof/HardyFirstZero/Spine.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyFirstZero/Spine.lean"
+      },
+      "upstream_git_blob_sha1": "26ed7fa7cf7ac2d3a88047261d9b043a80b26ebd",
+      "upstream_sha256": "3d6c33798fbb87b252912d55b3917105a013f94c52271b9302a38b26a9cc66a2",
+      "bytes": 5400,
+      "adaptations": []
+    },
+    {
+      "module": "HardyTenZeros.Box2102",
+      "path": "Proof/HardyTenZeros/Box2102.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyTenZeros/Box2102.lean"
+      },
+      "upstream_git_blob_sha1": "956a25891c524cf107cc5ff147d4450be314a20f",
+      "upstream_sha256": "42fd42ce783ba3e0b473e96778c6597dbfa1074a1353fe36d3b49c40b9336e6c",
+      "bytes": 31677,
+      "adaptations": []
+    },
+    {
+      "module": "HardyTenZeros.Box2501",
+      "path": "Proof/HardyTenZeros/Box2501.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyTenZeros/Box2501.lean"
+      },
+      "upstream_git_blob_sha1": "719328bab63f5d71284eab31e0de006f166d680a",
+      "upstream_sha256": "cbf25bfa00ad51e08960a315d59a40f191287272a3228d6e35c2f177c01361be",
+      "bytes": 40935,
+      "adaptations": []
+    },
+    {
+      "module": "HardyTenZeros.Box3042",
+      "path": "Proof/HardyTenZeros/Box3042.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyTenZeros/Box3042.lean"
+      },
+      "upstream_git_blob_sha1": "cd4108f74a64b60be3318aa59b0cd4cfd85c53b1",
+      "upstream_sha256": "eae9946f08b46598e39479fe4b68b564a0209d8cccc90d471b58c583462dc4ca",
+      "bytes": 40343,
+      "adaptations": []
+    },
+    {
+      "module": "HardyTenZeros.Box3293",
+      "path": "Proof/HardyTenZeros/Box3293.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyTenZeros/Box3293.lean"
+      },
+      "upstream_git_blob_sha1": "8d0699be6574f243201917b0677b5e6db3bbbc56",
+      "upstream_sha256": "b4a894c3ba1c2ada2ed78af5032c27c938dca82e12f938682892fae325a17e65",
+      "bytes": 42831,
+      "adaptations": []
+    },
+    {
+      "module": "HardyTenZeros.Box3758",
+      "path": "Proof/HardyTenZeros/Box3758.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyTenZeros/Box3758.lean"
+      },
+      "upstream_git_blob_sha1": "b044e93837f4710e2c8496c73c65a62524ac40b5",
+      "upstream_sha256": "55ea6de6a30f25bcd35ee3bc21e61c7d9c9df4e459020b34bfab4b3739eb7954",
+      "bytes": 47021,
+      "adaptations": []
+    },
+    {
+      "module": "HardyTenZeros.Box4091",
+      "path": "Proof/HardyTenZeros/Box4091.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyTenZeros/Box4091.lean"
+      },
+      "upstream_git_blob_sha1": "0feb386b49bc08c392ceb0cf737f3106193326a5",
+      "upstream_sha256": "03e8f3349bd4dc89cbdb57b39e24a55d33573d10931c94b012da3adbe1397fa4",
+      "bytes": 62388,
+      "adaptations": []
+    },
+    {
+      "module": "HardyTenZeros.Box4332",
+      "path": "Proof/HardyTenZeros/Box4332.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyTenZeros/Box4332.lean"
+      },
+      "upstream_git_blob_sha1": "893402d40a6fac866b5156dd4c73ae7c77e50283",
+      "upstream_sha256": "e2444cfe745a2ef604f346f64b5ce37995139a509f3512631c49284b7801ec2c",
+      "bytes": 53830,
+      "adaptations": []
+    },
+    {
+      "module": "HardyTenZeros.Box4800",
+      "path": "Proof/HardyTenZeros/Box4800.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyTenZeros/Box4800.lean"
+      },
+      "upstream_git_blob_sha1": "bab26de7d37fa9b3df53b77fe62c8e727ec9085d",
+      "upstream_sha256": "b02ec8d6fc9f262955441ac938df760e01c5c5f5016f4d7efb1e962b63ef837a",
+      "bytes": 59445,
+      "adaptations": []
+    },
+    {
+      "module": "HardyTenZeros.Box4977",
+      "path": "Proof/HardyTenZeros/Box4977.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyTenZeros/Box4977.lean"
+      },
+      "upstream_git_blob_sha1": "3d66ef7feb1d955190242225a6a2a5368cab4641",
+      "upstream_sha256": "171b6382b036c8353a0b646ec9a2f4c0306ab1afb2c881a4714f2a64ff31725b",
+      "bytes": 67285,
+      "adaptations": []
+    },
+    {
+      "module": "HardyTenZeros.PhaseShort",
+      "path": "Proof/HardyTenZeros/PhaseShort.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyTenZeros/PhaseShort.lean"
+      },
+      "upstream_git_blob_sha1": "41d904792e04c2caf6fb7d52629b10388de08aaf",
+      "upstream_sha256": "93a2c5675da6c10de558ff1086ac3eea9562e9885f425d42c45fb82f504cbd9e",
+      "bytes": 14529,
+      "adaptations": []
+    },
+    {
+      "module": "HardyTenZeros.TenSupport",
+      "path": "Proof/HardyTenZeros/TenSupport.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyTenZeros/TenSupport.lean"
+      },
+      "upstream_git_blob_sha1": "e18f2c3958c7e85e8c39781409dbace49a0232de",
+      "upstream_sha256": "b1ab68102dd14412518a7b6ae3dc0ae402ee89932bcb88562e92ddc421ad82aa",
+      "bytes": 11307,
+      "adaptations": []
+    },
+    {
+      "module": "HardyTenZeros.TenZeros",
+      "path": "Proof/HardyTenZeros/TenZeros.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/HardyTenZeros/TenZeros.lean"
+      },
+      "upstream_git_blob_sha1": "c893921468f39fa52f7ff899d3b20e26b220e226",
+      "upstream_sha256": "5e93d87d37d60bfc8a7245a09a6a780556fa7ed2abea7c7685b5c34b65a1536c",
+      "bytes": 2630,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight.ExactArgument",
+      "path": "Proof/RHHeight/ExactArgument.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight/ExactArgument.lean"
+      },
+      "upstream_git_blob_sha1": "9f68352cc1cc5549e163d2b225f20c991784e2fe",
+      "upstream_sha256": "214760e41a4b5de96fb15676cd9f20a0ff758197a79190451a0987798179c595",
+      "bytes": 8458,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight.GammaIncrement",
+      "path": "Proof/RHHeight/GammaIncrement.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight/GammaIncrement.lean"
+      },
+      "upstream_git_blob_sha1": "8de1b73d4f6cb362277c9a253d4b43359cbc880f",
+      "upstream_sha256": "478087e69de83d0ac6fee75e9a035947340ee3771efcb2dbaf8b0f07c607c1c9",
+      "bytes": 17605,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight.HorizontalLegs",
+      "path": "Proof/RHHeight/HorizontalLegs.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight/HorizontalLegs.lean"
+      },
+      "upstream_git_blob_sha1": "f124e86fc563cd904c707bb58d08e7e3675c8c92",
+      "upstream_sha256": "06a81f6c3831f4c961af1ba0f88b88d164a5add934bdadb82e1fef481cba17c4",
+      "bytes": 5529,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight.LegSupport",
+      "path": "Proof/RHHeight/LegSupport.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight/LegSupport.lean"
+      },
+      "upstream_git_blob_sha1": "e288a91b77c8e61b3b38c15f74a1d2d833a7e42d",
+      "upstream_sha256": "b975d6fe6e528875e3ba132fdd07a746c150ec224e7ddd6accda4bdb45b4e177",
+      "bytes": 33453,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight.LegsArg",
+      "path": "Proof/RHHeight/LegsArg.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight/LegsArg.lean"
+      },
+      "upstream_git_blob_sha1": "8f2d17537b83ed08d3892deebb27545304d52f97",
+      "upstream_sha256": "35939b0d2bb7b67b69c407c5f9fb92ed425fd3952d0fbd28dd241ba32799724b",
+      "bytes": 23587,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight.LegsBottom",
+      "path": "Proof/RHHeight/LegsBottom.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight/LegsBottom.lean"
+      },
+      "upstream_git_blob_sha1": "adb1679e9c31918053045136ba8165a564553cbb",
+      "upstream_sha256": "2590dabeea6324077e7e025ccfc2ac428a7bb9ffab30447426cb16287b877e57",
+      "bytes": 6978,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight.LegsTop1",
+      "path": "Proof/RHHeight/LegsTop1.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight/LegsTop1.lean"
+      },
+      "upstream_git_blob_sha1": "2ea1bc7cdf3384f459c373238363fe034c612702",
+      "upstream_sha256": "eb411636d40cdad262886a388c7b406e387189018fe227806d3b76c8bd8137d3",
+      "bytes": 26401,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight.LegsTop2",
+      "path": "Proof/RHHeight/LegsTop2.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight/LegsTop2.lean"
+      },
+      "upstream_git_blob_sha1": "256440ebaf0b5555ed242225451f7ada48a90637",
+      "upstream_sha256": "b0aca5ebbf2bee1f09998801ac8bf3bf7add63a56eaee78d61baae9fb2ae5fdb",
+      "bytes": 22382,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight.LowHeight",
+      "path": "Proof/RHHeight/LowHeight.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight/LowHeight.lean"
+      },
+      "upstream_git_blob_sha1": "a92538087226b1e4616ca7edeffdc2fdf7d6e313",
+      "upstream_sha256": "2139d0007f71eb53ffaf8bd1ba2b149bfcc239957208c6ccc95999207e0a6a1a",
+      "bytes": 8718,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight.Skeleton",
+      "path": "Proof/RHHeight/Skeleton.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight/Skeleton.lean"
+      },
+      "upstream_git_blob_sha1": "cf2dae2852e4649c637a235cb03d054e02bb7e22",
+      "upstream_sha256": "8600486da0e016231777575f2fa15e8e31d9996bf3238f3c01b3c25ae6fc2ff5",
+      "bytes": 13628,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight.Statement",
+      "path": "Proof/RHHeight/Statement.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight/Statement.lean"
+      },
+      "upstream_git_blob_sha1": "59530430f10381c09b7d5a71481ca1e3256857d1",
+      "upstream_sha256": "796d1c911c28473a24694d3204f2096a6046ac95a878f02e075674089e92708a",
+      "bytes": 4325,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box5297",
+      "path": "Proof/RHHeight100/Box5297.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box5297.lean"
+      },
+      "upstream_git_blob_sha1": "98d0e317c220e9c6cee1dabb551e2889dcd60215",
+      "upstream_sha256": "f292f92433b842ff99b250e45195709f1ce81b2a064f26a0a594bbbf8e66d695",
+      "bytes": 91766,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box5644",
+      "path": "Proof/RHHeight100/Box5644.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box5644.lean"
+      },
+      "upstream_git_blob_sha1": "a7f0fe830e46655177912895fdd69a58ae76184e",
+      "upstream_sha256": "0b15fb07286bf312d9a2b80541bdec9004a5d20b93bb28f024c8e22807f67984",
+      "bytes": 67964,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box5934",
+      "path": "Proof/RHHeight100/Box5934.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box5934.lean"
+      },
+      "upstream_git_blob_sha1": "2f2a57b9835c1c723fad6d30099f99e6d055f4b4",
+      "upstream_sha256": "3a6283923b04f5089ca55115c871b541d34a0197ae2069175b7522ab50d02588",
+      "bytes": 84022,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box6083",
+      "path": "Proof/RHHeight100/Box6083.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box6083.lean"
+      },
+      "upstream_git_blob_sha1": "09ce7f4326db3cb77e9cc16a3cb7e9b0bc2d0a28",
+      "upstream_sha256": "42e24d8cdd79e3765a514e024d109a9d54ea145850308c26a8d11e21f6c2e4de",
+      "bytes": 86360,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box6511",
+      "path": "Proof/RHHeight100/Box6511.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box6511.lean"
+      },
+      "upstream_git_blob_sha1": "e973bf9ffe0084ca81153cc253f87e57248294c5",
+      "upstream_sha256": "0f82c22225fd291cb2ed9e2d372f56ac661f2fd73a833914cf937dbffa8b7e29",
+      "bytes": 77077,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box67075",
+      "path": "Proof/RHHeight100/Box67075.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box67075.lean"
+      },
+      "upstream_git_blob_sha1": "0eb3afcd34cafeea5eb6dcaad2736b630d39686b",
+      "upstream_sha256": "3e77e610c77da9bc6f265054504127bb85aff0e13cf37e408eba18847bd3d5b0",
+      "bytes": 89209,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box6954",
+      "path": "Proof/RHHeight100/Box6954.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box6954.lean"
+      },
+      "upstream_git_blob_sha1": "2fd07cf16309150d1ca034d74458c87cfde03b3e",
+      "upstream_sha256": "7380117605d0aa710b3fb36f1ee84247300e783ea9fb98b3d91a4aa71a566940",
+      "bytes": 88281,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box7206",
+      "path": "Proof/RHHeight100/Box7206.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box7206.lean"
+      },
+      "upstream_git_blob_sha1": "ca28669495fc0e3da9f2321f7bbb12a6dbcf23a1",
+      "upstream_sha256": "18d698d2e08d4a9e712b783f321c9793d89d8342eb9bebb37bbbf8c18b9fde6e",
+      "bytes": 85865,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box7570",
+      "path": "Proof/RHHeight100/Box7570.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box7570.lean"
+      },
+      "upstream_git_blob_sha1": "032a76b0b74b5e07aed80eae9b31db539c66bff5",
+      "upstream_sha256": "e22677eb4e00aee06a0bcace295914d64352536e4b986e74f0b268ee4db48b10",
+      "bytes": 97393,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box7714",
+      "path": "Proof/RHHeight100/Box7714.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box7714.lean"
+      },
+      "upstream_git_blob_sha1": "609f7a56fa0d082a17d3eaee1b7a4665137cf533",
+      "upstream_sha256": "e0022ddbef4752f81f32693d8d012a32222492cb9b7219ecef953e2d22603a65",
+      "bytes": 107680,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box7933",
+      "path": "Proof/RHHeight100/Box7933.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box7933.lean"
+      },
+      "upstream_git_blob_sha1": "9238187a1b8779e21b57e6fea7ae7324617b5211",
+      "upstream_sha256": "6cd53b8484b1ac94eafee7fea855709c98a03b58e6b0a509b7034030e9fa775b",
+      "bytes": 93153,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box8291",
+      "path": "Proof/RHHeight100/Box8291.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box8291.lean"
+      },
+      "upstream_git_blob_sha1": "c91a5e2b5c38c2fa53196d03ffbaa88e4d584855",
+      "upstream_sha256": "0593136cfabdd54328cabd94011f3f4eeca1691c46631a6f44fc90c40f4852f6",
+      "bytes": 134304,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box8473",
+      "path": "Proof/RHHeight100/Box8473.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box8473.lean"
+      },
+      "upstream_git_blob_sha1": "abd89b32b0a3644fea8f19051cc8d706c2a5eb72",
+      "upstream_sha256": "c9ca5a61e51dd6c856462b9ec1533560a778aa18720e031f19990d5764278de5",
+      "bytes": 108993,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box8742",
+      "path": "Proof/RHHeight100/Box8742.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box8742.lean"
+      },
+      "upstream_git_blob_sha1": "d541a09ff8475a89b7a7a1e3a0adbe3ad48ef206",
+      "upstream_sha256": "b7de77698be15d0f8dd1d636668911cf578e7f401661901511dc3c79cd2d61f1",
+      "bytes": 116795,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box8880",
+      "path": "Proof/RHHeight100/Box8880.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box8880.lean"
+      },
+      "upstream_git_blob_sha1": "b4b0a83f51527114ebd7b762f2a8177f52ebf66b",
+      "upstream_sha256": "8b5e38d763a534480b3eaf8f74c81a9918958203d9f82f747e698b81b582ab7c",
+      "bytes": 135576,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box9249",
+      "path": "Proof/RHHeight100/Box9249.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box9249.lean"
+      },
+      "upstream_git_blob_sha1": "f66c13de9f6cdba068630b72c0466da32f37a35c",
+      "upstream_sha256": "abc9d730b56d6a8825c3dbe2c3b98a94ec2e2af968290ef846e3ab3ffbc06f49",
+      "bytes": 109601,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box9465",
+      "path": "Proof/RHHeight100/Box9465.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box9465.lean"
+      },
+      "upstream_git_blob_sha1": "4b0c32e1f0395686879301dbae0deae6f01b5498",
+      "upstream_sha256": "a4abd8025e68520d08b21b2157e2e067b4cfc1a26642f49daaad422821af2475",
+      "bytes": 151404,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box95865",
+      "path": "Proof/RHHeight100/Box95865.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box95865.lean"
+      },
+      "upstream_git_blob_sha1": "ab597017e256c39b7bba5cf13014ddb76a84ac1b",
+      "upstream_sha256": "8f50ff4bc88df4f2b88f9675830b1f5987488ea8cc2123effc80eb0da1e8ca13",
+      "bytes": 127323,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Box9883",
+      "path": "Proof/RHHeight100/Box9883.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Box9883.lean"
+      },
+      "upstream_git_blob_sha1": "abf92b6a959a220fdd870528b9d17c75becfc90e",
+      "upstream_sha256": "8bf5f46da5d0730e2366c1dde8b2567fae158363612bf1f92cf4af3cb8e5c438",
+      "bytes": 130531,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.GammaIncrement100",
+      "path": "Proof/RHHeight100/GammaIncrement100.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/GammaIncrement100.lean"
+      },
+      "upstream_git_blob_sha1": "4158b3c756598a501d35cdedced4d1a9fe112749",
+      "upstream_sha256": "d4dd19d5120dbb83805ccf5dfc2680ae5cc0a596f83d2a84aefb4c58865121d9",
+      "bytes": 4355,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.HorizontalLegs100",
+      "path": "Proof/RHHeight100/HorizontalLegs100.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/HorizontalLegs100.lean"
+      },
+      "upstream_git_blob_sha1": "976cd4003239d4b7e87a78d1b11068393dc0c76a",
+      "upstream_sha256": "63c779106074e9960f298c53641d4b4ba04b705eefe72f19d921f4697b0e0636",
+      "bytes": 3507,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.LegsArg100",
+      "path": "Proof/RHHeight100/LegsArg100.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/LegsArg100.lean"
+      },
+      "upstream_git_blob_sha1": "28876a1189845d99805cb401d6eb7e660607f78b",
+      "upstream_sha256": "335e6361d9fab61747cf50d1f54722fb017a5564755252c59d88b54dae99f1a3",
+      "bytes": 45050,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.LegsTop100A",
+      "path": "Proof/RHHeight100/LegsTop100A.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/LegsTop100A.lean"
+      },
+      "upstream_git_blob_sha1": "fbba179adade890fdaea62ddf480fdd0ff587e37",
+      "upstream_sha256": "f2e7b2e811d4848333b1d4c46c37c1240a38b2087cb0ae32d167ffa10c1891bf",
+      "bytes": 44594,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.LegsTop100B",
+      "path": "Proof/RHHeight100/LegsTop100B.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/LegsTop100B.lean"
+      },
+      "upstream_git_blob_sha1": "4cb0b06e72e44e2da507e4ebc59d98fd84f053a5",
+      "upstream_sha256": "3b938f39a9a614da386ed6fe7f2d5e4a9877c5b75830b6c153aa08de17eeece6",
+      "bytes": 45268,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Main100",
+      "path": "Proof/RHHeight100/Main100.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Main100.lean"
+      },
+      "upstream_git_blob_sha1": "8064fcdc070304f72f9b10bd296b32c433f982c6",
+      "upstream_sha256": "898a551afeb1b4d8e1589c0446f1ec4e8e98de375ef3d6e56f93b6339c2426b4",
+      "bytes": 3016,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Skeleton100",
+      "path": "Proof/RHHeight100/Skeleton100.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Skeleton100.lean"
+      },
+      "upstream_git_blob_sha1": "ae32a7b220425c907eba82905b274f92ac11d383",
+      "upstream_sha256": "f4acb2ae0da412b8eac84bf9e5cdd577483d4bb0e1c557ee476c6e1a1bacfcdd",
+      "bytes": 6457,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.Support",
+      "path": "Proof/RHHeight100/Support.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/Support.lean"
+      },
+      "upstream_git_blob_sha1": "e741fd6b013d47d5a50fdc62e8c9ba95e72ad407",
+      "upstream_sha256": "c86e8163ced999690877ddeb3f7dd911a71973743761ac2cda74bb4905fbeb62",
+      "bytes": 4955,
+      "adaptations": []
+    },
+    {
+      "module": "RHHeight100.TwentyNineZeros",
+      "path": "Proof/RHHeight100/TwentyNineZeros.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/RHHeight100/TwentyNineZeros.lean"
+      },
+      "upstream_git_blob_sha1": "d15b5428fd1d609d1131e897aab84a61d1d028ed",
+      "upstream_sha256": "8cbef496376d53f79a7b45d7f108ddb02c396e83e3418a0f03292d9b5c3b0923",
+      "bytes": 7062,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundAnchor",
+      "path": "Proof/RSBounds/BacklundAnchor.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundAnchor.lean"
+      },
+      "upstream_git_blob_sha1": "4b2492bf1f02f7e4c678e92c59c9104760a6e6d9",
+      "upstream_sha256": "f348306c76352b94134ef90946dc73f2c0c4bb3c56018a05d0e0a31837114d2b",
+      "bytes": 8354,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundAngularAssembly",
+      "path": "Proof/RSBounds/BacklundAngularAssembly.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundAngularAssembly.lean"
+      },
+      "upstream_git_blob_sha1": "0b01121942873096e0e82a1e2b61e4ba6ca7bbdb",
+      "upstream_sha256": "4a8e82eb517f827493e5dec85811ad69943555e42e0e7079c955fff26f0d0ecd",
+      "bytes": 9387,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundAngularCoefficients",
+      "path": "Proof/RSBounds/BacklundAngularCoefficients.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundAngularCoefficients.lean"
+      },
+      "upstream_git_blob_sha1": "ee77496ed1789f2683b19939af6a328e6815802c",
+      "upstream_sha256": "f0537ef7d60f9a31e81984c701964ea4e4d2adf8201b92eb32e59ec0098c4f05",
+      "bytes": 2511,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundAngularNumerics",
+      "path": "Proof/RSBounds/BacklundAngularNumerics.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundAngularNumerics.lean"
+      },
+      "upstream_git_blob_sha1": "2fd4cf1e965652de20bb452ecb8e576e439759eb",
+      "upstream_sha256": "d1999eeb87b121c705e3221a647b71bdd1f7252aeefeb93b702372da9e7da73a",
+      "bytes": 8857,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundBottomCertificates",
+      "path": "Proof/RSBounds/BacklundBottomCertificates.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundBottomCertificates.lean"
+      },
+      "upstream_git_blob_sha1": "5eb35692488235c15fda61d4c7e0edfabb13f615",
+      "upstream_sha256": "9d81ce926061e2ae2f13e275d0deccaab653717a2782fe4cea47445267e565d0",
+      "bytes": 6778,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundBottomData",
+      "path": "Proof/RSBounds/BacklundBottomData.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundBottomData.lean"
+      },
+      "upstream_git_blob_sha1": "2f7015e305dd20fb6cca555afc8d77f1d2f3bfb5",
+      "upstream_sha256": "bf5c5baf5347c704eee1a635a3565d9cda451610a5fc1480cf4532f42a10a429",
+      "bytes": 3068,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundBottomFiniteSum",
+      "path": "Proof/RSBounds/BacklundBottomFiniteSum.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundBottomFiniteSum.lean"
+      },
+      "upstream_git_blob_sha1": "f4c6247fe6f2bf36cacc89f7f2c999b1bfa3b51b",
+      "upstream_sha256": "87d55ef9965c7c3135b346953ecd5cf6a5da2efb4efd0e2b9989107915a244ae",
+      "bytes": 13727,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCenter",
+      "path": "Proof/RSBounds/BacklundCenter.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCenter.lean"
+      },
+      "upstream_git_blob_sha1": "302aa6d1969799892f98f98d87cae99ddf51f115",
+      "upstream_sha256": "93e18f13212f4fac9d084c6eeb47ac89d847e39d0d0fd741dd247619859d1fe3",
+      "bytes": 4523,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCenterNumerics",
+      "path": "Proof/RSBounds/BacklundCenterNumerics.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCenterNumerics.lean"
+      },
+      "upstream_git_blob_sha1": "f8030ee07e84c1f82609d2170889da04e437b7d4",
+      "upstream_sha256": "78bac242688138ddda0804b71af492c8fc2c7870c166a394125d9f565577c623",
+      "bytes": 3890,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCenterNumericsBase",
+      "path": "Proof/RSBounds/BacklundCenterNumericsBase.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCenterNumericsBase.lean"
+      },
+      "upstream_git_blob_sha1": "7cdd3640ab2db679bc29578589e7105979a9662c",
+      "upstream_sha256": "1d6cbe8721c32210bad319799f6facc82901302d37c9f5e5c777118d331178ef",
+      "bytes": 7144,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCenterNumericsData",
+      "path": "Proof/RSBounds/BacklundCenterNumericsData.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCenterNumericsData.lean"
+      },
+      "upstream_git_blob_sha1": "fb31f9943f46899130b6aaefc922a49bb439e428",
+      "upstream_sha256": "9443a37fe4087f5c6763ddc313ed2218b390dae43c696145dfe61a04992098b2",
+      "bytes": 9275,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCircleCount",
+      "path": "Proof/RSBounds/BacklundCircleCount.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCircleCount.lean"
+      },
+      "upstream_git_blob_sha1": "92889af26b87a9f74cba412459460d7117665f96",
+      "upstream_sha256": "f2a664b1bfb78799fa77e108b9b4a17a57157fc09dcaea865a9b15ccccad88fb",
+      "bytes": 5537,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCircleMajorantBounds",
+      "path": "Proof/RSBounds/BacklundCircleMajorantBounds.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCircleMajorantBounds.lean"
+      },
+      "upstream_git_blob_sha1": "196a42157f0a06efa479fdc530d5dbadce217314",
+      "upstream_sha256": "a28dc420ec226ad9ad0d667d06e1d08fbd6c3fc22793d54ab2bc4c8809bb1b56",
+      "bytes": 3688,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCircleMajorantDef",
+      "path": "Proof/RSBounds/BacklundCircleMajorantDef.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCircleMajorantDef.lean"
+      },
+      "upstream_git_blob_sha1": "e85624418fbdd3fee1ce9e82cb67f5e299264d68",
+      "upstream_sha256": "db8117323a7b72e62db7a13c2750b9189155972b637b4faf9e12d7e8bfe6beb3",
+      "bytes": 1049,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCircleMajorantGeometry",
+      "path": "Proof/RSBounds/BacklundCircleMajorantGeometry.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCircleMajorantGeometry.lean"
+      },
+      "upstream_git_blob_sha1": "0001d4eda9c17d08ad87ec8817f7b35c79475f29",
+      "upstream_sha256": "e6e6a769135fab6f7eea09f39d02add325425d9cf81b087b2ae35b5acea5dc57",
+      "bytes": 5664,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCircleSymmetry",
+      "path": "Proof/RSBounds/BacklundCircleSymmetry.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCircleSymmetry.lean"
+      },
+      "upstream_git_blob_sha1": "0e1a6d8966cbe32a154868e1f90c3a9c2a1d56ee",
+      "upstream_sha256": "ce9610b7ffd83c6c1aabce58cc8239e47c682030ba5d472dcebc591351bace00",
+      "bytes": 2724,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCountDefinitions",
+      "path": "Proof/RSBounds/BacklundCountDefinitions.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCountDefinitions.lean"
+      },
+      "upstream_git_blob_sha1": "af302650b888206767941193af3c0430192300f5",
+      "upstream_sha256": "80828b1d42e8019742929f461931ce92bf3466b04f20b8fd2f2b550c194a3684",
+      "bytes": 1373,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCountEndpoint",
+      "path": "Proof/RSBounds/BacklundCountEndpoint.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCountEndpoint.lean"
+      },
+      "upstream_git_blob_sha1": "d3c3a19f9460c54adba61b258e49069e16da7229",
+      "upstream_sha256": "67ac59bbd599804d4f4e582cc7e59d6600676dfbdd7b0979cee08ddb6f02518b",
+      "bytes": 7212,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCountHalving",
+      "path": "Proof/RSBounds/BacklundCountHalving.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCountHalving.lean"
+      },
+      "upstream_git_blob_sha1": "d5107241933323d68b659129036c2a25513c4f57",
+      "upstream_sha256": "d5c3da10907b838ab6d21b7a69d0c22d36f10b30ffb69c2fee9dbc8b763e625b",
+      "bytes": 5476,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCountIdentity",
+      "path": "Proof/RSBounds/BacklundCountIdentity.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCountIdentity.lean"
+      },
+      "upstream_git_blob_sha1": "69451615a479a67ac3eac1602a2fa8b64c2887be",
+      "upstream_sha256": "b701da48b6414739e846c5876ba6f53767215b0cac47f78ba60553a0791c833a",
+      "bytes": 9139,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCountJensen",
+      "path": "Proof/RSBounds/BacklundCountJensen.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCountJensen.lean"
+      },
+      "upstream_git_blob_sha1": "769d40fdeb5bc16c7e752678b23afce0e8978936",
+      "upstream_sha256": "206fa4c7f034b6ca9569178b0af37a75efcd1fa9c2d77b5105564c9624de01c7",
+      "bytes": 3778,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCountMultiplicity",
+      "path": "Proof/RSBounds/BacklundCountMultiplicity.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCountMultiplicity.lean"
+      },
+      "upstream_git_blob_sha1": "2703aa3cf77066f9034884facb7948134186402b",
+      "upstream_sha256": "97c6da40f1e8a0514023fcd670202ddd983338054c23c67a566027e988ad63cc",
+      "bytes": 3933,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCountPole",
+      "path": "Proof/RSBounds/BacklundCountPole.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCountPole.lean"
+      },
+      "upstream_git_blob_sha1": "f6306def04a3fcedecb6ed4c4bd7c0f713225c65",
+      "upstream_sha256": "e56ae01e93a4bc5ab04ce4e33eb43ca5fa52378bd0ebf9eac0d46b67fe9b1102",
+      "bytes": 4744,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCountRealAxis",
+      "path": "Proof/RSBounds/BacklundCountRealAxis.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCountRealAxis.lean"
+      },
+      "upstream_git_blob_sha1": "399cf1c471814cf38e7c6e77968c93d015ebe370",
+      "upstream_sha256": "7839640d90dd349f01506feb88ee6854eb706f166cdc3f76a84d31276c3ed016",
+      "bytes": 3048,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundCountRectangle",
+      "path": "Proof/RSBounds/BacklundCountRectangle.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundCountRectangle.lean"
+      },
+      "upstream_git_blob_sha1": "f258a1146f5ee1aa464e2b5e3f17b6803622ed0d",
+      "upstream_sha256": "4489a5fc0fd93a487ce98fb2cd94781b2081611dfb241b38331012bf58b6e5fb",
+      "bytes": 6404,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundDigammaSeriesAdapter",
+      "path": "Proof/RSBounds/BacklundDigammaSeriesAdapter.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundDigammaSeriesAdapter.lean"
+      },
+      "upstream_git_blob_sha1": "0cc072c80934ee3e061e2bf830878ab850d7c5cd",
+      "upstream_sha256": "b6edacacec890e91cdf9bd3adaa0abc9369b75422124ef710780e8845fa258bf",
+      "bytes": 1699,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundDigammaStirling",
+      "path": "Proof/RSBounds/BacklundDigammaStirling.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundDigammaStirling.lean"
+      },
+      "upstream_git_blob_sha1": "17302fdc1e60ae33e199b298ee6a966cecab6d9d",
+      "upstream_sha256": "a192fce9a05290bc874c8f2041a03a9b0c65159e1f0c2837438799ac03491950",
+      "bytes": 27919,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundEulerMaclaurin",
+      "path": "Proof/RSBounds/BacklundEulerMaclaurin.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundEulerMaclaurin.lean"
+      },
+      "upstream_git_blob_sha1": "a8d47df05a8fb6848fed91bc2e16eae62deb8aed",
+      "upstream_sha256": "55527effb0ee00109d2d009acd371f5ff5b63c1ca25a3e4abd14002cf1942324",
+      "bytes": 10324,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundFinalScalar",
+      "path": "Proof/RSBounds/BacklundFinalScalar.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundFinalScalar.lean"
+      },
+      "upstream_git_blob_sha1": "6ae446903ee0a990d9e1b262ff6204eaa97e5c78",
+      "upstream_sha256": "c7e8bc487e0c91c8a217bc37949fc874b7e61cf654f409ef1160a87b55f62127",
+      "bytes": 4772,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundFirstCrossing",
+      "path": "Proof/RSBounds/BacklundFirstCrossing.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundFirstCrossing.lean"
+      },
+      "upstream_git_blob_sha1": "654929cdb030ef2a881b6ac02567d5d93c35044c",
+      "upstream_sha256": "2c13d168589224ba938e56ae85fb67c5375be2cc249601a9b5e91b7f9a22bc01",
+      "bytes": 13703,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundFunctionalMultiplier",
+      "path": "Proof/RSBounds/BacklundFunctionalMultiplier.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundFunctionalMultiplier.lean"
+      },
+      "upstream_git_blob_sha1": "1ac26b5a684384fd78a17908b477804aa5184a70",
+      "upstream_sha256": "874344d5ceba67d76fcc0d3faab527ecf276ed29bf30d232150c64bae9bfc951",
+      "bytes": 4081,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundFunctionalStrip",
+      "path": "Proof/RSBounds/BacklundFunctionalStrip.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundFunctionalStrip.lean"
+      },
+      "upstream_git_blob_sha1": "242e7c239d9c7a78f8b1067ce67dbd10ed903a1e",
+      "upstream_sha256": "10d00089baa867c8c3dfa150ff8be77d1c81c722e8ef1dfb71fd4addf1b2363c",
+      "bytes": 6938,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundGammaBaseline",
+      "path": "Proof/RSBounds/BacklundGammaBaseline.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundGammaBaseline.lean"
+      },
+      "upstream_git_blob_sha1": "c1502bb569ff93fc055b23ebeb3e94f06211b02f",
+      "upstream_sha256": "83fd2c65bf52df7404827850049b92636b99fd825f9485ac1f8ad44179814053",
+      "bytes": 2815,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundGammaModulusAbsorption",
+      "path": "Proof/RSBounds/BacklundGammaModulusAbsorption.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundGammaModulusAbsorption.lean"
+      },
+      "upstream_git_blob_sha1": "e2e9f06cb60c9d5330985e128761fa80f655f43a",
+      "upstream_sha256": "96c963c3c7080171dbbacea2c95bed5b48b99131bbc541035d1bb3f56e4fcce5",
+      "bytes": 1797,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundGammaModulusDigamma",
+      "path": "Proof/RSBounds/BacklundGammaModulusDigamma.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundGammaModulusDigamma.lean"
+      },
+      "upstream_git_blob_sha1": "cc3fcd8e0576dc41e4701899a75c88dd1a7a618e",
+      "upstream_sha256": "cdae7548165f04f5ce86407c824bcc85e41a1817b2c01b63cef1069f5a06bb70",
+      "bytes": 3015,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundGammaModulusHorizontal",
+      "path": "Proof/RSBounds/BacklundGammaModulusHorizontal.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundGammaModulusHorizontal.lean"
+      },
+      "upstream_git_blob_sha1": "9e440dc4a2f4cd9b800c8658551793ff49a984ea",
+      "upstream_sha256": "60229c9ae786efb5efdbaf6729165a659da31e84d55095f2d62ed32ad8ef9985",
+      "bytes": 4660,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundGammaPhaseArctan",
+      "path": "Proof/RSBounds/BacklundGammaPhaseArctan.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundGammaPhaseArctan.lean"
+      },
+      "upstream_git_blob_sha1": "22ea7486f9071a5939e794b3dd61a55470091c00",
+      "upstream_sha256": "899d088554648ea746b67b2744314cd6caeb632cb4ae9bfa0e35822d6b18782c",
+      "bytes": 4837,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundGammaPhaseBase",
+      "path": "Proof/RSBounds/BacklundGammaPhaseBase.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundGammaPhaseBase.lean"
+      },
+      "upstream_git_blob_sha1": "c94abd87cb076e5ffe6792244f4bfddd4b732e28",
+      "upstream_sha256": "72ec468f2eb9f590d28b3cc565725015de9a8cebe9816690312fc5c4cf43671d",
+      "bytes": 6412,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundGammaPhaseEstimate",
+      "path": "Proof/RSBounds/BacklundGammaPhaseEstimate.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundGammaPhaseEstimate.lean"
+      },
+      "upstream_git_blob_sha1": "fd3c940b5dbd415a8c18067b0a12b52a7fef7eaf",
+      "upstream_sha256": "1b9911bfe6e8b7fcd4476414d311ba359c711f85ae37ff021c560f4223f6ef55",
+      "bytes": 6144,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundGammaPhasePrimitive",
+      "path": "Proof/RSBounds/BacklundGammaPhasePrimitive.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundGammaPhasePrimitive.lean"
+      },
+      "upstream_git_blob_sha1": "15c6f9ff939dbc6d2bdab29e95c4db2fb8355e1e",
+      "upstream_sha256": "3007ec7f09bad505b07b5b5bc7a1e7aa04fc43c6ad62219796d2568a967beddf",
+      "bytes": 6090,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundGammaPhaseShift",
+      "path": "Proof/RSBounds/BacklundGammaPhaseShift.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundGammaPhaseShift.lean"
+      },
+      "upstream_git_blob_sha1": "f840fe48c7a76198190b5a174d789a35a0a9c946",
+      "upstream_sha256": "38a0742776ecd0384710e0d1925c10603bc3d32461634d0e3382798f763fd6bc",
+      "bytes": 7523,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundGammaReflection",
+      "path": "Proof/RSBounds/BacklundGammaReflection.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundGammaReflection.lean"
+      },
+      "upstream_git_blob_sha1": "1a6fc06b07f75ba69fbec3e8b125aba309fa1514",
+      "upstream_sha256": "497375f997e8263f231d47cd9d419606694dd165a6312548eca9e6785ae51124",
+      "bytes": 17239,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundHalfStrip",
+      "path": "Proof/RSBounds/BacklundHalfStrip.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundHalfStrip.lean"
+      },
+      "upstream_git_blob_sha1": "22ca55c50edcfbaf91e9f701cdff8d09c1bf91d3",
+      "upstream_sha256": "001f344f9f7ba459940c631f36053d63c3a2ac124a5a6ddde293345b8f462faf",
+      "bytes": 5174,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundHighCount",
+      "path": "Proof/RSBounds/BacklundHighCount.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundHighCount.lean"
+      },
+      "upstream_git_blob_sha1": "ee834ad9cf4c060615a16e9f05ae8edd9c69be12",
+      "upstream_sha256": "4486c310f866463b5f69d57f3b6d879b8470a1b955e03f01deaca2b38c5f99ba",
+      "bytes": 2030,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundHyperbolicFactor",
+      "path": "Proof/RSBounds/BacklundHyperbolicFactor.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundHyperbolicFactor.lean"
+      },
+      "upstream_git_blob_sha1": "d9ea4f8a1bc87ae5eda54491b9496e4db2f6b73f",
+      "upstream_sha256": "ac5695ee0477102031dfb3197ca3012baffb1faa58f4a94b8440c9acda7f015a",
+      "bytes": 2421,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundJensen",
+      "path": "Proof/RSBounds/BacklundJensen.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundJensen.lean"
+      },
+      "upstream_git_blob_sha1": "ed727004ab785bc86aea82953163dde677af2751",
+      "upstream_sha256": "4f2d99921b4e50e81455c8f99d64a8fc7055bc3119b47dd0e73fe1ec0f41e558",
+      "bytes": 10081,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundLeftZetaBoundary",
+      "path": "Proof/RSBounds/BacklundLeftZetaBoundary.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundLeftZetaBoundary.lean"
+      },
+      "upstream_git_blob_sha1": "58bc11a2e46329cbff89f16653325c06d86890e8",
+      "upstream_sha256": "b2ec03f8282387134a01f18ad29bf44d1346fc0c943ff306ac675a613df051a7",
+      "bytes": 1831,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundLowCount",
+      "path": "Proof/RSBounds/BacklundLowCount.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundLowCount.lean"
+      },
+      "upstream_git_blob_sha1": "a33ff66361111ebcf75818fd0fc0faf153dd5d14",
+      "upstream_sha256": "cc675e5ef245f9e2b22667b007846030523973097dcc22712f5eae7b85cb059b",
+      "bytes": 6081,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundLowCountGeneric",
+      "path": "Proof/RSBounds/BacklundLowCountGeneric.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundLowCountGeneric.lean"
+      },
+      "upstream_git_blob_sha1": "910d3952cdd1fd4952798e3ebd420abf96ad6a30",
+      "upstream_sha256": "e81aab7ed1c0ba616095019fe5999894121d61d5b03b6b9dfdbea9aae2a5f410",
+      "bytes": 3243,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundLowMainTerm",
+      "path": "Proof/RSBounds/BacklundLowMainTerm.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundLowMainTerm.lean"
+      },
+      "upstream_git_blob_sha1": "f0870b684156696900eb00e9278a1313a0b30329",
+      "upstream_sha256": "762e69cdae547cd42e6158fa22795d92d0148a506ba49da0918c21e7d694332c",
+      "bytes": 2960,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundLowScalarBase",
+      "path": "Proof/RSBounds/BacklundLowScalarBase.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundLowScalarBase.lean"
+      },
+      "upstream_git_blob_sha1": "d0f6d487b6ed6af1714d54a880237ebc41cc1f52",
+      "upstream_sha256": "a9caa290da0036c104d13af4aaa3abd5fa5f719ef5b9c31c41627e5a17ca4e2d",
+      "bytes": 5744,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundLowScalarData",
+      "path": "Proof/RSBounds/BacklundLowScalarData.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundLowScalarData.lean"
+      },
+      "upstream_git_blob_sha1": "a9d79fce0c4dc38eddf2dd1f479552fdd23a2f5c",
+      "upstream_sha256": "e7cae1646aa69088df964e77db148cd7ba89caf548018eb054190a47f45b5a35",
+      "bytes": 5072,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundLowZeros",
+      "path": "Proof/RSBounds/BacklundLowZeros.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundLowZeros.lean"
+      },
+      "upstream_git_blob_sha1": "85306e081dc71cb85af917c40751bb0a81a94caf",
+      "upstream_sha256": "ab791143c290dd4c60633343d036f16e71c7030d51038701ecf9f429bb09b47b",
+      "bytes": 27779,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundPairedCrossing",
+      "path": "Proof/RSBounds/BacklundPairedCrossing.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundPairedCrossing.lean"
+      },
+      "upstream_git_blob_sha1": "5179077d9fa2053326433c4b688afa5db2f2f1b2",
+      "upstream_sha256": "4997dc4c8717ebc999eed8ceb82df417fba2d698722a2a4ca6391e462bc0eab4",
+      "bytes": 13573,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundPairedJensen",
+      "path": "Proof/RSBounds/BacklundPairedJensen.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundPairedJensen.lean"
+      },
+      "upstream_git_blob_sha1": "ce635eed9d0365e3350af8a8a96d434cc70ec362",
+      "upstream_sha256": "0ab831f9e7b9914c4e56cd3ea8d1854a1372c28e242f2cfd0391c13c22e3b8f4",
+      "bytes": 16732,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundPairedPower",
+      "path": "Proof/RSBounds/BacklundPairedPower.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundPairedPower.lean"
+      },
+      "upstream_git_blob_sha1": "e978e89e585359bfaedefb4e197b245b4e32184b",
+      "upstream_sha256": "7c85242a2f9641863706dc067494cedeb46d46dcb5a5472a5c960496afc2cb05",
+      "bytes": 6842,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundPhase",
+      "path": "Proof/RSBounds/BacklundPhase.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundPhase.lean"
+      },
+      "upstream_git_blob_sha1": "4952571c3671e43f454de0b5459a925b065fcee5",
+      "upstream_sha256": "fa9d615046e417cef78a903890e1e46b8bc72cff712513d21a5500aa3a5762e0",
+      "bytes": 5354,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundRH100Bridge",
+      "path": "Proof/RSBounds/BacklundRH100Bridge.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundRH100Bridge.lean"
+      },
+      "upstream_git_blob_sha1": "101fceb65d20548c55ac9e671f755ea75ddd81e4",
+      "upstream_sha256": "9dd743abd59125b74fa1900230e8ae2b9220ab6bf8ebd0ce54d51a7e7d6bcbc0",
+      "bytes": 2678,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundReflection",
+      "path": "Proof/RSBounds/BacklundReflection.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundReflection.lean"
+      },
+      "upstream_git_blob_sha1": "9d4d21796b16a2e84865954601e433297f7eb501",
+      "upstream_sha256": "85ec91b5ba621456c7aef3cfee32c898656777f7eecaca863b58358000b41b79",
+      "bytes": 12244,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundRightArc",
+      "path": "Proof/RSBounds/BacklundRightArc.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundRightArc.lean"
+      },
+      "upstream_git_blob_sha1": "ffc564d8f026f74a7aa61c6f8978887bec0f07d1",
+      "upstream_sha256": "207e6699ff12ae88ff57208ac5faa44d6f5dd3412eab87a9736a17390229968b",
+      "bytes": 10845,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundRightArcNumerics",
+      "path": "Proof/RSBounds/BacklundRightArcNumerics.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundRightArcNumerics.lean"
+      },
+      "upstream_git_blob_sha1": "9e937615e1120e9bb5992ce6b2dac109ef19da39",
+      "upstream_sha256": "4203ae88c1d4c74d428f0c9fe366e9a748ad4f8437223d727426002bb73d087e",
+      "bytes": 20790,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundRightArcNumericsBase",
+      "path": "Proof/RSBounds/BacklundRightArcNumericsBase.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundRightArcNumericsBase.lean"
+      },
+      "upstream_git_blob_sha1": "e0eae3b4973ed277cc7412b3b4a2036d00d2c2f9",
+      "upstream_sha256": "c05cd7db2c9e1291e772d6221dd131cd6f9db66366ed44061a129b8db8d68883",
+      "bytes": 4585,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundStrip",
+      "path": "Proof/RSBounds/BacklundStrip.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundStrip.lean"
+      },
+      "upstream_git_blob_sha1": "98ccf044cd4961c881e662bbbe2cf86e022b9db4",
+      "upstream_sha256": "db6bea567f2b44eaf08a7e4b988486d374b26ad3bee35e1905381af1cc8ac592",
+      "bytes": 10649,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundStripNormalizer",
+      "path": "Proof/RSBounds/BacklundStripNormalizer.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundStripNormalizer.lean"
+      },
+      "upstream_git_blob_sha1": "7d45ee5db446a1f3bb6d044e33c6f186b356d8f0",
+      "upstream_sha256": "1d2772a7ea925142fc804cc66218338da91f2b815b6e5d33b309d60acae75f12",
+      "bytes": 16091,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundTrapezoid",
+      "path": "Proof/RSBounds/BacklundTrapezoid.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundTrapezoid.lean"
+      },
+      "upstream_git_blob_sha1": "27ea3450fd29c5983e295c1b0c80e90187c67ca6",
+      "upstream_sha256": "1293c3bb601bd07df72843b3afe312f14ded8140864bfc95f7d74264c680ee8c",
+      "bytes": 5384,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundZetaBoundary",
+      "path": "Proof/RSBounds/BacklundZetaBoundary.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundZetaBoundary.lean"
+      },
+      "upstream_git_blob_sha1": "9ed7f435466392d2998c25434373acf9ae1c0c2d",
+      "upstream_sha256": "61c19350d516589800dd81a974a8a9b05d65bea81046c7fdee6624358fba70a6",
+      "bytes": 17404,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundZetaPhase",
+      "path": "Proof/RSBounds/BacklundZetaPhase.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundZetaPhase.lean"
+      },
+      "upstream_git_blob_sha1": "9a116eee4f09781d157b4c9d0860a2166828c76a",
+      "upstream_sha256": "fd50d42f55dba957b761c850ca029a8b091c1e2cd3813ac371a76f6f8e833923",
+      "bytes": 23158,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.BacklundZetaRegularization",
+      "path": "Proof/RSBounds/BacklundZetaRegularization.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/BacklundZetaRegularization.lean"
+      },
+      "upstream_git_blob_sha1": "c9892ff235fcc6f6b5492b202407387c9329ba5a",
+      "upstream_sha256": "d4e1591938ff9d96645e652c827cc5933f3fc4c291d55e5a8e7be69df7c9a31e",
+      "bytes": 7350,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.IEANTNDigamma",
+      "path": "Proof/RSBounds/IEANTNDigamma.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/IEANTNDigamma.lean"
+      },
+      "upstream_git_blob_sha1": "24a9ef49ba01d21399b7e12be304846f1d222eef",
+      "upstream_sha256": "8c431ad50bc3e114227c9a5f32bcad87f9503c3396f9ae36e9ba2b1f005a458d",
+      "bytes": 1349,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.IEANTNDigammaDifference",
+      "path": "Proof/RSBounds/IEANTNDigammaDifference.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/IEANTNDigammaDifference.lean"
+      },
+      "upstream_git_blob_sha1": "624edd6d6ef8c88fb1429318af278575c381a790",
+      "upstream_sha256": "f82d8bae9ee3edf522112976d59539616115fdd3c4e16fd71ea4bfb33de9aff0",
+      "bytes": 6383,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.IEANTNGamma.Analytic",
+      "path": "Proof/RSBounds/IEANTNGamma/Analytic.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/IEANTNGamma/Analytic.lean"
+      },
+      "upstream_git_blob_sha1": "f1199c778cc63e9d1439f08fd6aa5fb94c4539e3",
+      "upstream_sha256": "4033e326dad84e08a6ef903ea792c693ec4515158fa56bb927355cbf01212d38",
+      "bytes": 12271,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.IEANTNGamma.ComplexToReal",
+      "path": "Proof/RSBounds/IEANTNGamma/ComplexToReal.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/IEANTNGamma/ComplexToReal.lean"
+      },
+      "upstream_git_blob_sha1": "e83d120c29f9a5101b6de3e655d65d7f4baf198c",
+      "upstream_sha256": "2b76291513e7b931bd11a6b13879dac77dba1c5084bcc7713cb6ccb7c86e7b85",
+      "bytes": 3624,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.IEANTNGamma.GaussSeries",
+      "path": "Proof/RSBounds/IEANTNGamma/GaussSeries.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/IEANTNGamma/GaussSeries.lean"
+      },
+      "upstream_git_blob_sha1": "8814a0b1d5e7f327065de4f0003166ac298a97f6",
+      "upstream_sha256": "6e947437b267b5dbb2c3299b93a8ca477c487579f084817a13d2881ce5f6b7d0",
+      "bytes": 3554,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.IEANTNGamma.Oscillation",
+      "path": "Proof/RSBounds/IEANTNGamma/Oscillation.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/IEANTNGamma/Oscillation.lean"
+      },
+      "upstream_git_blob_sha1": "2d6b99ebc1616de83903001d2b0619b92309b99c",
+      "upstream_sha256": "05de86112f30519eed5ca9387b9806e7f19ea9a38d97c743908dcf8a56ec69d3",
+      "bytes": 12685,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.IEANTNGamma.Periodic",
+      "path": "Proof/RSBounds/IEANTNGamma/Periodic.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/IEANTNGamma/Periodic.lean"
+      },
+      "upstream_git_blob_sha1": "6bfd9649807de53a437727895a637560c7a95495",
+      "upstream_sha256": "2242fc4f9284f7d08c2e98df269edb2f211d00090d6315219b037c9cca4f1692",
+      "bytes": 4798,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.IEANTNGamma.RealAsymptotic",
+      "path": "Proof/RSBounds/IEANTNGamma/RealAsymptotic.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/IEANTNGamma/RealAsymptotic.lean"
+      },
+      "upstream_git_blob_sha1": "eab3e294cd4e4d9da4041818942085d21c522d1c",
+      "upstream_sha256": "289bf36620d96d8d10eec86bac6bcfaa0619f8dfe354e48a9644cdd5aa8b24db",
+      "bytes": 5936,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.IEANTNGamma.RealIdentity",
+      "path": "Proof/RSBounds/IEANTNGamma/RealIdentity.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/IEANTNGamma/RealIdentity.lean"
+      },
+      "upstream_git_blob_sha1": "f47e65ee58a4125d2abfb5f7ebbaac66b534715b",
+      "upstream_sha256": "c03c7b7d0d2cd772f5e472c9e52d90e9cbf21ac7eb49744233de26553beb4abe",
+      "bytes": 3202,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.IEANTNGamma.Recurrence",
+      "path": "Proof/RSBounds/IEANTNGamma/Recurrence.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/IEANTNGamma/Recurrence.lean"
+      },
+      "upstream_git_blob_sha1": "d8ce159728946f5d4694bc36527b557c92b1785f",
+      "upstream_sha256": "beb41cd5f74097866293bec987620ea42fe0a53c4628d5be7442347f4e3d0826",
+      "bytes": 6669,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialAveragedFormula",
+      "path": "Proof/RSBounds/PolynomialAveragedFormula.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialAveragedFormula.lean"
+      },
+      "upstream_git_blob_sha1": "32b60c0e0eb76e57bfc5712bc2480a1a6acfbe2f",
+      "upstream_sha256": "d6fea4b8db2b26721cd665da71ba1c3baf415ce1c27242da7cf64dd487668627",
+      "bytes": 7630,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialExplicitFormula",
+      "path": "Proof/RSBounds/PolynomialExplicitFormula.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialExplicitFormula.lean"
+      },
+      "upstream_git_blob_sha1": "2829881b97ad70f46116eb263a6c31cccccfd78d",
+      "upstream_sha256": "9b4980ca52f9c22ef4dc8964cfbdfd1d1321c8031b8adf852b0948d0df821191",
+      "bytes": 22958,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialKernelScaling",
+      "path": "Proof/RSBounds/PolynomialKernelScaling.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialKernelScaling.lean"
+      },
+      "upstream_git_blob_sha1": "dd57df6e1821e2d0b4c49a03d3fc44bdc36ae2de",
+      "upstream_sha256": "4b3e25fd0ed8a4cde34276b3a26727b8f99ce92ce019e0fb8179a803457221f5",
+      "bytes": 2883,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialLeftKernel",
+      "path": "Proof/RSBounds/PolynomialLeftKernel.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialLeftKernel.lean"
+      },
+      "upstream_git_blob_sha1": "af2039f8a5e15520ea48ccb96f8eb7640871b448",
+      "upstream_sha256": "0a86e38765aa7f098c0e3877d65b36c452970dbf4ab756d5fdaf770b464a1c11",
+      "bytes": 5561,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialLeftRemainder",
+      "path": "Proof/RSBounds/PolynomialLeftRemainder.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialLeftRemainder.lean"
+      },
+      "upstream_git_blob_sha1": "63750f0666d671c89a5b9b66fd48eb22b0264871",
+      "upstream_sha256": "f953776e4a91f6b2fd9f54c7e246423e1803dade49dedc8c1ec6bbac820e64f2",
+      "bytes": 4489,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialLowerKernel",
+      "path": "Proof/RSBounds/PolynomialLowerKernel.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialLowerKernel.lean"
+      },
+      "upstream_git_blob_sha1": "06719a7a9e0a059ba1fdca5ef03f3583cc81665d",
+      "upstream_sha256": "6c0ae133b163564b9f8bc87802bab6b2e4ca1b571f7d01b9fcea2b9d4da8737c",
+      "bytes": 4706,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialPrimeSum",
+      "path": "Proof/RSBounds/PolynomialPrimeSum.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialPrimeSum.lean"
+      },
+      "upstream_git_blob_sha1": "ab17f4334447f2d1182e0fe3a76685a7e2ac74a5",
+      "upstream_sha256": "a6b1a93a70decb1efa319a98d942aec007f50a99649aaaf72ae8119381b8e530",
+      "bytes": 5975,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialPsi",
+      "path": "Proof/RSBounds/PolynomialPsi.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialPsi.lean"
+      },
+      "upstream_git_blob_sha1": "ed1dbb90a40d958bb09a4b99adb11b56661321e2",
+      "upstream_sha256": "2b148b5b05748a8f40a44e0d28e2377e85d4eb92aa5e2217879ca151407b136e",
+      "bytes": 8943,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialPsiFromZeroSums",
+      "path": "Proof/RSBounds/PolynomialPsiFromZeroSums.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialPsiFromZeroSums.lean"
+      },
+      "upstream_git_blob_sha1": "5abf95da2cd9a8e3c97e461d4eec3d799f3a8480",
+      "upstream_sha256": "75852c697246a5e4bfbf0d25d1eb2b813d86cbce54b55f58ec16c7d592f1ac36",
+      "bytes": 5234,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialPsiMellin",
+      "path": "Proof/RSBounds/PolynomialPsiMellin.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialPsiMellin.lean"
+      },
+      "upstream_git_blob_sha1": "4b5507d7d20469444edac964c39789eabeeafc5a",
+      "upstream_sha256": "ab6858a620ce9e47130082b39a2bec747f9328aefa31fd9e47d928df37649c60",
+      "bytes": 2635,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialQuarticFormula",
+      "path": "Proof/RSBounds/PolynomialQuarticFormula.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialQuarticFormula.lean"
+      },
+      "upstream_git_blob_sha1": "6a84b1dd7cfa0052c86a21b737e78d7fe8742e3f",
+      "upstream_sha256": "0a2a5030070705fa2e9834c700b9dc01afa8b542ccba8ce2f109745ce671a018",
+      "bytes": 6858,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialRemainderBound",
+      "path": "Proof/RSBounds/PolynomialRemainderBound.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialRemainderBound.lean"
+      },
+      "upstream_git_blob_sha1": "778b8ce5cebf7abe41116ac33d30e1cfb222785d",
+      "upstream_sha256": "817c5feaa124eb7531a9c6c56cf9c5c9d37b8256ee9b65a7736d7d5a220ab7cf",
+      "bytes": 7595,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialRemainderIntegral",
+      "path": "Proof/RSBounds/PolynomialRemainderIntegral.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialRemainderIntegral.lean"
+      },
+      "upstream_git_blob_sha1": "355ac9839f0c6eaaaa0ed8c141379086326dda86",
+      "upstream_sha256": "3e87be73c89de7606dd47fa042e546abd7206ce032792fa619c089bf79ec5632",
+      "bytes": 5519,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialRemainderMajorant",
+      "path": "Proof/RSBounds/PolynomialRemainderMajorant.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialRemainderMajorant.lean"
+      },
+      "upstream_git_blob_sha1": "53ba8fc194a63ebcec50001c892c744b3c313e59",
+      "upstream_sha256": "c734e1d09c8002b88c041fa68debbedadf600f3a2502d8ad65da3088eab8c62c",
+      "bytes": 10446,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialResidue",
+      "path": "Proof/RSBounds/PolynomialResidue.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialResidue.lean"
+      },
+      "upstream_git_blob_sha1": "50f791990703ba22398bd58960e7169118256177",
+      "upstream_sha256": "5de808714eaf50123fb8002afb22316ef4ce32d8fa1892ca4d77e54053640857",
+      "bytes": 5926,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialSmoothing",
+      "path": "Proof/RSBounds/PolynomialSmoothing.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialSmoothing.lean"
+      },
+      "upstream_git_blob_sha1": "ed6862f6d278b081ec2bd237ea6836fc6ddb857a",
+      "upstream_sha256": "8d7ae55a74d319f9c967d079a97a3d3018e33f0169a1ad4e10c679d6a62ff299",
+      "bytes": 4736,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialZeroCancellation",
+      "path": "Proof/RSBounds/PolynomialZeroCancellation.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialZeroCancellation.lean"
+      },
+      "upstream_git_blob_sha1": "e0085273d236426983bf017258417031a3d9f60c",
+      "upstream_sha256": "779c2bf9815348f53925b23f9bfcd97694d278df908eefebaf798903b1e3a68f",
+      "bytes": 16992,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialZeroCountBridge",
+      "path": "Proof/RSBounds/PolynomialZeroCountBridge.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialZeroCountBridge.lean"
+      },
+      "upstream_git_blob_sha1": "a07f5faaa08425fb5b895e1e50f5756a375d298d",
+      "upstream_sha256": "8647a8b96db15ae931aec691c9801736581163ebfdbb8e20bc35c46f29a84175",
+      "bytes": 11067,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialZeroKernel",
+      "path": "Proof/RSBounds/PolynomialZeroKernel.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialZeroKernel.lean"
+      },
+      "upstream_git_blob_sha1": "dff41dd83fc91f145b3fade75661bc804571a1ab",
+      "upstream_sha256": "62c44199fe2f4ab1334fbaaed1a84adad2c0f745cfdc1d3ff3640d54af3cbb19",
+      "bytes": 17800,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialZeroMajorants",
+      "path": "Proof/RSBounds/PolynomialZeroMajorants.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialZeroMajorants.lean"
+      },
+      "upstream_git_blob_sha1": "bceb7229f10e8c8a6b80ca46b1cb7a9020e20b24",
+      "upstream_sha256": "a7937f054295f21f7222edb6b4ee9c3dc49b37f3d3e1cf0320920c261369766c",
+      "bytes": 8289,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialZeroPairing",
+      "path": "Proof/RSBounds/PolynomialZeroPairing.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialZeroPairing.lean"
+      },
+      "upstream_git_blob_sha1": "79d364a1c413dcb09e227aa4c4f6c54081dcc7ff",
+      "upstream_sha256": "7bc85e88d30612d76f4fea0338411f8c185c255314d2f6acd87f7e0b48e79504",
+      "bytes": 14710,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.PolynomialZetaFormula",
+      "path": "Proof/RSBounds/PolynomialZetaFormula.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/PolynomialZetaFormula.lean"
+      },
+      "upstream_git_blob_sha1": "21e59793cc2efbd8ed01ed4f4d866a8271eec903",
+      "upstream_sha256": "52c6ccb12385d82dcdde851907428ebb16f13fb4fadbe64bbb708e236a902ccc",
+      "bytes": 9402,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.QuarticBudgetNumericsBase",
+      "path": "Proof/RSBounds/QuarticBudgetNumericsBase.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/QuarticBudgetNumericsBase.lean"
+      },
+      "upstream_git_blob_sha1": "5d90da1c97f9e1e7702509f55343442616958def",
+      "upstream_sha256": "efd600bdcd54c8eda11dcc6724fa0f78c0bfacd0ff0384c6245cf73293c7a1f1",
+      "bytes": 6094,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.QuarticFirst29BudgetApplication",
+      "path": "Proof/RSBounds/QuarticFirst29BudgetApplication.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/QuarticFirst29BudgetApplication.lean"
+      },
+      "upstream_git_blob_sha1": "16d9687523603458344f89a5fd028e7509192a64",
+      "upstream_sha256": "c154e74fcaa31055fc33782762522b549659ccb8368e9f53696c599a608d284d",
+      "bytes": 4569,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.QuarticFirst29BudgetBridges",
+      "path": "Proof/RSBounds/QuarticFirst29BudgetBridges.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/QuarticFirst29BudgetBridges.lean"
+      },
+      "upstream_git_blob_sha1": "fd027acb46f63ea7855e1625f5bf63d31670b2b2",
+      "upstream_sha256": "013a89634f20666d3003fbda7102a501b2b583692402296448942444b57e1a7a",
+      "bytes": 4757,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.QuarticFirst29BudgetNumerics",
+      "path": "Proof/RSBounds/QuarticFirst29BudgetNumerics.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/QuarticFirst29BudgetNumerics.lean"
+      },
+      "upstream_git_blob_sha1": "a11a8b67b49fc746fda8a1f2a7571ff28976052e",
+      "upstream_sha256": "948dc49713c143847c32f955e3ca2fcd4adc52d36a29d671f66c94a15b50d6ae",
+      "bytes": 22106,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.QuarticLowZeroBounds",
+      "path": "Proof/RSBounds/QuarticLowZeroBounds.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/QuarticLowZeroBounds.lean"
+      },
+      "upstream_git_blob_sha1": "a14172530207c11cba50bf8122b3b1b996b2e858",
+      "upstream_sha256": "290276bf0f420a230bf0fc0f0a1534e24ed316ae81e255c99fc1faa8b2bbe385",
+      "bytes": 5018,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.QuarticMellin",
+      "path": "Proof/RSBounds/QuarticMellin.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/QuarticMellin.lean"
+      },
+      "upstream_git_blob_sha1": "975d57690f54eed21b5d7bd06d57e9fd3a387166",
+      "upstream_sha256": "d57d72d7589d667e7d98c73aa037379046485998a83648506ff0afb23d5fa990",
+      "bytes": 5079,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.Rosser1941",
+      "path": "Proof/RSBounds/Rosser1941.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/Rosser1941.lean"
+      },
+      "upstream_git_blob_sha1": "774599cd2cf7e872deb662588c293e705e3d0c29",
+      "upstream_sha256": "91110b87d17d996f8e55b6458bd52404482f97780f2f16eabc7c35a545f28ccc",
+      "bytes": 1147,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.RosserCountDefinition",
+      "path": "Proof/RSBounds/RosserCountDefinition.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/RosserCountDefinition.lean"
+      },
+      "upstream_git_blob_sha1": "e4a4ae6bf8eb35a4e11474e0c342857ae675ab50",
+      "upstream_sha256": "22131d13d140f1d959ec41d069480a2268832b3f1147798373d89f0ec29db1ed",
+      "bytes": 1668,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.RosserSchoenfeld1975",
+      "path": "Proof/RSBounds/RosserSchoenfeld1975.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/RosserSchoenfeld1975.lean"
+      },
+      "upstream_git_blob_sha1": "5c2494dacf6258750a9f9bbae4bc0bc956cc66c8",
+      "upstream_sha256": "78b8e4f89e0648714ac276ed0539045d9eb009725460b108b9a0278b0966ca3b",
+      "bytes": 9066,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.RosserTailIntegrals",
+      "path": "Proof/RSBounds/RosserTailIntegrals.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/RosserTailIntegrals.lean"
+      },
+      "upstream_git_blob_sha1": "e43d3b8979d2b50550ef6f6b5f4b9d45dc599832",
+      "upstream_sha256": "24b5a311c84e4f9bc160e942489a31add2f33d3487d8653d7bd9d5ed3650fef0",
+      "bytes": 9400,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.RosserWeightedBounds",
+      "path": "Proof/RSBounds/RosserWeightedBounds.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/RosserWeightedBounds.lean"
+      },
+      "upstream_git_blob_sha1": "7304dc1f4c428fcf376e2065f075b493bdbf3454",
+      "upstream_sha256": "e7ec52a3cae8029cf0773710eb999fcf2da2b4dfd9d95f2eaa5c5c4849b5c8ce",
+      "bytes": 8802,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.RosserWeightedSplit",
+      "path": "Proof/RSBounds/RosserWeightedSplit.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/RosserWeightedSplit.lean"
+      },
+      "upstream_git_blob_sha1": "ba47ba6804fd1a3c55be209215cc63a841fa1efc",
+      "upstream_sha256": "b29cef0e5c426b2f19eeaba4a37fb8f93d1d2c37f876313bed46102bafcad4a3",
+      "bytes": 4563,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.SmallTotientProduct",
+      "path": "Proof/RSBounds/SmallTotientProduct.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/SmallTotientProduct.lean"
+      },
+      "upstream_git_blob_sha1": "0a81b94f0b0a931237256620c7fd732db6f1b7f6",
+      "upstream_sha256": "441e7b4741a27148478caba16cfbafa0d1632ecb01e3d1ebe5f1c72b18769460",
+      "bytes": 24253,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.Targets",
+      "path": "Proof/RSBounds/Targets.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/Targets.lean"
+      },
+      "upstream_git_blob_sha1": "6e632bf2e71b7362d63e2308cf3d26d930f57490",
+      "upstream_sha256": "3829a60a8b3be68d5a05acc49de6af1f583899f953588876d29afc4501297d89",
+      "bytes": 1780,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.WeightedZeroSums",
+      "path": "Proof/RSBounds/WeightedZeroSums.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/WeightedZeroSums.lean"
+      },
+      "upstream_git_blob_sha1": "b7bf85d250b07dd26959dff78198ecb530803e9b",
+      "upstream_sha256": "081e997e5c9c5c4e9039e33684467a7b5e8b0c6fb04d815d06ae5f3b33329c7f",
+      "bytes": 13984,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.WeightedZetaZeros",
+      "path": "Proof/RSBounds/WeightedZetaZeros.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/WeightedZetaZeros.lean"
+      },
+      "upstream_git_blob_sha1": "953c17de3a62590b792972ec3a7cea46a43eff48",
+      "upstream_sha256": "f94896dcf35dcf12c4cae32e92a99ecafa08f53a4012f4ea03250de5a6066ccc",
+      "bytes": 7935,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.ZeroWindowFiniteSum",
+      "path": "Proof/RSBounds/ZeroWindowFiniteSum.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/ZeroWindowFiniteSum.lean"
+      },
+      "upstream_git_blob_sha1": "8753b23978850f0568cc79bfc6a7cb318c934f9d",
+      "upstream_sha256": "504bed963219cbb797cd3d470751bfd8056d6d7f4da4382dfe48407380758806",
+      "bytes": 5632,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.ZetaZeroHeadBound",
+      "path": "Proof/RSBounds/ZetaZeroHeadBound.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/ZetaZeroHeadBound.lean"
+      },
+      "upstream_git_blob_sha1": "789b7e89c6c0ac1315e880e9d25c8c20e2c77287",
+      "upstream_sha256": "60d4f4a102dc485d964e463f1a0e3f23ee998966607c2813468a905c83d712b7",
+      "bytes": 2960,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.ZetaZeroTable",
+      "path": "Proof/RSBounds/ZetaZeroTable.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/ZetaZeroTable.lean"
+      },
+      "upstream_git_blob_sha1": "6668e3578080ed85842aa3b3f0c29354c49f561c",
+      "upstream_sha256": "137118d7d016bf126819e8c3709e3cd02c51326b87f047585e6738c9865ffcb5",
+      "bytes": 6647,
+      "adaptations": []
+    },
+    {
+      "module": "RSBounds.ZetaZeroTableHead",
+      "path": "Proof/RSBounds/ZetaZeroTableHead.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/RSBounds/ZetaZeroTableHead.lean"
+      },
+      "upstream_git_blob_sha1": "096ec658167319a2efd88c2bba1bf19e991d9e51",
+      "upstream_sha256": "f6ea0a146bc09e268865b9c881f1e0fc786fc10265c70774a2a4e4eff0d12d13",
+      "bytes": 2127,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.CircleMethod",
+      "path": "Proof/TernaryGoldbach/CircleMethod.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/CircleMethod.lean"
+      },
+      "upstream_git_blob_sha1": "29de3b11bc7a83786de77474de08117f75b49584",
+      "upstream_sha256": "82f0ee32cac525bb2bf16933945dd48a6d28d377c441963b4d594ef201d842d0",
+      "bytes": 18992,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.Datum",
+      "path": "Proof/TernaryGoldbach/Explicit/Datum.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/Datum.lean"
+      },
+      "upstream_git_blob_sha1": "d812e7e45a48d4ce000e7d690c6e52fdd2390344",
+      "upstream_sha256": "356bf41e4c33a6e6ccef57847caf40aebdfb7c2a0aec1e7b677a0c27c0ba18e4",
+      "bytes": 39308,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.Digamma",
+      "path": "Proof/TernaryGoldbach/Explicit/Digamma.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/Digamma.lean"
+      },
+      "upstream_git_blob_sha1": "1247bd897deb475752ce3592b5454b252ba4310f",
+      "upstream_sha256": "eaaab1415167e813d1e322a23c2ad7e07425b003e49859add10326d3fe081ea1",
+      "bytes": 39070,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.ExplicitFormula",
+      "path": "Proof/TernaryGoldbach/Explicit/ExplicitFormula.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/ExplicitFormula.lean"
+      },
+      "upstream_git_blob_sha1": "9f2930af6c31a29a7861a45dbdeab0c49de583ca",
+      "upstream_sha256": "dcc4b53bfd727d8dd1b959da2ebbb2f0e7a5c9e0242ad8d4cf1a2c1db8544ad5",
+      "bytes": 63233,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.GMellin",
+      "path": "Proof/TernaryGoldbach/Explicit/GMellin.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/GMellin.lean"
+      },
+      "upstream_git_blob_sha1": "070168077b8f0cd8afdd28ea9160447878f5b34b",
+      "upstream_sha256": "cb9c596c81c545a147588c9252333c7cf74e7118372ec470d0ff7a7f928720b6",
+      "bytes": 6061,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.GammaBounds",
+      "path": "Proof/TernaryGoldbach/Explicit/GammaBounds.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/GammaBounds.lean"
+      },
+      "upstream_git_blob_sha1": "7b62694a0a4de0af3c1d5c914b790af6478ffefb",
+      "upstream_sha256": "dd6a63daa1382043a92e61e3cf2f31b63e49be989090165b8e2493334844830f",
+      "bytes": 5032,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.LGrowth",
+      "path": "Proof/TernaryGoldbach/Explicit/LGrowth.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/LGrowth.lean"
+      },
+      "upstream_git_blob_sha1": "d61ac97aa44cd7cf616722f87c75f1554a8899ae",
+      "upstream_sha256": "408e5a29bdc77a5d77aa42a3c258034c2624c740e04a0353b8e6f84d3fbcff84",
+      "bytes": 10885,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.LGrowthLeft",
+      "path": "Proof/TernaryGoldbach/Explicit/LGrowthLeft.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/LGrowthLeft.lean"
+      },
+      "upstream_git_blob_sha1": "6f9419c4c2cb02170617091e23401a23cd3c4c5a",
+      "upstream_sha256": "1467ec39d5adcbd9070b8d6ca0bed16f8019820c2a5743beca2d5d1b2a891f1d",
+      "bytes": 15942,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.LGrowthPoly",
+      "path": "Proof/TernaryGoldbach/Explicit/LGrowthPoly.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/LGrowthPoly.lean"
+      },
+      "upstream_git_blob_sha1": "512e02890b2a64d33503420f30094d14a6e138ea",
+      "upstream_sha256": "6be578484fc0762cf810bc2133265172590c892576ea11c58d5cb9fbba6eb604",
+      "bytes": 15365,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.Landau",
+      "path": "Proof/TernaryGoldbach/Explicit/Landau.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/Landau.lean"
+      },
+      "upstream_git_blob_sha1": "9d2ebaba4f7812051fccaa4ab143802542037cf7",
+      "upstream_sha256": "7943d64e3b96b46eeb97239730d101543651eebe83ae0ba8fb0d8ce92df66e66",
+      "bytes": 15835,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.LineZeros",
+      "path": "Proof/TernaryGoldbach/Explicit/LineZeros.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/LineZeros.lean"
+      },
+      "upstream_git_blob_sha1": "4717da9ba702ea994c9c0117823025d580303304",
+      "upstream_sha256": "1908185f4c63d261eeb94c752117aa09b33480c517b7cb4c1312410ff6949925",
+      "bytes": 11532,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.LogDerivL",
+      "path": "Proof/TernaryGoldbach/Explicit/LogDerivL.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/LogDerivL.lean"
+      },
+      "upstream_git_blob_sha1": "72ed5e08e963c5d2bd5ca24ec24e3d58700fe7b5",
+      "upstream_sha256": "1d8b1b7d4d728757b1fc1b2a5a3db6e26d1ef3e9538184a213d129bbbc64697f",
+      "bytes": 7854,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.LogNumerics",
+      "path": "Proof/TernaryGoldbach/Explicit/LogNumerics.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/LogNumerics.lean"
+      },
+      "upstream_git_blob_sha1": "31a2928580ea102d8b64be14f62603c1d05695c3",
+      "upstream_sha256": "85781ff025dd0bc44234e623109450aef61d428256b478361742679bd8386a47",
+      "bytes": 1962,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.MellinPlancherel",
+      "path": "Proof/TernaryGoldbach/Explicit/MellinPlancherel.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/MellinPlancherel.lean"
+      },
+      "upstream_git_blob_sha1": "5d97947c0d571d024e6cd2bdb4af588c27e3e5c3",
+      "upstream_sha256": "b2981a810378cab85a6c6432cf44f3c7d3e54a9268c0b6d65c12af3c438aa624",
+      "bytes": 19366,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.MellinRotate",
+      "path": "Proof/TernaryGoldbach/Explicit/MellinRotate.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/MellinRotate.lean"
+      },
+      "upstream_git_blob_sha1": "8730b99bf3dd05e7f02a599abc6f41e2db0635ce",
+      "upstream_sha256": "b3c94fed8319e2a6282f2dc1a2c2a7514e6992964137b3cd25257cef094a71dc",
+      "bytes": 38266,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.RectResidue",
+      "path": "Proof/TernaryGoldbach/Explicit/RectResidue.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/RectResidue.lean"
+      },
+      "upstream_git_blob_sha1": "b46d603132c356c094ec1893e9ff0d6f32e40aef",
+      "upstream_sha256": "b20d30db6ecb5ec14c216e20f61e3c9dc88f2b3e42d368ea13ba803fe74840c1",
+      "bytes": 30745,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.RectResidue2",
+      "path": "Proof/TernaryGoldbach/Explicit/RectResidue2.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/RectResidue2.lean"
+      },
+      "upstream_git_blob_sha1": "0058145e6ee75906d7fe8bbdbfd2f61b531ed5c5",
+      "upstream_sha256": "08f892964e52a08a7a5ce6dc75356b6628fa817aa278bd620f7a97fe986b012e",
+      "bytes": 10657,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.Xi",
+      "path": "Proof/TernaryGoldbach/Explicit/Xi.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/Xi.lean"
+      },
+      "upstream_git_blob_sha1": "d47febd9d77a63cedf3cbcb0c1bc72ecc3cec9b7",
+      "upstream_sha256": "4639c36632c643b27aad190f64c4ccfde92065bd5150b089f94b455fbfa2671c",
+      "bytes": 8549,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.XiPartial",
+      "path": "Proof/TernaryGoldbach/Explicit/XiPartial.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/XiPartial.lean"
+      },
+      "upstream_git_blob_sha1": "35fe2f1f10662ca2f4ad5bf65635bce226fb5cc8",
+      "upstream_sha256": "d5c7c512e06b21a1d07d150cd8174138df2cd80bb0de6aaa05a9508a0ebe6207",
+      "bytes": 45189,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.ZeroCount",
+      "path": "Proof/TernaryGoldbach/Explicit/ZeroCount.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/ZeroCount.lean"
+      },
+      "upstream_git_blob_sha1": "e885657b0079dcd62c45f8864bf0cbb0343464f8",
+      "upstream_sha256": "de1002825bc21ad311f3f17fe7077f5260058a17171a1fda4b475e28e41fe4c7",
+      "bytes": 7610,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.ZeroSumBound",
+      "path": "Proof/TernaryGoldbach/Explicit/ZeroSumBound.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/ZeroSumBound.lean"
+      },
+      "upstream_git_blob_sha1": "dee1d9dc4de94d7a27db468c53db8e3de40a1099",
+      "upstream_sha256": "b2f34f170ff801fff922e1948bd7c35f969f5800799c2623189107f7c7f6d23c",
+      "bytes": 32184,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.ZeroSumGen",
+      "path": "Proof/TernaryGoldbach/Explicit/ZeroSumGen.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/ZeroSumGen.lean"
+      },
+      "upstream_git_blob_sha1": "a9453ec1992980485c82f078db0bb6d554b07104",
+      "upstream_sha256": "dd3ae091e9e27de87080db65e09aba0528920568055c3a10c87a0da54d51ba64",
+      "bytes": 18732,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.ZeroSums",
+      "path": "Proof/TernaryGoldbach/Explicit/ZeroSums.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/ZeroSums.lean"
+      },
+      "upstream_git_blob_sha1": "f36abcdaee24f561145e3054c5d13870ab2adcfe",
+      "upstream_sha256": "e71e6a9652a4f937330a909a0b7b091abdf3052dac6c9910c64c78c739e1f708",
+      "bytes": 12207,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.ZetaDatum",
+      "path": "Proof/TernaryGoldbach/Explicit/ZetaDatum.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/ZetaDatum.lean"
+      },
+      "upstream_git_blob_sha1": "f0f0ac77961c85dffc014983de97be1be6bf7ee8",
+      "upstream_sha256": "7aec9ff69ec824fdfb1157202babec3288cd33484d63202e05bfa7e4804299e7",
+      "bytes": 12461,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.ZetaExplicit",
+      "path": "Proof/TernaryGoldbach/Explicit/ZetaExplicit.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/ZetaExplicit.lean"
+      },
+      "upstream_git_blob_sha1": "44ef992c2c71bfc4227b4bdff5a7d5c87a1917b9",
+      "upstream_sha256": "f9d9c2495e3a72b699cfc38cd848c2a0c7ae1163aeda800038ef557124022ed2",
+      "bytes": 9012,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.ZetaGrowth",
+      "path": "Proof/TernaryGoldbach/Explicit/ZetaGrowth.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/ZetaGrowth.lean"
+      },
+      "upstream_git_blob_sha1": "ba28b11e8de54dacde18be572f8ed39375f4d295",
+      "upstream_sha256": "8571d868425ed604cd5860097ada7e89ab0978a2e144ecd605b5f5328fec4a66",
+      "bytes": 16078,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Explicit.ZetaPoly",
+      "path": "Proof/TernaryGoldbach/Explicit/ZetaPoly.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Explicit/ZetaPoly.lean"
+      },
+      "upstream_git_blob_sha1": "019ee419ba5954b1ee572e573d7fea1e27755485",
+      "upstream_sha256": "dab7d7ec237094fb81921a2bf602263d373bdad30633f36aa818a662c3126da1",
+      "bytes": 32409,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.MinorArcs.Montgomery",
+      "path": "Proof/TernaryGoldbach/MinorArcs/Montgomery.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/MinorArcs/Montgomery.lean"
+      },
+      "upstream_git_blob_sha1": "d9741a71273cfdcf5d6b4dc76c397133a6a3c17c",
+      "upstream_sha256": "318fb7021f7723e37e781e066d1068994f6cebefbeaf8591c80f9ed0eb22e9d5",
+      "bytes": 7855,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Prelim.GaussInduced",
+      "path": "Proof/TernaryGoldbach/Prelim/GaussInduced.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Prelim/GaussInduced.lean"
+      },
+      "upstream_git_blob_sha1": "512a26364e0bdcd19af8b9463cd15bdd54382f2a",
+      "upstream_sha256": "fec1c910a5c2c3907a33c4fe2b5b645a1d16d1e3350894d3991c737127e7b54f",
+      "bytes": 10049,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Prelim.LogWalk",
+      "path": "Proof/TernaryGoldbach/Prelim/LogWalk.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Prelim/LogWalk.lean"
+      },
+      "upstream_git_blob_sha1": "7b6ed2f364ce153e6404fbd89d4530d329ff7b14",
+      "upstream_sha256": "f84dab3f3bf02aea3d31e529fbcaa39611dc2e108b5e06bd8c7684f525a7f87d",
+      "bytes": 6032,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Prelim.PNTMertens",
+      "path": "Proof/TernaryGoldbach/Prelim/PNTMertens.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Prelim/PNTMertens.lean"
+      },
+      "upstream_git_blob_sha1": "0068160a3f9fcf9ab84ac2ca8a681119c72131ef",
+      "upstream_sha256": "d1406c91106cf881bf2a5ec0adae8f4a33e938f1cd571759fe2fe5a483c0d2ea",
+      "bytes": 82640,
+      "adaptations": [
+        {
+          "description": "Use the Mathlib 4.34 module name Integrability.LogMeromorphic in place of its 4.35 name Integrability.Log. No theorem statements or proof bodies changed.",
+          "patch": "adaptations/PNTMertens-import.patch"
+        }
+      ],
+      "adapted_sha256": "1c7dd4cce00e07b2f9e73ecd5202f21ab7c60202dfe0fec081c716579b125fbd"
+    },
+    {
+      "module": "TernaryGoldbach.Prelim.PlancherelReal",
+      "path": "Proof/TernaryGoldbach/Prelim/PlancherelReal.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Prelim/PlancherelReal.lean"
+      },
+      "upstream_git_blob_sha1": "eff1e351418c2971afd3b09fe1de28e4d351d5b0",
+      "upstream_sha256": "dbbaf5ebba80315278e9e287dd363877d76272d89db3ef330c8fd7fd691a0823",
+      "bytes": 5686,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Prelim.RamareHarm",
+      "path": "Proof/TernaryGoldbach/Prelim/RamareHarm.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Prelim/RamareHarm.lean"
+      },
+      "upstream_git_blob_sha1": "56ed38feb5deff207151ee37dda7e9dbce39549a",
+      "upstream_sha256": "e52e430c9ae1009222e32488cda7f131005179cedc28908868ac4854a48e6d20",
+      "bytes": 9384,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Prelim.RamareWalk",
+      "path": "Proof/TernaryGoldbach/Prelim/RamareWalk.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Prelim/RamareWalk.lean"
+      },
+      "upstream_git_blob_sha1": "dff2f8df6ee0db1c171421f82c735cca50fed68a",
+      "upstream_sha256": "735bda9cd0be131dd517ab98589e95cc990928c57e4b543c7acf54841fb37a2d",
+      "bytes": 48869,
+      "adaptations": []
+    },
+    {
+      "module": "TernaryGoldbach.Statement",
+      "path": "Proof/TernaryGoldbach/Statement.lean",
+      "upstream": {
+        "repository": "https://github.com/calr3/ternary-goldbach",
+        "commit": "ce82a5b2a4ed5039c4750c0d062f0b0f2b833be0",
+        "path": "TernaryGoldbach/Statement.lean"
+      },
+      "upstream_git_blob_sha1": "9203df446fd69294595f2370ebd3690b261d2523",
+      "upstream_sha256": "03bc8f8e4a036511a8ca8c3262717d00d51606e1908f0038121af4c74c75f69c",
+      "bytes": 3842,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.Analytic.RectangleLogDeriv",
+      "path": "Proof/Zeta23/Analytic/RectangleLogDeriv.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/Analytic/RectangleLogDeriv.lean"
+      },
+      "upstream_git_blob_sha1": "8e6dfd57843f9ed69b21aa89d3989acad50845cb",
+      "upstream_sha256": "72782802ac7efb8941dcac9bf80431e7b9a2d5ad207b4f2798a0c9ee31d4a6b9",
+      "bytes": 22674,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.Analytic.Stirling",
+      "path": "Proof/Zeta23/Analytic/Stirling.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/Analytic/Stirling.lean"
+      },
+      "upstream_git_blob_sha1": "ef1fd23e954a7b9c6cfc0077faf75183c0245252",
+      "upstream_sha256": "e8928ea1017d822d1d09d13ca41ebf0b98d4a3e9a611d90d8f688c284e75c6ba",
+      "bytes": 12732,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.Defs",
+      "path": "Proof/Zeta23/Defs.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/Defs.lean"
+      },
+      "upstream_git_blob_sha1": "8b61f41b1bf15e85ec5421a91a45c4ae27633b04",
+      "upstream_sha256": "9b37b38d87443fdbd19c0d4b715128bb666a102d98f1d94bb76f0191c26a138c",
+      "bytes": 16352,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.Defs.Counting",
+      "path": "Proof/Zeta23/Defs/Counting.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/Defs/Counting.lean"
+      },
+      "upstream_git_blob_sha1": "2bb4cb7a5ee130e18c33f94f61e6b92057d9f7b8",
+      "upstream_sha256": "2b28f1314f2c42b9f676b0f86d1dce931b6cc4d5b93bdf9bada245c8c2068d8b",
+      "bytes": 3017,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.FromPNTPlus.Auxiliary",
+      "path": "Proof/Zeta23/FromPNTPlus/Auxiliary.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/FromPNTPlus/Auxiliary.lean"
+      },
+      "upstream_git_blob_sha1": "8ed19404d7c641fa0c853348f166e507c9d1ce18",
+      "upstream_sha256": "4870e29ea655fc1d3047686d0c68dab8ba65fcdb525ed83dcb64c7289d78b860",
+      "bytes": 3913,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.FromPNTPlus.EulerMaclaurin",
+      "path": "Proof/Zeta23/FromPNTPlus/EulerMaclaurin.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/FromPNTPlus/EulerMaclaurin.lean"
+      },
+      "upstream_git_blob_sha1": "cbbc9e16a14dea35f407a9c4a3c27adb866aec73",
+      "upstream_sha256": "dff20198b3538c4502943efe3f3b74d3ea8f34877b209f2d7df7030e6a274acd",
+      "bytes": 4338,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.FromPNTPlus.Fourier",
+      "path": "Proof/Zeta23/FromPNTPlus/Fourier.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/FromPNTPlus/Fourier.lean"
+      },
+      "upstream_git_blob_sha1": "e6b541224e9e37ecff16eefa0aea1bb5611aad55",
+      "upstream_sha256": "50396a0bbfd78d813b3cdcb3a18239ef273f36a46533b891f7aae1f5a043407d",
+      "bytes": 9699,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.FromPNTPlus.Mathlib.Analysis.SpecialFunctions.Log.Basic",
+      "path": "Proof/Zeta23/FromPNTPlus/Mathlib/Analysis/SpecialFunctions/Log/Basic.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/FromPNTPlus/Mathlib/Analysis/SpecialFunctions/Log/Basic.lean"
+      },
+      "upstream_git_blob_sha1": "ab660fe7c6fbd71fee1d74bd157c3aae75a504fe",
+      "upstream_sha256": "a3d0f4f396b28ae0b410be246be645535680360073ef2788c9a16bbbcaf80060",
+      "bytes": 1326,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.FromPNTPlus.Rectangle",
+      "path": "Proof/Zeta23/FromPNTPlus/Rectangle.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/FromPNTPlus/Rectangle.lean"
+      },
+      "upstream_git_blob_sha1": "92b0a1d522a723a0b5f8191799211b91aa5f2dfa",
+      "upstream_sha256": "efd3c3e039c82d3d70889db572218c8a05de25ddb03c254e346b92329a95e6fc",
+      "bytes": 13977,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.FromPNTPlus.ResidueCalcOnRectangles",
+      "path": "Proof/Zeta23/FromPNTPlus/ResidueCalcOnRectangles.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/FromPNTPlus/ResidueCalcOnRectangles.lean"
+      },
+      "upstream_git_blob_sha1": "d044646e34fd61434c6fb831c81bf1d659f06b37",
+      "upstream_sha256": "43c018e48238ebab163b1c20183929b42c269d525d98d16388a1565550ea4900",
+      "bytes": 61687,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.FromPNTPlus.Sobolev",
+      "path": "Proof/Zeta23/FromPNTPlus/Sobolev.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/FromPNTPlus/Sobolev.lean"
+      },
+      "upstream_git_blob_sha1": "04f159a8b6e2258c4e441f95da7ae7399bfeb172",
+      "upstream_sha256": "82f6053d4a003291b6db6a3db186b7da96267faca6ffecbb23fe5a214f223be2",
+      "bytes": 16555,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.FromPNTPlus.StrongPNTPrefix",
+      "path": "Proof/Zeta23/FromPNTPlus/StrongPNTPrefix.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/FromPNTPlus/StrongPNTPrefix.lean"
+      },
+      "upstream_git_blob_sha1": "4a8f88ff45c2559c247c1088628c744fb2bd5eee",
+      "upstream_sha256": "8edf4a423d7cd704700a439db439bce1e3ded1d974df90b16ec7900e02c79ec8",
+      "bytes": 27066,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.FromPNTPlus.Tactic.AdditiveCombination",
+      "path": "Proof/Zeta23/FromPNTPlus/Tactic/AdditiveCombination.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/FromPNTPlus/Tactic/AdditiveCombination.lean"
+      },
+      "upstream_git_blob_sha1": "d817378b411f6efd7214e3f4a29d67803d3c5694",
+      "upstream_sha256": "97f68a51fb8f70762fe81b5b6d7f1c0a680c01ee73ceb36f9124bda89f9fa45d",
+      "bytes": 1347,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.FromPNTPlus.ZetaBounds",
+      "path": "Proof/Zeta23/FromPNTPlus/ZetaBounds.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/FromPNTPlus/ZetaBounds.lean"
+      },
+      "upstream_git_blob_sha1": "aab41e5e3fce1718604dcd1b3bce2c25eaf77992",
+      "upstream_sha256": "b02875641f5652f886f819f5d811c1e40a646c90627cc7eeca5ed2cb41406312",
+      "bytes": 151743,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.FromPNTPlus.ZetaConj",
+      "path": "Proof/Zeta23/FromPNTPlus/ZetaConj.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/FromPNTPlus/ZetaConj.lean"
+      },
+      "upstream_git_blob_sha1": "9f42d3ff403e1c8caccc3c00caffa7283e0d3ad8",
+      "upstream_sha256": "6af1e8c535774b01870a7af304af884b5f21400b64c130d833156ab3fc970578",
+      "bytes": 1875,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.GammaFacts",
+      "path": "Proof/Zeta23/GammaFacts.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/GammaFacts.lean"
+      },
+      "upstream_git_blob_sha1": "b57fc6e6798b93a5d8f1e83663ecb58e4bec225f",
+      "upstream_sha256": "f4aa6b5650beb8262bf15db2d7575ab516436204d57b1a441fedd0b05611602b",
+      "bytes": 5884,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.GammaFacts.Mu",
+      "path": "Proof/Zeta23/GammaFacts/Mu.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/GammaFacts/Mu.lean"
+      },
+      "upstream_git_blob_sha1": "cd11d64f89fd8ccda178c0e81bc041b240865d62",
+      "upstream_sha256": "7d971de351bbecac7ea72d73f9f9cd14e881aa9c6efee0a250451e8bf6b476a4",
+      "bytes": 20909,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.GammaFacts.Series",
+      "path": "Proof/Zeta23/GammaFacts/Series.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/GammaFacts/Series.lean"
+      },
+      "upstream_git_blob_sha1": "4a5518493d5b3e54b6e7f4e648998d9321793673",
+      "upstream_sha256": "bd2cfd658e3d241ea062e8a4f2bf05199380f0b8cfeac8cb9f95ba2ac741419a",
+      "bytes": 24264,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.GammaFacts.StirlingVert",
+      "path": "Proof/Zeta23/GammaFacts/StirlingVert.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/GammaFacts/StirlingVert.lean"
+      },
+      "upstream_git_blob_sha1": "57815e8b74aa6bd628a46025041b972af53cab98",
+      "upstream_sha256": "a57258c5549aed77bb4d759755649351685a89721b37d49f2f7dbea4cbdfe882",
+      "bytes": 33188,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.Hypotheses",
+      "path": "Proof/Zeta23/Hypotheses.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/Hypotheses.lean"
+      },
+      "upstream_git_blob_sha1": "36791553db7eb55886d831f2f754a6edddbfe6f1",
+      "upstream_sha256": "cc35b644c3511cf610ea81b0be6cf4a299c4f3093b76b743ddbd9b0786a84a69",
+      "bytes": 10330,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.Prelude.InstancePriorities",
+      "path": "Proof/Zeta23/Prelude/InstancePriorities.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/Prelude/InstancePriorities.lean"
+      },
+      "upstream_git_blob_sha1": "2eb76e582b5f5cf5bdff2b92ee2b1c51aaabee89",
+      "upstream_sha256": "c8c41ff6f38212463ebe1ed54a973747528f55d372184b3160b47376277bd625",
+      "bytes": 2038,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.RvM.Backlund",
+      "path": "Proof/Zeta23/RvM/Backlund.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/RvM/Backlund.lean"
+      },
+      "upstream_git_blob_sha1": "1be4abed14b17b4704d237c51e9e37a54c8e1ee1",
+      "upstream_sha256": "e6fec52b346268bf17b7107f9f8eca235140c7982088cd0c570443ee32ebf481",
+      "bytes": 22735,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.RvM.BacklundDefs",
+      "path": "Proof/Zeta23/RvM/BacklundDefs.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/RvM/BacklundDefs.lean"
+      },
+      "upstream_git_blob_sha1": "67d6330e5e7ad43412692bf3e5cfb4d884a7b961",
+      "upstream_sha256": "2428d829629226ae84d798341409bbd3de96da297e33153856336e424adf88c6",
+      "bytes": 1050,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.RvM.CountByIntegral",
+      "path": "Proof/Zeta23/RvM/CountByIntegral.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/RvM/CountByIntegral.lean"
+      },
+      "upstream_git_blob_sha1": "a75bc8ae0d1d1760d029c3ad150dce6db4a6fc5f",
+      "upstream_sha256": "c61759a879be39c8279a62a6a4308a52aa45522c151fc623a48cbc4e116f0da9",
+      "bytes": 8303,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.RvM.Defs",
+      "path": "Proof/Zeta23/RvM/Defs.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/RvM/Defs.lean"
+      },
+      "upstream_git_blob_sha1": "a5cde50d1047acdc52c1dc69460057e18a68f532",
+      "upstream_sha256": "89ffd236563bc5259ecee833ee8b477f94aa8b572da29312c50ae3b019114454",
+      "bytes": 2971,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.RvM.Fold",
+      "path": "Proof/Zeta23/RvM/Fold.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/RvM/Fold.lean"
+      },
+      "upstream_git_blob_sha1": "bb839ab61b46b3e2169954c81a4c569566eafba2",
+      "upstream_sha256": "12a3d62f7c6ad25512ff5278d329927543570ff6c67cc95bafed6b10730b70d2",
+      "bytes": 11207,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.RvM.GammaSide",
+      "path": "Proof/Zeta23/RvM/GammaSide.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/RvM/GammaSide.lean"
+      },
+      "upstream_git_blob_sha1": "57eb1f7d7d8ac98199026747a808089a31ed9074",
+      "upstream_sha256": "ed591e91d998adaef7919949b81d85c0bd92a59399570f1169fbfd9c34d6fdf1",
+      "bytes": 9826,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.RvM.Halving",
+      "path": "Proof/Zeta23/RvM/Halving.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/RvM/Halving.lean"
+      },
+      "upstream_git_blob_sha1": "f16aee7a5279556277a9c1f1311c0766abf3fade",
+      "upstream_sha256": "a97101d4a2cc91989b4cc2f2712d41c81a200e1dcb6bacb55784761d783d4c29",
+      "bytes": 3893,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.RvM.LocalCount",
+      "path": "Proof/Zeta23/RvM/LocalCount.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/RvM/LocalCount.lean"
+      },
+      "upstream_git_blob_sha1": "aebf34b7807ccc4902a8d81a514a7d2e3fea0498",
+      "upstream_sha256": "21da1ea898779a431dce8976d939b7502ca93c7e2c22aebe6e9f5e5b56949306",
+      "bytes": 15760,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.RvM.MainTerm",
+      "path": "Proof/Zeta23/RvM/MainTerm.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/RvM/MainTerm.lean"
+      },
+      "upstream_git_blob_sha1": "e0265c0f6803ff6ec0ce11f52018d75a24c82920",
+      "upstream_sha256": "8daeb73992c8240c7adb60bc21825b4d0af5ddf2db6060672b4da3fddbc9424f",
+      "bytes": 26448,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.RvM.NcountWindow",
+      "path": "Proof/Zeta23/RvM/NcountWindow.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/RvM/NcountWindow.lean"
+      },
+      "upstream_git_blob_sha1": "21a80044cddedb639391449b93f25f13961919b9",
+      "upstream_sha256": "18cf3db903aef8694132f9c353aab830357a2bb970765553e349173fd1b536a4",
+      "bytes": 2101,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.RvM.ReZeroCount",
+      "path": "Proof/Zeta23/RvM/ReZeroCount.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/RvM/ReZeroCount.lean"
+      },
+      "upstream_git_blob_sha1": "bc96193b4dbbf047309a6179d9eb25c03be32841",
+      "upstream_sha256": "0ed40a210943cce357bf811caaa5e2dacbb399515b64b688976df2188bbb38cc",
+      "bytes": 17888,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.RvM.ZetaGrowth",
+      "path": "Proof/Zeta23/RvM/ZetaGrowth.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/RvM/ZetaGrowth.lean"
+      },
+      "upstream_git_blob_sha1": "667e9a2a69e5de923ae1ec048afbb8f990f2327a",
+      "upstream_sha256": "3647b1bdfc94dbe8deabeab49f81c9cfd5f6d9b82b47b933ad0a2b7352597ae7",
+      "bytes": 11831,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.Statement",
+      "path": "Proof/Zeta23/Statement.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/Statement.lean"
+      },
+      "upstream_git_blob_sha1": "c63158ace144f4c3e2de69edc76a192a00a98524",
+      "upstream_sha256": "ace63b9fc16dbe85007e4f9301a7ece03d2a6b7a106b862fd1560a2040f39a9b",
+      "bytes": 10537,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.Statement.Seam",
+      "path": "Proof/Zeta23/Statement/Seam.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/Statement/Seam.lean"
+      },
+      "upstream_git_blob_sha1": "19eac62379d17ae129affea85ce389bcf7ef6109",
+      "upstream_sha256": "f0b467ce6fc1ee94e3acb9241403a543aa6b4fb9086ed12fe5d43b598e32340a",
+      "bytes": 5660,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.Statement.SeamClosed",
+      "path": "Proof/Zeta23/Statement/SeamClosed.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/Statement/SeamClosed.lean"
+      },
+      "upstream_git_blob_sha1": "42057eb4d0caec0b68bd838533427731481d3ee9",
+      "upstream_sha256": "dd85b8ab36819478de00a80c394859614eb7cf5ea38ab19d91454ebfd0165a4d",
+      "bytes": 2528,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.WeilEF.XiLogDeriv",
+      "path": "Proof/Zeta23/WeilEF/XiLogDeriv.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/WeilEF/XiLogDeriv.lean"
+      },
+      "upstream_git_blob_sha1": "32342d73d3044c7e61faa2a25ef3deff749e9fd3",
+      "upstream_sha256": "134316fb4ae4df1759c04dbeff5f90c38203881c7eae05f821ffa478ab69b07f",
+      "bytes": 5943,
+      "adaptations": []
+    },
+    {
+      "module": "Zeta23.ZetaReflect",
+      "path": "Proof/Zeta23/ZetaReflect.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/Zeta23/ZetaReflect.lean"
+      },
+      "upstream_git_blob_sha1": "2189d68cc869d0def2868a8d7458340ba97fe5f9",
+      "upstream_sha256": "757c8087bf6be6de3212df02f5c2c44f1cdbae8b960bf982c9d4d4022f89d29f",
+      "bytes": 14736,
+      "adaptations": []
+    },
+    {
+      "module": "ZetaLean.HardyZ",
+      "path": "Proof/ZetaLean/HardyZ.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/ZetaLean/HardyZ.lean"
+      },
+      "upstream_git_blob_sha1": "26d980ba2a777a9cad8a5fe89978005d2f9f23b3",
+      "upstream_sha256": "9e95b6e9a66e9ad9e459673dc92cfdb23fc2b3228c567b60d350b420146959ef",
+      "bytes": 10464,
+      "adaptations": []
+    },
+    {
+      "module": "ZetaLean.IntervalCExp",
+      "path": "Proof/ZetaLean/IntervalCExp.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/ZetaLean/IntervalCExp.lean"
+      },
+      "upstream_git_blob_sha1": "af2ef1d636b68af5ffef13367c773fd9b78f8280",
+      "upstream_sha256": "854ed3f83c75b44b4e0b2879eaf901155d5371b51f2a54ad585d0b11042b2db4",
+      "bytes": 27975,
+      "adaptations": []
+    },
+    {
+      "module": "ZetaLean.IntervalExp",
+      "path": "Proof/ZetaLean/IntervalExp.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/ZetaLean/IntervalExp.lean"
+      },
+      "upstream_git_blob_sha1": "3e941cd3285d14ce8cf5b640302bca2dba328215",
+      "upstream_sha256": "63dd29aa3810992ae9f705fdf52f04684d96c89d368aa74981217ae64bf80d83",
+      "bytes": 13535,
+      "adaptations": []
+    },
+    {
+      "module": "ZetaLean.Rigor",
+      "path": "Proof/ZetaLean/Rigor.lean",
+      "upstream": {
+        "repository": "https://github.com/Garald1/PrimeNumberTheoremAnd",
+        "commit": "087f4418a84516a34cddaa8883062abfd0fc7e4e",
+        "path": "Projects/RSBounds/vendor/rh100/ZetaLean/Rigor.lean"
+      },
+      "upstream_git_blob_sha1": "123969e0c9f0ceb01c7ecd0ff5a954a6f4e3f6e5",
+      "upstream_sha256": "ed0337e17a0a02d5390ee565850ba6ff2a58cbcbb9fd1355561bf527bf38ced6",
+      "bytes": 8088,
+      "adaptations": []
+    }
+  ]
+}
