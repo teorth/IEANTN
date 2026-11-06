@@ -1,0 +1,112 @@
+version: v0.4
+node:
+  id: RosserSchoenfeld1962.v4
+  family: RosserSchoenfeld1962
+  version: v4
+  kind: paper
+  status: awaiting-verification
+project:
+  name: 'Rosser-Schoenfeld 1962: Theorem 13: maximum at 361 and equation (3.36)'
+  description: 'An unconditional port of the completed PNT+ proof of Theorem 13: maximum at 361 and equation
+    (3.36). The solution reuses the unchanged v1 RS12 library; the core imports Mathlib only.'
+  authors:
+  - Håkon Xue-Lønmo
+  license: Apache-2.0
+  responsible_maintainers:
+  - Håkon Xue-Lønmo
+repository:
+  role: substantive-development
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11N05
+conclusions:
+- id: psi_sub_theta_ratio_maximum_at_361
+  declaration: RosserSchoenfeld1962.v4.psi_sub_theta_ratio_maximum_at_361
+  challenge: RosserSchoenfeld1962.v4.challenge_psi_sub_theta_ratio_maximum_at_361
+  imports: []
+  imports_status: none
+  justifications:
+  - id: rs1962-port
+    kind: lean-noncompliant
+    note: The complete local solution builds and its compared declarations have identical pp.all challenge
+      types and exactly propext, Classical.choice and Quot.sound. The inherited v1 RS12 library uses LeanCert
+      at 6b11513512c9d27183fb4725bfc291ab38b4a6d7 and requires sequential certificate compilation to limit
+      memory. Admission of that third-party dependency and runner-memory support are the existing verification
+      questions in issue 164. No numerical assumption or additional logical axiom is used. No receipt
+      is supplied or lean-comparator justification designated by the author.
+  - id: rs1962-paper
+    kind: literature
+    source: https://doi.org/10.1215/ijm/1255631807
+    locator: Theorem 13, maximum clause, p. 71
+    note: Recorded on the authority of the cited paper pending official Comparator verification. The solution
+      proves the claim unconditionally using the actual v1 RS12 proof, with no node hypothesis or external
+      numerical assumption.
+  designated: rs1962-port
+  progress:
+    solution: Solutions/RosserSchoenfeld1962.v4/
+    state: in-progress
+    remaining_holes: 0
+  issue: 164
+- id: equation_3_36
+  declaration: RosserSchoenfeld1962.v4.equation_3_36
+  challenge: RosserSchoenfeld1962.v4.challenge_equation_3_36
+  imports: []
+  imports_status: none
+  justifications:
+  - id: rs1962-port
+    kind: lean-noncompliant
+    note: The complete local solution builds and its compared declarations have identical pp.all challenge
+      types and exactly propext, Classical.choice and Quot.sound. The inherited v1 RS12 library uses LeanCert
+      at 6b11513512c9d27183fb4725bfc291ab38b4a6d7 and requires sequential certificate compilation to limit
+      memory. Admission of that third-party dependency and runner-memory support are the existing verification
+      questions in issue 164. No numerical assumption or additional logical axiom is used. No receipt
+      is supplied or lean-comparator justification designated by the author.
+  - id: rs1962-paper
+    kind: literature
+    source: https://doi.org/10.1215/ijm/1255631807
+    locator: Theorem 13, equation (3.36), p. 71
+    note: Recorded on the authority of the cited paper pending official Comparator verification. The solution
+      proves the claim unconditionally using the actual v1 RS12 proof, with no node hypothesis or external
+      numerical assumption.
+  designated: rs1962-port
+  progress:
+    solution: Solutions/RosserSchoenfeld1962.v4/
+    state: in-progress
+    remaining_holes: 0
+  issue: 164
+sources:
+- title: Approximate formulas for some functions of prime numbers
+  authors:
+  - J. Barkley Rosser
+  - Lowell Schoenfeld
+  type: paper
+  id: https://doi.org/10.1215/ijm/1255631807
+  location: Illinois Journal of Mathematics 6(1) (1962), 64-94
+  relationship: formalizes
+  note: Rendered original pp. 64, 71 and 77 checked against the Lean statements. The paper defines psi
+    and theta with inclusive upper endpoints, as does Mathlib. The maximum is non-strict without uniqueness;
+    (3.36) and (5.4) are strict on x > 0. Theorem 25 includes x = 1 and has theta <= psi with a strict
+    upper bound. All displayed decimals are exact rationals; its logarithmic constant is not rounded.
+related_formalizations:
+- id: https://github.com/hakonlonmo/PrimeNumberTheoremAnd
+  relationship: port/adaptation
+  note: Read-only working-tree snapshot based at 81eca5aa3fa4779883a9aeba18e49087c5366e0f. The new historical
+    files are not represented as committed at that revision. Exact source SHA-256 hashes and the adapted
+    local files are recorded in the solution provenance.json.
+automation:
+  methods:
+  - method: agent
+    framework: OpenAI Codex
+    role: Source audit, mechanical proof port, metadata and local validation under human direction.
+review:
+  status: self-assessed
+  reviewers:
+  - OpenAI Codex
+  notes: Source audit against the rendered paper. No independent human review or official Comparator verification
+    claimed.
+limitations:
+- No mathematical novelty claimed; this ports existing PNT+ proofs of historical results.
+- Local checks do not replace maintainer-side Comparator verification. No author-created receipt or lean-comparator
+  designation.
