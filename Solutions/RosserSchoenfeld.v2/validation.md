@@ -27,6 +27,9 @@ Completed on 2026-11-06:
   both the finite-RH vocabulary adapter and the final network theorem against
   that environment. A separate `#print axioms` check passed for both theorems:
   their only axioms are `propext`, `Classical.choice`, and `Quot.sound`.
+- The new core psi conclusion and generated challenge built successfully with
+  the core's pinned Lean 4.34.0-rc2 and Mathlib. This checks the statement and
+  challenge, not the separate solution; the challenge's `sorry` is intentional.
 - Inspected all direct Mathlib imports. One renamed module was identified and
   adapted: `Integrability.Log` to `Integrability.LogMeromorphic`.
 
@@ -37,7 +40,7 @@ manifest resolution were not completed by this attempt.
 
 Still pending at this checkpoint:
 
-- Core compilation and generated statement fingerprints.
+- The full core build and generated statement fingerprints.
 - Compilation of the RH adapter on the core toolchain.
 - Full solution compilation on the core's pinned toolchain and Mathlib.
 - IEANTN's official Comparator workflow and its receipt.
