@@ -835,6 +835,15 @@ def verify(node: str, branch: str, dispatch: bool, precheck: bool = True,
                 print("         solution cannot be checked from here. Dispatching unchecked;")
                 print("         if Comparator rejects it, that is the first you will hear.")
             else:
+                nodes = load_nodes()
+                if node not in nodes:
+                    print(f"error: unknown node `{node}`")
+                    return False
+                # Receipt recording already requires complete coverage. Check it before building
+                # or asking for a workflow approval, rather than discovering the omission after
+                # Comparator has finished proving only the listed subset.
+                if not _comparator_covers_every_conclusion(node, nodes[node]):
+                    return False
                 result = solution_holes(node)
                 if result is None:
                     print(f"error: no solution under {rel(SOLUTIONS / node)} to verify")
