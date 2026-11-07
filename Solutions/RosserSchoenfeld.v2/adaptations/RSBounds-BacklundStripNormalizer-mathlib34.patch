@@ -23,3 +23,12 @@
        (div_le_div_of_nonneg_right hσ1 ht0.le)
    have ha2 : Real.arctan (σ / t) ^ 2 ≤ 1 / t ^ 2 := by
      have hsq : Real.arctan (σ / t) ^ 2 ≤ (1 / t) ^ 2 := by nlinarith
+@@ -355,6 +356,7 @@
+   have hm : 0 < (t / (2 * Real.pi)) ^ ((σ - 1) / 2) / Real.log t *
+       (1 - 4 / t ^ 2) := by positivity
+   apply (mul_le_mul_iff_right₀ hm).mp
+-  convert hprod.trans_eq htarget.symm using 1 <;> ring
++  convert hprod.trans_eq htarget.symm using 1 <;> first | rfl | ring
++
+ 
+ end TernaryGoldbach.RSBounds.BacklundStripNormalizer

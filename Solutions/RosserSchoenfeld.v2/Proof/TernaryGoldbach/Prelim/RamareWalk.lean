@@ -74,7 +74,10 @@ def Inv (n : ℕ) (s : WS) : Prop :=
   (s.Anlo : ℝ) ≤ 10 ^ 60 * AN n ∧ 10 ^ 60 * AN n ≤ s.Anhi ∧
   (s.Tlo : ℝ) ≤ 10 ^ 60 * TP n ∧ 10 ^ 60 * TP n ≤ s.Thi
 
-theorem Inv_step {n : ℕ} (hn : 1 ≤ n) (hn' : n + 1 < 21609) {s : WS} (h : Inv n s) :
+-- Lean 4.34 / older Mathlib elaborates this certificate step more slowly.
+set_option maxHeartbeats 800000 in
+theorem Inv_step {n : ℕ}
+ (hn : 1 ≤ n) (hn' : n + 1 < 21609) {s : WS} (h : Inv n s) :
     Inv (n + 1) (wstep n s) := by
   obtain ⟨l1, l2, h1, h2, p1, p2, q1, q2, t1, t2⟩ := h
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn

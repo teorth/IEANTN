@@ -83,8 +83,12 @@ theorem zeta_second_order_remainder {s : ℂ} (hs : 0 < s.re) (hs_one : s ≠ 1)
         (s * (s + 1) * (x : ℂ) ^ (-s - 2)) x := by
     convert (hasDerivAt_ofReal_cpow_const (hN0.trans_le hx).ne' hs1).const_mul (-s)
       using 1
-    rw [show -s - 1 - 1 = -s - 2 by ring]
-    ring
+    -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
+    all_goals first
+      | rfl
+      | (rw [show -s - 1 - 1 = -s - 2 by ring]
+         ring)
+
   have hc : ContinuousOn (fun x : ℝ => s * (s + 1) * (x : ℂ) ^ (-s - 2))
       (Ici (N : ℝ)) := by
     intro x hx

@@ -76,8 +76,10 @@ The actual RH adapter and three compatibility modules compile on Lean 4.34.0-rc2
 all six exported helper theorems have only the three standard axioms. The auxiliary
 Lean 4.35 wrapper check uses the original proof objects and the exact copied
 IEANTN vocabulary/conclusion. Its current status is recorded in `validation.md`.
-These checks do not replace the full solution build on Lean 4.34 or the official
-Comparator workflow.
+These checks do not replace the official Comparator workflow. The complete solution
+now also builds on Lean 4.34.0-rc2 against the core Mathlib, with 29 recorded
+proof-script compatibility edits; see `validation.md`.
+
 
 The full pinned core build and the official fingerprint generator also pass.
 Only this new node's fingerprint was added; existing fingerprints are unchanged.

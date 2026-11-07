@@ -21,7 +21,7 @@
     },
     {
       "path": "RSBoundsCompat/Arctan.lean",
-      "sha256": "666846cc4d00c146b3b1320a9e1dac4f96dc76cf7234f86ee2d6dfae59c653ef",
+      "sha256": "af721841fc0c47555514ff953953eae0980d4cf4f1173f78926df95786de2330",
       "source_commit": "56a005855ea17e0b0958f73ec801ae140b0a1679",
       "source_repository": "https://github.com/leanprover-community/mathlib4",
       "source_files": [
@@ -30,7 +30,7 @@
           "sha256": "4268d20e37d4ba832714de59a8c6174e495c907512b786642c6c52b4d59a91c7"
         }
       ],
-      "changes": "The same two statements are proved directly using the older Real.le_tan and Real.arctan_neg; the newer strict arctan helper is not needed."
+      "changes": "The same two statements are proved directly using the older Real.le_tan and Real.arctan_neg; the newer strict arctan helper is not needed. Declared as a `module` (public imports, exposed public section) because its consumer HardyFirstZero.Phase is a module."
     },
     {
       "path": "RSBoundsCompat/GammaDeriv.lean",

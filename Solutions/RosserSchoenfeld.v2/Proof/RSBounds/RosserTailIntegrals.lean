@@ -78,10 +78,12 @@ theorem hasDerivAt_neg_tailPrimitive (c : ℝ) {t : ℝ} (ht : 0 < t) :
     simpa only [Pi.pow_apply, id_eq] using
       mul_ne_zero (by norm_num : (5 : ℝ) ≠ 0) (pow_ne_zero 5 hn))
   convert (h₁.add h₂).neg using 1
-  · rfl
-  · dsimp only [id_eq, Pi.pow_apply]
-    field_simp [hp, hn]
-    <;> ring
+  -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
+  all_goals first
+    | rfl
+    | (dsimp only [id_eq, Pi.pow_apply]
+       field_simp [hp, hn] <;> ring)
+
 
 theorem hasDerivAt_lowPrimitive (c : ℝ) {t : ℝ} (ht : 0 < t) :
     HasDerivAt (lowPrimitive c)
@@ -93,10 +95,12 @@ theorem hasDerivAt_lowPrimitive (c : ℝ) {t : ℝ} (ht : 0 < t) :
   have hh := ((hl.pow 2).div_const (4 * Real.pi)).sub
     ((hasDerivAt_const t c).div hi hn)
   convert hh using 1
-  · rfl
-  · dsimp only [id_eq, Pi.pow_apply]
-    field_simp [hp, hn]
-    <;> ring
+  -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
+  all_goals first
+    | rfl
+    | (dsimp only [id_eq, Pi.pow_apply]
+       field_simp [hp, hn] <;> ring)
+
 
 theorem coefficient_nonneg {a : ℝ} (ha : 1 < a) : 0 ≤ coefficient a := by
   have hl : 0 < Real.log a := Real.log_pos ha

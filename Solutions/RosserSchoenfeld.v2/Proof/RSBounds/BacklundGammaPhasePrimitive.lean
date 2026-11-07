@@ -20,7 +20,8 @@ theorem hasDerivAt_arctan_quotient_deriv {τ x : ℝ} (hx : 0 < x) :
   have hden : 0 < x ^ 2 + τ ^ 2 := by positivity
   have h := (hasDerivAt_const x (-τ)).div
     ((hasDerivAt_pow 2 x).add_const (τ ^ 2)) hden.ne'
-  convert h using 1 <;> ring
+  convert h using 1 <;> first | rfl | ring
+
 
 noncomputable def arctanPrimitive (τ x : ℝ) : ℝ :=
   x * Real.arctan (τ / x) + τ / 2 * Real.log (x ^ 2 + τ ^ 2)
@@ -31,9 +32,12 @@ theorem hasDerivAt_arctanPrimitive {τ x : ℝ} (hx : 0 < x) :
   have hlog := (((hasDerivAt_pow 2 x).add_const (τ ^ 2)).log hden.ne').const_mul (τ / 2)
   have hp := (hasDerivAt_id x).mul (hasDerivAt_arctan_quotient (τ := τ) hx)
   convert hp.add hlog using 1
-  · rfl
-  · simp only [id_eq]
-    field_simp <;> ring
+  -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
+  all_goals first
+    | rfl
+    | (simp only [id_eq]
+       field_simp <;> ring)
+
 
 theorem integral_arctan_quotient {a : ℝ} (ha : 0 < a) (τ : ℝ) (N : ℕ) :
     (∫ x in a..(a + N), Real.arctan (τ / x)) =

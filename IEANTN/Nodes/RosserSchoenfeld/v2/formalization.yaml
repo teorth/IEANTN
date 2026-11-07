@@ -12,7 +12,8 @@ project:
   description: >-
     The strict error bound |psi(x) - x| < 0.00020211 x for x >= exp(23),
     assuming RH through height 1894439. The finite-RH assumption is explicit.
-    Integration of the independently replayed external Lean proof is in progress.
+    The complete solution builds on the core toolchain; IEANTN verification is pending.
+
   authors: ["IEANTN contributors"]
   license: "Apache-2.0"
   responsible_maintainers: ["IEANTN contributors"]
@@ -39,10 +40,12 @@ conclusions:
       only propext, Classical.choice, and Quot.sound. That replay is not an IEANTN
       receipt. The source is pinned in Solutions/RosserSchoenfeld.v2/README.md.
       The exact finite-RH vocabulary adapter and network theorem also compile on
-      Lean 4.35.0 with only those three axioms. The actual RH adapter and small
-      compatibility lemmas also compile on the core Lean 4.34.0-rc2 with only
-      those axioms. Full solution compilation against the core Mathlib revision
-      and IEANTN Comparator verification remain to be completed.
+      Lean 4.35.0 with only those three axioms. The complete solution also
+      compiles on the core Lean 4.34.0-rc2 and Mathlib, and the compared
+      theorem's local transitive-axiom audit lists only those three axioms;
+      see Solutions/RosserSchoenfeld.v2/validation.md. IEANTN Comparator
+      verification remains to be completed.
+
   designated: integration-pending
 
 sources:
@@ -73,12 +76,22 @@ automation:
     framework: "OpenAI Codex"
     role: >-
       Prepared the conditional node and integration of the published RSBounds proof.
+  - method: agent
+    models: ["Claude (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Compiled the complete solution on the core Lean 4.34.0-rc2 and Mathlib, made and
+      recorded the proof-script compatibility edits, fixed the solution library's roots,
+      and ran the local type-match and axiom pre-checks, under human direction.
+
 
 review:
   status: self-assessed
   reviewers: ["OpenAI Codex"]
   notes: >-
-    Integration is in progress; no IEANTN verification receipt or human review is claimed.
+    The solution builds on the core toolchain and passes the local pre-checks; no IEANTN
+    verification receipt or human review is claimed.
+
 
 limitations:
 - "RH through height 1894439 remains an explicit assumption."

@@ -69,8 +69,10 @@ def piBounds : Bounds :=
 
 theorem piBounds_sound : piBounds.Contains Real.pi := by
   constructor
-  · convert Real.pi_gt_d20.le using 1 <;> norm_num [piBounds]
-  · convert Real.pi_lt_d20.le using 1 <;> norm_num [piBounds]
+  · convert Real.pi_gt_d20.le using 1 <;> first | rfl | norm_num [piBounds]
+
+  · convert Real.pi_lt_d20.le using 1 <;> first | rfl | norm_num [piBounds]
+
 
 inductive Expr where
   | rat : ℚ → Expr

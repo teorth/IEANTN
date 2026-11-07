@@ -147,7 +147,8 @@ theorem norm_G_tail (s : ℂ) (δ : ℝ) (hs0 : -1 ≤ s.re) (hs1 : s.re ≤ 1) 
       have hu0' : 0 ≤ u := by linarith
       have := pow_le_pow_left₀ hu0' h1 2
       rw [mul_pow, ← Real.exp_nat_mul] at this
-      convert this using 3; push_cast; ring
+      convert this using 3 <;> first | rfl | (push_cast; ring) | (push_cast; done)
+
     have h2 : -0.1065 * u ^ 2 ≤ -0.1065 * u0 ^ 2 + -2.13 * (u - u0) := by nlinarith
     have hEAeq : EA T0 δ = 0.588 * u0 ^ 2 * Real.exp (-0.1065 * u0 ^ 2) := by
       unfold EA; rw [if_neg hδ]

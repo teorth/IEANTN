@@ -210,6 +210,9 @@ lemma right_arc_le_samples :
   norm_num only [smul_eq_mul, mul_zero, show Real.pi / 32 * 16 = Real.pi / 2 by ring] at he
   rw [← he]
   have hh := div_le_div_of_nonneg_right hi (show (0 : ℝ) ≤ 64 by norm_num)
-  convert hh using 1 <;> dsimp [F] <;> field_simp [Real.pi_ne_zero] <;> ring
+  -- Lean 4.34 / older Mathlib: goal shapes after `convert` differ; each step is made optional.
+  convert hh using 1 <;> (try dsimp [F]) <;>
+    first | rfl | (field_simp [Real.pi_ne_zero] <;> ring) | ring
+
 
 end TernaryGoldbach.RSBounds.BacklundRightArc

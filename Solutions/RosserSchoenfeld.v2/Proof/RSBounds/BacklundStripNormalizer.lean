@@ -356,6 +356,7 @@ theorem zeta_norm_le_of_normalized_le {σ t : ℝ} (hσ0 : 0 ≤ σ) (hσ1 : σ 
   have hm : 0 < (t / (2 * Real.pi)) ^ ((σ - 1) / 2) / Real.log t *
       (1 - 4 / t ^ 2) := by positivity
   apply (mul_le_mul_iff_right₀ hm).mp
-  convert hprod.trans_eq htarget.symm using 1 <;> ring
+  convert hprod.trans_eq htarget.symm using 1 <;> first | rfl | ring
+
 
 end TernaryGoldbach.RSBounds.BacklundStripNormalizer

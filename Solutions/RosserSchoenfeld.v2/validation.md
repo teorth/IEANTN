@@ -54,10 +54,38 @@ An earlier core build reached its 1800-second local runtime limit without a
 Lean error. The successful resumed build and generated files above supersede
 that incomplete attempt; the earlier attempt is not counted as a pass.
 
+Completed on 2026-11-07:
+
+- Fixed the solution's `lakefile.lean`. The `Solution` library globbed only its
+  submodules, so plain `lake build` never built the root module `Solution`, which
+  states the compared theorem, and `lake build +Solution` reported an unknown
+  module. It now uses `.andSubmodules`, matching the `roots = ["Solution"]` that
+  `ieantn.py new-solution` scaffolds.
+- Full solution compilation on the core's Lean 4.34.0-rc2 and Mathlib
+  `71a80585ee495fc24472fd0eaffc89d94e4fd8d6`: `lake build` completed 9143 jobs,
+  including `Solution`, with no `sorry` warning.
+- 29 vendored modules needed proof-script compatibility edits; no mathematical
+  statement changed. Each is recorded in `source-provenance.json` with one
+  upstream-to-current patch under `adaptations/`, and `check_source_provenance.py`
+  matches all 254 vendored sources and 3 compatibility helpers. The main cause:
+  on this Mathlib, `convert ... using 1` also emits instance-equality goals, so the
+  original follow-up tactics now run through `all_goals first | rfl | ...`. In
+  addition, `RSBoundsCompat.Arctan` is now a `module` (its consumer
+  `HardyFirstZero.Phase` is one), `integrableOn_indicator_iff` takes a
+  `MeasurableSet` here, and `RamareWalk.Inv_step` runs under
+  `maxHeartbeats 800000`.
+- The local pre-check of docs/NODES.md step 4 passed: the challenge and solution
+  `pp.all` types of `RosserSchoenfeld.v2.challenge_psi_error_b23` are identical,
+  and its transitive axioms are exactly `propext`, `Classical.choice` and
+  `Quot.sound`.
+- `ieantn.py check`: every section passes except receipt provenance, which in a
+  fork clone compares each existing receipt's repository with the fork's `origin`
+  URL. No receipt was added or changed.
+
 Still pending at this checkpoint:
 
-- Full solution compilation on the core's pinned toolchain and Mathlib.
 - IEANTN's official Comparator workflow and its receipt.
+
 
 The successful upstream Lean 4.35.0 psi replay is documented in README.md and
 does not discharge these integration checks.

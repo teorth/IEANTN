@@ -29,7 +29,8 @@ lemma cosDoubleCheck_sound {D : ℕ} (hD : 0 < D) {a : ℤ} {θ : ℝ} {bs : Lis
     have hb : (b : ℝ) * D ≤ 2 * (a : ℝ) ^ 2 - (D : ℝ) ^ 2 := by exact_mod_cast hc.1.2
     have hb' : (b : ℝ) / D ≤ 2 * ((a : ℝ) / D) ^ 2 - 1 := by
       apply (mul_le_mul_iff_left₀ (sq_pos_of_pos hD0)).mp
-      convert hb using 1 <;> field_simp [hD0.ne'] <;> ring
+      convert hb using 1 <;> first | rfl | (field_simp [hD0.ne'] <;> ring) | ring
+
     have hnext : (b : ℝ) / D ≤ Real.cos (2 * θ) := by
       rw [Real.cos_two_mul]
       have hsq : ((a : ℝ) / D) ^ 2 ≤ Real.cos θ ^ 2 :=

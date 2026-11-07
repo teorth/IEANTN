@@ -156,7 +156,9 @@ theorem normalized_power_zeroCount_le {c : ℂ} {r R : ℝ} {f g : ℂ → ℂ}
           (f := B) (c := c) (R := R))] at h
   apply (div_le_iff₀ hn0).mpr
   convert h using 1
-  field_simp
+  -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
+  all_goals first | rfl | field_simp
+
 
 
 /-- Backlund's power limit in Jensen's inequality. The angular majorant is

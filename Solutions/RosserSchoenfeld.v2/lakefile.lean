@@ -6,7 +6,7 @@ package solution_RosserSchoenfeld_v2
 require IEANTN from "../.."
 
 @[default_target] lean_lib Solution where
-  globs := #[.submodules `Solution]
+  globs := #[.andSubmodules `Solution]
 
 lean_lib RSBoundsCompat where
   globs := #[.submodules `RSBoundsCompat]

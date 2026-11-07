@@ -43,7 +43,13 @@
       "upstream_git_blob_sha1": "ab039bc4b050d9947ebf9853e3348140416e8c42",
       "upstream_sha256": "85cc5968d3ad87b0a215046b76bfcd9f2630bacd22d470a67664b86a424ca375",
       "bytes": 26323,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/HardyFirstZero-EulerMaclaurin-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "99c6b0a2d8b65e9b1054351c5f9252c837aa608265d14ae60c7baea63f135d1a"
     },
     {
       "module": "HardyFirstZero.FirstZero",
@@ -270,7 +276,13 @@
       "upstream_git_blob_sha1": "8de1b73d4f6cb362277c9a253d4b43359cbc880f",
       "upstream_sha256": "478087e69de83d0ac6fee75e9a035947340ee3771efcb2dbaf8b0f07c607c1c9",
       "bytes": 17605,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RHHeight-GammaIncrement-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "2a2a25da721940906a3621de71a045e0d1614407c292e1d9a83efd479dc5cb6b"
     },
     {
       "module": "RHHeight.HorizontalLegs",
@@ -770,7 +782,13 @@
       "upstream_git_blob_sha1": "4b2492bf1f02f7e4c678e92c59c9104760a6e6d9",
       "upstream_sha256": "f348306c76352b94134ef90946dc73f2c0c4bb3c56018a05d0e0a31837114d2b",
       "bytes": 8354,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-BacklundAnchor-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "8a560977ae36a6ba73a05e60c88aef1bd43175d85b0e2d63c3b5990669c88e71"
     },
     {
       "module": "RSBounds.BacklundAngularAssembly",
@@ -1134,7 +1152,13 @@
       "upstream_git_blob_sha1": "6ae446903ee0a990d9e1b262ff6204eaa97e5c78",
       "upstream_sha256": "c7e8bc487e0c91c8a217bc37949fc874b7e61cf654f409ef1160a87b55f62127",
       "bytes": 4772,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-BacklundFinalScalar-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "c9f491bee661443f72195a3bc09867a7c34d2b237db640d67a21da3de208d94a"
     },
     {
       "module": "RSBounds.BacklundFirstCrossing",
@@ -1231,7 +1255,13 @@
       "upstream_git_blob_sha1": "9e440dc4a2f4cd9b800c8658551793ff49a984ea",
       "upstream_sha256": "60229c9ae786efb5efdbaf6729165a659da31e84d55095f2d62ed32ad8ef9985",
       "bytes": 4660,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. In one place the older `norm_num` already closes the goal, so `ring` follows it with `<;>`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-BacklundGammaModulusHorizontal-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "44f21c45658f5dac3b87a0ad47697c92ce2bbe9e31562f39f3fd4995360db9fe"
     },
     {
       "module": "RSBounds.BacklundGammaPhaseArctan",
@@ -1283,7 +1313,13 @@
       "upstream_git_blob_sha1": "15c6f9ff939dbc6d2bdab29e95c4db2fb8355e1e",
       "upstream_sha256": "3007ec7f09bad505b07b5b5bc7a1e7aa04fc43c6ad62219796d2568a967beddf",
       "bytes": 6090,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-BacklundGammaPhasePrimitive-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "4014af20342f56256cff3a9f128c2a4467dae35bf58f776d539bf05161bad9c0"
     },
     {
       "module": "RSBounds.BacklundGammaPhaseShift",
@@ -1322,7 +1358,13 @@
       "upstream_git_blob_sha1": "22ca55c50edcfbaf91e9f701cdff8d09c1bf91d3",
       "upstream_sha256": "001f344f9f7ba459940c631f36053d63c3a2ac124a5a6ddde293345b8f462faf",
       "bytes": 5174,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-BacklundHalfStrip-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "3d911156e5d605bd5bad013c74c3b61b3d7aff4031c5f46eec3f0874176f1ade"
     },
     {
       "module": "RSBounds.BacklundHighCount",
@@ -1361,7 +1403,13 @@
       "upstream_git_blob_sha1": "ed727004ab785bc86aea82953163dde677af2751",
       "upstream_sha256": "4f2d99921b4e50e81455c8f99d64a8fc7055bc3119b47dd0e73fe1ec0f41e558",
       "bytes": 10081,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-BacklundJensen-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "37ad127adb416b4f28df87e1e3e26f34a087556d5fada5b8464ebc5c53a2c466"
     },
     {
       "module": "RSBounds.BacklundLeftZetaBoundary",
@@ -1491,7 +1539,13 @@
       "upstream_git_blob_sha1": "e978e89e585359bfaedefb4e197b245b4e32184b",
       "upstream_sha256": "7c85242a2f9641863706dc067494cedeb46d46dcb5a5472a5c960496afc2cb05",
       "bytes": 6842,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-BacklundPairedPower-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "96024cd62d8e64c5a35a8fe215ca88ff627ca5a4ac4c58a755617e9308c64161"
     },
     {
       "module": "RSBounds.BacklundPhase",
@@ -1549,7 +1603,13 @@
       "upstream_git_blob_sha1": "ffc564d8f026f74a7aa61c6f8978887bec0f07d1",
       "upstream_sha256": "207e6699ff12ae88ff57208ac5faa44d6f5dd3412eab87a9736a17390229968b",
       "bytes": 10845,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. Here `dsimp [F]` is made optional and `ring` is a fallback after `field_simp`, because the goal shapes differ on this Mathlib. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-BacklundRightArc-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "845eeb1dc479e4bf3f43fab517542ebf9f67636efdbabe10576f4d353078f23d"
     },
     {
       "module": "RSBounds.BacklundRightArcNumerics",
@@ -1575,7 +1635,13 @@
       "upstream_git_blob_sha1": "e0eae3b4973ed277cc7412b3b4a2036d00d2c2f9",
       "upstream_sha256": "c05cd7db2c9e1291e772d6221dd131cd6f9db66366ed44061a129b8db8d68883",
       "bytes": 4585,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. Plain `ring` is a fallback where the older `field_simp` makes no progress. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-BacklundRightArcNumericsBase-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "efff4453d3612b345ab79b03f015a61986c34d7ae855d4069c8ac59d13bc3e05"
     },
     {
       "module": "RSBounds.BacklundStrip",
@@ -1605,9 +1671,13 @@
         {
           "description": "Use checked Mathlib-4.34 compatibility helpers or the equivalent existing API for a newer Mathlib lemma. All mathematical theorem statements are unchanged; see compatibility-provenance.json.",
           "patch": "adaptations/RSBounds-BacklundStripNormalizer-mathlib34.patch"
+        },
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-BacklundStripNormalizer-mathlib34.patch"
         }
       ],
-      "adapted_sha256": "b9b227e657a2e30757f75656d3aa7c9bc66ac898ab8884d0552d5841996c5e6e"
+      "adapted_sha256": "0bd55c56dee639a985c2076cf278241669e0f48044a431298a64739f657b1294"
     },
     {
       "module": "RSBounds.BacklundTrapezoid",
@@ -1620,7 +1690,13 @@
       "upstream_git_blob_sha1": "27ea3450fd29c5983e295c1b0c80e90187c67ca6",
       "upstream_sha256": "1293c3bb601bd07df72843b3afe312f14ded8140864bfc95f7d74264c680ee8c",
       "bytes": 5384,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-BacklundTrapezoid-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "f530e829bc0d361687f23afa05cfe3927555ec620ee5546ccb2018705a938f71"
     },
     {
       "module": "RSBounds.BacklundZetaBoundary",
@@ -1633,7 +1709,13 @@
       "upstream_git_blob_sha1": "9ed7f435466392d2998c25434373acf9ae1c0c2d",
       "upstream_sha256": "61c19350d516589800dd81a974a8a9b05d65bea81046c7fdee6624358fba70a6",
       "bytes": 17404,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-BacklundZetaBoundary-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "8f473be9d49f82d275c24228b17042ef80dc0e98928108d351a2097ece1784f4"
     },
     {
       "module": "RSBounds.BacklundZetaPhase",
@@ -1867,7 +1949,13 @@
       "upstream_git_blob_sha1": "06719a7a9e0a059ba1fdca5ef03f3583cc81665d",
       "upstream_sha256": "6c0ae133b163564b9f8bc87802bab6b2e4ca1b571f7d01b9fcea2b9d4da8737c",
       "bytes": 4706,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-PolynomialLowerKernel-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "5f511440a1e5bf6dd53ab27666f067524c97407686a4dbffdd7558c42914a892"
     },
     {
       "module": "RSBounds.PolynomialPrimeSum",
@@ -2010,7 +2098,13 @@
       "upstream_git_blob_sha1": "e0085273d236426983bf017258417031a3d9f60c",
       "upstream_sha256": "779c2bf9815348f53925b23f9bfcd97694d278df908eefebaf798903b1e3a68f",
       "bytes": 16992,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. Plain `ring` is a fallback where the older `field_simp` makes no progress. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-PolynomialZeroCancellation-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "1cd736187727a8cf55e7bb1b26ea8d876f070ea1f0d66a0909c88c96d3ab257a"
     },
     {
       "module": "RSBounds.PolynomialZeroCountBridge",
@@ -2036,7 +2130,13 @@
       "upstream_git_blob_sha1": "dff41dd83fc91f145b3fade75661bc804571a1ab",
       "upstream_sha256": "62c44199fe2f4ab1334fbaaed1a84adad2c0f745cfdc1d3ff3640d54af3cbb19",
       "bytes": 17800,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-PolynomialZeroKernel-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "60773b4a89a1806f9133872107ee4ae016840c9a53197822d8d15aa9b3f3f675"
     },
     {
       "module": "RSBounds.PolynomialZeroMajorants",
@@ -2062,7 +2162,13 @@
       "upstream_git_blob_sha1": "79d364a1c413dcb09e227aa4c4f6c54081dcc7ff",
       "upstream_sha256": "7bc85e88d30612d76f4fea0338411f8c185c255314d2f6acd87f7e0b48e79504",
       "bytes": 14710,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-PolynomialZeroPairing-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "1f7b85d2a78fda844b62b6952821c75a2cdb7f0659f30a9d0902bb567c1b240e"
     },
     {
       "module": "RSBounds.PolynomialZetaFormula",
@@ -2088,7 +2194,13 @@
       "upstream_git_blob_sha1": "5d90da1c97f9e1e7702509f55343442616958def",
       "upstream_sha256": "efd600bdcd54c8eda11dcc6724fa0f78c0bfacd0ff0384c6245cf73293c7a1f1",
       "bytes": 6094,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-QuarticBudgetNumericsBase-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "47fbbb95472f75f1ed899d77a3d90a9f9d6ef9209c549c5498fb0943bd4c0018"
     },
     {
       "module": "RSBounds.QuarticFirst29BudgetApplication",
@@ -2205,7 +2317,13 @@
       "upstream_git_blob_sha1": "e43d3b8979d2b50550ef6f6b5f4b9d45dc599832",
       "upstream_sha256": "24b5a311c84e4f9bc160e942489a31add2f33d3487d8653d7bd9d5ed3650fef0",
       "bytes": 9400,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-RosserTailIntegrals-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "01495ce91e943cd015aaf060ae410e9152c91e902b8c60274d7fb56aa95a8720"
     },
     {
       "module": "RSBounds.RosserWeightedBounds",
@@ -2218,7 +2336,13 @@
       "upstream_git_blob_sha1": "7304dc1f4c428fcf376e2065f075b493bdbf3454",
       "upstream_sha256": "e7ec52a3cae8029cf0773710eb999fcf2da2b4dfd9d95f2eaa5c5c4849b5c8ce",
       "bytes": 8802,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-RosserWeightedBounds-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "fdd01c9b92bb3eca573295dc939419428bd9cb64356359c805f1d248c68ea571"
     },
     {
       "module": "RSBounds.RosserWeightedSplit",
@@ -2270,7 +2394,13 @@
       "upstream_git_blob_sha1": "b7bf85d250b07dd26959dff78198ecb530803e9b",
       "upstream_sha256": "081e997e5c9c5c4e9039e33684467a7b5e8b0c6fb04d815d06ae5f3b33329c7f",
       "bytes": 13984,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/RSBounds-WeightedZeroSums-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "488cf528579470ed19402887b4f3db22cd9eb347af601b2dc23a274a48955030"
     },
     {
       "module": "RSBounds.WeightedZetaZeros",
@@ -2378,9 +2508,13 @@
         {
           "description": "Use checked Mathlib-4.34 compatibility helpers or the equivalent existing API for a newer Mathlib lemma. All mathematical theorem statements are unchanged; see compatibility-provenance.json.",
           "patch": "adaptations/TernaryGoldbach-Explicit-Digamma-mathlib34.patch"
+        },
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. The last goal of `integral_one_add_rpow_cos` is closed by `rw [add_div, div_self ...]`, which the newer `field_simp` did implicitly. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/TernaryGoldbach-Explicit-Digamma-mathlib34.patch"
         }
       ],
-      "adapted_sha256": "2f8d0d96120b5f721cfc185cb510f9df25dac62edace858b9331c572c774f477"
+      "adapted_sha256": "9970b7d868b171426bae43134e81886d1ad6bea6f6a95fa8cacb67b2a391e67b"
     },
     {
       "module": "TernaryGoldbach.Explicit.ExplicitFormula",
@@ -2549,7 +2683,13 @@
       "upstream_git_blob_sha1": "b46d603132c356c094ec1893e9ff0d6f32e40aef",
       "upstream_sha256": "b20d30db6ecb5ec14c216e20f61e3c9dc88f2b3e42d368ea13ba803fe74840c1",
       "bytes": 30745,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/TernaryGoldbach-Explicit-RectResidue-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "dabde555095137c42ff91777b5f41e25613d8aacea949a7f568df745417f0ab1"
     },
     {
       "module": "TernaryGoldbach.Explicit.RectResidue2",
@@ -2562,7 +2702,13 @@
       "upstream_git_blob_sha1": "0058145e6ee75906d7fe8bbdbfd2f61b531ed5c5",
       "upstream_sha256": "08f892964e52a08a7a5ce6dc75356b6628fa817aa278bd620f7a97fe986b012e",
       "bytes": 10657,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/TernaryGoldbach-Explicit-RectResidue2-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "8c94f5cd56b94b3cc7817fc552589b8d8b208db7a5078cd0647725e7d8b0ed0b"
     },
     {
       "module": "TernaryGoldbach.Explicit.Xi",
@@ -2575,7 +2721,13 @@
       "upstream_git_blob_sha1": "d47febd9d77a63cedf3cbcb0c1bc72ecc3cec9b7",
       "upstream_sha256": "4639c36632c643b27aad190f64c4ccfde92065bd5150b089f94b455fbfa2671c",
       "bytes": 8549,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: on this Mathlib, `convert ... using 1` also emits instance-equality (and sometimes function) goals, so the original follow-up tactics are applied through `all_goals first | rfl | ...`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/TernaryGoldbach-Explicit-Xi-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "c174c9d6745f495ac0d834084c5b2ce58df1df8fec6d61739b92cef4aebfefdb"
     },
     {
       "module": "TernaryGoldbach.Explicit.XiPartial",
@@ -2620,7 +2772,13 @@
       "upstream_git_blob_sha1": "dee1d9dc4de94d7a27db468c53db8e3de40a1099",
       "upstream_sha256": "b2f34f170ff801fff922e1948bd7c35f969f5800799c2623189107f7c7f6d23c",
       "bytes": 32184,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: after `convert ... using 3`, goals are closed through `first | rfl | (push_cast; ring) | (push_cast; done)`, since instance goals may appear and the older `push_cast` may close a goal by itself. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/TernaryGoldbach-Explicit-ZeroSumBound-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "15cba5ae1935915ed509a2f38a67119a0c9097050b85aa4f901f71b3cd2f3f4b"
     },
     {
       "module": "TernaryGoldbach.Explicit.ZeroSumGen",
@@ -2754,9 +2912,13 @@
         {
           "description": "Use the Mathlib 4.34 module name Integrability.LogMeromorphic in place of its 4.35 name Integrability.Log. No theorem statements or proof bodies changed.",
           "patch": "adaptations/PNTMertens-import.patch"
+        },
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: `integrableOn_indicator_iff` takes a `MeasurableSet` argument in this Mathlib, so `measurableSet_Ici` replaces `measurableSet_Ici.nullMeasurableSet`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/PNTMertens-import.patch"
         }
       ],
-      "adapted_sha256": "1c7dd4cce00e07b2f9e73ecd5202f21ab7c60202dfe0fec081c716579b125fbd"
+      "adapted_sha256": "2ad49ecbcba0738aaf0accd9f4ade885b849c966be97fb4c42d50db36b539b4c"
     },
     {
       "module": "TernaryGoldbach.Prelim.PlancherelReal",
@@ -2801,7 +2963,13 @@
       "upstream_git_blob_sha1": "dff2f8df6ee0db1c171421f82c735cca50fed68a",
       "upstream_sha256": "735bda9cd0be131dd517ab98589e95cc990928c57e4b543c7acf54841fb37a2d",
       "bytes": 48869,
-      "adaptations": []
+      "adaptations": [
+        {
+          "description": "Lean 4.34.0-rc2 / Mathlib 71a80585 compatibility: `Inv_step` exceeds the default heartbeat limit on this toolchain, so it is elaborated under `set_option maxHeartbeats 800000`. All mathematical theorem statements are unchanged.",
+          "patch": "adaptations/TernaryGoldbach-Prelim-RamareWalk-mathlib34.patch"
+        }
+      ],
+      "adapted_sha256": "9dd8ff177e018ece824aab6bbbbe008ae3aa5e63f1adab40e2399e7d1f42c214"
     },
     {
       "module": "TernaryGoldbach.Statement",

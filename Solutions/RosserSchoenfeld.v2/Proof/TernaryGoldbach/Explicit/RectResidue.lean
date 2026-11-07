@@ -330,7 +330,11 @@ theorem rectInt_finset_sum {ι : Type*} (S : Finset ι) (F : ι → ℂ → ℂ)
         intro φ a b h
         have := IntervalIntegrable.sum S h
         convert this using 1
-        ext t; simp [Finset.sum_apply]
+        -- Lean 4.34 / older Mathlib: `convert` also emits an instance-equality goal.
+        all_goals first
+          | rfl
+          | (ext t; simp [Finset.sum_apply])
+
       exact ⟨key _ _ _ fun i hi => (hF i (Finset.mem_insert_of_mem hi)).1,
         key _ _ _ fun i hi => (hF i (Finset.mem_insert_of_mem hi)).2.1,
         key _ _ _ fun i hi => (hF i (Finset.mem_insert_of_mem hi)).2.2.1,
@@ -483,7 +487,11 @@ theorem rectInt_logDeriv_mul {f : ℂ → ℂ} (hf : Differentiable ℂ f) {c : 
       intro φ a b hφ
       have := IntervalIntegrable.sum Z fun u hu => (hφ u hu).const_mul ((divB f c R u).toNat : ℂ)
       convert this using 1
-      ext t; simp [Finset.sum_apply]
+      -- Lean 4.34 / older Mathlib: `convert` also emits an instance-equality goal.
+      all_goals first
+        | rfl
+        | (ext t; simp [Finset.sum_apply])
+
     exact ⟨key _ _ _ fun u hu => (hint_u u hu).1, key _ _ _ fun u hu => (hint_u u hu).2.1,
       key _ _ _ fun u hu => (hint_u u hu).2.2.1, key _ _ _ fun u hu => (hint_u u hu).2.2.2⟩
   have hg0' : rectInt (fun s => logDeriv g s * h s) z w = 0 :=

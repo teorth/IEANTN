@@ -28,7 +28,9 @@ theorem intervalIntegral_exp_neg_mul {u : ℝ} (hu : u ≠ 0) (a b : ℝ) :
       exact this
     have h := (h1.exp.neg).div_const u
     convert h using 1
-    field_simp
+    -- Lean 4.34 / older Mathlib: `convert` also emits instance and function goals.
+    all_goals first | rfl | field_simp
+
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hF
     ((by fun_prop : Continuous fun v : ℝ => Real.exp (-(v * u))).intervalIntegrable _ _)]
   ring
@@ -361,7 +363,9 @@ theorem one_sub_cos_div_eq {L : ℝ} (hL : L ≠ 0) (t : ℝ) :
       exact this
     have h := (h1.cos.neg).div_const L
     convert h using 1
-    field_simp
+    -- Lean 4.34 / older Mathlib: `convert` also emits instance and function goals.
+    all_goals first | rfl | field_simp
+
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hF
     ((by fun_prop : Continuous fun w : ℝ => Real.sin (w * L)).intervalIntegrable _ _)]
   rcases abs_choice t with h | h <;> rw [h] <;> simp [Real.cos_neg] <;> ring
@@ -447,8 +451,9 @@ theorem integral_one_add_rpow_cos {σ : ℝ} (hσ : 1 < σ) (t : ℝ) :
     have hp : 0 < (σ - 1) ^ 2 + w ^ 2 := by positivity
     have h := (((hasDerivAt_pow 2 w).const_add ((σ - 1) ^ 2)).log hp.ne').const_mul (1 / 2 : ℝ)
     convert h using 1
-    field_simp
-    push_cast; ring
+    -- Lean 4.34 / older Mathlib: `convert` also emits instance and function goals.
+    all_goals first | rfl | (field_simp; push_cast; ring)
+
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hG (by
     refine ContinuousOn.intervalIntegrable ?_
     exact fun w _ => ((continuousAt_id.div (continuousAt_const.add (continuousAt_id.pow 2))
@@ -458,9 +463,13 @@ theorem integral_one_add_rpow_cos {σ : ℝ} (hσ : 1 < σ) (t : ℝ) :
   rw [sq_abs, show (0:ℝ) ^ 2 = 0 by norm_num, add_zero, ← mul_sub,
     ← Real.log_div (by positivity) ha.ne']
   congr 2
-  field_simp
+  all_goals first
+    | rfl
+    | (rw [add_div, div_self ha.ne'])
+    | field_simp
 
 /-- **`Re ψ(σ + it) ≤ log σ + ½ log(1 + t²/(σ−1)²)`** for `σ > 1`. -/
+
 theorem re_digamma_le {σ t : ℝ} (hσ : 1 < σ) :
     (Complex.digamma ((σ : ℂ) + t * I)).re ≤ Real.log σ + 1 / 2 * Real.log (1 + t ^ 2 / (σ - 1) ^ 2) := by
   have hs : 1 / 2 < ((σ : ℂ) + t * I).re := by simp; linarith

@@ -50,7 +50,8 @@ theorem norm_le_one {f : ℂ → ℂ} {a : ℝ} (ha : 1 ≤ a)
       ‖Complex.exp ((ε : ℂ) * z ^ 2) * f z‖ ≤ 1 by
     apply le_of_tendsto _ h
     convert (((Complex.continuous_ofReal.mul continuous_const).cexp.mul
-      continuous_const).norm.tendsto (0 : ℝ)).mono_left nhdsWithin_le_nhds using 1 <;> simp
+      continuous_const).norm.tendsto (0 : ℝ)).mono_left nhdsWithin_le_nhds using 1 <;> first | rfl | simp
+
   filter_upwards [self_mem_nhdsWithin] with ε hε
   have hε0 : 0 < ε := hε
   let g : ℂ → ℂ := fun w => Complex.exp ((ε : ℂ) * w ^ 2) * f w

@@ -67,7 +67,8 @@ theorem normalized_power_argument_le {f g : ℂ → ℂ} {B : ℂ → ℝ} {θ :
         2 + (n : ℝ) * E / (2 * Real.pi) := by
     exact hh.trans (by gcongr)
   have hh'' := div_le_div_of_nonneg_right hh' hn0.le
-  convert hh'' using 1 <;> field_simp [hn0.ne', hlog.ne', Real.pi_ne_zero]
+  convert hh'' using 1 <;> first | rfl | field_simp [hn0.ne', hlog.ne', Real.pi_ne_zero]
+
 
 /-- Rosser's limiting reflected Jensen argument bound. The additive crossing
 cost disappears along the explicitly proved power subsequence. -/

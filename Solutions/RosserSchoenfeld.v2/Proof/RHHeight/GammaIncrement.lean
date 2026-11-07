@@ -132,9 +132,10 @@ theorem hasDerivAt_muPrim (t : ℝ) : HasDerivAt muPrim (muMain t) t := by
   have h1 : HasDerivAt (fun t : ℝ => (1 + 4 * t ^ 2) / 16) (8 * t / 16) t := by
     have := (((hasDerivAt_id' t).pow 2).const_mul 4).const_add 1 |>.div_const 16
     convert this using 1
-    simp
-    ring
+    -- Lean 4.34 / older Mathlib: `convert` also emits instance and function goals.
+    all_goals first | rfl | (simp; ring)
   have hlog := h1.log hq
+
   have hc : HasDerivAt (fun t : ℝ => t / 2) (1 / 2) t := (hasDerivAt_id' t).div_const 2
   have h2 : HasDerivAt (fun t : ℝ => 2 * t) 2 t := by
     simpa using (hasDerivAt_id' t).const_mul 2
@@ -142,11 +143,12 @@ theorem hasDerivAt_muPrim (t : ℝ) : HasDerivAt muPrim (muMain t) t := by
   have H := ((((hc.mul hlog).sub (hasDerivAt_id' t)).sub (harc.const_mul (1 / 2))).sub
     ((hasDerivAt_id' t).mul_const (Real.log Real.pi))).const_mul (1 / (2 * Real.pi))
   convert H using 1
-  · funext y
-    rfl
-  · unfold muMain
-    field_simp
-    ring
+  -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
+  all_goals first
+    | rfl
+    | (funext y; rfl)
+    | (unfold muMain; field_simp; ring)
+
 
 theorem continuous_muMain : Continuous muMain := by
   have h1 : Continuous (fun t : ℝ => Real.log ((1 + 4 * t ^ 2) / 16)) :=
@@ -162,8 +164,9 @@ theorem hasDerivAt_six_div (x : ℝ) (hx : x ≠ 0) :
   have h := (hasDerivAt_const x (6 : ℝ)).div ((hasDerivAt_id' x).const_mul Real.pi)
     (mul_ne_zero hπ.ne' hx)
   convert h using 1
-  field_simp
-  ring
+  -- Lean 4.34 / older Mathlib: `convert` also emits instance and function goals.
+  all_goals first | rfl | (field_simp; ring)
+
 
 /-- **The Gamma side between two heights, to within the Stirling error.** For `1 ≤ T₁ ≤ T₂`,
 `|∫_{T₁}^{T₂} μ - (F T₂ - F T₁)| ≤ (6/π)(1/T₁ - 1/T₂)`, with `F = muPrim`. -/
@@ -183,15 +186,20 @@ theorem abs_integral_mu_sub_le {T₁ T₂ : ℝ} (h1 : 1 ≤ T₁) (h12 : T₁ �
     have hx0 : x ≠ 0 := (by linarith [hx.1] : (0 : ℝ) < x).ne'
     have h := (hasDerivAt_muPrim x).sub (hasDerivAt_six_div x hx0)
     convert h using 1
-    ring
-  have hderL : ∀ x ∈ Set.uIcc T₁ T₂, HasDerivAt (fun t => muPrim t + 6 / (Real.pi * t))
+    -- Lean 4.34 / older Mathlib: `convert` also emits instance and function goals.
+    all_goals first | rfl | ring
+  have hderL
+ : ∀ x ∈ Set.uIcc T₁ T₂, HasDerivAt (fun t => muPrim t + 6 / (Real.pi * t))
       (muMain x - 6 / (Real.pi * x ^ 2)) x := by
     intro x hx
     rw [hIcc] at hx
     have hx0 : x ≠ 0 := (by linarith [hx.1] : (0 : ℝ) < x).ne'
     have h := (hasDerivAt_muPrim x).add (hasDerivAt_six_div x hx0)
     convert h using 1
-  have hcont6 : ContinuousOn (fun t : ℝ => 6 / (Real.pi * t ^ 2)) (Set.uIcc T₁ T₂) := by
+    -- Lean 4.34 / older Mathlib: `convert` leaves instance goals here.
+    all_goals first | rfl | ring
+  have hcont6
+ : ContinuousOn (fun t : ℝ => 6 / (Real.pi * t ^ 2)) (Set.uIcc T₁ T₂) := by
     rw [hIcc]
     apply continuousOn_const.div (by fun_prop)
     intro x hx

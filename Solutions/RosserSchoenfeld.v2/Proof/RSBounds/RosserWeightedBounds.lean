@@ -31,10 +31,12 @@ theorem hasDerivAt_reciprocal_fifth {t : ℝ} (ht : 0 < t) :
   have hp : (fun t : ℝ => t ^ 5) t ≠ 0 := pow_ne_zero 5 ht.ne'
   have hh := (hasDerivAt_const t (1 : ℝ)).div ((hasDerivAt_id t).pow 5) hp
   convert hh using 1
-  · rfl
-  · dsimp only [id_eq, Pi.pow_apply]
-    field_simp [ht.ne']
-    <;> ring
+  -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
+  all_goals first
+    | rfl
+    | (dsimp only [id_eq, Pi.pow_apply]
+       field_simp [ht.ne'] <;> ring)
+
 
 private theorem derivative_reciprocal_integrable {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
     IntervalIntegrable (fun t : ℝ => -1 / t ^ 2) volume a b := by

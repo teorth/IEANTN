@@ -35,7 +35,8 @@ theorem hasDerivAt_kernel (a x : ℝ) :
   change HasDerivAt (fun y : ℝ => (y - a) * (a + 1 - y) / 2) _ x
   convert (((hasDerivAt_id x).sub_const a).mul
     ((hasDerivAt_id x).const_sub (a + 1))).div_const 2 using 1 <;>
-    norm_num <;> ring
+    first | rfl | (norm_num <;> ring)
+
 
 /-- Exact Peano-kernel identity for one unit trapezoid. -/
 theorem error_eq_integral_kernel {f f' f'' : ℝ → ℝ} {a : ℝ}

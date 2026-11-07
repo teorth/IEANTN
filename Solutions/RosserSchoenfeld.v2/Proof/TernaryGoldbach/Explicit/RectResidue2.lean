@@ -143,7 +143,11 @@ theorem rectInt_logDeriv_inv_sub {f : ℂ → ℂ} (hf : Differentiable ℂ f) {
       intro φ a b hφ
       have := IntervalIntegrable.sum Z fun u hu => hφ u hu
       convert this using 1
-      ext t; simp [Finset.sum_apply]
+      -- Lean 4.34 / older Mathlib: `convert` also emits an instance-equality goal.
+      all_goals first
+        | rfl
+        | (ext t; simp [Finset.sum_apply])
+
     exact ⟨key _ _ _ fun u hu => (hint_u u hu).1, key _ _ _ fun u hu => (hint_u u hu).2.1,
       key _ _ _ fun u hu => (hint_u u hu).2.2.1, key _ _ _ fun u hu => (hint_u u hu).2.2.2⟩
   rw [hF, rectInt_add' hint_sum hint_g, rectInt_mul_inv_sub hUo hrect hgdiff hp1 hp2 hp3 hp4,

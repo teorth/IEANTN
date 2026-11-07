@@ -68,8 +68,11 @@ theorem deriv_xiF_half : deriv xiF (1 / 2) = 0 := by
     have h4 : HasDerivAt xiF (deriv xiF (1 - 1 / 2)) (1 - 1 / 2) := (differentiable_xiF _).hasDerivAt
     have := h4.comp (1 / 2 : ℂ) h3
     convert this using 1
-    · rfl
-    · rw [show (1 : ℂ) - 1 / 2 = 1 / 2 by norm_num]; ring
+    -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
+    all_goals first
+      | rfl
+      | (rw [show (1 : ℂ) - 1 / 2 = 1 / 2 by norm_num]; ring)
+
   have e : (fun s => xiF (1 - s)) = xiF := funext xiF_one_sub
   rw [e] at h2
   have := h1.unique h2
