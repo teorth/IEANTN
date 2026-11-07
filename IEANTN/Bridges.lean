@@ -8,6 +8,7 @@ import IEANTN.Bridges.DudekPlattNumerics.V4ToV3
 import IEANTN.Bridges.FKS.ClassicalToAllX
 import IEANTN.Bridges.FKS.ThresholdTwo
 import IEANTN.Bridges.Lcm.V2ToV1
+import IEANTN.Bridges.Platt.P2015ToRosserYoheSchoenfeld
 import IEANTN.Bridges.Platt.P2017ToP2015
 import IEANTN.Bridges.Platt.P2017ToWedeniwski
 import IEANTN.Bridges.RosserSchoenfeld.ToClassical
