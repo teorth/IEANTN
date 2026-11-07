@@ -527,6 +527,12 @@ that still imports something is refused. Assuming it would drop those dependenci
 no proof to apply. The command still does not invent `lakefile.toml`, `lake-manifest.json` or the
 limitations prose.
 
+Both export layouts preserve nested solution modules. Only the root `Solution.lean` is renamed
+to `NodeSolution.lean`; a helper with that root name must be renamed before exporting. Composed
+exports rewrite imports by full module name under each node's own `vendored/` directory, keeping
+similarly named helpers from different nodes separate. Lake configuration and hidden dependency
+or build directories are not copied.
+
 What it does is inline. A Palomar Challenge's import closure must be Lean core and Mathlib only, so
 the emitted Challenge cannot `import IEANTN.Vocabulary`; instead `Tools/Spinoff.lean` walks the
 conclusion's local constants, and the generator slices each one's source — docstring and all —
