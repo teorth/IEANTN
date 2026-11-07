@@ -34,7 +34,10 @@ class TestQuotedIdentifiers(FixtureRepo):
 
     def test_import_rewriting_preserves_quoted_suffixes_and_ignores_names(self):
         source = 'import Helper.«Part»\ndef «a\nimport Helper\nname» : Nat := 0\n'
-        rewritten = ieantn.rewrite_vendored_imports(source, {"Helper": "Vendor.Helper"})
+        # A project can contain both Helper.lean and Helper/Part.lean. Keep
+        # this fixture valid for both root-prefix and full-module export maps.
+        modules = {"Helper": "Vendor.Helper", "Helper.Part": "Vendor.Helper.«Part»"}
+        rewritten = ieantn.rewrite_vendored_imports(source, modules)
         self.assertEqual(rewritten, source.replace('import Helper.«Part»',
                                                    'import Vendor.Helper.«Part»'))
 
