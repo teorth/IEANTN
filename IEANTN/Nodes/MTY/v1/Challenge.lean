@@ -15,3 +15,12 @@ import IEANTN.Nodes.MTY.v1.Conclusions
 Each `sorry` below is deliberate and permanent: a challenge *states*, it does not prove.
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
+
+theorem MTY.v1.challenge_classical_zero_free_region : MTY.v1.classical_zero_free_region := by
+  sorry
+
+theorem MTY.v1.challenge_korobov_vinogradov_region : MTY.v1.korobov_vinogradov_region := by
+  sorry
+
+theorem MTY.v1.challenge_intermediate_zero_free_region : MTY.v1.intermediate_zero_free_region := by
+  sorry
