@@ -8,7 +8,7 @@ import RSBounds.Targets
 /-!
 # The positive-ordinate low-zero contribution for the quartic b=23 bound
 
-The only conditional input is RH through 1894439. The short head uses the
+The only conditional input is RH through 1894438.5122. The short head uses the
 proved first-29 zero table; the remaining weights use the proved Rosser count.
 The signed correction at Y and the eight cancellation subbands are retained.
 -/
@@ -23,7 +23,7 @@ private theorem majorant_delta_eq : PolynomialZeroMajorants.delta = (delta : ℝ
   norm_num [PolynomialZeroMajorants.delta, delta]
 
 /-- Finite RH is used only to locate the actual low zeros on the critical line. -/
-theorem low_zero_re {ρ : ℂ} (hRH : Goals.FiniteRH 1894439)
+theorem low_zero_re {ρ : ℂ} (hRH : Goals.FiniteRH 1894438.5122)
     (hρ : ρ ∈ closedPositiveZeros (A : ℝ)) : ρ.re = 1 / 2 := by
   have hp : 0 < (A : ℝ) := by norm_num [A]
   obtain ⟨hz, him, hiA⟩ := (mem_closedPositiveZeros_iff hp).mp hρ
@@ -58,7 +58,7 @@ theorem head_and_tail_le_lineWeight :
 /-- Actual low-zero contribution, counting multiplicity and valid for either
 of the two quartic smoothings. -/
 theorem positive_low_sum_le (lower : Bool) {x : ℝ} (hx : 0 < x)
-    (hRH : Goals.FiniteRH 1894439) :
+    (hRH : Goals.FiniteRH 1894438.5122) :
     (∑ ρ ∈ closedPositiveZeros (A : ℝ),
       ((analyticOrderAt riemannZeta ρ).toNat : ℝ) *
         ‖PolynomialZeroMajorants.coefficient lower x ρ‖) ≤

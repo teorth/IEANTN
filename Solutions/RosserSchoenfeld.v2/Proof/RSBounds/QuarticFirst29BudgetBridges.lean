@@ -32,7 +32,7 @@ theorem Y_cast_eq : (Y : ℝ) = 2 / (delta : ℝ) := by
   push_cast
   rfl
 
-theorem A_cast_eq : (A : ℝ) = 1894439 := by norm_num [A]
+theorem A_cast_eq : (A : ℝ) = 1894438.5122 := by norm_num [A]
 
 theorem a_nonneg : (0 : ℝ) ≤ (a : ℝ) := by
   rw [a_cast_eq]

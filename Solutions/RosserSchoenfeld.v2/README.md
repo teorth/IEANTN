@@ -3,12 +3,12 @@
 This solution integrates the theorem
 
 ```lean
-IEANTN.RiemannHypothesisUpTo 1894439 →
+IEANTN.RiemannHypothesisUpTo 1894438.5122 →
   ∀ x : ℝ, Real.exp 23 ≤ x → |Chebyshev.psi x - x| < 0.00020211 * x
 ```
 
 Finite RH is an explicit hypothesis, including the upper height endpoint. This
-does not establish RH through 1894439, an unconditional psi bound, or the 1976
+does not establish RH through 1894438.5122, an unconditional psi bound, or the 1976
 coefficient 0.00020171. The existing `RosserSchoenfeld.v1` zero-free statements
 are unchanged.
 
@@ -22,11 +22,26 @@ and functional equation for zeta. `Solution.lean` then applies the published
 The mathematical source is Rosser–Schoenfeld, *Sharper bounds for the Chebyshev
 functions theta(x) and psi(x)*, Math. Comp. 29 (1975), 243–269, Lemmas 7–9 and
 Theorem 4, [DOI](https://doi.org/10.1090/S0025-5718-1975-0457373-7).
-The fourfold smoothing proof retains delta = 0.0000211, height 1894439,
-threshold exp(23), and the final 1975 constant. Its numerical organization uses
+The fourfold smoothing proof retains delta = 0.0000211, the paper's finite-RH
+height (see below), threshold exp(23), and the final 1975 constant. Its numerical organization uses
 29 certified zeros and eight cancellation subbands, rather than reproducing
 the paper's 57-zero head computation. No quantitative zero-free region,
 Büthe theorem, Ramaré estimate, or PNT bound is an additional premise.
+
+## Height
+
+Rosser and Schoenfeld use the verification of the first 3 502 500 zeros at the height
+A = 1894438.51224…, the solution of F(A) = 3 502 500 with
+F(T) = (T/2π) log(T/2π) − T/2π + 7/8. The pinned source assumes RH up to the integer 1894439
+instead, which the LMFDB shows includes one more zero (the 3 502 501st, at 1894438.63746…).
+This solution assumes RH only up to 1894438.5122, A rounded down. That changes five vendored
+files: the `FiniteRH` height in `Targets`, `QuarticLowZeroBounds` and `RosserSchoenfeld1975`,
+the value of `A` in `QuarticFirst29BudgetBridges`, and the generated scalar certificate
+`QuarticFirst29BudgetNumerics`, regenerated with the pinned generator
+(`scripts/generate_quartic_budget_certificate.py`) after changing its `A` to
+`Q(9472192561, 5000)`. The certificate's margin below 0.00020211 is unchanged at about
+2.1 · 10⁻⁸. Each change is recorded in `source-provenance.json`, with patches under
+`adaptations/` (the generator change is `adaptations/generator-height.patch`).
 
 The implementation is pinned to
 [Garald1/PrimeNumberTheoremAnd, 087f4418](https://github.com/Garald1/PrimeNumberTheoremAnd/tree/087f4418a84516a34cddaa8883062abfd0fc7e4e/Projects/RSBounds),

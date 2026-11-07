@@ -11,7 +11,9 @@ project:
   name: "Rosser-Schoenfeld: the b = 23 Chebyshev-psi bound"
   description: >-
     The strict error bound |psi(x) - x| < 0.00020211 x for x >= exp(23),
-    assuming RH through height 1894439. The finite-RH assumption is explicit.
+    assuming RH up to height 1894438.5122: Rosser and Schoenfeld's A = 1894438.51224...,
+    rounded down, below which lie exactly the first 3 502 500 zeros. The finite-RH
+    assumption is explicit.
     The complete solution builds on the core toolchain; IEANTN verification is pending.
 
   authors: ["IEANTN contributors"]
@@ -35,10 +37,15 @@ conclusions:
   - id: integration-pending
     kind: none-yet
     note: >-
-      The conclusion is conditional: a consumer supplies RiemannHypothesisUpTo 1894439.
-      An external proof on Lean 4.35.0 has passed independent Comparator replay with
-      only propext, Classical.choice, and Quot.sound. That replay is not an IEANTN
-      receipt. The source is pinned in Solutions/RosserSchoenfeld.v2/README.md.
+      The conclusion is conditional: a consumer supplies RiemannHypothesisUpTo 1894438.5122,
+      the paper's own height A = 1894438.51224... rounded down. The pinned external proof
+      (Lean 4.35.0) assumes RH up to 1894439, which the LMFDB shows includes one more zero
+      (the 3 502 501st, at 1894438.63746...); it has passed independent Comparator replay
+      with only propext, Classical.choice, and Quot.sound. That replay is not an IEANTN
+      receipt, and it is of the 1894439 version. This solution lowers the height to
+      1894438.5122 in five vendored files, regenerating the scalar certificate; each change
+      is recorded in Solutions/RosserSchoenfeld.v2/source-provenance.json. The source is
+      pinned in Solutions/RosserSchoenfeld.v2/README.md.
       The exact finite-RH vocabulary adapter and network theorem also compile on
       Lean 4.35.0 with only those three axioms. The complete solution also
       compiles on the core Lean 4.34.0-rc2 and Mathlib, and the compared
@@ -56,8 +63,9 @@ sources:
   location: "Math. Comp. 29 (1975), 243-269; Lemmas 7-9 and Theorem 4"
   relationship: adapts
   note: >-
-    The proof retains the quartic smoothing, delta = 0.0000211, finite-RH height,
-    threshold exp(23), and final 1975 constant. It uses 29 certified zeros and eight
+    The proof retains the quartic smoothing, delta = 0.0000211, the finite-RH height
+    (A = 1894438.51224..., rounded down to 1894438.5122), threshold exp(23), and final
+    1975 constant. It uses 29 certified zeros and eight
     cancellation subbands instead of the paper's 57-zero head computation.
 - title: "RSBounds: the proved b = 23 psi estimate"
   authors: ["RSBounds contributors"]
@@ -68,6 +76,7 @@ sources:
   note: >-
     Original implementation and independent replay evidence, pinned before the
     IEANTN integration. Its finite-RH predicate is converted to the network vocabulary.
+    Its finite-RH height is 1894439; this integration lowers it to 1894438.5122.
 
 automation:
   methods:
@@ -82,7 +91,9 @@ automation:
     role: >-
       Compiled the complete solution on the core Lean 4.34.0-rc2 and Mathlib, made and
       recorded the proof-script compatibility edits, fixed the solution library's roots,
-      and ran the local type-match and axiom pre-checks, under human direction.
+      lowered the finite-RH height to 1894438.5122 (regenerating the scalar certificate
+      with the pinned generator), and ran the local type-match and axiom pre-checks,
+      under human direction.
 
 
 review:
@@ -94,7 +105,8 @@ review:
 
 
 limitations:
-- "RH through height 1894439 remains an explicit assumption."
+- "RH up to height 1894438.5122 remains an explicit assumption."
 - "The external Lean 4.35.0 replay does not establish compatibility with IEANTN's pinned environment."
+- "The external replay is of the pinned source at height 1894439; the lowered-height proof is compiled and audited locally on the core toolchain only."
 - "This node asserts neither an unconditional psi bound nor the 1976 constant 0.00020171."
 - "No novelty is claimed; the argument adapts Rosser and Schoenfeld's quartic method."

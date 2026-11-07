@@ -89,3 +89,23 @@ Still pending at this checkpoint:
 
 The successful upstream Lean 4.35.0 psi replay is documented in README.md and
 does not discharge these integration checks.
+
+Height change, 2026-11-07:
+
+- At the maintainer's request the finite-RH height is lowered from 1894439 to 1894438.5122,
+  Rosser and Schoenfeld's A = 1894438.51224… rounded down (the integer also covers the
+  3 502 501st zero, at 1894438.63746… according to the LMFDB). The node's conclusion and five
+  vendored files change; each vendored change is recorded in `source-provenance.json` with a
+  patch under `adaptations/`, and `check_source_provenance.py` matches all 254 vendored sources
+  and 3 compatibility helpers.
+- The scalar certificate `QuarticFirst29BudgetNumerics` was regenerated with the pinned generator
+  after changing its `A` to `Q(9472192561, 5000)` (`adaptations/generator-height.patch`). Run
+  unchanged, the same generator reproduces the previous certificate byte for byte. In the new one
+  only `A`, its rational literal and three logarithm enclosures differ; the diagnostic margin
+  below 0.00020211 is 2.1094e-8 (previously 2.1097e-8).
+- Full solution compilation on the core's Lean 4.34.0-rc2 and Mathlib `71a80585`: `lake build`
+  completed 9143 jobs, including `Solution`, with no `sorry` warning.
+- The local pre-check of docs/NODES.md step 4 passed again: the challenge and solution `pp.all`
+  types of `RosserSchoenfeld.v2.challenge_psi_error_b23` are identical, and its transitive axioms
+  are exactly `propext`, `Classical.choice` and `Quot.sound`.
+
