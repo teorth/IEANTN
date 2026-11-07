@@ -69,6 +69,21 @@ class TestSpinoffLayout(FixtureRepo):
                          ["Helpers/Solution.lean", "Helpers/Types.lean", "NodeSolution.lean",
                           "Solution/Extra.lean"])
 
+    def test_composed_vendor_matches_quoted_nested_imports_to_source_files(self):
+        directory = self.root / "Solutions" / "A.v1"
+        helper = directory / "Helpers" / "Inner.lean"
+        helper.parent.mkdir(parents=True)
+        helper.write_text("def helper : Nat := 7\n")
+        (directory / "Solution.lean").write_text(
+            'import Helpers.«Inner»\nexample : helper = 7 := rfl\n')
+        target = self.root / "export"
+        ieantn.vendor_solution("A.v1", target)
+        copied = target / "vendored" / "A" / "v1"
+        self.assertEqual((copied / "NodeSolution.lean").read_text(),
+                         "import vendored.A.v1.Helpers.Inner\nexample : helper = 7 := rfl\n")
+        self.assertEqual((copied / "Helpers" / "Inner.lean").read_text(),
+                         "def helper : Nat := 7\n")
+
     def test_node_solution_collision_is_refused_without_overwriting_a_helper(self):
         directory = self.root / "Solutions" / "A.v1"
         directory.mkdir(parents=True)

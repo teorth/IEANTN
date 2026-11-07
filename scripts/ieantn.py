@@ -4912,10 +4912,20 @@ def rewrite_vendored_imports(text: str, modules: dict[str, str]) -> str:
     pieces: list[str] = []
     cursor = 0
     for match in IMPORT_RE.finditer(stripped):
-        module = match.group(1)
+        start = end = match.start(1)
+        # The scanner locates a real import, but may mask quoted identifier
+        # contents. Read its spelling from the original source at those offsets.
+        while end < len(stripped) and not stripped[end].isspace():
+            if text[end] == "«":
+                closing = text.find("»", end + 1)
+                end = len(stripped) if closing < 0 else closing + 1
+            else:
+                end += 1
+        # Quoting an ordinary module component does not change its identity.
+        # Keep nonordinary components quoted so a literal dot is not a separator.
+        module = re.sub(r"«([A-Za-z_][A-Za-z0-9_']*)»", r"\1", text[start:end])
         if module not in modules:
             continue
-        start, end = match.span(1)
         pieces.append(text[cursor:start])
         pieces.append(modules[module])
         cursor = end
