@@ -270,7 +270,22 @@ def imports_of(path: pathlib.Path) -> list[str]:
     an import from every closure check -- silently, and in the direction that lets a violation
     through. Not stripping comments meant a commented-out import was reported as real.
     """
-    return IMPORT_RE.findall(strip_lean_comments(path.read_text(encoding="utf-8")))
+    text = path.read_text(encoding="utf-8")
+    code = strip_lean_comments(text)
+    with_names = strip_lean_comments(text, preserve_identifiers=True)
+    modules = []
+    for match in IMPORT_RE.finditer(code):
+        start = end = match.start(1)
+        # The masked source identifies real import commands; recover the module's spelling
+        # without treating whitespace or comment-like text inside a quoted component as syntax.
+        while end < len(with_names) and not with_names[end].isspace():
+            if with_names[end] == "«":
+                closing = with_names.find("»", end + 1)
+                end = len(with_names) if closing < 0 else closing + 1
+            else:
+                end += 1
+        modules.append(with_names[start:end])
+    return modules
 
 
 def _char_literal_length(text: str, index: int) -> int:
@@ -288,7 +303,7 @@ def _char_literal_length(text: str, index: int) -> int:
     return 0
 
 
-def strip_lean_comments(text: str) -> str:
+def strip_lean_comments(text: str, *, preserve_identifiers: bool = False) -> str:
     """Lean source with `--` line comments and nested `/- -/` blocks removed.
 
     Needed because a plain search for `sorry` also matches the word in prose. The docstring of an
@@ -321,6 +336,20 @@ def strip_lean_comments(text: str) -> str:
     while index < length:
         if depth == 0 and text[index] == '"':
             blank_string()
+            continue
+        if depth == 0 and text[index] == "«":
+            # A quoted identifier can contain quotes, comment delimiters and newlines. Its
+            # contents are not syntax. Keep the delimiters so a quoted import still has a
+            # visible module token for closure validation, and preserve source positions.
+            out.append("«")
+            index += 1
+            while index < length:
+                char = text[index]
+                index += 1
+                if char == "»":
+                    out.append("»")
+                    break
+                out.append(char if preserve_identifiers or char == "\n" else " ")
             continue
         if depth == 0 and text[index] == "'":
             width = _char_literal_length(text, index)
@@ -4685,8 +4714,10 @@ def opens_of(path: pathlib.Path) -> list[str]:
     `open ... in` is excluded: it scopes to the single declaration that follows, so it is
     already inside whatever text gets sliced.
     """
-    code = strip_lean_comments(path.read_text(encoding="utf-8"))
-    return [line.rstrip() for line in code.splitlines()
+    text = path.read_text(encoding="utf-8")
+    code = strip_lean_comments(text)
+    with_names = strip_lean_comments(text, preserve_identifiers=True)
+    return [original.rstrip() for line, original in zip(code.splitlines(), with_names.splitlines())
             if re.match(r"^open\s", line) and not line.rstrip().endswith(" in")]
 
 
