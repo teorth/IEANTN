@@ -2628,6 +2628,12 @@ def new_solution(node_id: str) -> bool:
     theorems = [f"{node_id}.challenge_{c.get('id')}" for c in conclusions]
     target.mkdir(parents=True)
 
+    # The solution is its own Lake project. Mathlib's cache reads this file in that project,
+    # even though its core dependency already has the same pin.
+    (target / "lean-toolchain").write_text(
+        (ROOT / "lean-toolchain").read_text(encoding="utf-8"), encoding="utf-8", newline="\n"
+    )
+
     (target / "lakefile.toml").write_text(
         f'name = "solution_{node_id.replace(".", "_")}"\n'
         'defaultTargets = ["Solution"]\n\n'
