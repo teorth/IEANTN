@@ -1,0 +1,53 @@
+--- a/Proof/RSBounds/BacklundGammaModulusHorizontal.lean
++++ b/Proof/RSBounds/BacklundGammaModulusHorizontal.lean
+@@ -22,16 +22,20 @@
+   have hn : ‖f x‖ ≠ 0 := norm_ne_zero_iff.mpr hne
+   have h := (hf.norm_sq.log (pow_ne_zero 2 hn)).div_const 2
+   convert h using 1
+-  · funext u
+-    rw [Real.log_pow]
+-    ring
+-  · rw [real_inner_eq_re_inner ℂ, RCLike.inner_apply, Complex.div_re,
+-      Complex.sq_norm]
+-    change f'.re * (f x).re / Complex.normSq (f x) +
+-      f'.im * (f x).im / Complex.normSq (f x) =
+-      2 * (f' * (starRingEnd ℂ) (f x)).re / Complex.normSq (f x) / 2
+-    simp only [Complex.mul_re, Complex.conj_re, Complex.conj_im]
+-    ring
++  -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
++  all_goals first
++    | rfl
++    | (funext u
++       rw [Real.log_pow]
++       ring)
++    | (rw [real_inner_eq_re_inner ℂ, RCLike.inner_apply, Complex.div_re,
++         Complex.sq_norm]
++       change f'.re * (f x).re / Complex.normSq (f x) +
++         f'.im * (f x).im / Complex.normSq (f x) =
++         2 * (f' * (starRingEnd ℂ) (f x)).re / Complex.normSq (f x) / 2
++       simp only [Complex.mul_re, Complex.conj_re, Complex.conj_im]
++       ring)
++
+ 
+ theorem hasDerivAt_log_norm_Gamma {a t : ℝ} (ha : 0 < a) :
+     HasDerivAt (fun x : ℝ => Real.log ‖Complex.Gamma ((x : ℂ) + t * I)‖)
+@@ -71,11 +75,14 @@
+     (show ‖a - 1‖ ≤ (1 / 2 : ℝ) by simpa [Real.norm_eq_abs] using hdist) hc)
+   rw [Real.norm_eq_abs] at h'
+   convert h' using 1
+-  · congr 1
+-    dsimp [f]
+-    norm_num
+-    ring
+-  · ring
++  -- Lean 4.34 / older Mathlib: goal shapes differ, and `norm_num` may already close the first.
++  all_goals first
++    | rfl
++    | (congr 1
++       dsimp [f]
++       norm_num <;> ring)
++    | ring
++
+ 
+ /-- Horizontal comparison, including the reflected bottom edge `1/2 ≤ a ≤ 1`.
+ The exponent allowance is small enough to retain Backlund's final zeta bound. -/
