@@ -5,7 +5,7 @@ node:
   family: RosserSchoenfeld
   version: v2
   kind: paper
-  status: awaiting-solution
+  status: active
 
 project:
   name: "Rosser-Schoenfeld: the b = 23 Chebyshev-psi bound"
@@ -53,7 +53,10 @@ conclusions:
       see Solutions/RosserSchoenfeld.v2/validation.md. IEANTN Comparator
       verification remains to be completed.
 
-  designated: integration-pending
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/42554427084'
+  designated: comparator
 
 sources:
 - title: "Sharper bounds for the Chebyshev functions theta(x) and psi(x)"
@@ -107,6 +110,7 @@ review:
 limitations:
 - "RH up to height 1894438.5122 remains an explicit assumption."
 - "The external Lean 4.35.0 replay does not establish compatibility with IEANTN's pinned environment."
-- "The external replay is of the pinned source at height 1894439; the lowered-height proof is compiled and audited locally on the core toolchain only."
+- "The external replay is of the pinned source at height 1894439; the lowered-height proof is compiled
+  and audited locally on the core toolchain only."
 - "This node asserts neither an unconditional psi bound nor the 1976 constant 0.00020171."
 - "No novelty is claimed; the argument adapts Rosser and Schoenfeld's quartic method."
