@@ -298,6 +298,8 @@ def strip_lean_comments(text: str) -> str:
     String and character literals are blanked, not scanned. A `/-` or `--` inside `"..."` is text,
     and treating it as a comment delimiter hides whatever follows -- including a real import --
     until a later `-/` that was never opened. The word `sorry` inside a string is not a hole.
+    Raw strings close at their matching quote/hash delimiter; raw literals and ordinary string
+    gaps retain newlines so source scans keep the original line boundaries.
     """
     out: list[str] = []
     index, depth, length = 0, 0, len(text)
@@ -308,7 +310,7 @@ def strip_lean_comments(text: str) -> str:
         index += 1
         while index < length:
             if text[index] == "\\" and index + 1 < length:
-                out.append("  ")
+                out.append(" \n" if text[index + 1] == "\n" else "  ")
                 index += 2
                 continue
             if text[index] == '"':
@@ -319,6 +321,20 @@ def strip_lean_comments(text: str) -> str:
             index += 1
 
     while index < length:
+        if (depth == 0 and text[index] == "r"
+                and (index == 0 or not (text[index - 1].isalnum() or text[index - 1] in "_'."))):
+            quote = index + 1
+            while quote < length and text[quote] == "#":
+                quote += 1
+            if quote < length and text[quote] == '"':
+                # Raw strings have no escapes: only a quote followed by the
+                # opening number of hashes closes them, including zero hashes.
+                delimiter = '"' + "#" * (quote - index - 1)
+                closing = text.find(delimiter, quote + 1)
+                end = length if closing < 0 else closing + len(delimiter)
+                out.append("".join("\n" if char == "\n" else " " for char in text[index:end]))
+                index = end
+                continue
         if depth == 0 and text[index] == '"':
             blank_string()
             continue
@@ -342,7 +358,11 @@ def strip_lean_comments(text: str) -> str:
             index += 1
         elif text.startswith("--", index):
             newline = text.find("\n", index)
-            index = length if newline < 0 else newline
+            comment_end = length if newline < 0 else newline
+            # Vendoring applies matches from this text to the original source.
+            # Keep offsets stable for line comments just as for block comments.
+            out.append(" " * (comment_end - index))
+            index = comment_end
         else:
             out.append(text[index])
             index += 1
@@ -5605,21 +5625,14 @@ def deactivate(node_ids: list[str], reason: str) -> bool:
         if node_id not in going and not is_inactive(node)
         for target in referenced_nodes(node) & going
     )
-    # A bridge whose target is going out with the node is not a live consumer of it: a node and
-    # the bridge that justifies it are deactivated together or not at all.
-    going_bridges = {
-        (ROOT / justification["bridge"]).resolve()
-        for node_id in going
-        for conclusion in conclusions_of(everything[node_id])
-        for justification in justifications_of(conclusion)
-        if justification.get("kind") == "bridged" and justification.get("bridge")
-    }
+    # Bridges remain in the core umbrella even when their target node retires.
+    # Their imports must be migrated or removed before deactivation, including
+    # imports in bridges recorded by the nodes being deactivated themselves.
     live_files = [
         path for node_id, node in everything.items()
         if node_id not in going and not is_inactive(node)
         for path in node["_dir"].glob("*.lean")
-    ] + [path for path in BRIDGES_DIR.rglob("*.lean")
-         if path.resolve() not in going_bridges]
+    ] + list(BRIDGES_DIR.rglob("*.lean"))
     blockers += _lean_import_blockers(live_files, going)
     if blockers:
         print("error: still imported or referenced by live nodes:")

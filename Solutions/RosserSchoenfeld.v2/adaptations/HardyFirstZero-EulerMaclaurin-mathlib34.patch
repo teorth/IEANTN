@@ -1,0 +1,80 @@
+--- a/Proof/HardyFirstZero/EulerMaclaurin.lean
++++ b/Proof/HardyFirstZero/EulerMaclaurin.lean
+@@ -43,8 +43,9 @@
+   have h := ((h1.fun_pow 2).fun_mul (h2.fun_pow 2)).div_const 24
+   unfold kq kq1
+   convert h using 1
+-  push_cast
+-  ring
++  -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
++  all_goals first | rfl | (push_cast; ring)
++
+ 
+ lemma hasDerivAt_kq1 (a t : ℝ) : HasDerivAt (kq1 a) (kq2 a t) t := by
+   have h1 : HasDerivAt (fun x : ℝ => x - a) 1 t := (hasDerivAt_id' t).sub_const a
+@@ -54,15 +55,18 @@
+   have h := ((h1.fun_mul h2).fun_mul h3).div_const 12
+   unfold kq1 kq2
+   convert h using 1
+-  ring
++  -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
++  all_goals first | rfl | ring
++
+ 
+ lemma hasDerivAt_kq2 (a t : ℝ) : HasDerivAt (kq2 a) (kq3 a t) t := by
+   have h1 : HasDerivAt (fun x : ℝ => x - a) 1 t := (hasDerivAt_id' t).sub_const a
+   have h := (((h1.const_mul 6).const_sub 1).fun_add ((h1.fun_pow 2).const_mul 6)).div_const 12
+   unfold kq2 kq3
+   convert h using 1
+-  push_cast
+-  ring
++  -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
++  all_goals first | rfl | (push_cast; ring)
++
+ 
+ lemma hasDerivAt_kq3 (a t : ℝ) : HasDerivAt (kq3 a) 1 t :=
+   ((hasDerivAt_id' t).sub_const a).sub_const (1 / 2 : ℝ)
+@@ -77,7 +81,9 @@
+     have h := ((((h1.fun_pow 3).div_const 3).sub ((h1.fun_pow 4).div_const 2)).add
+       ((h1.fun_pow 5).div_const 5)).div_const 24
+     convert h using 1
+-    simp only [kq]; push_cast; ring
++    -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
++    all_goals first | rfl | (simp only [kq]; push_cast; ring)
++
+   rw [integral_eq_sub_of_hasDerivAt hQ
+     ((continuous_iff_continuousAt.mpr fun t => (hasDerivAt_kq a t).continuousAt).intervalIntegrable _ _)]
+   norm_num
+@@ -111,8 +117,9 @@
+     have e2 := (hasDerivAt_kq2 a t).ofReal_comp.mul (h1 t ht)
+     have e3 := (hasDerivAt_kq3 a t).ofReal_comp.mul (h0 t ht)
+     convert ((e0.sub e1).add e2).sub e3 using 1
+-    push_cast
+-    ring
++    -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
++    all_goals first | rfl | (push_cast; ring)
++
+   have hint : IntervalIntegrable (fun t => ((kq a t : ℝ) : ℂ) * g4 t - g t) volume a (a + 1) :=
+     ((hck.continuousOn.mul hc).sub hcg).intervalIntegrable
+   have hftc := integral_eq_sub_of_hasDerivAt hF hint
+@@ -180,14 +187,17 @@
+     hasDerivAt_ofReal_cpow_const (hpos t ht).ne' r0
+   have d1 : ∀ t ∈ Set.uIcc x (x + 1), HasDerivAt g1 (g2 t) t := fun t ht => by
+     have := (hasDerivAt_ofReal_cpow_const (hpos t ht).ne' r1).const_mul (-s)
+-    convert this using 1; simp only [g2]; ring
++    convert this using 1 <;> first | rfl | (simp only [g2]; ring)
++
+   have d2 : ∀ t ∈ Set.uIcc x (x + 1), HasDerivAt g2 (g3 t) t := fun t ht => by
+     have := (hasDerivAt_ofReal_cpow_const (hpos t ht).ne' r2).const_mul (-s * (-s - 1))
+-    convert this using 1; simp only [g3]; ring
++    convert this using 1 <;> first | rfl | (simp only [g3]; ring)
++
+   have d3 : ∀ t ∈ Set.uIcc x (x + 1), HasDerivAt g3 (g4 t) t := fun t ht => by
+     have := (hasDerivAt_ofReal_cpow_const (hpos t ht).ne' r3).const_mul
+       (-s * (-s - 1) * (-s - 1 - 1))
+-    convert this using 1; simp only [g4]; ring
++    convert this using 1 <;> first | rfl | (simp only [g4]; ring)
++
+   have r4 : (-s - 1 - 1 - 1 - 1 : ℂ) ≠ 0 := ne_zero_of_re_neg (by simp; linarith)
+   have hc4 : ContinuousOn g4 (Set.uIcc x (x + 1)) := fun t ht =>
+     ((hasDerivAt_ofReal_cpow_const (hpos t ht).ne' r4).continuousAt.const_mul

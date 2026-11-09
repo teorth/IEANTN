@@ -1,0 +1,29 @@
+{
+  "challenge": "RosserSchoenfeld.v2.challenge_psi_error_b23",
+  "conclusion": "RosserSchoenfeld.v2.psi_error_b23",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6"
+  },
+  "repository": {
+    "commit": "98c7b280283326ac12474b49970dabaa60b2ccb3"
+  },
+  "run": {
+    "recorded_at": "2026-11-09T04:42:54Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/42554427084"
+  },
+  "schema": 2,
+  "solution": {
+    "dependencies": [],
+    "project": "Solutions/RosserSchoenfeld.v2"
+  },
+  "statement": {
+    "RosserSchoenfeld.v2.psi_error_b23": "b514a1469846d22081248354416b7aff103d4a256a0469e53214e950ede8ba7a"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}
