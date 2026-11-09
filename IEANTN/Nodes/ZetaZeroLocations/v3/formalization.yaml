@@ -1,0 +1,99 @@
+# Node metadata for `ZetaZeroLocations.v3`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: ZetaZeroLocations.v3
+  family: ZetaZeroLocations
+  version: v3
+  kind: computation
+  status: awaiting-solution
+
+project:
+  name: "The zeros of the Riemann zeta function with 2000 < Im s <= 3000"
+  description: >-
+    Every zero of the Riemann zeta function with 2000 < Im s <= 3000 is simple, lies on the critical
+    line, and has its ordinate within 10^-20 of m/10^24 for one of 952 listed integers m; each
+    listed m has exactly one zero near it; and there are exactly 952 such zeros. A Lean proof with
+    kernel-evaluated certificates exists in Garald1/zeta-zero-locations and is not yet integrated.
+  authors: ["Harald Helfgott"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Harald Helfgott"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M26", "11Y35"]
+
+conclusions:
+  - id: located_2000_3000
+    declaration: ZetaZeroLocations.v3.located_2000_3000
+    challenge: ZetaZeroLocations.v3.challenge_located_2000_3000
+    imports: []
+    imports_status: none
+    justifications:
+      - id: integration-pending
+        kind: none-yet
+        note: >-
+          The statement `located` of challenge/Zeros2000to3000.lean in Garald1/zeta-zero-locations,
+          in the network's vocabulary, as for ZetaZeroLocations.v1. Proved there on Lean
+          v4.35.0-rc2 with Mathlib 06535612 and not yet integrated here (it would have to be ported
+          to the core's pin and given a solution under Solutions/ZetaZeroLocations.v3).
+    designated: integration-pending
+
+  - id: unique_2000_3000
+    declaration: ZetaZeroLocations.v3.unique_2000_3000
+    challenge: ZetaZeroLocations.v3.challenge_unique_2000_3000
+    imports: []
+    imports_status: none
+    justifications:
+      - id: integration-pending
+        kind: none-yet
+        note: >-
+          The statement `unique` of challenge/Zeros2000to3000.lean in Garald1/zeta-zero-locations,
+          with `s ∈ zetaZeroes` for `riemannZeta s = 0`. Proved there and not yet integrated.
+    designated: integration-pending
+
+  - id: count_2000_3000
+    declaration: ZetaZeroLocations.v3.count_2000_3000
+    challenge: ZetaZeroLocations.v3.challenge_count_2000_3000
+    imports: []
+    imports_status: none
+    justifications:
+      - id: integration-pending
+        kind: none-yet
+        note: >-
+          The statement `count` of challenge/Zeros2000to3000.lean in Garald1/zeta-zero-locations,
+          with zetaZeroesIn Set.univ (Set.Ioc 2000 3000) for zerosBetween 2000 3000 (equal sets).
+          Proved there by the argument principle and not yet integrated.
+    designated: integration-pending
+
+sources:
+  - title: "Kernel-checked locations of the zeros of the Riemann zeta function up to height 10 000"
+    authors: ["Harald Helfgott"]
+    type: "other"
+    id: "https://github.com/Garald1/zeta-zero-locations"
+    relationship: adapts
+    note: >-
+      A Lean development, not a publication. The statement file challenge/Zeros2000to3000.lean,
+      read at commit 0f1ce31, is restated here in the network's vocabulary, and its ordinate list
+      is copied into this node's Tables.lean unchanged apart from names and line breaks.
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude (Anthropic)"]
+      framework: "Claude Code"
+      role: >-
+        Restated the statements in the network's vocabulary and copied the ordinate table, under
+        the maintainer's direction. The proof in zeta-zero-locations was also written by Claude
+        Code, from a plan and statements by Harald Helfgott.
+
+review:
+  status: self-assessed
+  reviewers: ["Harald Helfgott"]
+
+limitations:
+  - "No Lean solution is integrated here yet."
+  - "No novelty is claimed."

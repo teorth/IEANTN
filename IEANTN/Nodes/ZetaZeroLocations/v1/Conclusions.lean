@@ -24,12 +24,12 @@ The proof in that repository checks each zero with a certificate evaluated by th
 (Euler–Maclaurin, a contraction argument and the functional equation) and counts the zeros with the
 argument principle. Arb output is candidate data only; every inequality is re-proved in the kernel.
 
-## Intended to grow
+## The other versions
 
-The ranges `(1000 j, 1000 (j + 1)]` for `j = 1, …, 9`, and the count up to `10 000`, are proved in
-the same repository and belong here as further conclusions with their own tables. They are left
-out for now because their verification is far heavier: the range `(9000, 10000]` alone took over
-three hours in Comparator.
+The ranges `(1000 (j − 1), 1000 j]` for `j = 2, …, 10` are the versions `v2` to `v10`, with the
+same three statements and their own tables; `v11` derives the Riemann hypothesis, simplicity and
+the count up to height 10 000 from the ten ranges. The family is split into versions because a
+node is verified all at once and each range is a separate, heavy computation.
 -/
 
 namespace ZetaZeroLocations.v1
