@@ -12,7 +12,7 @@ node:
   family: FKS
   version: v3
   kind: paper
-  status: awaiting-verification
+  status: active
 
 project:
   name: "Fiori-Kadiri-Swidinsky: sharper bounds for the Chebyshev function psi(x)"
@@ -60,7 +60,10 @@ conclusions:
       IEANTN.Bridges.FKS.ClassicalToAllX (121.096 < 9.22022 R^{3/2} and 0.8476836 sqrt(R) <= 2),
       the direction the paper's proof of Lemma 5.3 runs; its imports are therefore those of
       psi_classical_bound.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/42580879995'
+  designated: comparator
 - id: psi_classical_bound
   issue: 52
   declaration: FKS.v3.psi_classical_bound
@@ -94,7 +97,10 @@ conclusions:
       Every input is an edge, so identified. The paper's own proof of Corollary 1.4 covers
       log x <= 2100 with Lemma 5.2, false as printed for 1 < x < 2.2901308748...; the assembly
       does not use it.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/42580879995'
+  designated: comparator
 
 sources:
 - title: "Sharper bounds for the Chebyshev function psi(x)"
