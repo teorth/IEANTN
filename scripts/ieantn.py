@@ -298,6 +298,8 @@ def strip_lean_comments(text: str) -> str:
     String and character literals are blanked, not scanned. A `/-` or `--` inside `"..."` is text,
     and treating it as a comment delimiter hides whatever follows -- including a real import --
     until a later `-/` that was never opened. The word `sorry` inside a string is not a hole.
+    Raw strings close at their matching quote/hash delimiter; raw literals and ordinary string
+    gaps retain newlines so source scans keep the original line boundaries.
     """
     out: list[str] = []
     index, depth, length = 0, 0, len(text)
@@ -308,7 +310,7 @@ def strip_lean_comments(text: str) -> str:
         index += 1
         while index < length:
             if text[index] == "\\" and index + 1 < length:
-                out.append("  ")
+                out.append(" \n" if text[index + 1] == "\n" else "  ")
                 index += 2
                 continue
             if text[index] == '"':
@@ -319,6 +321,20 @@ def strip_lean_comments(text: str) -> str:
             index += 1
 
     while index < length:
+        if (depth == 0 and text[index] == "r"
+                and (index == 0 or not (text[index - 1].isalnum() or text[index - 1] in "_'."))):
+            quote = index + 1
+            while quote < length and text[quote] == "#":
+                quote += 1
+            if quote < length and text[quote] == '"':
+                # Raw strings have no escapes: only a quote followed by the
+                # opening number of hashes closes them, including zero hashes.
+                delimiter = '"' + "#" * (quote - index - 1)
+                closing = text.find(delimiter, quote + 1)
+                end = length if closing < 0 else closing + len(delimiter)
+                out.append("".join("\n" if char == "\n" else " " for char in text[index:end]))
+                index = end
+                continue
         if depth == 0 and text[index] == '"':
             blank_string()
             continue
