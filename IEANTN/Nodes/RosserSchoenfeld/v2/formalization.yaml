@@ -14,7 +14,6 @@ project:
     assuming RH up to height 1894438.5122: Rosser and Schoenfeld's A = 1894438.51224...,
     rounded down, below which lie exactly the first 3 502 500 zeros. The finite-RH
     assumption is explicit.
-    The complete solution builds on the core toolchain; IEANTN verification is pending.
 
   authors: ["IEANTN contributors"]
   license: "Apache-2.0"
@@ -103,8 +102,9 @@ review:
   status: self-assessed
   reviewers: ["OpenAI Codex"]
   notes: >-
-    The solution builds on the core toolchain and passes the local pre-checks; no IEANTN
-    verification receipt or human review is claimed.
+    The solution builds on the core toolchain and passes the local pre-checks,
+    and Comparator has since accepted it: https://github.com/teorth/IEANTN/actions/runs/42554427084.
+    No human mathematical review is claimed.
 
 
 limitations:
