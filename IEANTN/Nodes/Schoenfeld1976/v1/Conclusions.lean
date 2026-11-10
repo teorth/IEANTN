@@ -16,7 +16,10 @@ Like the rest of the mid-1970s "Sharper bounds" papers, Schoenfeld assumes the R
 for the first `3 502 500` zeros, which Rosser and Schoenfeld (1975) use at the height
 `A = 1894438.51224…`. Every conclusion here keeps that assumption as an explicit premise,
 `RiemannHypothesisUpTo 1894438.5122`: `A` rounded down, so that the historical verification covers
-it (see `RosserYoheSchoenfeld.v1`).
+it. That verification, on which Schoenfeld relied, is the computation of Rosser, Yohe and
+Schoenfeld (Information Processing 68, North-Holland, 1969, pp. 70–76). The premise also follows
+from `Platt2017.v1.rh_up_to` (height `3.0610046e10`) by `riemannHypothesisUpTo_mono` in
+`IEANTN/Bridges/Platt/P2017ToP2015.lean`.
 
 Theorem 11 uses `X = √(log x / 9.645908801)` and `ε₀(x) = √(8/(17π)) · √X · e^{−X}`; the constant
 `9.645908801` is the `R` of the Rosser–Schoenfeld zero-free region. Theorem 7* has five displays,
