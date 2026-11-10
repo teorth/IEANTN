@@ -1,0 +1,20 @@
+--- a/scripts/generate_quartic_budget_certificate.py
++++ b/scripts/generate_quartic_budget_certificate.py
+@@ -98,7 +98,7 @@
+ delta = Q(211, 10**7)
+ a = 1 + 2*delta
+ C = ((1+delta)**5 + 1)**4 / delta**4
+-A, Y, S = Q(1894439), 2/delta, Q(592316, 10**6)
++A, Y, S = Q(9472192561, 5000), 2/delta, Q(592316, 10**6)  # A = 1894438.5122
+ L, U = 4/(3*delta), Y-8
+ cutoffs = [L + (U-L)*j/8 for j in range(9)]
+ pi = make('pi')
+@@ -165,7 +165,7 @@
+ def delta : ℚ := 211 / 10000000
+ def a : ℚ := 1 + 2 * delta
+ def C : ℚ := ((1 + delta) ^ 5 + 1) ^ 4 / delta ^ 4
+-def A : ℚ := 1894439
++def A : ℚ := 9472192561 / 5000  -- = 1894438.5122, RS75's A = 1894438.51224… rounded down
+ def Y : ℚ := 2 / delta
+ def cutoff (j : ℕ) : ℚ :=
+   4 / (3 * delta) + ((Y - 8) - 4 / (3 * delta)) * j / 8
