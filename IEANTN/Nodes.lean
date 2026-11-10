@@ -65,6 +65,7 @@ import IEANTN.Nodes.Richstein2001.v1.Challenge
 import IEANTN.Nodes.RosserSchoenfeld.v1.Challenge
 import IEANTN.Nodes.RosserSchoenfeld.v2.Challenge
 import IEANTN.Nodes.RosserSchoenfeld1962.v1.Challenge
+import IEANTN.Nodes.Schoenfeld1976.v1.Challenge
 import IEANTN.Nodes.Trudgian2011.v1.Challenge
 import IEANTN.Nodes.Wedeniwski.v1.Challenge
 import IEANTN.Nodes.ZeroCount.v1.Challenge
