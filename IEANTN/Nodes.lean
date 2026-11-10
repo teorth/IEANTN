@@ -65,6 +65,7 @@ import IEANTN.Nodes.Richstein2001.v1.Challenge
 import IEANTN.Nodes.RosserSchoenfeld.v1.Challenge
 import IEANTN.Nodes.RosserSchoenfeld.v2.Challenge
 import IEANTN.Nodes.RosserSchoenfeld1962.v1.Challenge
+import IEANTN.Nodes.Schoenfeld1976Numerics.v1.Challenge
 import IEANTN.Nodes.Trudgian2011.v1.Challenge
 import IEANTN.Nodes.Wedeniwski.v1.Challenge
 import IEANTN.Nodes.ZeroCount.v1.Challenge
@@ -72,6 +73,27 @@ import IEANTN.Nodes.ZeroFreeHeight.v1.Challenge
 import IEANTN.Nodes.ZetaHadamard.v1.Challenge
 import IEANTN.Nodes.ZetaLogDeriv.v1.Challenge
 import IEANTN.Nodes.ZetaLogDerivValues.v1.Challenge
+import IEANTN.Nodes.ZetaZeroLocations.v1.Tables
+import IEANTN.Nodes.ZetaZeroLocations.v1.Challenge
+import IEANTN.Nodes.ZetaZeroLocations.v10.Tables
+import IEANTN.Nodes.ZetaZeroLocations.v10.Challenge
+import IEANTN.Nodes.ZetaZeroLocations.v11.Challenge
+import IEANTN.Nodes.ZetaZeroLocations.v2.Tables
+import IEANTN.Nodes.ZetaZeroLocations.v2.Challenge
+import IEANTN.Nodes.ZetaZeroLocations.v3.Tables
+import IEANTN.Nodes.ZetaZeroLocations.v3.Challenge
+import IEANTN.Nodes.ZetaZeroLocations.v4.Tables
+import IEANTN.Nodes.ZetaZeroLocations.v4.Challenge
+import IEANTN.Nodes.ZetaZeroLocations.v5.Tables
+import IEANTN.Nodes.ZetaZeroLocations.v5.Challenge
+import IEANTN.Nodes.ZetaZeroLocations.v6.Tables
+import IEANTN.Nodes.ZetaZeroLocations.v6.Challenge
+import IEANTN.Nodes.ZetaZeroLocations.v7.Tables
+import IEANTN.Nodes.ZetaZeroLocations.v7.Challenge
+import IEANTN.Nodes.ZetaZeroLocations.v8.Tables
+import IEANTN.Nodes.ZetaZeroLocations.v8.Challenge
+import IEANTN.Nodes.ZetaZeroLocations.v9.Tables
+import IEANTN.Nodes.ZetaZeroLocations.v9.Challenge
 import IEANTN.Nodes.ZetaZeroes.v1.Challenge
 
 /-!

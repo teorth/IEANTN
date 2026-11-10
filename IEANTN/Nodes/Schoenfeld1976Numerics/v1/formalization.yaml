@@ -1,0 +1,103 @@
+# Node metadata for `Schoenfeld1976Numerics.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: Schoenfeld1976Numerics.v1
+  family: Schoenfeld1976Numerics
+  version: v1
+  kind: paper
+  status: awaiting-verification
+
+project:
+  name: "Schoenfeld 1976: the b = 23 entry of the recalculated psi table"
+  description: >-
+    The strict bound |psi(x) - x| < 0.00020171 x for x >= exp(23), the row b = 23 of the table
+    that Schoenfeld recalculated in 1976, assuming RH up to height 1894438.5122. The Lean proof
+    in Solutions/Schoenfeld1976Numerics.v1 takes the zeros up to height 1000 from
+    ZetaZeroLocations.v1.
+  authors: ["Harald Helfgott"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Harald Helfgott"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M26"]
+
+conclusions:
+  - id: psi_error_b23
+    declaration: Schoenfeld1976Numerics.v1.psi_error_b23
+    challenge: Schoenfeld1976Numerics.v1.challenge_psi_error_b23
+    imports:
+      - node: ZetaZeroLocations.v1
+        conclusion: located_0_1000
+      - node: ZetaZeroLocations.v1
+        conclusion: unique_0_1000
+      - node: ZetaZeroLocations.v1
+        conclusion: count_0_1000
+    imports_status: identified
+    justifications:
+      - id: schoenfeld-table
+        kind: literature
+        source: Schoenfeld1976
+        locator: "Table on printed p. 358, row b = 23 (recalculation described on p. 353)"
+        note: >-
+          Read from the rendered pages. On p. 353 Schoenfeld says he recalculated the table of
+          Section 5 of Rosser-Schoenfeld (1975); the recalculated table is on p. 358, and its row
+          b = 23 reads m = 4, delta = 2.11(-5), epsilon = 2.0171(-4). The proof of Theorem 7* on
+          p. 357 shows how a row is used: for e^22 <= x < e^23 it applies the row b = 22 to get
+          |psi(x) - x| < 2.9941e-4 x. The paper takes its zeros below its height D from Lehman's
+          computation (pp. 352-353: D = 12030.00896, N(D) = 12555, for b >= 20); the paper's
+          claim implies this conditional conclusion, whose imports are what the Lean proof uses.
+      - id: lean-solution
+        kind: none-yet
+        note: >-
+          A complete Lean proof is in Solutions/Schoenfeld1976Numerics.v1, awaiting the verification
+          workflow. It is the quartic-smoothing proof of RosserSchoenfeld.v2 (pull request #208),
+          with the same m = 4 and delta = 0.0000211 as the table row, and with the explicit zeros
+          taken up to height 1000 (649 zeros, from the imports) instead of 100 (29 zeros). Its
+          kernel-checked scalar budget is 0.00020152574343131 < 0.00020171. Locally: the solution
+          builds on the core's Lean v4.34.0-rc2 and Mathlib, the challenge and solution pp.all
+          types agree, and the compared theorem uses only propext, Classical.choice and Quot.sound.
+          The same proof passed an independent Comparator run on Lean 4.35.0 (RSBounds), which is
+          not an IEANTN receipt.
+    designated: schoenfeld-table
+
+sources:
+  - title: "Sharper bounds for the Chebyshev functions theta(x) and psi(x). II"
+    authors: ["Lowell Schoenfeld"]
+    type: paper
+    id: "https://doi.org/10.1090/S0025-5718-1976-0457374-X"
+    location: "Math. Comp. 30 (1976), 337-360; table on p. 358, recalculation described on p. 353"
+    relationship: formalizes
+  - title: "Sharper bounds for the Chebyshev functions theta(x) and psi(x)"
+    authors: ["J. Barkley Rosser", "Lowell Schoenfeld"]
+    type: paper
+    id: "https://doi.org/10.1090/S0025-5718-1975-0457373-7"
+    location: "Math. Comp. 29 (1975), 243-269"
+    relationship: background
+    note: >-
+      The table that Schoenfeld recalculated, and the finite-RH height he uses.
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude (Anthropic)"]
+      framework: "Claude Code"
+      role: >-
+        Wrote the Lean proof (the height-1000 head, its kernel-checked budget certificate and the
+        assembly), the node and the solution, under the maintainer's direction.
+
+review:
+  status: self-assessed
+  reviewers: ["Harald Helfgott"]
+
+limitations:
+  - "RH up to height 1894438.5122 remains an explicit premise."
+  - >-
+    The proof does not follow the paper's computation: it uses the zeros up to 1000 rather than
+    Lehman's 12 555 zeros, and the quartic smoothing of the RS75 proof in RosserSchoenfeld.v2.
+  - "Only the row b = 23 of the table is stated."
+  - "No novelty is claimed."

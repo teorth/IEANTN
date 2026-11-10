@@ -1,0 +1,126 @@
+# Node metadata for `ZetaZeroLocations.v11`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: ZetaZeroLocations.v11
+  family: ZetaZeroLocations
+  version: v11
+  kind: computation
+  status: awaiting-verification
+
+project:
+  name: "The zeros of the Riemann zeta function up to height 10 000"
+  description: >-
+    Every zero of the Riemann zeta function with 0 < Im s <= 10000 is simple and lies on the
+    critical line, and there are exactly 10142 of them; derived from the ten ranges
+    ZetaZeroLocations.v1 to v10.
+  authors: ["Harald Helfgott"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Harald Helfgott"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M26", "11Y35"]
+
+conclusions:
+  - id: on_line_and_simple_0_10000
+    issue: 214
+    declaration: ZetaZeroLocations.v11.on_line_and_simple_0_10000
+    challenge: ZetaZeroLocations.v11.challenge_on_line_and_simple_0_10000
+    imports:
+      - node: ZetaZeroLocations.v1
+        conclusion: located_0_1000
+      - node: ZetaZeroLocations.v2
+        conclusion: located_1000_2000
+      - node: ZetaZeroLocations.v3
+        conclusion: located_2000_3000
+      - node: ZetaZeroLocations.v4
+        conclusion: located_3000_4000
+      - node: ZetaZeroLocations.v5
+        conclusion: located_4000_5000
+      - node: ZetaZeroLocations.v6
+        conclusion: located_5000_6000
+      - node: ZetaZeroLocations.v7
+        conclusion: located_6000_7000
+      - node: ZetaZeroLocations.v8
+        conclusion: located_7000_8000
+      - node: ZetaZeroLocations.v9
+        conclusion: located_8000_9000
+      - node: ZetaZeroLocations.v10
+        conclusion: located_9000_10000
+    imports_status: identified
+    justifications:
+      - id: from-ranges
+        kind: none-yet
+        note: >-
+          Solutions/ZetaZeroLocations.v11 proves it from the ten imported located conclusions (a
+          zero with 0 < Im s <= 10000 lies in one of the ten ranges), awaiting the verification
+          workflow. Locally it builds on the core pin, the challenge and solution pp.all types
+          agree, and it uses only propext, Classical.choice and Quot.sound.
+    designated: from-ranges
+
+  - id: count_0_10000
+    issue: 214
+    declaration: ZetaZeroLocations.v11.count_0_10000
+    challenge: ZetaZeroLocations.v11.challenge_count_0_10000
+    imports:
+      - node: ZetaZeroLocations.v1
+        conclusion: count_0_1000
+      - node: ZetaZeroLocations.v2
+        conclusion: count_1000_2000
+      - node: ZetaZeroLocations.v3
+        conclusion: count_2000_3000
+      - node: ZetaZeroLocations.v4
+        conclusion: count_3000_4000
+      - node: ZetaZeroLocations.v5
+        conclusion: count_4000_5000
+      - node: ZetaZeroLocations.v6
+        conclusion: count_5000_6000
+      - node: ZetaZeroLocations.v7
+        conclusion: count_6000_7000
+      - node: ZetaZeroLocations.v8
+        conclusion: count_7000_8000
+      - node: ZetaZeroLocations.v9
+        conclusion: count_8000_9000
+      - node: ZetaZeroLocations.v10
+        conclusion: count_9000_10000
+    imports_status: identified
+    justifications:
+      - id: from-ranges
+        kind: none-yet
+        note: >-
+          Solutions/ZetaZeroLocations.v11 proves it from the ten imported counts: the ranges are
+          disjoint, each is finite (its count is positive), and 649 + 868 + 952 + 1005 + 1046 +
+          1078 + 1105 + 1127 + 1148 + 1164 = 10142. Awaiting the verification workflow; local checks
+          as for on_line_and_simple_0_10000.
+    designated: from-ranges
+
+sources:
+  - title: "Kernel-checked locations of the zeros of the Riemann zeta function up to height 10 000"
+    authors: ["Harald Helfgott"]
+    type: "other"
+    id: "https://github.com/Garald1/zeta-zero-locations"
+    relationship: adapts
+    note: >-
+      A Lean development, not a publication. The statement file challenge/Count10000.lean, read
+      at commit 0f1ce31, restated here in the network's vocabulary. There it is proved by
+      assembling the ten range proofs; here it is derived from the ten range statements.
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude (Anthropic)"]
+      framework: "Claude Code"
+      role: >-
+        Restated the statements and wrote the solution, under the maintainer's direction.
+
+review:
+  status: self-assessed
+  reviewers: ["Harald Helfgott"]
+
+limitations:
+  - "Only as good as the ten ranges it imports, which await their solutions."
+  - "No novelty is claimed."
