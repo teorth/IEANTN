@@ -18,11 +18,19 @@ class TestLifecycleReferences(FixtureRepo):
 
     def test_reactivation_requires_bridge_sources_first(self):
         self.setup_bridge()
+        # Bridges are always in the core build. Retire this one before its
+        # source, and restore it only once that source is live again.
+        bridge = self.root / "IEANTN" / "Bridges" / "a.lean"
+        source = bridge.read_bytes()
+        bridge.unlink()
         self.assertTrue(ieantn.deactivate(["A.v1", "B.v1"], "Retired."))
+        self.assertTrue(ieantn.check_closure())
         self.assertFalse(ieantn.reactivate("B.v1"))
         self.assertTrue(ieantn.reactivate("A.v1"))
+        bridge.write_bytes(source)
         self.assertTrue(ieantn.reactivate("B.v1"))
         self.assertTrue(ieantn.check_graph())
+        self.assertTrue(ieantn.check_closure())
 
     def test_deprecation_replacement_must_remain_live(self):
         self.write_node("A.v1", LITERATURE)
