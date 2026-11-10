@@ -1,0 +1,126 @@
+# Node metadata for `RosserYoheSchoenfeld.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: RosserYoheSchoenfeld.v1
+  family: RosserYoheSchoenfeld
+  version: v1
+  kind: computation
+  status: stub
+
+project:
+  name: 'Rosser, Yohe and Schoenfeld: the Riemann hypothesis for the first 3 502 500 zeros'
+  description: >-
+    The finite verification of the Riemann hypothesis assumed by the mid-1970s "Sharper bounds"
+    papers (Rosser-Schoenfeld 1975, Schoenfeld 1976), on which much of the later literature rests:
+    the first 3 500 000 zeros by Rosser, Yohe and Schoenfeld, extended to 3 502 500 by an observation
+    of Rosser (1970), as Rosser and Schoenfeld state. Stated at height 1894438.5122, which is the
+    height A = 1894438.51224... that Rosser and Schoenfeld use, rounded down.
+  authors:
+  - Harald Helfgott
+  license: Apache-2.0
+  responsible_maintainers:
+  - Harald Helfgott
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11M26
+  - 11Y35
+
+conclusions:
+- id: rh_up_to
+  declaration: RosserYoheSchoenfeld.v1.rh_up_to
+  challenge: RosserYoheSchoenfeld.v1.challenge_rh_up_to
+  imports: []
+  imports_status: undetermined
+  justifications:
+  - id: rys-computation
+    kind: numerical
+    source: RosserYoheSchoenfeld1968
+    locator: >-
+      the zero computation the paper reports (the first 3 500 000 zeros), extended to the first
+      3 502 500 zeros as stated by Rosser and Schoenfeld (1975)
+    note: >-
+      A computation described and stood behind in a paper, so `numerical`. It was implemented with
+      extreme care; see the paper. It covers the statement exactly: Rosser and Schoenfeld (1975) take
+      A = 1894438.51224... with F(A) = 3 502 500, where F(T) = (T/2pi) log(T/2pi) - T/2pi + 7/8, and use
+      N(A) = F(A); the node's height 1894438.5122 is A rounded down. The integer 1894439 was avoided on
+      purpose: the LMFDB lists the 3 502 501st zero at 1894438.63746..., below it.
+  - id: bridge-from-platt2015
+    kind: bridged
+    from: Platt2015.v1.rh_up_to
+    bridge: IEANTN/Bridges/Platt/P2015ToRosserYoheSchoenfeld.lean
+    note: >-
+      A spare ground, NOT designated. Platt2015 verifies to 3.06e10, and RiemannHypothesisUpTo is
+      antitone, so it implies this conclusion outright. Designating it would make the node assert that
+      its evidence is Platt's computation, which is not what Rosser-Schoenfeld 1975 and Schoenfeld 1976
+      used.
+  designated: rys-computation
+
+sources:
+- title: Rigorous computation and the zeros of the Riemann zeta-function
+  authors:
+  - J. Barkley Rosser
+  - J. M. Yohe
+  - Lowell Schoenfeld
+  type: paper
+  id: https://dblp.org/rec/conf/ifip/RosserYS68
+  location: Information Processing 68 (Proc. IFIP Congress 1968), pp. 70-76
+  relationship: formalizes
+  note: >-
+    The verification of the Riemann hypothesis for the first 3 500 000 zeros.
+- title: "Sharper bounds for the Chebyshev functions theta(x) and psi(x)"
+  authors:
+  - J. Barkley Rosser
+  - Lowell Schoenfeld
+  type: paper
+  id: https://doi.org/10.2307/2005479
+  location: Math. Comp. 29 (1975), 243-269
+  relationship: background
+  note: >-
+    States that the computation above, together with an observation by Rosser (1970), gives the
+    Riemann hypothesis for the first 3 502 500 zeros, and uses it with A = 1894438.51224 and
+    N(A) = F(A) = 3 502 500. Schoenfeld (1976), Math. Comp. 30, 337-360, uses the same assumption.
+- title: "Zeros of zeta(s)"
+  authors:
+  - The LMFDB Collaboration
+  type: dataset
+  id: https://www.lmfdb.org/zeros/zeta/
+  relationship: background
+  note: >-
+    Consulted for the ordinates of the 3 502 500th zero (1894438.29779...) and the 3 502 501st zero
+    (1894438.63746...), which show that the node's height lies between them and that 1894439 does not.
+
+automation:
+  methods:
+  - method: agent
+    models:
+    - Claude (Anthropic)
+    framework: Claude Code
+    role: >-
+      Drafted this node and its bridge from the maintainer's account of the historical verification,
+      under his direction. No proof of the conclusion is claimed; the bridge is a two-line Lean proof
+      checked by the core build.
+
+review:
+  status: self-assessed
+  reviewers:
+  - Harald Helfgott
+
+limitations:
+- >-
+  Rosser's 1970 observation is recorded as Rosser and Schoenfeld (1975) report it; it is not cited
+  here at first hand.
+- >-
+  Imports undetermined: what the 1968 computation rests on (its error analysis for the Riemann-Siegel
+  formula and its counting argument) has not been traced.
+- >-
+  A direct verification in Lean is expected to be feasible on a powerful desktop machine but has not
+  been done.
+- >-
+  No novelty is claimed.
