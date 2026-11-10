@@ -28,6 +28,7 @@ classification:
 
 conclusions:
   - id: located_0_1000
+    issue: 214
     declaration: ZetaZeroLocations.v1.located_0_1000
     challenge: ZetaZeroLocations.v1.challenge_located_0_1000
     imports: []
@@ -46,6 +47,7 @@ conclusions:
     designated: integration-pending
 
   - id: unique_0_1000
+    issue: 214
     declaration: ZetaZeroLocations.v1.unique_0_1000
     challenge: ZetaZeroLocations.v1.challenge_unique_0_1000
     imports: []
@@ -60,6 +62,7 @@ conclusions:
     designated: integration-pending
 
   - id: count_0_1000
+    issue: 214
     declaration: ZetaZeroLocations.v1.count_0_1000
     challenge: ZetaZeroLocations.v1.challenge_count_0_1000
     imports: []
@@ -99,6 +102,6 @@ review:
   reviewers: ["Harald Helfgott"]
 
 limitations:
-  - "Only the range 0 < Im s <= 1000; the higher ranges proved in zeta-zero-locations are not yet added."
+  - "Only the range 0 < Im s <= 1000; the ranges up to height 10 000 are the versions v2 to v10."
   - "No Lean solution is integrated here yet."
   - "No novelty is claimed."

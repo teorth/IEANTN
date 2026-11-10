@@ -28,6 +28,7 @@ classification:
 
 conclusions:
   - id: located_6000_7000
+    issue: 214
     declaration: ZetaZeroLocations.v7.located_6000_7000
     challenge: ZetaZeroLocations.v7.challenge_located_6000_7000
     imports: []
@@ -43,6 +44,7 @@ conclusions:
     designated: integration-pending
 
   - id: unique_6000_7000
+    issue: 214
     declaration: ZetaZeroLocations.v7.unique_6000_7000
     challenge: ZetaZeroLocations.v7.challenge_unique_6000_7000
     imports: []
@@ -56,6 +58,7 @@ conclusions:
     designated: integration-pending
 
   - id: count_6000_7000
+    issue: 214
     declaration: ZetaZeroLocations.v7.count_6000_7000
     challenge: ZetaZeroLocations.v7.challenge_count_6000_7000
     imports: []

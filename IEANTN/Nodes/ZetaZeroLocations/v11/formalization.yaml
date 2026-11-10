@@ -27,6 +27,7 @@ classification:
 
 conclusions:
   - id: on_line_and_simple_0_10000
+    issue: 214
     declaration: ZetaZeroLocations.v11.on_line_and_simple_0_10000
     challenge: ZetaZeroLocations.v11.challenge_on_line_and_simple_0_10000
     imports:
@@ -62,6 +63,7 @@ conclusions:
     designated: from-ranges
 
   - id: count_0_10000
+    issue: 214
     declaration: ZetaZeroLocations.v11.count_0_10000
     challenge: ZetaZeroLocations.v11.challenge_count_0_10000
     imports:

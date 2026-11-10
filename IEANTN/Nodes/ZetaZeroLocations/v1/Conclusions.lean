@@ -29,7 +29,9 @@ argument principle. Arb output is candidate data only; every inequality is re-pr
 The ranges `(1000 (j − 1), 1000 j]` for `j = 2, …, 10` are the versions `v2` to `v10`, with the
 same three statements and their own tables; `v11` derives the Riemann hypothesis, simplicity and
 the count up to height 10 000 from the ten ranges. The family is split into versions because a
-node is verified all at once and each range is a separate, heavy computation.
+node is verified all at once and each range is a separate, heavy computation: the range
+`(9000, 10000]` alone took over three hours in Comparator (3 h 13 min on a laptop, Lean kernel and
+NanoDa, with the solution already built; recorded in that repository's `STATUS.md`).
 -/
 
 namespace ZetaZeroLocations.v1
