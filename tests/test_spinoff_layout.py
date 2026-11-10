@@ -73,15 +73,15 @@ class TestSpinoffLayout(FixtureRepo):
         directory = self.root / "Solutions" / "A.v1"
         helper = directory / "Helpers" / "Inner.lean"
         helper.parent.mkdir(parents=True)
-        helper.write_text("def helper : Nat := 7\n")
+        helper.write_text("def helper : Nat := 7\n", encoding="utf-8")
         (directory / "Solution.lean").write_text(
-            'import Helpers.«Inner»\nexample : helper = 7 := rfl\n')
+            'import Helpers.«Inner»\nexample : helper = 7 := rfl\n', encoding="utf-8")
         target = self.root / "export"
         ieantn.vendor_solution("A.v1", target)
         copied = target / "vendored" / "A" / "v1"
-        self.assertEqual((copied / "NodeSolution.lean").read_text(),
+        self.assertEqual((copied / "NodeSolution.lean").read_text(encoding="utf-8"),
                          "import vendored.A.v1.Helpers.Inner\nexample : helper = 7 := rfl\n")
-        self.assertEqual((copied / "Helpers" / "Inner.lean").read_text(),
+        self.assertEqual((copied / "Helpers" / "Inner.lean").read_text(encoding="utf-8"),
                          "def helper : Nat := 7\n")
 
     def test_node_solution_collision_is_refused_without_overwriting_a_helper(self):
