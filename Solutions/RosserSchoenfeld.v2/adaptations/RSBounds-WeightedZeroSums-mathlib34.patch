@@ -1,0 +1,33 @@
+--- a/Proof/RSBounds/WeightedZeroSums.lean
++++ b/Proof/RSBounds/WeightedZeroSums.lean
+@@ -266,10 +266,12 @@
+   have hdiv := (hasDerivAt_id t).div_const (2 * Real.pi)
+   have hh := ((hdiv.mul (hdiv.log hq)).sub hdiv).add_const (7 / 8 : ℝ)
+   convert hh using 1
+-  · rfl
+-  · dsimp only [id_eq]
+-    field_simp [hp, ht.ne']
+-    <;> ring
++  -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
++  all_goals first
++    | rfl
++    | (dsimp only [id_eq]
++       field_simp [hp, ht.ne'] <;> ring)
++
+ 
+ /-- Exact derivative of the logarithmic error envelope. -/
+ theorem hasDerivAt_rosserR (C : ℝ) {t : ℝ} (ht : 1 < t) :
+@@ -279,8 +281,10 @@
+   have hlog := Real.hasDerivAt_log ht0.ne'
+   have hh := ((hlog.const_mul 0.137).add ((hlog.log hl0.ne').const_mul 0.443)).add_const C
+   convert hh using 1
+-  · rfl
+-  · field_simp [ht0.ne', hl0.ne']
+-    <;> ring
++  -- Lean 4.34 / older Mathlib: `convert` also emits instance goals.
++  all_goals first
++    | rfl
++    | (field_simp [ht0.ne', hl0.ne'] <;> ring)
++
+ 
+ end TernaryGoldbach.RSBounds

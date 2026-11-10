@@ -120,6 +120,20 @@ class TestSpinoffLayout(FixtureRepo):
         self.assertNotIn("\nend ", challenge)
         self.assertIn("def A.v1.main : Prop := True", challenge)
 
+    def test_line_comment_offsets_do_not_corrupt_vendored_imports(self):
+        directory = self.root / "Solutions" / "A.v1"
+        directory.mkdir(parents=True)
+        source = "-- import Helper is only mentioned here.\nimport Helper -- keep λ\n"
+        (directory / "Solution.lean").write_text(source, encoding="utf-8")
+        (directory / "Helper.lean").write_text("import Mathlib.Data.Nat.Basic\n", encoding="utf-8")
+        target = self.root / "export"
+        ieantn.vendor_solution("A.v1", target)
+        copied = target / "vendored" / "A" / "v1" / "NodeSolution.lean"
+        self.assertEqual(copied.read_text(encoding="utf-8"),
+                         "-- import Helper is only mentioned here.\n"
+                         "import vendored.A.v1.Helper -- keep λ\n")
+        self.assertEqual(ieantn.imports_of(copied), ["vendored.A.v1.Helper"])
+
 
 
 def _decl() -> dict:
