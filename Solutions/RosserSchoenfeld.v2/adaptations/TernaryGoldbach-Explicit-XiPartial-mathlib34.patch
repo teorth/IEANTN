@@ -1,0 +1,16 @@
+--- a/Proof/TernaryGoldbach/Explicit/XiPartial.lean
++++ b/Proof/TernaryGoldbach/Explicit/XiPartial.lean
+@@ -1,3 +1,4 @@
++import RSBoundsCompat.ZetaConjugation
+ import TernaryGoldbach.Explicit.Xi
+ import TernaryGoldbach.Explicit.RectResidue2
+ import TernaryGoldbach.Explicit.ZetaPoly
+@@ -677,7 +678,7 @@
+   have e : ∀ w : ℂ, w ≠ 0 → w ≠ 1 → xiF w = w * (w - 1) * (completedRiemannZeta w + 1 / w + 1 / (1 - w)) + 1 := by
+     intro w _ _
+     rw [completedRiemannZeta_eq]; unfold xiF; ring
+-  rw [e _ h0' h1', e _ h0 h1, completedRiemannZeta_conj]
++  rw [e _ h0' h1', e _ h0 h1, RSBoundsCompat.completedRiemannZeta_conj]
+   simp [map_add, map_mul, map_sub, map_div₀, map_one]
+ 
+ theorem logDeriv_xiF_conj (s : ℂ) : logDeriv xiF (starRingEnd ℂ s) = starRingEnd ℂ (logDeriv xiF s) := by

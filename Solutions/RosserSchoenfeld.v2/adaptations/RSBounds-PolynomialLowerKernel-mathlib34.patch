@@ -1,0 +1,12 @@
+--- a/Proof/RSBounds/PolynomialLowerKernel.lean
++++ b/Proof/RSBounds/PolynomialLowerKernel.lean
+@@ -56,7 +56,8 @@
+       exact div_le_div_of_nonneg_right (Real.rpow_le_one ht0.le ht1 hρ) (norm_nonneg _))
+   rw [norm_div, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hδ]
+   apply (div_le_iff₀ (pow_pos hδ 4)).mpr
+-  convert hm using 1 <;> ring
++  convert hm using 1 <;> first | rfl | ring
++
+ 
+ /-- The lower finite-difference numerator has coefficient sum `16`. -/
+ theorem norm_lower_difference_le_high {δ : ℝ} (hδ : 0 < δ) (hδ4 : 4 * δ < 1)

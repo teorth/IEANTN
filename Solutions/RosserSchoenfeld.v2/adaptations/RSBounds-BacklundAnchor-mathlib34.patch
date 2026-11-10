@@ -1,0 +1,12 @@
+--- a/Proof/RSBounds/BacklundAnchor.lean
++++ b/Proof/RSBounds/BacklundAnchor.lean
+@@ -118,7 +118,8 @@
+     HasDerivAt (fun u : ℝ => Complex.log (riemannZeta ((5 / 4 : ℂ) + u * I)))
+       (logDeriv riemannZeta ((5 / 4 : ℂ) + t * I) * I) t := by
+   have hl : HasDerivAt (fun u : ℝ => (5 / 4 : ℂ) + u * I) I t := by
+-    convert ((Complex.ofRealCLM.hasFDerivAt).hasDerivAt.mul_const I).const_add (5 / 4) using 1 <;> simp
++    convert ((Complex.ofRealCLM.hasFDerivAt).hasDerivAt.mul_const I).const_add (5 / 4) using 1 <;> first | rfl | simp
++
+   have hz := (differentiableAt_riemannZeta (anchor_ne_one t)).hasDerivAt.scomp t hl
+   have h := hz.clog_real (Complex.mem_slitPlane_iff.mpr (Or.inl (re_zeta_anchor_pos t)))
+   simp only [Function.comp_def, smul_eq_mul] at h
