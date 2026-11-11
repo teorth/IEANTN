@@ -1,0 +1,94 @@
+# Node metadata for `RosserSchoenfeld1962.v8`. See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: RosserSchoenfeld1962.v8
+  family: RosserSchoenfeld1962
+  version: v8
+  kind: paper
+  status: awaiting-verification
+
+project:
+  name: "Rosser-Schoenfeld 1962: equation (3.19), the Corollary to Theorem 5"
+  description: >-
+    Equation (3.19): log log x < sum_{p <= x} 1/p for every real x > 1. The solution is an
+    elementary Lean proof (Legendre's bound on v_p(N!), discrete partial summation, and one
+    kernel-checked numerical inequality plus a kernel-checked finite range), not a port of
+    the paper's route through Theorem 5. The Corollary's other inequality (3.20) is outside
+    this node's scope.
+  authors: ["Devon Wright"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Devon Wright"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05"]
+
+conclusions:
+- id: equation_3_19
+  declaration: RosserSchoenfeld1962.v8.equation_3_19
+  challenge: RosserSchoenfeld1962.v8.challenge_equation_3_19
+  imports: []
+  imports_status: none
+  justifications:
+  - id: pending-verification
+    kind: none-yet
+    note: >-
+      Complete unconditional Lean solution at Solutions/RosserSchoenfeld1962.v8, prepared
+      for Comparator verification; no receipt is claimed. Locally the compared theorem
+      audits to exactly propext, Classical.choice and Quot.sound. Its numerics use LeanCert's
+      interval_decide with (trust := kernel), never native_decide; LeanCert is a
+      solution-only dependency pinned to the full commit
+      0a47d99fdd1e61e8eeb96a162343f36bc01e1f92 (LeanCert's v4.34.0 tag), as issue 164
+      permits.
+  - id: rs1962-paper
+    kind: literature
+    source: "https://doi.org/10.1215/ijm/1255631807"
+    locator: "Corollary to Theorem 5, equation (3.19), p. 70; proof of Theorem 5 on p. 74 ff."
+    note: >-
+      In the paper (3.19) follows from Theorem 5's lower bound (3.17) wherever
+      B > 1/(2 log^2 x), that is for x above about 3.99; the paper's general remark on
+      p. 69 refers the remaining ranges of its corollaries to prime tables.
+  designated: rs1962-paper
+  progress:
+    solution: Solutions/RosserSchoenfeld1962.v8/
+    state: in-progress
+    remaining_holes: 0
+sources:
+- title: "Approximate formulas for some functions of prime numbers"
+  authors: ["J. Barkley Rosser", "Lowell Schoenfeld"]
+  type: paper
+  id: "https://doi.org/10.1215/ijm/1255631807"
+  location: "Illinois Journal of Mathematics 6(1) (1962), 64-94; Corollary to Theorem 5, equation (3.19),
+    p. 70"
+  relationship: formalizes
+  note: >-
+    The rendered scan was read at p. 70: (3.19) states log log x < sum_{p <= x} 1/p for
+    1 < x, with strict inequality. The same statement is PNT+'s RS_prime.theorem_c
+    (issue AlexKontorovich/PrimeNumberTheoremAnd#1694), which was redirected to IEANTN.
+
+automation:
+  methods:
+  - method: agent
+    framework: "Grok Bot"
+    role: >-
+      Lean proof development, port to the IEANTN toolchain, source-statement check,
+      metadata and local validation, under the direction of Devon Wright.
+
+review:
+  status: self-assessed
+  reviewers: ["Devon Wright"]
+  notes: >-
+    Statement checked against the rendered 1962 scan. Local build, statement-identity and
+    axiom checks only; no independent review or Comparator verification is claimed.
+
+limitations:
+- >-
+  Only (3.19) is represented; the Corollary's upper bound (3.20) and Theorem 5's (3.17),
+  (3.18), which involve Mertens' constant B, are not.
+- >-
+  The same historical statement is proved by a different, elementary formal proof; no
+  mathematical novelty is claimed.

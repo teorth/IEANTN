@@ -1,0 +1,26 @@
+name = "solution_RosserSchoenfeld1962_v8"
+defaultTargets = ["Solution"]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+
+# Only the solution depends on LeanCert; the core remains Mathlib-only.
+# Same pin as Solutions/RosserSchoenfeld1962.v1 (see issue 164).
+[[require]]
+name = "leancert"
+git = "https://github.com/alerad/leancert.git"
+rev = "0a47d99fdd1e61e8eeb96a162343f36bc01e1f92"
+
+# Lake visits later requirements first: inherit IEANTN's Mathlib and support-package pins.
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+[[lean_lib]]
+name = "RSPrimeRecip"
+roots = ["RSPrimeRecip"]
