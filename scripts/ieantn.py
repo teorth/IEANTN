@@ -33,7 +33,10 @@ None of this runs Comparator.
 from __future__ import annotations
 
 import argparse
+import contextlib
+import contextvars
 import datetime
+import functools
 import hashlib
 import json
 import os
@@ -511,6 +514,80 @@ def edit_yaml(path: pathlib.Path):
     writer.preserve_quotes = True
     writer.width = 100
     return writer, writer.load(path.read_text(encoding="utf-8"))
+
+
+_EDIT_ACTIVE = contextvars.ContextVar("ieantn_edit_active", default=False)
+
+
+def checked_node_edit(operation):
+    """Roll back a failed lifecycle operation, including its generated core files.
+
+    This is failure recovery, not a crash-safe multi-file filesystem transaction. A lock
+    excludes cooperating writers, and a nested receipt/designation edit shares its caller's
+    journal. Read-only commands never acquire the lock.
+    """
+    @functools.wraps(operation)
+    def run(*args, **kwargs):
+        if _EDIT_ACTIVE.get():
+            return operation(*args, **kwargs)
+        lock = ROOT / ".ieantn-edit.lock"
+        try:
+            descriptor = os.open(lock, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            print("error: another node edit holds .ieantn-edit.lock; no files changed")
+            return False
+        os.close(descriptor)
+        token = _EDIT_ACTIVE.set(True)
+        roots = (NODES_DIR, RECEIPTS)
+        umbrellas = (ROOT / "IEANTN" / "Nodes.lean", ROOT / "IEANTN" / "Bridges.lean")
+
+        def paths():
+            return set(umbrellas) | {p for root in roots for p in root.rglob("*")}
+
+        original = {}
+        directories = set()
+        completed = False
+        snapshot_ready = False
+        try:
+            for path in paths():
+                if path.is_symlink():
+                    raise ValueError(f"refusing a symlink in the node edit surface: {rel(path)}")
+                if path.is_file():
+                    original[path] = (path.read_bytes(), path.stat().st_mode & 0o777)
+                elif path.is_dir():
+                    directories.add(path)
+            directories.update(root for root in roots if root.is_dir())
+            snapshot_ready = True
+            result = operation(*args, **kwargs)
+            completed = result is not False
+            return result
+        finally:
+            try:
+                if snapshot_ready and not completed:
+                    current = paths()
+                    for path in current:
+                        if (path.is_file() or path.is_symlink()) and path not in original:
+                            path.unlink()
+                    for path, (content, mode) in original.items():
+                        if path.is_file() and path.read_bytes() == content:
+                            continue
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        with tempfile.NamedTemporaryFile(dir=path.parent, delete=False) as handle:
+                            temporary = pathlib.Path(handle.name)
+                            handle.write(content)
+                        try:
+                            temporary.chmod(mode)
+                            os.replace(temporary, path)
+                        finally:
+                            temporary.unlink(missing_ok=True)
+                    for path in sorted(current | set(roots), key=lambda p: len(p.parts), reverse=True):
+                        if path.is_dir() and path not in directories:
+                            path.rmdir()
+                    print(f"rolled back failed {operation.__name__} edit", file=sys.stderr)
+            finally:
+                _EDIT_ACTIVE.reset(token)
+                lock.unlink(missing_ok=True)
+    return run
 
 
 def versions_of(family: str) -> list[tuple[int, pathlib.Path]]:
@@ -2751,6 +2828,7 @@ def _comparator_covers_every_conclusion(node_id: str, node: dict) -> bool:
     return True
 
 
+@checked_node_edit
 def record_receipt(node_id: str, solution: str, run_url: str, stamp: str) -> bool:
     """Write a receipt. **Run by the verification workflow, never by an author.**
 
@@ -2805,6 +2883,7 @@ def record_receipt(node_id: str, solution: str, run_url: str, stamp: str) -> boo
     return True
 
 
+@checked_node_edit
 def designate_verification(node_id: str, run_url: str) -> None:
     """Record the verification as the node's designated justification.
 
@@ -5469,6 +5548,7 @@ limitations:
 """
 
 
+@checked_node_edit
 def new_node(family: str, kind: str) -> bool:
     """Scaffold a brand-new node at v1."""
     if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", family):
@@ -5488,7 +5568,8 @@ def new_node(family: str, kind: str) -> bool:
     )
     # Regenerate everything rather than writing this node's challenge alone: the umbrella is
     # generated too, and a scaffold that leaves it stale produces a node that quietly is not built.
-    gen_challenges(check_only=False)
+    if not gen_challenges(check_only=False):
+        return False
 
     print(f"created {rel(target)}")
     print("\nnext:")
@@ -5500,6 +5581,7 @@ def new_node(family: str, kind: str) -> bool:
     return True
 
 
+@checked_node_edit
 def new_version(family: str) -> bool:
     existing = versions_of(family)
     if not existing:
@@ -5524,9 +5606,11 @@ def new_version(family: str) -> bool:
         # Only this family's own version references may be bumped. A blanket `v1` -> `v2`
         # would also rewrite the *imported* nodes' versions, silently repointing the new node
         # at versions of its dependencies that may not exist.
-        text = re.sub(
+        text, replacements = re.subn(
             rf"(?<![\w']){re.escape(old_id)}(?![\w'])", new_id, text
         )
+        if name in {"formalization.yaml", "Conclusions.lean"} and replacements == 0:
+            raise ValueError(f"cannot branch {name}: no reference to {old_id} was rewritten")
         (target / name).write_text(text, encoding="utf-8", newline="\n")
 
     metadata = target / "formalization.yaml"
@@ -5550,7 +5634,8 @@ def new_version(family: str) -> bool:
         writer.dump(data, handle)
 
 
-    gen_challenges(check_only=False)
+    if not gen_challenges(check_only=False):
+        return False
 
     print(f"created {rel(target)} from {rel(latest)}")
     print("\nnext:")
@@ -5562,6 +5647,7 @@ def new_version(family: str) -> bool:
     return True
 
 
+@checked_node_edit
 def deprecate(node_id: str, replacement: str) -> bool:
     nodes = load_nodes()
     if node_id not in nodes:
@@ -5616,6 +5702,7 @@ def _lean_import_blockers(paths: list[pathlib.Path], node_ids: set[str]) -> list
     )
 
 
+@checked_node_edit
 def deactivate(node_ids: list[str], reason: str) -> bool:
     """Take nodes out of the network without deleting them.
 
@@ -5683,13 +5770,15 @@ def deactivate(node_ids: list[str], reason: str) -> bool:
         with path.open("w", encoding="utf-8", newline="\n") as handle:
             writer.dump(data, handle)
         print(f"deactivated {node_id}")
-    gen_challenges(check_only=False)
+    if not gen_challenges(check_only=False):
+        return False
     print("\nits files are kept; it is out of the umbrella, so the core build no longer compiles it.")
     print("next: python scripts/ieantn.py fingerprint && python scripts/ieantn.py check")
     print("      (STATE, GRAPH and the node pages are rewritten on `main` by derived.yml)")
     return True
 
 
+@checked_node_edit
 def reactivate(node_id: str) -> bool:
     """Undo `deactivate`: restore the status the node had, and put it back in the network."""
     everything = load_nodes(include_inactive=True)
@@ -5729,7 +5818,8 @@ def reactivate(node_id: str) -> bool:
     with path.open("w", encoding="utf-8", newline="\n") as handle:
         writer.dump(data, handle)
     print(f"reactivated {node_id} as `{data['node']['status']}`")
-    gen_challenges(check_only=False)
+    if not gen_challenges(check_only=False):
+        return False
     print("next: python scripts/ieantn.py fingerprint && python scripts/ieantn.py check")
     return True
 
