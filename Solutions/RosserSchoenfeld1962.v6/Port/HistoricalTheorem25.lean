@@ -3,7 +3,8 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Håkon Xue-Lønmo, PNT+ contributors
 -/
-import RS12.Proof
+import IEANTN.Nodes.RosserSchoenfeld1962.v1.Conclusions
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-! The elementary upper bound in Rosser--Schoenfeld (1962), Theorem 25.
 The already proved Theorem 12 has a stronger linear coefficient, so this
@@ -31,20 +32,19 @@ theorem theorem25_constant_lower : (47 / 54 : ℝ) ≤ theorem25Constant := by
   linarith
 
 /-- The proved RS12 coefficient is strictly smaller than the T25 coefficient. -/
-theorem theorem25_coefficient_gt_rs12 : RS_prime.c₀ < (6 / 5) * theorem25Constant := by
+theorem theorem25_coefficient_gt_rs12 : (1.03883 : ℝ) < (6 / 5) * theorem25Constant := by
   have h := theorem25_constant_lower
-  norm_num [RS_prime.c₀]
   linarith
 
 /-- RS1962 Theorem 25, including its explicit elementary correction. -/
-theorem theorem25 {x : ℝ} (hx : 1 ≤ x) :
+theorem theorem25 (hψ : RosserSchoenfeld1962.v1.equation_3_35) {x : ℝ} (hx : 1 ≤ x) :
     θ x ≤ ψ x ∧
       ψ x < (6 / 5) * theorem25Constant * x + (3 * log x + 5) * (log x + 1) := by
   refine ⟨theta_le_psi x, ?_⟩
   have hp : 0 < x := lt_of_lt_of_le zero_lt_one hx
   have hl : 0 ≤ log x := log_nonneg hx
   have hc : 0 ≤ (3 * log x + 5) * (log x + 1) := by positivity
-  exact (RS_prime.theorem_12 hp).trans_le
+  exact (hψ x hp).trans_le
     ((mul_le_mul_of_nonneg_right theorem25_coefficient_gt_rs12.le hp.le).trans
       (le_add_of_nonneg_right hc))
 

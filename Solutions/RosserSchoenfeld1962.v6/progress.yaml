@@ -18,13 +18,12 @@ statement_audit:
     upper bound. All displayed decimals are exact rationals; its logarithmic constant is not rounded.
 upstream_closure:
   ported_files: 1
-  reused_rs12_files: 51
-  note: The broad PNT+ RS12 import is replaced at the import boundary. No PNT+ dependency, unrelated historical
-    theorem, or generated Challenge enters the solution.
-trusted_numerics: None. Rational certificates are checked in the Lean kernel; LeanCert is a solution-only
-  pinned dependency.
+  reused_rs12_files: 0
+  note: Equation (3.35) is an explicit challenge hypothesis. No v1 proof sources,
+    PNT+ dependency, or generated Challenge enter the solution.
+trusted_numerics: None. The solution uses Mathlib only.
 file_layout: Solution.lean contains only Comparator adapters. Port retains upstream module boundaries.
-  The sibling v1 RS12 library is exposed via srcDir, with outputs in this project.
+  Only the v1 Conclusions module is imported; no sibling srcDir remains.
 order:
 - Audit statements
 - Port the pruned source closure
@@ -42,15 +41,28 @@ validation:
   - Quot.sound
   progress: ieantn.py progress --write derived zero holes for every compared theorem.
   source_inventory: check_port.py passed, including comparison with the read-only PNT+ snapshot.
-  inherited_certificates: All 35 certificate modules match PNT+ at the pinned 81eca5a commit after relocation.
+  inherited_certificates: Historical inventory only; no v1 certificates are compiled.
   palomar_validator: Passed current contract at 14aa8d6b3c2f14a8540605e37144560b9a00e7e7.
-  official_verification: Pending; the inherited LeanCert and runner-memory questions are tracked in teorth/IEANTN#164.
-    No receipt is created here.
+  official_verification: Pending. The existing rs1962-paper literature justification is
+    designated; the obsolete lean-noncompliant entry and issue 164 blocker are removed
+    for this node. Existing local validation records are preserved; no receipt is created here.
   network_check: ieantn.py check passed in the canonical teorth/IEANTN receipt context. Derived views
     are left to CI.
   generated_files: Repository-generated challenge and fingerprint checks passed. Earlier node statements
     and fingerprints are unchanged.
 proof_route: Keep the exact logarithmic constant a. Elementary logarithm bounds prove a >= 47/54, so (6/5)*a
-  exceeds the RS12 coefficient. For x >= 1 the correction (3 log x + 5)(log x + 1) is nonnegative. Combine
-  the actual RS12 proof with theta_le_psi. The paper cites Landau, volume 1, pp. 90-91; the port follows
+  exceeds 1.03883. For x >= 1 the correction (3 log x + 5)(log x + 1) is nonnegative. Combine
+  the supplied equation (3.35) with theta_le_psi. The paper cites Landau, volume 1, pp. 90-91; the port follows
   the completed PNT+ argument.
+
+step2_metadata_review:
+  proof_checks_rerun: false
+  saved_evidence: >-
+    Existing .lake/audit/challenge.out and solution.out have identical full types;
+    axioms.out records only propext, Classical.choice, and Quot.sound. These outputs
+    and the existing validation records were read and preserved during step 2.
+  build_log_evidence: >-
+    A separate step-1 solution-build transcript was not found in this worktree or
+    /tmp/rs1962-step1-review. A separate step-1 core-build transcript was also not found there.
+    Earlier build reports are preserved as historical records; no new build or
+    certificate verification is claimed by this metadata review.
