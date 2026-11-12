@@ -194,6 +194,71 @@ class EvidenceGraph:
         return {"schema_version": 1, "conclusion": key, "justification": justification_id,
                 "changes": changes, "warnings": warnings, "writes_metadata": False}
 
+
+def impact(before, after):
+    """Explain structural changes without pretending a graph comparison proves a bridge."""
+    changed = {}
+    for key in sorted(before.records.keys() | after.records.keys()):
+        old, new = before.records.get(key), after.records.get(key)
+        reasons = []
+        if old is None:
+            reasons.append("added")
+        elif new is None:
+            reasons.append("removed")
+        else:
+            for field, label in [
+                ("fingerprint", "statement"), ("requirements", "requirements"),
+                ("designated", "designation"), ("receipt", "receipt-health"),
+            ]:
+                if old.get(field) != new.get(field):
+                    reasons.append(label)
+            if before.leaves[key] != after.leaves[key]:
+                reasons.append("unproved-leaves")
+        if reasons:
+            changed[key] = reasons
+    findings = []
+    for key, reasons in changed.items():
+        users = set()
+        for graph in (before, after):
+            if key in graph.records:
+                users.update(graph.downstream(key))
+        users.discard(key)
+        repairs = []
+        if "removed" in reasons and users:
+            repairs.append("Migrate surviving consumers before removing the conclusion.")
+        if "statement" in reasons:
+            old = before.records[key]
+            if before.reverse[key] or old.get("receipt"):
+                repairs.append("Create a new node version; this statement already has consumers or a receipt.")
+            else:
+                repairs.append("Review the restated conclusion against its source.")
+        if "receipt-health" in reasons:
+            repairs.append("Inspect the receipt assessment; only fresh official verification restores a broken receipt.")
+        if "requirements" in reasons or "unproved-leaves" in reasons:
+            repairs.append("Review every gained leaf; a proposed bridge needs its own checked implication.")
+        paths = []
+        # Reverse BFS supplies a bounded witness for every downstream result.
+        for graph in (before, after):
+            if key not in graph.records:
+                continue
+            queue, parent = deque([key]), {key: None}
+            while queue:
+                current = queue.popleft()
+                for user in sorted(set(graph.reverse[current])):
+                    if user not in parent:
+                        parent[user] = current
+                        queue.append(user)
+            for user in sorted(users & parent.keys()):
+                route, current = [], user
+                while current is not None:
+                    route.append(current)
+                    current = parent[current]
+                paths.append({"conclusion": user, "snapshot": "before" if graph is before else "after",
+                              "path_to_changed": route})
+        findings.append({"conclusion": key, "reasons": reasons, "downstream": sorted(users),
+                         "witness_paths": paths, "repair_advice": repairs})
+    return {"schema_version": 1, "changes": findings}
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=pathlib.Path, help="evidence JSON; default stdin")
@@ -203,6 +268,8 @@ def main():
     compare = sub.add_parser("compare")
     compare.add_argument("conclusion")
     compare.add_argument("--justification", required=True)
+    changed = sub.add_parser("impact")
+    changed.add_argument("--base", type=pathlib.Path, required=True)
     args = parser.parse_args()
     try:
         if args.input:
@@ -214,6 +281,9 @@ def main():
             result = graph.explain(args.conclusion)
         elif args.command == "compare":
             result = graph.alternative(args.conclusion, args.justification)
+        elif args.command == "impact":
+            with args.base.open(encoding="utf-8") as stream:
+                result = impact(EvidenceGraph(load_document(stream)), graph)
         else:
             raise ValueError(args.command)
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True, allow_nan=False))

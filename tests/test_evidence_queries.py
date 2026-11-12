@@ -93,6 +93,16 @@ class QueryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "cycle"):
             query.EvidenceGraph(d).alternative("A.v1.main", "bad")
 
+    def test_impact_finds_transitive_users_and_a_concrete_route(self):
+        d = self.diamond()
+        new = copy.deepcopy(d)
+        new["conclusions"][0]["fingerprint"] = "changed"
+        result = query.impact(query.EvidenceGraph(d), query.EvidenceGraph(new))
+        finding = result["changes"][0]
+        self.assertIn("D.v1.main", finding["downstream"])
+        witness = next(p for p in finding["witness_paths"] if p["conclusion"] == "D.v1.main")
+        self.assertEqual(witness["path_to_changed"][-1], "A.v1.main")
+        self.assertIn("new node version", finding["repair_advice"][0])
 
 
 

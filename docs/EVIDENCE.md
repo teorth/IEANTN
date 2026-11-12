@@ -65,3 +65,11 @@ reports leaves gained or discharged for the conclusion and its downstream
 consumers. It does not designate that spare, invent a trust score, or write
 metadata. A spare Lean route with no receipt assessment stays an unproved leaf.
 Cycles and unknown premises are errors.
+
+## Transitive impact
+
+`impact --base before.json` compares two exports. It names statement,
+requirement, designation and receipt-health changes, a witness path to each
+downstream consumer, and repair advice derived from that change. `ieantn.py
+diff` remains the enforcement gate. Advice does not claim a proposed bridge
+has been proved.
