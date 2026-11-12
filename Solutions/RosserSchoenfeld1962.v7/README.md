@@ -59,3 +59,28 @@ sequential. Run the root `ieantn.py progress`, `gen-challenges --check`,
 The generator selects blocks; Lean independently checks all numbers.
 Only `propext`, `Classical.choice`, and `Quot.sound` are accepted.
 Official Comparator verification remains pending; no receipt is authored here.
+
+## Relation to equation (3.8)
+
+[PR #188](https://github.com/teorth/IEANTN/pull/188) proves the stronger lower
+bound `3*x/(5*log x) < pi(2*x)-pi(x)` for `x >= 41/2`; see its
+[`Interval/Tail.lean`](https://github.com/hakonlonmo/IEANTN/blob/rosser-schoenfeld-1962-cor3-pr/Solutions/RosserSchoenfeld1962.v3/Interval/Tail.lean).
+That proof uses a weighted-factorial lower estimate for psi, Costa–Pereira,
+and the explicit v1 equation-(3.35) hypothesis for `x >= 4096`, with 48 finite
+intervals and 3,356 prime witnesses below 4096. It retains pinned LeanCert for
+its own logarithm certificates.
+
+This project's `RS39.positive`, `RS39.large`, and `RS39.small` do not establish
+(3.8): positivity and an upper bound do not yield a quantitative lower bound.
+An adaptation would need an additional lower estimate for the prime count or
+theta difference, strong enough to exceed `3*x*log(2*x)/(5*log x)`, plus the
+remaining finite range. The binomial upper estimate supplies no such input.
+The counting-method adaptation documented above is the limited source reuse;
+there is no shared local proof module or cross-import, and the finite certificates
+differ. The documented history does not establish deliberate independence or
+supersession. Both outward-facing statements remain in separate PRs.
+
+Run `python3 scripts/audit.py` after building to compare every listed theorem
+with its generated challenge in separate Lean environments, check the three
+permitted axioms, and inspect the actual loaded import closure. These local
+checks passed; they are not an official Comparator or NanoDa result.

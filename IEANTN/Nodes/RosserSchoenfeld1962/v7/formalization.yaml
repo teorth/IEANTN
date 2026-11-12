@@ -29,11 +29,16 @@ conclusions:
   imports: []
   imports_status: none
   justifications:
-  - id: pending-verification
-    kind: none-yet
-    note: Complete unconditional Lean solution prepared for official Comparator verification; no
-      receipt claimed.
-  designated: pending-verification
+  - id: rs1962-paper
+    kind: literature
+    source: https://doi.org/10.1215/ijm/1255631807
+    locator: Corollary 3, equation (3.9), p. 69
+    note: >-
+      Recorded on the authority of the cited paper. A complete local Lean solution
+      is supplied in Solutions/RosserSchoenfeld1962.v7/Solution.lean.
+      Official Comparator verification and its workflow-generated receipt remain
+      pending; no receipt is claimed.
+  designated: rs1962-paper
   progress:
     solution: Solutions/RosserSchoenfeld1962.v7/
     state: in-progress
