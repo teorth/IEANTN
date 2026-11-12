@@ -68,8 +68,30 @@ class QueryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "standing receipt"):
             query.EvidenceGraph(document(entry("A.v1.main", "lean-comparator")))
 
+    def test_alternative_exposes_new_assumptions_without_modifying_input(self):
+        d = document(entry("A.v1.main"), entry("B.v1.main"),
+                     entry("C.v1.main", "bridged", [("A.v1.main", "bridge")],
+                           spares=[{"id": "other", "kind": "bridged", "from": "B.v1.main"}]),
+                     entry("D.v1.main", "bridged", [("C.v1.main", "bridge")]))
+        original = copy.deepcopy(d)
+        result = query.EvidenceGraph(d).alternative("C.v1.main", "other")
+        self.assertEqual(d, original)
+        self.assertEqual(result["changes"][-1]["gained"], ["B.v1.main"])
+        self.assertEqual(result["changes"][-1]["discharged"], ["A.v1.main"])
+        self.assertFalse(result["writes_metadata"])
 
+    def test_spare_lean_route_without_assessment_is_never_claimed_verified(self):
+        d = document(entry("A.v1.main", spares=[{"id": "proof", "kind": "lean-comparator"}]))
+        result = query.EvidenceGraph(d).alternative("A.v1.main", "proof")
+        self.assertEqual(result["changes"][0]["after"], ["A.v1.main"])
+        self.assertTrue(result["warnings"])
 
+    def test_hypothetical_cycle_is_rejected(self):
+        d = document(entry("A.v1.main", spares=[
+                         {"id": "bad", "kind": "bridged", "from": "B.v1.main"}]),
+                     entry("B.v1.main", "bridged", [("A.v1.main", "bridge")]))
+        with self.assertRaisesRegex(ValueError, "cycle"):
+            query.EvidenceGraph(d).alternative("A.v1.main", "bad")
 
 
 

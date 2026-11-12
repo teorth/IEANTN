@@ -57,3 +57,11 @@ evidence label, receipt and source at each step. A multi-premise bridge stays
 conjunctive: the path is a witness, and every listed premise is still required.
 A cited intermediate statement is itself an unproved leaf in addition to any
 assumptions below it. This is a record of dependencies, not a probability.
+
+## Compare a recorded spare justification
+
+`compare --justification ID` copies the export, selects one recorded spare, and
+reports leaves gained or discharged for the conclusion and its downstream
+consumers. It does not designate that spare, invent a trust score, or write
+metadata. A spare Lean route with no receipt assessment stays an unproved leaf.
+Cycles and unknown premises are errors.

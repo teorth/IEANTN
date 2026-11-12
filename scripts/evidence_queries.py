@@ -146,12 +146,63 @@ class EvidenceGraph:
             ),
         }
 
+    def alternative(self, key, justification_id):
+        self.require(key)
+        old = self.records[key]
+        matches = [j for j in old.get("justifications", [])
+                   if isinstance(j, dict) and j.get("id") == justification_id]
+        if len(matches) != 1:
+            raise ValueError("expected exactly one matching justification")
+        chosen = matches[0]
+        kind = chosen.get("kind")
+        if kind not in {"bridged", "lean-comparator", "literature", "asserted",
+                        "numerical", "none-yet", "lean-noncompliant"}:
+            raise ValueError("unsupported justification kind")
+        proposed = copy.deepcopy(self.document)
+        entry = next(c for c in proposed["conclusions"] if c["key"] == key)
+        entry["designated"], entry["evidence"] = justification_id, kind
+        entry["requirements"] = [r for r in entry["requirements"] if r["relation"] == "import"]
+        warnings = []
+        if kind == "bridged":
+            sources = chosen.get("from")
+            sources = [sources] if isinstance(sources, str) else sources
+            if not isinstance(sources, list) or not sources or any(
+                    not isinstance(source, str) for source in sources):
+                raise ValueError("bridge must name one or more conclusion sources")
+            entry["requirements"] += [{"conclusion": source, "relation": "bridge"}
+                                      for source in sorted(set(sources))]
+        if kind == "lean-comparator":
+            if not entry.get("receipt"):
+                entry["evidence"] = "lean-comparator-unassessed"
+                warnings.append("The export has no receipt assessment for this spare; "
+                                "the hypothetical route remains an unproved leaf.")
+            elif entry["receipt"]["state"] == "BROKEN":
+                entry["evidence"] = "lean-comparator-drifted"
+            elif entry["receipt"]["state"] != "green":
+                entry["evidence"] = "lean-comparator-stale"
+        after = EvidenceGraph(proposed)
+        changes = []
+        for current in sorted(self.downstream(key) | after.downstream(key)):
+            before_leaves, after_leaves = self.leaves[current], after.leaves[current]
+            if before_leaves != after_leaves or current == key:
+                changes.append({
+                    "conclusion": current, "before": sorted(before_leaves),
+                    "after": sorted(after_leaves),
+                    "gained": sorted(after_leaves - before_leaves),
+                    "discharged": sorted(before_leaves - after_leaves),
+                })
+        return {"schema_version": 1, "conclusion": key, "justification": justification_id,
+                "changes": changes, "warnings": warnings, "writes_metadata": False}
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=pathlib.Path, help="evidence JSON; default stdin")
     sub = parser.add_subparsers(dest="command", required=True)
     explain = sub.add_parser("explain")
     explain.add_argument("conclusion")
+    compare = sub.add_parser("compare")
+    compare.add_argument("conclusion")
+    compare.add_argument("--justification", required=True)
     args = parser.parse_args()
     try:
         if args.input:
@@ -161,6 +212,8 @@ def main():
             graph = EvidenceGraph(load_document(sys.stdin))
         if args.command == "explain":
             result = graph.explain(args.conclusion)
+        elif args.command == "compare":
+            result = graph.alternative(args.conclusion, args.justification)
         else:
             raise ValueError(args.command)
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True, allow_nan=False))
