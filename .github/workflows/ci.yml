@@ -227,6 +227,18 @@ jobs:
       - run: pip install pyyaml
       # Fails only on the one class that must not be silent: editing a conclusion that other
       # nodes depend on, or removing one that is still imported. Everything else is reported to
-      # the job summary for the reviewer and does not block.
+      # the job summary for the reviewer and does not block. The JSON artifact is the same
+      # analysis. review-report.yml, on the default branch, is what turns it into a comment.
+      # This job does not gain pull-requests: write: the code it checks out is the pull request's.
       - name: What this branch degrades
-        run: python3 scripts/ieantn.py diff --base "${{ github.event.pull_request.base.sha }}"
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python3 scripts/ieantn.py diff --base "$BASE" --head "$HEAD_SHA" --json review-report.json
+      - name: Upload the review report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ieantn-review-report
+          path: review-report.json
+          if-no-files-found: ignore

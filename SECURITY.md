@@ -63,6 +63,15 @@ job exists to track a moving contract. So the exposure is bounded instead: the j
 authenticated `gh api` call, and the resolved upstream commit is written to the job summary so
 *which* validator ran is visible after the fact.
 
+**Review comment (`review-report.yml`).** CI's impact job writes a JSON artifact and does not
+receive `pull-requests: write`, because that job checks out the pull request. A second workflow,
+triggered by `workflow_run` after CI succeeds, runs the workflow file from the default branch.
+It checks out that branch, reads the artifact, and uses the token only to comment. It does not
+check out the pull request head and it does not compile Lean. The token has `pull-requests: write`
+and not `contents: write`, so it cannot push. The artifact is untrusted text: the renderer accepts
+a head SHA, findings, and a truncated flag, and updates only the comment that starts with
+`<!-- ieantn-review-report -->`.
+
 ## The trusted base of a receipt
 
 A receipt is worth exactly what these are worth:
@@ -100,8 +109,8 @@ solution's `comparator.json`, so a receipt cannot cover a statement Comparator w
 about. That one needed no adversary: adding a second conclusion to a verified node was enough.
 
 The receipt job also refuses to commit to the default branch. It is the only job in the repository
-holding a write token, so it is the only thing that could put the most trusted file in the network
-into `main` without review.
+holding `contents: write`, so it is the only thing that could put the most trusted file in the
+network into `main` without review. The review-comment workflow's write is `pull-requests: write`.
 
 ## Residual risks, stated plainly
 

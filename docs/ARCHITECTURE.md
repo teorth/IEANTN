@@ -597,10 +597,11 @@ python scripts/ieantn.py deprecate        # mark a version for retirement
 `record-receipt` also exists and is deliberately not listed as something to run: it is called by
 the verification workflow, and a receipt you can write attests nothing.
 
-**Not yet built**, and tracked in [ROADMAP.md](ROADMAP.md): the reviewer report as a pull request
-comment rather than a job summary; a `/verify` comment trigger; and verification methods beyond
-Comparator. The `receipts/` ruleset is not pending but unavailable, and provenance replaced it --
-see above.
+The reviewer report is posted as a pull request comment by
+[`.github/workflows/review-report.yml`](../.github/workflows/review-report.yml) after CI succeeds.
+`diff` also keeps writing the job summary. **Not yet built**, and tracked in
+[ROADMAP.md](ROADMAP.md): a `/verify` comment trigger, and verification methods beyond Comparator.
+The `receipts/` ruleset is not pending but unavailable, and provenance replaced it -- see above.
 
 **The Comparator path is exercised end to end**: `Lcm.v1` carries a receipt written by the
 verification workflow, and `status` grades it against the current environment.

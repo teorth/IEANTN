@@ -57,9 +57,12 @@ Recovering the base state needs no Lean: the fingerprints are committed, so the 
 they were are readable with `git show` — from each node's file, or from the retired root
 `fingerprints.json` at a commit predating the split, which `state_at` still reads. That is most of why this is cheap enough to run per PR.
 
-**4. The reviewer report.** *Partly done* -- `diff` writes its findings to the job summary, which
-needs no token and no permissions. Still to do: posting it as a PR comment so it appears inline,
-and adding the recommended-modification text for cases beyond the in-place edit.
+**4. The reviewer report.** *Done for the comment* -- `diff` still writes its findings to the job
+summary, which needs no token and no permissions. `.github/workflows/review-report.yml` posts that
+analysis as one pull request comment after CI succeeds. The workflow file that runs is the one on
+the default branch: it reads the artifact and does not check out or execute the pull request head.
+The comment it updates is the one that starts with `<!-- ieantn-review-report -->`. Still to do:
+recommended-modification text for cases beyond the in-place edit.
 
 **5. Verification.** *Done, and exercised.* `scripts/verify-comparator.sh` with the four trusted
 tools pinned, and `.github/workflows/verify.yml` splitting the run in two: `comparator` executes
