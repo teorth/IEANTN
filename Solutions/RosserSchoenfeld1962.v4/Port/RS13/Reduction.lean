@@ -11,7 +11,7 @@ open Real Chebyshev Finset ArithmeticFunction
 
 /-- A convenient exact threshold; the stronger coefficient leaves room below
 both the historical decimal and the value of the quotient at 361. -/
-theorem gap_large {x : ℝ} (hx : 46656 ≤ x) :
+theorem gap_large (hψ : RosserSchoenfeld1962.v1.equation_3_35) {x : ℝ} (hx : 46656 ≤ x) :
     ψ x - θ x < (7 / 5) * sqrt x := by
   have hp : 0 < x := by linarith
   have h6 : (6 : ℝ) ≤ x ^ (1 / 6 : ℝ) := by
@@ -28,7 +28,7 @@ theorem gap_large {x : ℝ} (hx : 46656 ≤ x) :
     have h := mul_le_mul_of_nonneg_left h6 (rpow_nonneg hp.le (1 / 3 : ℝ))
     rw [he] at h
     linarith
-  have h := psi_sub_theta_le_prime_powers (show 1 ≤ x by linarith)
+  have h := psi_sub_theta_le_prime_powers hψ (show 1 ≤ x by linarith)
   rw [← sqrt_eq_rpow] at h
   have hs := sqrt_pos.2 hp
   nlinarith

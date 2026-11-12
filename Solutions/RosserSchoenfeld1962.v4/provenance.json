@@ -3,9 +3,9 @@
   "checkout_base_commit": "81eca5aa3fa4779883a9aeba18e49087c5366e0f",
   "source_kind": "read-only working-tree snapshot",
   "adaptations": [
-    "Redirect the completed RS12 import to the unchanged v1 RS12 library.",
     "Redirect historical module imports to Port; add attribution headers; remove diagnostic #print commands.",
-    "Keep only psi_sub_theta_le_prime_powers from PrimePowers; omit unrelated integral lemmas and their imports."
+    "Keep only psi_sub_theta_le_prime_powers from PrimePowers; omit unrelated integral lemmas and their imports.",
+    "Step 1: replace the v1 RS12 proof-library dependency with the explicit RosserSchoenfeld1962.v1.equation_3_35 challenge hypothesis; retain original source hashes."
   ],
   "ported": [
     {
@@ -13,14 +13,14 @@
       "source_sha256": "30f3e9bed149dd71cd28130ac40a24b53ba1d88ccc28e91ec14ad48fbd41d748",
       "tracked_at_snapshot": false,
       "local": "Port/HistoricalTheorem13.lean",
-      "local_sha256": "8f9ff5dfb7042bb582e91d70f55bf0f7fe47ef798b1f6678c7f3be56a13a8db0"
+      "local_sha256": "3a4f24919d945f238dd6e52da3116287c0eee268e324e6bf4761dcfd90f92b03"
     },
     {
       "source": "PrimeNumberTheoremAnd/Erdos306/RS5Historical/PrimePowers.lean",
       "source_sha256": "e738f520a5139926cae496298ef834bd4a583488e2a8d2c4256250661412b32b",
       "tracked_at_snapshot": false,
       "local": "Port/PrimePowers.lean",
-      "local_sha256": "bfb1ee1e7251ceacea58830c2eb7689d7377df2ae4ce914945751595489f9dbc"
+      "local_sha256": "31a908f751eded3c291dde13d5f43c915db9fd0810d0ef1c82f6ab6d14c2c903"
     },
     {
       "source": "PrimeNumberTheoremAnd/Erdos306/RS5Historical/RS13/Finite.lean",
@@ -62,10 +62,10 @@
       "source_sha256": "85384f92a5543b94a9621d9fa07a31cfc325ef2b22bbe21fca7e70747a257d18",
       "tracked_at_snapshot": false,
       "local": "Port/RS13/Reduction.lean",
-      "local_sha256": "c4427c2aa715ed1c0f648163f04ed4154f38698abcdff740178d083b1c266125"
+      "local_sha256": "b503326cf9084cf39b836c0bc11459e113a4aa3ad51bd8216ef020d1bb219aff"
     }
   ],
-  "inherited_rs12": [
+  "historical_inherited_rs12": [
     {
       "path": "../RosserSchoenfeld1962.v1/RS12/Chebyshev.lean",
       "sha256": "bab5e2175a12f190f6677262050be886f97953f8054664fd3c671e8a5edf2c96"
@@ -270,5 +270,6 @@
       "path": "../RosserSchoenfeld1962.v1/RS12/Weights.lean",
       "sha256": "a1ce1ba06c8d7a1e34e19e793fada50b3cab968c8b26c6b0b57d6f0826dd0e1b"
     }
-  ]
+  ],
+  "historical_inherited_rs12_note": "Historical inventory from the original port; these sibling sources are no longer imported, compiled, or required by the solution or its provenance check."
 }

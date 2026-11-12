@@ -6,10 +6,12 @@ Authors: Håkon Xue-Lønmo, PNT+ contributors
 import IEANTN.Nodes.RosserSchoenfeld1962.v4.Conclusions
 import Port.HistoricalTheorem13
 
-theorem RosserSchoenfeld1962.v4.challenge_psi_sub_theta_ratio_maximum_at_361 :
+theorem RosserSchoenfeld1962.v4.challenge_psi_sub_theta_ratio_maximum_at_361
+    (rosserschoenfeld1962_v1_equation_3_35 : RosserSchoenfeld1962.v1.equation_3_35) :
     RosserSchoenfeld1962.v4.psi_sub_theta_ratio_maximum_at_361 :=
-  fun _ hx => RS5Historical.theorem13_maximum hx
+  fun _ hx => RS5Historical.theorem13_maximum rosserschoenfeld1962_v1_equation_3_35 hx
 
-theorem RosserSchoenfeld1962.v4.challenge_equation_3_36 :
+theorem RosserSchoenfeld1962.v4.challenge_equation_3_36
+    (rosserschoenfeld1962_v1_equation_3_35 : RosserSchoenfeld1962.v1.equation_3_35) :
     RosserSchoenfeld1962.v4.equation_3_36 :=
-  fun _ hx => RS5Historical.theorem13_bound hx
+  fun _ hx => RS5Historical.theorem13_bound rosserschoenfeld1962_v1_equation_3_35 hx

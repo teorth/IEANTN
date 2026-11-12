@@ -7,8 +7,8 @@ node:
   status: awaiting-verification
 project:
   name: 'Rosser-Schoenfeld 1962: Theorem 13: maximum at 361 and equation (3.36)'
-  description: 'An unconditional port of the completed PNT+ proof of Theorem 13: maximum at 361 and equation
-    (3.36). The solution reuses the unchanged v1 RS12 library; the core imports Mathlib only.'
+  description: 'A conditional port of the completed PNT+ proof of Theorem 13: maximum at 361 and equation
+    (3.36). The solution assumes v1 equation_3_35; the core imports Mathlib only.'
   authors:
   - Håkon Xue-Lønmo
   license: Apache-2.0
@@ -25,57 +25,43 @@ conclusions:
 - id: psi_sub_theta_ratio_maximum_at_361
   declaration: RosserSchoenfeld1962.v4.psi_sub_theta_ratio_maximum_at_361
   challenge: RosserSchoenfeld1962.v4.challenge_psi_sub_theta_ratio_maximum_at_361
-  imports: []
-  imports_status: none
+  imports:
+  - node: RosserSchoenfeld1962.v1
+    conclusion: equation_3_35
+  imports_status: identified
   justifications:
-  - id: rs1962-port
-    kind: lean-noncompliant
-    note: The complete local solution builds and its compared declarations have identical pp.all challenge
-      types and exactly propext, Classical.choice and Quot.sound. The inherited v1 RS12 library uses LeanCert
-      at 6b11513512c9d27183fb4725bfc291ab38b4a6d7 and requires sequential certificate compilation to limit
-      memory. Admission of that third-party dependency and runner-memory support are the existing verification
-      questions in issue 164. No numerical assumption or additional logical axiom is used. No receipt
-      is supplied or lean-comparator justification designated by the author.
   - id: rs1962-paper
     kind: literature
     source: https://doi.org/10.1215/ijm/1255631807
     locator: Theorem 13, maximum clause, p. 71
     note: Recorded on the authority of the cited paper pending official Comparator verification. The solution
-      proves the claim unconditionally using the actual v1 RS12 proof, with no node hypothesis or external
+      proves the claim from the declared equation_3_35 hypothesis, without an additional
       numerical assumption.
-  designated: rs1962-port
+  designated: rs1962-paper
   progress:
     solution: Solutions/RosserSchoenfeld1962.v4/
     state: in-progress
     remaining_holes: 0
-  issue: 164
 - id: equation_3_36
   declaration: RosserSchoenfeld1962.v4.equation_3_36
   challenge: RosserSchoenfeld1962.v4.challenge_equation_3_36
-  imports: []
-  imports_status: none
+  imports:
+  - node: RosserSchoenfeld1962.v1
+    conclusion: equation_3_35
+  imports_status: identified
   justifications:
-  - id: rs1962-port
-    kind: lean-noncompliant
-    note: The complete local solution builds and its compared declarations have identical pp.all challenge
-      types and exactly propext, Classical.choice and Quot.sound. The inherited v1 RS12 library uses LeanCert
-      at 6b11513512c9d27183fb4725bfc291ab38b4a6d7 and requires sequential certificate compilation to limit
-      memory. Admission of that third-party dependency and runner-memory support are the existing verification
-      questions in issue 164. No numerical assumption or additional logical axiom is used. No receipt
-      is supplied or lean-comparator justification designated by the author.
   - id: rs1962-paper
     kind: literature
     source: https://doi.org/10.1215/ijm/1255631807
     locator: Theorem 13, equation (3.36), p. 71
     note: Recorded on the authority of the cited paper pending official Comparator verification. The solution
-      proves the claim unconditionally using the actual v1 RS12 proof, with no node hypothesis or external
+      proves the claim from the declared equation_3_35 hypothesis, without an additional
       numerical assumption.
-  designated: rs1962-port
+  designated: rs1962-paper
   progress:
     solution: Solutions/RosserSchoenfeld1962.v4/
     state: in-progress
     remaining_holes: 0
-  issue: 164
 sources:
 - title: Approximate formulas for some functions of prime numbers
   authors:

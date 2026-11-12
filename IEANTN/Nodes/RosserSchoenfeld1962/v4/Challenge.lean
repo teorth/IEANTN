@@ -3,6 +3,7 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Håkon Xue-Lønmo
 -/
+import IEANTN.Nodes.RosserSchoenfeld1962.v1.Conclusions
 import IEANTN.Nodes.RosserSchoenfeld1962.v4.Conclusions
 
 /-!
@@ -16,8 +17,12 @@ Each `sorry` below is deliberate and permanent: a challenge *states*, it does no
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
 
-theorem RosserSchoenfeld1962.v4.challenge_psi_sub_theta_ratio_maximum_at_361 : RosserSchoenfeld1962.v4.psi_sub_theta_ratio_maximum_at_361 := by
+theorem RosserSchoenfeld1962.v4.challenge_psi_sub_theta_ratio_maximum_at_361
+    (rosserschoenfeld1962_v1_equation_3_35 : RosserSchoenfeld1962.v1.equation_3_35) :
+    RosserSchoenfeld1962.v4.psi_sub_theta_ratio_maximum_at_361 := by
   sorry
 
-theorem RosserSchoenfeld1962.v4.challenge_equation_3_36 : RosserSchoenfeld1962.v4.equation_3_36 := by
+theorem RosserSchoenfeld1962.v4.challenge_equation_3_36
+    (rosserschoenfeld1962_v1_equation_3_35 : RosserSchoenfeld1962.v1.equation_3_35) :
+    RosserSchoenfeld1962.v4.equation_3_36 := by
   sorry
