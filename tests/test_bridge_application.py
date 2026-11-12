@@ -5,6 +5,8 @@ from __future__ import annotations
 import importlib.util
 import io
 import pathlib
+import sys
+import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 
@@ -14,6 +16,7 @@ def load():
     spec = importlib.util.spec_from_file_location("bridge_application", path)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 
@@ -139,13 +142,14 @@ class EquivalentSpellingTest(unittest.TestCase):
 
 class CommandLineTest(unittest.TestCase):
     def test_describe_command_prints_the_application(self) -> None:
-        with io.StringIO() as stdout, io.StringIO() as stderr:
-            with redirect_stdout(stdout), redirect_stderr(stderr):
-                code = bridge.main(
-                    ["describe", str(_write_sample(self)), "--target", "True", "--known", "True"]
-                )
-            self.assertEqual(code, 0, stderr.getvalue())
-            text = stdout.getvalue()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = pathlib.Path(tmp) / "Sample.lean"
+            path.write_text(bridge.NAMESPACE_SPELLING, encoding="utf-8")
+            with io.StringIO() as stdout, io.StringIO() as stderr:
+                with redirect_stdout(stdout), redirect_stderr(stderr):
+                    code = bridge.main(["describe", str(path), "--target", "True", "--known", "True"])
+                self.assertEqual(code, 0, stderr.getvalue())
+                text = stdout.getvalue()
         self.assertIn("full_name: Demo.from_b", text)
         self.assertIn("does not claim a proof", text)
 
@@ -158,20 +162,6 @@ class CommandLineTest(unittest.TestCase):
         self.assertIn("spellings: identical", text)
         self.assertIn("lean: ", text)
         self.assertIn("does not claim a proof", text)
-
-
-def _write_sample(test: unittest.TestCase) -> pathlib.Path:
-    directory = pathlib.Path(test.id().replace(".", "_"))
-    # Keep the sample next to the test process's temp via unittest's default tmp? Use the home
-    # of the module under a directory the test removes.
-    root = pathlib.Path(__file__).resolve().parent / "_bridge_cli_sample"
-    root.mkdir(exist_ok=True)
-    path = root / "Sample.lean"
-    path.write_text(bridge.NAMESPACE_SPELLING, encoding="utf-8")
-    test.addCleanup(lambda: path.unlink(missing_ok=True))
-    test.addCleanup(lambda: root.rmdir() if root.exists() else None)
-    del directory
-    return path
 
 
 if __name__ == "__main__":

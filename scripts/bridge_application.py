@@ -17,6 +17,7 @@ toolchain failure skips that live check. Neither command claims the theorem is p
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
 import subprocess
 import sys
@@ -272,9 +273,7 @@ def _scan(text: str) -> list[_Theorem]:
                 else:
                     binder_name, binder_type = split
                     binder_name = binder_name.strip()
-                    if not binder_name.isidentifier() or not all(
-                        character.isalnum() or character in "_'" for character in binder_name
-                    ):
+                    if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", binder_name) is None:
                         malformed = True
                     else:
                         premises.append(ExplicitPremise(binder_name, _collapse(binder_type)))
