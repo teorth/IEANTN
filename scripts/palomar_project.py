@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -32,7 +33,7 @@ class PalomarExportError(Exception):
     """The caller did not supply something this writer is not allowed to invent."""
 
 
-_SHA = __import__("re").compile(r"^[0-9a-fA-F]{40}$")
+_SHA = re.compile(r"^[0-9a-fA-F]{40}$")
 _REQUIRED = ("core_commit", "author", "source_url", "licence", "review_status")
 
 NO_HYPOTHESIS_LINE = "there are no hypotheses to name in the limitations"

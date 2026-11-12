@@ -97,10 +97,10 @@ class WriteProjectTest(unittest.TestCase):
             out = pathlib.Path(tmp)
             report = project.write_project(out, {"conclusion": "A.v1.main", "leaves": []}, metadata())
             form = yaml.safe_load((out / "formalization.yaml").read_text(encoding="utf-8"))
-        self.assertIn("there are no hypotheses to name in the limitations", report)
-        self.assertIn("there are no hypotheses to name in the limitations", form["limitations"])
-        self.assertIn("does not claim the conclusion is proved", " ".join(form["limitations"]))
-        self.assertFalse((out / "lake-manifest.json").exists())
+            self.assertIn("there are no hypotheses to name in the limitations", report)
+            self.assertIn("there are no hypotheses to name in the limitations", form["limitations"])
+            self.assertIn("does not claim the conclusion is proved", " ".join(form["limitations"]))
+            self.assertFalse((out / "lake-manifest.json").exists())
 
     def test_the_writer_does_not_call_lake(self) -> None:
         source = pathlib.Path(project.__file__).read_text(encoding="utf-8")
