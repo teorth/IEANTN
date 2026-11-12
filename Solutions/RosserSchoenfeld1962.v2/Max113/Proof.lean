@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Håkon Xue-Lønmo
 -/
 import Max113.Finite
-import RS12.Proof
+import IEANTN.Nodes.RosserSchoenfeld1962.v1.Conclusions
+import Max113.Recurrence.PsiRecurrence
 
 namespace RS12Max113
 open Chebyshev
@@ -31,19 +32,18 @@ theorem finite_integer_strict {n : ℕ} (hn : 0 < n) (hcut : n ≤ 500000) (hne 
 
 /-- The recurrence plus (3.35) already gives a strict tail below the symbolic optimum.
 No induction with an approximated optimum, and no new tail certificate, is needed. -/
-theorem tail_strict {x : ℝ} (hx : 500000 ≤ x) :
+theorem tail_strict (hψ : RosserSchoenfeld1962.v1.equation_3_35) {x : ℝ} (hx : 500000 ≤ x) :
     113 * ψ x < x * ψ (113 : ℝ) := by
   apply below_separator (by linarith)
   have hr := RS12Factorial.psi_factorial_recurrence hx
-  have hb := RS_prime.theorem_12 (x := x / 60) (by linarith)
-  dsimp [RS_prime.c₀] at hb
+  have hb := hψ (x / 60) (by linarith)
   linarith
 
 /-- The strict division-free maximum theorem, for every positive real except 113. -/
-theorem psi_strict_maximum {x : ℝ} (hx : 0 < x) (hne : x ≠ 113) :
+theorem psi_strict_maximum (hψ : RosserSchoenfeld1962.v1.equation_3_35) {x : ℝ} (hx : 0 < x) (hne : x ≠ 113) :
     113 * ψ x < x * ψ (113 : ℝ) := by
   by_cases hlarge : 500000 ≤ x
-  · exact tail_strict hlarge
+  · exact tail_strict hψ hlarge
   have hf : (⌊x⌋₊ : ℝ) ≤ x := Nat.floor_le hx.le
   rw [Chebyshev.psi_eq_psi_coe_floor x]
   by_cases hz : ⌊x⌋₊ = 0
@@ -62,25 +62,25 @@ theorem psi_strict_maximum {x : ℝ} (hx : 0 < x) (hne : x ≠ 113) :
     (mul_le_mul_of_nonneg_right hf psi_113_pos.le)
 
 /-- Equality at 113 supplies the non-strict division-free version. -/
-theorem psi_maximum {x : ℝ} (hx : 0 < x) :
+theorem psi_maximum (hψ : RosserSchoenfeld1962.v1.equation_3_35) {x : ℝ} (hx : 0 < x) :
     113 * ψ x ≤ x * ψ (113 : ℝ) := by
   by_cases he : x = 113
   · subst x; rfl
-  · exact (psi_strict_maximum hx he).le
+  · exact (psi_strict_maximum hψ hx he).le
 
-theorem ratio_maximum (x : ℝ) (hx : 0 < x) :
+theorem ratio_maximum (hψ : RosserSchoenfeld1962.v1.equation_3_35) (x : ℝ) (hx : 0 < x) :
     ψ x / x ≤ ψ (113 : ℝ) / 113 := by
   apply (div_le_div_iff₀ hx (by norm_num : (0 : ℝ) < 113)).mpr
-  simpa only [mul_comm] using psi_maximum hx
+  simpa only [mul_comm] using psi_maximum hψ hx
 
-theorem ratio_unique_maximum (x : ℝ) (hx : 0 < x) :
+theorem ratio_unique_maximum (hψ : RosserSchoenfeld1962.v1.equation_3_35) (x : ℝ) (hx : 0 < x) :
     (ψ x / x = ψ (113 : ℝ) / 113 ↔ x = 113) := by
   constructor
   · intro he
     by_contra hne
     have hs : ψ x / x < ψ (113 : ℝ) / 113 := by
       apply (div_lt_div_iff₀ hx (by norm_num : (0 : ℝ) < 113)).mpr
-      simpa only [mul_comm] using psi_strict_maximum hx hne
+      simpa only [mul_comm] using psi_strict_maximum hψ hx hne
     exact (ne_of_lt hs) he
   · rintro rfl; rfl
 

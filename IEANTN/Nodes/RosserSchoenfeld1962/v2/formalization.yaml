@@ -8,8 +8,9 @@ node:
 project:
   name: 'Rosser-Schoenfeld 1962: maximum of psi(x)/x at 113'
   description: The maximum-at-113 clause of Theorem 12, and a separately identified explicit
-    uniqueness refinement. Equation (3.35) remains in v1. The new Lean proof reuses the
-    solution-local RS12 certificates and recurrence from v1; the core depends only on Mathlib.
+    uniqueness refinement. Both proofs assume equation (3.35) from v1. The solution supplies
+    local certificate checks and recurrence support with Mathlib logarithm proofs;
+    no v1 proof modules or LeanCert are imported.
   authors:
   - Håkon Xue-Lønmo
   license: Apache-2.0
@@ -26,8 +27,10 @@ conclusions:
 - id: psi_ratio_maximum_at_113
   declaration: RosserSchoenfeld1962.v2.psi_ratio_maximum_at_113
   challenge: RosserSchoenfeld1962.v2.challenge_psi_ratio_maximum_at_113
-  imports: []
-  imports_status: none
+  imports:
+  - node: RosserSchoenfeld1962.v1
+    conclusion: equation_3_35
+  imports_status: identified
   justifications:
   - id: rs1962-paper
     kind: literature
@@ -43,12 +46,24 @@ conclusions:
 - id: psi_ratio_unique_maximum_at_113
   declaration: RosserSchoenfeld1962.v2.psi_ratio_unique_maximum_at_113
   challenge: RosserSchoenfeld1962.v2.challenge_psi_ratio_unique_maximum_at_113
-  imports: []
-  imports_status: none
+  imports:
+  - node: RosserSchoenfeld1962.v1
+    conclusion: equation_3_35
+  imports_status: identified
   justifications:
-  - id: awaiting-verification
-    kind: none-yet
-  designated: awaiting-verification
+  - id: local-proof-awaiting-verification
+    kind: asserted
+    note: >-
+      The author reports a complete local Lean proof of this uniqueness
+      refinement in Solutions/RosserSchoenfeld1962.v2/Solution.lean.
+      The isolated build, exact challenge-type comparisons, permitted-axiom
+      audits, and dependency-closure checks are recorded in
+      Solutions/RosserSchoenfeld1962.v2/DEPENDENCIES.md.
+      This entry records the author's local validation report;
+      maintainer-side Comparator verification and its workflow-generated
+      receipt remain pending. Uniqueness is not explicitly asserted in the
+      1962 paper.
+  designated: local-proof-awaiting-verification
   progress:
     solution: Solutions/RosserSchoenfeld1962.v2/
     state: in-progress
@@ -69,8 +84,9 @@ related_formalizations:
 - id:
     https://github.com/hakonlonmo/PrimeNumberTheoremAnd/tree/81eca5aa3fa4779883a9aeba18e49087c5366e0f
   relationship: port/adaptation
-  note: The pinned upstream proves only equation (3.35). Its IEANTN port in v1 supplies the reused
-    proof infrastructure. The maximum and uniqueness proof in v2 is new Lean work.
+  note: The pinned upstream proves only equation (3.35). Its IEANTN port in v1 is the source
+    of the attributed certificate data and extracted local recurrence support. No v1 proof
+    module is imported. The maximum and uniqueness proof in v2 is new Lean work.
 automation:
   methods:
   - method: agent
@@ -87,7 +103,8 @@ review:
     verification is claimed.
 limitations:
 - Uniqueness is an explicit refinement of the printed claim; no mathematical novelty is claimed.
-- The solution reuses the unchanged RS12 library from the merged v1 port (PR 125).
-  Its private source interface is pinned to the canonical upstream commit in provenance.json.
+- Certificate data and extracted support are pinned and attributed in the local provenance
+  records. All checks and soundness proofs are supplied locally; no private v1 proof interface
+  or compiled v1 artifact is required.
 - Local checks do not replace maintainer-side Comparator verification. No receipt is created and
   lean-comparator is not designated.

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Håkon Xue-Lønmo, PNT+ contributors
 -/
 import Max113.Lower
-import RS12.PsiWitness
+import Max113.Witness
 
 namespace RS12Max113
 open Chebyshev Real ArithmeticFunction

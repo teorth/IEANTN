@@ -1,6 +1,6 @@
 solution: Solutions/RosserSchoenfeld1962.v2/
-state: complete
-phase: awaiting-verification
+state: locally-validated
+phase: step1-dependency-removal
 
 base:
   branch: rosser-schoenfeld-1962-max113-pr
@@ -34,7 +34,8 @@ statement_audit:
       positive real arguments using Mathlib's full-weight prime-power endpoint convention.
     uniqueness: >-
       RosserSchoenfeld1962.v2.psi_ratio_unique_maximum_at_113 is an explicit uniqueness refinement, formally stronger
-      than the printed wording. Its designated justification remains none-yet until verification.
+      than the printed wording. Its designated asserted justification records the author's
+      local validation report; official Comparator verification remains pending.
       No mathematical novelty is claimed.
   unchanged: >-
     RosserSchoenfeld1962.v1.equation_3_35 and RS_prime.theorem_12 retain their original
@@ -47,22 +48,14 @@ architecture:
     maximum claim from uniqueness, and leave the merged v1 conclusion immutable.
   core: Mathlib.NumberTheory.Chebyshev only; no new Vocabulary definitions.
   reuse: >-
-    The v2 Lake project declares an RS12 library with srcDir pointing at the unchanged
-    sibling v1 sources, and uses the same pinned LeanCert dependency. Requiring the
-    entire v1 project would shadow v2's Solution module in lake env lean, so only the
-    RS12 sources are exposed. No v1 source file or conclusion is modified.
-    The core does not depend on either solution. The original 51 RS12 modules, including all witness and factorial data,
-    are checked against canonical merged commit 6664139ccebea21ecdb9bd94539fc75d77564794
-    by scripts/generate_adapters.py --check, without needing the old development history.
+    Required recurrence support and integer witness DATA are supplied locally with
+    attribution and pinned original-source hashes. No sibling srcDir, v1 proof module,
+    or LeanCert package remains. Only v1 core Conclusions supplies the hypothesis type.
   duplication: >-
-    No large certificate data is duplicated. Shifted.lean adapts the roughly 60-line
-    witness soundness and range-join proofs to carry an arbitrary additive offset.
-    SmallChecker.lean adapts its factor-witness convention and soundness argument to
-    verify a finer logarithm bound from supplied binary exponents.
-    Generated adapters reference all 1998 existing checked witness leaves and propagate
-    the stronger invariant. Private.lean resolves their pinned private names to ordinary
-    Lean constants; it asserts no fact and introduces no axiom. Changes to this private
-    source interface require deliberate regeneration and revalidation.
+    The 1998 witness lists are supplied as integer data and rendered into local checked
+    declarations. Shifted and SmallChecker preserve the existing stronger accumulator
+    argument. Only necessary recurrence support is extracted; unused checker routes,
+    the v1 seed, global theorem and induction are omitted.
 
 proof:
   historical_comparison: >-
@@ -75,7 +68,7 @@ proof:
   principal_target: 113 * psi(x) < x * psi(113) for x > 0 and x != 113
   finite_seed: >-
     A kernel-checked integer LCM comparison gives 2^169*(12774/10000) <= lcmUpto(113).
-    Two rational Taylor logarithm intervals at depth 20 then prove
+    Mathlib logarithm and twelve-term exponential bounds then prove
     113*1.03882 < psi(113). For the small upper bounds, refine v1's binary-length method
     from eighth powers to 256th powers, with the already certified log(2) upper bound.
     The generated data supplies 600 factor/exponent triples in 12 blocks. The checker
@@ -85,7 +78,7 @@ proof:
     below 594.10. This leaves more than five units of slack in v1's seed
     6919*693148/8000000. All computations use decide +kernel.
   finite_propagation: >-
-    The same v1 witness checks now yield psi(n)+5 <= 1.038829*n for 600 < n <= 500000.
+    Local kernel checks of the pinned witness data yield psi(n)+5 <= 1.038829*n for 600 < n <= 500000.
     Since 0.000009*n <= 4.5 in this range, this gives psi(n) < 1.03882*n, hence the strict
     symbolic comparison. The rational separator is not substituted for the exact optimum.
   real_extension: >-
@@ -93,10 +86,9 @@ proof:
     and floor x <= x suffice. For floor x=0 use psi(x)=0 and positivity of psi(113).
     For floor x=113 and x!=113, use 113<x and the same positivity.
   tail: >-
-    For x>=500000, reuse the recurrence and apply the existing equation-(3.35) theorem
-    at x/60. Their combination is strictly below 1.03882*x. Thus no new strong induction
-    or new tail certificate is needed. This reuses the already kernel-checked induction
-    behind RS_prime.theorem_12 and does not change its meaning.
+    For x>=500000, reuse the recurrence and apply the supplied equation_3_35 hypothesis
+    at x/60. Their combination is strictly below 1.03882*x. The global v1 theorem is
+    supplied as a proof; the recurrence uses locally compiled factorial certificates.
   ratios: >-
     Equality at 113 gives the non-strict global bound. Positive-denominator cross
     multiplication derives both public ratio formulations from the strict internal theorem.
@@ -105,15 +97,15 @@ trust:
   new_numerical_assumptions: none
   checks: decide +kernel, with soundness proved in Lean
   provenance: >-
-    scripts/generate_adapters.py --check compares generated adapters, their SHA256
-    inventory, and every reused RS12 source against the v1 base. The existing v1
-    scripts/check_certificates.py checks the 35 original generated modules against
-    read-only PNT+ commit 81eca5aa3fa4779883a9aeba18e49087c5366e0f.
+    generate_adapters.py --check regenerates local proofs from the pinned integer data.
+    check_dependencies.py checks local source hashes and rejects v1/LeanCert imports.
+    Original source hashes at commit 6664139ccebea21ecdb9bd94539fc75d77564794 are
+    retained separately in certificates/provenance.json. No sibling sources are read.
   comparator: >-
     Maintainer-side Comparator verification is separate. No author-written receipt and
     no manually designated lean-comparator justification.
 
-validation:
+original_port_validation:
   state: passed
   revalidated_on: '2026-10-31'
   core_build: lake build, 3875 jobs
@@ -166,3 +158,19 @@ validation:
   submission: >-
     Prepared locally for human inspection. Maintainer-side Comparator verification
     remains separate; no verification receipt or remote submission is supplied.
+
+step1_revision:
+  status: dependency-removal-complete
+  explicit_hypothesis: Both compared declarations and their tail helpers take equation_3_35.
+  source_dependencies: No v1 proof imports; only the v1 core Conclusions definition remains.
+  package_dependencies: IEANTN path dependency and its pinned Mathlib packages; no LeanCert.
+  implementation: See DEPENDENCIES.md; prior validation above describes the original port only.
+  validation: >-
+    Fresh isolated build passed on 2026-11-12 under /tmp/pr187-isolated-d8h9p8eh.
+    Both pp.all types match regenerated challenges; both axiom lists are exactly
+    propext, Classical.choice, Quot.sound. The actual loaded closure has zero v1
+    solution and LeanCert modules. All 1998 witness leaves and twelve floor shards
+    compiled locally. Both conclusion fingerprints are unchanged. Details and log
+    locations are in DEPENDENCIES.md. No certificate computation remains.
+  metadata_followup: Step 2 records uniqueness as an author-reported asserted justification;
+    the published maximum retains its rs1962-paper literature designation.

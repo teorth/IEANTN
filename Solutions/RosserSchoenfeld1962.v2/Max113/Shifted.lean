@@ -3,16 +3,13 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Håkon Xue-Lønmo, PNT+ contributors
 -/
-import RS12.PsiWitness
-import Max113.Private
+import Max113.Witness
 
 namespace RS12Max113
 open Real Chebyshev RS12PsiInteger ArithmeticFunction
 
 set_option maxRecDepth 100000
 
-private abbrev hintUnits : ℕ → ℕ :=
-  rs12_private% RS12.PsiWitness RS12PsiInteger.hintUnits
 
 /-- Soundness of a block of supplied factorization witnesses. -/
 theorem shifted_sound {start acc target : ℕ} {δ : ℝ} {cs : List ℕ}
@@ -32,7 +29,7 @@ theorem shifted_sound {start acc target : ℕ} {δ : ℝ} {cs : List ℕ}
     have hnext : (ψ (start + 1 : ℕ) + δ) ≤
         ((acc + hintUnits code : ℕ) : ℝ) * 693148 / 8000000 := by
       rw [psi_succ]
-      have ht := (rs12_private% RS12.PsiWitness RS12PsiInteger.vonMangoldt_le_factorUnits) hc.1
+      have ht := vonMangoldt_le_factorUnits hc.1
       change vonMangoldt (start + 1) ≤ (hintUnits code : ℝ) * 693148 / 8000000 at ht
       push_cast
       linarith

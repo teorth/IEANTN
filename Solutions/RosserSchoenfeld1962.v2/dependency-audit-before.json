@@ -1,0 +1,362 @@
+{
+  "v1_modules": [
+    "RS12.Chebyshev",
+    "RS12.Constants",
+    "RS12.Factorial",
+    "RS12.FactorialBound",
+    "RS12.FactorialData",
+    "RS12.FactorialData00",
+    "RS12.FactorialData01",
+    "RS12.FactorialData02",
+    "RS12.FactorialData03",
+    "RS12.FactorialData04",
+    "RS12.FactorialData05",
+    "RS12.FactorialData06",
+    "RS12.FactorialData07",
+    "RS12.FactorialData08",
+    "RS12.FactorialData09",
+    "RS12.FactorialData10",
+    "RS12.FactorialData11",
+    "RS12.FactorialUpper",
+    "RS12.FixedCheck",
+    "RS12.KernelLogs",
+    "RS12.Period",
+    "RS12.PsiData00",
+    "RS12.PsiData01",
+    "RS12.PsiData02",
+    "RS12.PsiData03",
+    "RS12.PsiData04",
+    "RS12.PsiData05",
+    "RS12.PsiData06",
+    "RS12.PsiData07",
+    "RS12.PsiData08",
+    "RS12.PsiData09",
+    "RS12.PsiData10",
+    "RS12.PsiData11",
+    "RS12.PsiData12",
+    "RS12.PsiData13",
+    "RS12.PsiData14",
+    "RS12.PsiData15",
+    "RS12.PsiData16",
+    "RS12.PsiData17",
+    "RS12.PsiData18",
+    "RS12.PsiData19",
+    "RS12.PsiFiniteBase",
+    "RS12.PsiInteger",
+    "RS12.PsiRecurrence",
+    "RS12.PsiWitness",
+    "RS12.Weights"
+  ],
+  "imports": {
+    "Solution": [
+      "IEANTN.Nodes.RosserSchoenfeld1962.v2.Conclusions",
+      "Max113.Proof"
+    ],
+    "Max113.Proof": [
+      "Max113.Finite",
+      "IEANTN.Nodes.RosserSchoenfeld1962.v1.Conclusions",
+      "RS12.PsiRecurrence"
+    ],
+    "Max113.Finite": [
+      "Max113.Data19"
+    ],
+    "Max113.Data19": [
+      "RS12.PsiData19",
+      "Max113.Shifted",
+      "Max113.Data18"
+    ],
+    "RS12.PsiData19": [
+      "RS12.PsiWitness",
+      "RS12.PsiData18"
+    ],
+    "RS12.PsiWitness": [
+      "RS12.PsiInteger",
+      "Mathlib.Data.Nat.Factorization.PrimePow"
+    ],
+    "RS12.PsiInteger": [
+      "RS12.KernelLogs",
+      "Mathlib.NumberTheory.Chebyshev"
+    ],
+    "RS12.KernelLogs": [
+      "LeanCert.Core.IntervalRat.Taylor",
+      "Mathlib.Tactic"
+    ],
+    "RS12.PsiData18": [
+      "RS12.PsiWitness",
+      "RS12.PsiData17"
+    ],
+    "RS12.PsiData17": [
+      "RS12.PsiWitness",
+      "RS12.PsiData16"
+    ],
+    "RS12.PsiData16": [
+      "RS12.PsiWitness",
+      "RS12.PsiData15"
+    ],
+    "RS12.PsiData15": [
+      "RS12.PsiWitness",
+      "RS12.PsiData14"
+    ],
+    "RS12.PsiData14": [
+      "RS12.PsiWitness",
+      "RS12.PsiData13"
+    ],
+    "RS12.PsiData13": [
+      "RS12.PsiWitness",
+      "RS12.PsiData12"
+    ],
+    "RS12.PsiData12": [
+      "RS12.PsiWitness",
+      "RS12.PsiData11"
+    ],
+    "RS12.PsiData11": [
+      "RS12.PsiWitness",
+      "RS12.PsiData10"
+    ],
+    "RS12.PsiData10": [
+      "RS12.PsiWitness",
+      "RS12.PsiData09"
+    ],
+    "RS12.PsiData09": [
+      "RS12.PsiWitness",
+      "RS12.PsiData08"
+    ],
+    "RS12.PsiData08": [
+      "RS12.PsiWitness",
+      "RS12.PsiData07"
+    ],
+    "RS12.PsiData07": [
+      "RS12.PsiWitness",
+      "RS12.PsiData06"
+    ],
+    "RS12.PsiData06": [
+      "RS12.PsiWitness",
+      "RS12.PsiData05"
+    ],
+    "RS12.PsiData05": [
+      "RS12.PsiWitness",
+      "RS12.PsiData04"
+    ],
+    "RS12.PsiData04": [
+      "RS12.PsiWitness",
+      "RS12.PsiData03"
+    ],
+    "RS12.PsiData03": [
+      "RS12.PsiWitness",
+      "RS12.PsiData02"
+    ],
+    "RS12.PsiData02": [
+      "RS12.PsiWitness",
+      "RS12.PsiData01"
+    ],
+    "RS12.PsiData01": [
+      "RS12.PsiWitness",
+      "RS12.PsiData00"
+    ],
+    "RS12.PsiData00": [
+      "RS12.PsiWitness",
+      "RS12.PsiFiniteBase"
+    ],
+    "RS12.PsiFiniteBase": [
+      "RS12.PsiInteger"
+    ],
+    "Max113.Shifted": [
+      "RS12.PsiWitness",
+      "Max113.Private"
+    ],
+    "Max113.Private": [
+      "Lean"
+    ],
+    "Max113.Data18": [
+      "RS12.PsiData18",
+      "Max113.Shifted",
+      "Max113.Data17"
+    ],
+    "Max113.Data17": [
+      "RS12.PsiData17",
+      "Max113.Shifted",
+      "Max113.Data16"
+    ],
+    "Max113.Data16": [
+      "RS12.PsiData16",
+      "Max113.Shifted",
+      "Max113.Data15"
+    ],
+    "Max113.Data15": [
+      "RS12.PsiData15",
+      "Max113.Shifted",
+      "Max113.Data14"
+    ],
+    "Max113.Data14": [
+      "RS12.PsiData14",
+      "Max113.Shifted",
+      "Max113.Data13"
+    ],
+    "Max113.Data13": [
+      "RS12.PsiData13",
+      "Max113.Shifted",
+      "Max113.Data12"
+    ],
+    "Max113.Data12": [
+      "RS12.PsiData12",
+      "Max113.Shifted",
+      "Max113.Data11"
+    ],
+    "Max113.Data11": [
+      "RS12.PsiData11",
+      "Max113.Shifted",
+      "Max113.Data10"
+    ],
+    "Max113.Data10": [
+      "RS12.PsiData10",
+      "Max113.Shifted",
+      "Max113.Data09"
+    ],
+    "Max113.Data09": [
+      "RS12.PsiData09",
+      "Max113.Shifted",
+      "Max113.Data08"
+    ],
+    "Max113.Data08": [
+      "RS12.PsiData08",
+      "Max113.Shifted",
+      "Max113.Data07"
+    ],
+    "Max113.Data07": [
+      "RS12.PsiData07",
+      "Max113.Shifted",
+      "Max113.Data06"
+    ],
+    "Max113.Data06": [
+      "RS12.PsiData06",
+      "Max113.Shifted",
+      "Max113.Data05"
+    ],
+    "Max113.Data05": [
+      "RS12.PsiData05",
+      "Max113.Shifted",
+      "Max113.Data04"
+    ],
+    "Max113.Data04": [
+      "RS12.PsiData04",
+      "Max113.Shifted",
+      "Max113.Data03"
+    ],
+    "Max113.Data03": [
+      "RS12.PsiData03",
+      "Max113.Shifted",
+      "Max113.Data02"
+    ],
+    "Max113.Data02": [
+      "RS12.PsiData02",
+      "Max113.Shifted",
+      "Max113.Data01"
+    ],
+    "Max113.Data01": [
+      "RS12.PsiData01",
+      "Max113.Shifted",
+      "Max113.Data00"
+    ],
+    "Max113.Data00": [
+      "RS12.PsiData00",
+      "Max113.Shifted",
+      "Max113.Small"
+    ],
+    "Max113.Small": [
+      "Max113.SmallChecker"
+    ],
+    "Max113.SmallChecker": [
+      "Max113.Lower",
+      "RS12.PsiWitness"
+    ],
+    "Max113.Lower": [
+      "RS12.KernelLogs",
+      "Mathlib.NumberTheory.Chebyshev"
+    ],
+    "RS12.PsiRecurrence": [
+      "RS12.FactorialData",
+      "RS12.FactorialUpper"
+    ],
+    "RS12.FactorialData": [
+      "RS12.FactorialData00",
+      "RS12.FactorialData01",
+      "RS12.FactorialData02",
+      "RS12.FactorialData03",
+      "RS12.FactorialData04",
+      "RS12.FactorialData05",
+      "RS12.FactorialData06",
+      "RS12.FactorialData07",
+      "RS12.FactorialData08",
+      "RS12.FactorialData09",
+      "RS12.FactorialData10",
+      "RS12.FactorialData11"
+    ],
+    "RS12.FactorialData00": [
+      "RS12.FixedCheck"
+    ],
+    "RS12.FixedCheck": [
+      "RS12.Period"
+    ],
+    "RS12.Period": [
+      "RS12.Weights",
+      "RS12.Factorial"
+    ],
+    "RS12.Weights": [
+      "Mathlib.Data.Int.Basic",
+      "Mathlib.Data.List.Range",
+      "Mathlib.Tactic"
+    ],
+    "RS12.Factorial": [
+      "RS12.Chebyshev"
+    ],
+    "RS12.Chebyshev": [
+      "Mathlib.NumberTheory.Chebyshev",
+      "Mathlib.Analysis.SumIntegralComparisons",
+      "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+      "Mathlib.Tactic"
+    ],
+    "RS12.FactorialData01": [
+      "RS12.FixedCheck"
+    ],
+    "RS12.FactorialData02": [
+      "RS12.FixedCheck"
+    ],
+    "RS12.FactorialData03": [
+      "RS12.FixedCheck"
+    ],
+    "RS12.FactorialData04": [
+      "RS12.FixedCheck"
+    ],
+    "RS12.FactorialData05": [
+      "RS12.FixedCheck"
+    ],
+    "RS12.FactorialData06": [
+      "RS12.FixedCheck"
+    ],
+    "RS12.FactorialData07": [
+      "RS12.FixedCheck"
+    ],
+    "RS12.FactorialData08": [
+      "RS12.FixedCheck"
+    ],
+    "RS12.FactorialData09": [
+      "RS12.FixedCheck"
+    ],
+    "RS12.FactorialData10": [
+      "RS12.FixedCheck"
+    ],
+    "RS12.FactorialData11": [
+      "RS12.FixedCheck"
+    ],
+    "RS12.FactorialUpper": [
+      "RS12.Constants"
+    ],
+    "RS12.Constants": [
+      "RS12.FactorialBound",
+      "RS12.KernelLogs"
+    ],
+    "RS12.FactorialBound": [
+      "RS12.Period"
+    ]
+  }
+}
