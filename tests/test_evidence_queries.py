@@ -104,8 +104,26 @@ class QueryTests(unittest.TestCase):
         self.assertEqual(witness["path_to_changed"][-1], "A.v1.main")
         self.assertIn("new node version", finding["repair_advice"][0])
 
+    def test_plan_deduplicates_runs_by_node_and_covers_every_conclusion(self):
+        d = document(entry("A.v1.one", "lean-comparator-stale", receipt={"state": "yellow"}),
+                     entry("A.v1.two", "lean-comparator-stale", receipt={"state": "yellow"}))
+        result = query.refresh_plan(query.EvidenceGraph(d), {"A.v1": 20}, 30)
+        self.assertEqual(len(result["runs"]), 1)
+        self.assertEqual(result["runs"][0]["covers"], ["A.v1.one", "A.v1.two"])
+        self.assertEqual(result["known_selected_seconds"], 20)
+        self.assertFalse(result["dispatches"])
 
+    def test_unknown_cost_never_silently_fits_finite_budget(self):
+        d = document(entry("A.v1.main", "lean-comparator-stale", receipt={"state": "yellow"}))
+        result = query.refresh_plan(query.EvidenceGraph(d), budget=100)
+        self.assertFalse(result["runs"][0]["selected"])
+        self.assertEqual(result["runs"][0]["decision"], "unknown-cost")
 
+    def test_nonfinite_and_boolean_costs_are_rejected(self):
+        graph = query.EvidenceGraph(self.diamond())
+        for value in [True, float("inf"), float("nan"), -1]:
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                query.refresh_plan(graph, {"A.v1": value})
 
     def test_duplicate_keys_and_unsupported_schema_fail(self):
         with self.assertRaisesRegex(ValueError, "duplicate JSON"):

@@ -73,3 +73,10 @@ requirement, designation and receipt-health changes, a witness path to each
 downstream consumer, and repair advice derived from that change. `ieantn.py
 diff` remains the enforcement gate. Advice does not claim a proposed bridge
 has been proved.
+
+## Budgeted re-verification plan
+
+`refresh-plan` groups stale or broken conclusions by node, ranks broken
+evidence ahead of environmental staleness, then by downstream reach. Costs are
+optional estimates in seconds. An unknown cost never counts as zero inside a
+finite budget. The plan does not dispatch a run.
