@@ -7,8 +7,8 @@ node:
   status: awaiting-verification
 project:
   name: 'Rosser-Schoenfeld 1962: equation (5.4)'
-  description: An unconditional port of the completed PNT+ proof of equation (5.4). The solution reuses
-    the unchanged v1 RS12 library; the core imports Mathlib only.
+  description: A port of the completed PNT+ proof of equation (5.4), conditional on
+    RosserSchoenfeld1962.v1.equation_3_35. The solution and core use Mathlib only.
   authors:
   - Håkon Xue-Lønmo
   license: Apache-2.0
@@ -25,30 +25,23 @@ conclusions:
 - id: equation_5_4
   declaration: RosserSchoenfeld1962.v5.equation_5_4
   challenge: RosserSchoenfeld1962.v5.challenge_equation_5_4
-  imports: []
-  imports_status: none
+  imports:
+  - node: RosserSchoenfeld1962.v1
+    conclusion: equation_3_35
+  imports_status: identified
   justifications:
-  - id: rs1962-port
-    kind: lean-noncompliant
-    note: The complete local solution builds and its compared declarations have identical pp.all challenge
-      types and exactly propext, Classical.choice and Quot.sound. The inherited v1 RS12 library uses LeanCert
-      at 6b11513512c9d27183fb4725bfc291ab38b4a6d7 and requires sequential certificate compilation to limit
-      memory. Admission of that third-party dependency and runner-memory support are the existing verification
-      questions in issue 164. No numerical assumption or additional logical axiom is used. No receipt
-      is supplied or lean-comparator justification designated by the author.
   - id: rs1962-paper
     kind: literature
     source: https://doi.org/10.1215/ijm/1255631807
     locator: Equation (5.4), p. 77
     note: Recorded on the authority of the cited paper pending official Comparator verification. The solution
-      proves the claim unconditionally using the actual v1 RS12 proof, with no node hypothesis or external
+      proves the claim from the declared v1 equation_3_35 hypothesis, with no additional
       numerical assumption.
-  designated: rs1962-port
+  designated: rs1962-paper
   progress:
     solution: Solutions/RosserSchoenfeld1962.v5/
     state: in-progress
     remaining_holes: 0
-  issue: 164
 sources:
 - title: Approximate formulas for some functions of prime numbers
   authors:

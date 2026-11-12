@@ -44,3 +44,12 @@ for name, printed in matches:
         raise SystemExit(f'{name}: expected exactly {sorted(allowed)}, got {sorted(found)}')
 print(f'PASS: {len(names)} identical pp.all types; exactly the three permitted axioms')
 print(axioms, end='')
+
+imports = run('imports', config['solution_module'],
+              'run_cmd do\n  for m in (← Lean.getEnv).header.moduleNames do\n    Lean.logInfo m!"{m}"\n')
+modules = {line.strip() for line in imports.splitlines()}
+assert not any(m == 'RS12' or m.startswith('RS12.') for m in modules), imports
+assert not any(m.endswith('.Challenge') for m in modules), imports
+assert not any(m == 'LeanCert' or m.startswith('LeanCert.') for m in modules), imports
+assert 'IEANTN.Nodes.RosserSchoenfeld1962.v1.Conclusions' in modules
+print('PASS: actual loaded module closure respects the declared dependency boundary')

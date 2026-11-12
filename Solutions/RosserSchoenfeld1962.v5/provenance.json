@@ -3,8 +3,8 @@
   "checkout_base_commit": "81eca5aa3fa4779883a9aeba18e49087c5366e0f",
   "source_kind": "read-only working-tree snapshot",
   "adaptations": [
-    "Redirect the completed RS12 import to the unchanged v1 RS12 library.",
-    "Redirect historical module imports to Port; add attribution headers; remove diagnostic #print commands."
+    "Redirect historical module imports to Port; add attribution headers; remove diagnostic #print commands.",
+    "Step 1: replace the v1 RS12 proof-library dependency with the explicit RosserSchoenfeld1962.v1.equation_3_35 challenge hypothesis; retain original source hashes."
   ],
   "ported": [
     {
@@ -12,10 +12,10 @@
       "source_sha256": "a8370b4ea5a43bd0d4a42fd793710c4e685c786b33c629e0450c9697da6d313b",
       "tracked_at_snapshot": false,
       "local": "Port/HistoricalEquation54.lean",
-      "local_sha256": "1c1339b8d12b9279de467cb7575833f1a1b87f232b0104b2593f9157d589769b"
+      "local_sha256": "f6360baf05b02bfb60d43ae244d77dfd76456587bb56921edf3530ac3993c64d"
     }
   ],
-  "inherited_rs12": [
+  "historical_inherited_rs12": [
     {
       "path": "../RosserSchoenfeld1962.v1/RS12/Chebyshev.lean",
       "sha256": "bab5e2175a12f190f6677262050be886f97953f8054664fd3c671e8a5edf2c96"
@@ -220,5 +220,6 @@
       "path": "../RosserSchoenfeld1962.v1/RS12/Weights.lean",
       "sha256": "a1ce1ba06c8d7a1e34e19e793fada50b3cab968c8b26c6b0b57d6f0826dd0e1b"
     }
-  ]
+  ],
+  "historical_inherited_rs12_note": "Historical inventory from the original port; these sibling sources are no longer imported, compiled, or required by the solution or its provenance check."
 }

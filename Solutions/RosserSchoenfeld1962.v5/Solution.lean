@@ -6,6 +6,7 @@ Authors: Håkon Xue-Lønmo, PNT+ contributors
 import IEANTN.Nodes.RosserSchoenfeld1962.v5.Conclusions
 import Port.HistoricalEquation54
 
-theorem RosserSchoenfeld1962.v5.challenge_equation_5_4 :
+theorem RosserSchoenfeld1962.v5.challenge_equation_5_4
+    (rosserschoenfeld1962_v1_equation_3_35 : RosserSchoenfeld1962.v1.equation_3_35) :
     RosserSchoenfeld1962.v5.equation_5_4 :=
-  fun _ hx => RS5Historical.equation54 hx
+  fun _ hx => RS5Historical.equation54 rosserschoenfeld1962_v1_equation_3_35 hx

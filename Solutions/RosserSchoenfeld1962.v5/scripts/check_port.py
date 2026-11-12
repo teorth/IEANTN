@@ -24,9 +24,7 @@ for item in inventory['ported']:
     check(root / item['local'], item['local_sha256'])
     if args.source:
         check(args.source / item['source'], item['source_sha256'])
-for item in inventory['inherited_rs12']:
-    check(root / item['path'], item['sha256'])
 if errors:
     raise SystemExit('Source inventory mismatch:\n' + '\n'.join(errors))
-print(f"PASS: {len(inventory['ported'])} ported and "
-      f"{len(inventory['inherited_rs12'])} unchanged RS12 sources")
+print(f"PASS: {len(inventory['ported'])} ported sources; "
+      "historical RS12 inventory is attribution only")
