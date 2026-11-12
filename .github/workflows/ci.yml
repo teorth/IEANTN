@@ -215,6 +215,11 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # The workflow's contents: read token cannot upload artifacts. This write is
+    # limited to the impact job. The comment token stays in review-report.yml.
+    permissions:
+      contents: read
+      actions: write
     steps:
       # Full history: the base state is recovered with `git show`, not by checking it out.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
