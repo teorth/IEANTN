@@ -47,6 +47,9 @@ defeat the purpose of the split.
 
 ## Reading order
 
+For machine-readable graph data, see [the evidence JSON interface](docs/EVIDENCE.md)
+and `python scripts/ieantn.py export`.
+
 0. [GRAPH.md](GRAPH.md) — **the network itself**: what it contains, what each result rests
    on, and what is taken on trust. Generated, and the place to start if you only want to
    see the thing. Each node also has a generated summary page under
