@@ -1,0 +1,61 @@
+name: Review report
+
+# Posts the network-impact analysis as one pull-request comment.
+#
+# `ci.yml` already runs `ieantn.py diff` and writes the result to the job summary. That job holds
+# `contents: read` and, on a pull request, checks out contributor code. Giving it
+# `pull-requests: write` would hand the comment token to that checkout. This workflow is the
+# split instead:
+#
+#   * it is triggered by `workflow_run` after CI succeeds, so the workflow file that runs is the
+#     one on the default branch, not the pull request's copy;
+#   * it checks out that default branch and reads the artifact CI uploaded;
+#   * it does not check out the pull request head and does not compile or execute its Lean;
+#   * the token is used to read that artifact and to create or update a comment. It is not a
+#     `contents: write` token, so this job cannot push.
+#
+# The artifact is data. A pull request can put whatever JSON it wants in it. `review_report.py`
+# accepts only head SHA, findings, and a truncated flag, treats the strings as text, and refuses
+# anything else. The comment it updates is the one whose body starts with
+# `<!-- ieantn-review-report -->`.
+#
+# `actions: read` is the extra read GitHub requires to download an artifact from another
+# workflow run. It does not grant a write.
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+
+jobs:
+  comment:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout the trusted workflow
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Download the review report artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: ieantn-review-report
+          path: ${{ runner.temp }}/ieantn-review-report
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event.workflow_run.id }}
+      - name: Post or update the review comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          EVENT_PATH: ${{ github.event_path }}
+          REPORT: ${{ runner.temp }}/ieantn-review-report/review-report.json
+        run: python3 scripts/review_report.py post --event "$EVENT_PATH" --payload "$REPORT" --repo "$REPO"

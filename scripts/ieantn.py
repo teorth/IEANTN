@@ -13,6 +13,7 @@ routine node-management tasks.
     python scripts/ieantn.py fingerprint --check     fail if any has moved
     python scripts/ieantn.py status                  the traffic light for every conclusion
     python scripts/ieantn.py diff --base origin/main what this branch degrades, and for whom
+    python scripts/ieantn.py diff --base "$BASE" --head "$SHA" --json review-report.json
     python scripts/ieantn.py housekeeping            the derived task queue
     python scripts/ieantn.py state                   refresh STATE.md (a view; CI commits it)
     python scripts/ieantn.py check-receipts          every receipt names a real verification run
@@ -4528,7 +4529,21 @@ def acknowledged() -> dict[str, str]:
     return result
 
 
-def diff(base: str) -> bool:
+def _write_review_payload(
+    path: pathlib.Path, head_sha: str, errors: list[str], warnings: list[str], notes: list[str]
+) -> None:
+    """Write the artifact the review-comment workflow renders. The renderer lives beside this file."""
+    script_dir = str(pathlib.Path(__file__).resolve().parent)
+    if script_dir not in sys.path:
+        sys.path.insert(0, script_dir)
+    import review_report
+
+    payload = review_report.build_ci_payload(head_sha, errors, warnings, notes)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+
+def diff(base: str, head_sha: str | None = None, report_json: str | None = None) -> bool:
     """Report what this branch degrades, and fail on the one class that must not be silent."""
     before, after = state_at(base), state_at(None)
     excused = acknowledged()
@@ -4685,6 +4700,11 @@ def diff(base: str) -> bool:
     if summary:
         with open(summary, "a", encoding="utf-8") as handle:
             handle.write(report + "\n")
+
+    if report_json:
+        if not head_sha:
+            sys.exit("error: --json requires --head, the pull request head SHA")
+        _write_review_payload(pathlib.Path(report_json), head_sha, errors, warnings, notes)
 
     return not errors
 
@@ -5799,6 +5819,11 @@ def main() -> int:
     version.add_argument("family", help="e.g. Lcm")
     changed = sub.add_parser("diff")
     changed.add_argument("--base", default="origin/main")
+    changed.add_argument("--head", default=None, help="pull request head SHA recorded in --json")
+    changed.add_argument(
+        "--json", dest="report_json", default=None,
+        help="write the review-report payload for the comment workflow",
+    )
     solution = sub.add_parser("new-solution")
     solution.add_argument("node", help="e.g. Lcm.v1")
     written = sub.add_parser("record-receipt", help="verification workflow only")
@@ -5837,7 +5862,7 @@ def main() -> int:
     if args.command == "status":
         return 0 if status() else 1
     if args.command == "diff":
-        return 0 if diff(args.base) else 1
+        return 0 if diff(args.base, args.head, args.report_json) else 1
     if args.command == "new-solution":
         return 0 if new_solution(args.node) else 1
     if args.command == "record-receipt":
