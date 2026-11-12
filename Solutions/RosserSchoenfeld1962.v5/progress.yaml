@@ -1,0 +1,66 @@
+solution: Solutions/RosserSchoenfeld1962.v5/
+state: locally-validated
+source:
+  repository: https://github.com/hakonlonmo/PrimeNumberTheoremAnd
+  checkout_base_commit: 81eca5aa3fa4779883a9aeba18e49087c5366e0f
+  note: The new files are a working-tree snapshot, pinned individually by provenance.json.
+targets:
+- challenge: RosserSchoenfeld1962.v5.challenge_equation_5_4
+  upstream: RS5Historical.equation54
+  upstream_status: Completed and manually axiom-audited by the human before this port.
+statement_audit:
+  status: confirmed_correct
+  source: https://doi.org/10.1215/ijm/1255631807
+  scan: https://denisevellachemla.eu/Rosser-Schoenfeld-1962.pdf
+  details: Rendered original pp. 64, 71 and 77 checked against the Lean statements. The paper defines
+    psi and theta with inclusive upper endpoints, as does Mathlib. The maximum is non-strict without uniqueness;
+    (3.36) and (5.4) are strict on x > 0. Theorem 25 includes x = 1 and has theta <= psi with a strict
+    upper bound. All displayed decimals are exact rationals; its logarithmic constant is not rounded.
+upstream_closure:
+  ported_files: 1
+  reused_rs12_files: 0
+  note: Equation (3.35) is an explicit challenge hypothesis. No v1 proof sources,
+    PNT+ dependency, or generated Challenge enter the solution.
+trusted_numerics: None. The solution uses Mathlib only.
+file_layout: Solution.lean contains only Comparator adapters. Port retains upstream module boundaries.
+  The v1 Conclusions module supplies the imported proposition; no sibling srcDir remains.
+order:
+- Audit statements
+- Port the pruned source closure
+- Build sequentially
+- Check exact challenge types and axioms
+- Generate fingerprints and run repository checks
+validation:
+  core_build: passed
+  solution_build: passed (sequential cold build, then ordinary lake build)
+  types: Every Comparator-facing declaration has an identical pp.all type in separate challenge and solution
+    environments.
+  axioms:
+  - propext
+  - Classical.choice
+  - Quot.sound
+  progress: ieantn.py progress --write derived zero holes for every compared theorem.
+  source_inventory: check_port.py passed, including comparison with the read-only PNT+ snapshot.
+  inherited_certificates: Historical inventory only; no v1 certificate modules are compiled.
+  palomar_validator: Passed current contract at 14aa8d6b3c2f14a8540605e37144560b9a00e7e7.
+  official_verification: Pending. The existing rs1962-paper literature justification is
+    designated; the obsolete lean-noncompliant entry and issue 164 blocker are removed
+    for this node. Existing local validation records are preserved; no receipt is created here.
+  network_check: ieantn.py check passed in the canonical teorth/IEANTN receipt context. Derived views
+    are left to CI.
+  generated_files: Repository-generated challenge and fingerprint checks passed. Earlier node statements
+    and fingerprints are unchanged.
+proof_route: Apply theta_le_psi and the supplied equation_3_35 hypothesis, comparing
+  the exact coefficients 1.03883 < 1.11 for x > 0.
+
+step2_metadata_review:
+  proof_checks_rerun: false
+  saved_evidence: >-
+    Existing .lake/audit/challenge.out and solution.out have identical full types;
+    axioms.out records only propext, Classical.choice, and Quot.sound. These outputs
+    and the existing validation records were read and preserved during step 2.
+  build_log_evidence: >-
+    A separate step-1 solution-build transcript was not found in this worktree or
+    the temporary step-1 review directory. A separate step-1 core-build transcript was also not found there.
+    Earlier build reports are preserved as historical records; no new build or
+    certificate verification is claimed by this metadata review.
