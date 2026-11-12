@@ -166,7 +166,7 @@ step1_revision:
   package_dependencies: IEANTN path dependency and its pinned Mathlib packages; no LeanCert.
   implementation: See DEPENDENCIES.md; prior validation above describes the original port only.
   validation: >-
-    Fresh isolated build passed on 2026-11-12 under /tmp/pr187-isolated-d8h9p8eh.
+    Fresh isolated build passed on 2026-11-12 in an isolated temporary build directory.
     Both pp.all types match regenerated challenges; both axiom lists are exactly
     propext, Classical.choice, Quot.sound. The actual loaded closure has zero v1
     solution and LeanCert modules. All 1998 witness leaves and twelve floor shards

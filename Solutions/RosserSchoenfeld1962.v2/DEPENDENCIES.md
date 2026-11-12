@@ -19,7 +19,7 @@ The finite handoff, strict separator 1.03882, and floor-x=113 case are unchanged
 
 ## Validation results (2026-11-12)
 
-PASS in `/tmp/pr187-isolated-d8h9p8eh`. The source snapshot contains only the v2
+PASS in an isolated temporary build directory. The source snapshot contains only the v2
 solution, with fresh core and solution output directories. No sibling v1 solution
 or old solution artifacts were copied. Only Mathlib and its package caches were
 shared. All 51 supplied Lean source files match the edited worktree byte for byte.
