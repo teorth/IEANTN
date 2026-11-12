@@ -43,3 +43,17 @@ JSON on stdout. Consumers should reject unsupported schema versions. These
 fields describe recorded evidence, not a probability of correctness, source
 alignment certification or a claim that an inactive result is in the core build.
 
+## Explain why a theorem is conditional
+
+`scripts/evidence_queries.py` reads an export and does not write the repository:
+
+```sh
+python scripts/ieantn.py export > current.json
+python scripts/evidence_queries.py --input current.json explain FKS2.v1.corollary_14
+```
+
+`explain` returns one shortest witness path to each unproved leaf, with the
+evidence label, receipt and source at each step. A multi-premise bridge stays
+conjunctive: the path is a witness, and every listed premise is still required.
+A cited intermediate statement is itself an unproved leaf in addition to any
+assumptions below it. This is a record of dependencies, not a probability.
