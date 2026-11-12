@@ -9,7 +9,7 @@ open Lake DSL
 package solution_RosserSchoenfeld1962_v3 where
   leanOptions := #[⟨`autoImplicit, false⟩, ⟨`relaxedAutoImplicit, false⟩]
 
--- Only the solution depends on LeanCert; use the validated v1 pin.
+-- Local logarithm certificates need LeanCert; retain the validated pin.
 require leancert from git "https://github.com/alerad/leancert.git" @
   "6b11513512c9d27183fb4725bfc291ab38b4a6d7"
 require IEANTN from "../.."
@@ -20,10 +20,3 @@ lean_lib Solution where
 
 lean_lib Interval where
   globs := #[.submodules `Interval]
-
--- Reuse only the unchanged RS12 library, avoiding v1's conflicting Solution module.
--- Resolve the sibling within this checkout; v3 precedes it in LEAN_SRC_PATH.
-lean_lib RS12 where
-  srcDir := (__dir__).parent.get! / "RosserSchoenfeld1962.v1"
-  roots := #[`RS12.Proof]
-  globs := #[.submodules `RS12]

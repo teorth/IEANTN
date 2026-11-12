@@ -3,7 +3,7 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Håkon Xue-Lønmo, PNT+ contributors
 -/
-import RS12.Chebyshev
+import Interval.FactorialSupport
 import LeanCert.Core.IntervalRat.Taylor
 
 /-! Elementary weighted-factorial lower bound. Selected support adapted from
@@ -102,7 +102,9 @@ noncomputable def U (x : ℝ) : ℝ := ν.sum (fun m w ↦ w * T (x/m))
 
 theorem psi_ge_weighted (x : ℝ) (hx : x > 0) : ψ x ≥ U x := by
   unfold U psi
-  rw [T.weighted_eq_sum, ← Ioc_eq_Icc]
+  have hI : Icc 1 ⌊x⌋₊ = Ioc 0 ⌊x⌋₊ := by
+    simpa using (Finset.Icc_add_one_left_eq_Ioc (0 : ℕ) ⌊x⌋₊)
+  rw [T.weighted_eq_sum, hI]
   gcongr with i
   have := E_nu_bound (x / i) (div_nonneg hx.le (by simp))
   grw [this.2, mul_one]

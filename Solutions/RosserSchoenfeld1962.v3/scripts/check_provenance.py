@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Authors: Håkon Xue-Lønmo
-"""Check reused v1 sources without requiring unpublished Git objects or workspaces.
+"""Check local adaptations without requiring sibling proof sources or unpublished objects.
 
 This is a source correspondence check, not a verification receipt. The optional
 canonical comparison needs the public v1 merge in a full IEANTN clone.
@@ -21,23 +21,21 @@ def main() -> None:
     parser.add_argument("--canonical", action="store_true")
     args = parser.parse_args()
     provenance = json.loads((SOLUTION / "provenance.json").read_text())
-    sources = provenance["reused_sources"]
-    actual = {
-        p.relative_to(ROOT).as_posix()
-        for p in (ROOT / "Solutions/RosserSchoenfeld1962.v1/RS12").glob("*.lean")
-    }
-    if actual != set(sources):
-        raise SystemExit("The RS12 source inventory has changed")
+    sources = provenance["local_sources"]
     for name, digest in sources.items():
-        if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != digest:
-            raise SystemExit(f"Reused source differs: {name}")
-        if args.canonical:
+        if hashlib.sha256((SOLUTION / name).read_bytes()).hexdigest() != digest:
+            raise SystemExit(f"Local adaptation differs: {name}")
+    if args.canonical:
+        for item in provenance["adapted_sources"]:
+            if "source_commit" not in item:
+                continue
+            name = item["source"]
             blob = subprocess.check_output(
-                ["git", "show", f"{provenance['reused_source_commit']}:{name}"], cwd=ROOT
+                ["git", "show", f"{item['source_commit']}:{name}"], cwd=ROOT
             )
-            if hashlib.sha256(blob).hexdigest() != digest:
+            if hashlib.sha256(blob).hexdigest() != item["source_sha256"]:
                 raise SystemExit(f"Canonical source differs: {name}")
-    print(f"All {len(sources)} reused v1 sources match the recorded SHA-256 inventory.")
+    print(f"All {len(sources)} local adaptations match their SHA-256 inventory; no sibling sources required.")
     if args.canonical:
         print(f"Canonical public v1 merge: {provenance['reused_source_commit']}")
 

@@ -3,6 +3,7 @@ Copyright (c) 2026 IEANTN contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Håkon Xue-Lønmo
 -/
+import IEANTN.Nodes.RosserSchoenfeld1962.v1.Conclusions
 import IEANTN.Nodes.RosserSchoenfeld1962.v3.Conclusions
 
 /-!
@@ -16,5 +17,7 @@ Each `sorry` below is deliberate and permanent: a challenge *states*, it does no
 How each conclusion is justified is recorded in `formalization.yaml`, not here.
 -/
 
-theorem RosserSchoenfeld1962.v3.challenge_equation_3_8 : RosserSchoenfeld1962.v3.equation_3_8 := by
+theorem RosserSchoenfeld1962.v3.challenge_equation_3_8
+    (rosserschoenfeld1962_v1_equation_3_35 : RosserSchoenfeld1962.v1.equation_3_35) :
+    RosserSchoenfeld1962.v3.equation_3_8 := by
   sorry

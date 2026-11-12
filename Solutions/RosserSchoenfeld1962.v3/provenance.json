@@ -2,7 +2,7 @@
   "note": "Source inventory only; this is not a verification receipt.",
   "reused_source_repository": "https://github.com/teorth/IEANTN",
   "reused_source_commit": "e4123d4b16c21fc4df4f4f4706884bb57396833d",
-  "reused_source_locator": "PR #125 merge; all 51 RS12 sources also match the current checkout.",
+  "reused_source_locator": "PR #125 merge; historical attribution, not a compilation dependency.",
   "pnt_source_repository": "https://github.com/hakonlonmo/PrimeNumberTheoremAnd",
   "pnt_source_commit": "81eca5aa3fa4779883a9aeba18e49087c5366e0f",
   "adapted_sources": [
@@ -17,13 +17,20 @@
       "target": "Interval/Dyadic.lean",
       "source_sha256": "f4c52183195cf647feaa537454df15b8dfd58ce864867078e54b3d30c88e9559",
       "source_status": "Uncommitted PNT+ workspace material; not present at the public PNT+ pin. Historical attribution only, not an executable source dependency. The adapted proof is included in full."
+    },
+    {
+      "source": "Solutions/RosserSchoenfeld1962.v1/RS12/Chebyshev.lean",
+      "source_commit": "e4123d4b16c21fc4df4f4f4706884bb57396833d",
+      "source_sha256": "bab5e2175a12f190f6677262050be886f97953f8054664fd3c671e8a5edf2c96",
+      "target": "Interval/FactorialSupport.lean",
+      "note": "Only T, T.le, T.ge, T.eq_sum_Lambda, E and T.weighted_eq_sum. Use Mathlib for the interval conversion; omit e and its unused error bound. Original authors Akula and PNT+ contributors; no v1 certificate pipeline is retained."
     }
   ],
   "automation": {
     "framework": "OpenAI Codex",
     "role": "Proof development, witness generation, provenance and validation under human direction."
   },
-  "reused_sources": {
+  "historical_reused_sources": {
     "Solutions/RosserSchoenfeld1962.v1/RS12/Chebyshev.lean": "bab5e2175a12f190f6677262050be886f97953f8054664fd3c671e8a5edf2c96",
     "Solutions/RosserSchoenfeld1962.v1/RS12/Constants.lean": "4a34a0bd443fb8a22255fee705fef833845a5522f8adbf996f2d38ab7ef62c3a",
     "Solutions/RosserSchoenfeld1962.v1/RS12/Factorial.lean": "c11a5ad35d99c900fe056955258ad502cf8c7ed8a6504e4d370d4e8a0074c8da",
@@ -75,5 +82,11 @@
     "Solutions/RosserSchoenfeld1962.v1/RS12/Small.lean": "3d8b9712d4549e30bfed88189defdd9d08d2571dc0b316c4607da99384da3778",
     "Solutions/RosserSchoenfeld1962.v1/RS12/Tables.lean": "8ee93a2c2b9c6c2624ab4369020685139dc9815ad9e883443a9cb31c5604cb00",
     "Solutions/RosserSchoenfeld1962.v1/RS12/Weights.lean": "a1ce1ba06c8d7a1e34e19e793fada50b3cab968c8b26c6b0b57d6f0826dd0e1b"
-  }
+  },
+  "local_sources": {
+    "Interval/FactorialSupport.lean": "28a9a12e06937e226b254e7fff616a1ba26baadd173077fa9e84d2f775197f54",
+    "Interval/Lower.lean": "47d8259a27edf3cf415ef0276e7260d36745fe3f92651bb65a6003e159dfce55",
+    "Interval/Tail.lean": "f959150c80701bc304a68b70a86ebeb3c1e65e91a0387214e53c5c62fa2bf578"
+  },
+  "dependency_refactor": "Equation (3.35) is supplied as a hypothesis. Historical v1 inventory is not a build input."
 }

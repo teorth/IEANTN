@@ -3,8 +3,8 @@
 """Build the solution import closure one module at a time, retaining Lake's normal caches.
 
 Run from any directory after `lake update` / `lake exe cache get` in the solution.
-The certificate shards are memory-intensive; serial builds avoid compiling all twelve
-independent factorial shards at once. Logs are local build output, not verification receipts.
+Only this solution's own certificate shards and local support are built.
+No v1 proof source or factorial certificate is compiled. Logs are local build output, not verification receipts.
 """
 
 from pathlib import Path
@@ -18,8 +18,6 @@ LEAN_CERT = ROOT / ".lake/packages/leancert"
 
 def source(module: str) -> Path | None:
     relative = Path(module.replace(".", "/") + ".lean")
-    if module.startswith("RS12."):
-        return ROOT.parent / "RosserSchoenfeld1962.v1" / relative
     if module == "Solution" or module.startswith("Interval."):
         return ROOT / relative
     if module.startswith("LeanCert."):

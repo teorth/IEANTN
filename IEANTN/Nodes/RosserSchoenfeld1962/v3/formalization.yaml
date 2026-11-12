@@ -7,10 +7,10 @@ node:
   status: awaiting-verification
 project:
   name: 'Rosser-Schoenfeld 1962: equation (3.8) in Corollary 3'
-  description: 'Equation (3.8) of Corollary 3: 3x/(5 log x) < pi(2x)-pi(x) for every real x >= 41/2. An
-    unconditional Lean proof combines kernel-checked prime witnesses below 4096 with elementary weighted
-    factorial estimates, Mathlib''s Costa-Pereira inequality, and the unchanged proved equation-(3.35)
-    library from v1.'
+  description: 'Equation (3.8) of Corollary 3: 3x/(5 log x) < pi(2x)-pi(x) for every real x >= 41/2. A
+    conditional Lean proof combines kernel-checked prime witnesses below 4096 with elementary weighted
+    factorial estimates, Mathlib''s Costa-Pereira inequality, and the explicit equation-(3.35)
+    hypothesis from v1.'
   authors:
   - Håkon Xue-Lønmo
   license: Apache-2.0
@@ -27,17 +27,19 @@ conclusions:
 - id: equation_3_8
   declaration: RosserSchoenfeld1962.v3.equation_3_8
   challenge: RosserSchoenfeld1962.v3.challenge_equation_3_8
-  imports: []
-  imports_status: none
+  imports:
+  - node: RosserSchoenfeld1962.v1
+    conclusion: equation_3_35
+  imports_status: identified
   justifications:
   - id: rs1962-paper
     kind: literature
     source: https://doi.org/10.1215/ijm/1255631807
     locator: Corollary 3, equation (3.8), p. 69
     note: The source derives the corollaries from preceding estimates, with remaining finite ranges
-      checked against Lehmer's table. The local unconditional proof uses a different elementary
-      finite/analytic split and has only the standard three Lean axioms. No IEANTN node conclusion
-      is assumed. Comparator verification remains pending; no receipt is supplied by the author.
+      checked against Lehmer's table. The local conditional proof uses a different elementary
+      finite/analytic split and has only the standard three Lean axioms. Equation (3.35) from v1
+      is supplied as a hypothesis. Comparator verification remains pending; no receipt is supplied by the author.
   designated: rs1962-paper
   progress:
     solution: Solutions/RosserSchoenfeld1962.v3/
