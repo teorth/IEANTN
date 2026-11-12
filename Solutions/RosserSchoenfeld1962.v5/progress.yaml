@@ -61,6 +61,6 @@ step2_metadata_review:
     and the existing validation records were read and preserved during step 2.
   build_log_evidence: >-
     A separate step-1 solution-build transcript was not found in this worktree or
-    /tmp/rs1962-step1-review. A separate step-1 core-build transcript was also not found there.
+    the temporary step-1 review directory. A separate step-1 core-build transcript was also not found there.
     Earlier build reports are preserved as historical records; no new build or
     certificate verification is claimed by this metadata review.
