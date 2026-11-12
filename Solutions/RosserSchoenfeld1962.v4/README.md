@@ -18,7 +18,7 @@ From this solution directory:
 lake update
 python3 scripts/check_port.py
 # Optional comparison against the original read-only working-tree snapshot:
-python3 scripts/check_port.py --source /home/hxl/src/PNT-current
+python3 scripts/check_port.py --source /path/to/PNT-checkout
 python3 scripts/build_sequential.py
 ```
 
