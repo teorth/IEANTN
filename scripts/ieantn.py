@@ -41,6 +41,7 @@ import pathlib
 import re
 import subprocess
 import tempfile
+import textwrap
 import time
 import sys
 
@@ -63,6 +64,11 @@ FINGERPRINTS = ROOT / "fingerprints.json"
 FINGERPRINTS_NAME = "fingerprints.json"
 STATE = ROOT / "STATE.md"
 GRAPH = ROOT / "GRAPH.md"
+#: The same graph drawn, because Markdown can no longer hold it: GitHub renders Mermaid
+#: through a sandboxed viewer that refuses a diagram over 50,000 characters, and the
+#: conclusion-level graph passed that at 63,621. Laid out here rather than in the browser so
+#: the file stays byte-for-byte reproducible, which is what lets CI diff it like the others.
+GRAPH_PAGE = ROOT / "docs" / "graph.html"
 PAGES = ROOT / "docs" / "nodes"
 VERIFY_SCRIPT = ROOT / "scripts" / "verify-comparator.sh"
 RECEIPTS = ROOT / "receipts"
@@ -180,6 +186,7 @@ def _set_root(path: pathlib.Path) -> None:
     the tooling cannot be pointed somewhere unexpected by accident.
     """
     global ROOT, NODES_DIR, VOCAB_DIR, BRIDGES_DIR, FINGERPRINTS, STATE, GRAPH, PAGES, VERIFY_SCRIPT
+    global GRAPH_PAGE
     global RECEIPTS, CHANGES, SOLUTIONS
     ROOT = path
     NODES_DIR = ROOT / "IEANTN" / "Nodes"
@@ -189,6 +196,7 @@ def _set_root(path: pathlib.Path) -> None:
     FINGERPRINTS = ROOT / "fingerprints.json"
     STATE = ROOT / "STATE.md"
     GRAPH = ROOT / "GRAPH.md"
+    GRAPH_PAGE = ROOT / "docs" / "graph.html"
     VERIFY_SCRIPT = ROOT / "scripts" / "verify-comparator.sh"
     RECEIPTS = ROOT / "receipts"
     CHANGES = ROOT / "changes"
@@ -290,6 +298,8 @@ def strip_lean_comments(text: str) -> str:
     String and character literals are blanked, not scanned. A `/-` or `--` inside `"..."` is text,
     and treating it as a comment delimiter hides whatever follows -- including a real import --
     until a later `-/` that was never opened. The word `sorry` inside a string is not a hole.
+    Raw strings close at their matching quote/hash delimiter; raw literals and ordinary string
+    gaps retain newlines so source scans keep the original line boundaries.
     """
     out: list[str] = []
     index, depth, length = 0, 0, len(text)
@@ -300,7 +310,7 @@ def strip_lean_comments(text: str) -> str:
         index += 1
         while index < length:
             if text[index] == "\\" and index + 1 < length:
-                out.append("  ")
+                out.append(" \n" if text[index + 1] == "\n" else "  ")
                 index += 2
                 continue
             if text[index] == '"':
@@ -311,6 +321,20 @@ def strip_lean_comments(text: str) -> str:
             index += 1
 
     while index < length:
+        if (depth == 0 and text[index] == "r"
+                and (index == 0 or not (text[index - 1].isalnum() or text[index - 1] in "_'."))):
+            quote = index + 1
+            while quote < length and text[quote] == "#":
+                quote += 1
+            if quote < length and text[quote] == '"':
+                # Raw strings have no escapes: only a quote followed by the
+                # opening number of hashes closes them, including zero hashes.
+                delimiter = '"' + "#" * (quote - index - 1)
+                closing = text.find(delimiter, quote + 1)
+                end = length if closing < 0 else closing + len(delimiter)
+                out.append("".join("\n" if char == "\n" else " " for char in text[index:end]))
+                index = end
+                continue
         if depth == 0 and text[index] == '"':
             blank_string()
             continue
@@ -334,7 +358,11 @@ def strip_lean_comments(text: str) -> str:
             index += 1
         elif text.startswith("--", index):
             newline = text.find("\n", index)
-            index = length if newline < 0 else newline
+            comment_end = length if newline < 0 else newline
+            # Vendoring applies matches from this text to the original source.
+            # Keep offsets stable for line comments just as for block comments.
+            out.append(" " * (comment_end - index))
+            index = comment_end
         else:
             out.append(text[index])
             index += 1
@@ -806,6 +834,7 @@ def verify(node: str, branch: str, dispatch: bool, precheck: bool = True,
         print("no `origin` remote; cannot find the run")
         return False
 
+    run_id = None
     if dispatch:
         # Two guards before spending someone's approval. A dispatch that cannot succeed is not
         # free: the gate exists so that a human looks at the branch, and an hour of compute follows.
@@ -827,6 +856,15 @@ def verify(node: str, branch: str, dispatch: bool, precheck: bool = True,
                 print("         solution cannot be checked from here. Dispatching unchecked;")
                 print("         if Comparator rejects it, that is the first you will hear.")
             else:
+                nodes = load_nodes()
+                if node not in nodes:
+                    print(f"error: unknown node `{node}`")
+                    return False
+                # Receipt recording already requires complete coverage. Check it before building
+                # or asking for a workflow approval, rather than discovering the omission after
+                # Comparator has finished proving only the listed subset.
+                if not _comparator_covers_every_conclusion(node, nodes[node]):
+                    return False
                 result = solution_holes(node)
                 if result is None:
                     print(f"error: no solution under {rel(SOLUTIONS / node)} to verify")
@@ -856,10 +894,22 @@ def verify(node: str, branch: str, dispatch: bool, precheck: bool = True,
             print(f"dispatch failed: {started.stderr.strip()}")
             return False
         print(f"dispatched verify.yml for {node} on {branch}")
+        # `gh workflow run` returns the created run's URL. Looking up the latest run instead
+        # can select another contributor's dispatch, or an old success before ours is listed.
+        created = re.search(
+            rf"https://github\.com/{re.escape(repository)}/actions/runs/(\d+)(?=\s|$)",
+            started.stdout or "", re.IGNORECASE,
+        )
+        if created is None:
+            print("the dispatch succeeded, but gh returned no run URL; cannot follow it reliably.")
+            print("open this repository's Actions page to find the run; no other run was followed.")
+            return False
+        run_id = created.group(1)
         time.sleep(5)
 
-    run_id = _gh_json(["run", "list", "--workflow=verify.yml", "--limit", "1",
-                       "--json", "databaseId", "--jq", ".[0].databaseId"])
+    if not dispatch:
+        run_id = _gh_json(["run", "list", "--workflow=verify.yml", "--limit", "1",
+                           "--json", "databaseId", "--jq", ".[0].databaseId"])
     if not run_id:
         print("no verification run found")
         return False
@@ -948,16 +998,21 @@ def solution_holes(node: str) -> tuple[bool, list[str], dict[str, bool]] | None:
     # the warnings are simply absent and a count taken from them silently reads zero -- which is
     # exactly what this reported the first time it was run against a scaffolded solution with three
     # open goals. `lake env lean` re-elaborates and always emits them.
-    # Every top-level file, not just the compared one. A solution is split across files for build
+    # Every local proof file, not just the compared one. A solution is split across files for build
     # time -- see docs/SOLUTIONS.md -- so the holes are usually in a sibling, and elaborating only
     # the root reports zero while three theorems are plainly open. That is what this did first.
     holes: list[str] = []
-    for source in sorted(directory.glob("*.lean")):
+    for source in sorted(directory.rglob("*.lean")):
+        relative = source.relative_to(directory)
+        # Dependencies and build trees belong to their own projects, not to this solution.
+        if any(part.startswith(".") for part in relative.parts):
+            continue
         # Lake already elaborated its configuration during the successful build above.
         # Its DSL commands are not available to an ordinary `lake env lean` proof probe.
         if source.name == "lakefile.lean":
             continue
-        fresh = subprocess.run(["lake", "env", "lean", source.name], cwd=directory,
+        source_name = relative.as_posix()
+        fresh = subprocess.run(["lake", "env", "lean", source_name], cwd=directory,
                                capture_output=True, text=True, encoding="utf-8", errors="replace")
         seen_output = (fresh.stdout or "") + (fresh.stderr or "")
         # An elaboration that FAILED emits no `declaration uses` warnings, so scanning only for
@@ -966,7 +1021,7 @@ def solution_holes(node: str) -> tuple[bool, list[str], dict[str, bool]] | None:
         # on Windows turned four open goals into a clean bill of health, and `--write` would have
         # recorded `remaining_holes: 0` on the node. Treat it as unbuildable instead.
         if fresh.returncode != 0 or re.search(r"^error:|: error:", seen_output, re.MULTILINE):
-            print(f"  re-elaborating {source.name} failed, so its holes cannot be counted:")
+            print(f"  re-elaborating {source_name} failed, so its holes cannot be counted:")
             for line in seen_output.splitlines()[:3]:
                 # Lean's output carries goal characters like U+22A2 that a cp1252 console cannot
                 # encode, and an uncaught UnicodeEncodeError here would replace a useful diagnostic
@@ -974,7 +1029,7 @@ def solution_holes(node: str) -> tuple[bool, list[str], dict[str, bool]] | None:
                 print("    " + line.encode("ascii", "replace").decode("ascii"))
             return (False, [], {})
         holes += [
-            f"{pathlib.PurePosixPath(m.group(1)).name}:{m.group(2)}"
+            f"{source_name}:{m.group(2)}"
             for m in re.finditer(r"([^\s:]+):(\d+):\d+: warning: declaration uses", seen_output)
         ]
     holes = sorted(set(holes))
@@ -1284,6 +1339,66 @@ def check_closure() -> bool:
                 "divergent pin cannot work; what pins a verification is the commit its receipt "
                 "records.",
             )
+
+    # A solution may rest on a package outside Mathlib -- that is settled policy, and the
+    # argument is in ROADMAP's tier A -- on two conditions, which are the ones Palomar's
+    # specification puts on the same Comparator: the dependency is *pinned*, and the Challenge's
+    # own closure stays Mathlib-only, which `check_closure` has always enforced above.
+    #
+    # Pinned means a full commit. A branch pin verifies whatever that branch said on the day, and
+    # a receipt naming it would record a verification nobody can reproduce.
+    for directory in sorted(SOLUTIONS.iterdir()) if SOLUTIONS.is_dir() else []:
+        if not any((directory / name).is_file() for name in ("lakefile.toml", "lakefile.lean")):
+            continue
+        manifest = directory / "lake-manifest.json"
+        if not manifest.is_file():
+            # A warning, not a failure: a solution scaffolded by `new-solution` has no manifest
+            # until someone resolves it, and `check` should not refuse a project on its first day.
+            # Nothing is unpinned here -- nothing is resolved yet.
+            problems.warn(
+                rel(directory),
+                "has no `lake-manifest.json`, so the revisions it would be verified against are "
+                "not written down. Commit the one Lake resolves when you first build it; a "
+                "receipt reads it to record what the proof rested on.",
+            )
+            continue
+        packages = manifest_packages(manifest)
+        core = manifest_packages(ROOT / "lake-manifest.json")
+        for name, package in sorted(packages.items()):
+            if package.get("type") != "git":
+                continue
+            where = f"{rel(manifest)}: package `{name}`"
+            if name in core:
+                # A solution with its own Mathlib is verifying in a different environment from
+                # the one the fingerprints were taken in, which is the thing a receipt's
+                # `environment` is supposed to pin down.
+                if package.get("rev") != core[name].get("rev"):
+                    problems.add(
+                        where,
+                        f"is pinned to `{package.get('rev')}` but the core pins "
+                        f"`{core[name].get('rev')}`. A solution shares the core's environment by "
+                        "taking it as a path dependency; a divergent pin verifies against a "
+                        "different library than the one the fingerprints were taken in. Run "
+                        "`lake update` in the solution against the core's manifest.",
+                    )
+                continue
+            if not PINNED_REV.match(str(package.get("rev") or "")):
+                problems.add(
+                    where,
+                    f"is not pinned to a full commit: `{package.get('rev')}`. An external "
+                    "dependency may be verified against, but a receipt has to name something "
+                    "that cannot move afterwards.",
+                )
+            url = str(package.get("url") or "")
+            host = url.split("//", 1)[-1].split("/", 1)[0]
+            if not url.startswith("https://"):
+                problems.add(where, f"is fetched over `{url}`, which is not https.")
+            elif "@" in host:
+                problems.add(
+                    where,
+                    f"carries credentials in its URL (`{url}`). A pin anyone can fetch is part "
+                    "of what makes a verification reproducible.",
+                )
 
     # An inactive node is out of the umbrella, so nothing compiles it -- unless something live
     # imports one of its modules, which would quietly pull it back into the core build. The
@@ -1991,6 +2106,52 @@ def fingerprint(check_only: bool) -> bool:
 # ---------------------------------------------------------------------------
 
 
+#: A pinned revision: a full, lowercase Git commit. A branch or a tag names whatever it names
+#: today, so it pins nothing; Palomar's specification requires a full commit for the same reason.
+PINNED_REV = re.compile(r"^[0-9a-f]{40}$")
+
+
+def manifest_packages(path: pathlib.Path) -> dict[str, dict]:
+    """`name -> package` from a `lake-manifest.json`, or `{}` if it cannot be read.
+
+    Defensive in the same way `current_environment` is: a manifest is a generated file that a
+    half-finished `lake update` can leave malformed, and a reporting command is not the place to
+    discover it.
+    """
+    if not path.is_file():
+        return {}
+    try:
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return {}
+    packages = manifest.get("packages") if isinstance(manifest, dict) else None
+    if not isinstance(packages, list):
+        return {}
+    return {package["name"]: package for package in packages
+            if isinstance(package, dict) and isinstance(package.get("name"), str)}
+
+
+def solution_dependencies(node_id: str) -> list[dict]:
+    """What a solution's proof rests on beyond what the core already pins.
+
+    Derived from the solution's committed `lake-manifest.json` rather than restated in the node
+    metadata, so there is one source of truth for a pin and no way for the two to drift.
+
+    *Beyond the core* is the operative phrase. A solution resolves its own copy of Mathlib and the
+    eight packages Mathlib brings, and those are the core's pins, already recorded in the receipt's
+    environment. What matters here is what a solution adds -- LeanCert, PrimeCert, PNT+ -- because
+    that is the part of the trusted base a reader of the receipt would not otherwise know about.
+    The path dependency on the core itself is not an addition and is left out.
+    """
+    core = manifest_packages(ROOT / "lake-manifest.json")
+    added = manifest_packages(SOLUTIONS / node_id / "lake-manifest.json")
+    return [
+        {"name": name, "url": package.get("url"), "rev": package.get("rev")}
+        for name, package in sorted(added.items())
+        if name not in core and package.get("type") == "git"
+    ]
+
+
 def current_environment() -> dict:
     """The environment a verification run today would happen in.
 
@@ -2627,7 +2788,11 @@ def record_receipt(node_id: str, solution: str, run_url: str, stamp: str) -> boo
             "environment": current_environment(),
             "repository": {"commit": repository_commit()},
             "tools": verification_tools(),
-            "solution": {"project": solution},
+            # What the proof rested on beyond Mathlib, read from the solution's manifest at
+            # the moment of verification. Without it a receipt records that a proof was checked
+            # but not what was trusted in order to check it.
+            "solution": {"project": solution,
+                         "dependencies": solution_dependencies(node_id)},
             "run": {"workflow_run": run_url, "recorded_at": stamp},
         }
         path = receipt_path(key)
@@ -3107,6 +3272,180 @@ def declaration_url(key: str) -> str | None:
 BRIDGE_STYLE = ("#8250df", "#fbefff")
 
 
+#: The page's stylesheet. Inline, and no web fonts: the file has to work opened
+#: from a clone with no network, which is most of why nothing is loaded from a CDN.
+GRAPH_PAGE_CSS = """\
+:root { color-scheme: light; --ink: #1f2328; --quiet: #57606a; --line: #d0d7de;
+  --bg: #ffffff; --panel: #f6f8fa; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 0 20px 56px; background: var(--bg); color: var(--ink);
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+header, nav, .controls, main, footer { max-width: 1180px; margin: 0 auto; }
+header { padding: 28px 0 8px; }
+h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: -0.01em; }
+header p { margin: 4px 0; color: var(--quiet); font-size: 13px; }
+a { color: #0969da; }
+code { font: 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: var(--panel); padding: 2px 5px; border-radius: 5px; }
+.tabs { display: flex; gap: 6px; margin: 18px 0 0; border-bottom: 1px solid var(--line); }
+.tabs button { appearance: none; border: 1px solid transparent; border-bottom: none;
+  background: none; font: inherit; font-weight: 600; color: var(--quiet);
+  padding: 9px 15px; border-radius: 8px 8px 0 0; cursor: pointer; margin-bottom: -1px; }
+.tabs button.on { color: var(--ink); background: var(--bg);
+  border-color: var(--line); }
+.controls { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center;
+  padding: 14px 0 6px; font-size: 13px; }
+.find input { font: inherit; padding: 6px 10px; border: 1px solid var(--line);
+  border-radius: 7px; min-width: 15rem; }
+fieldset { border: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap;
+  gap: 4px 14px; align-items: center; }
+legend { float: left; margin-right: 12px; color: var(--quiet); padding: 0; }
+.swatch { display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  white-space: nowrap; }
+.swatch::after { content: ""; width: 11px; height: 11px; border-radius: 3px;
+  background: var(--fill); border: 1.5px solid var(--stroke); }
+.zoom button { font: inherit; min-width: 2em; padding: 4px 8px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+h2 { font-size: 19px; margin: 24px 0 4px; }
+h3 { font-size: 15px; margin: 26px 0 4px; }
+.count { color: var(--quiet); font-weight: 400; }
+.blurb { margin: 0 0 12px; color: var(--quiet); font-size: 13px; max-width: 62em; }
+.scroll { overflow: auto; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--panel); padding: 8px; max-height: 78vh; }
+.drawing { display: block; }
+.drawing text { font: 600 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-anchor: middle; fill: var(--ink); pointer-events: none; }
+.drawing text.bottom { font-weight: 400; font-size: 11px; fill: var(--quiet); }
+.drawing a { text-decoration: none; }
+.box, .edge { transition: opacity .12s ease-out; }
+.box.dim { opacity: .13; }
+.edge.dim { opacity: .07; }
+.box:hover rect, .box:hover polygon { filter: brightness(.96); }
+ul.alone { list-style: none; display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 0; padding: 0; }
+ul.alone li { border: 1.5px var(--edge, solid) var(--stroke); background: var(--fill);
+  border-radius: 7px; padding: 4px 9px; }
+ul.alone a { color: var(--ink); text-decoration: none;
+  font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+ul.alone a:hover { text-decoration: underline; }
+.note { color: var(--quiet); font-size: 13px; }
+footer { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--line);
+  color: var(--quiet); font-size: 13px; }
+footer h2 { font-size: 15px; color: var(--ink); margin-top: 18px; }
+footer dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px;
+  margin: 8px 0 0; }
+footer dt { font-weight: 600; color: var(--ink); }
+footer dd { margin: 0; }
+"""
+
+
+#: Search, evidence filter, tab switch, zoom. ES5 and no libraries, for the same
+#: reason. The drawing is static SVG underneath, so none of this is load-bearing:
+#: with scripting off the picture is still there and still correct.
+GRAPH_PAGE_SCRIPT = """\
+(function () {
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.box'));
+  var edges = Array.prototype.slice.call(document.querySelectorAll('.edge'));
+  var find = document.getElementById('find');
+  var toggles = Array.prototype.slice.call(
+    document.querySelectorAll('[data-kind-toggle]'));
+
+  function apply() {
+    var needle = find.value.trim().toLowerCase();
+    var hidden = {};
+    toggles.forEach(function (box) {
+      if (!box.checked) { hidden[box.getAttribute('data-kind-toggle')] = true; }
+    });
+    var shown = {};
+    boxes.forEach(function (box) {
+      var key = box.getAttribute('data-key');
+      var off = hidden[box.getAttribute('data-kind')] === true ||
+        (needle !== '' && key.toLowerCase().indexOf(needle) === -1);
+      box.classList.toggle('dim', off);
+      if (!off) { shown[key] = true; }
+    });
+    // An edge is only as visible as the boxes it joins, or it would point at nothing.
+    edges.forEach(function (edge) {
+      edge.classList.toggle('dim', !(shown[edge.getAttribute('data-from')] &&
+        shown[edge.getAttribute('data-to')]));
+    });
+  }
+
+  find.addEventListener('input', apply);
+  toggles.forEach(function (box) { box.addEventListener('change', apply); });
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-tab]'),
+    function (button) {
+      button.addEventListener('click', function () {
+        var want = button.getAttribute('data-tab');
+        Array.prototype.forEach.call(document.querySelectorAll('[data-tab]'),
+          function (other) {
+            var on = other === button;
+            other.classList.toggle('on', on);
+            other.setAttribute('aria-selected', on ? 'true' : 'false');
+          });
+        Array.prototype.forEach.call(document.querySelectorAll('.panel'),
+          function (panel) { panel.hidden = panel.id !== 'panel-' + want; });
+      });
+    });
+
+  var scale = 1;
+  function zoom(factor) {
+    scale = factor === 'reset' ? 1 :
+      Math.min(2.5, Math.max(0.25, scale * parseFloat(factor)));
+    Array.prototype.forEach.call(document.querySelectorAll('.drawing'),
+      function (svg) {
+        var width = parseFloat(svg.getAttribute('data-width'));
+        svg.setAttribute('width', Math.round(width * scale));
+        svg.removeAttribute('height');
+      });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-zoom]'),
+    function (button) {
+      button.addEventListener('click', function () {
+        zoom(button.getAttribute('data-zoom'));
+      });
+    });
+}());
+"""
+
+
+#: The legend, which is the condensed form of what GRAPH.md says at length.
+GRAPH_PAGE_LEGEND = """\
+  <h2>How to read it</h2>
+  <p>The colour of a box is the kind of evidence behind the step from its assumptions to its
+  claim, and only green was checked by Lean here. Everything else is a leaf of the trust
+  graph &mdash; something the network takes on faith, however reasonably &mdash; and the point of
+  drawing it is that you can see exactly which.</p>
+  <dl>
+    <dt>Solid green</dt><dd>A verification receipt that still stands.</dd>
+    <dt>Pale green</dt><dd><em>Stale</em>: only the environment has moved on, so re-running is
+      bookkeeping.</dd>
+    <dt>Grey-green</dt><dd><em>Drifted</em>: the statement itself changed since verification, so
+      the checked implication no longer reaches what the node claims. Ranked below a bare
+      assertion for that reason.</dd>
+    <dt>Dashed border</dt><dd>The inputs are known and written down, but at least one is not the
+      sort of thing an arrow can carry &mdash; an algorithm, a data set, a paper nobody has made
+      a node of yet.</dd>
+    <dt>Dotted border</dt><dd>Nobody has yet worked out what the claim assumes.</dd>
+    <dt>Hexagon</dt><dd>A bridge: the step itself, proved in Lean and recompiled on every push.
+      Drawn as a box rather than an arrow because a bridge may have several premises at once,
+      which an arrow cannot say.</dd>
+  </dl>
+  <p>Every box links to its node's page, which carries the Lean spelling of the claim, its
+  docstring, and everything recorded about why it should be believed.</p>
+"""
+
+
+#: The dash patterns of `imports_status`, as CSS border styles: the list of boxes that stand
+#: alone has no arrows to carry the distinction, so its borders are all that is left to say it.
+BORDER_STYLE = {"2 3": "dotted", "8 4": "dashed", "": "solid"}
+
+#: What a hexagon is called in the evidence filter, where it sits beside the evidence kinds
+#: without being one: a bridge is a step, not a grade of belief.
+BRIDGE_LABEL = "bridge (a proved step)"
+
+
 def bridges_in(nodes: dict) -> list[dict]:
     """Every bridge in the network, as premises -> conclusion.
 
@@ -3277,6 +3616,9 @@ def render_graph(nodes: dict[str, dict]) -> str:
         "it is ranked below an assertion accordingly: nothing short of a fresh Comparator run",
         "brings it back. `python scripts/ieantn.py status` says which claim moved.",
         "",
+        "The diagram here carries the colours. The border and the hexagon described next are on",
+        "the drawn page, which has the room for them.",
+        "",
         "The border says how completely the arrows into a box tell the story, and the more broken",
         "it is the less they say. **Solid**: they tell all of it. **Dashed**: the inputs are known",
         "and written down, but at least one is not the sort of thing an arrow can carry — an",
@@ -3302,9 +3644,6 @@ def render_graph(nodes: dict[str, dict]) -> str:
     class_defs = [
         f"  classDef {mermaid_id(kind)} fill:{fill},stroke:{stroke},color:#1f2328;"
         for kind, (_, stroke, fill) in EVIDENCE_STYLE.items()]
-    bridge_class_def = (f"  classDef bridge fill:{BRIDGE_STYLE[1]},stroke:{BRIDGE_STYLE[0]},"
-                        "color:#1f2328,stroke-width:2px;")
-
     lines += [
         "## The network at a glance",
         "",
@@ -3324,62 +3663,22 @@ def render_graph(nodes: dict[str, dict]) -> str:
     lines += [
         "## Every claim",
         "",
-        "The same graph at full resolution, grouped by node. This is the one that is true rather",
-        "than the one that is legible; when they disagree, believe this one.",
+        "At full resolution the graph is **drawn** rather than written: see",
+        f"[docs/graph.html]({REPOSITORY_URL}/blob/main/docs/graph.html), which carries this graph",
+        "per conclusion and the one above per node version, with a search box, a filter by kind of",
+        "evidence, and a link from every box to the page for its node.",
+        "",
+        "It is a file rather than a block here because this one outgrew what Markdown can show.",
+        "GitHub renders Mermaid through a sandboxed viewer that refuses a diagram over 50,000",
+        "characters, and the conclusion-level graph reached 63,621 -- so what a reader got was an",
+        "error where the picture should have been. The drawn page has no such ceiling, and the",
+        "layout is computed when the file is generated, so it is as reproducible as the Markdown",
+        "was: `python scripts/ieantn.py graph` writes both, and CI diffs both.",
+        "",
+        "Open it from a clone, or enable GitHub Pages for `docs/` to have it at a URL. The two",
+        "tables below say the same thing in text, and need nothing but this file.",
         "",
     ]
-    lines += ["```mermaid", "graph LR"]
-    for node_id in sorted(nodes):
-        keys = [k for k in sorted(index) if k.rsplit(".", 1)[0] == node_id]
-        if not keys:
-            continue
-        lines.append(f'  subgraph sg{mermaid_id(node_id)}["{node_id}"]')
-        for key in keys:
-            _, conclusion = index[key]
-            kind = display_kind(key, conclusion)
-            label, _, _ = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
-            cid = key.rsplit(".", 1)[1]
-            lines.append(f'    {mermaid_id(key)}["<b>{cid}</b><br/><i>{label}</i>"]')
-        lines.append("  end")
-    for key in sorted(index):
-        _, conclusion = index[key]
-        for dependency in conclusion.get("imports") or []:
-            source = f"{dependency.get('node')}.{dependency.get('conclusion')}"
-            if source in index:
-                lines.append(f"  {mermaid_id(source)} --> {mermaid_id(key)}")
-    bridges = bridges_in(nodes)
-    for bridge in bridges:
-        if bridge["conclusion"] not in index:
-            continue
-        stem = pathlib.PurePosixPath(bridge["file"]).stem or "bridge"
-        role = "" if bridge["designated"] else "<br/><i>spare</i>"
-        bid = "BR" + mermaid_id(bridge["id"])
-        lines.append(f'  {bid}{{{{"<b>{stem}</b>{role}"}}}}')
-        for premise in bridge["premises"]:
-            if premise in index:
-                lines.append(f"  {mermaid_id(premise)} ==> {bid}")
-        lines.append(f"  {bid} ==> {mermaid_id(bridge['conclusion'])}")
-
-    for key in sorted(index):
-        status = import_status(index[key][1])
-        # The pattern tracks how much of the story the arrows tell: solid says all of it, a
-        # clear dash says most, fine dots say none. More uncertainty, more broken border.
-        if status == "undetermined":
-            lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 2 3;")
-        elif status == "traced":
-            lines.append(f"  style {mermaid_id(key)} stroke-dasharray: 8 4;")
-    seen_kinds = {display_kind(k, c) for k, (_, c) in index.items()}
-    lines += class_defs + [bridge_class_def]
-    bridge_ids = ["BR" + mermaid_id(b["id"]) for b in bridges if b["conclusion"] in index]
-    if bridge_ids:
-        lines.append(f"  class {','.join(bridge_ids)} bridge;")
-    for kind in sorted(seen_kinds):
-        members = [mermaid_id(k) for k in sorted(index)
-                   if display_kind(k, index[k][1]) == kind]
-        if members:
-            lines.append(f"  class {','.join(members)} {mermaid_id(kind)};")
-    lines += click_lines(index)
-    lines += ["```", ""]
 
     # --- what it rests on --------------------------------------------------------------
     roots = sorted(key for key in index if not importers.get(key))
@@ -3575,6 +3874,15 @@ def render_node_page(node_id: str, nodes: dict, index: dict, importers: dict) ->
         if (solution / "Solution.lean").is_file():
             out.append(f"| Solution | [`Solutions/{node_id}`]"
                        f"({REPOSITORY_URL}/tree/main/Solutions/{node_id}) |")
+            # What the proof rests on beyond Mathlib. A reader deciding what a receipt is worth
+            # should not have to open a manifest to find out that the finite range was certified
+            # by a package this repository does not control.
+            external = solution_dependencies(node_id)
+            if external:
+                out.append("| Builds on | " + ", ".join(
+                    f"[`{item['name']}`]({item['url'].removesuffix('.git')}/tree/{item['rev']})"
+                    f" `{str(item['rev'])[:9]}`" if item.get("url") and item.get("rev")
+                    else f"`{item['name']}`" for item in external) + " |")
         receipt = RECEIPTS / f"{key}.json"
         if receipt.is_file():
             out.append(f"| Receipt | [`{receipt.name}`]"
@@ -3690,17 +3998,410 @@ def pages(check_only: bool, advisory: bool = False) -> bool:
     return True
 
 
+# ---------------------------------------------------------------------------
+# The drawn graph: docs/graph.html
+# ---------------------------------------------------------------------------
+
+#: Geometry of a drawing, in SVG user units. A box holds `Family.v1` over a conclusion id at
+#: 12px, and that is what sets the column pitch.
+BOX_WIDTH, BOX_HEIGHT = 208, 46
+COLUMN_GAP, ROW_GAP, MARGIN = 76, 16, 28
+
+#: Barycentre sweeps. Four is where the crossing count stops improving on a graph this shape,
+#: and a fixed number is what keeps the output reproducible.
+LAYOUT_SWEEPS = 4
+
+
+def layered_layout(vertices: list[str], edges: list[tuple[str, str]],
+                   rank: dict[str, tuple]) -> dict[str, tuple[int, int]]:
+    """Place a DAG in columns: `(layer, slot)` for every vertex.
+
+    Layer by longest path, so an arrow always points rightwards and its reach says how much of
+    the network stands behind the claim at its head. Slots within a column are then ordered by
+    the mean slot of each vertex's neighbours -- the barycentre heuristic, swept down and up --
+    which is the cheap standard way to pull connected boxes level and take out crossings.
+
+    **Deterministic**, which is the requirement that chose this over laying out in the browser:
+    a view this repository commits has to be diffable, so every tie breaks on `rank`, the sweep
+    count is fixed, and nothing consults a set's iteration order.
+    """
+    predecessors: dict[str, list[str]] = {vertex: [] for vertex in vertices}
+    successors: dict[str, list[str]] = {vertex: [] for vertex in vertices}
+    for source, target in edges:
+        if source in predecessors and target in predecessors:
+            successors[source].append(target)
+            predecessors[target].append(source)
+
+    layer: dict[str, int] = {}
+
+    def depth(vertex: str, stack: frozenset) -> int:
+        if vertex in layer:
+            return layer[vertex]
+        # `check_graph` rejects an import cycle, so this cannot happen in a network that passes
+        # the checks. Guard anyway: a drawing command is not where anyone wants to meet one.
+        if vertex in stack:
+            return 0
+        found = 0
+        for source in predecessors[vertex]:
+            found = max(found, 1 + depth(source, stack | {vertex}))
+        layer[vertex] = found
+        return found
+
+    ordered = sorted(vertices, key=lambda vertex: rank[vertex])
+    for vertex in ordered:
+        depth(vertex, frozenset())
+
+    columns: dict[int, list[str]] = {}
+    for vertex in ordered:
+        columns.setdefault(layer[vertex], []).append(vertex)
+    slot = {vertex: index for column in columns.values()
+            for index, vertex in enumerate(column)}
+
+    for sweep in range(LAYOUT_SWEEPS):
+        downward = sweep % 2 == 0
+        neighbours = predecessors if downward else successors
+        for index in sorted(columns, reverse=not downward):
+            def centre(vertex: str) -> float:
+                near = [slot[other] for other in neighbours[vertex] if other in slot]
+                return sum(near) / len(near) if near else float(slot[vertex])
+            columns[index].sort(key=lambda vertex: (centre(vertex), rank[vertex]))
+            for position, vertex in enumerate(columns[index]):
+                slot[vertex] = position
+
+    return {vertex: (layer[vertex], slot[vertex]) for vertex in vertices}
+
+
+def html_escape(value) -> str:
+    """Text safe in element content and in a double-quoted attribute."""
+    return (str(value).replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;").replace('"', "&quot;"))
+
+
+#: How much prose a tooltip gets. Enough for the statement and the sentence that qualifies it;
+#: a docstring runs to 1,950 characters at the longest, and a tooltip is not where to read that.
+SUMMARY_BUDGET = 420
+
+
+def summary_text(text: str, budget: int = SUMMARY_BUDGET) -> str:
+    """A docstring or description, folded into a few lines a tooltip can show.
+
+    Whole paragraphs, because the first one is usually a fragment: a conclusion docstring tends
+    to open with a bolded name and run the statement itself onto the next paragraph, so cutting
+    at the first blank line would show `**Chebyshev's upper bound.** For every x >= 30,` and stop
+    there. Paragraphs are taken until the budget is spent, and an ellipsis admits what was left.
+
+    Wrapped here rather than left to the tooltip, which does not reliably wrap, and stripped of
+    the `**` that marks bold in prose nobody is rendering. Backticks stay: they are what tells a
+    reader that `psi` is the Lean name rather than the letter.
+    """
+    paragraphs = [" ".join(block.split())
+                  for block in (text or "").strip().split("\n\n") if block.strip()]
+    kept: list[str] = []
+    spent = 0
+    for paragraph in paragraphs:
+        remaining = budget - spent
+        if remaining < 60:
+            kept.append("...")
+            break
+        if len(paragraph) > remaining:
+            # Shorten the paragraph that crosses the line rather than dropping it. Dropping it
+            # cost `KadiriLumley.v1.table_2` everything after its opening clause, because what it
+            # had to say came after the first blank line and did not fit whole.
+            kept.append(textwrap.shorten(paragraph, width=remaining, placeholder=" ..."))
+            break
+        kept.append(paragraph)
+        spent += len(paragraph)
+    folded = "\n\n".join(kept).replace("**", "")
+    return "\n".join(textwrap.fill(block, width=78) if block != "..." else block
+                      for block in folded.split("\n\n"))
+
+
+def render_drawing(boxes: list[dict], edges: list[dict]) -> str:
+    """One `<svg>`: the boxes placed, and the edges between them.
+
+    Static. The search, the filters and the zoom on the page are enhancements over this, so the
+    picture is still there with JavaScript off -- which is also what makes it renderable straight
+    from a blob view or an offline clone.
+    """
+    placement = layered_layout(
+        [box["key"] for box in boxes],
+        [(edge["from"], edge["to"]) for edge in edges],
+        {box["key"]: box["rank"] for box in boxes},
+    )
+    at = {}
+    for box in boxes:
+        layer, slot = placement[box["key"]]
+        at[box["key"]] = (MARGIN + layer * (BOX_WIDTH + COLUMN_GAP),
+                          MARGIN + slot * (BOX_HEIGHT + ROW_GAP))
+    width = max((x for x, _ in at.values()), default=0) + BOX_WIDTH + MARGIN
+    height = max((y for _, y in at.values()), default=0) + BOX_HEIGHT + MARGIN
+
+    out = [
+        f'<svg class="drawing" viewBox="0 0 {width} {height}" width="{width}" '
+        f'height="{height}" data-width="{width}" xmlns="http://www.w3.org/2000/svg" '
+        f'role="img" aria-label="The network as a layered graph">',
+        '  <defs>',
+        '    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7"',
+        '        markerHeight="7" orient="auto-start-reverse">',
+        '      <path d="M 0 0 L 8 4 L 0 8 z" fill="#57606a"/>',
+        '    </marker>',
+        '    <marker id="arrow-bridge" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6"',
+        '        markerHeight="6" orient="auto-start-reverse">',
+        f'      <path d="M 0 0 L 8 4 L 0 8 z" fill="{BRIDGE_STYLE[0]}"/>',
+        '    </marker>',
+        '  </defs>',
+        '  <g class="edges" fill="none">',
+    ]
+    for edge in sorted(edges, key=lambda e: (e["from"], e["to"])):
+        if edge["from"] not in at or edge["to"] not in at:
+            continue
+        x1, y1 = at[edge["from"]]
+        x2, y2 = at[edge["to"]]
+        start = (x1 + BOX_WIDTH, y1 + BOX_HEIGHT / 2)
+        end = (x2, y2 + BOX_HEIGHT / 2)
+        reach = max((end[0] - start[0]) * 0.45, 24)
+        bridge = edge.get("bridge")
+        out.append(
+            f'    <path class="edge{" bridge" if bridge else ""}" '
+            f'd="M {start[0]:.0f} {start[1]:.0f} C {start[0] + reach:.0f} {start[1]:.0f}, '
+            f'{end[0] - reach:.0f} {end[1]:.0f}, {end[0]:.0f} {end[1]:.0f}" '
+            f'stroke="{BRIDGE_STYLE[0] if bridge else "#57606a"}" '
+            f'stroke-width="{2.4 if bridge else 1.2}" '
+            f'marker-end="url(#{"arrow-bridge" if bridge else "arrow"})" '
+            f'data-from="{html_escape(edge["from"])}" data-to="{html_escape(edge["to"])}"/>')
+    out.append('  </g>')
+
+    for box in sorted(boxes, key=lambda b: b["rank"]):
+        x, y = at[box["key"]]
+        dash = f' stroke-dasharray="{box["dash"]}"' if box.get("dash") else ""
+        shape = (
+            f'<polygon points="{x + 14},{y} {x + BOX_WIDTH - 14},{y} '
+            f'{x + BOX_WIDTH},{y + BOX_HEIGHT / 2:.0f} {x + BOX_WIDTH - 14},{y + BOX_HEIGHT} '
+            f'{x + 14},{y + BOX_HEIGHT} {x},{y + BOX_HEIGHT / 2:.0f}" '
+            f'fill="{box["fill"]}" stroke="{box["stroke"]}" stroke-width="1.5"{dash}/>'
+            if box.get("shape") == "hexagon" else
+            f'<rect x="{x}" y="{y}" width="{BOX_WIDTH}" height="{BOX_HEIGHT}" rx="7" '
+            f'fill="{box["fill"]}" stroke="{box["stroke"]}" stroke-width="1.5"{dash}/>')
+        out += [
+            f'  <g class="box" data-key="{html_escape(box["key"])}" '
+            f'data-kind="{html_escape(box["kind"])}">',
+            f'    <title>{html_escape(box["title"])}</title>',
+            f'    <a href="{html_escape(box["href"])}" target="_blank" rel="noopener">',
+            f'      {shape}',
+            f'      <text x="{x + BOX_WIDTH / 2:.0f}" y="{y + 19}" class="top">'
+            f'{html_escape(box["top"])}</text>',
+            f'      <text x="{x + BOX_WIDTH / 2:.0f}" y="{y + 34}" class="bottom">'
+            f'{html_escape(box["bottom"])}</text>',
+            '    </a>',
+            '  </g>',
+        ]
+    out.append('</svg>')
+    return "\n".join(out)
+
+
+def graph_boxes(nodes: dict, index: dict, level: str) -> tuple[list[dict], list[dict]]:
+    """The boxes and edges of one drawing: `claims` per conclusion, `nodes` per node version."""
+    boxes: list[dict] = []
+    edges: list[dict] = []
+    if level == "claims":
+        for key in sorted(index):
+            node_id, conclusion = index[key]
+            kind = display_kind(key, conclusion)
+            label, stroke, fill = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
+            status = import_status(conclusion)
+            boxes.append({
+                "key": key, "rank": (node_id, key), "kind": kind,
+                "top": node_id, "bottom": key.rsplit(".", 1)[1],
+                "fill": fill, "stroke": stroke,
+                "dash": {"undetermined": "2 3", "traced": "8 4"}.get(status, ""),
+                "href": node_page_url(node_id, anchor=key.rsplit(".", 1)[1], absolute=True),
+                # The claim's own docstring, not the node's description: at this resolution a box
+                # is one conclusion, and the node's paragraph would say the same thing over every
+                # box of the node while describing none of them.
+                "title": f"{key}\nevidence: {label}\nimports: {status}\n\n"
+                         + summary_text(read_declaration(node_id, key.rsplit(".", 1)[1])[0]),
+            })
+            for dependency in conclusion.get("imports") or []:
+                source = f"{dependency.get('node')}.{dependency.get('conclusion')}"
+                if source in index:
+                    edges.append({"from": source, "to": key})
+        for bridge in bridges_in(nodes):
+            if bridge["conclusion"] not in index:
+                continue
+            stem = pathlib.PurePosixPath(bridge["file"]).stem or bridge["id"]
+            boxes.append({
+                "key": bridge["id"], "rank": ("~bridge", bridge["id"]), "kind": "bridge",
+                "top": stem, "bottom": "bridge" if bridge["designated"] else "bridge (spare)",
+                "fill": BRIDGE_STYLE[1], "stroke": BRIDGE_STYLE[0], "dash": "",
+                "shape": "hexagon",
+                "href": f"{REPOSITORY_URL}/blob/main/{bridge['file']}",
+                "title": f"{bridge['file']}\nproves: {bridge['conclusion']}\n"
+                         f"from: {', '.join(bridge['premises'])}",
+            })
+            for premise in bridge["premises"]:
+                if premise in index:
+                    edges.append({"from": premise, "to": bridge["id"], "bridge": True})
+            edges.append({"from": bridge["id"], "to": bridge["conclusion"], "bridge": True})
+    else:
+        for node_id in sorted(nodes):
+            conclusions = conclusions_of(nodes[node_id])
+            kind = weakest_kind(node_id, conclusions) if conclusions else "none-yet"
+            label, stroke, fill = EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
+            count = len(conclusions)
+            boxes.append({
+                "key": node_id, "rank": (node_id,), "kind": kind,
+                "top": node_id,
+                "bottom": f"{count} claim{'' if count == 1 else 's'} · {label}",
+                "fill": fill, "stroke": stroke, "dash": "",
+                "href": node_page_url(node_id, absolute=True),
+                "title": f"{node_id}\nweakest evidence: {label}\n{count} conclusion(s)\n\n"
+                         + summary_text((nodes[node_id].get("project") or {})
+                                        .get("description") or ""),
+            })
+        seen = set()
+        for key in sorted(index):
+            node_id, conclusion = index[key]
+            for dependency in conclusion.get("imports") or []:
+                source = f"{dependency.get('node')}.{dependency.get('conclusion')}"
+                if source in index:
+                    pair = (index[source][0], node_id)
+                    if pair[0] != pair[1] and pair not in seen:
+                        seen.add(pair)
+                        edges.append({"from": pair[0], "to": pair[1]})
+    return boxes, edges
+
+
+def render_graph_page(nodes: dict[str, dict]) -> str:
+    """`docs/graph.html`: both graphs, drawn, with the boxes that stand alone listed beside them.
+
+    Two things the Mermaid blocks could not do. It holds a network this size -- the conclusion
+    graph had outgrown what GitHub will render -- and it separates the claims that take part in
+    the dependency structure from the ones that do not. Forty-one of the conclusions have no edge
+    at all in either direction; drawing them among the rest cost most of the width and told a
+    reader nothing, so they are a list under the picture instead.
+    """
+    index = index_conclusions(nodes)
+    # Once per level, not once per use: filling the tooltips reads every `Conclusions.lean`.
+    drawings = {level: graph_boxes(nodes, index, level) for level in ("claims", "nodes")}
+    panels = []
+    for level, heading, blurb in (
+        ("claims", "Every claim",
+         "One box per conclusion, grouped left to right by what it rests on. A thin arrow "
+         "means the box at its head <em>assumes</em> the box at its tail; a thick arrow runs "
+         "through a hexagon, which is a bridge proved in Lean."),
+        ("nodes", "Node versions",
+         "The same thing with each node version as one box, summarised by its weakest "
+         "conclusion. Edges between conclusions of the same node version are not drawn."),
+    ):
+        boxes, edges = drawings[level]
+        linked = {edge["from"] for edge in edges} | {edge["to"] for edge in edges}
+        drawn = [box for box in boxes if box["key"] in linked]
+        alone = [box for box in boxes if box["key"] not in linked]
+        panel = [
+            f'<section class="panel" id="panel-{level}"'
+            f'{"" if level == "claims" else " hidden"}>',
+            f'  <h2>{heading}</h2>',
+            f'  <p class="blurb">{blurb}</p>',
+            f'  <div class="scroll">{render_drawing(drawn, edges) if drawn else ""}</div>',
+        ]
+        if alone:
+            panel += [
+                f'  <h3>Stands alone <span class="count">{len(alone)}</span></h3>',
+                '  <p class="blurb">Nothing in the network imports these, and they import '
+                'nothing. That is not a defect -- an unconditional theorem has nothing to '
+                'assume -- but it is why they are not in the picture.</p>',
+                '  <ul class="alone">',
+            ]
+            for box in sorted(alone, key=lambda b: b["rank"]):
+                panel.append(
+                    f'    <li class="box" data-key="{html_escape(box["key"])}" '
+                    f'data-kind="{html_escape(box["kind"])}" '
+                    f'style="--fill:{box["fill"]};--stroke:{box["stroke"]};'
+                    f'--edge:{BORDER_STYLE.get(box.get("dash", ""), "solid")}">'
+                    f'<a href="{html_escape(box["href"])}" target="_blank" rel="noopener" '
+                    f'title="{html_escape(box["title"])}">'
+                    f'{html_escape(box["key"])}</a></li>')
+            panel.append('  </ul>')
+        panel.append('</section>')
+        panels += panel
+
+    kinds = sorted({box["kind"] for boxes, _ in drawings.values() for box in boxes})
+    toggles = []
+    for kind in kinds:
+        label = (BRIDGE_LABEL if kind == "bridge"
+                 else EVIDENCE_STYLE.get(kind, (kind, "", ""))[0])
+        _, stroke, fill = (BRIDGE_STYLE[0], BRIDGE_STYLE[0], BRIDGE_STYLE[1]) \
+            if kind == "bridge" else EVIDENCE_STYLE.get(kind, (kind, "#57606a", "#f6f8fa"))
+        toggles.append(
+            f'      <label class="swatch" style="--fill:{fill};--stroke:{stroke}">'
+            f'<input type="checkbox" checked data-kind-toggle="{html_escape(kind)}">'
+            f'{html_escape(label)}</label>')
+
+    return "\n".join([
+        "<!doctype html>",
+        '<html lang="en">',
+        "<head>",
+        '<meta charset="utf-8">',
+        '<meta name="viewport" content="width=device-width, initial-scale=1">',
+        "<title>IEANTN · the network</title>",
+        f"<style>{GRAPH_PAGE_CSS}</style>",
+        "</head>",
+        "<body>",
+        "<header>",
+        "  <h1>The network</h1>",
+        "  <p><strong>Generated file &mdash; do not edit.</strong> Regenerated by "
+        "<code>python scripts/ieantn.py graph</code>.</p>",
+        f'  <p class="links"><a href="{REPOSITORY_URL}/blob/main/GRAPH.md">GRAPH.md</a> for the '
+        f'same content as prose and tables · <a href="{REPOSITORY_URL}/blob/main/STATE.md">'
+        f'STATE.md</a> · <a href="nodes/README.md">the node pages</a> · '
+        f'<a href="{REPOSITORY_URL}/blob/main/docs/ARCHITECTURE.md">ARCHITECTURE.md</a></p>',
+        "</header>",
+        '<nav class="tabs" role="tablist">',
+        '  <button data-tab="claims" class="on" aria-selected="true">Every claim</button>',
+        '  <button data-tab="nodes" aria-selected="false">Node versions</button>',
+        "</nav>",
+        '<form class="controls" onsubmit="return false">',
+        '  <label class="find">Find <input type="search" id="find" '
+        'placeholder="Buthe, psi, FKS2.v1 ..." autocomplete="off"></label>',
+        '  <fieldset><legend>Evidence</legend>',
+        *toggles,
+        "  </fieldset>",
+        '  <span class="zoom">Zoom <button data-zoom="0.8" type="button">&minus;</button>'
+        '<button data-zoom="1.25" type="button">+</button>'
+        '<button data-zoom="reset" type="button">reset</button></span>',
+        "</form>",
+        '<noscript><p class="note">The pictures below are plain SVG and need no JavaScript; '
+        "only the search, the evidence filter and the zoom do.</p></noscript>",
+        "<main>",
+        *panels,
+        "</main>",
+        f"<footer>{GRAPH_PAGE_LEGEND}</footer>",
+        f"<script>{GRAPH_PAGE_SCRIPT}</script>",
+        "</body>",
+        "</html>",
+        "",
+    ])
+
+
 def graph(check_only: bool, advisory: bool = False) -> bool:
-    """Refresh `GRAPH.md`, or check it. `advisory` as in `state`."""
-    rendered = render_graph(load_nodes())
+    """Refresh `GRAPH.md` and `docs/graph.html`, or check them. `advisory` as in `state`.
+
+    Two files from one command, because they are two renderings of one thing and a reader who
+    found them disagreeing would have no way to tell which was stale.
+    """
+    nodes = load_nodes()
+    wanted = {GRAPH: render_graph(nodes), GRAPH_PAGE: render_graph_page(nodes)}
     if check_only:
         problems = Problems()
-        if (GRAPH.read_text(encoding="utf-8") if GRAPH.is_file() else "") != rendered:
-            note = DERIVED_NOTE.format(command="graph")
-            (problems.warn if advisory else problems.add)(rel(GRAPH), note)
+        for path, rendered in wanted.items():
+            if (path.read_text(encoding="utf-8") if path.is_file() else "") != rendered:
+                note = DERIVED_NOTE.format(command="graph")
+                (problems.warn if advisory else problems.add)(rel(path), note)
         return problems.report("network graph")
-    GRAPH.write_text(rendered, encoding="utf-8", newline="\n")
-    print(f"wrote {rel(GRAPH)}")
+    for path, rendered in wanted.items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(rendered, encoding="utf-8", newline="\n")
+        print(f"wrote {rel(path)}")
     return True
 
 
@@ -3774,14 +4475,41 @@ def state_at(ref: str | None) -> dict:
     conclusions = {}
     for node_id, node in nodes.items():
         for conclusion in conclusions_of(node):
+            designated = designated_of(conclusion) or {}
             conclusions[f"{node_id}.{conclusion.get('id')}"] = {
                 "imports": [
                     f"{d.get('node')}.{d.get('conclusion')}"
                     for d in (conclusion.get("imports") or [])
                 ],
-                "kind": designated_kind(conclusion),
+                "kind": designated.get("kind"),
+                "from": bridge_sources(designated) if designated.get("kind") == "bridged" else [],
             }
     return {"conclusions": conclusions, "fingerprints": fingerprints, "receipts": receipts}
+
+
+def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None) -> list[str]:
+    """The unproved-in-Lean conclusions `key` rests on, from a `state_at` snapshot.
+
+    A `bridged` conclusion contributes nothing of its own: what it rests on is whatever its
+    sources rest on. A `lean-comparator` conclusion is proved in this network. Anything else is a
+    leaf, and imports are walked in every case. Receipt health is not consulted. A severed
+    receipt is a different event, and `diff` already reports it. This is only the shape of the
+    graph, which is why it needs no Lean run.
+    """
+    seen = set() if seen is None else seen
+    if key in seen or key not in conclusions:
+        return []
+    seen.add(key)
+    entry = conclusions[key]
+    found: list[str] = []
+    if entry.get("kind") == "bridged":
+        for source in entry.get("from") or []:
+            found += graph_leaves(conclusions, source, seen)
+    elif entry.get("kind") not in VERIFIED_KINDS:
+        found.append(key)
+    for dependency in entry.get("imports") or []:
+        found += graph_leaves(conclusions, dependency, seen)
+    return found
 
 
 def acknowledged() -> dict[str, str]:
@@ -3908,6 +4636,36 @@ def diff(base: str) -> bool:
             notes.append(
                 "Vocabulary changed, but no conclusion fingerprint moved, so the change is "
                 "additive or cosmetic."
+            )
+
+    # A bridge is a restatement. It may discharge assumptions; it may not acquire any. Comparing
+    # the leaf set before and after is the whole check, and it is a property of the graph, so a
+    # conclusion that did not exist at the base has nothing to compare against.
+    for key, entry in sorted(after["conclusions"].items()):
+        if entry.get("kind") != "bridged" or key not in before["conclusions"]:
+            continue
+        before_leaves = set(graph_leaves(before["conclusions"], key))
+        after_leaves = set(graph_leaves(after["conclusions"], key))
+        added = sorted(after_leaves - before_leaves)
+        removed = sorted(before_leaves - after_leaves)
+        if added:
+            gained = ", ".join(f"`{name}`" for name in added)
+            message = f"**`{key}` gained unproved assumptions** via its bridge: {gained}."
+            if removed:
+                lost = ", ".join(f"`{name}`" for name in removed)
+                message += f" It no longer rests on {lost}."
+            message += (
+                " A restatement must not rest on more than it did. Discharge the new "
+                "assumptions, or do not designate the bridge: designate the weaker evidence "
+                "the node actually has, which costs nothing and says the true thing. This is "
+                "the one `diff` error a `changes/*.yaml` acknowledgement does not cover -- see "
+                "docs/ROADMAP.md."
+            )
+            errors.append(message)
+        elif removed:
+            lost = ", ".join(f"`{name}`" for name in removed)
+            notes.append(
+                f"`{key}` rests on fewer unproved assumptions after its bridge: {lost}."
             )
 
     lines = ["## Network impact", ""]
@@ -4889,21 +5647,14 @@ def deactivate(node_ids: list[str], reason: str) -> bool:
         if node_id not in going and not is_inactive(node)
         for target in referenced_nodes(node) & going
     )
-    # A bridge whose target is going out with the node is not a live consumer of it: a node and
-    # the bridge that justifies it are deactivated together or not at all.
-    going_bridges = {
-        (ROOT / justification["bridge"]).resolve()
-        for node_id in going
-        for conclusion in conclusions_of(everything[node_id])
-        for justification in justifications_of(conclusion)
-        if justification.get("kind") == "bridged" and justification.get("bridge")
-    }
+    # Bridges remain in the core umbrella even when their target node retires.
+    # Their imports must be migrated or removed before deactivation, including
+    # imports in bridges recorded by the nodes being deactivated themselves.
     live_files = [
         path for node_id, node in everything.items()
         if node_id not in going and not is_inactive(node)
         for path in node["_dir"].glob("*.lean")
-    ] + [path for path in BRIDGES_DIR.rglob("*.lean")
-         if path.resolve() not in going_bridges]
+    ] + list(BRIDGES_DIR.rglob("*.lean"))
     blockers += _lean_import_blockers(live_files, going)
     if blockers:
         print("error: still imported or referenced by live nodes:")
