@@ -75,13 +75,45 @@ def prime_in_interval_above_exp_60 : Prop :=
 
 > As for the row above, and from the same transcription. This is the sharper of the two and the one that sets the final odd-Goldbach height; the exp(59) row is needed to reach it.
 
+### `table_2`
+
+**Theorem 1.1, for every row of Table 2.**
+
+For the opening row, every `x ≥ 4 · 10^18` has a prime in `(x(1 − 1/36082898), x)`. For each
+later row `(n, Δ)`, every `x ≥ exp n` has a prime in `(x(1 − 1/Δ), x)`. The interval is open on
+the right, as in the two rows already stated. The table caption says `x ≥ x₀`. The theorem
+display says `x > x₀`. The closed form is the one the caption prints, and it matches the two
+conclusions above, which are the rows `n = 59` and `n = 60` of this list.
+
+```lean
+def table_2 : Prop :=
+  (∀ x : ℝ, 4 * 10 ^ 18 ≤ x →
+    ∃ p : ℕ, Nat.Prime p ∧ x * (1 - 1 / 36082898) < p ∧ (p : ℝ) < x) ∧
+  ∀ n Δ, (n, Δ) ∈ table2ExpRows → ∀ x : ℝ, exp (n : ℝ) ≤ x →
+    ∃ p : ℕ, Nat.Prime p ∧ x * (1 - 1 / (Δ : ℕ)) < p ∧ (p : ℝ) < x
+```
+
+| | |
+|---|---|
+| Lean name | `KadiriLumley.v1.table_2` |
+| Challenge | `KadiriLumley.v1.challenge_table_2` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/KadiriLumley/v1/Conclusions.lean#L81) |
+| Evidence | cited (`literature`) |
+| Sources traced | traced |
+| Assumes | nothing recorded |
+| Assumed by | nothing yet |
+
+**Justification `kadiri-lumley-table-2`** — **designated** — literature, Theorem 1.1 with every row of Table 2
+
+> Read from arXiv:1407.7902, which is the preprint of Integers 14 (2014), A61. Theorem 1.1 says that each row gives a prime in (x(1 - 1/Δ), x) past that row's x₀. The table caption says x ≥ x₀. The theorem display says x > x₀. The closed form is stated, because that is the caption and it is what the two older conclusions already say. The opening threshold is 4·10^18, not exp of a printed integer. Δ is the integer in the last column. The other columns are the method, not the claim.
+
 ## Limitations
 
 Recorded by the node itself, not derived.
 
 - Cited, not proved, and its inputs are not traced: the paper is not held here, so what the result assumes is not recorded.
-- Two rows, not the theorem. The paper's Theorem 1.1 is a general statement over the rows of its Table 2; only the two rows the network consumes are stated. Carrying the table whole is the right shape once someone holds the paper, and is a natural v2.
-- Transcribed from a transcription. Neither the thresholds nor the constants have been read from the source. The two numbers that matter -- 1946282821 and 1966196911 -- appear in the conclusions above and should be the first thing checked when the paper arrives.
+- The two older conclusions were first transcribed from PrimeNumberTheoremAnd. Table 2 has since been read from arXiv:1407.7902, and every row of it checked against the published Integers 14 (2014) A61, which is the source cited here: all twenty Δ agree, so nothing rests on the preprint. The integers 1946282821 and 1966196911 are the rows at log x₀ = 59 and 60. The columns other than the threshold and Δ are still not stated. They are inputs of the method.
+- The paper disagrees with itself at the log x₀ = 60 row, in the published version as well as the preprint. Table 2 prints Δ = 1 966 196 911, and Corollary 1.2 states its conclusion as 1 966 196 911 · 4·10¹⁸ = 7.864…·10²⁷ — but the proof of that corollary, in the section "Verification of the Ternary Goldbach Conjecture", writes "from Table 2, we have that for x = e⁶⁰ and Δ = 1 966 090 061", citing the table for a number the table does not contain. Three places give 1 966 196 911 against one giving 1 966 090 061, so the single occurrence in the proof is read here as a typo, and both `prime_in_interval_above_exp_60` and `table_2` state the table value. Note which way the risk runs: the table value is the LARGER Δ, hence the narrower interval and the stronger claim. If the proof's figure is the correct one, this node asserts slightly more than the paper proves — by a relative 5.4·10⁻⁵, which is far inside the slack of the one consumer, `Goldbach.v1.odd_up_to_kadiri_lumley`.
 
 ## How this node was made
 
