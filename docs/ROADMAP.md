@@ -170,7 +170,10 @@ revision. The privilege split in `verify.yml` already has the right shape.
 ### Two tiers, and only one of them is dangerous
 
 **Tier A — the backend produces a certificate that Lean re-checks.** This is the LeanCert and
-PrimeCert pattern, and the one to build first. Generate outside, verify inside: the external run
+PrimeCert pattern, and the one to build first. **Settled, as of issue #164**: a solution may be
+verified while resting on such a package, provided the dependency is pinned; see ARCHITECTURE
+section 3 for what `check` requires and what the receipt records. The argument below is the one
+that settled it. Generate outside, verify inside: the external run
 emits a Bernstein certificate, an interval enclosure, a factorisation witness, and a *Lean* solution
 checks it. **The backend then leaves the trusted base entirely** — a bug in it causes a failed
 build, not an unsound theorem — and the receipt stays a `lean-comparator` receipt, because that is
@@ -418,8 +421,22 @@ unproved-in-Lean leaves must not grow**. A restatement is supposed to say the sa
 not to quietly acquire a new assumption. If the "refactor" leaves `X.v1` resting on more than it
 did before, it is not a restatement at all — it is an amendment wearing a bridge.
 
-This is mechanically checkable, and should be part of the breaking-change work (piece 3): compute
-the leaf set before and after and require containment.
+This is mechanically checkable. `ieantn.py diff` computes the leaf set before and after for every
+conclusion whose designated justification is `bridged` on both sides, or becomes `bridged`, and
+fails when the new set is not contained in the old one. A smaller set is reported, not failed:
+discharging an assumption is what a restatement is for. A conclusion that did not exist at the
+base has no previous set, so a new bridged node is not held to one.
+
+**The acknowledgement escape hatch does not cover this one, deliberately.** Every other error
+`diff` raises is about a conclusion edited in place, where the hatch's question — "you know this
+breaks something downstream; why must it land anyway?" — has an answer that a reviewer can weigh.
+Here it has none, because there is nothing to weigh against: if the only available restatement
+rests on an assumption the original did not, then it is not a restatement, and the honest move is
+the one the error message names. Stop designating the bridge and designate the weaker evidence the
+node actually has — a citation, a computation, `none-yet` — which costs nothing but says the true
+thing. An acknowledgement here would record a bridge the network goes on trusting while knowing it
+transports less than it claims, which is the one thing the designated-justification graph exists to
+prevent. So this check has no override, and that is the policy, not an omission.
 
 The concrete case that made it visible: an early sketch of `Lcm.v2` would have needed a numerical
 side condition awkward enough to want its own `computation` node — but `Lcm.v1` needs no
