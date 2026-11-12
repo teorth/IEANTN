@@ -28,6 +28,7 @@ IEANTN/Nodes/<Family>/<version>/
   Conclusions.lean       hand-written — the human-readable face of the node
   Challenge.lean         generated — conditional theorems, sorried
   formalization.yaml     metadata: imports, justification, sources, receipts
+  dossier.yaml           optional — pinned edition, locator, domain, rounding; see docs/DOSSIERS.md
   README.md              optional prose
   Examples.lean          optional — consequences, to show what the node buys
   Tables.lean            optional — the paper's bulk data, and nothing else
