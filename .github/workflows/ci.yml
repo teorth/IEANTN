@@ -67,6 +67,8 @@ jobs:
         run: npx --yes pyright@1.1.413
       - name: Tooling unit tests
         run: python3 -m unittest discover -s tests
+      - name: Source dossiers
+        run: python3 scripts/check_dossiers.py
       - name: Import closure, graph well-formedness, generated challenges
         run: python3 scripts/ieantn.py check
       # Online: fetches each receipt's recorded run and checks it really is a successful run of

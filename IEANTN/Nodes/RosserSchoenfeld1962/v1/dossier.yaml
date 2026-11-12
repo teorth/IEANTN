@@ -1,0 +1,24 @@
+# Source dossier for `RosserSchoenfeld1962.v1`.
+# Locators and the edition pin are copied from Conclusions.lean and formalization.yaml.
+# This file does not prove the statement.
+schema: ieantn-source-dossier/1
+node: RosserSchoenfeld1962.v1
+declarations:
+  - key: RosserSchoenfeld1962.v1.equation_3_35
+    edition:
+      # formalization.yaml sources[0].location
+      pin: "Illinois Journal of Mathematics 6(1) (1962), 64-94"
+      year: 1962
+      pages: "64-94"
+    # conclusions justifications locator, and the conclusion docstring's equation (3.35), Theorem 12, p. 71
+    locator: "Theorem 12, equation (3.35), p. 71; proof on pp. 77-80"
+    # Conclusions.lean: every real x > 0, both the inequality and the positivity hypothesis strict
+    domain: "every real x > 0, with the inequality and the positivity hypothesis both strict"
+    # 1.03883 is the numeral printed in the conclusion, not a rounding of a longer expansion recorded here
+    rounding: exact
+    quantities:
+      - display: "1.03883"
+        exact: "103883/100000"
+    divergences:
+      - "Theorem 12 also asserts that psi(x)/x attains its maximum at x = 113; that separate assertion is not represented."
+      - "This is a different paper from the 1975 RosserSchoenfeld.v1 node."
