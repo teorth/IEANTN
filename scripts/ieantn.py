@@ -33,7 +33,6 @@ None of this runs Comparator.
 from __future__ import annotations
 
 import argparse
-import contextlib
 import contextvars
 import datetime
 import functools
