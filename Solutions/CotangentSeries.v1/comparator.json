@@ -1,0 +1,13 @@
+{
+  "challenge_module": "IEANTN.Nodes.CotangentSeries.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "CotangentSeries.v1.challenge_cot_series_zeta_values"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
