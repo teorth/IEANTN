@@ -115,7 +115,8 @@ class EvidenceGraph:
 
     def explain(self, key):
         self.require(key)
-        parent, queue = {key: None}, deque([key])
+        parent: dict[str, tuple[str, str] | None] = {key: None}
+        queue = deque([key])
         while queue:
             current = queue.popleft()
             for target, relation in self.edges[current]:
