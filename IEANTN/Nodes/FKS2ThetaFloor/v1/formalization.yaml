@@ -1,0 +1,84 @@
+# Node metadata for `FKS2ThetaFloor.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: FKS2ThetaFloor.v1
+  family: FKS2ThetaFloor
+  version: v1
+  kind: standard
+  status: awaiting-verification
+
+project:
+  name: FKS2's small-range theta floor
+  description: >-
+    The closed-interval bound 1 ≤ margin 0 * admissibleBound 121.0961 (3/2) 2 5.5666305 x
+    for x in [2, exp 30], split out of FKS2Numerics.v1 so it can be proved without treating the
+    other four numerical conclusions of that node as proved.
+  authors:
+  - Taksh Kothari
+  license: Apache-2.0
+  responsible_maintainers:
+  - Taksh Kothari
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11N05
+
+conclusions:
+- id: theta_asymp_ge_one_below_e30
+  issue: 232
+  declaration: FKS2ThetaFloor.v1.theta_asymp_ge_one_below_e30
+  challenge: FKS2ThetaFloor.v1.challenge_theta_asymp_ge_one_below_e30
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      Proved in Solutions/FKS2ThetaFloor.v1. The justification stays none-yet until the
+      verification workflow writes a receipt. The argument is the paper's: u = sqrt(log x / R)
+      turns the bound into A u^3 exp(-2u), whose only critical point in the range is a maximum
+      at u = 3/2, so the minimum on [2, exp 30] is at an endpoint.
+  designated: unjustified
+
+sources:
+- title: Sharper bounds for the error term in the Prime Number Theorem
+  authors:
+  - Andrew Fiori
+  - Habiba Kadiri
+  - Joshua Swidinsky
+  type: paper
+  id: arXiv:2206.12557
+  location: the proof of Corollary 14, the minimum of epsilon_theta,asymp on [2, e^30]
+  relationship: formalizes
+  note: >-
+    The same numerical claim as FKS2Numerics.v1.theta_asymp_ge_one_below_e30. Nothing is weakened.
+    The endpoint evaluation is proved from Mathlib's bounds on log 2 and exp, not taken from the
+    paper's displayed 2.6271.
+
+automation:
+  methods:
+  - method: ai-assisted
+    role: >-
+      Drafted the Lean proof of the endpoint reduction. The inequalities were checked against the
+      paper's description of the minimum before commit. No new bound is claimed.
+
+review:
+  status: self-assessed
+  reviewers:
+  - Taksh Kothari
+  notes: >-
+    The statement matches FKS2Numerics.v1.theta_asymp_ge_one_below_e30, including margin 0 and the
+    four constants. The bridge back is compiled and left undesignated until this node has a
+    receipt, so the numerical leaf on FKS2Numerics.v1 is not replaced by an unverified one.
+
+limitations:
+- >-
+  One statement only. The other four conclusions of FKS2Numerics.v1 stay numerical.
+- >-
+  No novelty is claimed. The shape of the minimum is the paper's.

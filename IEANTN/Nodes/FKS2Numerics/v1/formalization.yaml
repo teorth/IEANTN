@@ -100,6 +100,14 @@ conclusions:
 
       Found by porting, not by reading -- the second of the two missing imports of
       FKS2.v1.corollary_14.
+  - id: proved-floor
+    kind: bridged
+    from: FKS2ThetaFloor.v1.theta_asymp_ge_one_below_e30
+    bridge: IEANTN/Bridges/FKS2Numerics/ThetaFloor.lean
+    note: >-
+      The same statement, proved as FKS2ThetaFloor.v1. Not designated: that node is still
+      none-yet, and designating this bridge would replace the numerical leaf with an unverified
+      one. Designate it once the receipt exists.
   designated: fks2-small-range-computation
 - id: corollary_22_mid_range
   declaration: FKS2Numerics.v1.corollary_22_mid_range
