@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 import copy
 import json
-import math
 import pathlib
 import sys
 from collections import deque
@@ -115,7 +114,8 @@ class EvidenceGraph:
 
     def explain(self, key):
         self.require(key)
-        parent, queue = {key: None}, deque([key])
+        parent: dict[str, tuple[str, str] | None] = {key: None}
+        queue = deque([key])
         while queue:
             current = queue.popleft()
             for target, relation in self.edges[current]:
