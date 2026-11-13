@@ -33,8 +33,10 @@ None of this runs Comparator.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import datetime
 import hashlib
+import io
 import json
 import os
 import pathlib
@@ -2925,6 +2927,91 @@ def report() -> bool:
     return True
 
 
+def evidence_snapshot(include_inactive: bool = False) -> dict:
+    """A deterministic public projection of the graph; no builds, network or file writes.
+
+    Requirements are conjunctive. In particular, the sources of a designated bridge are
+    premises needed together, not alternative routes. Spare justifications remain metadata.
+    Receipt health and leaves use the same functions as the human-facing reports.
+    """
+    diagnostics = io.StringIO()
+    with contextlib.redirect_stdout(diagnostics):
+        valid = check_graph()
+    if not valid:
+        raise ValueError(diagnostics.getvalue().strip())
+    nodes = load_nodes(include_inactive=include_inactive)
+    index = index_conclusions(nodes)
+    fingerprints = recorded_fingerprints()
+    records = []
+    for key, (node_id, conclusion) in sorted(index.items()):
+        designated = designated_of(conclusion) or {}
+        requirements = [
+            {"conclusion": dependency, "relation": "import"}
+            for dependency in sorted(set(import_keys_of(conclusion)))
+        ]
+        if designated.get("kind") == "bridged":
+            requirements += [
+                {"conclusion": source, "relation": "bridge"}
+                for source in sorted(set(bridge_sources(designated)))
+            ]
+        for requirement in requirements:
+            if requirement["conclusion"] not in index:
+                raise ValueError(f"{key}: unknown requirement {requirement['conclusion']}")
+        health = receipt_state(key, conclusion)
+        receipt = load_receipt(key) if health is not None else None
+        records.append({
+            "key": key,
+            "node": node_id,
+            "declaration": conclusion.get("declaration"),
+            "challenge": conclusion.get("challenge"),
+            "fingerprint": fingerprints.get(key),
+            "imports_status": import_status(conclusion),
+            "requirements": requirements,
+            "designated": conclusion.get("designated"),
+            "evidence": display_kind(key, conclusion),
+            "justifications": sorted(justifications_of(conclusion), key=lambda item: item["id"]),
+            "receipt": None if health is None else {
+                "state": health[0], "reason": health[1],
+                "path": rel(receipt_path(key)),
+                "run_url": ((receipt or {}).get("run") or {}).get("workflow_run"),
+            },
+            "unproved_leaves": sorted(set(unjustified_leaves(index, key))),
+            "source": rel(nodes[node_id]["_dir"] / "Conclusions.lean"),
+            "metadata": rel(nodes[node_id]["_dir"] / "formalization.yaml"),
+        })
+    return {
+        "schema_version": 1,
+        "environment": current_environment(),
+        "includes_inactive": include_inactive,
+        "nodes": [
+            {"id": node_id, "kind": node["node"].get("kind"),
+             "status": node["node"].get("status"), "inactive": is_inactive(node)}
+            for node_id, node in sorted(nodes.items())
+        ],
+        "conclusions": records,
+    }
+
+
+def evidence_json_default(value):
+    """YAML dates are public metadata too; reject other unsupported objects."""
+    if isinstance(value, (datetime.date, datetime.datetime)):
+        return value.isoformat()
+    raise TypeError(f"not JSON metadata: {type(value).__name__}")
+
+
+def export_evidence(include_inactive: bool = False) -> bool:
+    """Write only the versioned JSON document to stdout; diagnostics belong on stderr."""
+    try:
+        document = json.dumps(evidence_snapshot(include_inactive), ensure_ascii=False,
+                              indent=2, sort_keys=True, allow_nan=False,
+                              default=evidence_json_default)
+    except (OSError, ValueError, TypeError, yaml.YAMLError) as error:
+        print(f"error: cannot export evidence: {error}", file=sys.stderr)
+        return False
+    print(document)
+    return True
+
+
 def closed_issues(numbers: set[int]) -> set[int]:
     """Which of these issue numbers are closed, as far as `gh` can tell.
 
@@ -5761,6 +5848,9 @@ def main() -> int:
         "status", "check"
     ):
         sub.add_parser(name)
+    exported = sub.add_parser("export", help="write the versioned evidence graph as JSON")
+    exported.add_argument("--include-inactive", action="store_true",
+                          help="also include retained inactive nodes and their conclusions")
     generate = sub.add_parser("gen-challenges")
     generate.add_argument("--check", action="store_true", help="fail instead of rewriting")
     prints = sub.add_parser("fingerprint")
@@ -5834,6 +5924,8 @@ def main() -> int:
         return 0 if fingerprint(args.check) else 1
     if args.command == "report":
         return 0 if report() else 1
+    if args.command == "export":
+        return 0 if export_evidence(args.include_inactive) else 1
     if args.command == "status":
         return 0 if status() else 1
     if args.command == "diff":
