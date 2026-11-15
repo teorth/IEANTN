@@ -1,0 +1,24 @@
+name = "solution_GammaAsymptotics_v1"
+defaultTargets = ["Solution", "Audit"]
+
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+# Reuse v2's proof sources without importing its challenge or its `Solution` module.
+[[lean_lib]]
+name = "GammaStrip"
+srcDir = "../GammaAsymptotics.v2"
+roots = ["RealAsymptotic", "Periodic", "GaussSeries", "Recurrence", "ComplexToReal", "Oscillation", "RealIdentity", "Analytic", "Strip"]
+
+[[lean_lib]]
+name = "Uniform"
+roots = ["Uniform"]
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+[[lean_lib]]
+name = "Audit"
+roots = ["Audit"]
