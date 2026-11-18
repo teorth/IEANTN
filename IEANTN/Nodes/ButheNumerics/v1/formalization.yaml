@@ -54,6 +54,14 @@ conclusions:
       display the evaluation. Three evaluations at a single point, so imports `none` and that is a real
       none. Unlike the bounds on [2, 10^19] this is small enough that a Lean proof could discharge it
       outright, which is worth recording as a target rather than a permanent assertion.
+  - id: proved-v2
+    kind: bridged
+    from: ButheNumerics.v2.lemma_3_constant_nonpos
+    bridge: IEANTN/Bridges/ButheNumerics/V2ToV1.lean
+    note: >-
+      The same statement, proved as ButheNumerics.v2. Not designated: that node is still none-yet,
+      and designating this bridge would replace the numerical leaf with an unverified one.
+      Designate it once the receipt exists.
   designated: buthe-computation
 - id: li_minus_pi_below_1e7
   declaration: ButheNumerics.v1.li_minus_pi_below_1e7
