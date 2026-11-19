@@ -4546,13 +4546,15 @@ def diff(base: str) -> bool:
         new = after["fingerprints"].get(key)
 
         if key not in after["conclusions"]:
-            # Only importers that survive the change can break. One leaving in the same change --
-            # a node deactivated together with its only consumer -- is not a dangling edge.
-            users = [u for u in importers_before.get(key, []) if u in after["conclusions"]]
+            # Only surviving imports can dangle: a consumer may leave the graph or migrate its
+            # edge to a replacement conclusion in the same change.
+            users = sorted(
+                u for u, current in after["conclusions"].items() if key in current["imports"]
+            )
             if users:
                 errors.append(
-                    f"**`{key}` was removed** but {len(users)} conclusion(s) still import it at "
-                    f"the base: {', '.join(f'`{u}`' for u in users)}."
+                    f"**`{key}` was removed** but {len(users)} conclusion(s) still import it: "
+                    f"{', '.join(f'`{u}`' for u in users)}."
                 )
             elif key.rsplit(".", 1)[0] in inactive_nodes():
                 notes.append(f"`{key}` deactivated (its node is now inactive); nothing imported it.")
