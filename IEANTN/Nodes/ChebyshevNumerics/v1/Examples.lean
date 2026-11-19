@@ -18,7 +18,7 @@ namespace ChebyshevNumerics.v1
 example (h : psi_le_below_11723) : Chebyshev.psi 11723 ≤ 1.11 * 11723 :=
   h 11723 (by norm_num)
 
-example (h : psi_le_below_11723) : Chebyshev.psi 0 ≤ 1.11 * 0 :=
-  h 0 (by norm_num)
+example (h : psi_le_below_11723) : Chebyshev.psi 0 ≤ 1.11 * 0 := by
+  simpa only [Nat.cast_zero] using h 0 (by norm_num)
 
 end ChebyshevNumerics.v1
