@@ -51,6 +51,14 @@ conclusions:
       no other result in the network. PrimeNumberTheoremAnd carries the same datum as a deliberate `sorry`
       in its FKS2TrustedNumerics -- it has no import mechanism, so its FKS2 development reports sorryAx.
       Stating it here is what lets FKS2.v1's solution rest on the same computation without a hole.
+  - id: proved-pi-floor
+    kind: bridged
+    from: FKS2PiFloor.v1.table6_row2_floor
+    bridge: IEANTN/Bridges/FKS2Numerics/PiFloor.lean
+    note: >-
+      The identical statement, proved separately in Solutions/FKS2PiFloor.v1.
+      Not designated until that node has a verification receipt: the existing
+      numerical evidence must not be replaced by an unverified leaf.
   designated: fks2-computation
 - id: nu_asymp_e30_le
   declaration: FKS2Numerics.v1.nu_asymp_e30_le
