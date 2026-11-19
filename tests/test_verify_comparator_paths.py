@@ -12,6 +12,8 @@ class TestComparatorScriptPaths(unittest.TestCase):
         dirname = shutil.which("dirname")
         if not bash or not dirname:
             self.skipTest("requires bash and dirname")
+        bash = str(pathlib.Path(bash).resolve())
+        dirname = str(pathlib.Path(dirname).resolve())
         source = pathlib.Path(__file__).resolve().parents[1] / "scripts/verify-comparator.sh"
         with tempfile.TemporaryDirectory() as directory:
             root = pathlib.Path(directory) / "checkout with spaces"
