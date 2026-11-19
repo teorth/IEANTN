@@ -19,8 +19,10 @@ import IEANTN.Nodes.CH2.v2.Challenge
 import IEANTN.Nodes.CH2.v3.Challenge
 import IEANTN.Nodes.Chebyshev.v1.Challenge
 import IEANTN.Nodes.ChebyshevNumerics.v1.Challenge
+import IEANTN.Nodes.ChebyshevNumerics.v1.Examples
 import IEANTN.Nodes.ChengGraham2004.v1.Challenge
 import IEANTN.Nodes.CotangentSeries.v1.Challenge
+import IEANTN.Nodes.CotangentSeries.v1.Examples
 import IEANTN.Nodes.DudekPlatt.v1.Challenge
 import IEANTN.Nodes.DudekPlatt.v2.Challenge
 import IEANTN.Nodes.DudekPlatt.v3.Challenge
@@ -37,6 +39,7 @@ import IEANTN.Nodes.FKS.v2.Challenge
 import IEANTN.Nodes.FKS2.v1.Challenge
 import IEANTN.Nodes.FKS2.v2.Challenge
 import IEANTN.Nodes.FKS2Numerics.v1.Challenge
+import IEANTN.Nodes.FKS2Numerics.v1.Examples
 import IEANTN.Nodes.GammaAsymptotics.v1.Challenge
 import IEANTN.Nodes.GammaAsymptotics.v2.Challenge
 import IEANTN.Nodes.Goldbach.v1.Challenge
