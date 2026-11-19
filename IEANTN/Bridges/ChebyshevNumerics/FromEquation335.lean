@@ -25,7 +25,7 @@ theorem psi_le_below_11723_of_equation_3_35
     ChebyshevNumerics.v1.psi_le_below_11723 := by
   intro n hn
   obtain rfl | hnpos := Nat.eq_zero_or_pos n
-  · rw [Chebyshev.psi_zero]
+  · rw [Nat.cast_zero, Chebyshev.psi_zero]
     norm_num
   · have hpos : (0 : ℝ) < n := Nat.cast_pos.mpr hnpos
     have hlt : Chebyshev.psi (n : ℝ) < 1.03883 * (n : ℝ) := h (n : ℝ) hpos
