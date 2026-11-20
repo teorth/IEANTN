@@ -4741,6 +4741,64 @@ def module_path(module: str) -> pathlib.Path:
     return ROOT / pathlib.PurePosixPath(module.replace(".", "/") + ".lean")
 
 
+def _render_parameter(param: dict) -> str | None:
+    name = str(param.get("name") or "")
+    typ = param.get("type")
+    if not isinstance(typ, str) or not typ.strip():
+        return None
+    kind = param.get("binder") or "explicit"
+    if kind == "instImplicit":
+        return f"[{typ.strip()}]"
+    if not re.fullmatch(r"[A-Za-z_α-ωΑ-Ωℕℤℝℂ][A-Za-z0-9_α-ωΑ-Ωℕℤℝℂ']*", name):
+        return None
+    if kind == "implicit":
+        return f"{{{name} : {typ.strip()}}}"
+    if kind == "strictImplicit":
+        return f"⦃{name} : {typ.strip()}⦄"
+    return f"({name} : {typ.strip()})"
+
+
+def _parameter_present(header: str, param: dict) -> bool:
+    """Whether this telescope entry is already written in the declaration header."""
+    kind = param.get("binder") or "explicit"
+    typ = param.get("type")
+    if kind == "instImplicit":
+        return isinstance(typ, str) and typ.strip() in header
+    name = str(param.get("name") or "")
+    if not name or name == "[anonymous]" or "✝" in name:
+        return True
+    return re.search(rf"[\(\{{\[⦃]\s*{re.escape(name)}\b", header) is not None
+
+
+def bind_missing_parameters(body: str, written: str, parameters: list) -> str:
+    """Put back a leading telescope the declaration range does not contain.
+
+    A `variable` in a surrounding section is elaborated into the constant and is not part of
+    `findDeclarationRanges?`. Slicing the range therefore drops those binders. Parameters the
+    header already names stay as written; the restored prefix stops at the first one of those.
+    """
+    if not parameters:
+        return body
+    header, sep, rest = body.partition(":=")
+    if not sep:
+        return body
+    prefix: list[str] = []
+    for param in parameters:
+        if not isinstance(param, dict) or _parameter_present(header, param):
+            break
+        rendered = _render_parameter(param)
+        if rendered is None:
+            break
+        prefix.append(rendered)
+    if not prefix:
+        return body
+    matches = list(re.finditer(rf"\b(?:def|theorem|lemma|abbrev|axiom)\s+{re.escape(written)}\b", header))
+    if not matches:
+        return body
+    at = matches[-1].end()
+    return header[:at] + " " + " ".join(prefix) + header[at:] + sep + rest
+
+
 def slice_source(text: str, decl: dict, prefix: str) -> tuple[str, str]:
     """The source of one declaration, and the namespace it must be re-emitted inside.
 
@@ -4766,6 +4824,10 @@ def slice_source(text: str, decl: dict, prefix: str) -> tuple[str, str]:
             "The namespace cannot be recovered; refusing to guess.")
     namespace = full[: len(full) - len(written)].rstrip(".")
     del prefix
+    parameters = decl.get("parameters") or []
+    if not isinstance(parameters, list):
+        parameters = []
+    body = bind_missing_parameters(body, written, parameters)
     return body, namespace
 
 
