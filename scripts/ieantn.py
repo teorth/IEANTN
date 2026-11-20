@@ -2267,8 +2267,25 @@ def release_distance(recorded: str, current: str) -> int | None:
     return abs(new_minor - old_minor)
 
 
+def imported_conclusion_keys(conclusion: dict) -> list[str]:
+    """The hypotheses a conclusion currently names, as `Node.version.id` keys.
+
+    These are the premises the receipt pinned beside the conclusion's own fingerprint.
+    The conclusion's fingerprint is a digest of its proposition, not of that premise
+    list, so an import can be added or dropped while every recorded digest still matches.
+    """
+    keys: list[str] = []
+    for dependency in conclusion.get("imports") or []:
+        if not isinstance(dependency, dict):
+            continue
+        node, name = dependency.get("node"), dependency.get("conclusion")
+        if isinstance(node, str) and isinstance(name, str) and node and name:
+            keys.append(f"{node}.{name}")
+    return keys
+
+
 def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str], *,
-           consult_history: bool = True) -> tuple[str, str]:
+           consult_history: bool = True, imports: list[str] | None = None) -> tuple[str, str]:
     """Grade one receipt against the world as it is now.
 
     Two axes, deliberately not collapsed (ARCHITECTURE section 4):
@@ -2309,6 +2326,27 @@ def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str], *,
             return "BROKEN", f"{which} changed since verification"
     if churn is not None:
         return "churn", churn
+
+    # The fingerprints above say each recorded proposition still reads the same way.
+    # They do not say the node still rests on that same set. Dropping a hypothesis
+    # leaves a stronger claim; adding one leaves a claim Comparator was not asked
+    # about. Either way the receipt must not stay green.
+    if imports is not None:
+        recorded_imports = sorted(name for name in recorded if name != conclusion_key)
+        expected = sorted(dict.fromkeys(imports))
+        if recorded_imports != expected:
+            missing = [name for name in expected if name not in recorded_imports]
+            extra = [name for name in recorded_imports if name not in expected]
+            parts = []
+            if missing:
+                parts.append(
+                    "does not record " + ", ".join(f"`{name}`" for name in missing)
+                )
+            if extra:
+                parts.append(
+                    "still records " + ", ".join(f"`{name}`" for name in extra)
+                )
+            return "BROKEN", "hypotheses no longer match the receipt: " + "; ".join(parts)
 
     environment = receipt.get("environment") or {}
     current = current_environment()
@@ -2515,7 +2553,10 @@ def receipt_state(conclusion_key: str, conclusion: dict) -> tuple[str, str] | No
     if receipt is None:
         return "BROKEN", "designated `lean-comparator` but no receipt file"
     # Views are generated and diffed by CI, so they must not depend on git history.
-    return assess(conclusion_key, receipt, recorded_fingerprints(), consult_history=False)
+    return assess(
+        conclusion_key, receipt, recorded_fingerprints(),
+        consult_history=False, imports=imported_conclusion_keys(conclusion),
+    )
 
 
 #: `assess`'s verdict, as the views draw it. Environment staleness keeps the verification: the
@@ -2579,7 +2620,9 @@ def status() -> bool:
                 print(f"  BROKEN  {key}")
                 print("          designated `lean-comparator` but no receipt file")
                 continue
-            light, detail = assess(key, receipt, fingerprints)
+            light, detail = assess(
+                key, receipt, fingerprints, imports=imported_conclusion_keys(conclusion)
+            )
             lights[light] += 1
             print(f"  {light:<7} {key}")
             print(f"          {detail}")
