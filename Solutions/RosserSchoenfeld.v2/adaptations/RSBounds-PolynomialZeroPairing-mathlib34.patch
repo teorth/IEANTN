@@ -1,0 +1,42 @@
+--- a/Proof/RSBounds/PolynomialZeroPairing.lean
++++ b/Proof/RSBounds/PolynomialZeroPairing.lean
+@@ -186,7 +186,8 @@
+     have hi := ((mem_positiveZeros_iff_zeta hT).mp hρ).2.1
+     have hh := mul_le_mul_of_nonneg_left (rpow_pair_le hx hr.1.le hr.2.le)
+       (mul_nonneg (Nat.cast_nonneg (multRectD zetaF T ρ) : (0 : ℝ) ≤ _) (hw _ hi))
+-    convert hh using 1 <;> ring
++    convert hh using 1 <;> first | rfl | ring
++
+   rw [Finset.sum_add_distrib, href, ← Finset.mul_sum] at hp
+   rw [hhalf]
+   linarith
+@@ -243,7 +244,8 @@
+   have hh := mul_le_mul_of_nonneg_left
+     ((norm_upperKernel_le_high hδ hr).trans (high_denominator_le hδ him))
+     (Real.rpow_nonneg hx.le ρ.re)
+-  convert hh using 1 <;> ring
++  convert hh using 1 <;> first | rfl | ring
++
+ 
+ theorem norm_zeroCoefficient_lower_le_high {x δ : ℝ} (hx : 0 < x) (hδ : 0 < δ)
+     (hδ4 : 4 * δ < 1) {ρ : ℂ} (hr : 0 ≤ ρ.re) (him : ρ.im ≠ 0) :
+@@ -253,7 +255,8 @@
+   have hh := mul_le_mul_of_nonneg_left
+     ((PolynomialLowerKernel.norm_lower_difference_le_high_common hδ hδ4 hr).trans
+       (high_denominator_le hδ him)) (Real.rpow_nonneg hx.le ρ.re)
+-  convert hh using 1 <;> ring
++  convert hh using 1 <;> first | rfl | ring
++
+ 
+ /-- Generic finite high-zero domination, after bounding an actual coefficient. -/
+ theorem norm_high_sum_le_of_bound {T x C : ℝ} (hT : 0 < T) (hg : zetaGoodHeight T)
+@@ -275,7 +278,8 @@
+       obtain ⟨hr, hA⟩ := Finset.mem_filter.mp hρ
+       rw [norm_mul, Complex.norm_natCast]
+       have hh := mul_le_mul_of_nonneg_left (hK ρ hr hA) (Nat.cast_nonneg (multRectD zetaF T ρ))
+-      convert hh using 1 <;> ring
++      convert hh using 1 <;> first | rfl | ring
++
+     _ ≤ C * ((x + 1) * WeightedZetaZeros.weightedSum A T (fun t => 1 / t ^ 5)) :=
+       mul_le_mul_of_nonneg_left (sum_rpow_high_le_weightedSum hT hg hx A) hC
+     _ = _ := by ring

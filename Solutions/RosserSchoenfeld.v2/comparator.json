@@ -1,0 +1,7 @@
+{
+  "challenge_module": "IEANTN.Nodes.RosserSchoenfeld.v2.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": ["RosserSchoenfeld.v2.challenge_psi_error_b23"],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}

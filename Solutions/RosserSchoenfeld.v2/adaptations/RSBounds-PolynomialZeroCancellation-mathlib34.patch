@@ -1,0 +1,38 @@
+--- a/Proof/RSBounds/PolynomialZeroCancellation.lean
++++ b/Proof/RSBounds/PolynomialZeroCancellation.lean
+@@ -79,7 +79,8 @@
+       ((3 / 2 : ℝ) * t ^ (1 / 2 : ℝ)) (Icc a b) t := by
+     intro t ht
+     convert (Real.hasDerivAt_rpow_const (Or.inl (ne_of_gt (ha.trans_le ht.1)))).hasDerivWithinAt using 1 <;>
+-      norm_num
++      first | rfl | norm_num
++
+   have hm : ∀ t ∈ Ico a b, ‖(3 / 2 : ℝ) * t ^ (1 / 2 : ℝ)‖ ≤ 2 := by
+     intro t ht
+     have ht0 : 0 < t := ha.trans_le ht.1
+@@ -122,9 +123,13 @@
+     refine hhi.trans ?_
+     gcongr
+   have hlow' : γ * δ / (2 * (1 + 4 * δ)) ≤ γ * (Real.log (y + δ) - Real.log y) / 2 := by
+-    convert mul_le_mul_of_nonneg_left hlow (show 0 ≤ γ / 2 by positivity) using 1 <;> field_simp <;> ring
++    convert mul_le_mul_of_nonneg_left hlow (show 0 ≤ γ / 2 by positivity) using 1 <;>
++      first | rfl | (field_simp <;> ring) | ring
++
+   have hupp' : γ * (Real.log (y + δ) - Real.log y) / 2 ≤ γ * δ / (2 * (1 - 4 * δ)) := by
+-    convert mul_le_mul_of_nonneg_left hupp (show 0 ≤ γ / 2 by positivity) using 1 <;> field_simp <;> ring
++    convert mul_le_mul_of_nonneg_left hupp (show 0 ≤ γ / 2 by positivity) using 1 <;>
++      first | rfl | (field_simp <;> ring) | ring
++
+   refine ⟨(by positivity : 0 ≤ γ * δ / (2 * (1 + 4 * δ))).trans hlow',
+     hupp'.trans ?_, hlow', hupp'⟩
+   exact (div_le_one (by positivity)).mpr hv1
+@@ -310,7 +315,8 @@
+       iteratedIntegral δ 3 (iteratedIntegral δ 1 (fun t : ℝ => (t : ℂ) ^ ρ / ρ)) x := rfl
+   rw [he, norm_div, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hδ]
+   apply (div_le_iff₀ (pow_pos hδ 4)).mpr
+-  convert hm using 1 <;> ring
++  convert hm using 1 <;> first | rfl | ring
++
+ 
+ theorem norm_upperKernel_le_band {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ ≤ 0.000022)
+     {ρ : ℂ} (hρ : ρ.re = 1 / 2)
