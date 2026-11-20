@@ -1684,6 +1684,19 @@ class TestLifecycleLeanImports(FixtureRepo):
         self.assertEqual((upstream / "formalization.yaml").read_bytes(), before)
         self.assertTrue(ieantn.deactivate(["A.v1", "B.v1"], "Unused pair"))
 
+    def test_deactivation_refuses_its_own_bridge_while_the_bridge_is_still_built(self) -> None:
+        self.write_node("Upstream.v1", LITERATURE)
+        target = self.write_node("A.v1", bridged("Upstream.v1.main"))
+        self.write_bridge("import IEANTN.Nodes.A.v1.Conclusions\n")
+        self.generate()
+        self.assertTrue(ieantn.check_closure())
+        before = (target / "formalization.yaml").read_bytes()
+        umbrella = (self.root / "IEANTN" / "Bridges.lean").read_bytes()
+        self.assertFalse(ieantn.deactivate(["A.v1"], "No longer needed"))
+        self.assertEqual((target / "formalization.yaml").read_bytes(), before)
+        self.assertEqual((self.root / "IEANTN" / "Bridges.lean").read_bytes(), umbrella)
+        self.assertTrue(ieantn.check_closure())
+
     def test_reactivation_refuses_an_inactive_lean_import_before_writing(self) -> None:
         self.write_node("A.v1", LITERATURE)
         consumer = self.write_node("B.v1", LITERATURE)
