@@ -112,6 +112,32 @@ Lake project**, not a library of the core, with its own lakefile and its own man
 keeps a proof's dependencies its own: a solution needing PNT+ must not force PNT+ on the core, which
 has to stay Mathlib-only and fast.
 
+**A verification may rest on a package outside Mathlib, provided it is pinned.** This is settled
+policy, not an open question, and it is the same line Palomar's `docs/specification.md` draws for
+the same Comparator: *"Proof-only dependencies used by the Solution may be broader, but remain
+pinned and confined."* The confinement is the Challenge, whose transitive closure must resolve to
+Lean core and Mathlib — which `check_closure` has always enforced, because the challenge lives in
+the core and the core is Mathlib-only by construction. Comparator itself never had an opinion on
+where a declaration came from: `verify-comparator.sh` builds the solution project as it finds it,
+and what Comparator then checks is the axioms of the compared theorem.
+
+So `check` requires, of every git dependency in a solution's manifest:
+
+- a **full 40-character commit** — a branch or tag names whatever it names today, and a receipt
+  pointing at one would record a verification nobody can reproduce;
+- **https, with no credentials in the URL** — a pin anyone can fetch is part of what makes the
+  verification repeatable;
+- for a package the core already pins, **the core's own revision** — a solution resolves its own
+  copy of Mathlib, and a divergent pin would verify against a different library than the one the
+  statement fingerprints were taken in.
+
+The receipt then records what the proof rested on, under `solution.dependencies`, read from the
+solution's manifest at the moment of verification; the node page shows it as **Builds on**. Neither
+is restated in the node metadata, because the manifest is the pin and two copies of a pin are one
+pin and one chance to drift. `RosserSchoenfeld1962.v1` is the first node to use this, resting on
+LeanCert for the finite range of Rosser–Schoenfeld (3.35); issue #164 is where the decision was
+taken.
+
 It takes the core as a path dependency, in order to see its node's `Conclusions`. It deliberately
 does *not* import the node's `Challenge`: Comparator compares two modules declaring the same names,
 so importing it would collide.
@@ -177,13 +203,19 @@ Comparator does not permit — `native_decide` goes through `Lean.ofReduceBool` 
 workflow cannot be run on it as it stands: a dependency the network has not admitted to its trust
 base, or a build no runner will finish.
 
-`RosserSchoenfeld1962.v1` is the worked case. Its finite certificates come from a third-party
-LeanCert pin, and whether a verification run may fetch such a thing is a question about the trust
-base, not about this proof. It is a question with a likely answer: the tier A argument in
-[ROADMAP.md](ROADMAP.md) holds that a certificate *re-checked inside Lean* leaves the trusted base
-entirely — a bug in the generator causes a failed build, not an unsound theorem — and should end in
-an ordinary `lean-comparator` receipt. This kind is where such a node waits while that is settled,
-not a verdict against the proof.
+The axiom case is the permanent one. `native_decide` goes through `Lean.ofReduceBool`, which
+Comparator does not permit and should not: it asks the reader to trust the compiler and the runtime
+as well as the kernel. A proof that needs it is honestly `lean-noncompliant` and stays so until
+the computation is done another way.
+
+The *dependency* case turned out not to be a case at all. An external pin was once thought to put
+a solution out of reach of verification; it does not, and the policy settling that is in the
+Solution section above. `RosserSchoenfeld1962.v1`, which was this kind's worked example, is
+therefore an ordinary candidate for verification, resting on a pinned LeanCert. What remains
+between it and a receipt is not policy but arithmetic: its 32 certificate shards need the
+solution's own sequential build to fit in memory, where `verify-comparator.sh` runs a plain
+`lake build`. A node waits here while a run is attempted, which is a different thing from waiting
+for a decision.
 
 So it is a **leaf of the trust graph**, like a citation: what a reader relies on is the author's
 report that it builds and audits. It is not `none-yet`, because the work left is to settle a policy
@@ -243,7 +275,8 @@ matching receipt, and `record-receipt` refuses to receipt any conclusion absent 
 
 `python scripts/ieantn.py status` grades every receipt against the world as it is now.
 
-So do the generated views. `STATE.md`, `GRAPH.md` and `docs/nodes/` read the committed
+So do the generated views. `STATE.md`, `GRAPH.md`, `docs/graph.html` and `docs/nodes/` read the
+committed
 fingerprints and manifest rather than rebuilding, so they can say what a receipt is presently
 worth without a Lean run — and they say it, rather than reporting the *designated* kind and
 leaving a severed implication looking verified.
@@ -485,10 +518,14 @@ solution composing the per-node solutions along the way — *"the main results o
 this RH verification, this table computation, and this folklore lemma."* That is the artifact worth
 registering.
 
-`python scripts/ieantn.py spinoff <conclusion> --out <dir>` builds it, for the **one-level** case:
-a conclusion whose unjustified leaves are all among its own direct imports. Deeper graphs need the
-per-node solutions composed, which is not implemented; the command refuses rather than emitting
-something that looks complete. *(planned: the composing case.)*
+`python scripts/ieantn.py spinoff <conclusion> --out <dir>` builds it. When every unjustified leaf
+is a direct import, the Solution is that node's challenge theorem applied to those hypotheses.
+When the leaves sit further down, it composes the designated path: each `lean-comparator` step is
+its challenge theorem, and each `bridged` step is the one theorem in the recorded bridge file
+whose conclusion is that declaration and whose hypotheses are themselves conclusions. A citation
+that still imports something is refused. Assuming it would drop those dependencies, and there is
+no proof to apply. The command still does not invent `lakefile.toml`, `lake-manifest.json` or the
+limitations prose.
 
 What it does is inline. A Palomar Challenge's import closure must be Lean core and Mathlib only, so
 the emitted Challenge cannot `import IEANTN.Vocabulary`; instead `Tools/Spinoff.lean` walks the
@@ -561,9 +598,9 @@ python scripts/ieantn.py deprecate        # mark a version for retirement
 the verification workflow, and a receipt you can write attests nothing.
 
 **Not yet built**, and tracked in [ROADMAP.md](ROADMAP.md): the reviewer report as a pull request
-comment rather than a job summary; a `/verify` comment trigger; the Palomar spin-off generator;
-visualisation; and verification methods beyond Comparator. The `receipts/` ruleset is not pending
-but unavailable, and provenance replaced it -- see above.
+comment rather than a job summary; a `/verify` comment trigger; and verification methods beyond
+Comparator. The `receipts/` ruleset is not pending but unavailable, and provenance replaced it --
+see above.
 
 **The Comparator path is exercised end to end**: `Lcm.v1` carries a receipt written by the
 verification workflow, and `status` grades it against the current environment.

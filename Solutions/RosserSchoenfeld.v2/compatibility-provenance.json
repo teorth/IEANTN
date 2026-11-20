@@ -1,0 +1,49 @@
+{
+  "description": "Source provenance for small compatibility helpers; not a proof-verification receipt.",
+  "target_mathlib": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6",
+  "files": [
+    {
+      "path": "RSBoundsCompat/ZetaConjugation.lean",
+      "sha256": "20049cea319b6e64fd14a6482391974f9310b1c72add37ab2d8e8f4e984c4caa",
+      "source_commit": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+      "source_repository": "https://github.com/leanprover-community/mathlib4",
+      "source_files": [
+        {
+          "path": "Mathlib/Analysis/SpecialFunctions/Gamma/Deligne.lean",
+          "sha256": "c43be3027d379c4f4143e92550e084389823caddf955fda7f869a0d3ed97dae3"
+        },
+        {
+          "path": "Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean",
+          "sha256": "576337ec45281fc9f6b847e0015927179b55a66b087ac8747bdf1750594261ab"
+        }
+      ],
+      "changes": "Namespaced backport; imports and namespace qualifications adapted."
+    },
+    {
+      "path": "RSBoundsCompat/Arctan.lean",
+      "sha256": "af721841fc0c47555514ff953953eae0980d4cf4f1173f78926df95786de2330",
+      "source_commit": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+      "source_repository": "https://github.com/leanprover-community/mathlib4",
+      "source_files": [
+        {
+          "path": "Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean",
+          "sha256": "4268d20e37d4ba832714de59a8c6174e495c907512b786642c6c52b4d59a91c7"
+        }
+      ],
+      "changes": "The same two statements are proved directly using the older Real.le_tan and Real.arctan_neg; the newer strict arctan helper is not needed. Declared as a `module` (public imports, exposed public section) because its consumer HardyFirstZero.Phase is a module."
+    },
+    {
+      "path": "RSBoundsCompat/GammaDeriv.lean",
+      "sha256": "9b05f04d2bb4930a9ab93278027f66fe64919a9838799c2dacdf2ec1f197fe36",
+      "source_commit": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+      "source_repository": "https://github.com/leanprover-community/mathlib4",
+      "source_files": [
+        {
+          "path": "Mathlib/Analysis/SpecialFunctions/Gamma/Deriv.lean",
+          "sha256": "6bfec4313c29559f99c4ea493c8538d143ade63016c7bde1f6c5cff2eaca31b1"
+        }
+      ],
+      "changes": "Namespaced backport; imports and namespace qualifications adapted."
+    }
+  ]
+}

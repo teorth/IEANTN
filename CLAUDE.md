@@ -53,7 +53,8 @@ breaks the architecture silently and CI will reject it.
 - **After changing a conclusion, run `python scripts/ieantn.py fingerprint`** and commit the
   result — it lives in the node's own directory. Cosmetic edits will not change it; a change of
   meaning will, which is the point.
-- **Do not commit `STATE.md`, `GRAPH.md` or `docs/nodes/`.** They are views, rewritten on `main`
+- **Do not commit `STATE.md`, `GRAPH.md`, `docs/graph.html` or `docs/nodes/`.** They are views,
+  rewritten on `main`
   by `.github/workflows/derived.yml`, and a pull request carrying them conflicts with every other
   open one. Regenerate them locally as much as you like; leave them out of the commit. CI fails a
   pull request that includes them, and `check` reports a stale one without failing.
@@ -71,7 +72,7 @@ python scripts/ieantn.py diff           # what your branch degrades, and for who
 python scripts/ieantn.py housekeeping   # the derived task queue
 python scripts/ieantn.py progress <node> [--write]   # where a partial solution's holes are
 python scripts/ieantn.py state          # STATE.md
-python scripts/ieantn.py graph          # GRAPH.md, two Mermaid diagrams
+python scripts/ieantn.py graph          # GRAPH.md, and docs/graph.html drawn
 python scripts/ieantn.py verify <node> --branch <branch>   # dispatch a verification and follow it
 python scripts/ieantn.py verify <node> --pr <n>            # same, for a pull request (fork-safe)
 python scripts/ieantn.py spinoff <conclusion> --out <dir> --compile   # Palomar submission

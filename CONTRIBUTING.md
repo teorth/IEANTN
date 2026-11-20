@@ -104,8 +104,8 @@ is a changed statement — so they belong in the diff that caused them. The fing
 file per node, in the node's own directory, so two branches collide only when they touch the same
 node.
 
-**CI's to regenerate, and not yours to commit:** `STATE.md`, `GRAPH.md` and everything under
-`docs/nodes/`. Every fact in them is already in some `formalization.yaml`, so a pull request
+**CI's to regenerate, and not yours to commit:** `STATE.md`, `GRAPH.md`, `docs/graph.html` and
+everything under `docs/nodes/`. Every fact in them is already in some `formalization.yaml`, so a pull request
 carrying them adds nothing to review — and conflicts with every other open pull request, since all
 of them rewrite the same few files. `.github/workflows/derived.yml` rewrites them once a change
 reaches `main`. Run `state`, `graph` and `pages` locally whenever you want to see the effect of a
@@ -254,8 +254,8 @@ Editing metadata, notes or the solution is fine; editing a *statement* throws th
 So make the branch's statements final before step 2.
 
 **Expect a commit you did not write.** The receipt job commits `receipts/`, `IEANTN/Nodes/`,
-`STATE.md`, `GRAPH.md` and `docs/nodes/` as `ieantn-verifier[bot]`. It regenerates all three derived
-files because designating a `lean-comparator` justification changes the node's evidence kind, and a
+`STATE.md`, `GRAPH.md`, `docs/graph.html` and `docs/nodes/` as `ieantn-verifier[bot]`. It
+regenerates every derived file because designating a `lean-comparator` justification changes the node's evidence kind, and a
 receipt whose own pull request failed CI would be self-defeating. Push without pulling first and you
 will be rejected.
 
@@ -295,10 +295,14 @@ conclusion should point at. You can re-designate afterwards; that is an ordinary
 
 Some complete proofs cannot be given a receipt as they stand. Either they use an axiom Comparator
 does not permit — `native_decide` goes through `Lean.ofReduceBool` — or the verification workflow
-cannot be run on them: a dependency the network has not admitted to its trust base, such as a
-third-party LeanCert or PrimeCert pin, or a build no runner will finish. Nothing need be wrong with
-such a proof; what is outstanding is usually a policy question rather than a defect in the
-solution.
+cannot be run on them, usually because no runner will finish the build. Nothing need be wrong with
+such a proof.
+
+**An external dependency is not one of these cases.** A solution may be verified while resting on a
+package outside Mathlib — LeanCert, PrimeCert, PNT+ — as long as the dependency is pinned to a full
+commit, fetched over https without credentials, and leaves the core's own pins alone. `check`
+enforces all three, the receipt records what was trusted, and the node page shows it as
+**Builds on**. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) section 3.
 
 Designate `kind: lean-noncompliant` for it. Say in the justification's `note` exactly what the
 obstruction is, and record the `issue` where removing it is tracked. The node then reads as what it
@@ -590,6 +594,13 @@ acknowledge:
 CI cross-checks this against its own computation, so it cannot be written without reading what
 actually broke. It is an override, not a routine step: if you find yourself writing one often, you
 are editing where you should be versioning.
+
+**One failure has no acknowledgement**: a designated `bridged` justification whose leaf set grew,
+reported as "gained unproved assumptions". Every other error here is a conclusion edited in place,
+where the question is whether landing it is worth what it breaks downstream — a judgement a
+reviewer can make. That one is not a judgement call: a restatement resting on an assumption the
+original did not is not a restatement. Designate the weaker evidence the node really has instead.
+[docs/ROADMAP.md](docs/ROADMAP.md) gives the reasoning.
 
 ## Disclose AI assistance
 

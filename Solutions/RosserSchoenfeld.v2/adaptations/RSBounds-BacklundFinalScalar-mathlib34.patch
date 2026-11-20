@@ -1,0 +1,16 @@
+--- a/Proof/RSBounds/BacklundFinalScalar.lean
++++ b/Proof/RSBounds/BacklundFinalScalar.lean
+@@ -98,9 +98,11 @@
+     rw [div_le_iff₀ (by positivity)]
+     linarith [Real.pi_gt_d2]
+   have hP : 2 / (Real.pi * T) ≤ 0.637 / T := by
+-    convert div_le_div_of_nonneg_right hpi2 hT0.le using 1 <;> ring
++    convert div_le_div_of_nonneg_right hpi2 hT0.le using 1 <;> first | rfl | ring
++
+   have hG : 1 / (4 * Real.pi * T) ≤ 0.08 / T := by
+-    convert div_le_div_of_nonneg_right hG0 hT0.le using 1 <;> ring
++    convert div_le_div_of_nonneg_right hG0 hT0.le using 1 <;> first | rfl | ring
++
+   have hsmall : (1.1 : ℝ) / T ≤ 0.011 := by
+     rw [div_le_iff₀ hT0]
+     linarith
