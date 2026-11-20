@@ -541,6 +541,28 @@ class TestReceiptHealthInTheViews(FixtureRepo):
     def test_a_standing_receipt_is_plain_verified(self) -> None:
         self.assertEqual(self._kind_of(self._verified("A.v1")), "lean-comparator")
 
+    def test_a_receipt_for_a_different_hypothesis_is_drifted(self) -> None:
+        """The view used to say verified when the stored digests still matched.
+
+        The conclusion's fingerprint does not include its import list, so a node can
+        take on a hypothesis the receipt never recorded and still look green.
+        """
+        self.write_node("Upstream.v1", LITERATURE)
+        family, version = "Upstream", "v1"
+        (self.root / "IEANTN" / "Nodes" / family / version / "fingerprints.json").write_text(
+            json.dumps({"Upstream.v1.main": "upstream-digest"}), encoding="utf-8")
+        key = self._verified("A.v1")
+        body = (self.root / "IEANTN" / "Nodes" / "A" / "v1" / "formalization.yaml").read_text(
+            encoding="utf-8")
+        body = body.replace(
+            "  imports: []\n",
+            "  imports:\n    - node: Upstream.v1\n      conclusion: main\n",
+            1,
+        )
+        (self.root / "IEANTN" / "Nodes" / "A" / "v1" / "formalization.yaml").write_text(
+            body, encoding="utf-8")
+        self.assertEqual(self._kind_of(key), "lean-comparator-drifted")
+
     def test_a_moved_statement_is_drifted(self) -> None:
         """The fingerprint the receipt pinned is not the one the library now elaborates to."""
         key = self._verified("A.v1", statement={"A.v1.main": "digest-before-the-edit"})
@@ -1551,6 +1573,12 @@ class TestUnjustifiedLeaves(FixtureRepo):
         self.write_node(
             "A.v1", importing("Upstream.v1").replace("kind: none-yet", "kind: lean-comparator"))
         self._receipt_for("A.v1.main")
+        receipt_path = self.root / "receipts" / "A.v1.main.json"
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        receipt["statement"]["Upstream.v1.main"] = "upstream"
+        receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+        (self.root / "IEANTN" / "Nodes" / "Upstream" / "v1" / "fingerprints.json").write_text(
+            json.dumps({"Upstream.v1.main": "upstream"}), encoding="utf-8")
         index = ieantn.index_conclusions(ieantn.load_nodes())
         self.assertEqual(ieantn.unjustified_leaves(index, "A.v1.main"), ["Upstream.v1.main"])
 
@@ -2243,6 +2271,42 @@ class TestStaleness(FixtureRepo):
             "A.v1.main", self._receipt({"A.v1.main": "old"}), {"A.v1.main": "new"}
         )
         self.assertEqual(light, "BROKEN")
+
+    def test_a_dropped_hypothesis_is_not_still_verified(self) -> None:
+        """Removing an import leaves the conclusion's own fingerprint where it was.
+
+        The receipt still names the hypothesis it was checked under, and that digest
+        still matches, so the grade used to stay green for a stronger claim.
+        """
+        light, detail = ieantn.assess(
+            "B.v1.main",
+            self._receipt({"B.v1.main": "d", "A.v1.main": "h"}),
+            {"B.v1.main": "d", "A.v1.main": "h"},
+            imports=[],
+        )
+        self.assertEqual(light, "BROKEN")
+        self.assertIn("A.v1.main", detail)
+        self.assertIn("hypotheses", detail)
+
+    def test_an_added_hypothesis_is_not_still_verified(self) -> None:
+        """A new import is a premise the receipt never pinned."""
+        light, detail = ieantn.assess(
+            "B.v1.main",
+            self._receipt({"B.v1.main": "d"}),
+            {"B.v1.main": "d", "A.v1.main": "h"},
+            imports=["A.v1.main"],
+        )
+        self.assertEqual(light, "BROKEN")
+        self.assertIn("A.v1.main", detail)
+
+    def test_the_same_hypotheses_stay_green(self) -> None:
+        light, _ = ieantn.assess(
+            "B.v1.main",
+            self._receipt({"B.v1.main": "d", "A.v1.main": "h"}),
+            {"B.v1.main": "d", "A.v1.main": "h"},
+            imports=["A.v1.main"],
+        )
+        self.assertEqual(light, "green")
 
     def test_environment_drift_is_yellow_not_broken(self) -> None:
         light, _ = ieantn.assess(
