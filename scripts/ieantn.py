@@ -4858,13 +4858,36 @@ def _until_assign(code: str, index: int) -> tuple[str, int]:
     return code[start:], len(code)
 
 
+def _resolve_binder_type(written: str, namespace: list[str], known: set[str]) -> str:
+    """The declaration Lean would mean by `written` inside `namespace`, when that is determined.
+
+    A name is tried under the enclosing namespace first, then each parent, then as written.
+    `namespace Demo` / `(h : B.v1.main)` is `Demo.B.v1.main` when that declaration exists, and
+    only otherwise `B.v1.main`. A short name works the same way: `main` inside `B.v1` is
+    `B.v1.main`. Anything that is not a single name is returned unchanged. Names that resolve
+    only through `open` are not guessed.
+    """
+    collapsed = " ".join(written.split())
+    if not re.fullmatch(
+        r"[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*", collapsed
+    ):
+        return collapsed
+    for length in range(len(namespace), -1, -1):
+        prefix = ".".join(namespace[:length])
+        candidate = f"{prefix}.{collapsed}" if prefix else collapsed
+        if candidate in known:
+            return candidate
+    return collapsed
+
+
 def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, list[str]]]:
     """Theorems whose conclusion is exactly `target` and whose hypotheses are known declarations.
 
-    A dotted name at the top level is used as written. A short name is prefixed with the
-    namespaces open around it. A dotted name inside a namespace is skipped: which full name Lean
-    would assign is not something to guess. Only a single explicit `(name : type)` binder is
-    accepted, and only when `type` is one of `known`. An implicit binder or a side condition
+    A dotted theorem name at the top level is used as written. A short theorem name is prefixed
+    with the namespaces open around it. A dotted theorem name inside a namespace is skipped:
+    which full name Lean would assign is not something to guess. Hypothesis types are resolved
+    with `_resolve_binder_type`. Only a single explicit `(name : type)` binder is accepted, and
+    only when the resolved type is one of `known`. An implicit binder or a side condition
     disqualifies that theorem.
     """
     code = strip_lean_comments(text)
@@ -4918,7 +4941,7 @@ def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, 
             if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", binder_name.strip()):
                 usable = False
                 break
-            binders.append(" ".join(binder_type.split()))
+            binders.append(_resolve_binder_type(binder_type, stack, known))
             index = _skip_ws(code, index)
         if index < length and code[index] == ":":
             conclusion, index = _until_assign(code, index + 1)
