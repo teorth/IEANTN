@@ -5126,10 +5126,11 @@ def plan_composition(index: dict, key: str) -> tuple[dict | None, str | None]:
         return f"({name} {' '.join(arguments)})"
 
     if one_level:
-        # The single application is written the way it always was: the theorem, then the
-        # hypotheses in sorted order, with no extra parentheses. A reader diffing a one-level
-        # submission against the previous generator should see the same proof line.
-        arguments = " ".join(hypothesis_of(leaf) for leaf in ordered)
+        # Binder order is the order `gen-challenges` wrote, which is the yaml import list.
+        # `ordered` is sorted for the emitted hypothesis list; feeding that order to the
+        # challenge applies the later hypothesis to the earlier parameter whenever the
+        # imports were not already alphabetical.
+        arguments = " ".join(hypothesis_of(item) for item in import_keys_of(conclusion))
         term = f"{node_id}.challenge_{conclusion.get('id')}"
         if arguments:
             term += " " + arguments
