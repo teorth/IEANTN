@@ -39,7 +39,6 @@ lemma rpow_three_halves : (5.5666305 : ℝ) ^ ((3 : ℝ) / 2) = 5.5666305 * √(
   have hpos : (0 : ℝ) < 5.5666305 := by norm_num
   have hsplit : ((3 : ℝ) / 2) = (1 : ℝ) + (1 / 2) := by norm_num
   rw [hsplit, rpow_add hpos, rpow_one, sqrt_eq_rpow]
-  ring
 
 /-- **`FKS.v1.rescaled_A_exceeds_printed`.** Lemma 5.3's check
 `121.096 / R^{3/2} < 9.22022`, written as `9.22022 R^{3/2} > 121.096`.
@@ -86,9 +85,10 @@ lemma rescaled_lt {q w : ℝ} (hw : 0 < w) (hq_lo : 2.3593705 < q) (_hq_hi : q <
   have hq3 : (121.096 : ℝ) < 9.22022 * q ^ 3 := by
     have hA := rescaled_A_exceeds_printed
     unfold FKS.v1.rescaled_A_exceeds_printed at hA
-    rw [rpow_three_halves, hq] at hA
+    rw [rpow_three_halves, ← hq] at hA
     have h3 : q ^ 3 = 5.5666305 * q := by rw [show q ^ 3 = q ^ 2 * q by ring, hq2]
-    linarith
+    rw [h3]
+    exact hA
   have hw3 : 0 < w ^ 3 := pow_pos hw 3
   calc 121.096 * w ^ 3 * exp (-2 * w)
       ≤ 121.096 * w ^ 3 * exp (-0.8476836 * (q * w)) :=
