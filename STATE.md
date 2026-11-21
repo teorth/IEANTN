@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-64 node version(s), 134 conclusion(s).  3 state nothing yet.
+66 node version(s), 141 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
@@ -16,7 +16,7 @@ adds the environment detail.
 | `asserted` | 1 |
 | `bridged` | 3 |
 | `lean-comparator` | 49 |
-| `literature` | 45 |
+| `literature` | 52 |
 | `none-yet` | 4 |
 | `numerical` | 32 |
 
@@ -124,8 +124,13 @@ adds the environment detail.
 | `MT.v1` | active | `zero_free_region` | literature | 2 | - |
 | `MT.v1` | active | `zero_free_region_sharpened` | literature | 2 | - |
 | `MT.v2` | active | `corollary_1` | literature | 1 | #63 |
-| `MTY.v1` | stub | *(none yet)* | - | - | - |
+| `MTY.v1` | stub | `classical_zero_free_region` | literature | 0 | - |
+| `MTY.v1` | stub | `korobov_vinogradov_region` | literature | 0 | - |
+| `MTY.v1` | stub | `intermediate_zero_free_region` | literature | 0 | - |
 | `OliveiraESilva2014.v1` | active | `even_up_to_4e18` | numerical | 0 | - |
+| `Patel2020.v1` | stub | `zeta_one_bound` | literature | 0 | - |
+| `Patel2020.v1` | stub | `cheng_graham_lemma_2` | literature | 0 | - |
+| `Patel2020.v1` | stub | `cheng_graham_lemma_3` | literature | 0 | - |
 | `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
 | `Platt2017.v1` | stub | `rh_up_to` | numerical | 1 | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
@@ -137,6 +142,7 @@ adds the environment detail.
 | `PrimeInterval.v1` | active | `eTheta_criterion` | lean-comparator-stale | 0 | #53 |
 | `PrimeInterval.v1` | active | `numericalBound_hasPrimeInInterval` | lean-comparator-stale | 0 | #53 |
 | `PrimeInterval.v1` | active | `classicalBound_hasPrimeInInterval` | lean-comparator-stale | 0 | #53 |
+| `PrimesBetweenCubes.v1` | stub | `prime_between_successive_cubes` | literature | 1 | - |
 | `RamareSaouter2003.v1` | active | `prime_in_short_interval` | literature | 0 | - |
 | `Richstein2001.v1` | active | `even_up_to_4e14` | numerical | 0 | - |
 | `RosserSchoenfeld.v1` | stub | `zero_free_region` | literature | 0 | - |
@@ -239,6 +245,7 @@ downstream.
 | `Richstein2001.v1.even_up_to_4e14` | 1 |
 | `Platt2017.v1.rh_up_to` | 1 |
 | `Platt2015.v1.rh_up_to` | 1 |
+| `MTY.v1.korobov_vinogradov_region` | 1 |
 | `MT.v2.corollary_1` | 1 |
 | `KadiriLumley.v1.prime_in_interval_above_exp_60` | 1 |
 | `KadiriLumley.v1.prime_in_interval_above_exp_59` | 1 |
