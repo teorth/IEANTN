@@ -100,6 +100,7 @@ graph LR
   NMT_2e_v2["<b>MT.v2</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NMTY_2e_v1["<b>MTY.v1</b><br/><i>nothing stated yet</i>"]
   NOliveiraESilva2014_2e_v1["<b>OliveiraESilva2014.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
+  NPatel2020_2e_v1["<b>Patel2020.v1</b><br/>3 claims<br/><i>weakest: cited</i>"]
   NPlatt2015_2e_v1["<b>Platt2015.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NPlatt2017_2e_v1["<b>Platt2017.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NPlattTrudgian_2e_v1["<b>PlattTrudgian.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
@@ -195,6 +196,7 @@ graph LR
   style NFKS_2e_v2 stroke-dasharray: 8 4;
   style NHiary2016_2e_v1 stroke-dasharray: 8 4;
   style NKadiriLumley_2e_v1 stroke-dasharray: 2 3;
+  style NPatel2020_2e_v1 stroke-dasharray: 8 4;
   style NPlatt2015_2e_v1 stroke-dasharray: 8 4;
   style NPlatt2017_2e_v1 stroke-dasharray: 8 4;
   style NPlattTrudgian_2e_v1 stroke-dasharray: 8 4;
@@ -204,7 +206,7 @@ graph LR
   style NWedeniwski_2e_v1 stroke-dasharray: 2 3;
   class NBrown1967_2e_v1,NButhe_2e_v2,NChengGraham2004_2e_v1,NCotangentSeries_2e_v1,NGammaAsymptotics_2e_v1,NMTY_2e_v1 none_2d_yet;
   class NWedeniwski_2e_v1 asserted;
-  class NBKLNW_2e_v1,NBKLNW_2e_v2,NButhe_2e_v1,NButhe2016_2e_v1,NDudekPlatt_2e_v1,NDusart2018_2e_v1,NFKS_2e_v1,NHiary2016_2e_v1,NKLN_2e_v1,NKadiri2005_2e_v1,NKadiriLumley_2e_v1,NMT_2e_v1,NMT_2e_v2,NPlattTrudgian_2e_v1,NPlattTrudgian2021_2e_v1,NPlattZeroSum_2e_v1,NRamareSaouter2003_2e_v1,NRosserSchoenfeld_2e_v1,NTrudgian2011_2e_v1,NZeroCount_2e_v1,NZetaHadamard_2e_v1 literature;
+  class NBKLNW_2e_v1,NBKLNW_2e_v2,NButhe_2e_v1,NButhe2016_2e_v1,NDudekPlatt_2e_v1,NDusart2018_2e_v1,NFKS_2e_v1,NHiary2016_2e_v1,NKLN_2e_v1,NKadiri2005_2e_v1,NKadiriLumley_2e_v1,NMT_2e_v1,NMT_2e_v2,NPatel2020_2e_v1,NPlattTrudgian_2e_v1,NPlattTrudgian2021_2e_v1,NPlattZeroSum_2e_v1,NRamareSaouter2003_2e_v1,NRosserSchoenfeld_2e_v1,NTrudgian2011_2e_v1,NZeroCount_2e_v1,NZetaHadamard_2e_v1 literature;
   class NBKLNWNumerics_2e_v1,NButheNumerics_2e_v1,NChebyshevNumerics_2e_v1,NDudekPlattNumerics_2e_v1,NDudekPlattNumerics_2e_v2,NDudekPlattNumerics_2e_v3,NFKBJ_2e_v1,NFKS2Numerics_2e_v1,NLowZeroes_2e_v1,NOliveiraESilva2014_2e_v1,NPlatt2015_2e_v1,NPlatt2017_2e_v1,NRichstein2001_2e_v1,NZetaLogDerivValues_2e_v1 numerical;
   class NFKS_2e_v2 bridged;
   class NCH2_2e_v2,NDudekPlatt_2e_v2,NDudekPlatt_2e_v3,NFKS2_2e_v1,NFKS2_2e_v2,NLcm_2e_v1,NLcm_2e_v2,NPrimeInterval_2e_v1,NZeroFreeHeight_2e_v1 lean_2d_comparator_2d_stale;
@@ -251,6 +253,7 @@ graph LR
   click NMT_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v1.md" _blank
   click NMT_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v2.md" _blank
   click NOliveiraESilva2014_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/OliveiraESilva2014-v1.md" _blank
+  click NPatel2020_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Patel2020-v1.md" _blank
   click NPlatt2015_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Platt2015-v1.md" _blank
   click NPlatt2017_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Platt2017-v1.md" _blank
   click NPlattTrudgian_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian-v1.md" _blank
@@ -625,6 +628,12 @@ A line is one claim, indented under whatever assumes it.
 
 - [`LowZeroes.v1.sum_inv_ordinates_below_2e4`](docs/nodes/LowZeroes-v1.md#sum_inv_ordinates_below_2e4) — computation
 
+- [`Patel2020.v1.cheng_graham_lemma_2`](docs/nodes/Patel2020-v1.md#cheng_graham_lemma_2) — cited — *sources known, not all drawable*
+
+- [`Patel2020.v1.cheng_graham_lemma_3`](docs/nodes/Patel2020-v1.md#cheng_graham_lemma_3) — cited — *sources known, not all drawable*
+
+- [`Patel2020.v1.zeta_one_bound`](docs/nodes/Patel2020-v1.md#zeta_one_bound) — cited — *sources known, not all drawable*
+
 - [`PlattTrudgian2021.v1.theorem_1_classical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_classical) — cited
   - [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) — cited
     - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited
@@ -756,6 +765,9 @@ rather than maintained.
 | [`KadiriLumley.v1.table_2`](docs/nodes/KadiriLumley-v1.md#table_2) | cited | 0 | known, not all drawable |
 | [`LowZeroes.v1.no_zeroes_below_first_ordinate`](docs/nodes/LowZeroes-v1.md#no_zeroes_below_first_ordinate) | computation | 0 | none |
 | [`LowZeroes.v1.sum_inv_ordinates_below_2e4`](docs/nodes/LowZeroes-v1.md#sum_inv_ordinates_below_2e4) | computation | 0 | none |
+| [`Patel2020.v1.cheng_graham_lemma_2`](docs/nodes/Patel2020-v1.md#cheng_graham_lemma_2) | cited | 0 | known, not all drawable |
+| [`Patel2020.v1.cheng_graham_lemma_3`](docs/nodes/Patel2020-v1.md#cheng_graham_lemma_3) | cited | 0 | known, not all drawable |
+| [`Patel2020.v1.zeta_one_bound`](docs/nodes/Patel2020-v1.md#zeta_one_bound) | cited | 0 | known, not all drawable |
 | [`PlattTrudgian2021.v1.theorem_1_classical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_classical) | cited | 0 | traced |
 | [`RosserSchoenfeld.v1.zero_free_region`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region) | cited | 0 | **not yet traced** |
 | [`ZetaLogDerivValues.v1.deriv_logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#deriv_logDeriv_neg_one) | computation | 0 | none |

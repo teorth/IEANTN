@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-64 node version(s), 134 conclusion(s).  3 state nothing yet.
+65 node version(s), 137 conclusion(s).  3 state nothing yet.
 
 ## Evidence
 
@@ -16,7 +16,7 @@ adds the environment detail.
 | `asserted` | 1 |
 | `bridged` | 3 |
 | `lean-comparator` | 49 |
-| `literature` | 45 |
+| `literature` | 48 |
 | `none-yet` | 4 |
 | `numerical` | 32 |
 
@@ -126,6 +126,9 @@ adds the environment detail.
 | `MT.v2` | active | `corollary_1` | literature | 1 | #63 |
 | `MTY.v1` | stub | *(none yet)* | - | - | - |
 | `OliveiraESilva2014.v1` | active | `even_up_to_4e18` | numerical | 0 | - |
+| `Patel2020.v1` | stub | `zeta_one_bound` | literature | 0 | - |
+| `Patel2020.v1` | stub | `cheng_graham_lemma_2` | literature | 0 | - |
+| `Patel2020.v1` | stub | `cheng_graham_lemma_3` | literature | 0 | - |
 | `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
 | `Platt2017.v1` | stub | `rh_up_to` | numerical | 1 | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
