@@ -4949,7 +4949,7 @@ def hypothesis_of(key: str) -> str:
     return hypothesis_name({"node": node_id, "conclusion": conclusion_id})
 
 
-def rewrite_vendored_imports(text: str, stems: dict[str, str]) -> str:
+def rewrite_vendored_imports(text: str, modules: dict[str, str]) -> str:
     """Repoint imports of a solution's own files at the directory they were copied into.
 
     Positions come from the comment-stripped text, which keeps the same length, so the
@@ -4959,13 +4959,22 @@ def rewrite_vendored_imports(text: str, stems: dict[str, str]) -> str:
     pieces: list[str] = []
     cursor = 0
     for match in IMPORT_RE.finditer(stripped):
-        module = match.group(1)
-        head, dot, tail = module.partition(".")
-        if head not in stems:
+        start = end = match.start(1)
+        # The scanner locates a real import, but may mask quoted identifier
+        # contents. Read its spelling from the original source at those offsets.
+        while end < len(stripped) and not stripped[end].isspace():
+            if text[end] == "«":
+                closing = text.find("»", end + 1)
+                end = len(stripped) if closing < 0 else closing + 1
+            else:
+                end += 1
+        # Quoting an ordinary module component does not change its identity.
+        # Keep nonordinary components quoted so a literal dot is not a separator.
+        module = re.sub(r"«([A-Za-z_][A-Za-z0-9_']*)»", r"\1", text[start:end])
+        if module not in modules:
             continue
-        start, end = match.span(1)
         pieces.append(text[cursor:start])
-        pieces.append(stems[head] + (dot + tail if dot else ""))
+        pieces.append(modules[module])
         cursor = end
     if not pieces:
         return text
@@ -4977,35 +4986,60 @@ def vendored_module(node_id: str, stem: str) -> str:
     return f"vendored.{node_id}.{stem}"
 
 
-def vendor_solution(node_id: str, target: pathlib.Path) -> None:
-    """Copy one node's solution under `vendored/<Family>/<version>/`.
+def copy_solution_sources(node_id: str, target: pathlib.Path, destination: pathlib.Path,
+                          prefix: str = "") -> list[str]:
+    """Copy project modules, preserving directories and excluding Lake's dependency/build tree.
 
-    `Solution.lean` becomes `NodeSolution.lean` so the wrapper can keep the name `Solution`.
-    Imports of sibling files are rewritten to that directory; an import that should have moved
-    and did not is a failure, not a successful copy of a file that no longer resolves.
+    Only the root `Solution.lean` is renamed. `Solution/Extra.lean` and
+    `Helpers/Solution.lean` are different modules, so imports are mapped by their full names.
     """
     solution_dir = SOLUTIONS / node_id
-    destination = target.joinpath("vendored", *node_id.split("."))
-    destination.mkdir(parents=True, exist_ok=True)
-    files = sorted(path for path in solution_dir.glob("*.lean"))
-    stems = {
-        path.stem: vendored_module(node_id, "NodeSolution" if path.name == "Solution.lean" else path.stem)
-        for path in files
-    }
-    for path in files:
+    files: dict[pathlib.Path, pathlib.Path] = {}
+    for directory, children, names in os.walk(solution_dir):
+        parent = pathlib.Path(directory)
+        # Prune dependency/build directories before descending: a warm solution
+        # can contain far more Lean files under .lake than in its own sources.
+        children[:] = sorted(name for name in children if not name.startswith(".")
+                             and not (parent / name).is_relative_to(target))
+        for name in sorted(names):
+            if name.startswith(".") or not name.endswith(".lean"):
+                continue
+            relative = (parent / name).relative_to(solution_dir)
+            if relative == pathlib.Path("lakefile.lean"):
+                continue
+            files[relative] = (pathlib.Path("NodeSolution.lean")
+                               if relative == pathlib.Path("Solution.lean") else relative)
+    if len(set(files.values())) != len(files):
+        sys.exit(f"error: {rel(solution_dir)} contains NodeSolution.lean, which conflicts with "
+                 "the exported name of Solution.lean; rename that helper before exporting.")
+
+    def module(path: pathlib.Path) -> str:
+        return ".".join(path.with_suffix("").parts)
+
+    modules = {module(source): prefix + module(copied) for source, copied in files.items()}
+    for source, copied in files.items():
+        path = solution_dir / source
         original = path.read_text(encoding="utf-8")
         local = [
             module for module in IMPORT_RE.findall(strip_lean_comments(original))
-            if module.split(".", 1)[0] in stems
+            if module in modules
         ]
-        rewritten = rewrite_vendored_imports(original, stems)
-        if local and rewritten == original:
+        rewritten = rewrite_vendored_imports(original, modules)
+        if any(modules[name] != name for name in local) and rewritten == original:
             sys.exit(
                 f"error: {rel(path)} imports `{local[0]}`, and copying it under vendored/ "
                 "did not rewrite that import."
             )
-        name = "NodeSolution.lean" if path.name == "Solution.lean" else path.name
-        (destination / name).write_text(rewritten, encoding="utf-8", newline="\n")
+        output = destination / copied
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(rewritten, encoding="utf-8", newline="\n")
+    return sorted(modules.values())
+
+
+def vendor_solution(node_id: str, target: pathlib.Path) -> None:
+    """Copy one node's source tree under `vendored/<Family>/<version>/`."""
+    copy_solution_sources(node_id, target, target.joinpath("vendored", *node_id.split(".")),
+                          prefix=f"vendored.{node_id}.")
 
 
 def plan_composition(index: dict, key: str) -> tuple[dict | None, str | None]:
@@ -5271,9 +5305,7 @@ theorem {SPINOFF_NAMESPACE}.main{binders} :
   {plan["term"]}
 """
     if plan["one_level"]:
-        solution_dir = SOLUTIONS / node_id
-        vendored = sorted("NodeSolution" if path.stem == "Solution" else path.stem
-                          for path in solution_dir.glob("*.lean"))
+        vendored = copy_solution_sources(node_id, target, target)
         solution = (
             LICENCE_HEADER
             + "".join(f"import {stem}\n" for stem in vendored)
@@ -5290,13 +5322,6 @@ does not collide with the sorried challenge the source repository generates for 
 """
             + proof)
         (target / "Solution.lean").write_text(solution, encoding="utf-8", newline="\n")
-        for path in solution_dir.glob("*.lean"):
-            if path.name != "Solution.lean":
-                (target / path.name).write_text(path.read_text(encoding="utf-8"),
-                                                encoding="utf-8", newline="\n")
-        vendor = solution_dir / "Solution.lean"
-        (target / "NodeSolution.lean").write_text(vendor.read_text(encoding="utf-8"),
-                                                  encoding="utf-8", newline="\n")
     else:
         for vendor_id in plan["vendors"]:
             vendor_solution(vendor_id, target)
