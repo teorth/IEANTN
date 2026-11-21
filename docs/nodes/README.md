@@ -49,7 +49,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`LowZeroes.v1`](LowZeroes-v1.md) | computation | 2 | computation |
 | [`MT.v1`](MT-v1.md) | paper | 2 | cited |
 | [`MT.v2`](MT-v2.md) | paper | 1 | cited |
-| [`MTY.v1`](MTY-v1.md) | paper | 0 | — |
+| [`MTY.v1`](MTY-v1.md) | paper | 3 | cited |
 | [`OliveiraESilva2014.v1`](OliveiraESilva2014-v1.md) | computation | 1 | computation |
 | [`Patel2020.v1`](Patel2020-v1.md) | paper | 3 | cited |
 | [`Platt2015.v1`](Platt2015-v1.md) | computation | 1 | computation |
@@ -58,6 +58,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`PlattTrudgian2021.v1`](PlattTrudgian2021-v1.md) | paper | 2 | cited |
 | [`PlattZeroSum.v1`](PlattZeroSum-v1.md) | standard | 1 | cited |
 | [`PrimeInterval.v1`](PrimeInterval-v1.md) | pipeline | 4 | verified, stale |
+| [`PrimesBetweenCubes.v1`](PrimesBetweenCubes-v1.md) | paper | 1 | cited |
 | [`RamareSaouter2003.v1`](RamareSaouter2003-v1.md) | paper | 1 | cited |
 | [`Richstein2001.v1`](Richstein2001-v1.md) | computation | 1 | computation |
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 2 | cited |
