@@ -51,6 +51,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`MT.v2`](MT-v2.md) | paper | 1 | cited |
 | [`MTY.v1`](MTY-v1.md) | paper | 0 | — |
 | [`OliveiraESilva2014.v1`](OliveiraESilva2014-v1.md) | computation | 1 | computation |
+| [`Patel2020.v1`](Patel2020-v1.md) | paper | 3 | cited |
 | [`Platt2015.v1`](Platt2015-v1.md) | computation | 1 | computation |
 | [`Platt2017.v1`](Platt2017-v1.md) | computation | 1 | computation |
 | [`PlattTrudgian.v1`](PlattTrudgian-v1.md) | computation | 2 | cited |
