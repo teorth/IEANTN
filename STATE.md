@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-66 node version(s), 141 conclusion(s).  2 state nothing yet.
+68 node version(s), 145 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
@@ -15,10 +15,10 @@ adds the environment detail.
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 3 |
-| `lean-comparator` | 49 |
-| `literature` | 52 |
+| `lean-comparator` | 51 |
+| `literature` | 53 |
 | `none-yet` | 4 |
-| `numerical` | 32 |
+| `numerical` | 33 |
 
 ## Nodes
 
@@ -91,6 +91,8 @@ adds the environment detail.
 | `FKS.v1` | active | `rescaled_C_is_short_of_two` | numerical | 0 | - |
 | `FKS.v2` | awaiting-solution | `psi_bound_all_x` | bridged | 3 | - |
 | `FKS.v2` | awaiting-solution | `psi_classical_bound` | bridged | 3 | - |
+| `FKS.v3` | active | `psi_bound_all_x` | lean-comparator | 3 | #52 |
+| `FKS.v3` | active | `psi_classical_bound` | lean-comparator | 3 | #52 |
 | `FKS2.v1` | active | `corollary_14` | lean-comparator-stale | 6 | - |
 | `FKS2.v1` | active | `corollary_22` | lean-comparator-stale | 8 | - |
 | `FKS2.v1` | active | `corollary_23` | lean-comparator-stale | 10 | - |
@@ -102,6 +104,8 @@ adds the environment detail.
 | `FKS2Numerics.v1` | stub | `theta_asymp_ge_one_below_e30` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `corollary_22_mid_range` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `corollary_23_mid_range` | numerical | 0 | - |
+| `FKSNumerics.v1` | stub | `psi_classical_mid_range` | numerical | 0 | - |
+| `FKSNumerics.v1` | stub | `psi_classical_above_e200000` | literature | 3 | - |
 | `GammaAsymptotics.v1` | awaiting-solution | `digamma_sub_log_isBigO` | none-yet | 0 | #64 |
 | `GammaAsymptotics.v2` | active | `digamma_sub_log_isBigO_strip` | lean-comparator | 0 | #64 |
 | `Goldbach.v1` | active | `even_implies_odd` | lean-comparator | 0 | - |
@@ -201,11 +205,11 @@ downstream.
 
 | Conclusion | Dependants |
 |---|---:|
-| `PlattTrudgian.v1.rh_up_to` | 7 |
+| `PlattTrudgian.v1.rh_up_to` | 8 |
 | `FKBJ.v1.rh_up_to` | 6 |
 | `Buthe.v1.theorem_2_theta_lower` | 6 |
-| `MT.v1.zero_free_region_sharpened` | 4 |
-| `KLN.v1.subconvexity_bound` | 4 |
+| `MT.v1.zero_free_region_sharpened` | 5 |
+| `KLN.v1.subconvexity_bound` | 5 |
 | `FKS2Numerics.v1.theta_asymp_ge_one_below_e30` | 4 |
 | `FKS2Numerics.v1.nu_asymp_e30_le` | 4 |
 | `FKS2.v2.proposition_13` | 4 |
@@ -233,12 +237,15 @@ downstream.
 | `Kadiri2005.v1.zero_free_region` | 2 |
 | `KLN.v1.zero_density` | 2 |
 | `GammaAsymptotics.v2.digamma_sub_log_isBigO_strip` | 2 |
+| `FKSNumerics.v1.psi_classical_mid_range` | 2 |
+| `FKSNumerics.v1.psi_classical_above_e200000` | 2 |
 | `FKS2Numerics.v1.table6_row2_floor` | 2 |
 | `FKS2Numerics.v1.corollary_23_mid_range` | 2 |
 | `CotangentSeries.v1.cot_series_zeta_values` | 2 |
 | `CH2.v2.proposition_2_4_upper` | 2 |
 | `CH2.v2.proposition_2_4_lower` | 2 |
 | `Buthe.v1.theorem_2_psi` | 2 |
+| `BKLNW.v1.table8_psi_bound_above` | 2 |
 | `Wedeniwski.v1.rh_up_to` | 1 |
 | `Trudgian2011.v1.integral_S_bound` | 1 |
 | `RosserSchoenfeld.v1.zero_free_region_classical` | 1 |

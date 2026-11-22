@@ -34,9 +34,11 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`FKBJ.v1`](FKBJ-v1.md) | computation | 1 | computation |
 | [`FKS.v1`](FKS-v1.md) | paper | 4 | cited |
 | [`FKS.v2`](FKS-v2.md) | paper | 2 | bridged |
+| [`FKS.v3`](FKS-v3.md) | paper | 2 | verified |
 | [`FKS2.v1`](FKS2-v1.md) | paper | 4 | verified, stale |
 | [`FKS2.v2`](FKS2-v2.md) | pipeline | 2 | verified, stale |
 | [`FKS2Numerics.v1`](FKS2Numerics-v1.md) | computation | 5 | computation |
+| [`FKSNumerics.v1`](FKSNumerics-v1.md) | computation | 2 | cited |
 | [`GammaAsymptotics.v1`](GammaAsymptotics-v1.md) | standard | 1 | unjustified |
 | [`GammaAsymptotics.v2`](GammaAsymptotics-v2.md) | standard | 1 | verified |
 | [`Goldbach.v1`](Goldbach-v1.md) | paper | 6 | verified |
