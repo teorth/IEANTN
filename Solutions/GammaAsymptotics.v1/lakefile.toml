@@ -6,6 +6,8 @@ name = "IEANTN"
 path = "../.."
 
 # Reuse v2's proof sources without importing its challenge or its `Solution` module.
+# These nine module roots couple this build to v2's solution layout; a layout change there
+# may require updating this list.
 [[lean_lib]]
 name = "GammaStrip"
 srcDir = "../GammaAsymptotics.v2"

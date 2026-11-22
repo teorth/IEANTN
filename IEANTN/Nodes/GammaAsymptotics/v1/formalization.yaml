@@ -35,7 +35,6 @@ classification:
 
 conclusions:
 - id: digamma_sub_log_isBigO
-  issue: 64
   declaration: GammaAsymptotics.v1.digamma_sub_log_isBigO
   challenge: GammaAsymptotics.v1.challenge_digamma_sub_log_isBigO
   imports: []
@@ -106,11 +105,17 @@ limitations:
   remains the bounded-height statement on the existing consumers' path; this version supplies the
   stronger height-uniform estimate without changing their statements or verifications.
 - >-
-  Iterating the recurrence from a compact box alone does not control w = 1 + it as t -> infinity.
+  Iterating digamma_apply_add_one from a compact box in Re w in [1,2] controls Re w -> infinity
+  only at bounded height, not w = 1 + it as t -> infinity, which no compact box reaches.
   The solution instead bounds each logarithmic increment by 1/||w+n||^2 and compares the resulting
   series with 4/((n+||w||)(n+||w||+1)). Its sum is 4/||w||, independent of Im w. The strip estimate
   is used only to make the terminal error tend to zero for each fixed w, not to choose a uniform
-  strip constant.
+  strip constant. An earlier note predicted that the half-plane bound needed a Binet or Gauss
+  integral representation. That prediction was wrong: telescoping the recurrence against
+  logarithmic increments avoids both integral representations.
+- >-
+  THE REFLECTION FORMULA DOES NOT HELP WITH THIS: it relates the two half-planes but supplies no
+  growth bound in either, so it cannot start the half-plane estimate.
 - >-
   ONE ASYMPTOTIC ONLY, and a weak one. The node is named for the class because it is intended to
   grow: the -1/(2w) term, the sector version, a bound on Gamma itself, and Stirling's formula in the
