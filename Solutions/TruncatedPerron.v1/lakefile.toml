@@ -1,5 +1,5 @@
 name = "solution_TruncatedPerron_v1"
-defaultTargets = ["Solution", "PerronDev"]
+defaultTargets = ["Solution", "PerronDev", "PerronGeneral"]
 
 # The core library, for the node's `Conclusions`. Add whatever else the proof needs --
 # PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
@@ -15,3 +15,8 @@ roots = ["Solution"]
 [[lean_lib]]
 name = "PerronDev"
 roots = ["PerronDev"]
+
+# The term-by-term general formula, from the single-term bound.
+[[lean_lib]]
+name = "PerronGeneral"
+roots = ["PerronGeneral"]

@@ -5,6 +5,7 @@ Authors: Finn Doolan
 -/
 import IEANTN.Nodes.TruncatedPerron.v1.Conclusions
 import PerronDev
+import PerronGeneral
 
 /-!
 # Solution: `TruncatedPerron.v1`
@@ -15,7 +16,10 @@ imported: Comparator compares two modules declaring the same names, so importing
 `perron_single_term` is proved, from `TruncPerron.perron_single` in `PerronDev.lean`. The bridge
 only unfolds `perronT y c T = (1/(2πi)) · i · ∫_{-T}^{T} y^(c+it)/(c+it) dt` and cancels the `i`.
 
-`perron_general` and `perron_psi` are still open.
+`perron_general` is proved term by term from `perron_single_term`, in `PerronGeneral.lean`
+(`TruncPerronGeneral.perron_general_of_single`).
+
+`perron_psi` is still open.
 -/
 
 open Complex Real
@@ -31,8 +35,8 @@ theorem TruncatedPerron.v1.challenge_perron_single_term :
     field_simp
   rwa [e] at h
 
-theorem TruncatedPerron.v1.challenge_perron_general : TruncatedPerron.v1.perron_general := by
-  sorry
+theorem TruncatedPerron.v1.challenge_perron_general : TruncatedPerron.v1.perron_general :=
+  TruncPerronGeneral.perron_general_of_single TruncatedPerron.v1.challenge_perron_single_term
 
 theorem TruncatedPerron.v1.challenge_perron_psi : TruncatedPerron.v1.perron_psi := by
   sorry
