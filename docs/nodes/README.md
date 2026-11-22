@@ -66,6 +66,8 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 2 | cited |
 | [`RosserSchoenfeld.v2`](RosserSchoenfeld-v2.md) | paper | 1 | verified |
 | [`RosserSchoenfeld1962.v1`](RosserSchoenfeld1962-v1.md) | paper | 1 | verified |
+| [`Schoenfeld1976.v1`](Schoenfeld1976-v1.md) | paper | 8 | cited |
+| [`Schoenfeld1976Numerics.v1`](Schoenfeld1976Numerics-v1.md) | paper | 1 | cited |
 | [`Trudgian2011.v1`](Trudgian2011-v1.md) | paper | 1 | cited |
 | [`Wedeniwski.v1`](Wedeniwski-v1.md) | computation | 1 | asserted |
 | [`ZeroCount.v1`](ZeroCount-v1.md) | paper | 2 | cited |
@@ -73,6 +75,17 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`ZetaHadamard.v1`](ZetaHadamard-v1.md) | standard | 1 | cited |
 | [`ZetaLogDeriv.v1`](ZetaLogDeriv-v1.md) | standard | 1 | verified |
 | [`ZetaLogDerivValues.v1`](ZetaLogDerivValues-v1.md) | computation | 5 | computation |
+| [`ZetaZeroLocations.v1`](ZetaZeroLocations-v1.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v10`](ZetaZeroLocations-v10.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v11`](ZetaZeroLocations-v11.md) | computation | 2 | unjustified |
+| [`ZetaZeroLocations.v2`](ZetaZeroLocations-v2.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v3`](ZetaZeroLocations-v3.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v4`](ZetaZeroLocations-v4.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v5`](ZetaZeroLocations-v5.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v6`](ZetaZeroLocations-v6.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v7`](ZetaZeroLocations-v7.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v8`](ZetaZeroLocations-v8.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v9`](ZetaZeroLocations-v9.md) | computation | 3 | unjustified |
 | [`ZetaZeroes.v1`](ZetaZeroes-v1.md) | standard | 6 | verified |
 
 ## Inactive nodes
