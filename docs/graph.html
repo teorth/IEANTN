@@ -691,12 +691,12 @@ this at a different `φ` from the one above.</title>
 evidence: verified, stale
 imports: none
 
-Proposition 2.4, the majorant half. If `φ` is band-limited with `truncExp
-(2π(σ−1)/T) y ≤ (𝓕 φ y).re` for every `y` — that is, `𝓕 φ` majorizes the
-truncated exponential — then `partialSum a σ x` is at most `mainExpression`.
+Proposition 2.4, the majorant half. If `φ` is supported on `[−1, 1]` (as in
+`IsBandLimited`) and `(𝓕 φ y).re` majorizes `truncExp (2π(σ−1)/T) y` for every
+`y`, then `partialSum a σ x` is at most `mainExpression`.
 Imports nothing: `a`, `G`, `φ`, `T`, `β`, `σ` and `x` are all universally
 quantified and every condition on them is a hypothesis. So a Lean proof is
-this conclusion's whole ...</title>
+this conclusion's whole justification, and it can ...</title>
     <a href="https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v2.md#proposition_2_4_upper" target="_blank" rel="noopener">
       <rect x="28" y="1640" width="208" height="46" rx="7" fill="#e9f7ec" stroke="#2da44e" stroke-width="1.5"/>
       <text x="132" y="1659" class="top">CH2.v2</text>
@@ -2297,11 +2297,13 @@ evidence: verified, stale
 imports: none
 
 The numerical-bound route: if `Eθ` is at most the constant `ε` throughout
-`[x₀, ∞)` and `(2x + h) * ε &lt; h`, there is a prime in `(x, x + h]`.
+`[x₀, ∞)`, `0 &lt; h`, `x₀ ≤ x`, `0 &lt; x`, and `(2x + h) * ε &lt; h`, there is a
+prime in `(x, x + h]`.
+`x₀` itself need not be positive: the declaration asks for `0 &lt; x` and `x₀ ≤
+x` separately.
 Immediate from `eTheta_criterion` once both `Eθ x` and `Eθ (x + h)` are
 bounded by the same `ε`, which is exactly what `IEANTN.HasNumericalBound`
-gives once `x ≥ x₀`. Once `x` is at or beyond the threshold where
-`admissibleBound` reaches its maximum and becomes antitone, the ...">PrimeInterval.v1.numericalBound_hasPrimeInInterval</a></li>
+gives ...">PrimeInterval.v1.numericalBound_hasPrimeInInterval</a></li>
     <li class="box" data-key="PrimeInterval.v1.theta_characterisation" data-kind="lean-comparator-stale" style="--fill:#e9f7ec;--stroke:#2da44e;--edge:solid"><a href="https://github.com/teorth/IEANTN/blob/main/docs/nodes/PrimeInterval-v1.md#theta_characterisation" target="_blank" rel="noopener" title="PrimeInterval.v1.theta_characterisation
 evidence: verified, stale
 imports: none
