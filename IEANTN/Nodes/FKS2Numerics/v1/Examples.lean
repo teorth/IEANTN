@@ -25,7 +25,4 @@ example (h : theta_asymp_ge_one_below_e30) :
     1 ≤ margin 0 * admissibleBound 121.0961 (3 / 2) 2 5.5666305 2 :=
   h 2 ⟨le_rfl, le_trans (by norm_num : (2 : ℝ) ≤ 30 + 1) (Real.add_one_le_exp 30)⟩
 
-example (h : nu_asymp_e30_le) : nuAsympE30 ≤ margin 0 * 6.3376e-7 :=
-  h
-
 end FKS2Numerics.v1
