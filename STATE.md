@@ -14,11 +14,11 @@ adds the environment detail.
 | Designated justification | Conclusions |
 |---|---:|
 | `asserted` | 1 |
-| `bridged` | 3 |
+| `bridged` | 4 |
 | `lean-comparator` | 51 |
 | `literature` | 62 |
 | `none-yet` | 36 |
-| `numerical` | 33 |
+| `numerical` | 32 |
 
 ## Nodes
 
@@ -68,7 +68,7 @@ adds the environment detail.
 | `Chebyshev.v1` | active | `psi_upper` | lean-comparator | 0 | - |
 | `Chebyshev.v1` | active | `psi_le_small` | lean-comparator | 0 | - |
 | `Chebyshev.v1` | active | `psi_upper_clean` | lean-comparator | 1 | - |
-| `ChebyshevNumerics.v1` | active | `psi_le_below_11723` | numerical | 0 | - |
+| `ChebyshevNumerics.v1` | active | `psi_le_below_11723` | bridged | 0 | - |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `CotangentSeries.v1` | awaiting-solution | `cot_series_zeta_values` | none-yet | 0 | - |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
