@@ -578,6 +578,40 @@ Both commands regenerate the challenges and the umbrella. Then run `fingerprint`
 
 ---
 
+## Maintainer triage
+
+`scripts/triage.py` is for whoever is landing other people's work. It reviews nothing; it does
+the bookkeeping around a review that is easy to get wrong by hand.
+
+**`compose` is the part CI cannot do.** CI builds each pull request against `main`. Nothing
+builds them against *each other*, so two branches that are both green can still be
+incompatible, and the first anyone learns of it is a broken `main`. It also separates the two
+kinds of conflict, which need opposite responses:
+
+```console
+$ python scripts/triage.py compose --worktree ../wt 188 189 190 191
+composes together: [188]
+  #189: conflicts only in company
+      IEANTN/Nodes.lean (generated -- resolve with gen-challenges)
+```
+
+"Conflicts only in company" means the contributor has nothing to do: the file is generated, and
+the maintainer resolves it once with `gen-challenges`. "Needs a rebase" means the branch is
+behind `main` and the author does. Asking several people to rebase in turn over a generated
+umbrella is the wrong shape of work, and `integrate` exists so nobody has to.
+
+`queue` plans by default and merges only with `--execute`, because `main` has strict required
+checks: every merge puts the rest behind, so each pull request must be updated, re-checked and
+merged in turn. It always merges with a merge commit -- a fork's pull request is badged
+**Merged** only when its head commit becomes reachable, and a squash discards that.
+
+`receipt-pr` opens the pull request that carries a verification's receipt. The receipt job
+pushes to the branch it verified, not to the contributor's pull request, so merging that pull
+request would land the node without the receipt it just earned.
+
+Nothing in it approves a pull request, approves a verification, dispatches `verify.yml`, or
+writes a receipt. Those stay human acts.
+
 ## The acknowledgement escape hatch
 
 If `Network impact` fails and you need the change to land anyway, add `changes/<slug>.yaml`:

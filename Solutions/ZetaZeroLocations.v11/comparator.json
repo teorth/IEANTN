@@ -1,0 +1,14 @@
+{
+  "challenge_module": "IEANTN.Nodes.ZetaZeroLocations.v11.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ZetaZeroLocations.v11.challenge_on_line_and_simple_0_10000",
+    "ZetaZeroLocations.v11.challenge_count_0_10000"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
