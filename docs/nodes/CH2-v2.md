@@ -21,9 +21,9 @@
 
 ### `proposition_2_4_upper`
 
-**Proposition 2.4, the majorant half.** If `φ` is band-limited with
-`truncExp (2π(σ−1)/T) y ≤ (𝓕 φ y).re` for every `y` — that is, `𝓕 φ` **majorizes** the truncated
-exponential — then `partialSum a σ x` is at most `mainExpression`.
+**Proposition 2.4, the majorant half.** If `φ` is supported on `[−1, 1]` (as in
+`IsBandLimited`) and `(𝓕 φ y).re` majorizes `truncExp (2π(σ−1)/T) y` for every `y`,
+then `partialSum a σ x` is at most `mainExpression`.
 
 Imports nothing: `a`, `G`, `φ`, `T`, `β`, `σ` and `x` are all universally quantified and every
 condition on them is a hypothesis. So a Lean proof is this conclusion's whole justification, and it
