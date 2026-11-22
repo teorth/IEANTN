@@ -2971,10 +2971,15 @@ def report() -> bool:
     index = index_conclusions(nodes)
     importers = importers_of(nodes)
 
-    def leaves(key: str, seen: set[str]) -> set[str]:
+    def leaves(key: str, seen: set[str], stack: list[str]) -> set[str]:
+        # A bridge that leads back to itself used to vanish here: the node was
+        # marked seen on the way in, the source was already seen, and the walk
+        # returned nothing — the same answer as a Comparator proof.
+        if key in stack:
+            return {f"{name}  [bridged cycle]" for name in _bridged_cycle(stack, key, _report_bridged)}
         if key in seen or key not in index:
             return set()
-        seen.add(key)
+        stack.append(key)
         _, conclusion = index[key]
         justification = designated_of(conclusion) or {}
         kind = justification.get("kind")
@@ -2985,18 +2990,25 @@ def report() -> bool:
         result: set[str] = set()
         if kind == "bridged":
             for source in bridge_sources(justification):
-                result |= leaves(source, seen)
+                result |= leaves(source, seen, stack)
         elif kind not in VERIFIED_KINDS:
             note = f"  [{kind}]" + (f", {spares} other justification(s) available" if spares else "")
             result.add(f"{key}{note}")
         for dependency in conclusion.get("imports") or []:
-            result |= leaves(f"{dependency.get('node')}.{dependency.get('conclusion')}", seen)
+            result |= leaves(f"{dependency.get('node')}.{dependency.get('conclusion')}", seen, stack)
+        stack.pop()
+        seen.add(key)
         return result
+
+    def _report_bridged(name: str) -> bool:
+        if name not in index:
+            return False
+        return (designated_of(index[name][1]) or {}).get("kind") == "bridged"
 
     print("Unproved-in-Lean dependencies, per conclusion")
     print("=" * 62)
     for key in sorted(index):
-        rests_on = sorted(leaves(key, set()))
+        rests_on = sorted(leaves(key, set(), []))
         print(f"\n{key}")
         for item in rests_on or ["  fully verified in Lean"]:
             print(f"  - {item}" if rests_on else item)
@@ -4657,7 +4669,33 @@ def state_at(ref: str | None) -> dict:
     return {"conclusions": conclusions, "fingerprints": fingerprints, "receipts": receipts}
 
 
-def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None) -> list[str]:
+def _bridged_cycle(stack: list[str], key: str, is_bridged) -> list[str]:
+    """Bridge-loop members that a seen-set would have dropped.
+
+    A `bridged` conclusion is not recorded as a leaf; its sources are. When a source is the
+    conclusion already being walked, that walk used to stop and return nothing, which is also
+    what a real proof returns. The members of the loop are unproved until something outside
+    the loop grounds them. An import cycle is left alone: those conclusions are already
+    recorded as leaves on the way in.
+    """
+    if key not in stack or not is_bridged(key):
+        return []
+    start = stack.index(key)
+    return [name for name in stack[start:] if is_bridged(name)]
+
+
+def _dedupe(items: list[str]) -> list[str]:
+    found: list[str] = []
+    have: set[str] = set()
+    for item in items:
+        if item not in have:
+            have.add(item)
+            found.append(item)
+    return found
+
+
+def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None,
+                 stack: list[str] | None = None) -> list[str]:
     """The unproved-in-Lean conclusions `key` rests on, from a `state_at` snapshot.
 
     A `bridged` conclusion contributes nothing of its own: what it rests on is whatever its
@@ -4665,21 +4703,30 @@ def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None) -> l
     leaf, and imports are walked in every case. Receipt health is not consulted. A severed
     receipt is a different event, and `diff` already reports it. This is only the shape of the
     graph, which is why it needs no Lean run.
+
+    A bridge that only leads back to itself is not that shape. The loop is reported as unproved
+    rather than as an empty leaf set.
     """
     seen = set() if seen is None else seen
+    stack = [] if stack is None else stack
+    if key in stack:
+        return _dedupe(_bridged_cycle(
+            stack, key, lambda name: (conclusions.get(name) or {}).get("kind") == "bridged"))
     if key in seen or key not in conclusions:
         return []
-    seen.add(key)
+    stack.append(key)
     entry = conclusions[key]
     found: list[str] = []
     if entry.get("kind") == "bridged":
         for source in entry.get("from") or []:
-            found += graph_leaves(conclusions, source, seen)
+            found += graph_leaves(conclusions, source, seen, stack)
     elif entry.get("kind") not in VERIFIED_KINDS:
         found.append(key)
     for dependency in entry.get("imports") or []:
-        found += graph_leaves(conclusions, dependency, seen)
-    return found
+        found += graph_leaves(conclusions, dependency, seen, stack)
+    stack.pop()
+    seen.add(key)
+    return _dedupe(found)
 
 
 def acknowledged() -> dict[str, str]:
@@ -4870,23 +4917,34 @@ def diff(base: str) -> bool:
 SPINOFF_NAMESPACE = "Spinoff"
 
 
-def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None) -> list[str]:
+def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None,
+                       stack: list[str] | None = None) -> list[str]:
     """The conclusion keys `key` transitively rests on that Lean has not checked here.
 
     The same walk `report` prints, returning keys rather than prose. These become the emitted
     Challenge's hypotheses: a Palomar submission cannot assert what this network is content to
-    take on a citation's authority, so it must say what it is assuming.
+    take on a citation's authority, so it must say what it is assuming. A bridge cycle is part
+    of that set: it has no proof outside itself.
     """
     seen = set() if seen is None else seen
+    stack = [] if stack is None else stack
+
+    def is_bridged(name: str) -> bool:
+        if name not in index:
+            return False
+        return (designated_of(index[name][1]) or {}).get("kind") == "bridged"
+
+    if key in stack:
+        return _dedupe(_bridged_cycle(stack, key, is_bridged))
     if key in seen or key not in index:
         return []
-    seen.add(key)
+    stack.append(key)
     _, conclusion = index[key]
     justification = designated_of(conclusion) or {}
     found: list[str] = []
     if justification.get("kind") == "bridged":
         for source in bridge_sources(justification):
-            found += unjustified_leaves(index, source, seen)
+            found += unjustified_leaves(index, source, seen, stack)
     elif (
         justification.get("kind") not in VERIFIED_KINDS
         or (receipt_state(key, conclusion) or (None, ""))[0] == "BROKEN"
@@ -4894,8 +4952,10 @@ def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None) -> l
         found.append(key)
     for dependency in conclusion.get("imports") or []:
         found += unjustified_leaves(
-            index, f"{dependency.get('node')}.{dependency.get('conclusion')}", seen)
-    return found
+            index, f"{dependency.get('node')}.{dependency.get('conclusion')}", seen, stack)
+    stack.pop()
+    seen.add(key)
+    return _dedupe(found)
 
 
 def opens_of(path: pathlib.Path) -> list[str]:

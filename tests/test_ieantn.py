@@ -1554,6 +1554,62 @@ class TestReportReceiptHealth(FixtureRepo):
         self.assertEqual(ieantn.unjustified_leaves(ieantn.index_conclusions(ieantn.load_nodes()), key), [])
 
 
+class TestBridgeCycleLeaves(FixtureRepo):
+    """A bridge that only cites itself is not a proof.
+
+    The leaf walk marks a conclusion seen before it walks the bridge sources. On a cycle the
+    source is already seen, the walk returns nothing, and `report` prints "fully verified in
+    Lean" — the same line it prints for a Comparator proof. `diff` then treats the erased
+    leaves as assumptions the bridge discharged.
+    """
+
+    def test_graph_leaves_keeps_both_sides_of_a_bridge_cycle(self) -> None:
+        conclusions = {
+            "A.v1.main": {"kind": "bridged", "from": ["B.v1.main"], "imports": []},
+            "B.v1.main": {"kind": "bridged", "from": ["A.v1.main"], "imports": []},
+        }
+        self.assertEqual(
+            ieantn.graph_leaves(conclusions, "A.v1.main"),
+            ["A.v1.main", "B.v1.main"],
+        )
+
+    def test_an_import_cycle_is_still_just_its_leaves(self) -> None:
+        conclusions = {
+            "A.v1.main": {"kind": "literature", "from": [], "imports": ["B.v1.main"]},
+            "B.v1.main": {"kind": "literature", "from": [], "imports": ["A.v1.main"]},
+        }
+        self.assertEqual(
+            ieantn.graph_leaves(conclusions, "A.v1.main"),
+            ["A.v1.main", "B.v1.main"],
+        )
+
+    def test_a_real_leaf_beside_a_cycle_is_not_dropped(self) -> None:
+        conclusions = {
+            "A.v1.main": {"kind": "bridged", "from": ["B.v1.main", "Leaf.v1.main"], "imports": []},
+            "B.v1.main": {"kind": "bridged", "from": ["A.v1.main"], "imports": []},
+            "Leaf.v1.main": {"kind": "literature", "from": [], "imports": []},
+        }
+        self.assertEqual(
+            ieantn.graph_leaves(conclusions, "A.v1.main"),
+            ["A.v1.main", "B.v1.main", "Leaf.v1.main"],
+        )
+
+    def test_report_does_not_call_a_bridge_cycle_verified(self) -> None:
+        self.write_node("A.v1", bridged("B.v1.main"))
+        self.write_node("B.v1", bridged("A.v1.main"))
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertTrue(ieantn.report())
+        text = output.getvalue()
+        self.assertIn("[bridged cycle]", text)
+        self.assertNotIn("fully verified in Lean", text)
+        index = ieantn.index_conclusions(ieantn.load_nodes())
+        self.assertEqual(
+            ieantn.unjustified_leaves(index, "A.v1.main"),
+            ["A.v1.main", "B.v1.main"],
+        )
+
+
 class TestUnjustifiedLeaves(FixtureRepo):
     """What a spun-off Challenge must take as hypotheses.
 
