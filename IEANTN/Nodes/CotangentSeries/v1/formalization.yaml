@@ -10,7 +10,7 @@ node:
   family: CotangentSeries
   version: v1
   kind: standard
-  status: awaiting-verification
+  status: active
 
 project:
   name: "The cotangent expansion in terms of zeta values"
@@ -36,64 +36,67 @@ classification:
   msc2020: ["33B10", "11M06"]
 
 conclusions:
-  - id: cot_series_zeta_values
-    declaration: CotangentSeries.v1.cot_series_zeta_values
-    challenge: CotangentSeries.v1.challenge_cot_series_zeta_values
-    imports: []
-    imports_status: none
-    issue: 257
-    justifications:
-      - id: unjustified
-        kind: none-yet
-        note: >-
-          Imports `none`, and that is a real none: z is universally quantified with both conditions
-          hypotheses, so a Lean proof is the whole justification.
-          THE ROUTE. Mathlib's cot_series_rep gives Euler's partial fractions; expanding each term
-          1/(z-n) + 1/(z+n) = -2z/(n^2 - z^2) as a geometric series in (z/n)^2 and interchanging the
-          two summations produces the coefficients 2 zeta(2n). The interchange is the content --
-          the double family is absolutely summable for |z| < 1, and that is what has to be shown.
-          An alternative route runs through the Bernoulli generating function, which Mathlib also
-          has, together with riemannZeta_two_mul_nat to convert Bernoulli numbers into zeta values;
-          which is shorter has not been assessed.
-          THE ROUTE HAS BEEN TAKEN. Solutions/CotangentSeries.v1 proves this by exactly the
-          argument above -- cot_series_rep', then hasSum_geometric_of_norm_lt_one on each term,
-          then Summable.of_nonneg_of_le for the interchange that the paragraph above calls the
-          content. It has no sorry and no native_decide and rests on the core alone. What is
-          absent is a receipt, and nothing stands between the proof and one: the kind stays
-          none-yet rather than lean-noncompliant precisely because there is no obstruction to
-          name, and `status: awaiting-verification` above carries the fact that the solution is
-          already here. See issue 257.
-          CHECKED NUMERICALLY BEFORE BEING STATED, to 30 digits at four points -- two complex, one
-          negative real, one positive real -- with the series truncated at 200 terms. A sign or
-          index error in an expansion of this shape is invisible to the type-checker and would be
-          fatal for every consumer, so agreement of the statement with the mathematics was
-          established independently of any Lean proof.
-    designated: unjustified
+- id: cot_series_zeta_values
+  declaration: CotangentSeries.v1.cot_series_zeta_values
+  challenge: CotangentSeries.v1.challenge_cot_series_zeta_values
+  imports: []
+  imports_status: none
+  issue: 257
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      Imports `none`, and that is a real none: z is universally quantified with both conditions
+      hypotheses, so a Lean proof is the whole justification.
+      THE ROUTE. Mathlib's cot_series_rep gives Euler's partial fractions; expanding each term
+      1/(z-n) + 1/(z+n) = -2z/(n^2 - z^2) as a geometric series in (z/n)^2 and interchanging the
+      two summations produces the coefficients 2 zeta(2n). The interchange is the content --
+      the double family is absolutely summable for |z| < 1, and that is what has to be shown.
+      An alternative route runs through the Bernoulli generating function, which Mathlib also
+      has, together with riemannZeta_two_mul_nat to convert Bernoulli numbers into zeta values;
+      which is shorter has not been assessed.
+      THE ROUTE HAS BEEN TAKEN. Solutions/CotangentSeries.v1 proves this by exactly the
+      argument above -- cot_series_rep', then hasSum_geometric_of_norm_lt_one on each term,
+      then Summable.of_nonneg_of_le for the interchange that the paragraph above calls the
+      content. It has no sorry and no native_decide and rests on the core alone. What is
+      absent is a receipt, and nothing stands between the proof and one: the kind stays
+      none-yet rather than lean-noncompliant precisely because there is no obstruction to
+      name, and `status: awaiting-verification` above carries the fact that the solution is
+      already here. See issue 257.
+      CHECKED NUMERICALLY BEFORE BEING STATED, to 30 digits at four points -- two complex, one
+      negative real, one positive real -- with the series truncated at 200 terms. A sign or
+      index error in an expansion of this shape is invisible to the type-checker and would be
+      fatal for every consumer, so agreement of the statement with the mathematics was
+      established independently of any Lean proof.
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/44989379823'
+  designated: comparator
 
 sources:
-  - title: "The Taylor expansion of the cotangent"
-    authors: ["folklore"]
-    type: "folklore"
-    id: "cotangent-zeta-expansion"
-    relationship: formalizes
-    note: >-
-      Textbook material, in every account of the zeta function's even values; no particular source
-      is followed and none is claimed. The `folklore` type is used in the sense the schema allows
-      rather than the usual one -- this is not an unproved fact circulating in the literature, it is
-      a classical expansion Mathlib has not got yet.
-      Chirre-Helfgott (arXiv:2512.15709) states it as their equation (mireio), citing DLMF (4.19.6)
-      and Erdelyi et al., and uses it twice in section 7. That paper is the consumer, not the
-      source.
+- title: "The Taylor expansion of the cotangent"
+  authors: ["folklore"]
+  type: "folklore"
+  id: "cotangent-zeta-expansion"
+  relationship: formalizes
+  note: >-
+    Textbook material, in every account of the zeta function's even values; no particular source
+    is followed and none is claimed. The `folklore` type is used in the sense the schema allows
+    rather than the usual one -- this is not an unproved fact circulating in the literature, it is
+    a classical expansion Mathlib has not got yet.
+    Chirre-Helfgott (arXiv:2512.15709) states it as their equation (mireio), citing DLMF (4.19.6)
+    and Erdelyi et al., and uses it twice in section 7. That paper is the consumer, not the
+    source.
 
 automation:
   methods:
-    - method: agent
-      models: ["Claude Opus 5 (Anthropic)"]
-      framework: "Claude Code"
-      role: >-
-        Identified the expansion as the missing input to section 7 of CH2, checked Mathlib rather
-        than assuming its absence, chose the HasSum form and the index shift, and verified the
-        statement numerically, under the direction of the maintainer. No proof is claimed.
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Identified the expansion as the missing input to section 7 of CH2, checked Mathlib rather
+      than assuming its absence, chose the HasSum form and the index shift, and verified the
+      statement numerically, under the direction of the maintainer. No proof is claimed.
 
 review:
   status: self-assessed
@@ -116,18 +119,18 @@ review:
     guessing at the form.
 
 limitations:
-  - >-
-    STATED BUT NOT PROVED. Nothing downstream may treat it as established. CH2.v1 imports it, so
-    that node's corollaries carry it as a hypothesis and inherit its unjustified status until this
-    one is closed.
-  - >-
-    ONE EXPANSION ONLY, and only at the origin. The node is named for the class because it is
-    intended to grow: the tangent's expansion, the coefficientwise comparisons CH2 also uses
-    (its lem:tremic), and the hyperbolic analogue coth y = 1/y + 2y sum 1/(y^2 + n^2 pi^2) are all
-    wanted and none is here.
-  - >-
-    THE DISC IS THE UNIT DISC, not the natural domain. cot is meromorphic on all of C and this
-    expansion converges only for ||z|| < 1; a consumer needing coefficients further out must
-    continue analytically or use the partial fractions directly.
-  - >-
-    No novelty is claimed. The expansion is classical.
+- >-
+  STATED BUT NOT PROVED. Nothing downstream may treat it as established. CH2.v1 imports it, so
+  that node's corollaries carry it as a hypothesis and inherit its unjustified status until this
+  one is closed.
+- >-
+  ONE EXPANSION ONLY, and only at the origin. The node is named for the class because it is
+  intended to grow: the tangent's expansion, the coefficientwise comparisons CH2 also uses
+  (its lem:tremic), and the hyperbolic analogue coth y = 1/y + 2y sum 1/(y^2 + n^2 pi^2) are all
+  wanted and none is here.
+- >-
+  THE DISC IS THE UNIT DISC, not the natural domain. cot is meromorphic on all of C and this
+  expansion converges only for ||z|| < 1; a consumer needing coefficients further out must
+  continue analytically or use the partial fractions directly.
+- >-
+  No novelty is claimed. The expansion is classical.
