@@ -35,6 +35,7 @@ conclusions:
   challenge: FKS2PiFloor.v1.challenge_table6_row2_floor
   imports: []
   imports_status: none
+  issue: 258
   justifications:
   - id: unjustified
     kind: none-yet
