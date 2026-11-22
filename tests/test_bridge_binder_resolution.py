@@ -64,6 +64,114 @@ class TestBridgeBinderResolution(FixtureRepo):
         found = ieantn.bridge_theorems(text, "A.v1.main", {"A.v1.main", "B.v1.main"})
         self.assertEqual(found, [("Demo.from_b", ["B.v1.main"])])
 
+    def test_qualified_binder_survives_a_named_section_end(self) -> None:
+        text = (
+            "namespace Demo\n"
+            "section Helper\n"
+            "end Helper\n"
+            "theorem from_b (h : B.v1.main) : A.v1.main := trivial\n"
+            "end Demo\n"
+        )
+        known = {"B.v1.main", "Demo.B.v1.main"}
+        self.assertEqual(
+            ieantn.bridge_theorems(text, "A.v1.main", known),
+            [("Demo.from_b", ["Demo.B.v1.main"])],
+        )
+
+    def test_unqualified_binder_survives_nested_section_ends(self) -> None:
+        text = (
+            "namespace Demo.B.v1\n"
+            "section Helper\n"
+            "section\n"
+            "theorem inside (h : main) : A.v1.main := trivial\n"
+            "end\n"
+            "theorem after_anonymous (h : main) : A.v1.main := trivial\n"
+            "end Helper\n"
+            "theorem after_named (h : main) : A.v1.main := trivial\n"
+            "end Demo.B.v1\n"
+            "theorem outside (h : B.v1.main) : A.v1.main := trivial\n"
+        )
+        self.assertEqual(
+            ieantn.bridge_theorems(text, "A.v1.main", {"B.v1.main", "Demo.B.v1.main"}),
+            [("Demo.B.v1.inside", ["Demo.B.v1.main"]),
+             ("Demo.B.v1.after_anonymous", ["Demo.B.v1.main"]),
+             ("Demo.B.v1.after_named", ["Demo.B.v1.main"]),
+             ("outside", ["B.v1.main"])],
+        )
+
+    def test_nested_namespace_tries_known_parents_before_root(self) -> None:
+        text = (
+            "namespace Demo.Inner\n"
+            "section Helper\n"
+            "theorem from_b (h : B.v1.main) : A.v1.main := trivial\n"
+            "end Helper\n"
+            "end Demo.Inner\n"
+        )
+        known = {"B.v1.main", "Demo.B.v1.main", "Demo.Inner.B.v1.main"}
+        for expected in ("Demo.Inner.B.v1.main", "Demo.B.v1.main", "B.v1.main"):
+            with self.subTest(expected=expected):
+                self.assertEqual(
+                    ieantn.bridge_theorems(text, "A.v1.main", known),
+                    [("Demo.Inner.from_b", [expected])],
+                )
+            known.remove(expected)
+
+    def test_open_only_binder_is_not_guessed(self) -> None:
+        text = (
+            "open B.v1\n"
+            "namespace Demo\n"
+            "section Helper\n"
+            "end Helper\n"
+            "theorem from_b (h : main) : A.v1.main := trivial\n"
+            "end Demo\n"
+        )
+        self.assertEqual(ieantn._resolve_binder_type("main", ["Demo"], {"B.v1.main"}), "main")
+        self.assertEqual(ieantn.bridge_theorems(text, "A.v1.main", {"B.v1.main"}), [])
+
+    def test_unknown_binders_are_unchanged_and_rejected(self) -> None:
+        for written in ("missing", "Missing.v1.main", "B.v1.main ∧ True"):
+            with self.subTest(written=written):
+                known = {"B.v1.main"}
+                self.assertEqual(ieantn._resolve_binder_type(written, ["Demo"], known), written)
+                text = (
+                    "namespace Demo\nsection\nend\n"
+                    f"theorem from_b (h : {written}) : A.v1.main := trivial\n"
+                    "end Demo\n"
+                )
+                self.assertEqual(ieantn.bridge_theorems(text, "A.v1.main", known), [])
+
+    def test_dotted_theorem_is_only_accepted_outside_a_namespace(self) -> None:
+        text = (
+            "section Helper\n"
+            "theorem Demo.from_b (h : B.v1.main) : A.v1.main := trivial\n"
+            "end Helper\n"
+            "namespace Demo\nsection\nend\n"
+            "theorem Inner.from_b (h : B.v1.main) : A.v1.main := trivial\n"
+            "end Demo\n"
+        )
+        self.assertEqual(
+            ieantn.bridge_theorems(text, "A.v1.main", {"B.v1.main", "Demo.B.v1.main"}),
+            [("Demo.from_b", ["B.v1.main"])],
+        )
+
+    def test_composition_refuses_open_only_and_unknown_binders(self) -> None:
+        self.write_node("B.v1", LITERATURE)
+        self.write_node("A.v1", bridged("B.v1.main"))
+        bridge = self.root / "IEANTN" / "Bridges" / "a.lean"
+        bridge.parent.mkdir(parents=True)
+        for written in ("main", "Missing.v1.main"):
+            with self.subTest(written=written):
+                bridge.write_text(
+                    "open B.v1\nnamespace Demo\nsection Helper\nend Helper\n"
+                    f"theorem from_b (h : {written}) : A.v1.main := trivial\n"
+                    "end Demo\n",
+                    encoding="utf-8",
+                )
+                ok, text = self.spin()
+                self.assertFalse(ok)
+                self.assertIn("Refusing to guess an application.", text)
+                self.assertFalse((self.root / "export").exists())
+
     def test_composition_applies_the_shadowed_hypothesis(self) -> None:
         self.write_node("B.v1", LITERATURE)
         self.write_node("Demo.B.v1", LITERATURE)
@@ -77,6 +185,8 @@ class TestBridgeBinderResolution(FixtureRepo):
         bridge.write_text(
             "namespace Demo\n"
             "-- the λ in this comment must survive a UTF-8 round trip\n"
+            "section Helper\n"
+            "end Helper\n"
             "theorem from_b (h : B.v1.main) : A.v1.main := trivial\n"
             "end Demo\n",
             encoding="utf-8",
@@ -104,7 +214,11 @@ class TestBridgeBinderResolution(FixtureRepo):
         nested.parent.mkdir(parents=True)
         nested.write_text(
             "namespace B.v1\n"
+            "section Helper\n"
+            "section\n"
             "-- λ\n"
+            "end\n"
+            "end Helper\n"
             "theorem to_a (h : main) : A.v1.main := trivial\n"
             "end B.v1\n",
             encoding="utf-8",
