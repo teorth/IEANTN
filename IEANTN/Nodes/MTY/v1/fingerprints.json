@@ -1,1 +1,5 @@
-{}
+{
+  "MTY.v1.classical_zero_free_region": "2d36b5e9d3394c07fb84980c6be9bc37c621ba635342b0c72d53dd3511e49921",
+  "MTY.v1.intermediate_zero_free_region": "44301c27c659b62a6fef84045d91c1a8f3d5dd1f6be05b4898c24a56edfb698e",
+  "MTY.v1.korobov_vinogradov_region": "e41575b9ebb11901c22f30ced54a8d13858cdc2076c191f4360943a22dd57dd2"
+}

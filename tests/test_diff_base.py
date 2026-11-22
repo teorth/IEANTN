@@ -1,6 +1,7 @@
 """A failed Git read is not an empty network baseline."""
 import contextlib
 import io
+import shutil
 import subprocess
 from test_ieantn import LITERATURE, FixtureRepo, bridged, ieantn, importing
 
@@ -45,6 +46,47 @@ class TestDiffBase(_DiffGit):
         self.write_node("A.v1", LITERATURE)
         self.assertTrue(ieantn.diff("HEAD"))
         self.assertEqual(ieantn.state_at("HEAD")["conclusions"], {})
+
+
+class TestRemovedConclusions(_DiffGit):
+    def test_removal_allows_importers_migrated_in_the_same_change(self):
+        old = self.write_node("A.v1", LITERATURE)
+        self.write_node("A.v2", LITERATURE)
+        self.write_node("B.v1", importing("A.v1"))
+        self.commit_all("base")
+        self.write_node("B.v1", importing("A.v2"))
+        shutil.rmtree(old)
+
+        text = self.report()
+        self.assertTrue(self._last_ok)
+        self.assertIn("`A.v1.main` removed; nothing imported it.", text)
+        self.assertNotIn("### Breaking", text)
+
+    def test_removal_still_fails_when_a_new_importer_replaces_a_migrated_one(self):
+        old = self.write_node("A.v1", LITERATURE)
+        self.write_node("A.v2", LITERATURE)
+        self.write_node("B.v1", importing("A.v1"))
+        self.commit_all("base")
+        self.write_node("B.v1", importing("A.v2"))
+        self.write_node("C.v1", importing("A.v1"))
+        shutil.rmtree(old)
+
+        text = self.report()
+        self.assertFalse(self._last_ok)
+        self.assertIn("`A.v1.main` was removed", text)
+        self.assertIn("1 conclusion(s) still import it: `C.v1.main`.", text)
+        self.assertNotIn("`B.v1.main`", text)
+
+    def test_removal_still_fails_when_an_import_is_retained(self):
+        old = self.write_node("A.v1", LITERATURE)
+        self.write_node("B.v1", importing("A.v1"))
+        self.commit_all("base")
+        shutil.rmtree(old)
+
+        text = self.report()
+        self.assertFalse(self._last_ok)
+        self.assertIn("`A.v1.main` was removed", text)
+        self.assertIn("`B.v1.main`", text)
 
 
 class TestBridgeLeafSet(_DiffGit):
