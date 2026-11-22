@@ -70,10 +70,12 @@ sources:
   - Lowell Schoenfeld
   type: paper
   id: https://dblp.org/rec/conf/ifip/RosserYS68
-  location: Information Processing 68 (Proc. IFIP Congress 1968), pp. 70-76
+  location: Information Processing 68, North-Holland, 1969, pp. 70-76
   relationship: formalizes
   note: >-
-    The verification of the Riemann hypothesis for the first 3 500 000 zeros.
+    The verification of the Riemann hypothesis for the first 3 500 000 zeros. Presented at the IFIP
+    Congress, Edinburgh, 1968; the proceedings appeared in 1969. Cited in the same form as in
+    Schoenfeld1976.v1.
 - title: "Sharper bounds for the Chebyshev functions theta(x) and psi(x)"
   authors:
   - J. Barkley Rosser
