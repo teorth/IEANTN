@@ -1,0 +1,61 @@
+--- a/Proof/RSBounds/PolynomialZeroKernel.lean
++++ b/Proof/RSBounds/PolynomialZeroKernel.lean
+@@ -40,8 +40,12 @@
+     intro x hx
+     have hd := (ih (x + h) (by linarith)).scomp x ((hasDerivAt_id x).add_const h)
+     convert hd.sub (ih x hx) using 1
+-    · funext y; rfl
+-    · simp only [forwardDiff, one_smul]
++    -- Lean 4.34 / older Mathlib: `convert` also emits an instance-equality goal.
++    all_goals first
++      | rfl
++      | (funext y; rfl)
++      | simp only [forwardDiff, one_smul]
++
+ 
+ theorem continuousAt_forwardDiff {h : ℝ} (hh : 0 ≤ h) {f : ℝ → ℂ}
+     (hf : ∀ x, 0 < x → ContinuousAt f x) (n : ℕ) :
+@@ -122,12 +126,15 @@
+     linarith
+   have hd := (hasDerivAt_ofReal_cpow_const' hx.ne' hr).div_const (rising ρ n)
+   convert hd using 1
+-  · funext y
+-    simp only [antiderivative, rising, Nat.cast_add, Nat.cast_one, add_assoc]
+-    rw [div_div]
+-    congr 1
+-    ring
+-  · rfl
++  -- Lean 4.34 / older Mathlib: `convert` also emits an instance-equality goal.
++  all_goals first
++    | rfl
++    | (funext y
++       simp only [antiderivative, rising, Nat.cast_add, Nat.cast_one, add_assoc]
++       rw [div_div]
++       congr 1
++       ring)
++
+ 
+ /-- The repeated integral is exactly the finite difference of the fourth antiderivative. -/
+ theorem zero_term_fourfold_identity {ρ : ℂ} (hρ : 0 < ρ.re)
+@@ -309,12 +316,15 @@
+     linarith
+   have hd := (hasDerivAt_ofReal_cpow_const' hx.ne' hr).div_const (rising ρ n)
+   convert hd using 1
+-  · funext y
+-    simp only [antiderivative, rising, Nat.cast_add, Nat.cast_one, add_assoc]
+-    rw [div_div]
+-    congr 1
+-    ring
+-  · rfl
++  -- Lean 4.34 / older Mathlib: `convert` also emits an instance-equality goal.
++  all_goals first
++    | rfl
++    | (funext y
++       simp only [antiderivative, rising, Nat.cast_add, Nat.cast_one, add_assoc]
++       rw [div_div]
++       congr 1
++       ring)
++
+ 
+ theorem zero_term_fourfold_identity_of_neg_one_lt {ρ : ℂ} (hρ : -1 < ρ.re) (hn : ρ ≠ 0)
+     {x h : ℝ} (hx : 0 < x) (hh : 0 ≤ h) :

@@ -98,17 +98,20 @@ graph LR
   NLowZeroes_2e_v1["<b>LowZeroes.v1</b><br/>2 claims<br/><i>weakest: computation</i>"]
   NMT_2e_v1["<b>MT.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NMT_2e_v2["<b>MT.v2</b><br/>1 claim<br/><i>weakest: cited</i>"]
-  NMTY_2e_v1["<b>MTY.v1</b><br/><i>nothing stated yet</i>"]
+  NMTY_2e_v1["<b>MTY.v1</b><br/>3 claims<br/><i>weakest: cited</i>"]
   NOliveiraESilva2014_2e_v1["<b>OliveiraESilva2014.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
+  NPatel2020_2e_v1["<b>Patel2020.v1</b><br/>3 claims<br/><i>weakest: cited</i>"]
   NPlatt2015_2e_v1["<b>Platt2015.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NPlatt2017_2e_v1["<b>Platt2017.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NPlattTrudgian_2e_v1["<b>PlattTrudgian.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NPlattTrudgian2021_2e_v1["<b>PlattTrudgian2021.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NPlattZeroSum_2e_v1["<b>PlattZeroSum.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NPrimeInterval_2e_v1["<b>PrimeInterval.v1</b><br/>4 claims<br/><i>weakest: verified, stale</i>"]
+  NPrimesBetweenCubes_2e_v1["<b>PrimesBetweenCubes.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NRamareSaouter2003_2e_v1["<b>RamareSaouter2003.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NRichstein2001_2e_v1["<b>Richstein2001.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
   NRosserSchoenfeld_2e_v1["<b>RosserSchoenfeld.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
+  NRosserSchoenfeld_2e_v2["<b>RosserSchoenfeld.v2</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NRosserSchoenfeld1962_2e_v1["<b>RosserSchoenfeld1962.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NTrudgian2011_2e_v1["<b>Trudgian2011.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NWedeniwski_2e_v1["<b>Wedeniwski.v1</b><br/>1 claim<br/><i>weakest: asserted</i>"]
@@ -154,6 +157,7 @@ graph LR
   NMT_2e_v1 --> NMT_2e_v2
   NMT_2e_v1 -->|2| NPlattTrudgian2021_2e_v1
   NMT_2e_v2 --> NDudekPlattNumerics_2e_v4
+  NMTY_2e_v1 --> NPrimesBetweenCubes_2e_v1
   NOliveiraESilva2014_2e_v1 -->|2| NGoldbach_2e_v1
   NPlatt2015_2e_v1 --> NMT_2e_v1
   NPlatt2017_2e_v1 --> NKLN_2e_v1
@@ -194,20 +198,23 @@ graph LR
   style NFKS_2e_v2 stroke-dasharray: 8 4;
   style NHiary2016_2e_v1 stroke-dasharray: 8 4;
   style NKadiriLumley_2e_v1 stroke-dasharray: 2 3;
+  style NMTY_2e_v1 stroke-dasharray: 8 4;
+  style NPatel2020_2e_v1 stroke-dasharray: 8 4;
   style NPlatt2015_2e_v1 stroke-dasharray: 8 4;
   style NPlatt2017_2e_v1 stroke-dasharray: 8 4;
   style NPlattTrudgian_2e_v1 stroke-dasharray: 8 4;
+  style NPrimesBetweenCubes_2e_v1 stroke-dasharray: 8 4;
   style NRamareSaouter2003_2e_v1 stroke-dasharray: 2 3;
   style NRosserSchoenfeld_2e_v1 stroke-dasharray: 2 3;
   style NTrudgian2011_2e_v1 stroke-dasharray: 2 3;
   style NWedeniwski_2e_v1 stroke-dasharray: 2 3;
-  class NBrown1967_2e_v1,NButhe_2e_v2,NChengGraham2004_2e_v1,NCotangentSeries_2e_v1,NGammaAsymptotics_2e_v1,NMTY_2e_v1 none_2d_yet;
+  class NBrown1967_2e_v1,NButhe_2e_v2,NChengGraham2004_2e_v1,NCotangentSeries_2e_v1,NGammaAsymptotics_2e_v1 none_2d_yet;
   class NWedeniwski_2e_v1 asserted;
-  class NBKLNW_2e_v1,NBKLNW_2e_v2,NButhe_2e_v1,NButhe2016_2e_v1,NDudekPlatt_2e_v1,NDusart2018_2e_v1,NFKS_2e_v1,NHiary2016_2e_v1,NKLN_2e_v1,NKadiri2005_2e_v1,NKadiriLumley_2e_v1,NMT_2e_v1,NMT_2e_v2,NPlattTrudgian_2e_v1,NPlattTrudgian2021_2e_v1,NPlattZeroSum_2e_v1,NRamareSaouter2003_2e_v1,NRosserSchoenfeld_2e_v1,NTrudgian2011_2e_v1,NZeroCount_2e_v1,NZetaHadamard_2e_v1 literature;
+  class NBKLNW_2e_v1,NBKLNW_2e_v2,NButhe_2e_v1,NButhe2016_2e_v1,NDudekPlatt_2e_v1,NDusart2018_2e_v1,NFKS_2e_v1,NHiary2016_2e_v1,NKLN_2e_v1,NKadiri2005_2e_v1,NKadiriLumley_2e_v1,NMT_2e_v1,NMT_2e_v2,NMTY_2e_v1,NPatel2020_2e_v1,NPlattTrudgian_2e_v1,NPlattTrudgian2021_2e_v1,NPlattZeroSum_2e_v1,NPrimesBetweenCubes_2e_v1,NRamareSaouter2003_2e_v1,NRosserSchoenfeld_2e_v1,NTrudgian2011_2e_v1,NZeroCount_2e_v1,NZetaHadamard_2e_v1 literature;
   class NBKLNWNumerics_2e_v1,NButheNumerics_2e_v1,NChebyshevNumerics_2e_v1,NDudekPlattNumerics_2e_v1,NDudekPlattNumerics_2e_v2,NDudekPlattNumerics_2e_v3,NFKBJ_2e_v1,NFKS2Numerics_2e_v1,NLowZeroes_2e_v1,NOliveiraESilva2014_2e_v1,NPlatt2015_2e_v1,NPlatt2017_2e_v1,NRichstein2001_2e_v1,NZetaLogDerivValues_2e_v1 numerical;
   class NFKS_2e_v2 bridged;
   class NCH2_2e_v2,NDudekPlatt_2e_v2,NDudekPlatt_2e_v3,NFKS2_2e_v1,NFKS2_2e_v2,NLcm_2e_v1,NLcm_2e_v2,NPrimeInterval_2e_v1,NZeroFreeHeight_2e_v1 lean_2d_comparator_2d_stale;
-  class NCH2_2e_v1,NCH2_2e_v3,NChebyshev_2e_v1,NDudekPlatt_2e_v4,NDudekPlattNumerics_2e_v4,NErdos392_2e_v1,NGammaAsymptotics_2e_v2,NGoldbach_2e_v1,NRosserSchoenfeld1962_2e_v1,NZetaLogDeriv_2e_v1,NZetaZeroes_2e_v1 lean_2d_comparator;
+  class NCH2_2e_v1,NCH2_2e_v3,NChebyshev_2e_v1,NDudekPlatt_2e_v4,NDudekPlattNumerics_2e_v4,NErdos392_2e_v1,NGammaAsymptotics_2e_v2,NGoldbach_2e_v1,NRosserSchoenfeld_2e_v2,NRosserSchoenfeld1962_2e_v1,NZetaLogDeriv_2e_v1,NZetaZeroes_2e_v1 lean_2d_comparator;
   click NBKLNW_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md" _blank
   click NBKLNW_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v2.md" _blank
   click NBKLNWNumerics_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNWNumerics-v1.md" _blank
@@ -249,16 +256,20 @@ graph LR
   click NLowZeroes_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/LowZeroes-v1.md" _blank
   click NMT_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v1.md" _blank
   click NMT_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MT-v2.md" _blank
+  click NMTY_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/MTY-v1.md" _blank
   click NOliveiraESilva2014_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/OliveiraESilva2014-v1.md" _blank
+  click NPatel2020_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Patel2020-v1.md" _blank
   click NPlatt2015_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Platt2015-v1.md" _blank
   click NPlatt2017_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Platt2017-v1.md" _blank
   click NPlattTrudgian_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian-v1.md" _blank
   click NPlattTrudgian2021_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattTrudgian2021-v1.md" _blank
   click NPlattZeroSum_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PlattZeroSum-v1.md" _blank
   click NPrimeInterval_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PrimeInterval-v1.md" _blank
+  click NPrimesBetweenCubes_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/PrimesBetweenCubes-v1.md" _blank
   click NRamareSaouter2003_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RamareSaouter2003-v1.md" _blank
   click NRichstein2001_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Richstein2001-v1.md" _blank
   click NRosserSchoenfeld_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v1.md" _blank
+  click NRosserSchoenfeld_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v2.md" _blank
   click NRosserSchoenfeld1962_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld1962-v1.md" _blank
   click NTrudgian2011_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Trudgian2011-v1.md" _blank
   click NWedeniwski_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Wedeniwski-v1.md" _blank
@@ -623,6 +634,16 @@ A line is one claim, indented under whatever assumes it.
 
 - [`LowZeroes.v1.sum_inv_ordinates_below_2e4`](docs/nodes/LowZeroes-v1.md#sum_inv_ordinates_below_2e4) — computation
 
+- [`MTY.v1.classical_zero_free_region`](docs/nodes/MTY-v1.md#classical_zero_free_region) — cited — *sources known, not all drawable*
+
+- [`MTY.v1.intermediate_zero_free_region`](docs/nodes/MTY-v1.md#intermediate_zero_free_region) — cited — *sources known, not all drawable*
+
+- [`Patel2020.v1.cheng_graham_lemma_2`](docs/nodes/Patel2020-v1.md#cheng_graham_lemma_2) — cited — *sources known, not all drawable*
+
+- [`Patel2020.v1.cheng_graham_lemma_3`](docs/nodes/Patel2020-v1.md#cheng_graham_lemma_3) — cited — *sources known, not all drawable*
+
+- [`Patel2020.v1.zeta_one_bound`](docs/nodes/Patel2020-v1.md#zeta_one_bound) — cited — *sources known, not all drawable*
+
 - [`PlattTrudgian2021.v1.theorem_1_classical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_classical) — cited
   - [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) — cited
     - [`Kadiri2005.v1.zero_free_region`](docs/nodes/Kadiri2005-v1.md#zero_free_region) — cited
@@ -642,7 +663,12 @@ A line is one claim, indented under whatever assumes it.
 
 - [`PrimeInterval.v1.theta_characterisation`](docs/nodes/PrimeInterval-v1.md#theta_characterisation) — verified, stale
 
+- [`PrimesBetweenCubes.v1.prime_between_successive_cubes`](docs/nodes/PrimesBetweenCubes-v1.md#prime_between_successive_cubes) — cited — *sources known, not all drawable*
+  - [`MTY.v1.korobov_vinogradov_region`](docs/nodes/MTY-v1.md#korobov_vinogradov_region) — cited — *sources known, not all drawable*
+
 - [`RosserSchoenfeld.v1.zero_free_region`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region) — cited — *sources not traced*
+
+- [`RosserSchoenfeld.v2.psi_error_b23`](docs/nodes/RosserSchoenfeld-v2.md#psi_error_b23) — verified
 
 - [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) — verified
 
@@ -717,6 +743,7 @@ rather than maintained.
 | [`KadiriLumley.v1.prime_in_interval_above_exp_59`](docs/nodes/KadiriLumley-v1.md#prime_in_interval_above_exp_59) | cited | 1 | **not yet traced** |
 | [`KadiriLumley.v1.prime_in_interval_above_exp_60`](docs/nodes/KadiriLumley-v1.md#prime_in_interval_above_exp_60) | cited | 1 | **not yet traced** |
 | [`MT.v2.corollary_1`](docs/nodes/MT-v2.md#corollary_1) | cited | 1 | traced |
+| [`MTY.v1.korobov_vinogradov_region`](docs/nodes/MTY-v1.md#korobov_vinogradov_region) | cited | 1 | known, not all drawable |
 | [`Platt2015.v1.rh_up_to`](docs/nodes/Platt2015-v1.md#rh_up_to) | computation | 1 | known, not all drawable |
 | [`Platt2017.v1.rh_up_to`](docs/nodes/Platt2017-v1.md#rh_up_to) | computation | 1 | known, not all drawable |
 | [`Richstein2001.v1.even_up_to_4e14`](docs/nodes/Richstein2001-v1.md#even_up_to_4e14) | computation | 1 | none |
@@ -752,7 +779,13 @@ rather than maintained.
 | [`KadiriLumley.v1.table_2`](docs/nodes/KadiriLumley-v1.md#table_2) | cited | 0 | known, not all drawable |
 | [`LowZeroes.v1.no_zeroes_below_first_ordinate`](docs/nodes/LowZeroes-v1.md#no_zeroes_below_first_ordinate) | computation | 0 | none |
 | [`LowZeroes.v1.sum_inv_ordinates_below_2e4`](docs/nodes/LowZeroes-v1.md#sum_inv_ordinates_below_2e4) | computation | 0 | none |
+| [`MTY.v1.classical_zero_free_region`](docs/nodes/MTY-v1.md#classical_zero_free_region) | cited | 0 | known, not all drawable |
+| [`MTY.v1.intermediate_zero_free_region`](docs/nodes/MTY-v1.md#intermediate_zero_free_region) | cited | 0 | known, not all drawable |
+| [`Patel2020.v1.cheng_graham_lemma_2`](docs/nodes/Patel2020-v1.md#cheng_graham_lemma_2) | cited | 0 | known, not all drawable |
+| [`Patel2020.v1.cheng_graham_lemma_3`](docs/nodes/Patel2020-v1.md#cheng_graham_lemma_3) | cited | 0 | known, not all drawable |
+| [`Patel2020.v1.zeta_one_bound`](docs/nodes/Patel2020-v1.md#zeta_one_bound) | cited | 0 | known, not all drawable |
 | [`PlattTrudgian2021.v1.theorem_1_classical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_classical) | cited | 0 | traced |
+| [`PrimesBetweenCubes.v1.prime_between_successive_cubes`](docs/nodes/PrimesBetweenCubes-v1.md#prime_between_successive_cubes) | cited | 0 | known, not all drawable |
 | [`RosserSchoenfeld.v1.zero_free_region`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region) | cited | 0 | **not yet traced** |
 | [`ZetaLogDerivValues.v1.deriv_logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#deriv_logDeriv_neg_one) | computation | 0 | none |
 
@@ -763,7 +796,6 @@ the network's open invitations.
 
 - [`Brown1967.v1`](docs/nodes/Brown1967-v1.md)
 - [`ChengGraham2004.v1`](docs/nodes/ChengGraham2004-v1.md)
-- [`MTY.v1`](docs/nodes/MTY-v1.md)
 
 ---
 

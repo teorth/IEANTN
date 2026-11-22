@@ -1,0 +1,18 @@
+--- a/Proof/HardyFirstZero/Phase.lean
++++ b/Proof/HardyFirstZero/Phase.lean
+@@ -1,5 +1,6 @@
+ module
+ 
++public import RSBoundsCompat.Arctan
+ public import HardyFirstZero.Spine
+ public import Mathlib.NumberTheory.Harmonic.Bounds
+ public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+@@ -265,7 +266,7 @@
+   nlinarith [sq_nonneg (a * b / 4), pow_pos hc 4]
+ 
+ lemma psi_le {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) (j : ℕ) : psi a b j ≤ xj a b j :=
+-  Real.arctan_le_self (xj_nonneg ha hab j)
++  RSBoundsCompat.Real.arctan_le_self (xj_nonneg ha hab j)
+ 
+ lemma psi_ge {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) (j : ℕ) :
+     xj a b j - xj a b j ^ 3 ≤ psi a b j :=
