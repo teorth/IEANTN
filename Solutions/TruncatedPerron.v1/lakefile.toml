@@ -1,0 +1,17 @@
+name = "solution_TruncatedPerron_v1"
+defaultTargets = ["Solution", "PerronDev"]
+
+# The core library, for the node's `Conclusions`. Add whatever else the proof needs --
+# PNT+, LeanCert, PrimeCert -- here rather than in the core lakefile.
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+# The single-term development. Kept a separate root so it can be built on its own while iterating.
+[[lean_lib]]
+name = "PerronDev"
+roots = ["PerronDev"]

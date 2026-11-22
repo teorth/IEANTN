@@ -54,9 +54,14 @@ conclusions:
       through secondary citations, not against the book.
       A SORRY-FREE LEAN PROOF OF EXACTLY THIS STATEMENT EXISTS (about 620 lines, axioms propext,
       Classical.choice, Quot.sound only), by rectangle contour shifts for the 1/(pi T |log y|)
-      half and a circular arc for the 1 half. It will be submitted as Solutions/TruncatedPerron.v1
-      in a follow-up pull request, for the verification workflow to issue a receipt.
+      half and a circular arc for the 1 half. It is in Solutions/TruncatedPerron.v1
+      (PerronDev.lean, bridged in Solution.lean). The node is verified all at once, so the receipt
+      waits on perron_general and perron_psi.
   designated: titchmarsh
+  progress:
+    solution: Solutions/TruncatedPerron.v1/
+    state: in-progress
+    remaining_holes: 2
 - id: perron_general
   issue: 254
   declaration: TruncatedPerron.v1.perron_general
@@ -78,6 +83,10 @@ conclusions:
       (1/pi) arctan(T/sigma_0) for n = x; interchange by dominated convergence on the compact
       segment (the series is dominated by x^sigma_0 sum |a_n| n^-sigma_0 / sigma_0).
   designated: montgomery-vaughan
+  progress:
+    solution: Solutions/TruncatedPerron.v1/
+    state: in-progress
+    remaining_holes: 2
 - id: perron_psi
   issue: 254
   declaration: TruncatedPerron.v1.perron_psi
@@ -100,6 +109,10 @@ conclusions:
       by the same expression for any T > 0, and only changes C.
       Davenport ch. 17 gives the same estimate.
   designated: montgomery-vaughan-12-5
+  progress:
+    solution: Solutions/TruncatedPerron.v1/
+    state: in-progress
+    remaining_holes: 2
 
 sources:
 - title: "The Theory of the Riemann Zeta-Function"
