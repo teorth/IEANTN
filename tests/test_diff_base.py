@@ -1,6 +1,7 @@
 """A failed Git read is not an empty network baseline."""
 import contextlib
 import io
+import shutil
 import subprocess
 from test_ieantn import LITERATURE, FixtureRepo, bridged, ieantn, importing
 
@@ -45,6 +46,47 @@ class TestDiffBase(_DiffGit):
         self.write_node("A.v1", LITERATURE)
         self.assertTrue(ieantn.diff("HEAD"))
         self.assertEqual(ieantn.state_at("HEAD")["conclusions"], {})
+
+
+class TestRemovedConclusions(_DiffGit):
+    def test_removal_allows_importers_migrated_in_the_same_change(self):
+        old = self.write_node("A.v1", LITERATURE)
+        self.write_node("A.v2", LITERATURE)
+        self.write_node("B.v1", importing("A.v1"))
+        self.commit_all("base")
+        self.write_node("B.v1", importing("A.v2"))
+        shutil.rmtree(old)
+
+        text = self.report()
+        self.assertTrue(self._last_ok)
+        self.assertIn("`A.v1.main` removed; nothing imported it.", text)
+        self.assertNotIn("### Breaking", text)
+
+    def test_removal_still_fails_when_a_new_importer_replaces_a_migrated_one(self):
+        old = self.write_node("A.v1", LITERATURE)
+        self.write_node("A.v2", LITERATURE)
+        self.write_node("B.v1", importing("A.v1"))
+        self.commit_all("base")
+        self.write_node("B.v1", importing("A.v2"))
+        self.write_node("C.v1", importing("A.v1"))
+        shutil.rmtree(old)
+
+        text = self.report()
+        self.assertFalse(self._last_ok)
+        self.assertIn("`A.v1.main` was removed", text)
+        self.assertIn("1 conclusion(s) still import it: `C.v1.main`.", text)
+        self.assertNotIn("`B.v1.main`", text)
+
+    def test_removal_still_fails_when_an_import_is_retained(self):
+        old = self.write_node("A.v1", LITERATURE)
+        self.write_node("B.v1", importing("A.v1"))
+        self.commit_all("base")
+        shutil.rmtree(old)
+
+        text = self.report()
+        self.assertFalse(self._last_ok)
+        self.assertIn("`A.v1.main` was removed", text)
+        self.assertIn("`B.v1.main`", text)
 
 
 class TestBridgeLeafSet(_DiffGit):
@@ -141,6 +183,24 @@ class TestBridgeLeafSet(_DiffGit):
         self.assertFalse(self._last_ok)
         self.assertIn("Leaf.v1.main", text)
         self.assertIn("gained unproved assumptions", text)
+
+    def test_a_bridge_cycle_is_not_discharged_assumptions(self) -> None:
+        """Closing the bridge onto itself used to empty the leaf set.
+
+        `diff` then reported the lost citation as a bridge that rests on less, and the branch
+        passed. The cycle is an unproved assumption, not a discharge.
+        """
+        self.write_node("Leaf.v1", LITERATURE)
+        self.write_node("A.v1", bridged("Leaf.v1.main"))
+        self.commit_all("base")
+        self.write_node("B.v1", bridged("A.v1.main"))
+        self.write_node("A.v1", bridged("B.v1.main"))
+        text = self.report()
+        self.assertFalse(self._last_ok)
+        self.assertIn("gained unproved assumptions", text)
+        self.assertIn("A.v1.main", text)
+        self.assertIn("B.v1.main", text)
+        self.assertNotIn("fewer unproved assumptions", text)
 
     def test_an_unbridged_import_is_not_this_check(self) -> None:
         self.write_node("Leaf.v1", LITERATURE)

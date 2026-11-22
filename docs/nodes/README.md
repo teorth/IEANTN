@@ -18,7 +18,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`CH2.v2`](CH2-v2.md) | pipeline | 2 | verified, stale |
 | [`CH2.v3`](CH2-v3.md) | pipeline | 2 | verified |
 | [`Chebyshev.v1`](Chebyshev-v1.md) | paper | 5 | verified |
-| [`ChebyshevNumerics.v1`](ChebyshevNumerics-v1.md) | computation | 1 | computation |
+| [`ChebyshevNumerics.v1`](ChebyshevNumerics-v1.md) | computation | 1 | bridged |
 | [`ChengGraham2004.v1`](ChengGraham2004-v1.md) | paper | 0 | — |
 | [`CotangentSeries.v1`](CotangentSeries-v1.md) | standard | 1 | unjustified |
 | [`DudekPlatt.v1`](DudekPlatt-v1.md) | paper | 2 | cited |
@@ -34,9 +34,11 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`FKBJ.v1`](FKBJ-v1.md) | computation | 1 | computation |
 | [`FKS.v1`](FKS-v1.md) | paper | 4 | cited |
 | [`FKS.v2`](FKS-v2.md) | paper | 2 | bridged |
+| [`FKS.v3`](FKS-v3.md) | paper | 2 | verified |
 | [`FKS2.v1`](FKS2-v1.md) | paper | 4 | verified, stale |
 | [`FKS2.v2`](FKS2-v2.md) | pipeline | 2 | verified, stale |
 | [`FKS2Numerics.v1`](FKS2Numerics-v1.md) | computation | 5 | computation |
+| [`FKSNumerics.v1`](FKSNumerics-v1.md) | computation | 2 | cited |
 | [`GammaAsymptotics.v1`](GammaAsymptotics-v1.md) | standard | 1 | unjustified |
 | [`GammaAsymptotics.v2`](GammaAsymptotics-v2.md) | standard | 1 | verified |
 | [`Goldbach.v1`](Goldbach-v1.md) | paper | 6 | verified |
@@ -49,19 +51,23 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`LowZeroes.v1`](LowZeroes-v1.md) | computation | 2 | computation |
 | [`MT.v1`](MT-v1.md) | paper | 2 | cited |
 | [`MT.v2`](MT-v2.md) | paper | 1 | cited |
-| [`MTY.v1`](MTY-v1.md) | paper | 0 | — |
+| [`MTY.v1`](MTY-v1.md) | paper | 3 | cited |
 | [`OliveiraESilva2014.v1`](OliveiraESilva2014-v1.md) | computation | 1 | computation |
+| [`Patel2020.v1`](Patel2020-v1.md) | paper | 3 | cited |
 | [`Platt2015.v1`](Platt2015-v1.md) | computation | 1 | computation |
 | [`Platt2017.v1`](Platt2017-v1.md) | computation | 1 | computation |
 | [`PlattTrudgian.v1`](PlattTrudgian-v1.md) | computation | 2 | cited |
 | [`PlattTrudgian2021.v1`](PlattTrudgian2021-v1.md) | paper | 2 | cited |
 | [`PlattZeroSum.v1`](PlattZeroSum-v1.md) | standard | 1 | cited |
 | [`PrimeInterval.v1`](PrimeInterval-v1.md) | pipeline | 4 | verified, stale |
+| [`PrimesBetweenCubes.v1`](PrimesBetweenCubes-v1.md) | paper | 1 | cited |
 | [`RamareSaouter2003.v1`](RamareSaouter2003-v1.md) | paper | 1 | cited |
 | [`Richstein2001.v1`](Richstein2001-v1.md) | computation | 1 | computation |
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 2 | cited |
 | [`RosserSchoenfeld.v2`](RosserSchoenfeld-v2.md) | paper | 1 | verified |
 | [`RosserSchoenfeld1962.v1`](RosserSchoenfeld1962-v1.md) | paper | 1 | verified |
+| [`Schoenfeld1976.v1`](Schoenfeld1976-v1.md) | paper | 8 | cited |
+| [`Schoenfeld1976Numerics.v1`](Schoenfeld1976Numerics-v1.md) | paper | 1 | cited |
 | [`Trudgian2011.v1`](Trudgian2011-v1.md) | paper | 1 | cited |
 | [`Wedeniwski.v1`](Wedeniwski-v1.md) | computation | 1 | asserted |
 | [`ZeroCount.v1`](ZeroCount-v1.md) | paper | 2 | cited |
@@ -69,6 +75,17 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`ZetaHadamard.v1`](ZetaHadamard-v1.md) | standard | 1 | cited |
 | [`ZetaLogDeriv.v1`](ZetaLogDeriv-v1.md) | standard | 1 | verified |
 | [`ZetaLogDerivValues.v1`](ZetaLogDerivValues-v1.md) | computation | 5 | computation |
+| [`ZetaZeroLocations.v1`](ZetaZeroLocations-v1.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v10`](ZetaZeroLocations-v10.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v11`](ZetaZeroLocations-v11.md) | computation | 2 | unjustified |
+| [`ZetaZeroLocations.v2`](ZetaZeroLocations-v2.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v3`](ZetaZeroLocations-v3.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v4`](ZetaZeroLocations-v4.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v5`](ZetaZeroLocations-v5.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v6`](ZetaZeroLocations-v6.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v7`](ZetaZeroLocations-v7.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v8`](ZetaZeroLocations-v8.md) | computation | 3 | unjustified |
+| [`ZetaZeroLocations.v9`](ZetaZeroLocations-v9.md) | computation | 3 | unjustified |
 | [`ZetaZeroes.v1`](ZetaZeroes-v1.md) | standard | 6 | verified |
 
 ## Inactive nodes
