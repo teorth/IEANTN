@@ -115,6 +115,8 @@ graph LR
   NRosserSchoenfeld_2e_v1["<b>RosserSchoenfeld.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NRosserSchoenfeld_2e_v2["<b>RosserSchoenfeld.v2</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NRosserSchoenfeld1962_2e_v1["<b>RosserSchoenfeld1962.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
+  NSchoenfeld1976_2e_v1["<b>Schoenfeld1976.v1</b><br/>8 claims<br/><i>weakest: cited</i>"]
+  NSchoenfeld1976Numerics_2e_v1["<b>Schoenfeld1976Numerics.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NTrudgian2011_2e_v1["<b>Trudgian2011.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NWedeniwski_2e_v1["<b>Wedeniwski.v1</b><br/>1 claim<br/><i>weakest: asserted</i>"]
   NZeroCount_2e_v1["<b>ZeroCount.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
@@ -122,6 +124,17 @@ graph LR
   NZetaHadamard_2e_v1["<b>ZetaHadamard.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NZetaLogDeriv_2e_v1["<b>ZetaLogDeriv.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NZetaLogDerivValues_2e_v1["<b>ZetaLogDerivValues.v1</b><br/>5 claims<br/><i>weakest: computation</i>"]
+  NZetaZeroLocations_2e_v1["<b>ZetaZeroLocations.v1</b><br/>3 claims<br/><i>weakest: unjustified</i>"]
+  NZetaZeroLocations_2e_v10["<b>ZetaZeroLocations.v10</b><br/>3 claims<br/><i>weakest: unjustified</i>"]
+  NZetaZeroLocations_2e_v11["<b>ZetaZeroLocations.v11</b><br/>2 claims<br/><i>weakest: unjustified</i>"]
+  NZetaZeroLocations_2e_v2["<b>ZetaZeroLocations.v2</b><br/>3 claims<br/><i>weakest: unjustified</i>"]
+  NZetaZeroLocations_2e_v3["<b>ZetaZeroLocations.v3</b><br/>3 claims<br/><i>weakest: unjustified</i>"]
+  NZetaZeroLocations_2e_v4["<b>ZetaZeroLocations.v4</b><br/>3 claims<br/><i>weakest: unjustified</i>"]
+  NZetaZeroLocations_2e_v5["<b>ZetaZeroLocations.v5</b><br/>3 claims<br/><i>weakest: unjustified</i>"]
+  NZetaZeroLocations_2e_v6["<b>ZetaZeroLocations.v6</b><br/>3 claims<br/><i>weakest: unjustified</i>"]
+  NZetaZeroLocations_2e_v7["<b>ZetaZeroLocations.v7</b><br/>3 claims<br/><i>weakest: unjustified</i>"]
+  NZetaZeroLocations_2e_v8["<b>ZetaZeroLocations.v8</b><br/>3 claims<br/><i>weakest: unjustified</i>"]
+  NZetaZeroLocations_2e_v9["<b>ZetaZeroLocations.v9</b><br/>3 claims<br/><i>weakest: unjustified</i>"]
   NZetaZeroes_2e_v1["<b>ZetaZeroes.v1</b><br/>6 claims<br/><i>weakest: verified</i>"]
   NBKLNW_2e_v1 -->|2| NFKS_2e_v3
   NBKLNW_2e_v1 -->|8| NFKS2_2e_v1
@@ -185,12 +198,24 @@ graph LR
   NZetaHadamard_2e_v1 -->|2| NCH2_2e_v1
   NZetaLogDeriv_2e_v1 -->|2| NCH2_2e_v1
   NZetaLogDerivValues_2e_v1 -->|8| NCH2_2e_v1
+  NZetaZeroLocations_2e_v1 -->|3| NSchoenfeld1976Numerics_2e_v1
+  NZetaZeroLocations_2e_v1 -->|2| NZetaZeroLocations_2e_v11
+  NZetaZeroLocations_2e_v10 -->|2| NZetaZeroLocations_2e_v11
+  NZetaZeroLocations_2e_v2 -->|2| NZetaZeroLocations_2e_v11
+  NZetaZeroLocations_2e_v3 -->|2| NZetaZeroLocations_2e_v11
+  NZetaZeroLocations_2e_v4 -->|2| NZetaZeroLocations_2e_v11
+  NZetaZeroLocations_2e_v5 -->|2| NZetaZeroLocations_2e_v11
+  NZetaZeroLocations_2e_v6 -->|2| NZetaZeroLocations_2e_v11
+  NZetaZeroLocations_2e_v7 -->|2| NZetaZeroLocations_2e_v11
+  NZetaZeroLocations_2e_v8 -->|2| NZetaZeroLocations_2e_v11
+  NZetaZeroLocations_2e_v9 -->|2| NZetaZeroLocations_2e_v11
   NDudekPlatt_2e_v4 ==>|bridge| NDudekPlatt_2e_v1
   NDudekPlattNumerics_2e_v4 ==>|bridge| NDudekPlattNumerics_2e_v3
   NFKS_2e_v1 ==>|bridge| NFKS_2e_v2
   NLcm_2e_v2 ==>|bridge| NLcm_2e_v1
   NPlatt2017_2e_v1 ==>|bridge| NPlatt2015_2e_v1
   NPlatt2017_2e_v1 ==>|bridge| NWedeniwski_2e_v1
+  NZetaZeroLocations_2e_v1 ==>|bridge| NLowZeroes_2e_v1
   style NBKLNW_2e_v1 stroke-dasharray: 8 4;
   style NBKLNWNumerics_2e_v1 stroke-dasharray: 8 4;
   style NButhe_2e_v1 stroke-dasharray: 8 4;
@@ -214,11 +239,12 @@ graph LR
   style NPrimesBetweenCubes_2e_v1 stroke-dasharray: 8 4;
   style NRamareSaouter2003_2e_v1 stroke-dasharray: 2 3;
   style NRosserSchoenfeld_2e_v1 stroke-dasharray: 2 3;
+  style NSchoenfeld1976_2e_v1 stroke-dasharray: 8 4;
   style NTrudgian2011_2e_v1 stroke-dasharray: 2 3;
   style NWedeniwski_2e_v1 stroke-dasharray: 2 3;
-  class NBrown1967_2e_v1,NButhe_2e_v2,NChengGraham2004_2e_v1,NCotangentSeries_2e_v1,NGammaAsymptotics_2e_v1 none_2d_yet;
+  class NBrown1967_2e_v1,NButhe_2e_v2,NChengGraham2004_2e_v1,NCotangentSeries_2e_v1,NGammaAsymptotics_2e_v1,NZetaZeroLocations_2e_v1,NZetaZeroLocations_2e_v10,NZetaZeroLocations_2e_v11,NZetaZeroLocations_2e_v2,NZetaZeroLocations_2e_v3,NZetaZeroLocations_2e_v4,NZetaZeroLocations_2e_v5,NZetaZeroLocations_2e_v6,NZetaZeroLocations_2e_v7,NZetaZeroLocations_2e_v8,NZetaZeroLocations_2e_v9 none_2d_yet;
   class NWedeniwski_2e_v1 asserted;
-  class NBKLNW_2e_v1,NBKLNW_2e_v2,NButhe_2e_v1,NButhe2016_2e_v1,NDudekPlatt_2e_v1,NDusart2018_2e_v1,NFKS_2e_v1,NFKSNumerics_2e_v1,NHiary2016_2e_v1,NKLN_2e_v1,NKadiri2005_2e_v1,NKadiriLumley_2e_v1,NMT_2e_v1,NMT_2e_v2,NMTY_2e_v1,NPatel2020_2e_v1,NPlattTrudgian_2e_v1,NPlattTrudgian2021_2e_v1,NPlattZeroSum_2e_v1,NPrimesBetweenCubes_2e_v1,NRamareSaouter2003_2e_v1,NRosserSchoenfeld_2e_v1,NTrudgian2011_2e_v1,NZeroCount_2e_v1,NZetaHadamard_2e_v1 literature;
+  class NBKLNW_2e_v1,NBKLNW_2e_v2,NButhe_2e_v1,NButhe2016_2e_v1,NDudekPlatt_2e_v1,NDusart2018_2e_v1,NFKS_2e_v1,NFKSNumerics_2e_v1,NHiary2016_2e_v1,NKLN_2e_v1,NKadiri2005_2e_v1,NKadiriLumley_2e_v1,NMT_2e_v1,NMT_2e_v2,NMTY_2e_v1,NPatel2020_2e_v1,NPlattTrudgian_2e_v1,NPlattTrudgian2021_2e_v1,NPlattZeroSum_2e_v1,NPrimesBetweenCubes_2e_v1,NRamareSaouter2003_2e_v1,NRosserSchoenfeld_2e_v1,NSchoenfeld1976_2e_v1,NSchoenfeld1976Numerics_2e_v1,NTrudgian2011_2e_v1,NZeroCount_2e_v1,NZetaHadamard_2e_v1 literature;
   class NBKLNWNumerics_2e_v1,NButheNumerics_2e_v1,NChebyshevNumerics_2e_v1,NDudekPlattNumerics_2e_v1,NDudekPlattNumerics_2e_v2,NDudekPlattNumerics_2e_v3,NFKBJ_2e_v1,NFKS2Numerics_2e_v1,NLowZeroes_2e_v1,NOliveiraESilva2014_2e_v1,NPlatt2015_2e_v1,NPlatt2017_2e_v1,NRichstein2001_2e_v1,NZetaLogDerivValues_2e_v1 numerical;
   class NFKS_2e_v2 bridged;
   class NCH2_2e_v2,NDudekPlatt_2e_v2,NDudekPlatt_2e_v3,NFKS2_2e_v1,NFKS2_2e_v2,NLcm_2e_v1,NLcm_2e_v2,NPrimeInterval_2e_v1,NZeroFreeHeight_2e_v1 lean_2d_comparator_2d_stale;
@@ -281,6 +307,8 @@ graph LR
   click NRosserSchoenfeld_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v1.md" _blank
   click NRosserSchoenfeld_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v2.md" _blank
   click NRosserSchoenfeld1962_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld1962-v1.md" _blank
+  click NSchoenfeld1976_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Schoenfeld1976-v1.md" _blank
+  click NSchoenfeld1976Numerics_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Schoenfeld1976Numerics-v1.md" _blank
   click NTrudgian2011_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Trudgian2011-v1.md" _blank
   click NWedeniwski_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Wedeniwski-v1.md" _blank
   click NZeroCount_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZeroCount-v1.md" _blank
@@ -288,6 +316,17 @@ graph LR
   click NZetaHadamard_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaHadamard-v1.md" _blank
   click NZetaLogDeriv_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaLogDeriv-v1.md" _blank
   click NZetaLogDerivValues_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaLogDerivValues-v1.md" _blank
+  click NZetaZeroLocations_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroLocations-v1.md" _blank
+  click NZetaZeroLocations_2e_v10 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroLocations-v10.md" _blank
+  click NZetaZeroLocations_2e_v11 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroLocations-v11.md" _blank
+  click NZetaZeroLocations_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroLocations-v2.md" _blank
+  click NZetaZeroLocations_2e_v3 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroLocations-v3.md" _blank
+  click NZetaZeroLocations_2e_v4 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroLocations-v4.md" _blank
+  click NZetaZeroLocations_2e_v5 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroLocations-v5.md" _blank
+  click NZetaZeroLocations_2e_v6 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroLocations-v6.md" _blank
+  click NZetaZeroLocations_2e_v7 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroLocations-v7.md" _blank
+  click NZetaZeroLocations_2e_v8 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroLocations-v8.md" _blank
+  click NZetaZeroLocations_2e_v9 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroLocations-v9.md" _blank
   click NZetaZeroes_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaZeroes-v1.md" _blank
   classDef lean_2d_comparator fill:#dafbe1,stroke:#1a7f37,color:#1f2328;
   classDef lean_2d_comparator_2d_stale fill:#e9f7ec,stroke:#2da44e,color:#1f2328;
@@ -713,9 +752,72 @@ A line is one claim, indented under whatever assumes it.
 
 - [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) — verified
 
+- [`Schoenfeld1976.v1.psi_log_5_5a`](docs/nodes/Schoenfeld1976-v1.md#psi_log_5_5a) — cited — *sources known, not all drawable*
+
+- [`Schoenfeld1976.v1.psi_log_lower_5_5b`](docs/nodes/Schoenfeld1976-v1.md#psi_log_lower_5_5b) — cited — *sources known, not all drawable*
+
+- [`Schoenfeld1976.v1.psi_theorem_11`](docs/nodes/Schoenfeld1976-v1.md#psi_theorem_11) — cited — *sources known, not all drawable*
+
+- [`Schoenfeld1976.v1.psi_theta_log_5_6b`](docs/nodes/Schoenfeld1976-v1.md#psi_theta_log_5_6b) — cited — *sources known, not all drawable*
+
+- [`Schoenfeld1976.v1.psi_upper_theorem_11`](docs/nodes/Schoenfeld1976-v1.md#psi_upper_theorem_11) — cited — *sources known, not all drawable*
+
+- [`Schoenfeld1976.v1.theta_log_5_6`](docs/nodes/Schoenfeld1976-v1.md#theta_log_5_6) — cited — *sources known, not all drawable*
+
+- [`Schoenfeld1976.v1.theta_log_upper_5_6a`](docs/nodes/Schoenfeld1976-v1.md#theta_log_upper_5_6a) — cited — *sources known, not all drawable*
+
+- [`Schoenfeld1976.v1.theta_theorem_11`](docs/nodes/Schoenfeld1976-v1.md#theta_theorem_11) — cited — *sources known, not all drawable*
+
+- [`Schoenfeld1976Numerics.v1.psi_error_b23`](docs/nodes/Schoenfeld1976Numerics-v1.md#psi_error_b23) — cited
+  - [`ZetaZeroLocations.v1.located_0_1000`](docs/nodes/ZetaZeroLocations-v1.md#located_0_1000) — unjustified
+  - [`ZetaZeroLocations.v1.unique_0_1000`](docs/nodes/ZetaZeroLocations-v1.md#unique_0_1000) — unjustified
+  - [`ZetaZeroLocations.v1.count_0_1000`](docs/nodes/ZetaZeroLocations-v1.md#count_0_1000) — unjustified
+
 - [`ZeroFreeHeight.v1.classical_region_descends`](docs/nodes/ZeroFreeHeight-v1.md#classical_region_descends) — verified, stale
 
 - [`ZetaLogDerivValues.v1.deriv_logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#deriv_logDeriv_neg_one) — computation
+
+- [`ZetaZeroLocations.v10.unique_9000_10000`](docs/nodes/ZetaZeroLocations-v10.md#unique_9000_10000) — unjustified
+
+- [`ZetaZeroLocations.v11.count_0_10000`](docs/nodes/ZetaZeroLocations-v11.md#count_0_10000) — unjustified
+  - [`ZetaZeroLocations.v1.count_0_1000`](docs/nodes/ZetaZeroLocations-v1.md#count_0_1000) — unjustified
+  - [`ZetaZeroLocations.v2.count_1000_2000`](docs/nodes/ZetaZeroLocations-v2.md#count_1000_2000) — unjustified
+  - [`ZetaZeroLocations.v3.count_2000_3000`](docs/nodes/ZetaZeroLocations-v3.md#count_2000_3000) — unjustified
+  - [`ZetaZeroLocations.v4.count_3000_4000`](docs/nodes/ZetaZeroLocations-v4.md#count_3000_4000) — unjustified
+  - [`ZetaZeroLocations.v5.count_4000_5000`](docs/nodes/ZetaZeroLocations-v5.md#count_4000_5000) — unjustified
+  - [`ZetaZeroLocations.v6.count_5000_6000`](docs/nodes/ZetaZeroLocations-v6.md#count_5000_6000) — unjustified
+  - [`ZetaZeroLocations.v7.count_6000_7000`](docs/nodes/ZetaZeroLocations-v7.md#count_6000_7000) — unjustified
+  - [`ZetaZeroLocations.v8.count_7000_8000`](docs/nodes/ZetaZeroLocations-v8.md#count_7000_8000) — unjustified
+  - [`ZetaZeroLocations.v9.count_8000_9000`](docs/nodes/ZetaZeroLocations-v9.md#count_8000_9000) — unjustified
+  - [`ZetaZeroLocations.v10.count_9000_10000`](docs/nodes/ZetaZeroLocations-v10.md#count_9000_10000) — unjustified
+
+- [`ZetaZeroLocations.v11.on_line_and_simple_0_10000`](docs/nodes/ZetaZeroLocations-v11.md#on_line_and_simple_0_10000) — unjustified
+  - [`ZetaZeroLocations.v1.located_0_1000`](docs/nodes/ZetaZeroLocations-v1.md#located_0_1000) — unjustified
+  - [`ZetaZeroLocations.v2.located_1000_2000`](docs/nodes/ZetaZeroLocations-v2.md#located_1000_2000) — unjustified
+  - [`ZetaZeroLocations.v3.located_2000_3000`](docs/nodes/ZetaZeroLocations-v3.md#located_2000_3000) — unjustified
+  - [`ZetaZeroLocations.v4.located_3000_4000`](docs/nodes/ZetaZeroLocations-v4.md#located_3000_4000) — unjustified
+  - [`ZetaZeroLocations.v5.located_4000_5000`](docs/nodes/ZetaZeroLocations-v5.md#located_4000_5000) — unjustified
+  - [`ZetaZeroLocations.v6.located_5000_6000`](docs/nodes/ZetaZeroLocations-v6.md#located_5000_6000) — unjustified
+  - [`ZetaZeroLocations.v7.located_6000_7000`](docs/nodes/ZetaZeroLocations-v7.md#located_6000_7000) — unjustified
+  - [`ZetaZeroLocations.v8.located_7000_8000`](docs/nodes/ZetaZeroLocations-v8.md#located_7000_8000) — unjustified
+  - [`ZetaZeroLocations.v9.located_8000_9000`](docs/nodes/ZetaZeroLocations-v9.md#located_8000_9000) — unjustified
+  - [`ZetaZeroLocations.v10.located_9000_10000`](docs/nodes/ZetaZeroLocations-v10.md#located_9000_10000) — unjustified
+
+- [`ZetaZeroLocations.v2.unique_1000_2000`](docs/nodes/ZetaZeroLocations-v2.md#unique_1000_2000) — unjustified
+
+- [`ZetaZeroLocations.v3.unique_2000_3000`](docs/nodes/ZetaZeroLocations-v3.md#unique_2000_3000) — unjustified
+
+- [`ZetaZeroLocations.v4.unique_3000_4000`](docs/nodes/ZetaZeroLocations-v4.md#unique_3000_4000) — unjustified
+
+- [`ZetaZeroLocations.v5.unique_4000_5000`](docs/nodes/ZetaZeroLocations-v5.md#unique_4000_5000) — unjustified
+
+- [`ZetaZeroLocations.v6.unique_5000_6000`](docs/nodes/ZetaZeroLocations-v6.md#unique_5000_6000) — unjustified
+
+- [`ZetaZeroLocations.v7.unique_6000_7000`](docs/nodes/ZetaZeroLocations-v7.md#unique_6000_7000) — unjustified
+
+- [`ZetaZeroLocations.v8.unique_7000_8000`](docs/nodes/ZetaZeroLocations-v8.md#unique_7000_8000) — unjustified
+
+- [`ZetaZeroLocations.v9.unique_8000_9000`](docs/nodes/ZetaZeroLocations-v9.md#unique_8000_9000) — unjustified
 
 - [`ZetaZeroes.v1.exists_ordinate_free_height`](docs/nodes/ZetaZeroes-v1.md#exists_ordinate_free_height) — verified
 
@@ -771,6 +873,8 @@ rather than maintained.
 | [`ZetaLogDerivValues.v1.logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_neg_one) | computation | 2 | none |
 | [`ZetaLogDerivValues.v1.logDeriv_three_halves`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_three_halves) | computation | 2 | none |
 | [`ZetaLogDerivValues.v1.logDeriv_two`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_two) | computation | 2 | none |
+| [`ZetaZeroLocations.v1.count_0_1000`](docs/nodes/ZetaZeroLocations-v1.md#count_0_1000) | unjustified | 2 | none |
+| [`ZetaZeroLocations.v1.located_0_1000`](docs/nodes/ZetaZeroLocations-v1.md#located_0_1000) | unjustified | 2 | none |
 | [`BKLNWNumerics.v1.table8_psi_bound`](docs/nodes/BKLNWNumerics-v1.md#table8_psi_bound) | computation | 1 | known, not all drawable |
 | [`Buthe.v1.theorem_2_theta`](docs/nodes/Buthe-v1.md#theorem_2_theta) | cited | 1 | known, not all drawable |
 | [`Buthe.v2.lemma_3_bounds`](docs/nodes/Buthe-v2.md#lemma_3_bounds) | unjustified | 1 | none |
@@ -794,6 +898,25 @@ rather than maintained.
 | [`RosserSchoenfeld.v1.zero_free_region_classical`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region_classical) | bridged | 1 | none |
 | [`Trudgian2011.v1.integral_S_bound`](docs/nodes/Trudgian2011-v1.md#integral_S_bound) | cited | 1 | **not yet traced** |
 | [`Wedeniwski.v1.rh_up_to`](docs/nodes/Wedeniwski-v1.md#rh_up_to) | asserted | 1 | **not yet traced** |
+| [`ZetaZeroLocations.v1.unique_0_1000`](docs/nodes/ZetaZeroLocations-v1.md#unique_0_1000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v10.count_9000_10000`](docs/nodes/ZetaZeroLocations-v10.md#count_9000_10000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v10.located_9000_10000`](docs/nodes/ZetaZeroLocations-v10.md#located_9000_10000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v2.count_1000_2000`](docs/nodes/ZetaZeroLocations-v2.md#count_1000_2000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v2.located_1000_2000`](docs/nodes/ZetaZeroLocations-v2.md#located_1000_2000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v3.count_2000_3000`](docs/nodes/ZetaZeroLocations-v3.md#count_2000_3000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v3.located_2000_3000`](docs/nodes/ZetaZeroLocations-v3.md#located_2000_3000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v4.count_3000_4000`](docs/nodes/ZetaZeroLocations-v4.md#count_3000_4000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v4.located_3000_4000`](docs/nodes/ZetaZeroLocations-v4.md#located_3000_4000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v5.count_4000_5000`](docs/nodes/ZetaZeroLocations-v5.md#count_4000_5000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v5.located_4000_5000`](docs/nodes/ZetaZeroLocations-v5.md#located_4000_5000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v6.count_5000_6000`](docs/nodes/ZetaZeroLocations-v6.md#count_5000_6000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v6.located_5000_6000`](docs/nodes/ZetaZeroLocations-v6.md#located_5000_6000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v7.count_6000_7000`](docs/nodes/ZetaZeroLocations-v7.md#count_6000_7000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v7.located_6000_7000`](docs/nodes/ZetaZeroLocations-v7.md#located_6000_7000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v8.count_7000_8000`](docs/nodes/ZetaZeroLocations-v8.md#count_7000_8000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v8.located_7000_8000`](docs/nodes/ZetaZeroLocations-v8.md#located_7000_8000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v9.count_8000_9000`](docs/nodes/ZetaZeroLocations-v9.md#count_8000_9000) | unjustified | 1 | none |
+| [`ZetaZeroLocations.v9.located_8000_9000`](docs/nodes/ZetaZeroLocations-v9.md#located_8000_9000) | unjustified | 1 | none |
 | [`BKLNW.v1.corollary_5_1_above`](docs/nodes/BKLNW-v1.md#corollary_5_1_above) | cited | 0 | traced |
 | [`BKLNW.v1.table8_psi_bound`](docs/nodes/BKLNW-v1.md#table8_psi_bound) | cited | 0 | known, not all drawable |
 | [`BKLNW.v2.corollary_5_1`](docs/nodes/BKLNW-v2.md#corollary_5_1) | cited | 0 | traced |
@@ -830,7 +953,27 @@ rather than maintained.
 | [`PlattTrudgian2021.v1.theorem_1_classical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_classical) | cited | 0 | traced |
 | [`PrimesBetweenCubes.v1.prime_between_successive_cubes`](docs/nodes/PrimesBetweenCubes-v1.md#prime_between_successive_cubes) | cited | 0 | known, not all drawable |
 | [`RosserSchoenfeld.v1.zero_free_region`](docs/nodes/RosserSchoenfeld-v1.md#zero_free_region) | cited | 0 | **not yet traced** |
+| [`Schoenfeld1976.v1.psi_log_5_5a`](docs/nodes/Schoenfeld1976-v1.md#psi_log_5_5a) | cited | 0 | known, not all drawable |
+| [`Schoenfeld1976.v1.psi_log_lower_5_5b`](docs/nodes/Schoenfeld1976-v1.md#psi_log_lower_5_5b) | cited | 0 | known, not all drawable |
+| [`Schoenfeld1976.v1.psi_theorem_11`](docs/nodes/Schoenfeld1976-v1.md#psi_theorem_11) | cited | 0 | known, not all drawable |
+| [`Schoenfeld1976.v1.psi_theta_log_5_6b`](docs/nodes/Schoenfeld1976-v1.md#psi_theta_log_5_6b) | cited | 0 | known, not all drawable |
+| [`Schoenfeld1976.v1.psi_upper_theorem_11`](docs/nodes/Schoenfeld1976-v1.md#psi_upper_theorem_11) | cited | 0 | known, not all drawable |
+| [`Schoenfeld1976.v1.theta_log_5_6`](docs/nodes/Schoenfeld1976-v1.md#theta_log_5_6) | cited | 0 | known, not all drawable |
+| [`Schoenfeld1976.v1.theta_log_upper_5_6a`](docs/nodes/Schoenfeld1976-v1.md#theta_log_upper_5_6a) | cited | 0 | known, not all drawable |
+| [`Schoenfeld1976.v1.theta_theorem_11`](docs/nodes/Schoenfeld1976-v1.md#theta_theorem_11) | cited | 0 | known, not all drawable |
+| [`Schoenfeld1976Numerics.v1.psi_error_b23`](docs/nodes/Schoenfeld1976Numerics-v1.md#psi_error_b23) | cited | 0 | traced |
 | [`ZetaLogDerivValues.v1.deriv_logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#deriv_logDeriv_neg_one) | computation | 0 | none |
+| [`ZetaZeroLocations.v10.unique_9000_10000`](docs/nodes/ZetaZeroLocations-v10.md#unique_9000_10000) | unjustified | 0 | none |
+| [`ZetaZeroLocations.v11.count_0_10000`](docs/nodes/ZetaZeroLocations-v11.md#count_0_10000) | unjustified | 0 | traced |
+| [`ZetaZeroLocations.v11.on_line_and_simple_0_10000`](docs/nodes/ZetaZeroLocations-v11.md#on_line_and_simple_0_10000) | unjustified | 0 | traced |
+| [`ZetaZeroLocations.v2.unique_1000_2000`](docs/nodes/ZetaZeroLocations-v2.md#unique_1000_2000) | unjustified | 0 | none |
+| [`ZetaZeroLocations.v3.unique_2000_3000`](docs/nodes/ZetaZeroLocations-v3.md#unique_2000_3000) | unjustified | 0 | none |
+| [`ZetaZeroLocations.v4.unique_3000_4000`](docs/nodes/ZetaZeroLocations-v4.md#unique_3000_4000) | unjustified | 0 | none |
+| [`ZetaZeroLocations.v5.unique_4000_5000`](docs/nodes/ZetaZeroLocations-v5.md#unique_4000_5000) | unjustified | 0 | none |
+| [`ZetaZeroLocations.v6.unique_5000_6000`](docs/nodes/ZetaZeroLocations-v6.md#unique_5000_6000) | unjustified | 0 | none |
+| [`ZetaZeroLocations.v7.unique_6000_7000`](docs/nodes/ZetaZeroLocations-v7.md#unique_6000_7000) | unjustified | 0 | none |
+| [`ZetaZeroLocations.v8.unique_7000_8000`](docs/nodes/ZetaZeroLocations-v8.md#unique_7000_8000) | unjustified | 0 | none |
+| [`ZetaZeroLocations.v9.unique_8000_9000`](docs/nodes/ZetaZeroLocations-v9.md#unique_8000_9000) | unjustified | 0 | none |
 
 ## Nodes that state nothing yet
 
