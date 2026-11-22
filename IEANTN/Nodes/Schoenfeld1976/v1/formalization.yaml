@@ -1,0 +1,265 @@
+# Node metadata for `Schoenfeld1976.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: Schoenfeld1976.v1
+  family: Schoenfeld1976
+  version: v1
+  kind: paper
+  status: stub
+
+project:
+  name: "Schoenfeld: sharper bounds for the Chebyshev functions theta(x) and psi(x), II"
+  description: >-
+    Theorem 11 (|psi(x) - x| and |theta(x) - x| below x eps0(x), with Schoenfeld's exponentially small
+    eps0) and the five displays of Theorem 7* (bounds of the form c x / log x), each with its
+    published threshold, from Schoenfeld's 1976 paper. Every conclusion assumes the Riemann hypothesis
+    up to 1894438.5122, the height A = 1894438.51224... of Rosser-Schoenfeld (1975) rounded down,
+    as an explicit premise.
+  authors: ["Harald Helfgott"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Harald Helfgott"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11M26"]
+
+conclusions:
+- id: psi_theorem_11
+  declaration: Schoenfeld1976.v1.psi_theorem_11
+  challenge: Schoenfeld1976.v1.challenge_psi_theorem_11
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: schoenfeld-paper
+    kind: literature
+    source: Schoenfeld1976
+    locator: "Theorem 11, (7.2), printed p. 342"
+    note: >-
+      Asserted on the authority of the paper. Schoenfeld's proof rests on Rosser-Schoenfeld (1975)
+      (their zero-free region with R = 9.645908801 and their table of psi bounds), on the Riemann
+      hypothesis up to the height A = 1894438.51224... of that paper (here the premise), and on his
+      own finite computations of theta and psi. Two of these inputs are nodes: the zero-free region
+      is RosserSchoenfeld.v1.zero_free_region, and the row b = 23 of the psi table is
+      RosserSchoenfeld.v2.psi_error_b23. Neither is imported, deliberately: imports become
+      hypotheses of the challenge, and the conclusion as stated does not need them (the standalone
+      Lean proof described below assumes neither). Transcribed from the scan and rechecked on
+      2026-11-07. A standalone Lean 4.35 proof exists (RSBounds, Schoenfeld1976Final): it assumes
+      only RiemannHypothesisUpTo's counterpart at the same height, but replaces the paper's finite
+      computations by a kernel-checked walk below 1.35e6 and by the certification |psi(x) - x| <=
+      (4/5) sqrt(x) for 1500 <= x <= 1e10. It is not integrated here and has no IEANTN receipt.
+  designated: schoenfeld-paper
+- id: theta_theorem_11
+  declaration: Schoenfeld1976.v1.theta_theorem_11
+  challenge: Schoenfeld1976.v1.challenge_theta_theorem_11
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: schoenfeld-paper
+    kind: literature
+    source: Schoenfeld1976
+    locator: "Theorem 11, (7.3), printed p. 342"
+    note: >-
+      Asserted on the authority of the paper. Schoenfeld's proof rests on Rosser-Schoenfeld (1975)
+      (their zero-free region with R = 9.645908801 and their table of psi bounds), on the Riemann
+      hypothesis up to the height A = 1894438.51224... of that paper (here the premise), and on his
+      own finite computations of theta and psi. Two of these inputs are nodes: the zero-free region
+      is RosserSchoenfeld.v1.zero_free_region, and the row b = 23 of the psi table is
+      RosserSchoenfeld.v2.psi_error_b23. Neither is imported, deliberately: imports become
+      hypotheses of the challenge, and the conclusion as stated does not need them (the standalone
+      Lean proof described below assumes neither). Transcribed from the scan and rechecked on
+      2026-11-07. A standalone Lean 4.35 proof exists (RSBounds, Schoenfeld1976Final): it assumes
+      only RiemannHypothesisUpTo's counterpart at the same height, but replaces the paper's finite
+      computations by a kernel-checked walk below 1.35e6 and by the certification |psi(x) - x| <=
+      (4/5) sqrt(x) for 1500 <= x <= 1e10. It is not integrated here and has no IEANTN receipt.
+  designated: schoenfeld-paper
+- id: psi_upper_theorem_11
+  declaration: Schoenfeld1976.v1.psi_upper_theorem_11
+  challenge: Schoenfeld1976.v1.challenge_psi_upper_theorem_11
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: schoenfeld-paper
+    kind: literature
+    source: Schoenfeld1976
+    locator: "Theorem 11, (7.4), printed p. 342; the form proved on p. 349"
+    note: >-
+      Asserted on the authority of the paper. Schoenfeld's proof rests on Rosser-Schoenfeld (1975)
+      (their zero-free region with R = 9.645908801 and their table of psi bounds), on the Riemann
+      hypothesis up to the height A = 1894438.51224... of that paper (here the premise), and on his
+      own finite computations of theta and psi. Two of these inputs are nodes: the zero-free region
+      is RosserSchoenfeld.v1.zero_free_region, and the row b = 23 of the psi table is
+      RosserSchoenfeld.v2.psi_error_b23. Neither is imported, deliberately: imports become
+      hypotheses of the challenge, and the conclusion as stated does not need them (the standalone
+      Lean proof described below assumes neither). Transcribed from the scan and rechecked on
+      2026-11-07. A standalone Lean 4.35 proof exists (RSBounds, Schoenfeld1976Final): it assumes
+      only RiemannHypothesisUpTo's counterpart at the same height, but replaces the paper's finite
+      computations by a kernel-checked walk below 1.35e6 and by the certification |psi(x) - x| <=
+      (4/5) sqrt(x) for 1500 <= x <= 1e10. It is not integrated here and has no IEANTN receipt.
+  designated: schoenfeld-paper
+- id: psi_log_5_5a
+  declaration: Schoenfeld1976.v1.psi_log_5_5a
+  challenge: Schoenfeld1976.v1.challenge_psi_log_5_5a
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: schoenfeld-paper
+    kind: literature
+    source: Schoenfeld1976
+    locator: "Theorem 7*, (5.5a*), printed p. 357"
+    note: >-
+      Asserted on the authority of the paper. Schoenfeld's proof rests on Rosser-Schoenfeld (1975)
+      (their zero-free region with R = 9.645908801 and their table of psi bounds), on the Riemann
+      hypothesis up to the height A = 1894438.51224... of that paper (here the premise), and on his
+      own finite computations of theta and psi. Two of these inputs are nodes: the zero-free region
+      is RosserSchoenfeld.v1.zero_free_region, and the row b = 23 of the psi table is
+      RosserSchoenfeld.v2.psi_error_b23. Neither is imported, deliberately: imports become
+      hypotheses of the challenge, and the conclusion as stated does not need them (the standalone
+      Lean proof described below assumes neither). Transcribed from the scan and rechecked on
+      2026-11-07. A standalone Lean 4.35 proof exists (RSBounds, Schoenfeld1976Final): it assumes
+      only RiemannHypothesisUpTo's counterpart at the same height, but replaces the paper's finite
+      computations by a kernel-checked walk below 1.35e6 and by the certification |psi(x) - x| <=
+      (4/5) sqrt(x) for 1500 <= x <= 1e10. It is not integrated here and has no IEANTN receipt.
+  designated: schoenfeld-paper
+- id: psi_log_lower_5_5b
+  declaration: Schoenfeld1976.v1.psi_log_lower_5_5b
+  challenge: Schoenfeld1976.v1.challenge_psi_log_lower_5_5b
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: schoenfeld-paper
+    kind: literature
+    source: Schoenfeld1976
+    locator: "Theorem 7*, (5.5b*), printed p. 357"
+    note: >-
+      Asserted on the authority of the paper. Schoenfeld's proof rests on Rosser-Schoenfeld (1975)
+      (their zero-free region with R = 9.645908801 and their table of psi bounds), on the Riemann
+      hypothesis up to the height A = 1894438.51224... of that paper (here the premise), and on his
+      own finite computations of theta and psi. Two of these inputs are nodes: the zero-free region
+      is RosserSchoenfeld.v1.zero_free_region, and the row b = 23 of the psi table is
+      RosserSchoenfeld.v2.psi_error_b23. Neither is imported, deliberately: imports become
+      hypotheses of the challenge, and the conclusion as stated does not need them (the standalone
+      Lean proof described below assumes neither). Transcribed from the scan and rechecked on
+      2026-11-07. A standalone Lean 4.35 proof exists (RSBounds, Schoenfeld1976Final): it assumes
+      only RiemannHypothesisUpTo's counterpart at the same height, but replaces the paper's finite
+      computations by a kernel-checked walk below 1.35e6 and by the certification |psi(x) - x| <=
+      (4/5) sqrt(x) for 1500 <= x <= 1e10. It is not integrated here and has no IEANTN receipt.
+  designated: schoenfeld-paper
+- id: theta_log_5_6
+  declaration: Schoenfeld1976.v1.theta_log_5_6
+  challenge: Schoenfeld1976.v1.challenge_theta_log_5_6
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: schoenfeld-paper
+    kind: literature
+    source: Schoenfeld1976
+    locator: "Theorem 7*, (5.6*), printed p. 357"
+    note: >-
+      Asserted on the authority of the paper. Schoenfeld's proof rests on Rosser-Schoenfeld (1975)
+      (their zero-free region with R = 9.645908801 and their table of psi bounds), on the Riemann
+      hypothesis up to the height A = 1894438.51224... of that paper (here the premise), and on his
+      own finite computations of theta and psi. Two of these inputs are nodes: the zero-free region
+      is RosserSchoenfeld.v1.zero_free_region, and the row b = 23 of the psi table is
+      RosserSchoenfeld.v2.psi_error_b23. Neither is imported, deliberately: imports become
+      hypotheses of the challenge, and the conclusion as stated does not need them (the standalone
+      Lean proof described below assumes neither). Transcribed from the scan and rechecked on
+      2026-11-07. A standalone Lean 4.35 proof exists (RSBounds, Schoenfeld1976Final): it assumes
+      only RiemannHypothesisUpTo's counterpart at the same height, but replaces the paper's finite
+      computations by a kernel-checked walk below 1.35e6 and by the certification |psi(x) - x| <=
+      (4/5) sqrt(x) for 1500 <= x <= 1e10. It is not integrated here and has no IEANTN receipt.
+  designated: schoenfeld-paper
+- id: theta_log_upper_5_6a
+  declaration: Schoenfeld1976.v1.theta_log_upper_5_6a
+  challenge: Schoenfeld1976.v1.challenge_theta_log_upper_5_6a
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: schoenfeld-paper
+    kind: literature
+    source: Schoenfeld1976
+    locator: "Theorem 7*, (5.6a*), printed p. 357"
+    note: >-
+      Asserted on the authority of the paper. Schoenfeld's proof rests on Rosser-Schoenfeld (1975)
+      (their zero-free region with R = 9.645908801 and their table of psi bounds), on the Riemann
+      hypothesis up to the height A = 1894438.51224... of that paper (here the premise), and on his
+      own finite computations of theta and psi. Two of these inputs are nodes: the zero-free region
+      is RosserSchoenfeld.v1.zero_free_region, and the row b = 23 of the psi table is
+      RosserSchoenfeld.v2.psi_error_b23. Neither is imported, deliberately: imports become
+      hypotheses of the challenge, and the conclusion as stated does not need them (the standalone
+      Lean proof described below assumes neither). Transcribed from the scan and rechecked on
+      2026-11-07. A standalone Lean 4.35 proof exists (RSBounds, Schoenfeld1976Final): it assumes
+      only RiemannHypothesisUpTo's counterpart at the same height, but replaces the paper's finite
+      computations by a kernel-checked walk below 1.35e6 and by the certification |psi(x) - x| <=
+      (4/5) sqrt(x) for 1500 <= x <= 1e10. It is not integrated here and has no IEANTN receipt.
+  designated: schoenfeld-paper
+- id: psi_theta_log_5_6b
+  declaration: Schoenfeld1976.v1.psi_theta_log_5_6b
+  challenge: Schoenfeld1976.v1.challenge_psi_theta_log_5_6b
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: schoenfeld-paper
+    kind: literature
+    source: Schoenfeld1976
+    locator: "Theorem 7*, (5.6b*), printed p. 357"
+    note: >-
+      Asserted on the authority of the paper. Schoenfeld's proof rests on Rosser-Schoenfeld (1975)
+      (their zero-free region with R = 9.645908801 and their table of psi bounds), on the Riemann
+      hypothesis up to the height A = 1894438.51224... of that paper (here the premise), and on his
+      own finite computations of theta and psi. Two of these inputs are nodes: the zero-free region
+      is RosserSchoenfeld.v1.zero_free_region, and the row b = 23 of the psi table is
+      RosserSchoenfeld.v2.psi_error_b23. Neither is imported, deliberately: imports become
+      hypotheses of the challenge, and the conclusion as stated does not need them (the standalone
+      Lean proof described below assumes neither). Transcribed from the scan and rechecked on
+      2026-11-07. A standalone Lean 4.35 proof exists (RSBounds, Schoenfeld1976Final): it assumes
+      only RiemannHypothesisUpTo's counterpart at the same height, but replaces the paper's finite
+      computations by a kernel-checked walk below 1.35e6 and by the certification |psi(x) - x| <=
+      (4/5) sqrt(x) for 1500 <= x <= 1e10. It is not integrated here and has no IEANTN receipt.
+  designated: schoenfeld-paper
+
+sources:
+- title: "Sharper bounds for the Chebyshev functions theta(x) and psi(x). II"
+  authors: ["Lowell Schoenfeld"]
+  type: paper
+  id: "https://doi.org/10.1090/S0025-5718-1976-0457374-X"
+  location: "Math. Comp. 30 (1976), 337-360; Theorem 11 (p. 342) and Theorem 7* (p. 357)"
+  relationship: formalizes
+  note: >-
+    The printed (7.4), 'theta(x) - x <= psi(x) - x eps0(x) if 1 <= x', has lost a relation; the
+    conclusion states the form the proof on p. 349 establishes.
+- title: "Sharper bounds for the Chebyshev functions theta(x) and psi(x)"
+  authors: ["J. Barkley Rosser", "Lowell Schoenfeld"]
+  type: paper
+  id: "https://doi.org/10.1090/S0025-5718-1975-0457373-7"
+  location: "Math. Comp. 29 (1975), 243-269"
+  relationship: background
+  note: >-
+    The source of the zero-free region, the psi table and the finite-RH height that Schoenfeld uses.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Drafted the node from the transcription of the paper checked against the scan, under the
+      maintainer's direction. No proof is integrated.
+
+review:
+  status: self-assessed
+  reviewers: ["Harald Helfgott"]
+
+limitations:
+- "RH up to height 1894438.5122 remains an explicit premise of every conclusion."
+- >-
+  The paper's own inputs (Rosser-Schoenfeld 1975 and Schoenfeld's finite computations) are traced
+  in the notes but are not edges.
+- >-
+  The thresholds 161971 in (5.5a*) and 89909 in (5.5b*) are transcribed as printed; they are not
+  sharp: an exact interval computation of psi (the RSBounds walk data, outside Lean) shows that
+  both inequalities already hold from x >= 70841.
+- "No novelty is claimed."

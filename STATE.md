@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-68 node version(s), 145 conclusion(s).  2 state nothing yet.
+81 node version(s), 186 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
@@ -16,8 +16,8 @@ adds the environment detail.
 | `asserted` | 1 |
 | `bridged` | 3 |
 | `lean-comparator` | 51 |
-| `literature` | 53 |
-| `none-yet` | 4 |
+| `literature` | 62 |
+| `none-yet` | 36 |
 | `numerical` | 33 |
 
 ## Nodes
@@ -153,6 +153,15 @@ adds the environment detail.
 | `RosserSchoenfeld.v1` | stub | `zero_free_region_classical` | bridged | 0 | - |
 | `RosserSchoenfeld.v2` | active | `psi_error_b23` | lean-comparator | 0 | - |
 | `RosserSchoenfeld1962.v1` | active | `equation_3_35` | lean-comparator | 0 | #164 |
+| `Schoenfeld1976.v1` | stub | `psi_theorem_11` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `theta_theorem_11` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `psi_upper_theorem_11` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `psi_log_5_5a` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `psi_log_lower_5_5b` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `theta_log_5_6` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `theta_log_upper_5_6a` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `psi_theta_log_5_6b` | literature | 0 | - |
+| `Schoenfeld1976Numerics.v1` | awaiting-verification | `psi_error_b23` | literature | 3 | - |
 | `Trudgian2011.v1` | stub | `integral_S_bound` | literature | 0 | - |
 | `Wedeniwski.v1` | stub | `rh_up_to` | asserted | 0 | - |
 | `ZeroCount.v1` | stub | `rvm_error_bound` | literature | 0 | #64 |
@@ -165,6 +174,38 @@ adds the environment detail.
 | `ZetaLogDerivValues.v1` | stub | `logDeriv_neg_one` | numerical | 0 | - |
 | `ZetaLogDerivValues.v1` | stub | `deriv_logDeriv_neg_one` | numerical | 0 | - |
 | `ZetaLogDerivValues.v1` | stub | `logDeriv_laurent_alternating` | numerical | 0 | - |
+| `ZetaZeroLocations.v1` | awaiting-solution | `located_0_1000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v1` | awaiting-solution | `unique_0_1000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v1` | awaiting-solution | `count_0_1000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v10` | awaiting-solution | `located_9000_10000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v10` | awaiting-solution | `unique_9000_10000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v10` | awaiting-solution | `count_9000_10000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v11` | awaiting-verification | `on_line_and_simple_0_10000` | none-yet | 10 | #214 |
+| `ZetaZeroLocations.v11` | awaiting-verification | `count_0_10000` | none-yet | 10 | #214 |
+| `ZetaZeroLocations.v2` | awaiting-solution | `located_1000_2000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v2` | awaiting-solution | `unique_1000_2000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v2` | awaiting-solution | `count_1000_2000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v3` | awaiting-solution | `located_2000_3000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v3` | awaiting-solution | `unique_2000_3000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v3` | awaiting-solution | `count_2000_3000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v4` | awaiting-solution | `located_3000_4000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v4` | awaiting-solution | `unique_3000_4000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v4` | awaiting-solution | `count_3000_4000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v5` | awaiting-solution | `located_4000_5000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v5` | awaiting-solution | `unique_4000_5000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v5` | awaiting-solution | `count_4000_5000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v6` | awaiting-solution | `located_5000_6000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v6` | awaiting-solution | `unique_5000_6000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v6` | awaiting-solution | `count_5000_6000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v7` | awaiting-solution | `located_6000_7000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v7` | awaiting-solution | `unique_6000_7000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v7` | awaiting-solution | `count_6000_7000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v8` | awaiting-solution | `located_7000_8000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v8` | awaiting-solution | `unique_7000_8000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v8` | awaiting-solution | `count_7000_8000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v9` | awaiting-solution | `located_8000_9000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v9` | awaiting-solution | `unique_8000_9000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v9` | awaiting-solution | `count_8000_9000` | none-yet | 0 | #214 |
 | `ZetaZeroes.v1` | active | `no_nontrivial_zeroes_left` | lean-comparator | 0 | - |
 | `ZetaZeroes.v1` | active | `zeroes_off_axis_in_strip` | lean-comparator | 0 | - |
 | `ZetaZeroes.v1` | active | `finite_zeroes_on_compact` | lean-comparator | 0 | - |
@@ -223,6 +264,8 @@ downstream.
 | `FKS2.v2.theorem_3` | 3 |
 | `DudekPlatt.v3.criterion` | 3 |
 | `Buthe2016.v1.theorem_2_psi` | 3 |
+| `ZetaZeroLocations.v1.located_0_1000` | 2 |
+| `ZetaZeroLocations.v1.count_0_1000` | 2 |
 | `ZetaLogDerivValues.v1.logDeriv_two` | 2 |
 | `ZetaLogDerivValues.v1.logDeriv_three_halves` | 2 |
 | `ZetaLogDerivValues.v1.logDeriv_neg_one` | 2 |
@@ -246,6 +289,25 @@ downstream.
 | `CH2.v2.proposition_2_4_lower` | 2 |
 | `Buthe.v1.theorem_2_psi` | 2 |
 | `BKLNW.v1.table8_psi_bound_above` | 2 |
+| `ZetaZeroLocations.v9.located_8000_9000` | 1 |
+| `ZetaZeroLocations.v9.count_8000_9000` | 1 |
+| `ZetaZeroLocations.v8.located_7000_8000` | 1 |
+| `ZetaZeroLocations.v8.count_7000_8000` | 1 |
+| `ZetaZeroLocations.v7.located_6000_7000` | 1 |
+| `ZetaZeroLocations.v7.count_6000_7000` | 1 |
+| `ZetaZeroLocations.v6.located_5000_6000` | 1 |
+| `ZetaZeroLocations.v6.count_5000_6000` | 1 |
+| `ZetaZeroLocations.v5.located_4000_5000` | 1 |
+| `ZetaZeroLocations.v5.count_4000_5000` | 1 |
+| `ZetaZeroLocations.v4.located_3000_4000` | 1 |
+| `ZetaZeroLocations.v4.count_3000_4000` | 1 |
+| `ZetaZeroLocations.v3.located_2000_3000` | 1 |
+| `ZetaZeroLocations.v3.count_2000_3000` | 1 |
+| `ZetaZeroLocations.v2.located_1000_2000` | 1 |
+| `ZetaZeroLocations.v2.count_1000_2000` | 1 |
+| `ZetaZeroLocations.v10.located_9000_10000` | 1 |
+| `ZetaZeroLocations.v10.count_9000_10000` | 1 |
+| `ZetaZeroLocations.v1.unique_0_1000` | 1 |
 | `Wedeniwski.v1.rh_up_to` | 1 |
 | `Trudgian2011.v1.integral_S_bound` | 1 |
 | `RosserSchoenfeld.v1.zero_free_region_classical` | 1 |

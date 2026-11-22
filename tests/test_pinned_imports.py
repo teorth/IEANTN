@@ -51,6 +51,32 @@ class TestPinnedImports(FixtureRepo):
                          [{"name": "leancert", "url": "https://github.com/alerad/leancert.git",
                            "rev": PINNED}])
 
+    def test_vocabulary_umbrella_cannot_import_proof_only_dependencies(self) -> None:
+        self.write_solution([self.external()])
+        umbrella = self.root / "IEANTN" / "Vocabulary.lean"
+        for module in ("LeanCert", "Solution", "IEANTN.Nodes.A.v1.Conclusions"):
+            with self.subTest(module=module):
+                umbrella.write_text(f"import {module}\n", encoding="utf-8")
+                printed = io.StringIO()
+                with contextlib.redirect_stdout(printed):
+                    self.assertFalse(ieantn.check_closure())
+                self.assertIn("IEANTN/Vocabulary.lean", printed.getvalue())
+                self.assertIn(f"found `{module}`", printed.getvalue())
+
+    def test_vocabulary_umbrella_may_import_mathlib_and_vocabulary(self) -> None:
+        (self.root / "IEANTN" / "Vocabulary" / "Defs.lean").write_text(
+            "import Mathlib.Data.Nat.Basic\n", encoding="utf-8")
+        (self.root / "IEANTN" / "Vocabulary.lean").write_text(
+            "import Mathlib.Data.Nat.Basic\nimport IEANTN.Vocabulary.Defs\n", encoding="utf-8")
+        self.assertTrue(ieantn.check_closure())
+
+    def test_vocabulary_umbrella_still_checks_its_imported_files(self) -> None:
+        (self.root / "IEANTN" / "Vocabulary" / "Defs.lean").write_text(
+            "import LeanCert\n", encoding="utf-8")
+        (self.root / "IEANTN" / "Vocabulary.lean").write_text(
+            "import IEANTN.Vocabulary.Defs\n", encoding="utf-8")
+        self.assertFalse(ieantn.check_closure())
+
     def test_a_branch_is_not_a_pin(self) -> None:
         """It names whatever it names today, so a receipt pointing at one records a verification
         nobody can reproduce."""
