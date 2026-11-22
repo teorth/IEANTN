@@ -67,7 +67,7 @@ graph LR
   NCH2_2e_v2["<b>CH2.v2</b><br/>2 claims<br/><i>weakest: verified, stale</i>"]
   NCH2_2e_v3["<b>CH2.v3</b><br/>2 claims<br/><i>weakest: verified</i>"]
   NChebyshev_2e_v1["<b>Chebyshev.v1</b><br/>5 claims<br/><i>weakest: verified</i>"]
-  NChebyshevNumerics_2e_v1["<b>ChebyshevNumerics.v1</b><br/>1 claim<br/><i>weakest: computation</i>"]
+  NChebyshevNumerics_2e_v1["<b>ChebyshevNumerics.v1</b><br/>1 claim<br/><i>weakest: bridged</i>"]
   NChengGraham2004_2e_v1["<b>ChengGraham2004.v1</b><br/><i>nothing stated yet</i>"]
   NCotangentSeries_2e_v1["<b>CotangentSeries.v1</b><br/>1 claim<br/><i>weakest: unjustified</i>"]
   NDudekPlatt_2e_v1["<b>DudekPlatt.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
@@ -215,6 +215,7 @@ graph LR
   NLcm_2e_v2 ==>|bridge| NLcm_2e_v1
   NPlatt2017_2e_v1 ==>|bridge| NPlatt2015_2e_v1
   NPlatt2017_2e_v1 ==>|bridge| NWedeniwski_2e_v1
+  NRosserSchoenfeld1962_2e_v1 ==>|bridge| NChebyshevNumerics_2e_v1
   NZetaZeroLocations_2e_v1 ==>|bridge| NLowZeroes_2e_v1
   style NBKLNW_2e_v1 stroke-dasharray: 8 4;
   style NBKLNWNumerics_2e_v1 stroke-dasharray: 8 4;
@@ -245,8 +246,8 @@ graph LR
   class NBrown1967_2e_v1,NButhe_2e_v2,NChengGraham2004_2e_v1,NCotangentSeries_2e_v1,NGammaAsymptotics_2e_v1,NZetaZeroLocations_2e_v1,NZetaZeroLocations_2e_v10,NZetaZeroLocations_2e_v11,NZetaZeroLocations_2e_v2,NZetaZeroLocations_2e_v3,NZetaZeroLocations_2e_v4,NZetaZeroLocations_2e_v5,NZetaZeroLocations_2e_v6,NZetaZeroLocations_2e_v7,NZetaZeroLocations_2e_v8,NZetaZeroLocations_2e_v9 none_2d_yet;
   class NWedeniwski_2e_v1 asserted;
   class NBKLNW_2e_v1,NBKLNW_2e_v2,NButhe_2e_v1,NButhe2016_2e_v1,NDudekPlatt_2e_v1,NDusart2018_2e_v1,NFKS_2e_v1,NFKSNumerics_2e_v1,NHiary2016_2e_v1,NKLN_2e_v1,NKadiri2005_2e_v1,NKadiriLumley_2e_v1,NMT_2e_v1,NMT_2e_v2,NMTY_2e_v1,NPatel2020_2e_v1,NPlattTrudgian_2e_v1,NPlattTrudgian2021_2e_v1,NPlattZeroSum_2e_v1,NPrimesBetweenCubes_2e_v1,NRamareSaouter2003_2e_v1,NRosserSchoenfeld_2e_v1,NSchoenfeld1976_2e_v1,NSchoenfeld1976Numerics_2e_v1,NTrudgian2011_2e_v1,NZeroCount_2e_v1,NZetaHadamard_2e_v1 literature;
-  class NBKLNWNumerics_2e_v1,NButheNumerics_2e_v1,NChebyshevNumerics_2e_v1,NDudekPlattNumerics_2e_v1,NDudekPlattNumerics_2e_v2,NDudekPlattNumerics_2e_v3,NFKBJ_2e_v1,NFKS2Numerics_2e_v1,NLowZeroes_2e_v1,NOliveiraESilva2014_2e_v1,NPlatt2015_2e_v1,NPlatt2017_2e_v1,NRichstein2001_2e_v1,NZetaLogDerivValues_2e_v1 numerical;
-  class NFKS_2e_v2 bridged;
+  class NBKLNWNumerics_2e_v1,NButheNumerics_2e_v1,NDudekPlattNumerics_2e_v1,NDudekPlattNumerics_2e_v2,NDudekPlattNumerics_2e_v3,NFKBJ_2e_v1,NFKS2Numerics_2e_v1,NLowZeroes_2e_v1,NOliveiraESilva2014_2e_v1,NPlatt2015_2e_v1,NPlatt2017_2e_v1,NRichstein2001_2e_v1,NZetaLogDerivValues_2e_v1 numerical;
+  class NChebyshevNumerics_2e_v1,NFKS_2e_v2 bridged;
   class NCH2_2e_v2,NDudekPlatt_2e_v2,NDudekPlatt_2e_v3,NFKS2_2e_v1,NFKS2_2e_v2,NLcm_2e_v1,NLcm_2e_v2,NPrimeInterval_2e_v1,NZeroFreeHeight_2e_v1 lean_2d_comparator_2d_stale;
   class NCH2_2e_v1,NCH2_2e_v3,NChebyshev_2e_v1,NDudekPlatt_2e_v4,NDudekPlattNumerics_2e_v4,NErdos392_2e_v1,NFKS_2e_v3,NGammaAsymptotics_2e_v2,NGoldbach_2e_v1,NRosserSchoenfeld_2e_v2,NRosserSchoenfeld1962_2e_v1,NZetaLogDeriv_2e_v1,NZetaZeroes_2e_v1 lean_2d_comparator;
   click NBKLNW_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md" _blank
@@ -487,7 +488,7 @@ A line is one claim, indented under whatever assumes it.
 - [`Chebyshev.v1.psi_upper`](docs/nodes/Chebyshev-v1.md#psi_upper) — verified
 
 - [`Chebyshev.v1.psi_upper_clean`](docs/nodes/Chebyshev-v1.md#psi_upper_clean) — verified
-  - [`ChebyshevNumerics.v1.psi_le_below_11723`](docs/nodes/ChebyshevNumerics-v1.md#psi_le_below_11723) — computation
+  - [`ChebyshevNumerics.v1.psi_le_below_11723`](docs/nodes/ChebyshevNumerics-v1.md#psi_le_below_11723) — bridged
 
 - [`DudekPlatt.v1.largest_counterexample_on_rh`](docs/nodes/DudekPlatt-v1.md#largest_counterexample_on_rh) — cited — *sources known, not all drawable*
 
@@ -882,7 +883,7 @@ rather than maintained.
 | [`ButheNumerics.v1.lemma_3_constant_gt_at_10`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_gt_at_10) | computation | 1 | none |
 | [`ButheNumerics.v1.lemma_3_constant_nonpos`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_nonpos) | computation | 1 | none |
 | [`ButheNumerics.v1.li_minus_pi_below_1e7`](docs/nodes/ButheNumerics-v1.md#li_minus_pi_below_1e7) | computation | 1 | none |
-| [`ChebyshevNumerics.v1.psi_le_below_11723`](docs/nodes/ChebyshevNumerics-v1.md#psi_le_below_11723) | computation | 1 | none |
+| [`ChebyshevNumerics.v1.psi_le_below_11723`](docs/nodes/ChebyshevNumerics-v1.md#psi_le_below_11723) | bridged | 1 | none |
 | [`DudekPlattNumerics.v1.pi_two_sided_paper`](docs/nodes/DudekPlattNumerics-v1.md#pi_two_sided_paper) | computation | 1 | known, not all drawable |
 | [`DudekPlattNumerics.v2.pi_two_sided_pnt`](docs/nodes/DudekPlattNumerics-v2.md#pi_two_sided_pnt) | computation | 1 | **not yet traced** |
 | [`DudekPlattNumerics.v3.pi_two_sided_footnote`](docs/nodes/DudekPlattNumerics-v3.md#pi_two_sided_footnote) | computation | 1 | known, not all drawable |
