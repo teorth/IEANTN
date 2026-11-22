@@ -1,0 +1,162 @@
+# Node metadata for `TruncatedPerron.v1`.  See docs/NODES.md.
+#
+# Perron's formula truncated at height T with an explicit error. Textbook material Mathlib lacks;
+# proposed in issue 254 as input for the truncated explicit formula for psi.
+version: "v0.4"
+
+node:
+  id: TruncatedPerron.v1
+  family: TruncatedPerron
+  version: v1
+  kind: standard
+  status: awaiting-solution
+
+project:
+  name: "Truncated Perron formula"
+  description: >-
+    Perron's formula cut off at height T, with an explicit error, in three conclusions: the
+    single-term kernel bound |(1/2 pi i) int_{c-iT}^{c+iT} y^s/s ds - 1_{y>1}| <= y^c min(1,
+    1/(pi T |log y|)); the formula for an absolutely convergent Dirichlet series with the error left
+    as an explicit sum over n; and the psi case with c = 1 + 1/log x and Davenport's error
+    O(x log^2 x/T + log x min(1, x/(T<x>))). Finite interval integrals only. The papers in the
+    network that need this (FKS Theorems 3.1/3.2, Platt-Trudgian 2021) cite it rather than prove it,
+    and PrimeNumberTheoremAnd has only the smoothed version.
+  authors: ["Finn Doolan"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Finn Doolan"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT, math.CV]
+  msc2020: ["11M45", "11N05"]
+
+conclusions:
+- id: perron_single_term
+  issue: 254
+  declaration: TruncatedPerron.v1.perron_single_term
+  challenge: TruncatedPerron.v1.challenge_perron_single_term
+  imports: []
+  imports_status: none
+  justifications:
+  - id: titchmarsh
+    kind: literature
+    source: Titchmarsh1986
+    locator: "Section 3.12"
+    note: >-
+      Imports `none`: y, c and T are universally quantified with every condition a hypothesis.
+      The single-term estimate is the kernel of the truncated Perron formula in Titchmarsh Section 3.12
+      and of Montgomery-Vaughan Theorem 5.2 (Section 5.1; their Theorem 5.1 is the untruncated
+      formula). The explicit constants -- error below both y^c and y^c/(pi T |log y|), from a
+      rectangle and a circular arc respectively -- are the standard ones; the 1/pi is two horizontal
+      sides, each at most y^c/(T|log y|), divided by 2 pi. The Titchmarsh numbering was checked only
+      through secondary citations, not against the book.
+      A SORRY-FREE LEAN PROOF OF EXACTLY THIS STATEMENT EXISTS (about 620 lines, axioms propext,
+      Classical.choice, Quot.sound only), by rectangle contour shifts for the 1/(pi T |log y|)
+      half and a circular arc for the 1 half. It will be submitted as Solutions/TruncatedPerron.v1
+      in a follow-up pull request, for the verification workflow to issue a receipt.
+  designated: titchmarsh
+- id: perron_general
+  issue: 254
+  declaration: TruncatedPerron.v1.perron_general
+  challenge: TruncatedPerron.v1.challenge_perron_general
+  imports: []
+  imports_status: none
+  justifications:
+  - id: montgomery-vaughan
+    kind: literature
+    source: MontgomeryVaughan2007
+    locator: "Theorem 5.2 (Section 5.1), before the error is simplified in Corollary 5.3"
+    note: >-
+      Imports `none`: the coefficients a, sigma_0, x and T are universally quantified.
+      This is the inequality Montgomery-Vaughan (and Titchmarsh, Section 3.12) obtain by applying
+      the single-term bound to each term of the absolutely convergent series and interchanging sum
+      and finite integral; they then simplify the right-hand side. The simplification is not stated
+      here, so none of its constants is transcribed unchecked.
+      EXPECTED ROUTE for a Lean proof: perron_single_term for n != x; the explicit integral
+      (1/pi) arctan(T/sigma_0) for n = x; interchange by dominated convergence on the compact
+      segment (the series is dominated by x^sigma_0 sum |a_n| n^-sigma_0 / sigma_0).
+  designated: montgomery-vaughan
+- id: perron_psi
+  issue: 254
+  declaration: TruncatedPerron.v1.perron_psi
+  challenge: TruncatedPerron.v1.challenge_perron_psi
+  imports: []
+  imports_status: none
+  justifications:
+  - id: montgomery-vaughan-12-5
+    kind: literature
+    source: MontgomeryVaughan2007
+    locator: "Proof of Theorem 12.5, the bound for R1 (Section 12.1, pp. 400-401)"
+    note: >-
+      Imports `none`. Checked against the text: in the proof of Theorem 12.5 Montgomery-Vaughan apply
+      Theorem 5.2 and Corollary 5.3 with sigma_0 = 1 + 1/log x to -zeta'/zeta = sum Lambda(n) n^-s and
+      obtain psi_0(x) = (1/2 pi i) int_{sigma_0 - iT}^{sigma_0 + iT} (-zeta'/zeta)(s) x^s/s ds + R1
+      with R1 << (log x) min(1, x/(T<x>)) + (x/T)(log x)^2, where <x> is "the distance from x to the
+      nearest prime power, other than x itself". That is this conclusion. Their hypotheses are
+      x >= c > 1 and T >= 2; this conclusion takes x >= 2 and T >= 1. The range 1 <= T < 2 is not in
+      the source; it is covered by the same argument, since every term of the error sum is bounded
+      by the same expression for any T > 0, and only changes C.
+      Davenport ch. 17 gives the same estimate.
+  designated: montgomery-vaughan-12-5
+
+sources:
+- title: "The Theory of the Riemann Zeta-Function"
+  authors: ["E. C. Titchmarsh"]
+  type: "book"
+  id: "Titchmarsh1986"
+  relationship: formalizes
+  note: >-
+    Second edition, revised by D. R. Heath-Brown, Oxford University Press, 1986. Section 3.12 gives the
+    truncated Perron formula with the single-term bound.
+- title: "Multiplicative Number Theory I: Classical Theory"
+  authors: ["Hugh L. Montgomery", "Robert C. Vaughan"]
+  type: "book"
+  id: "MontgomeryVaughan2007"
+  relationship: formalizes
+  note: >-
+    Cambridge Studies in Advanced Mathematics 97, Cambridge University Press, 2007.
+    doi:10.1017/CBO9780511618314. Section 5.1: Theorem 5.2 and Corollary 5.3 (truncated Perron).
+    Section 12.1: the proof of Theorem 12.5 gives perron_psi.
+- title: "Multiplicative Number Theory"
+  authors: ["Harold Davenport"]
+  type: "book"
+  id: "Davenport2000"
+  relationship: background
+  note: >-
+    Third edition, revised by Hugh L. Montgomery, Graduate Texts in Mathematics 74, Springer, 2000.
+    Chapter 17 derives the truncated formula for psi from the single-term lemma, with the same
+    1/(pi T) constant. Recorded as a second account; the designated locator for perron_psi is
+    Montgomery-Vaughan's.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5.5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Used to draft the Lean statements, the single-term proof and this metadata, and to check
+      conclusions 1 and 2 numerically. The node's author directed and reviewed the work.
+
+review:
+  status: self-assessed
+  reviewers: ["Finn Doolan"]
+  notes: >-
+    perron_single_term was checked against the Lean proof described above: the proved theorem
+    implies this exact Prop, sorry-free. Conclusions 1 and 2 were also checked numerically
+    (Simpson's rule, plain Python): over y in {0.3, ..., 20}, c in {0.05, 0.5, 2}, T in {0.3, 1, 5,
+    40} the single-term error is at most 0.951 of the bound, so the bound is close to sharp; over 40
+    random finitely supported a_n with x in {3, 4.5, 5, 7.2, 8}, including integer x, the general
+    error is at most 0.42 of the bound. perron_psi has an existential constant and was checked
+    for well-formedness and junk values, and against the text of Montgomery-Vaughan Section 12.1.
+    The Titchmarsh locator was checked only through secondary citations.
+
+limitations:
+- >-
+  perron_general leaves the error as an explicit sum over n. Montgomery-Vaughan's simplified form
+  (Corollary 5.3) is a consequence and is not stated.
+- >-
+  perron_psi has an existential constant. An explicit-constant version is not claimed.
+- >-
+  No novelty is claimed. This is textbook mathematics; only the formulation is the node's.
