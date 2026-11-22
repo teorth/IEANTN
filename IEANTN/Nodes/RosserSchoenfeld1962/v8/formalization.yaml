@@ -6,7 +6,7 @@ node:
   family: RosserSchoenfeld1962
   version: v8
   kind: paper
-  status: awaiting-verification
+  status: active
 
 project:
   name: "Rosser-Schoenfeld 1962: equation (3.19), the Corollary to Theorem 5"
@@ -52,11 +52,10 @@ conclusions:
       In the paper (3.19) follows from Theorem 5's lower bound (3.17) wherever
       B > 1/(2 log^2 x), that is for x above about 3.99; the paper's general remark on
       p. 69 refers the remaining ranges of its corollaries to prime tables.
-  designated: rs1962-paper
-  progress:
-    solution: Solutions/RosserSchoenfeld1962.v8/
-    state: in-progress
-    remaining_holes: 0
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/44990674262'
+  designated: comparator
 sources:
 - title: "Approximate formulas for some functions of prime numbers"
   authors: ["J. Barkley Rosser", "Lowell Schoenfeld"]
