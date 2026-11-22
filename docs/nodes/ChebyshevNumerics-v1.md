@@ -44,14 +44,20 @@ def psi_le_below_11723 : Prop :=
 | Lean name | `ChebyshevNumerics.v1.psi_le_below_11723` |
 | Challenge | `ChebyshevNumerics.v1.challenge_psi_le_below_11723` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ChebyshevNumerics/v1/Conclusions.lean#L56) |
-| Evidence | computation (`numerical`) |
+| Evidence | bridged (`bridged`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | [`Chebyshev.v1.psi_upper_clean`](Chebyshev-v1.md#psi_upper_clean) |
 
-**Justification `pnt-plus-native-decide`** — **designated** — numerical, PrimeNumberTheoremAnd/IEANTN/Chebyshev.lean, `allChecks_11723` and `psi_num_2`
+**Justification `pnt-plus-native-decide`** — numerical, PrimeNumberTheoremAnd/IEANTN/Chebyshev.lean, `allChecks_11723` and `psi_num_2`
 
-> Verified by computation, not by proof. PrimeNumberTheoremAnd evaluates LeanCert's O(N) incremental checker, checkAllPsiLeMulWith 11723 (111/100) 20, with native_decide, and derives psi_num_2 from it. That is Lean.ofReduceBool, which Comparator does not admit, so the check is recorded here rather than reproduced in Solutions/Chebyshev.v1 -- the solution takes this conclusion as an import and proves the implication. Independently true on stronger grounds: Rosser and Schoenfeld prove psi(x) < 1.03883 x for every x > 0, which dominates this on the whole range. That is not recorded as the justification because RosserSchoenfeld.v1 does not yet state it; when it does, this node can be re-grounded as literature or discharged by a bridge, and the solution need not change.
+> Verified by computation, not by proof. PrimeNumberTheoremAnd evaluates LeanCert's O(N) incremental checker, checkAllPsiLeMulWith 11723 (111/100) 20, with native_decide, and derives psi_num_2 from it. That is Lean.ofReduceBool, which Comparator does not admit, so the check is recorded here rather than reproduced in Solutions/Chebyshev.v1 -- the solution takes this conclusion as an import and proves the implication. The native_decide computation remains recorded, but it is no longer the designated ground. Equation (3.35) of Rosser–Schoenfeld 1962 is stronger and has a Comparator receipt.
+
+**Justification `from-equation-3-35`** — **designated** — bridged
+  
+  Bridged from RosserSchoenfeld1962.v1.equation_3_35 via `IEANTN/Bridges/ChebyshevNumerics/FromEquation335.lean`.
+
+> psi(x) < 1.03883 x for every x > 0 implies psi(n) <= 1.11 n for every natural n <= 11723. The n = 0 case is psi 0 = 0. For n >= 1 the constant 1.03883 is at most 1.11, so the inequality weakens. The bridge does not reprove equation (3.35).
 
 ## Limitations
 
