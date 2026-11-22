@@ -75,6 +75,7 @@ python scripts/ieantn.py state          # STATE.md
 python scripts/ieantn.py graph          # GRAPH.md, and docs/graph.html drawn
 python scripts/ieantn.py verify <node> --branch <branch>   # dispatch a verification and follow it
 python scripts/ieantn.py verify <node> --pr <n>            # same, for a pull request (fork-safe)
+gh workflow run verify.yml -f node="A.v1,B.v1" -f branch="b1,b2"   # several under one approval
 python scripts/ieantn.py spinoff <conclusion> --out <dir> --compile   # Palomar submission
 ```
 

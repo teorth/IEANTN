@@ -619,6 +619,12 @@ def check_receipts(online: bool = True) -> bool:
 
     Offline this checks only the shape of the recorded URL, so it stays useful without network
     access; CI runs it online.
+
+    One run may verify several nodes -- `verify.yml` takes a list, so that a batch costs one
+    approval rather than one each -- and then several receipts cite the same run. What binds each
+    receipt to that run is the node appearing in one of the run's job names, which is per node and
+    needs the network. For a run predating that convention there is no such record, and the older
+    rule applies instead: one such run covers one node.
     """
     problems = Problems()
     remote = subprocess.run(
@@ -626,7 +632,11 @@ def check_receipts(online: bool = True) -> bool:
         cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
     ).stdout.strip()
     expected = re.sub(r"^.*github\.com[:/]|\.git$", "", remote) if remote else None
-    seen_runs: dict[str, str] = {}
+    # url -> [(path, node, repository, run id)]; several receipts may share a run.
+    citations: dict[str, list[tuple[pathlib.Path, str, str, str]]] = {}
+    run_state: dict[str, tuple[str | None, str]] = {}
+    run_jobs: dict[str, tuple[list[str] | None, str]] = {}
+    bound_by_job_name: set[str] = set()
 
     # Everything below rests on the receipt naming a run in *this* repository: anyone can stand up
     # a repository with a workflow called `verify.yml` whose jobs succeed. So when the check is
@@ -656,30 +666,28 @@ def check_receipts(online: bool = True) -> bool:
         if expected and repository != expected:
             problems.add(rel(path), f"points at `{repository}`, not `{expected}`")
             continue
-        # One run, one node. Without this, a receipt for any node validated against any successful
-        # verification: copying the run URL out of a real receipt into a fabricated one passed.
-        # Uniqueness is the part that works retroactively; the job-name check below is the sharper
-        # one, and applies to every run recorded since the node went into the job name.
         node_of = str(receipt.get("conclusion") or path.stem).rsplit(".", 1)[0]
-        claimed = seen_runs.setdefault(url, node_of)
-        if claimed != node_of:
-            problems.add(
-                rel(path),
-                f"cites run {run_id}, which another receipt already cites for `{claimed}`. One "
-                "verification run covers one node.",
-            )
+        # Which nodes cite this run, for the uniqueness fallback below. A run that verifies
+        # several nodes at once is legitimate -- `verify.yml` takes a list, under one approval --
+        # so several receipts citing one run is not in itself wrong. What must hold is that the
+        # run's own record names each node, and that is the job-name check.
+        citations.setdefault(url, []).append((path, node_of, repository, run_id))
 
         if not online:
             continue
-        finished = subprocess.run(
-            ["gh", "api", f"repos/{repository}/actions/runs/{run_id}",
-             "--jq", "[.conclusion, .path] | @tsv"],
-            cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
-        )
-        if finished.returncode != 0:
-            problems.add(rel(path), f"run {run_id} could not be read: {finished.stderr.strip()}")
+        if run_id not in run_state:
+            finished = subprocess.run(
+                ["gh", "api", f"repos/{repository}/actions/runs/{run_id}",
+                 "--jq", "[.conclusion, .path] | @tsv"],
+                cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+            )
+            run_state[run_id] = (None if finished.returncode != 0 else finished.stdout.strip(),
+                                 finished.stderr.strip())
+        recorded, error = run_state[run_id]
+        if recorded is None:
+            problems.add(rel(path), f"run {run_id} could not be read: {error}")
             continue
-        parts = finished.stdout.strip().split("\t")
+        parts = recorded.split("\t")
         conclusion, workflow = (parts + ["", ""])[:2]
         if conclusion != "success":
             problems.add(rel(path), f"run {run_id} concluded `{conclusion}`, not `success`")
@@ -687,24 +695,53 @@ def check_receipts(online: bool = True) -> bool:
             problems.add(rel(path), f"run {run_id} is `{workflow}`, not the verification workflow")
             continue
 
-        # `verify.yml` puts the dispatched node in its job names, so GitHub's record of the run
-        # says which node was verified -- independently of anything the receipt asserts. Runs from
-        # before that convention have no parenthesised job name; those fall back to the uniqueness
-        # check above rather than failing, since re-running them is not possible.
-        jobs = subprocess.run(
-            ["gh", "api", f"repos/{repository}/actions/runs/{run_id}/jobs",
-             "--jq", ".jobs[].name"],
-            cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
-        )
-        if jobs.returncode != 0:
+        # `verify.yml` puts each verified node in a job name, so GitHub's record of the run says
+        # which nodes it covered -- independently of anything the receipt asserts. This is the
+        # check that binds a receipt to a verification, and it is per node, so it holds whether
+        # the run carried one node or several. Runs from before the convention have no
+        # parenthesised job name; those fall back to uniqueness, since re-running them is not
+        # possible. Asked once per run, not once per receipt.
+        if run_id not in run_jobs:
+            jobs = subprocess.run(
+                ["gh", "api", f"repos/{repository}/actions/runs/{run_id}/jobs",
+                 "--jq", ".jobs[].name"],
+                cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+            )
+            run_jobs[run_id] = (None if jobs.returncode != 0 else jobs.stdout.split("\n"),
+                                jobs.stderr.strip())
+        names, jobs_error = run_jobs[run_id]
+        if names is None:
             problems.add(rel(path),
-                         f"run {run_id} jobs could not be read: {jobs.stderr.strip()}")
+                         f"run {run_id} jobs could not be read: {jobs_error}")
             continue
-        names = jobs.stdout.split("\n")
-        if any("(" in name for name in names) and not any(f"({node_of})" in name for name in names):
+        if any("(" in name for name in names):
+            bound_by_job_name.add(run_id)
+            if not any(f"({node_of})" in name for name in names):
+                problems.add(
+                    rel(path),
+                    f"run {run_id} verified {[n for n in names if '(' in n]}, not `{node_of}`",
+                )
+
+    # One run, one node -- but only where nothing better is available. Without some such rule a
+    # receipt for any node validated against any successful verification: copying the run URL out
+    # of a real receipt into a fabricated one passed. Where the run's job names name their nodes
+    # the check above has already established the binding per node, and insisting on uniqueness as
+    # well would reject a run that verified several nodes under one approval. Where they do not --
+    # a run predating that convention -- uniqueness is all there is, so it still applies.
+    for url, cited in citations.items():
+        nodes = {node for _, node, _, _ in cited}
+        if len(nodes) < 2:
+            continue
+        run_id = cited[0][3]
+        if run_id in bound_by_job_name:
+            continue
+        for path, node_of, _, _ in cited:
+            others = sorted(nodes - {node_of})
             problems.add(
                 rel(path),
-                f"run {run_id} verified {[n for n in names if '(' in n]}, not `{node_of}`",
+                f"cites run {run_id}, which {', '.join(f'`{other}`' for other in others)} also "
+                "cites, and that run's job names do not say which nodes it verified. A run from "
+                "before the job-name convention covers one node.",
             )
 
     return problems.report("receipt provenance")
