@@ -60,17 +60,26 @@ def main() -> int:
 
     for directory in node_dirs:
         source = directory / "formalization.yaml"
-        data = yaml.safe_load(source.read_text(encoding="utf-8")) or {}
-        for key in IEANTN_ONLY:
-            data.pop(key, None)
-
-        with tempfile.NamedTemporaryFile(
-            "w", suffix=".yaml", delete=False, encoding="utf-8"
-        ) as handle:
-            yaml.safe_dump(data, handle, allow_unicode=True, sort_keys=False)
-            staged = pathlib.Path(handle.name)
-
+        staged = None
         try:
+            # Project the YAML nodes, not Python values: safe_load would erase
+            # duplicate and merge keys before Palomar could reject them.
+            data = yaml.compose(source.read_text(encoding="utf-8"), Loader=yaml.SafeLoader)
+            if isinstance(data, yaml.MappingNode):
+                data.value = [
+                    (key, value) for key, value in data.value
+                    if not (isinstance(key, yaml.ScalarNode)
+                            and key.tag == "tag:yaml.org,2002:str"
+                            and key.value in IEANTN_ONLY)
+                ]
+
+            with tempfile.NamedTemporaryFile(
+                "w", suffix=".yaml", delete=False, encoding="utf-8"
+            ) as handle:
+                staged = pathlib.Path(handle.name)
+                if data is not None:
+                    yaml.serialize(data, handle, allow_unicode=True)
+
             loaded = contract.load_formalization_metadata(staged)
             origin = contract.normalized_provenance(loaded)["result_origin"]
             print(f"ok    {node_id(directory)}  (result_origin: {origin})")
@@ -78,7 +87,8 @@ def main() -> int:
             failures += 1
             print(f"FAIL  {node_id(directory)}: {error}")
         finally:
-            staged.unlink(missing_ok=True)
+            if staged is not None:
+                staged.unlink(missing_ok=True)
 
     if failures:
         print(f"\n{failures} node(s) would be rejected by Palomar's current contract.")

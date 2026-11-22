@@ -145,7 +145,7 @@ def table8_psi_bound_above : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | [`Buthe2016.v1.theorem_2_psi`](Buthe2016-v1.md#theorem_2_psi), [`PlattTrudgian2021.v1.theorem_1_numerical`](PlattTrudgian2021-v1.md#theorem_1_numerical) |
-| Assumed by | nothing yet |
+| Assumed by | [`FKS.v3.psi_bound_all_x`](FKS-v3.md#psi_bound_all_x), [`FKS.v3.psi_classical_bound`](FKS-v3.md#psi_classical_bound) |
 
 **Justification `bklnw-paper`** — **designated** — literature, Table 8 in the form used by Corollaries 2.1 and 15.1
 

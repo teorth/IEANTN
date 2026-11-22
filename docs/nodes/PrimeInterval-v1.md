@@ -96,8 +96,10 @@ def eTheta_criterion : Prop :=
 
 ### `numericalBound_hasPrimeInInterval`
 
-The numerical-bound route: if `Eθ` is at most the constant `ε` throughout `[x₀, ∞)` and
-`(2x + h) * ε < h`, there is a prime in `(x, x + h]`.
+The numerical-bound route: if `Eθ` is at most the constant `ε` throughout `[x₀, ∞)`,
+`0 < h`, `x₀ ≤ x`, `0 < x`, and `(2x + h) * ε < h`, there is a prime in `(x, x + h]`.
+
+`x₀` itself need not be positive: the declaration asks for `0 < x` and `x₀ ≤ x` separately.
 
 Immediate from `eTheta_criterion` once both `Eθ x` and `Eθ (x + h)` are bounded by the same `ε`,
 which is exactly what `IEANTN.HasNumericalBound` gives once `x ≥ x₀`. Once `x` is at or beyond the
@@ -114,7 +116,7 @@ def numericalBound_hasPrimeInInterval : Prop :=
 |---|---|
 | Lean name | `PrimeInterval.v1.numericalBound_hasPrimeInInterval` |
 | Challenge | `PrimeInterval.v1.challenge_numericalBound_hasPrimeInInterval` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PrimeInterval/v1/Conclusions.lean#L58) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PrimeInterval/v1/Conclusions.lean#L60) |
 | Solution | [`Solutions/PrimeInterval.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/PrimeInterval.v1) |
 | Receipt | [`PrimeInterval.v1.numericalBound_hasPrimeInInterval.json`](https://github.com/teorth/IEANTN/blob/main/receipts/PrimeInterval.v1.numericalBound_hasPrimeInInterval.json) |
 | Evidence | verified, stale (`lean-comparator`) |
@@ -156,7 +158,7 @@ def classicalBound_hasPrimeInInterval : Prop :=
 |---|---|
 | Lean name | `PrimeInterval.v1.classicalBound_hasPrimeInInterval` |
 | Challenge | `PrimeInterval.v1.challenge_classicalBound_hasPrimeInInterval` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PrimeInterval/v1/Conclusions.lean#L72) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/PrimeInterval/v1/Conclusions.lean#L74) |
 | Solution | [`Solutions/PrimeInterval.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/PrimeInterval.v1) |
 | Receipt | [`PrimeInterval.v1.classicalBound_hasPrimeInInterval.json`](https://github.com/teorth/IEANTN/blob/main/receipts/PrimeInterval.v1.classicalBound_hasPrimeInInterval.json) |
 | Evidence | verified, stale (`lean-comparator`) |

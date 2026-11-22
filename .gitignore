@@ -2,6 +2,9 @@
 /.cache
 __pycache__/
 
+# A killed lifecycle command can leave its lock behind; never stage it with `add -A`.
+/.ieantn-edit.lock
+
 # Solution projects are separate Lake projects; their build output is not tracked.
 /Solutions/*/.lake
 
