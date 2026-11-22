@@ -1,0 +1,114 @@
+# Node metadata for `Patel2020.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: Patel2020.v1
+  family: Patel2020
+  version: v1
+  kind: paper
+  status: stub
+
+project:
+  name: "Patel: an explicit bound for |zeta(1+it)|, and the corrected Cheng-Graham lemmas"
+  description: >-
+    Patel's explicit bound for |zeta(1+it)|, and the corrected forms of Cheng-Graham Lemmas 2 and 3
+    printed in the same paper. ChengGraham2004.v1 states nothing because those lemmas are wrong;
+    this node is where the corrections live.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M06", "11L07"]
+
+conclusions:
+- id: zeta_one_bound
+  declaration: Patel2020.v1.zeta_one_bound
+  challenge: Patel2020.v1.challenge_zeta_one_bound
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: patel-zeta
+    kind: literature
+    source: Patel2020
+    locator: Theorem maintheorem
+    note: >-
+      Read from arXiv:2009.00769, mainbound.tex, Theorem maintheorem. For t >= 3,
+      |zeta(1+it)| <= min(log t, (1/2) log t + 1.93, (1/5) log t + 44.02). Asserted on the paper's
+      authority. The proof uses exponential-sum estimates, including the corrected Cheng-Graham
+      lemmas stated beside it; those are separate conclusions rather than hidden hypotheses.
+  designated: patel-zeta
+- id: cheng_graham_lemma_2
+  declaration: Patel2020.v1.cheng_graham_lemma_2
+  challenge: Patel2020.v1.challenge_cheng_graham_lemma_2
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: patel-lemma-2
+    kind: literature
+    source: Patel2020
+    locator: Section 2, the corrected form of Cheng-Graham Lemma 2
+    note: >-
+      Read from the same source. If f is continuously differentiable on (a, b], f' is monotonic,
+      and the distance from f' to the integers is at least 1/U, then the exponential sum over
+      integers n in (a, b] is at most (2/pi) U. The preprint attributes the shape to Kuzmin-Landau
+      and records that 2/pi is best possible (Landau). Asserted on Patel's authority, not on
+      Cheng-Graham's, because the lemma being corrected is the erroneous one.
+  designated: patel-lemma-2
+- id: cheng_graham_lemma_3
+  declaration: Patel2020.v1.cheng_graham_lemma_3
+  challenge: Patel2020.v1.challenge_cheng_graham_lemma_3
+  imports: []
+  imports_status: traced
+  justifications:
+  - id: patel-lemma-3
+    kind: literature
+    source: Patel2020
+    locator: Section 2, the corrected form of Cheng-Graham Lemma 3
+    note: >-
+      Read from the same source. Under 1/W <= |f''| <= 1/V on [N+1, N+L], with V < W and W > 1,
+      the exponential sum is at most 2 (L/V + 2) (2 sqrt(W/pi) + 1). Patel records that the
+      leading term of the incorrect lemma is off by a factor of sqrt(2). The Platt-Trudgian
+      sharpening printed immediately afterwards is a different bound and is not this conclusion.
+  designated: patel-lemma-3
+
+sources:
+- title: "An explicit upper bound for |zeta(1+it)|"
+  authors: ["Dhir Patel"]
+  type: "paper"
+  id: "https://arxiv.org/abs/2009.00769"
+  location: "arXiv:2009.00769"
+  relationship: formalizes
+  note: >-
+    Read from the arXiv source mainbound.tex. The published venue, if any, was not checked.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Transcribed Patel's zeta(1+it) bound and the corrected Cheng-Graham lemmas from the arXiv
+      source.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    Transcribed from the arXiv source named above. The author line on the preprint was not
+    re-checked against a publisher page.
+
+limitations:
+- >-
+  The corrected third-derivative test in the same section is not stated. In the formula for
+  alpha_3 the preprint writes 32 lambda once and lambda_3 elsewhere, and lambda is never defined.
+- >-
+  The sum in the corrected Lemma 2 is taken over integers n with floor(a)+1 <= n <= floor(b),
+  which is n in (a, b] when a and b are real. A non-integral endpoint convention different from
+  that would be a different sum.
+- >-
+  No novelty is claimed. The results are the cited author's, correcting Cheng and Graham.
