@@ -22,7 +22,9 @@ case "$node" in
     echo "error: '$node' is not a node id (expected <Family>.<version>, e.g. Lcm.v1)" >&2
     exit 1 ;;
 esac
-repository_root=$(cd "$(dirname "$0")/.." && pwd)
+# Ignore the caller's CDPATH: cd may otherwise search elsewhere and print a path
+# into the command substitution before pwd, corrupting repository_root.
+repository_root=$(CDPATH= cd "$(dirname "$0")/.." && pwd)
 solution_dir="$repository_root/Solutions/$node"
 config="$solution_dir/comparator.json"
 

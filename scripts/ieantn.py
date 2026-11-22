@@ -33,8 +33,10 @@ None of this runs Comparator.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import datetime
 import hashlib
+import io
 import json
 import os
 import pathlib
@@ -270,7 +272,22 @@ def imports_of(path: pathlib.Path) -> list[str]:
     an import from every closure check -- silently, and in the direction that lets a violation
     through. Not stripping comments meant a commented-out import was reported as real.
     """
-    return IMPORT_RE.findall(strip_lean_comments(path.read_text(encoding="utf-8")))
+    text = path.read_text(encoding="utf-8")
+    code = strip_lean_comments(text)
+    with_names = strip_lean_comments(text, preserve_identifiers=True)
+    modules = []
+    for match in IMPORT_RE.finditer(code):
+        start = end = match.start(1)
+        # The masked source identifies real import commands; recover the module's spelling
+        # without treating whitespace or comment-like text inside a quoted component as syntax.
+        while end < len(with_names) and not with_names[end].isspace():
+            if with_names[end] == "«":
+                closing = with_names.find("»", end + 1)
+                end = len(with_names) if closing < 0 else closing + 1
+            else:
+                end += 1
+        modules.append(with_names[start:end])
+    return modules
 
 
 def _char_literal_length(text: str, index: int) -> int:
@@ -288,7 +305,7 @@ def _char_literal_length(text: str, index: int) -> int:
     return 0
 
 
-def strip_lean_comments(text: str) -> str:
+def strip_lean_comments(text: str, *, preserve_identifiers: bool = False) -> str:
     """Lean source with `--` line comments and nested `/- -/` blocks removed.
 
     Needed because a plain search for `sorry` also matches the word in prose. The docstring of an
@@ -337,6 +354,20 @@ def strip_lean_comments(text: str) -> str:
                 continue
         if depth == 0 and text[index] == '"':
             blank_string()
+            continue
+        if depth == 0 and text[index] == "«":
+            # A quoted identifier can contain quotes, comment delimiters and newlines. Its
+            # contents are not syntax. Keep the delimiters so a quoted import still has a
+            # visible module token for closure validation, and preserve source positions.
+            out.append("«")
+            index += 1
+            while index < length:
+                char = text[index]
+                index += 1
+                if char == "»":
+                    out.append("»")
+                    break
+                out.append(char if preserve_identifiers or char == "\n" else " ")
             continue
         if depth == 0 and text[index] == "'":
             width = _char_literal_length(text, index)
@@ -1174,7 +1205,12 @@ def check_closure() -> bool:
     """
     problems = Problems()
 
-    for path in sorted(VOCAB_DIR.rglob("*.lean")):
+    vocabulary_files = sorted(VOCAB_DIR.rglob("*.lean"))
+    # Conclusions may import the umbrella as well as individual Vocabulary modules.
+    vocabulary_umbrella = VOCAB_DIR.with_suffix(".lean")
+    if vocabulary_umbrella.is_file():
+        vocabulary_files.insert(0, vocabulary_umbrella)
+    for path in vocabulary_files:
         for module in imports_of(path):
             if not (under(module, "Mathlib") or under(module, "IEANTN.Vocabulary")):
                 problems.add(rel(path), f"Vocabulary may import only Mathlib; found `{module}`")
@@ -2267,8 +2303,25 @@ def release_distance(recorded: str, current: str) -> int | None:
     return abs(new_minor - old_minor)
 
 
+def imported_conclusion_keys(conclusion: dict) -> list[str]:
+    """The hypotheses a conclusion currently names, as `Node.version.id` keys.
+
+    These are the premises the receipt pinned beside the conclusion's own fingerprint.
+    The conclusion's fingerprint is a digest of its proposition, not of that premise
+    list, so an import can be added or dropped while every recorded digest still matches.
+    """
+    keys: list[str] = []
+    for dependency in conclusion.get("imports") or []:
+        if not isinstance(dependency, dict):
+            continue
+        node, name = dependency.get("node"), dependency.get("conclusion")
+        if isinstance(node, str) and isinstance(name, str) and node and name:
+            keys.append(f"{node}.{name}")
+    return keys
+
+
 def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str], *,
-           consult_history: bool = True) -> tuple[str, str]:
+           consult_history: bool = True, imports: list[str] | None = None) -> tuple[str, str]:
     """Grade one receipt against the world as it is now.
 
     Two axes, deliberately not collapsed (ARCHITECTURE section 4):
@@ -2309,6 +2362,27 @@ def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str], *,
             return "BROKEN", f"{which} changed since verification"
     if churn is not None:
         return "churn", churn
+
+    # The fingerprints above say each recorded proposition still reads the same way.
+    # They do not say the node still rests on that same set. Dropping a hypothesis
+    # leaves a stronger claim; adding one leaves a claim Comparator was not asked
+    # about. Either way the receipt must not stay green.
+    if imports is not None:
+        recorded_imports = sorted(name for name in recorded if name != conclusion_key)
+        expected = sorted(dict.fromkeys(imports))
+        if recorded_imports != expected:
+            missing = [name for name in expected if name not in recorded_imports]
+            extra = [name for name in recorded_imports if name not in expected]
+            parts = []
+            if missing:
+                parts.append(
+                    "does not record " + ", ".join(f"`{name}`" for name in missing)
+                )
+            if extra:
+                parts.append(
+                    "still records " + ", ".join(f"`{name}`" for name in extra)
+                )
+            return "BROKEN", "hypotheses no longer match the receipt: " + "; ".join(parts)
 
     environment = receipt.get("environment") or {}
     current = current_environment()
@@ -2515,7 +2589,10 @@ def receipt_state(conclusion_key: str, conclusion: dict) -> tuple[str, str] | No
     if receipt is None:
         return "BROKEN", "designated `lean-comparator` but no receipt file"
     # Views are generated and diffed by CI, so they must not depend on git history.
-    return assess(conclusion_key, receipt, recorded_fingerprints(), consult_history=False)
+    return assess(
+        conclusion_key, receipt, recorded_fingerprints(),
+        consult_history=False, imports=imported_conclusion_keys(conclusion),
+    )
 
 
 #: `assess`'s verdict, as the views draw it. Environment staleness keeps the verification: the
@@ -2579,7 +2656,9 @@ def status() -> bool:
                 print(f"  BROKEN  {key}")
                 print("          designated `lean-comparator` but no receipt file")
                 continue
-            light, detail = assess(key, receipt, fingerprints)
+            light, detail = assess(
+                key, receipt, fingerprints, imports=imported_conclusion_keys(conclusion)
+            )
             lights[light] += 1
             print(f"  {light:<7} {key}")
             print(f"          {detail}")
@@ -2627,6 +2706,12 @@ def new_solution(node_id: str) -> bool:
     conclusions = conclusions_of(nodes[node_id])
     theorems = [f"{node_id}.challenge_{c.get('id')}" for c in conclusions]
     target.mkdir(parents=True)
+
+    # The solution is its own Lake project. Mathlib's cache reads this file in that project,
+    # even though its core dependency already has the same pin.
+    (target / "lean-toolchain").write_text(
+        (ROOT / "lean-toolchain").read_text(encoding="utf-8"), encoding="utf-8", newline="\n"
+    )
 
     (target / "lakefile.toml").write_text(
         f'name = "solution_{node_id.replace(".", "_")}"\n'
@@ -2886,10 +2971,15 @@ def report() -> bool:
     index = index_conclusions(nodes)
     importers = importers_of(nodes)
 
-    def leaves(key: str, seen: set[str]) -> set[str]:
+    def leaves(key: str, seen: set[str], stack: list[str]) -> set[str]:
+        # A bridge that leads back to itself used to vanish here: the node was
+        # marked seen on the way in, the source was already seen, and the walk
+        # returned nothing — the same answer as a Comparator proof.
+        if key in stack:
+            return {f"{name}  [bridged cycle]" for name in _bridged_cycle(stack, key, _report_bridged)}
         if key in seen or key not in index:
             return set()
-        seen.add(key)
+        stack.append(key)
         _, conclusion = index[key]
         justification = designated_of(conclusion) or {}
         kind = justification.get("kind")
@@ -2900,18 +2990,25 @@ def report() -> bool:
         result: set[str] = set()
         if kind == "bridged":
             for source in bridge_sources(justification):
-                result |= leaves(source, seen)
+                result |= leaves(source, seen, stack)
         elif kind not in VERIFIED_KINDS:
             note = f"  [{kind}]" + (f", {spares} other justification(s) available" if spares else "")
             result.add(f"{key}{note}")
         for dependency in conclusion.get("imports") or []:
-            result |= leaves(f"{dependency.get('node')}.{dependency.get('conclusion')}", seen)
+            result |= leaves(f"{dependency.get('node')}.{dependency.get('conclusion')}", seen, stack)
+        stack.pop()
+        seen.add(key)
         return result
+
+    def _report_bridged(name: str) -> bool:
+        if name not in index:
+            return False
+        return (designated_of(index[name][1]) or {}).get("kind") == "bridged"
 
     print("Unproved-in-Lean dependencies, per conclusion")
     print("=" * 62)
     for key in sorted(index):
-        rests_on = sorted(leaves(key, set()))
+        rests_on = sorted(leaves(key, set(), []))
         print(f"\n{key}")
         for item in rests_on or ["  fully verified in Lean"]:
             print(f"  - {item}" if rests_on else item)
@@ -2922,6 +3019,91 @@ def report() -> bool:
         print("=" * 62)
         for count, key in ranked:
             print(f"  {count:3d}  {key}")
+    return True
+
+
+def evidence_snapshot(include_inactive: bool = False) -> dict:
+    """A deterministic public projection of the graph; no builds, network or file writes.
+
+    Requirements are conjunctive. In particular, the sources of a designated bridge are
+    premises needed together, not alternative routes. Spare justifications remain metadata.
+    Receipt health and leaves use the same functions as the human-facing reports.
+    """
+    diagnostics = io.StringIO()
+    with contextlib.redirect_stdout(diagnostics):
+        valid = check_graph()
+    if not valid:
+        raise ValueError(diagnostics.getvalue().strip())
+    nodes = load_nodes(include_inactive=include_inactive)
+    index = index_conclusions(nodes)
+    fingerprints = recorded_fingerprints()
+    records = []
+    for key, (node_id, conclusion) in sorted(index.items()):
+        designated = designated_of(conclusion) or {}
+        requirements = [
+            {"conclusion": dependency, "relation": "import"}
+            for dependency in sorted(set(import_keys_of(conclusion)))
+        ]
+        if designated.get("kind") == "bridged":
+            requirements += [
+                {"conclusion": source, "relation": "bridge"}
+                for source in sorted(set(bridge_sources(designated)))
+            ]
+        for requirement in requirements:
+            if requirement["conclusion"] not in index:
+                raise ValueError(f"{key}: unknown requirement {requirement['conclusion']}")
+        health = receipt_state(key, conclusion)
+        receipt = load_receipt(key) if health is not None else None
+        records.append({
+            "key": key,
+            "node": node_id,
+            "declaration": conclusion.get("declaration"),
+            "challenge": conclusion.get("challenge"),
+            "fingerprint": fingerprints.get(key),
+            "imports_status": import_status(conclusion),
+            "requirements": requirements,
+            "designated": conclusion.get("designated"),
+            "evidence": display_kind(key, conclusion),
+            "justifications": sorted(justifications_of(conclusion), key=lambda item: item["id"]),
+            "receipt": None if health is None else {
+                "state": health[0], "reason": health[1],
+                "path": rel(receipt_path(key)),
+                "run_url": ((receipt or {}).get("run") or {}).get("workflow_run"),
+            },
+            "unproved_leaves": sorted(set(unjustified_leaves(index, key))),
+            "source": rel(nodes[node_id]["_dir"] / "Conclusions.lean"),
+            "metadata": rel(nodes[node_id]["_dir"] / "formalization.yaml"),
+        })
+    return {
+        "schema_version": 1,
+        "environment": current_environment(),
+        "includes_inactive": include_inactive,
+        "nodes": [
+            {"id": node_id, "kind": node["node"].get("kind"),
+             "status": node["node"].get("status"), "inactive": is_inactive(node)}
+            for node_id, node in sorted(nodes.items())
+        ],
+        "conclusions": records,
+    }
+
+
+def evidence_json_default(value):
+    """YAML dates are public metadata too; reject other unsupported objects."""
+    if isinstance(value, (datetime.date, datetime.datetime)):
+        return value.isoformat()
+    raise TypeError(f"not JSON metadata: {type(value).__name__}")
+
+
+def export_evidence(include_inactive: bool = False) -> bool:
+    """Write only the versioned JSON document to stdout; diagnostics belong on stderr."""
+    try:
+        document = json.dumps(evidence_snapshot(include_inactive), ensure_ascii=False,
+                              indent=2, sort_keys=True, allow_nan=False,
+                              default=evidence_json_default)
+    except (OSError, ValueError, TypeError, yaml.YAMLError) as error:
+        print(f"error: cannot export evidence: {error}", file=sys.stderr)
+        return False
+    print(document)
     return True
 
 
@@ -4487,7 +4669,33 @@ def state_at(ref: str | None) -> dict:
     return {"conclusions": conclusions, "fingerprints": fingerprints, "receipts": receipts}
 
 
-def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None) -> list[str]:
+def _bridged_cycle(stack: list[str], key: str, is_bridged) -> list[str]:
+    """Bridge-loop members that a seen-set would have dropped.
+
+    A `bridged` conclusion is not recorded as a leaf; its sources are. When a source is the
+    conclusion already being walked, that walk used to stop and return nothing, which is also
+    what a real proof returns. The members of the loop are unproved until something outside
+    the loop grounds them. An import cycle is left alone: those conclusions are already
+    recorded as leaves on the way in.
+    """
+    if key not in stack or not is_bridged(key):
+        return []
+    start = stack.index(key)
+    return [name for name in stack[start:] if is_bridged(name)]
+
+
+def _dedupe(items: list[str]) -> list[str]:
+    found: list[str] = []
+    have: set[str] = set()
+    for item in items:
+        if item not in have:
+            have.add(item)
+            found.append(item)
+    return found
+
+
+def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None,
+                 stack: list[str] | None = None) -> list[str]:
     """The unproved-in-Lean conclusions `key` rests on, from a `state_at` snapshot.
 
     A `bridged` conclusion contributes nothing of its own: what it rests on is whatever its
@@ -4495,21 +4703,30 @@ def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None) -> l
     leaf, and imports are walked in every case. Receipt health is not consulted. A severed
     receipt is a different event, and `diff` already reports it. This is only the shape of the
     graph, which is why it needs no Lean run.
+
+    A bridge that only leads back to itself is not that shape. The loop is reported as unproved
+    rather than as an empty leaf set.
     """
     seen = set() if seen is None else seen
+    stack = [] if stack is None else stack
+    if key in stack:
+        return _dedupe(_bridged_cycle(
+            stack, key, lambda name: (conclusions.get(name) or {}).get("kind") == "bridged"))
     if key in seen or key not in conclusions:
         return []
-    seen.add(key)
+    stack.append(key)
     entry = conclusions[key]
     found: list[str] = []
     if entry.get("kind") == "bridged":
         for source in entry.get("from") or []:
-            found += graph_leaves(conclusions, source, seen)
+            found += graph_leaves(conclusions, source, seen, stack)
     elif entry.get("kind") not in VERIFIED_KINDS:
         found.append(key)
     for dependency in entry.get("imports") or []:
-        found += graph_leaves(conclusions, dependency, seen)
-    return found
+        found += graph_leaves(conclusions, dependency, seen, stack)
+    stack.pop()
+    seen.add(key)
+    return _dedupe(found)
 
 
 def acknowledged() -> dict[str, str]:
@@ -4546,13 +4763,15 @@ def diff(base: str) -> bool:
         new = after["fingerprints"].get(key)
 
         if key not in after["conclusions"]:
-            # Only importers that survive the change can break. One leaving in the same change --
-            # a node deactivated together with its only consumer -- is not a dangling edge.
-            users = [u for u in importers_before.get(key, []) if u in after["conclusions"]]
+            # Only surviving imports can dangle: a consumer may leave the graph or migrate its
+            # edge to a replacement conclusion in the same change.
+            users = sorted(
+                u for u, current in after["conclusions"].items() if key in current["imports"]
+            )
             if users:
                 errors.append(
-                    f"**`{key}` was removed** but {len(users)} conclusion(s) still import it at "
-                    f"the base: {', '.join(f'`{u}`' for u in users)}."
+                    f"**`{key}` was removed** but {len(users)} conclusion(s) still import it: "
+                    f"{', '.join(f'`{u}`' for u in users)}."
                 )
             elif key.rsplit(".", 1)[0] in inactive_nodes():
                 notes.append(f"`{key}` deactivated (its node is now inactive); nothing imported it.")
@@ -4698,23 +4917,34 @@ def diff(base: str) -> bool:
 SPINOFF_NAMESPACE = "Spinoff"
 
 
-def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None) -> list[str]:
+def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None,
+                       stack: list[str] | None = None) -> list[str]:
     """The conclusion keys `key` transitively rests on that Lean has not checked here.
 
     The same walk `report` prints, returning keys rather than prose. These become the emitted
     Challenge's hypotheses: a Palomar submission cannot assert what this network is content to
-    take on a citation's authority, so it must say what it is assuming.
+    take on a citation's authority, so it must say what it is assuming. A bridge cycle is part
+    of that set: it has no proof outside itself.
     """
     seen = set() if seen is None else seen
+    stack = [] if stack is None else stack
+
+    def is_bridged(name: str) -> bool:
+        if name not in index:
+            return False
+        return (designated_of(index[name][1]) or {}).get("kind") == "bridged"
+
+    if key in stack:
+        return _dedupe(_bridged_cycle(stack, key, is_bridged))
     if key in seen or key not in index:
         return []
-    seen.add(key)
+    stack.append(key)
     _, conclusion = index[key]
     justification = designated_of(conclusion) or {}
     found: list[str] = []
     if justification.get("kind") == "bridged":
         for source in bridge_sources(justification):
-            found += unjustified_leaves(index, source, seen)
+            found += unjustified_leaves(index, source, seen, stack)
     elif (
         justification.get("kind") not in VERIFIED_KINDS
         or (receipt_state(key, conclusion) or (None, ""))[0] == "BROKEN"
@@ -4722,8 +4952,10 @@ def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None) -> l
         found.append(key)
     for dependency in conclusion.get("imports") or []:
         found += unjustified_leaves(
-            index, f"{dependency.get('node')}.{dependency.get('conclusion')}", seen)
-    return found
+            index, f"{dependency.get('node')}.{dependency.get('conclusion')}", seen, stack)
+    stack.pop()
+    seen.add(key)
+    return _dedupe(found)
 
 
 def opens_of(path: pathlib.Path) -> list[str]:
@@ -4732,13 +4964,73 @@ def opens_of(path: pathlib.Path) -> list[str]:
     `open ... in` is excluded: it scopes to the single declaration that follows, so it is
     already inside whatever text gets sliced.
     """
-    code = strip_lean_comments(path.read_text(encoding="utf-8"))
-    return [line.rstrip() for line in code.splitlines()
+    text = path.read_text(encoding="utf-8")
+    code = strip_lean_comments(text)
+    with_names = strip_lean_comments(text, preserve_identifiers=True)
+    return [original.rstrip() for line, original in zip(code.splitlines(), with_names.splitlines())
             if re.match(r"^open\s", line) and not line.rstrip().endswith(" in")]
 
 
 def module_path(module: str) -> pathlib.Path:
     return ROOT / pathlib.PurePosixPath(module.replace(".", "/") + ".lean")
+
+
+def _render_parameter(param: dict) -> str | None:
+    name = str(param.get("name") or "")
+    typ = param.get("type")
+    if not isinstance(typ, str) or not typ.strip():
+        return None
+    kind = param.get("binder") or "explicit"
+    if kind == "instImplicit":
+        return f"[{typ.strip()}]"
+    if not re.fullmatch(r"[A-Za-z_α-ωΑ-Ωℕℤℝℂ][A-Za-z0-9_α-ωΑ-Ωℕℤℝℂ']*", name):
+        return None
+    if kind == "implicit":
+        return f"{{{name} : {typ.strip()}}}"
+    if kind == "strictImplicit":
+        return f"⦃{name} : {typ.strip()}⦄"
+    return f"({name} : {typ.strip()})"
+
+
+def _parameter_present(header: str, param: dict) -> bool:
+    """Whether this telescope entry is already written in the declaration header."""
+    kind = param.get("binder") or "explicit"
+    typ = param.get("type")
+    if kind == "instImplicit":
+        return isinstance(typ, str) and typ.strip() in header
+    name = str(param.get("name") or "")
+    if not name or name == "[anonymous]" or "✝" in name:
+        return True
+    return re.search(rf"[\(\{{\[⦃]\s*{re.escape(name)}\b", header) is not None
+
+
+def bind_missing_parameters(body: str, written: str, parameters: list) -> str:
+    """Put back a leading telescope the declaration range does not contain.
+
+    A `variable` in a surrounding section is elaborated into the constant and is not part of
+    `findDeclarationRanges?`. Slicing the range therefore drops those binders. Parameters the
+    header already names stay as written; the restored prefix stops at the first one of those.
+    """
+    if not parameters:
+        return body
+    header, sep, rest = body.partition(":=")
+    if not sep:
+        return body
+    prefix: list[str] = []
+    for param in parameters:
+        if not isinstance(param, dict) or _parameter_present(header, param):
+            break
+        rendered = _render_parameter(param)
+        if rendered is None:
+            break
+        prefix.append(rendered)
+    if not prefix:
+        return body
+    matches = list(re.finditer(rf"\b(?:def|theorem|lemma|abbrev|axiom)\s+{re.escape(written)}\b", header))
+    if not matches:
+        return body
+    at = matches[-1].end()
+    return header[:at] + " " + " ".join(prefix) + header[at:] + sep + rest
 
 
 def slice_source(text: str, decl: dict, prefix: str) -> tuple[str, str]:
@@ -4766,6 +5058,10 @@ def slice_source(text: str, decl: dict, prefix: str) -> tuple[str, str]:
             "The namespace cannot be recovered; refusing to guess.")
     namespace = full[: len(full) - len(written)].rstrip(".")
     del prefix
+    parameters = decl.get("parameters") or []
+    if not isinstance(parameters, list):
+        parameters = []
+    body = bind_missing_parameters(body, written, parameters)
     return body, namespace
 
 
@@ -4863,38 +5159,69 @@ def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, 
 
     A dotted name at the top level is used as written. A short name is prefixed with the
     namespaces open around it. A dotted name inside a namespace is skipped: which full name Lean
-    would assign is not something to guess. Only a single explicit `(name : type)` binder is
+    would assign is not something to guess. A `section` is not a namespace: closing it must not
+    drop the namespace that contains it. Only a single explicit `(name : type)` binder is
     accepted, and only when `type` is one of `known`. An implicit binder or a side condition
     disqualifies that theorem.
     """
     code = strip_lean_comments(text)
-    stack: list[str] = []
+    # ("namespace", component) or ("section", name-or-None). Sections sit in the same
+    # stack so `end` closes the innermost scope, but only namespace components are
+    # prefixed onto theorem names.
+    scopes: list[tuple[str, str | None]] = []
     found: list[tuple[str, list[str]]] = []
     index, length = 0, len(code)
+
+    def header_name(at: int) -> tuple[str, int]:
+        # The optional name stays on the header line. Skipping every whitespace
+        # character would treat the next command (`end` or `theorem`) as that name.
+        while at < length and code[at] in " \t":
+            at += 1
+        if at < length and code[at] == "\n":
+            return "", at
+        return _read_lean_name(code, at)
+
+    def close_scope(parts: list[str]) -> None:
+        if not parts:
+            if scopes:
+                scopes.pop()
+            return
+        remaining = parts[:]
+        cut = len(scopes)
+        while remaining and cut > 0:
+            kind, name = scopes[cut - 1]
+            if kind == "namespace" and name == remaining[-1]:
+                remaining.pop()
+                cut -= 1
+                continue
+            if kind == "section" and name and remaining == [name]:
+                remaining = []
+                cut -= 1
+                continue
+            break
+        if not remaining:
+            del scopes[cut:]
+
     while index < length:
         if _ident_boundary(code, index, "namespace"):
-            index = _skip_ws(code, index + len("namespace"))
-            name, index = _read_lean_name(code, index)
-            stack.extend(part for part in name.split(".") if part)
+            name, index = header_name(index + len("namespace"))
+            for part in name.split("."):
+                if part:
+                    scopes.append(("namespace", part))
+            continue
+        if _ident_boundary(code, index, "section"):
+            name, index = header_name(index + len("section"))
+            scopes.append(("section", name or None))
             continue
         if _ident_boundary(code, index, "end"):
-            index = _skip_ws(code, index + len("end"))
-            name, next_index = _read_lean_name(code, index)
-            if name:
-                parts = [part for part in name.split(".") if part]
-                if len(stack) >= len(parts) and stack[-len(parts):] == parts:
-                    del stack[-len(parts):]
-                elif stack:
-                    stack.pop()
-                index = next_index
-            elif stack:
-                stack.pop()
-            else:
-                index += 1
+            name, next_index = header_name(index + len("end"))
+            close_scope([part for part in name.split(".") if part] if name else [])
+            index = next_index if next_index > index else index + len("end")
             continue
         if not _ident_boundary(code, index, "theorem"):
             index += 1
             continue
+        stack = [name for kind, name in scopes if kind == "namespace" and name]
         index = _skip_ws(code, index + len("theorem"))
         declared, index = _read_lean_name(code, index)
         ambiguous = "." in declared and bool(stack)
@@ -4949,7 +5276,7 @@ def hypothesis_of(key: str) -> str:
     return hypothesis_name({"node": node_id, "conclusion": conclusion_id})
 
 
-def rewrite_vendored_imports(text: str, stems: dict[str, str]) -> str:
+def rewrite_vendored_imports(text: str, modules: dict[str, str]) -> str:
     """Repoint imports of a solution's own files at the directory they were copied into.
 
     Positions come from the comment-stripped text, which keeps the same length, so the
@@ -4959,13 +5286,22 @@ def rewrite_vendored_imports(text: str, stems: dict[str, str]) -> str:
     pieces: list[str] = []
     cursor = 0
     for match in IMPORT_RE.finditer(stripped):
-        module = match.group(1)
-        head, dot, tail = module.partition(".")
-        if head not in stems:
+        start = end = match.start(1)
+        # The scanner locates a real import, but may mask quoted identifier
+        # contents. Read its spelling from the original source at those offsets.
+        while end < len(stripped) and not stripped[end].isspace():
+            if text[end] == "«":
+                closing = text.find("»", end + 1)
+                end = len(stripped) if closing < 0 else closing + 1
+            else:
+                end += 1
+        # Quoting an ordinary module component does not change its identity.
+        # Keep nonordinary components quoted so a literal dot is not a separator.
+        module = re.sub(r"«([A-Za-z_][A-Za-z0-9_']*)»", r"\1", text[start:end])
+        if module not in modules:
             continue
-        start, end = match.span(1)
         pieces.append(text[cursor:start])
-        pieces.append(stems[head] + (dot + tail if dot else ""))
+        pieces.append(modules[module])
         cursor = end
     if not pieces:
         return text
@@ -4977,35 +5313,60 @@ def vendored_module(node_id: str, stem: str) -> str:
     return f"vendored.{node_id}.{stem}"
 
 
-def vendor_solution(node_id: str, target: pathlib.Path) -> None:
-    """Copy one node's solution under `vendored/<Family>/<version>/`.
+def copy_solution_sources(node_id: str, target: pathlib.Path, destination: pathlib.Path,
+                          prefix: str = "") -> list[str]:
+    """Copy project modules, preserving directories and excluding Lake's dependency/build tree.
 
-    `Solution.lean` becomes `NodeSolution.lean` so the wrapper can keep the name `Solution`.
-    Imports of sibling files are rewritten to that directory; an import that should have moved
-    and did not is a failure, not a successful copy of a file that no longer resolves.
+    Only the root `Solution.lean` is renamed. `Solution/Extra.lean` and
+    `Helpers/Solution.lean` are different modules, so imports are mapped by their full names.
     """
     solution_dir = SOLUTIONS / node_id
-    destination = target.joinpath("vendored", *node_id.split("."))
-    destination.mkdir(parents=True, exist_ok=True)
-    files = sorted(path for path in solution_dir.glob("*.lean"))
-    stems = {
-        path.stem: vendored_module(node_id, "NodeSolution" if path.name == "Solution.lean" else path.stem)
-        for path in files
-    }
-    for path in files:
+    files: dict[pathlib.Path, pathlib.Path] = {}
+    for directory, children, names in os.walk(solution_dir):
+        parent = pathlib.Path(directory)
+        # Prune dependency/build directories before descending: a warm solution
+        # can contain far more Lean files under .lake than in its own sources.
+        children[:] = sorted(name for name in children if not name.startswith(".")
+                             and not (parent / name).is_relative_to(target))
+        for name in sorted(names):
+            if name.startswith(".") or not name.endswith(".lean"):
+                continue
+            relative = (parent / name).relative_to(solution_dir)
+            if relative == pathlib.Path("lakefile.lean"):
+                continue
+            files[relative] = (pathlib.Path("NodeSolution.lean")
+                               if relative == pathlib.Path("Solution.lean") else relative)
+    if len(set(files.values())) != len(files):
+        sys.exit(f"error: {rel(solution_dir)} contains NodeSolution.lean, which conflicts with "
+                 "the exported name of Solution.lean; rename that helper before exporting.")
+
+    def module(path: pathlib.Path) -> str:
+        return ".".join(path.with_suffix("").parts)
+
+    modules = {module(source): prefix + module(copied) for source, copied in files.items()}
+    for source, copied in files.items():
+        path = solution_dir / source
         original = path.read_text(encoding="utf-8")
         local = [
             module for module in IMPORT_RE.findall(strip_lean_comments(original))
-            if module.split(".", 1)[0] in stems
+            if module in modules
         ]
-        rewritten = rewrite_vendored_imports(original, stems)
-        if local and rewritten == original:
+        rewritten = rewrite_vendored_imports(original, modules)
+        if any(modules[name] != name for name in local) and rewritten == original:
             sys.exit(
                 f"error: {rel(path)} imports `{local[0]}`, and copying it under vendored/ "
                 "did not rewrite that import."
             )
-        name = "NodeSolution.lean" if path.name == "Solution.lean" else path.name
-        (destination / name).write_text(rewritten, encoding="utf-8", newline="\n")
+        output = destination / copied
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(rewritten, encoding="utf-8", newline="\n")
+    return sorted(modules.values())
+
+
+def vendor_solution(node_id: str, target: pathlib.Path) -> None:
+    """Copy one node's source tree under `vendored/<Family>/<version>/`."""
+    copy_solution_sources(node_id, target, target.joinpath("vendored", *node_id.split(".")),
+                          prefix=f"vendored.{node_id}.")
 
 
 def plan_composition(index: dict, key: str) -> tuple[dict | None, str | None]:
@@ -5126,10 +5487,11 @@ def plan_composition(index: dict, key: str) -> tuple[dict | None, str | None]:
         return f"({name} {' '.join(arguments)})"
 
     if one_level:
-        # The single application is written the way it always was: the theorem, then the
-        # hypotheses in sorted order, with no extra parentheses. A reader diffing a one-level
-        # submission against the previous generator should see the same proof line.
-        arguments = " ".join(hypothesis_of(leaf) for leaf in ordered)
+        # Binder order is the order `gen-challenges` wrote, which is the yaml import list.
+        # `ordered` is sorted for the emitted hypothesis list; feeding that order to the
+        # challenge applies the later hypothesis to the earlier parameter whenever the
+        # imports were not already alphabetical.
+        arguments = " ".join(hypothesis_of(item) for item in import_keys_of(conclusion))
         term = f"{node_id}.challenge_{conclusion.get('id')}"
         if arguments:
             term += " " + arguments
@@ -5271,9 +5633,7 @@ theorem {SPINOFF_NAMESPACE}.main{binders} :
   {plan["term"]}
 """
     if plan["one_level"]:
-        solution_dir = SOLUTIONS / node_id
-        vendored = sorted("NodeSolution" if path.stem == "Solution" else path.stem
-                          for path in solution_dir.glob("*.lean"))
+        vendored = copy_solution_sources(node_id, target, target)
         solution = (
             LICENCE_HEADER
             + "".join(f"import {stem}\n" for stem in vendored)
@@ -5290,13 +5650,6 @@ does not collide with the sorried challenge the source repository generates for 
 """
             + proof)
         (target / "Solution.lean").write_text(solution, encoding="utf-8", newline="\n")
-        for path in solution_dir.glob("*.lean"):
-            if path.name != "Solution.lean":
-                (target / path.name).write_text(path.read_text(encoding="utf-8"),
-                                                encoding="utf-8", newline="\n")
-        vendor = solution_dir / "Solution.lean"
-        (target / "NodeSolution.lean").write_text(vendor.read_text(encoding="utf-8"),
-                                                  encoding="utf-8", newline="\n")
     else:
         for vendor_id in plan["vendors"]:
             vendor_solution(vendor_id, target)
@@ -5761,6 +6114,9 @@ def main() -> int:
         "status", "check"
     ):
         sub.add_parser(name)
+    exported = sub.add_parser("export", help="write the versioned evidence graph as JSON")
+    exported.add_argument("--include-inactive", action="store_true",
+                          help="also include retained inactive nodes and their conclusions")
     generate = sub.add_parser("gen-challenges")
     generate.add_argument("--check", action="store_true", help="fail instead of rewriting")
     prints = sub.add_parser("fingerprint")
@@ -5834,6 +6190,8 @@ def main() -> int:
         return 0 if fingerprint(args.check) else 1
     if args.command == "report":
         return 0 if report() else 1
+    if args.command == "export":
+        return 0 if export_evidence(args.include_inactive) else 1
     if args.command == "status":
         return 0 if status() else 1
     if args.command == "diff":
