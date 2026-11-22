@@ -10,7 +10,7 @@ node:
   family: CotangentSeries
   version: v1
   kind: standard
-  status: awaiting-solution
+  status: awaiting-verification
 
 project:
   name: "The cotangent expansion in terms of zeta values"
@@ -41,6 +41,7 @@ conclusions:
     challenge: CotangentSeries.v1.challenge_cot_series_zeta_values
     imports: []
     imports_status: none
+    issue: 257
     justifications:
       - id: unjustified
         kind: none-yet
@@ -54,6 +55,14 @@ conclusions:
           An alternative route runs through the Bernoulli generating function, which Mathlib also
           has, together with riemannZeta_two_mul_nat to convert Bernoulli numbers into zeta values;
           which is shorter has not been assessed.
+          THE ROUTE HAS BEEN TAKEN. Solutions/CotangentSeries.v1 proves this by exactly the
+          argument above -- cot_series_rep', then hasSum_geometric_of_norm_lt_one on each term,
+          then Summable.of_nonneg_of_le for the interchange that the paragraph above calls the
+          content. It has no sorry and no native_decide and rests on the core alone. What is
+          absent is a receipt, and nothing stands between the proof and one: the kind stays
+          none-yet rather than lean-noncompliant precisely because there is no obstruction to
+          name, and `status: awaiting-verification` above carries the fact that the solution is
+          already here. See issue 257.
           CHECKED NUMERICALLY BEFORE BEING STATED, to 30 digits at four points -- two complex, one
           negative real, one positive real -- with the series truncated at 200 terms. A sign or
           index error in an expansion of this shape is invisible to the type-checker and would be
