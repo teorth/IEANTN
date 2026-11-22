@@ -2303,8 +2303,25 @@ def release_distance(recorded: str, current: str) -> int | None:
     return abs(new_minor - old_minor)
 
 
+def imported_conclusion_keys(conclusion: dict) -> list[str]:
+    """The hypotheses a conclusion currently names, as `Node.version.id` keys.
+
+    These are the premises the receipt pinned beside the conclusion's own fingerprint.
+    The conclusion's fingerprint is a digest of its proposition, not of that premise
+    list, so an import can be added or dropped while every recorded digest still matches.
+    """
+    keys: list[str] = []
+    for dependency in conclusion.get("imports") or []:
+        if not isinstance(dependency, dict):
+            continue
+        node, name = dependency.get("node"), dependency.get("conclusion")
+        if isinstance(node, str) and isinstance(name, str) and node and name:
+            keys.append(f"{node}.{name}")
+    return keys
+
+
 def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str], *,
-           consult_history: bool = True) -> tuple[str, str]:
+           consult_history: bool = True, imports: list[str] | None = None) -> tuple[str, str]:
     """Grade one receipt against the world as it is now.
 
     Two axes, deliberately not collapsed (ARCHITECTURE section 4):
@@ -2345,6 +2362,27 @@ def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str], *,
             return "BROKEN", f"{which} changed since verification"
     if churn is not None:
         return "churn", churn
+
+    # The fingerprints above say each recorded proposition still reads the same way.
+    # They do not say the node still rests on that same set. Dropping a hypothesis
+    # leaves a stronger claim; adding one leaves a claim Comparator was not asked
+    # about. Either way the receipt must not stay green.
+    if imports is not None:
+        recorded_imports = sorted(name for name in recorded if name != conclusion_key)
+        expected = sorted(dict.fromkeys(imports))
+        if recorded_imports != expected:
+            missing = [name for name in expected if name not in recorded_imports]
+            extra = [name for name in recorded_imports if name not in expected]
+            parts = []
+            if missing:
+                parts.append(
+                    "does not record " + ", ".join(f"`{name}`" for name in missing)
+                )
+            if extra:
+                parts.append(
+                    "still records " + ", ".join(f"`{name}`" for name in extra)
+                )
+            return "BROKEN", "hypotheses no longer match the receipt: " + "; ".join(parts)
 
     environment = receipt.get("environment") or {}
     current = current_environment()
@@ -2551,7 +2589,10 @@ def receipt_state(conclusion_key: str, conclusion: dict) -> tuple[str, str] | No
     if receipt is None:
         return "BROKEN", "designated `lean-comparator` but no receipt file"
     # Views are generated and diffed by CI, so they must not depend on git history.
-    return assess(conclusion_key, receipt, recorded_fingerprints(), consult_history=False)
+    return assess(
+        conclusion_key, receipt, recorded_fingerprints(),
+        consult_history=False, imports=imported_conclusion_keys(conclusion),
+    )
 
 
 #: `assess`'s verdict, as the views draw it. Environment staleness keeps the verification: the
@@ -2615,7 +2656,9 @@ def status() -> bool:
                 print(f"  BROKEN  {key}")
                 print("          designated `lean-comparator` but no receipt file")
                 continue
-            light, detail = assess(key, receipt, fingerprints)
+            light, detail = assess(
+                key, receipt, fingerprints, imports=imported_conclusion_keys(conclusion)
+            )
             lights[light] += 1
             print(f"  {light:<7} {key}")
             print(f"          {detail}")
@@ -2928,10 +2971,15 @@ def report() -> bool:
     index = index_conclusions(nodes)
     importers = importers_of(nodes)
 
-    def leaves(key: str, seen: set[str]) -> set[str]:
+    def leaves(key: str, seen: set[str], stack: list[str]) -> set[str]:
+        # A bridge that leads back to itself used to vanish here: the node was
+        # marked seen on the way in, the source was already seen, and the walk
+        # returned nothing — the same answer as a Comparator proof.
+        if key in stack:
+            return {f"{name}  [bridged cycle]" for name in _bridged_cycle(stack, key, _report_bridged)}
         if key in seen or key not in index:
             return set()
-        seen.add(key)
+        stack.append(key)
         _, conclusion = index[key]
         justification = designated_of(conclusion) or {}
         kind = justification.get("kind")
@@ -2942,18 +2990,25 @@ def report() -> bool:
         result: set[str] = set()
         if kind == "bridged":
             for source in bridge_sources(justification):
-                result |= leaves(source, seen)
+                result |= leaves(source, seen, stack)
         elif kind not in VERIFIED_KINDS:
             note = f"  [{kind}]" + (f", {spares} other justification(s) available" if spares else "")
             result.add(f"{key}{note}")
         for dependency in conclusion.get("imports") or []:
-            result |= leaves(f"{dependency.get('node')}.{dependency.get('conclusion')}", seen)
+            result |= leaves(f"{dependency.get('node')}.{dependency.get('conclusion')}", seen, stack)
+        stack.pop()
+        seen.add(key)
         return result
+
+    def _report_bridged(name: str) -> bool:
+        if name not in index:
+            return False
+        return (designated_of(index[name][1]) or {}).get("kind") == "bridged"
 
     print("Unproved-in-Lean dependencies, per conclusion")
     print("=" * 62)
     for key in sorted(index):
-        rests_on = sorted(leaves(key, set()))
+        rests_on = sorted(leaves(key, set(), []))
         print(f"\n{key}")
         for item in rests_on or ["  fully verified in Lean"]:
             print(f"  - {item}" if rests_on else item)
@@ -4614,7 +4669,33 @@ def state_at(ref: str | None) -> dict:
     return {"conclusions": conclusions, "fingerprints": fingerprints, "receipts": receipts}
 
 
-def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None) -> list[str]:
+def _bridged_cycle(stack: list[str], key: str, is_bridged) -> list[str]:
+    """Bridge-loop members that a seen-set would have dropped.
+
+    A `bridged` conclusion is not recorded as a leaf; its sources are. When a source is the
+    conclusion already being walked, that walk used to stop and return nothing, which is also
+    what a real proof returns. The members of the loop are unproved until something outside
+    the loop grounds them. An import cycle is left alone: those conclusions are already
+    recorded as leaves on the way in.
+    """
+    if key not in stack or not is_bridged(key):
+        return []
+    start = stack.index(key)
+    return [name for name in stack[start:] if is_bridged(name)]
+
+
+def _dedupe(items: list[str]) -> list[str]:
+    found: list[str] = []
+    have: set[str] = set()
+    for item in items:
+        if item not in have:
+            have.add(item)
+            found.append(item)
+    return found
+
+
+def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None,
+                 stack: list[str] | None = None) -> list[str]:
     """The unproved-in-Lean conclusions `key` rests on, from a `state_at` snapshot.
 
     A `bridged` conclusion contributes nothing of its own: what it rests on is whatever its
@@ -4622,21 +4703,30 @@ def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None) -> l
     leaf, and imports are walked in every case. Receipt health is not consulted. A severed
     receipt is a different event, and `diff` already reports it. This is only the shape of the
     graph, which is why it needs no Lean run.
+
+    A bridge that only leads back to itself is not that shape. The loop is reported as unproved
+    rather than as an empty leaf set.
     """
     seen = set() if seen is None else seen
+    stack = [] if stack is None else stack
+    if key in stack:
+        return _dedupe(_bridged_cycle(
+            stack, key, lambda name: (conclusions.get(name) or {}).get("kind") == "bridged"))
     if key in seen or key not in conclusions:
         return []
-    seen.add(key)
+    stack.append(key)
     entry = conclusions[key]
     found: list[str] = []
     if entry.get("kind") == "bridged":
         for source in entry.get("from") or []:
-            found += graph_leaves(conclusions, source, seen)
+            found += graph_leaves(conclusions, source, seen, stack)
     elif entry.get("kind") not in VERIFIED_KINDS:
         found.append(key)
     for dependency in entry.get("imports") or []:
-        found += graph_leaves(conclusions, dependency, seen)
-    return found
+        found += graph_leaves(conclusions, dependency, seen, stack)
+    stack.pop()
+    seen.add(key)
+    return _dedupe(found)
 
 
 def acknowledged() -> dict[str, str]:
@@ -4827,23 +4917,34 @@ def diff(base: str) -> bool:
 SPINOFF_NAMESPACE = "Spinoff"
 
 
-def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None) -> list[str]:
+def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None,
+                       stack: list[str] | None = None) -> list[str]:
     """The conclusion keys `key` transitively rests on that Lean has not checked here.
 
     The same walk `report` prints, returning keys rather than prose. These become the emitted
     Challenge's hypotheses: a Palomar submission cannot assert what this network is content to
-    take on a citation's authority, so it must say what it is assuming.
+    take on a citation's authority, so it must say what it is assuming. A bridge cycle is part
+    of that set: it has no proof outside itself.
     """
     seen = set() if seen is None else seen
+    stack = [] if stack is None else stack
+
+    def is_bridged(name: str) -> bool:
+        if name not in index:
+            return False
+        return (designated_of(index[name][1]) or {}).get("kind") == "bridged"
+
+    if key in stack:
+        return _dedupe(_bridged_cycle(stack, key, is_bridged))
     if key in seen or key not in index:
         return []
-    seen.add(key)
+    stack.append(key)
     _, conclusion = index[key]
     justification = designated_of(conclusion) or {}
     found: list[str] = []
     if justification.get("kind") == "bridged":
         for source in bridge_sources(justification):
-            found += unjustified_leaves(index, source, seen)
+            found += unjustified_leaves(index, source, seen, stack)
     elif (
         justification.get("kind") not in VERIFIED_KINDS
         or (receipt_state(key, conclusion) or (None, ""))[0] == "BROKEN"
@@ -4851,8 +4952,10 @@ def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None) -> l
         found.append(key)
     for dependency in conclusion.get("imports") or []:
         found += unjustified_leaves(
-            index, f"{dependency.get('node')}.{dependency.get('conclusion')}", seen)
-    return found
+            index, f"{dependency.get('node')}.{dependency.get('conclusion')}", seen, stack)
+    stack.pop()
+    seen.add(key)
+    return _dedupe(found)
 
 
 def opens_of(path: pathlib.Path) -> list[str]:
@@ -4994,38 +5097,69 @@ def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, 
 
     A dotted name at the top level is used as written. A short name is prefixed with the
     namespaces open around it. A dotted name inside a namespace is skipped: which full name Lean
-    would assign is not something to guess. Only a single explicit `(name : type)` binder is
+    would assign is not something to guess. A `section` is not a namespace: closing it must not
+    drop the namespace that contains it. Only a single explicit `(name : type)` binder is
     accepted, and only when `type` is one of `known`. An implicit binder or a side condition
     disqualifies that theorem.
     """
     code = strip_lean_comments(text)
-    stack: list[str] = []
+    # ("namespace", component) or ("section", name-or-None). Sections sit in the same
+    # stack so `end` closes the innermost scope, but only namespace components are
+    # prefixed onto theorem names.
+    scopes: list[tuple[str, str | None]] = []
     found: list[tuple[str, list[str]]] = []
     index, length = 0, len(code)
+
+    def header_name(at: int) -> tuple[str, int]:
+        # The optional name stays on the header line. Skipping every whitespace
+        # character would treat the next command (`end` or `theorem`) as that name.
+        while at < length and code[at] in " \t":
+            at += 1
+        if at < length and code[at] == "\n":
+            return "", at
+        return _read_lean_name(code, at)
+
+    def close_scope(parts: list[str]) -> None:
+        if not parts:
+            if scopes:
+                scopes.pop()
+            return
+        remaining = parts[:]
+        cut = len(scopes)
+        while remaining and cut > 0:
+            kind, name = scopes[cut - 1]
+            if kind == "namespace" and name == remaining[-1]:
+                remaining.pop()
+                cut -= 1
+                continue
+            if kind == "section" and name and remaining == [name]:
+                remaining = []
+                cut -= 1
+                continue
+            break
+        if not remaining:
+            del scopes[cut:]
+
     while index < length:
         if _ident_boundary(code, index, "namespace"):
-            index = _skip_ws(code, index + len("namespace"))
-            name, index = _read_lean_name(code, index)
-            stack.extend(part for part in name.split(".") if part)
+            name, index = header_name(index + len("namespace"))
+            for part in name.split("."):
+                if part:
+                    scopes.append(("namespace", part))
+            continue
+        if _ident_boundary(code, index, "section"):
+            name, index = header_name(index + len("section"))
+            scopes.append(("section", name or None))
             continue
         if _ident_boundary(code, index, "end"):
-            index = _skip_ws(code, index + len("end"))
-            name, next_index = _read_lean_name(code, index)
-            if name:
-                parts = [part for part in name.split(".") if part]
-                if len(stack) >= len(parts) and stack[-len(parts):] == parts:
-                    del stack[-len(parts):]
-                elif stack:
-                    stack.pop()
-                index = next_index
-            elif stack:
-                stack.pop()
-            else:
-                index += 1
+            name, next_index = header_name(index + len("end"))
+            close_scope([part for part in name.split(".") if part] if name else [])
+            index = next_index if next_index > index else index + len("end")
             continue
         if not _ident_boundary(code, index, "theorem"):
             index += 1
             continue
+        stack = [name for kind, name in scopes if kind == "namespace" and name]
         index = _skip_ws(code, index + len("theorem"))
         declared, index = _read_lean_name(code, index)
         ambiguous = "." in declared and bool(stack)
