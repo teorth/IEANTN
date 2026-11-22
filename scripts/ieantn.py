@@ -33,8 +33,10 @@ None of this runs Comparator.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import datetime
 import hashlib
+import io
 import json
 import os
 import pathlib
@@ -270,7 +272,22 @@ def imports_of(path: pathlib.Path) -> list[str]:
     an import from every closure check -- silently, and in the direction that lets a violation
     through. Not stripping comments meant a commented-out import was reported as real.
     """
-    return IMPORT_RE.findall(strip_lean_comments(path.read_text(encoding="utf-8")))
+    text = path.read_text(encoding="utf-8")
+    code = strip_lean_comments(text)
+    with_names = strip_lean_comments(text, preserve_identifiers=True)
+    modules = []
+    for match in IMPORT_RE.finditer(code):
+        start = end = match.start(1)
+        # The masked source identifies real import commands; recover the module's spelling
+        # without treating whitespace or comment-like text inside a quoted component as syntax.
+        while end < len(with_names) and not with_names[end].isspace():
+            if with_names[end] == "«":
+                closing = with_names.find("»", end + 1)
+                end = len(with_names) if closing < 0 else closing + 1
+            else:
+                end += 1
+        modules.append(with_names[start:end])
+    return modules
 
 
 def _char_literal_length(text: str, index: int) -> int:
@@ -288,7 +305,7 @@ def _char_literal_length(text: str, index: int) -> int:
     return 0
 
 
-def strip_lean_comments(text: str) -> str:
+def strip_lean_comments(text: str, *, preserve_identifiers: bool = False) -> str:
     """Lean source with `--` line comments and nested `/- -/` blocks removed.
 
     Needed because a plain search for `sorry` also matches the word in prose. The docstring of an
@@ -337,6 +354,20 @@ def strip_lean_comments(text: str) -> str:
                 continue
         if depth == 0 and text[index] == '"':
             blank_string()
+            continue
+        if depth == 0 and text[index] == "«":
+            # A quoted identifier can contain quotes, comment delimiters and newlines. Its
+            # contents are not syntax. Keep the delimiters so a quoted import still has a
+            # visible module token for closure validation, and preserve source positions.
+            out.append("«")
+            index += 1
+            while index < length:
+                char = text[index]
+                index += 1
+                if char == "»":
+                    out.append("»")
+                    break
+                out.append(char if preserve_identifiers or char == "\n" else " ")
             continue
         if depth == 0 and text[index] == "'":
             width = _char_literal_length(text, index)
@@ -2633,6 +2664,12 @@ def new_solution(node_id: str) -> bool:
     theorems = [f"{node_id}.challenge_{c.get('id')}" for c in conclusions]
     target.mkdir(parents=True)
 
+    # The solution is its own Lake project. Mathlib's cache reads this file in that project,
+    # even though its core dependency already has the same pin.
+    (target / "lean-toolchain").write_text(
+        (ROOT / "lean-toolchain").read_text(encoding="utf-8"), encoding="utf-8", newline="\n"
+    )
+
     (target / "lakefile.toml").write_text(
         f'name = "solution_{node_id.replace(".", "_")}"\n'
         'defaultTargets = ["Solution"]\n\n'
@@ -2927,6 +2964,91 @@ def report() -> bool:
         print("=" * 62)
         for count, key in ranked:
             print(f"  {count:3d}  {key}")
+    return True
+
+
+def evidence_snapshot(include_inactive: bool = False) -> dict:
+    """A deterministic public projection of the graph; no builds, network or file writes.
+
+    Requirements are conjunctive. In particular, the sources of a designated bridge are
+    premises needed together, not alternative routes. Spare justifications remain metadata.
+    Receipt health and leaves use the same functions as the human-facing reports.
+    """
+    diagnostics = io.StringIO()
+    with contextlib.redirect_stdout(diagnostics):
+        valid = check_graph()
+    if not valid:
+        raise ValueError(diagnostics.getvalue().strip())
+    nodes = load_nodes(include_inactive=include_inactive)
+    index = index_conclusions(nodes)
+    fingerprints = recorded_fingerprints()
+    records = []
+    for key, (node_id, conclusion) in sorted(index.items()):
+        designated = designated_of(conclusion) or {}
+        requirements = [
+            {"conclusion": dependency, "relation": "import"}
+            for dependency in sorted(set(import_keys_of(conclusion)))
+        ]
+        if designated.get("kind") == "bridged":
+            requirements += [
+                {"conclusion": source, "relation": "bridge"}
+                for source in sorted(set(bridge_sources(designated)))
+            ]
+        for requirement in requirements:
+            if requirement["conclusion"] not in index:
+                raise ValueError(f"{key}: unknown requirement {requirement['conclusion']}")
+        health = receipt_state(key, conclusion)
+        receipt = load_receipt(key) if health is not None else None
+        records.append({
+            "key": key,
+            "node": node_id,
+            "declaration": conclusion.get("declaration"),
+            "challenge": conclusion.get("challenge"),
+            "fingerprint": fingerprints.get(key),
+            "imports_status": import_status(conclusion),
+            "requirements": requirements,
+            "designated": conclusion.get("designated"),
+            "evidence": display_kind(key, conclusion),
+            "justifications": sorted(justifications_of(conclusion), key=lambda item: item["id"]),
+            "receipt": None if health is None else {
+                "state": health[0], "reason": health[1],
+                "path": rel(receipt_path(key)),
+                "run_url": ((receipt or {}).get("run") or {}).get("workflow_run"),
+            },
+            "unproved_leaves": sorted(set(unjustified_leaves(index, key))),
+            "source": rel(nodes[node_id]["_dir"] / "Conclusions.lean"),
+            "metadata": rel(nodes[node_id]["_dir"] / "formalization.yaml"),
+        })
+    return {
+        "schema_version": 1,
+        "environment": current_environment(),
+        "includes_inactive": include_inactive,
+        "nodes": [
+            {"id": node_id, "kind": node["node"].get("kind"),
+             "status": node["node"].get("status"), "inactive": is_inactive(node)}
+            for node_id, node in sorted(nodes.items())
+        ],
+        "conclusions": records,
+    }
+
+
+def evidence_json_default(value):
+    """YAML dates are public metadata too; reject other unsupported objects."""
+    if isinstance(value, (datetime.date, datetime.datetime)):
+        return value.isoformat()
+    raise TypeError(f"not JSON metadata: {type(value).__name__}")
+
+
+def export_evidence(include_inactive: bool = False) -> bool:
+    """Write only the versioned JSON document to stdout; diagnostics belong on stderr."""
+    try:
+        document = json.dumps(evidence_snapshot(include_inactive), ensure_ascii=False,
+                              indent=2, sort_keys=True, allow_nan=False,
+                              default=evidence_json_default)
+    except (OSError, ValueError, TypeError, yaml.YAMLError) as error:
+        print(f"error: cannot export evidence: {error}", file=sys.stderr)
+        return False
+    print(document)
     return True
 
 
@@ -4737,8 +4859,10 @@ def opens_of(path: pathlib.Path) -> list[str]:
     `open ... in` is excluded: it scopes to the single declaration that follows, so it is
     already inside whatever text gets sliced.
     """
-    code = strip_lean_comments(path.read_text(encoding="utf-8"))
-    return [line.rstrip() for line in code.splitlines()
+    text = path.read_text(encoding="utf-8")
+    code = strip_lean_comments(text)
+    with_names = strip_lean_comments(text, preserve_identifiers=True)
+    return [original.rstrip() for line, original in zip(code.splitlines(), with_names.splitlines())
             if re.match(r"^open\s", line) and not line.rstrip().endswith(" in")]
 
 
@@ -4954,7 +5078,7 @@ def hypothesis_of(key: str) -> str:
     return hypothesis_name({"node": node_id, "conclusion": conclusion_id})
 
 
-def rewrite_vendored_imports(text: str, stems: dict[str, str]) -> str:
+def rewrite_vendored_imports(text: str, modules: dict[str, str]) -> str:
     """Repoint imports of a solution's own files at the directory they were copied into.
 
     Positions come from the comment-stripped text, which keeps the same length, so the
@@ -4964,13 +5088,22 @@ def rewrite_vendored_imports(text: str, stems: dict[str, str]) -> str:
     pieces: list[str] = []
     cursor = 0
     for match in IMPORT_RE.finditer(stripped):
-        module = match.group(1)
-        head, dot, tail = module.partition(".")
-        if head not in stems:
+        start = end = match.start(1)
+        # The scanner locates a real import, but may mask quoted identifier
+        # contents. Read its spelling from the original source at those offsets.
+        while end < len(stripped) and not stripped[end].isspace():
+            if text[end] == "«":
+                closing = text.find("»", end + 1)
+                end = len(stripped) if closing < 0 else closing + 1
+            else:
+                end += 1
+        # Quoting an ordinary module component does not change its identity.
+        # Keep nonordinary components quoted so a literal dot is not a separator.
+        module = re.sub(r"«([A-Za-z_][A-Za-z0-9_']*)»", r"\1", text[start:end])
+        if module not in modules:
             continue
-        start, end = match.span(1)
         pieces.append(text[cursor:start])
-        pieces.append(stems[head] + (dot + tail if dot else ""))
+        pieces.append(modules[module])
         cursor = end
     if not pieces:
         return text
@@ -4982,35 +5115,60 @@ def vendored_module(node_id: str, stem: str) -> str:
     return f"vendored.{node_id}.{stem}"
 
 
-def vendor_solution(node_id: str, target: pathlib.Path) -> None:
-    """Copy one node's solution under `vendored/<Family>/<version>/`.
+def copy_solution_sources(node_id: str, target: pathlib.Path, destination: pathlib.Path,
+                          prefix: str = "") -> list[str]:
+    """Copy project modules, preserving directories and excluding Lake's dependency/build tree.
 
-    `Solution.lean` becomes `NodeSolution.lean` so the wrapper can keep the name `Solution`.
-    Imports of sibling files are rewritten to that directory; an import that should have moved
-    and did not is a failure, not a successful copy of a file that no longer resolves.
+    Only the root `Solution.lean` is renamed. `Solution/Extra.lean` and
+    `Helpers/Solution.lean` are different modules, so imports are mapped by their full names.
     """
     solution_dir = SOLUTIONS / node_id
-    destination = target.joinpath("vendored", *node_id.split("."))
-    destination.mkdir(parents=True, exist_ok=True)
-    files = sorted(path for path in solution_dir.glob("*.lean"))
-    stems = {
-        path.stem: vendored_module(node_id, "NodeSolution" if path.name == "Solution.lean" else path.stem)
-        for path in files
-    }
-    for path in files:
+    files: dict[pathlib.Path, pathlib.Path] = {}
+    for directory, children, names in os.walk(solution_dir):
+        parent = pathlib.Path(directory)
+        # Prune dependency/build directories before descending: a warm solution
+        # can contain far more Lean files under .lake than in its own sources.
+        children[:] = sorted(name for name in children if not name.startswith(".")
+                             and not (parent / name).is_relative_to(target))
+        for name in sorted(names):
+            if name.startswith(".") or not name.endswith(".lean"):
+                continue
+            relative = (parent / name).relative_to(solution_dir)
+            if relative == pathlib.Path("lakefile.lean"):
+                continue
+            files[relative] = (pathlib.Path("NodeSolution.lean")
+                               if relative == pathlib.Path("Solution.lean") else relative)
+    if len(set(files.values())) != len(files):
+        sys.exit(f"error: {rel(solution_dir)} contains NodeSolution.lean, which conflicts with "
+                 "the exported name of Solution.lean; rename that helper before exporting.")
+
+    def module(path: pathlib.Path) -> str:
+        return ".".join(path.with_suffix("").parts)
+
+    modules = {module(source): prefix + module(copied) for source, copied in files.items()}
+    for source, copied in files.items():
+        path = solution_dir / source
         original = path.read_text(encoding="utf-8")
         local = [
             module for module in IMPORT_RE.findall(strip_lean_comments(original))
-            if module.split(".", 1)[0] in stems
+            if module in modules
         ]
-        rewritten = rewrite_vendored_imports(original, stems)
-        if local and rewritten == original:
+        rewritten = rewrite_vendored_imports(original, modules)
+        if any(modules[name] != name for name in local) and rewritten == original:
             sys.exit(
                 f"error: {rel(path)} imports `{local[0]}`, and copying it under vendored/ "
                 "did not rewrite that import."
             )
-        name = "NodeSolution.lean" if path.name == "Solution.lean" else path.name
-        (destination / name).write_text(rewritten, encoding="utf-8", newline="\n")
+        output = destination / copied
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(rewritten, encoding="utf-8", newline="\n")
+    return sorted(modules.values())
+
+
+def vendor_solution(node_id: str, target: pathlib.Path) -> None:
+    """Copy one node's source tree under `vendored/<Family>/<version>/`."""
+    copy_solution_sources(node_id, target, target.joinpath("vendored", *node_id.split(".")),
+                          prefix=f"vendored.{node_id}.")
 
 
 def plan_composition(index: dict, key: str) -> tuple[dict | None, str | None]:
@@ -5276,9 +5434,7 @@ theorem {SPINOFF_NAMESPACE}.main{binders} :
   {plan["term"]}
 """
     if plan["one_level"]:
-        solution_dir = SOLUTIONS / node_id
-        vendored = sorted("NodeSolution" if path.stem == "Solution" else path.stem
-                          for path in solution_dir.glob("*.lean"))
+        vendored = copy_solution_sources(node_id, target, target)
         solution = (
             LICENCE_HEADER
             + "".join(f"import {stem}\n" for stem in vendored)
@@ -5295,13 +5451,6 @@ does not collide with the sorried challenge the source repository generates for 
 """
             + proof)
         (target / "Solution.lean").write_text(solution, encoding="utf-8", newline="\n")
-        for path in solution_dir.glob("*.lean"):
-            if path.name != "Solution.lean":
-                (target / path.name).write_text(path.read_text(encoding="utf-8"),
-                                                encoding="utf-8", newline="\n")
-        vendor = solution_dir / "Solution.lean"
-        (target / "NodeSolution.lean").write_text(vendor.read_text(encoding="utf-8"),
-                                                  encoding="utf-8", newline="\n")
     else:
         for vendor_id in plan["vendors"]:
             vendor_solution(vendor_id, target)
@@ -5766,6 +5915,9 @@ def main() -> int:
         "status", "check"
     ):
         sub.add_parser(name)
+    exported = sub.add_parser("export", help="write the versioned evidence graph as JSON")
+    exported.add_argument("--include-inactive", action="store_true",
+                          help="also include retained inactive nodes and their conclusions")
     generate = sub.add_parser("gen-challenges")
     generate.add_argument("--check", action="store_true", help="fail instead of rewriting")
     prints = sub.add_parser("fingerprint")
@@ -5839,6 +5991,8 @@ def main() -> int:
         return 0 if fingerprint(args.check) else 1
     if args.command == "report":
         return 0 if report() else 1
+    if args.command == "export":
+        return 0 if export_evidence(args.include_inactive) else 1
     if args.command == "status":
         return 0 if status() else 1
     if args.command == "diff":

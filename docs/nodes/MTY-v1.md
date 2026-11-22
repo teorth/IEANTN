@@ -19,13 +19,97 @@
 
 ## Conclusions
 
-_This node states nothing yet._  It records that the source is in scope and carries its citation, so a conclusion can be added the moment something needs one.
+### `classical_zero_free_region`
+
+**Theorem thmClassical.** No zeros of `ζ(σ + it)` for `|t| ≥ 2` and
+`σ ≥ 1 - 1/(5.558691 log |t|)`.
+
+The classical shape, so a consumer of `Kadiri2005.v1.zero_free_region` can be pointed here by a
+bridge. Smaller `R` is stronger: `5.558691` improves Mossinghoff–Trudgian's `5.573412`.
+
+```lean
+def classical_zero_free_region : Prop :=
+  ClassicalZeroFreeRegion 5.558691 2
+```
+
+| | |
+|---|---|
+| Lean name | `MTY.v1.classical_zero_free_region` |
+| Challenge | `MTY.v1.challenge_classical_zero_free_region` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/MTY/v1/Conclusions.lean#L28) |
+| Evidence | cited (`literature`) |
+| Sources traced | traced |
+| Assumes | nothing recorded |
+| Assumed by | nothing yet |
+
+**Justification `mty-classical`** — **designated** — literature, Theorem thmClassical
+
+> Read from arXiv:2212.06867, Zerofree_MTY_v10_arXiv_TTsub.tex, Theorem thmClassical: no zeros for \|t\| >= 2 and sigma >= 1 - 1/(5.558691 log\|t\|). The abstract states the same pair of constants. The proof uses the Platt-Trudgian verification of RH up to 3e12 and the Jang-Kwon smoothing; neither is an edge yet. Asserted on the paper's authority.
+
+### `korobov_vinogradov_region`
+
+**Theorem Main.** No zeros of `ζ(σ + it)` for `|t| ≥ 3` and
+`σ ≥ 1 - 1/(55.241 (log |t|)^{2/3} (log log |t|)^{1/3})`.
+
+The preprint's closed inequality (`σ ≥`) is kept. `log log t` is only asked for `t ≥ 3`, where
+`log t > 1`.
+
+```lean
+def korobov_vinogradov_region : Prop :=
+  ∀ σ t : ℝ, 3 ≤ t →
+    1 - 1 / (55.241 * (Real.log t) ^ ((2 : ℝ) / 3) * (Real.log (Real.log t)) ^ ((1 : ℝ) / 3)) ≤ σ →
+    riemannZeta (σ + t * Complex.I) ≠ 0
+```
+
+| | |
+|---|---|
+| Lean name | `MTY.v1.korobov_vinogradov_region` |
+| Challenge | `MTY.v1.challenge_korobov_vinogradov_region` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/MTY/v1/Conclusions.lean#L36) |
+| Evidence | cited (`literature`) |
+| Sources traced | traced |
+| Assumes | nothing recorded |
+| Assumed by | [`PrimesBetweenCubes.v1.prime_between_successive_cubes`](PrimesBetweenCubes-v1.md#prime_between_successive_cubes) |
+
+**Justification `mty-korobov`** — **designated** — literature, Theorem Main
+
+> Read from the same source, Theorem Main: no zeros for \|t\| >= 3 and sigma >= 1 - 1/(55.241 (log\|t\|)^{2/3} (log log\|t\|)^{1/3}). The closed inequality is the one printed. Asserted on the paper's authority. The argument uses a trigonometric polynomial, intermediate regions, and a verified height; those inputs are named in the preprint's discussion of Theorem Main and are not drawn as edges.
+
+### `intermediate_zero_free_region`
+
+**Theorem thmIntZFR.** No zeros for `|t| ≥ exp(1000)` and
+`σ > 1 - 0.05035 / h(t) + 0.0349 / h(t)²`, with `h` as above.
+
+The preprint's inequality is strict (`σ >`). Stating `≥` would claim a boundary the theorem does
+not give.
+
+```lean
+def intermediate_zero_free_region : Prop :=
+  ∀ σ t : ℝ, Real.exp 1000 ≤ t →
+    1 - 0.05035 / intermediateHeight t + 0.0349 / intermediateHeight t ^ 2 < σ →
+    riemannZeta (σ + t * Complex.I) ≠ 0
+```
+
+| | |
+|---|---|
+| Lean name | `MTY.v1.intermediate_zero_free_region` |
+| Challenge | `MTY.v1.challenge_intermediate_zero_free_region` |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/MTY/v1/Conclusions.lean#L50) |
+| Evidence | cited (`literature`) |
+| Sources traced | traced |
+| Assumes | nothing recorded |
+| Assumed by | nothing yet |
+
+**Justification `mty-intermediate`** — **designated** — literature, Theorem thmIntZFR
+
+> Read from the same source, Theorem thmIntZFR: no zeros for \|t\| >= exp(1000) and sigma > 1 - 0.05035/h(t) + 0.0349/h(t)^2, with h(t) = (27/164) log\|t\| + 7.096. The inequality on sigma is strict in the preprint and is stated that way. Asserted on the paper's authority.
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
-- This node states nothing. It exists so that the network records the paper as in scope, and so that the housekeeping queue asks for conclusions.
+- Theorem Main2 (constant 48.1588, "for sufficiently large \|t\|") is not stated. The preprint gives no explicit threshold, and a made-up cutoff would not be the theorem.
+- Only positive t is quantified, as in ClassicalZeroFreeRegion. The preprint writes \|t\|.
 - No novelty is claimed. The results are the cited authors'.
 
 ## How this node was made
