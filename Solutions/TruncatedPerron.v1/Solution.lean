@@ -6,6 +6,7 @@ Authors: Finn Doolan
 import IEANTN.Nodes.TruncatedPerron.v1.Conclusions
 import PerronDev
 import PerronGeneral
+import PerronPsi
 
 /-!
 # Solution: `TruncatedPerron.v1`
@@ -19,7 +20,8 @@ only unfolds `perronT y c T = (1/(2πi)) · i · ∫_{-T}^{T} y^(c+it)/(c+it) dt
 `perron_general` is proved term by term from `perron_single_term`, in `PerronGeneral.lean`
 (`TruncPerronGeneral.perron_general_of_single`).
 
-`perron_psi` is still open.
+`perron_psi` is proved from `perron_general` with `aₙ = Λ(n)`, `σ₀ = 1 + 1/log x` and `C = 400`,
+in `PerronPsi.lean` (`TruncPerronPsi.perron_psi_of_general`).
 -/
 
 open Complex Real
@@ -38,5 +40,5 @@ theorem TruncatedPerron.v1.challenge_perron_single_term :
 theorem TruncatedPerron.v1.challenge_perron_general : TruncatedPerron.v1.perron_general :=
   TruncPerronGeneral.perron_general_of_single TruncatedPerron.v1.challenge_perron_single_term
 
-theorem TruncatedPerron.v1.challenge_perron_psi : TruncatedPerron.v1.perron_psi := by
-  sorry
+theorem TruncatedPerron.v1.challenge_perron_psi : TruncatedPerron.v1.perron_psi :=
+  TruncPerronPsi.perron_psi_of_general TruncatedPerron.v1.challenge_perron_general

@@ -61,7 +61,7 @@ conclusions:
   progress:
     solution: Solutions/TruncatedPerron.v1/
     state: in-progress
-    remaining_holes: 1
+    remaining_holes: 0
 - id: perron_general
   issue: 254
   declaration: TruncatedPerron.v1.perron_general
@@ -86,7 +86,7 @@ conclusions:
   progress:
     solution: Solutions/TruncatedPerron.v1/
     state: in-progress
-    remaining_holes: 1
+    remaining_holes: 0
 - id: perron_psi
   issue: 254
   declaration: TruncatedPerron.v1.perron_psi
@@ -112,7 +112,7 @@ conclusions:
   progress:
     solution: Solutions/TruncatedPerron.v1/
     state: in-progress
-    remaining_holes: 1
+    remaining_holes: 0
 sources:
 - title: "The Theory of the Riemann Zeta-Function"
   authors: ["E. C. Titchmarsh"]
