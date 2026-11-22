@@ -272,11 +272,12 @@ def refresh_plan(graph, costs=None, budget=None):
     if budget is not None and (type(budget) not in {int, float} or
                                not math.isfinite(budget) or budget <= 0):
         raise ValueError("budget must be finite positive seconds")
+    urgency = {"BROKEN": 0, "churn": 1, "orange": 2, "yellow": 3}
     candidates = {}
     for key, entry in graph.records.items():
         receipt = entry.get("receipt")
         state = receipt.get("state") if isinstance(receipt, dict) else None
-        if state not in {"yellow", "orange", "churn", "BROKEN"}:
+        if state not in urgency:
             continue
         node = entry["node"]
         item = candidates.setdefault(node, {"node": node, "conclusions": [],
@@ -286,7 +287,7 @@ def refresh_plan(graph, costs=None, budget=None):
         item["downstream"].update(graph.downstream(key))
     used, proposed = 0.0, []
     for item in sorted(candidates.values(), key=lambda c: (
-            "BROKEN" not in c["states"], -len(c["downstream"]), c["node"])):
+            min(urgency[state] for state in c["states"]), -len(c["downstream"]), c["node"])):
         node, estimate = item["node"], costs.get(item["node"])
         selected = budget is None or estimate is not None and used + estimate <= budget
         reason = "selected"
@@ -333,12 +334,14 @@ def main():
         elif args.command == "impact":
             with args.base.open(encoding="utf-8") as stream:
                 result = impact(EvidenceGraph(load_document(stream)), graph)
-        else:
+        elif args.command == "refresh-plan":
             costs = None
             if args.costs:
                 with args.costs.open(encoding="utf-8") as stream:
                     costs = load_document(stream)
             result = refresh_plan(graph, costs, args.budget)
+        else:
+            raise ValueError(args.command)
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True, allow_nan=False))
         return 0
     except (OSError, ValueError, TypeError, KeyError) as error:

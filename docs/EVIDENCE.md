@@ -76,7 +76,21 @@ has been proved.
 
 ## Budgeted re-verification plan
 
-`refresh-plan` groups stale or broken conclusions by node, ranks broken
-evidence ahead of environmental staleness, then by downstream reach. Costs are
-optional estimates in seconds. An unknown cost never counts as zero inside a
-finite budget. The plan does not dispatch a run.
+`refresh-plan` groups stale or broken conclusions into one run per node, ordered
+by the node's most urgent receipt state: `BROKEN`, `churn`, `orange`, then
+`yellow`. Within a rank, greater downstream reach comes first, then node id for
+deterministic ties. A node's reach is the union of its affected conclusions and
+their transitive consumers; a run covers every conclusion of that node.
+
+```sh
+python scripts/evidence_queries.py --input current.json refresh-plan --costs costs.json --budget 3600
+```
+
+`costs.json` maps node ids to finite positive estimates in seconds, for example
+`{"FKS2.v1": 1200}`. The optional budget must also be finite and positive. Runs
+are considered in rank order, skipping unknown or over-budget costs under a
+finite budget; without a budget, unknown-cost runs are selected too. An unknown
+cost never counts as zero inside a finite budget. `known_selected_seconds`
+totals only known selected estimates, not a guaranteed porting cost. The output
+keeps `"dispatches": false` and `"costs_are_estimates": true`: planning never
+dispatches verification, which remains a human act.

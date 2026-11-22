@@ -2,7 +2,11 @@
 import copy
 import importlib.util
 import io
+import json
 import pathlib
+import subprocess
+import sys
+import tempfile
 import unittest
 
 _SPEC = importlib.util.spec_from_file_location(
@@ -121,9 +125,124 @@ class QueryTests(unittest.TestCase):
 
     def test_nonfinite_and_boolean_costs_are_rejected(self):
         graph = query.EvidenceGraph(self.diamond())
-        for value in [True, float("inf"), float("nan"), -1]:
+        for value in [True, False, float("inf"), float("-inf"), float("nan"), 0, -1, "20", None]:
             with self.subTest(value=value), self.assertRaises(ValueError):
                 query.refresh_plan(graph, {"A.v1": value})
+            with self.subTest(budget=value), self.assertRaises(ValueError):
+                # None is the valid unbounded-budget sentinel.
+                query.refresh_plan(graph, budget=value if value is not None else "unbounded")
+        for costs in [[], 20, {1: 20}]:
+            with self.subTest(costs=costs), self.assertRaises(ValueError):
+                query.refresh_plan(graph, costs)
+
+    def ranked_plan_document(self):
+        entries = [entry(f"{node}.v1.main", "lean-comparator-drifted" if state == "BROKEN"
+                         else "lean-comparator-stale", receipt={"state": state})
+                   for node, state in [("A", "yellow"), ("B", "orange"),
+                                       ("C", "churn"), ("Z", "BROKEN")]]
+        # Less urgent nodes deliberately have greater downstream reach.
+        for node, count in [("A", 3), ("B", 2), ("C", 1)]:
+            entries += [entry(f"User{node}{i}.v1.main",
+                              requirements=[(f"{node}.v1.main", "import")])
+                        for i in range(count)]
+        return document(*entries)
+
+    def test_plan_ranks_all_four_states_before_downstream_reach(self):
+        d = self.ranked_plan_document()
+        original = copy.deepcopy(d)
+        result = query.refresh_plan(query.EvidenceGraph(d))
+        self.assertEqual([r["node"] for r in result["runs"]], ["Z.v1", "C.v1", "B.v1", "A.v1"])
+        self.assertEqual([r["downstream_reach"] for r in result["runs"]], [1, 2, 3, 4])
+        self.assertTrue(all(r["selected"] for r in result["runs"]))
+        self.assertEqual(result["known_selected_seconds"], 0)
+        self.assertTrue(result["costs_are_estimates"])
+        self.assertFalse(result["dispatches"])
+        self.assertEqual(d, original)
+
+    def test_plan_shared_node_uses_most_urgent_state_and_union_reach(self):
+        d = document(
+            entry("Z.v1.one", "lean-comparator-stale", receipt={"state": "yellow"}),
+            entry("Z.v1.two", "lean-comparator-stale", receipt={"state": "churn"}),
+            entry("Z.v1.healthy", "lean-comparator", receipt={"state": "green"}),
+            entry("A.v1.main", "lean-comparator-stale", receipt={"state": "orange"}),
+            entry("User.v1.main", requirements=[("Z.v1.one", "import"), ("Z.v1.two", "import")]))
+        result = query.refresh_plan(query.EvidenceGraph(d), {"Z.v1": 20, "A.v1": 20}, 20)
+        self.assertEqual([r["node"] for r in result["runs"]], ["Z.v1", "A.v1"])
+        run = result["runs"][0]
+        self.assertEqual(run["states"], ["churn", "yellow"])
+        self.assertEqual(run["reasons"], ["Z.v1.one", "Z.v1.two"])
+        self.assertEqual(run["covers"], ["Z.v1.healthy", "Z.v1.one", "Z.v1.two"])
+        self.assertEqual(run["downstream_reach"], 3)
+        self.assertEqual(result["known_selected_seconds"], 20)
+        self.assertTrue(run["selected"])
+        self.assertEqual(result["runs"][1]["decision"], "over-budget")
+
+    def test_plan_equal_rank_uses_reach_then_deterministic_node_ties(self):
+        for state in ["BROKEN", "churn", "orange", "yellow"]:
+            entries = [entry(f"{node}.v1.main", "lean-comparator-drifted" if state == "BROKEN"
+                             else "lean-comparator-stale", receipt={"state": state})
+                       for node in ["C", "B", "A"]]
+            entries += [entry("User.v1.main", requirements=[("C.v1.main", "import")]),
+                        entry("Transitive.v1.main", requirements=[("User.v1.main", "import")])]
+            for ordered in [entries, list(reversed(entries))]:
+                with self.subTest(state=state, first=ordered[0]["key"]):
+                    result = query.refresh_plan(query.EvidenceGraph(document(*ordered)))
+                    self.assertEqual([r["node"] for r in result["runs"]], ["C.v1", "A.v1", "B.v1"])
+                    self.assertEqual([r["downstream_reach"] for r in result["runs"]], [3, 1, 1])
+
+    def test_plan_finite_budget_skips_unknown_and_expensive_runs_then_fills_exactly(self):
+        graph = query.EvidenceGraph(self.ranked_plan_document())
+        result = query.refresh_plan(graph, {"C.v1": 11, "B.v1": 6, "A.v1": 4.0}, 10)
+        self.assertEqual([r["decision"] for r in result["runs"]],
+                         ["unknown-cost", "over-budget", "selected", "selected"])
+        self.assertEqual(result["known_selected_seconds"], 10)
+        self.assertEqual(result["budget_seconds"], 10)
+        self.assertIsNone(result["runs"][0]["estimated_seconds"])
+
+    def test_plan_ignores_green_and_unreceipted_conclusions(self):
+        graph = query.EvidenceGraph(document(
+            entry("A.v1.main", "lean-comparator", receipt={"state": "green"}), entry("B.v1.main")))
+        self.assertEqual(query.refresh_plan(graph)["runs"], [])
+
+    def test_refresh_plan_cli_files_and_stdin_use_ranked_budget(self):
+        d = self.ranked_plan_document()
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = pathlib.Path(temporary)
+            evidence, costs = directory / "evidence.json", directory / "costs.json"
+            evidence.write_text(json.dumps(d), encoding="utf-8")
+            costs.write_text(json.dumps({"C.v1": 11, "B.v1": 6, "A.v1": 4}), encoding="utf-8")
+            for source in [[], ["--input", str(evidence)]]:
+                with self.subTest(source=source):
+                    process = subprocess.run(
+                        [sys.executable, "-I", query.__file__, *source, "refresh-plan",
+                         "--costs", str(costs), "--budget", "10"],
+                        input=json.dumps(d), text=True, encoding="utf-8", capture_output=True, timeout=10)
+                    self.assertEqual(process.returncode, 0, process.stderr)
+                    self.assertEqual(process.stderr, "")
+                    result = json.loads(process.stdout)
+                    self.assertEqual([r["node"] for r in result["runs"]], ["Z.v1", "C.v1", "B.v1", "A.v1"])
+                    self.assertEqual([r["decision"] for r in result["runs"]],
+                                     ["unknown-cost", "over-budget", "selected", "selected"])
+                    self.assertEqual(result["known_selected_seconds"], 10)
+                    self.assertFalse(result["dispatches"])
+                    self.assertTrue(result["costs_are_estimates"])
+
+    def test_refresh_plan_cli_rejects_invalid_costs_and_budgets_without_json(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            costs = pathlib.Path(temporary) / "costs.json"
+            cases = [(["--costs", str(costs)], content)
+                     for content in ['{"A.v1": NaN}', '{"A.v1": 1e999}', '{"A.v1": true}']]
+            cases += [(["--budget", value], '{}') for value in ["nan", "inf", "0", "-1"]]
+            for arguments, content in cases:
+                with self.subTest(arguments=arguments, content=content):
+                    costs.write_text(content, encoding="utf-8")
+                    process = subprocess.run(
+                        [sys.executable, "-I", query.__file__, "refresh-plan", *arguments],
+                        input=json.dumps(self.ranked_plan_document()), text=True, encoding="utf-8",
+                        capture_output=True, timeout=10)
+                    self.assertEqual(process.returncode, 1, process.stderr)
+                    self.assertEqual(process.stdout, "")
+                    self.assertIn("error:", process.stderr)
 
     def test_duplicate_keys_and_unsupported_schema_fail(self):
         with self.assertRaisesRegex(ValueError, "duplicate JSON"):

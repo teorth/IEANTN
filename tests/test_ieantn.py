@@ -2378,6 +2378,17 @@ class TestScaffolding(FixtureRepo):
         )
         self.assertEqual(config["theorem_names"], ["A.v1.challenge_main"])
 
+    def test_new_solution_satisfies_the_toolchain_invariant(self) -> None:
+        pin = "leanprover/lean4:v4.35.0-rc3\n"
+        (self.root / "lean-toolchain").write_text(pin, encoding="utf-8")
+        self.write_node("A.v1", LITERATURE)
+        self.generate()
+        self.assertTrue(ieantn.check_closure())
+        self.assertTrue(ieantn.new_solution("A.v1"))
+        self.assertTrue(ieantn.check_closure())
+        self.assertEqual((self.root / "Solutions/A.v1/lean-toolchain").read_text(encoding="utf-8"),
+                         pin)
+
     def test_deprecate_requires_the_replacement_to_exist(self) -> None:
         self.write_node("A.v1", LITERATURE)
         self.assertFalse(ieantn.deprecate("A.v1", "A.v2"))
