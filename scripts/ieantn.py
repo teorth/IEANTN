@@ -1205,7 +1205,12 @@ def check_closure() -> bool:
     """
     problems = Problems()
 
-    for path in sorted(VOCAB_DIR.rglob("*.lean")):
+    vocabulary_files = sorted(VOCAB_DIR.rglob("*.lean"))
+    # Conclusions may import the umbrella as well as individual Vocabulary modules.
+    vocabulary_umbrella = VOCAB_DIR.with_suffix(".lean")
+    if vocabulary_umbrella.is_file():
+        vocabulary_files.insert(0, vocabulary_umbrella)
+    for path in vocabulary_files:
         for module in imports_of(path):
             if not (under(module, "Mathlib") or under(module, "IEANTN.Vocabulary")):
                 problems.add(rel(path), f"Vocabulary may import only Mathlib; found `{module}`")
