@@ -55,8 +55,8 @@ conclusions:
       A SORRY-FREE LEAN PROOF OF EXACTLY THIS STATEMENT EXISTS (about 620 lines, axioms propext,
       Classical.choice, Quot.sound only), by rectangle contour shifts for the 1/(pi T |log y|)
       half and a circular arc for the 1 half. It is in Solutions/TruncatedPerron.v1
-      (PerronDev.lean, bridged in Solution.lean). The node is verified all at once, so the receipt
-      waits on perron_general and perron_psi.
+      (PerronDev.lean, bridged in Solution.lean), together with proofs of the other two
+      conclusions, awaiting the verification workflow.
   designated: titchmarsh
   progress:
     solution: Solutions/TruncatedPerron.v1/
@@ -82,6 +82,8 @@ conclusions:
       EXPECTED ROUTE for a Lean proof: perron_single_term for n != x; the explicit integral
       (1/pi) arctan(T/sigma_0) for n = x; interchange by dominated convergence on the compact
       segment (the series is dominated by x^sigma_0 sum |a_n| n^-sigma_0 / sigma_0).
+      A sorry-free Lean proof along this route is in Solutions/TruncatedPerron.v1
+      (PerronGeneral.lean), awaiting the verification workflow.
   designated: montgomery-vaughan
   progress:
     solution: Solutions/TruncatedPerron.v1/
@@ -108,6 +110,8 @@ conclusions:
       the source; it is covered by the same argument, since every term of the error sum is bounded
       by the same expression for any T > 0, and only changes C.
       Davenport ch. 17 gives the same estimate.
+      A sorry-free Lean proof, derived from perron_general, is in Solutions/TruncatedPerron.v1
+      (PerronPsi.lean), awaiting the verification workflow.
   designated: montgomery-vaughan-12-5
   progress:
     solution: Solutions/TruncatedPerron.v1/
