@@ -6,7 +6,7 @@ node:
   family: FKS2ThetaFloor
   version: v1
   kind: standard
-  status: awaiting-verification
+  status: active
 
 project:
   name: FKS2's small-range theta floor
@@ -44,7 +44,10 @@ conclusions:
       verification workflow writes a receipt. The argument is the paper's: u = sqrt(log x / R)
       turns the bound into A u^3 exp(-2u), whose only critical point in the range is a maximum
       at u = 3/2, so the minimum on [2, exp 30] is at an endpoint.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/44987695107'
+  designated: comparator
 
 sources:
 - title: Sharper bounds for the error term in the Prime Number Theorem
