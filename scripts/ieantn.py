@@ -4994,38 +4994,69 @@ def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, 
 
     A dotted name at the top level is used as written. A short name is prefixed with the
     namespaces open around it. A dotted name inside a namespace is skipped: which full name Lean
-    would assign is not something to guess. Only a single explicit `(name : type)` binder is
+    would assign is not something to guess. A `section` is not a namespace: closing it must not
+    drop the namespace that contains it. Only a single explicit `(name : type)` binder is
     accepted, and only when `type` is one of `known`. An implicit binder or a side condition
     disqualifies that theorem.
     """
     code = strip_lean_comments(text)
-    stack: list[str] = []
+    # ("namespace", component) or ("section", name-or-None). Sections sit in the same
+    # stack so `end` closes the innermost scope, but only namespace components are
+    # prefixed onto theorem names.
+    scopes: list[tuple[str, str | None]] = []
     found: list[tuple[str, list[str]]] = []
     index, length = 0, len(code)
+
+    def header_name(at: int) -> tuple[str, int]:
+        # The optional name stays on the header line. Skipping every whitespace
+        # character would treat the next command (`end` or `theorem`) as that name.
+        while at < length and code[at] in " \t":
+            at += 1
+        if at < length and code[at] == "\n":
+            return "", at
+        return _read_lean_name(code, at)
+
+    def close_scope(parts: list[str]) -> None:
+        if not parts:
+            if scopes:
+                scopes.pop()
+            return
+        remaining = parts[:]
+        cut = len(scopes)
+        while remaining and cut > 0:
+            kind, name = scopes[cut - 1]
+            if kind == "namespace" and name == remaining[-1]:
+                remaining.pop()
+                cut -= 1
+                continue
+            if kind == "section" and name and remaining == [name]:
+                remaining = []
+                cut -= 1
+                continue
+            break
+        if not remaining:
+            del scopes[cut:]
+
     while index < length:
         if _ident_boundary(code, index, "namespace"):
-            index = _skip_ws(code, index + len("namespace"))
-            name, index = _read_lean_name(code, index)
-            stack.extend(part for part in name.split(".") if part)
+            name, index = header_name(index + len("namespace"))
+            for part in name.split("."):
+                if part:
+                    scopes.append(("namespace", part))
+            continue
+        if _ident_boundary(code, index, "section"):
+            name, index = header_name(index + len("section"))
+            scopes.append(("section", name or None))
             continue
         if _ident_boundary(code, index, "end"):
-            index = _skip_ws(code, index + len("end"))
-            name, next_index = _read_lean_name(code, index)
-            if name:
-                parts = [part for part in name.split(".") if part]
-                if len(stack) >= len(parts) and stack[-len(parts):] == parts:
-                    del stack[-len(parts):]
-                elif stack:
-                    stack.pop()
-                index = next_index
-            elif stack:
-                stack.pop()
-            else:
-                index += 1
+            name, next_index = header_name(index + len("end"))
+            close_scope([part for part in name.split(".") if part] if name else [])
+            index = next_index if next_index > index else index + len("end")
             continue
         if not _ident_boundary(code, index, "theorem"):
             index += 1
             continue
+        stack = [name for kind, name in scopes if kind == "namespace" and name]
         index = _skip_ws(code, index + len("theorem"))
         declared, index = _read_lean_name(code, index)
         ambiguous = "." in declared and bool(stack)
