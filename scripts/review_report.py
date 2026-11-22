@@ -99,7 +99,8 @@ def build_ci_payload(
 
 
 def _bullet(body: str) -> str:
-    return "- " + body.replace("\n", "\n  ")
+    # A finding is untrusted text, not permission to notify users or teams.
+    return "- " + body.replace("@", "＠").replace("\n", "\n  ")
 
 
 def render_review_report(payload: object, context: dict) -> str:
@@ -144,6 +145,17 @@ def render_review_report(payload: object, context: dict) -> str:
         lines += [
             "The pull request's current head SHA could not be read, so this report is not "
             "known to be current.",
+            "",
+        ]
+    if context.get("origin_base_unconfirmed"):
+        origin_note = (
+            "The workflow event did not identify its originating pull request. "
+            if context.get("origin_unidentified") else ""
+        )
+        lines += [
+            origin_note + "This comment is associated by the run's fork, branch and commit; "
+            "the analysis's original base is not independently attested. Base-relative "
+            "findings are not confirmed for this pull request's current base.",
             "",
         ]
     if report["truncated"]:
@@ -195,10 +207,11 @@ def upsert_review_comment(comments: list[dict], body: str) -> dict:
 
 
 def trusted_run(event: object) -> dict | None:
-    """The pull request number and run SHA from a workflow_run event, or None if this run is not one.
+    """The run SHA from a successful pull-request workflow_run event, or None.
 
-    `checkout_head` is always false. The head SHA is recorded so the comment can name it. It is
-    not a ref, and a fork-shaped payload does not change that.
+    Fork runs can have an empty `pull_requests` array. Resolve the comment target separately
+    through the trusted run SHA, never through a number supplied in the artifact.
+    `checkout_head` is always false: the SHA is a label, not a ref to execute.
     """
     if not isinstance(event, dict):
         return None
@@ -207,16 +220,26 @@ def trusted_run(event: object) -> dict | None:
         return None
     if run.get("conclusion") != "success" or run.get("event") != "pull_request":
         return None
-    pulls = run.get("pull_requests")
-    if not isinstance(pulls, list) or not pulls or not isinstance(pulls[0], dict):
-        return None
-    number = pulls[0].get("number")
     sha = run.get("head_sha")
-    if not isinstance(number, int) or isinstance(number, bool) or number < 1:
-        return None
     if not isinstance(sha, str) or HEAD_SHA.fullmatch(sha) is None:
         return None
-    return {"pull_request": number, "run_head_sha": sha, "checkout_head": False}
+    head_repository = _text(_mapping(run.get("head_repository")).get("full_name"))
+    head_branch = _text(run.get("head_branch"))
+    if REPO_NAME.fullmatch(head_repository) is None or not head_branch:
+        return None
+    trusted: dict = {
+        "run_head_sha": sha, "checkout_head": False,
+        "head_repository": head_repository, "head_branch": head_branch,
+    }
+    pulls = run.get("pull_requests", [])
+    if not isinstance(pulls, list) or len(pulls) > 1:
+        return None
+    if pulls:
+        number = _mapping(pulls[0]).get("number")
+        if type(number) is not int or number < 1:
+            return None
+        trusted["pull_request"] = number
+    return trusted
 
 
 def _mapping(value: object) -> dict:
@@ -286,40 +309,114 @@ def _list_comments(repo: str, number: int, token: str) -> list[dict]:
     return comments
 
 
-def post_review(event: dict, payload_path: pathlib.Path, repo: str, token: str) -> int:
-    """Post or update the comment. Returns 0 when there is nothing to comment on."""
+def _pull_request_number(
+    repo: str, run_head_sha: str, token: str, head_repository: str, head_branch: str,
+    expected_number: int | None = None,
+) -> int | None:
+    """Find one unambiguous association, retaining any trusted event identity.
+
+    A closed association still makes another open PR ambiguous: a shared commit does not
+    establish which PR produced the run's base-relative analysis.
+    """
+    numbers: set[int] = set()
+    associated: set[int] = set()
+    path: str | None = f"/repos/{repo}/commits/{run_head_sha}/pulls?per_page=100"
+    while path is not None:
+        page, link = _api("GET", path, None, token)
+        if not isinstance(page, list):
+            raise ReviewReportError("associated pull-request listing was not a list")
+        for pull in page:
+            if not isinstance(pull, dict):
+                raise ReviewReportError("associated pull request was not an object")
+            number = pull.get("number")
+            base_repo = _mapping(_mapping(pull.get("base")).get("repo"))
+            if type(number) is not int or number < 1 or base_repo.get("full_name") != repo:
+                raise ReviewReportError("unexpected associated pull-request identity")
+            if pull.get("state") not in {"open", "closed"}:
+                raise ReviewReportError("unexpected associated pull-request state")
+            associated.add(number)
+            head = _mapping(pull.get("head"))
+            if (pull["state"] == "open" and head.get("ref") == head_branch
+                    and _mapping(head.get("repo")).get("full_name") == head_repository):
+                numbers.add(number)
+            if len(numbers) > 1:
+                raise ReviewReportError("more than one open pull request matches the run commit")
+        match = re.search(r"<https://api\.github\.com([^>]+)>; rel=\"next\"", link)
+        path = match.group(1) if match else None
+    if not numbers:
+        return None
+    number = next(iter(numbers))
+    if len(associated) > 1 or expected_number is not None and number != expected_number:
+        raise ReviewReportError("associated pull request is ambiguous or differs from the trusted event")
+    return number
+
+
+def resolve_review_target(event: object, repo: str, token: str) -> tuple[dict, int] | None:
+    """Read-only target discovery, also used before acquiring a per-PR comment lock."""
     if REPO_NAME.fullmatch(repo) is None:
         raise ReviewReportError("unexpected repository name")
     trusted = trusted_run(event)
     if trusted is None:
-        print("not a successful pull-request run with an associated pull request; not commenting")
-        return 0
+        return None
     if trusted["checkout_head"]:
         raise ReviewReportError("refusing to comment from a plan that checks out the head")
+    number = _pull_request_number(
+        repo, trusted["run_head_sha"], token, trusted["head_repository"], trusted["head_branch"],
+        trusted.get("pull_request"),
+    )
+    return (trusted, number) if number is not None else None
+
+
+def post_review(
+    event: dict, payload_path: pathlib.Path, repo: str, token: str,
+    expected_number: int | None = None,
+) -> int:
+    """Post or update the comment. Returns 0 when there is nothing to comment on."""
+    target = resolve_review_target(event, repo, token)
+    if target is None:
+        print("no unambiguous pull request matches the trusted run context; not commenting")
+        return 0
+    trusted, number = target
+    if expected_number is not None and (type(expected_number) is not int or number != expected_number):
+        raise ReviewReportError("resolved pull request changed after acquiring its comment lock")
     report = load_report_file(payload_path)
-    pull, _link = _api("GET", f"/repos/{repo}/pulls/{trusted['pull_request']}", None, token)
-    comments = _list_comments(repo, trusted["pull_request"], token)
-    body = render_review_report(report, context_for(pull, trusted["run_head_sha"]))
+    pull, _link = _api("GET", f"/repos/{repo}/pulls/{number}", None, token)
+    if _mapping(pull).get("state") != "open":
+        print("the associated pull request is no longer open; not commenting")
+        return 0
+    head = _mapping(_mapping(pull).get("head"))
+    if (head.get("ref") != trusted["head_branch"]
+            or _mapping(head.get("repo")).get("full_name") != trusted["head_repository"]):
+        raise ReviewReportError("pull-request source no longer matches the trusted run")
+    comments = _list_comments(repo, number, token)
+    context = context_for(pull, trusted["run_head_sha"])
+    # A PR number identifies the origin, not the base used by the old analysis.
+    context["origin_unidentified"] = "pull_request" not in trusted
+    context["origin_base_unconfirmed"] = True
+    body = render_review_report(report, context)
     plan = upsert_review_comment(comments, body)
     if plan["action"] == "update":
         _api("PATCH", f"/repos/{repo}/issues/comments/{plan['id']}", {"body": plan["body"]}, token)
-        print(f"updated review comment {plan['id']} on pull request {trusted['pull_request']}")
+        print(f"updated review comment {plan['id']} on pull request {number}")
     else:
         _api(
-            "POST", f"/repos/{repo}/issues/{trusted['pull_request']}/comments",
+            "POST", f"/repos/{repo}/issues/{number}/comments",
             {"body": plan["body"]}, token,
         )
-        print(f"created review comment on pull request {trusted['pull_request']}")
+        print(f"created review comment on pull request {number}")
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Post the IEANTN review report comment")
     sub = parser.add_subparsers(dest="command", required=True)
-    post = sub.add_parser("post", help="comment on the pull request from a workflow_run event")
-    post.add_argument("--event", required=True, help="path to the workflow event JSON")
+    resolve = sub.add_parser("resolve", help="resolve the comment target without writing to GitHub")
+    post = sub.add_parser("post", help="comment under the resolved pull request's workflow lock")
+    for command in (resolve, post):
+        command.add_argument("--event", required=True, help="path to the workflow event JSON")
+        command.add_argument("--repo", required=True, help="owner/name")
     post.add_argument("--payload", required=True, help="path to review-report.json")
-    post.add_argument("--repo", required=True, help="owner/name")
+    post.add_argument("--expected-pr", type=int, required=True, help="PR number from the read-only resolve job")
     args = parser.parse_args(argv)
     token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
     if not token:
@@ -328,7 +425,11 @@ def main(argv: list[str] | None = None) -> int:
     event_path = pathlib.Path(args.event)
     try:
         event = json.loads(event_path.read_text(encoding="utf-8"))
-        return post_review(event, pathlib.Path(args.payload), args.repo, token)
+        if args.command == "resolve":
+            target = resolve_review_target(event, args.repo, token)
+            print(f"pull_request={target[1] if target is not None else ''}")
+            return 0
+        return post_review(event, pathlib.Path(args.payload), args.repo, token, args.expected_pr)
     except (OSError, json.JSONDecodeError, ReviewReportError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 1

@@ -61,8 +61,15 @@ they were are readable with `git show` — from each node's file, or from the re
 summary, which needs no token and no permissions. `.github/workflows/review-report.yml` posts that
 analysis as one pull request comment after CI succeeds. The workflow file that runs is the one on
 the default branch: it reads the artifact and does not check out or execute the pull request head.
-The comment it updates is the one that starts with `<!-- ieantn-review-report -->`. Still to do:
-recommended-modification text for cases beyond the in-place edit.
+The comment it updates is the one that starts with `<!-- ieantn-review-report -->`. A read-only
+job resolves the target from the run's commit, fork and branch; the commenting job resolves it
+again under a per-PR concurrency lock. Ambiguous matches are refused. PR identity does not
+attest the original analysis base, even when the event identifies the PR, so every comment
+explicitly records that limit. Both jobs check out the trusted default-branch workflow revision,
+not a moving branch tip or contributor head. The concurrency group retains only the newest
+pending report for a given PR, not every rerun. See
+[SECURITY.md](../SECURITY.md) for these boundaries. Still to do: recommended-modification text for
+cases beyond the in-place edit.
 
 **5. Verification.** *Done, and exercised.* `scripts/verify-comparator.sh` with the four trusted
 tools pinned, and `.github/workflows/verify.yml` splitting the run in two: `comparator` executes

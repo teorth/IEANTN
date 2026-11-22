@@ -36,8 +36,9 @@ def fork_event() -> dict:
             "event": "pull_request",
             "head_sha": HEAD,
             "head_repository": {"full_name": "contributor/ieantn"},
+            "head_branch": "topic",
             "repository": {"full_name": "teorth/IEANTN"},
-            "pull_requests": [{"number": 7}],
+            "pull_requests": [],
         }
     }
 
@@ -46,7 +47,8 @@ class TestReviewReport(unittest.TestCase):
     def test_fork_shaped_input_is_labelled_and_not_checked_out(self) -> None:
         trusted = review_report.trusted_run(fork_event())
         self.assertEqual(
-            trusted, {"pull_request": 7, "run_head_sha": HEAD, "checkout_head": False}
+            trusted, {"run_head_sha": HEAD, "checkout_head": False,
+                      "head_repository": "contributor/ieantn", "head_branch": "topic"}
         )
         self.assertNotIn("ref", trusted)
         pull = {

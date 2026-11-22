@@ -66,11 +66,28 @@ authenticated `gh api` call, and the resolved upstream commit is written to the 
 **Review comment (`review-report.yml`).** CI's impact job writes a JSON artifact and does not
 receive `pull-requests: write`, because that job checks out the pull request. A second workflow,
 triggered by `workflow_run` after CI succeeds, runs the workflow file from the default branch.
-It checks out that branch, reads the artifact, and uses the token only to comment. It does not
-check out the pull request head and it does not compile Lean. The token has `pull-requests: write`
-and not `contents: write`, so it cannot push. The artifact is untrusted text: the renderer accepts
-a head SHA, findings, and a truncated flag, and updates only the comment that starts with
-`<!-- ieantn-review-report -->`.
+Both its jobs check out the trusted default-branch workflow revision (`github.sha`, not the
+contributor's `workflow_run.head_sha`) with persisted credentials disabled; neither checks out the
+pull request head or compiles Lean. The first job has read-only permissions and resolves a target
+through the run commit's paginated pull-request associations, requiring the run's fork and branch
+to match. Ambiguous associations, including a closed PR alongside another open one, are refused;
+a PR number present in the trusted event must also agree. The artifact cannot choose the target.
+
+The comment job has `actions: read`, `contents: read` and `pull-requests: write`, not
+`contents: write`, so it cannot push. A per-PR concurrency group serializes comment lookup and
+creation without unrelated PRs displacing one another. GitHub keeps only one pending job per
+group, so this is not a lossless queue of reports for the same PR. Under that lock the script
+resolves the target again, requires it to match the first job's output, and rechecks that the PR
+is open and its source still matches. The artifact is untrusted text: the renderer accepts only
+a head SHA, findings, and a truncated flag, caps the payload and comment, neutralizes mentions,
+and updates the comment that starts with `<!-- ieantn-review-report -->`. Its SHA is compared
+with the trusted run SHA for display; it grants no authority to comment.
+
+An empty event PR array is normal for forks. Fork, branch and commit association does not
+independently attest which base the original analysis compared against: a PR can be retargeted,
+even when its number is present in the event. Every posted report therefore states that its
+base-relative findings are not confirmed for the current base. Artifact contents remain
+contributor-controlled analysis, not a verification receipt.
 
 ## The trusted base of a receipt
 
