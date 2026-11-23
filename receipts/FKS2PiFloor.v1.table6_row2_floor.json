@@ -1,0 +1,35 @@
+{
+  "challenge": "FKS2PiFloor.v1.challenge_table6_row2_floor",
+  "conclusion": "FKS2PiFloor.v1.table6_row2_floor",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6"
+  },
+  "repository": {
+    "commit": "af86beabecb0723b03c2e374f9ef547de31e5f15"
+  },
+  "run": {
+    "recorded_at": "2026-11-22T06:16:58Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/44990079299"
+  },
+  "schema": 2,
+  "solution": {
+    "dependencies": [
+      {
+        "name": "leancert",
+        "rev": "9c4bde501499fb50ec22d08d072cb47019f9dbe5",
+        "url": "https://github.com/alerad/leancert.git"
+      }
+    ],
+    "project": "Solutions/FKS2PiFloor.v1"
+  },
+  "statement": {
+    "FKS2PiFloor.v1.table6_row2_floor": "9ffe27ea7d004b84edd59278b24954a63298b3459debab073a0bb8a3cd0dac22"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}

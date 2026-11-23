@@ -1,0 +1,14 @@
+{
+  "challenge_module": "IEANTN.Nodes.RosserSchoenfeld1962.v4.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "RosserSchoenfeld1962.v4.challenge_psi_sub_theta_ratio_maximum_at_361",
+    "RosserSchoenfeld1962.v4.challenge_equation_3_36"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

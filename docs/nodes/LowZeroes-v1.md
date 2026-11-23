@@ -101,6 +101,12 @@ noncomputable def no_zeroes_below_first_ordinate : Prop :=
 
 > Asserted as a numerical fact about zeta: there are no zeroes with 0 < Im rho < 14.134725. The digits are the standard truncation of the first nontrivial ordinate 14.1347251417..., stated on an open interval with a margin 0 site so that widening later is a one-numeral change. Stated as an empty zero set rather than as zetaN = 0: zetaN is a tsum, whose junk value for a non-summable family is 0, so the counting form would hold vacuously where the empty-set form does not, and a consumer would have to prove finiteness before it said anything. ZeroFreeHeight's module docstring and this node's limitations both name this as the input needed to push a classical region below exp(2/R). Imports none.
 
+**Justification `bridge-from-zero-locations`** — bridged
+  
+  Bridged from ZetaZeroLocations.v1.located_0_1000 via `IEANTN/Bridges/ZetaZeroLocations/ToLowZeroes.lean`.
+
+> A spare, as Platt2017 is for Wedeniwski: the same fact on the evidence of the located zeros below height 1000. Every listed integer is at least 14134725141734693790457252 (checked by the kernel), so a zero with 0 < Im rho < 14.134725 would be more than 1e-7 from every listed ordinate. Not designated: it is only as good as ZetaZeroLocations.v1, which awaits its solution, and the designated justification records where the literature takes the fact from.
+
 ## Limitations
 
 Recorded by the node itself, not derived.

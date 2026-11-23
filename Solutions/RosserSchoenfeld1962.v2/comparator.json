@@ -1,0 +1,14 @@
+{
+  "challenge_module": "IEANTN.Nodes.RosserSchoenfeld1962.v2.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "RosserSchoenfeld1962.v2.challenge_psi_ratio_maximum_at_113",
+    "RosserSchoenfeld1962.v2.challenge_psi_ratio_unique_maximum_at_113"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
