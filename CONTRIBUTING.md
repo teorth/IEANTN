@@ -461,6 +461,13 @@ make no claims of record, so they are not fingerprinted and never affect a recei
 A paper the network does not cover yet, a pipeline abstracted from several, a piece of folklore, or
 a large computation.
 
+**First, check it is in scope** — see [Scope](README.md#scope). Two conditions: the claim is tied to
+an accepted result in the literature, published or preprint, and it is plausibly connected to the
+network, meaning it imports something already here or something already here could import it.
+Anywhere in explicit analytic number theory is welcome on those terms. If you are unsure, open an
+issue describing the result and the connection; that is cheaper than a node that has to be
+withdrawn.
+
 **Do:**
 
 ```bash
