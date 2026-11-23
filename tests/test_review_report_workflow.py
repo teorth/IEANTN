@@ -61,7 +61,13 @@ class TestReviewWorkflowTarget(unittest.TestCase):
                         "resolve", "--event", str(event), "--repo", REPO,
                     ]), 0)
                 self.assertEqual(output.getvalue(), expected)
-                api.assert_called_once_with("GET", ASSOCIATED, None, "fixture-token")
+                expected_calls = [mock.call("GET", ASSOCIATED, None, "fixture-token")]
+                if not matches:
+                    expected_calls.append(mock.call(
+                        "GET", f"/repos/contributor/ieantn/commits/{HEAD}/pulls?per_page=100",
+                        None, "fixture-token",
+                    ))
+                self.assertEqual(api.call_args_list, expected_calls)
 
     def test_missing_or_malformed_source_identity_never_contacts_api(self):
         for key, value in [("head_branch", ""), ("head_branch", None),

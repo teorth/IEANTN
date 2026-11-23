@@ -70,7 +70,9 @@ Both its jobs check out the trusted default-branch workflow revision (`github.sh
 contributor's `workflow_run.head_sha`) with persisted credentials disabled; neither checks out the
 pull request head or compiles Lean. The first job has read-only permissions and resolves a target
 through the run commit's paginated pull-request associations, requiring the run's fork and branch
-to match. Ambiguous associations, including a closed PR alongside another open one, are refused;
+to match. If the destination has no association, lookup falls back to the trusted run's source
+repository and filters associations to the destination. Ambiguous associations, including a closed
+PR alongside another open one, are refused;
 a PR number present in the trusted event must also agree. The artifact cannot choose the target.
 
 The comment job has `actions: read`, `contents: read` and `pull-requests: write`, not

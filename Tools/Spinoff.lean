@@ -53,7 +53,7 @@ mis-sliced declaration fails there rather than silently producing a Challenge th
 other than the node does.
 -/
 
-open Lean
+open Lean Meta
 
 namespace IEANTN.Spinoff
 
@@ -108,6 +108,32 @@ partial def collect (env : Environment) (n : Name) (seen : NameSet) (out : Array
         (fun (acc : NameSet × Array Name) s => collect env s.toName acc.1 acc.2) (seen, out)
       (seen, out.push n)
 
+/-- How a telescope binder was written. -/
+def binderKind (bi : BinderInfo) : String :=
+  match bi with
+  | .default => "explicit"
+  | .implicit => "implicit"
+  | .strictImplicit => "strictImplicit"
+  | .instImplicit => "instImplicit"
+
+/-- Parameters that belong to the constant, in telescope order.
+
+`findDeclarationRanges?` covers the declaration itself and not a surrounding `variable`. Those
+binders are still in the type and the value, and a slice that omits them does not typecheck.
+The generator inserts only the prefix the source text does not already bind. -/
+partial def parameterJson (type value : Expr) (acc : Array Json := #[]) : MetaM (Array Json) := do
+  match type, value with
+  | .forallE n ty body bi, .lam _ _ vbody _ =>
+    let printed ← ppExpr ty
+    let entry := Json.mkObj [
+      ("name", Json.str n.toString),
+      ("binder", Json.str (binderKind bi)),
+      ("type", Json.str (printed.pretty 200))
+    ]
+    withLocalDecl n bi ty fun fvar =>
+      parameterJson (body.instantiate1 fvar) (vbody.instantiate1 fvar) (acc.push entry)
+  | _, _ => return acc
+
 /-- Where one local constant is written, and what kind of declaration it is. -/
 def locate (n : Name) : CoreM (Option Json) := do
   let env ← getEnv
@@ -120,10 +146,14 @@ def locate (n : Name) : CoreM (Option Json) := do
     | .axiomInfo _ => "axiom"
     | .thmInfo _ => "theorem"
     | _ => "other"
+  let parameters ← match info.value? with
+    | some value => parameterJson info.type value |>.run'
+    | none => pure #[]
   return some <| Json.mkObj [
     ("name", Json.str n.toString),
     ("module", Json.str ((env.getModuleFor? n).map Name.toString |>.getD "")),
     ("kind", Json.str kind),
+    ("parameters", Json.arr parameters),
     ("startLine", Json.num full.pos.line), ("startCol", Json.num full.pos.column),
     ("endLine", Json.num full.endPos.line), ("endCol", Json.num full.endPos.column),
     ("nameStartLine", Json.num sel.pos.line), ("nameStartCol", Json.num sel.pos.column),

@@ -316,33 +316,44 @@ def _pull_request_number(
     """Find one unambiguous association, retaining any trusted event identity.
 
     A closed association still makes another open PR ambiguous: a shared commit does not
-    establish which PR produced the run's base-relative analysis.
+    establish which PR produced the run's base-relative analysis. When the base repository
+    has no associations, a fork's trusted run repository can expose the missing association;
+    only pull requests targeting `repo` count there.
     """
     numbers: set[int] = set()
     associated: set[int] = set()
-    path: str | None = f"/repos/{repo}/commits/{run_head_sha}/pulls?per_page=100"
-    while path is not None:
-        page, link = _api("GET", path, None, token)
-        if not isinstance(page, list):
-            raise ReviewReportError("associated pull-request listing was not a list")
-        for pull in page:
-            if not isinstance(pull, dict):
-                raise ReviewReportError("associated pull request was not an object")
-            number = pull.get("number")
-            base_repo = _mapping(_mapping(pull.get("base")).get("repo"))
-            if type(number) is not int or number < 1 or base_repo.get("full_name") != repo:
-                raise ReviewReportError("unexpected associated pull-request identity")
-            if pull.get("state") not in {"open", "closed"}:
-                raise ReviewReportError("unexpected associated pull-request state")
-            associated.add(number)
-            head = _mapping(pull.get("head"))
-            if (pull["state"] == "open" and head.get("ref") == head_branch
-                    and _mapping(head.get("repo")).get("full_name") == head_repository):
-                numbers.add(number)
-            if len(numbers) > 1:
-                raise ReviewReportError("more than one open pull request matches the run commit")
-        match = re.search(r"<https://api\.github\.com([^>]+)>; rel=\"next\"", link)
-        path = match.group(1) if match else None
+    for lookup_repo in dict.fromkeys((repo, head_repository)):
+        path: str | None = f"/repos/{lookup_repo}/commits/{run_head_sha}/pulls?per_page=100"
+        while path is not None:
+            page, link = _api("GET", path, None, token)
+            if not isinstance(page, list):
+                raise ReviewReportError("associated pull-request listing was not a list")
+            for pull in page:
+                if not isinstance(pull, dict):
+                    raise ReviewReportError("associated pull request was not an object")
+                number = pull.get("number")
+                base_repo = _mapping(_mapping(pull.get("base")).get("repo"))
+                base_name = base_repo.get("full_name")
+                if (type(number) is not int or number < 1 or not isinstance(base_name, str)
+                        or REPO_NAME.fullmatch(base_name) is None):
+                    raise ReviewReportError("unexpected associated pull-request identity")
+                if pull.get("state") not in {"open", "closed"}:
+                    raise ReviewReportError("unexpected associated pull-request state")
+                if base_name != repo:
+                    if lookup_repo == repo:
+                        raise ReviewReportError("unexpected associated pull-request identity")
+                    continue
+                associated.add(number)
+                head = _mapping(pull.get("head"))
+                if (pull["state"] == "open" and head.get("ref") == head_branch
+                        and _mapping(head.get("repo")).get("full_name") == head_repository):
+                    numbers.add(number)
+                if len(numbers) > 1:
+                    raise ReviewReportError("more than one open pull request matches the run commit")
+            match = re.search(r'<https://api\.github\.com([^>]+)>; rel="next"', link)
+            path = match.group(1) if match else None
+        if associated:
+            break
     if not numbers:
         return None
     number = next(iter(numbers))
