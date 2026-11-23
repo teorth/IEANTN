@@ -4864,6 +4864,11 @@ def state_at(ref: str | None) -> dict:
                     for d in (conclusion.get("imports") or [])
                 ],
                 "kind": designated.get("kind"),
+                # Recorded separately from `kind`, because a refutation does not change what the
+                # conclusion designates -- it overrides it. Without this, `diff` compares the
+                # designated kinds, finds them identical, and reports "no change" for a branch
+                # that has just declared a conclusion false.
+                "refuted": bool(conclusion.get("refuted")),
                 "from": bridge_sources(designated) if designated.get("kind") == "bridged" else [],
             }
     return {"conclusions": conclusions, "fingerprints": fingerprints, "receipts": receipts}
@@ -5023,6 +5028,27 @@ def diff(base: str) -> bool:
     for key, entry in sorted(after["conclusions"].items()):
         if key not in before["conclusions"]:
             notes.append(f"new conclusion `{key}` (`{entry['kind']}`).")
+            continue
+        # Refuting a conclusion is the strongest degradation there is -- not a weaker
+        # justification but the absence of any -- and it is invisible to every other comparison
+        # here: the statement is untouched, so no fingerprint moves, and the designated
+        # justification is untouched too. It is reported rather than failed, because recording a
+        # published result as false is a legitimate thing for a branch to do; what must not
+        # happen is for it to land looking like no change at all.
+        was, now = before["conclusions"][key].get("refuted"), entry.get("refuted")
+        if now and not was:
+            users = sorted(
+                u for u, current in after["conclusions"].items() if key in current["imports"]
+            )
+            warnings.append(
+                f"**`{key}` is now refuted** -- declared false as stated, so it offers no "
+                "evidence at all."
+                + (f" {len(users)} conclusion(s) still import it and want rerouting: "
+                   + ", ".join(f"`{u}`" for u in users) + "."
+                   if users else " Nothing imports it.")
+            )
+        elif was and not now:
+            notes.append(f"`{key}` is no longer refuted; the counterexample was withdrawn.")
 
     # Vocabulary is this repository's core: shared by every node, and so the one place a single
     # edit can change what many conclusions claim. Mathlib gives its core files the same extra
