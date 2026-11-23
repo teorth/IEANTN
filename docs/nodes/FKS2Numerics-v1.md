@@ -54,6 +54,12 @@ def table6_row2_floor : Prop :=
 
 > A finite check rather than an argument, so `numerical`. On the window [e, e^6] -- x between 2.72 and 403 -- pi(x) is an exact prime count and Li(x) a certified quadrature, so the claim is bounded arithmetic with no analytic content. The paper describes it as checking directly for particularly small x. Imports `none`, and that is a real none: a finite computation on a bounded range consumes no other result in the network. PrimeNumberTheoremAnd carries the same datum as a deliberate `sorry` in its FKS2TrustedNumerics -- it has no import mechanism, so its FKS2 development reports sorryAx. Stating it here is what lets FKS2.v1's solution rest on the same computation without a hole.
 
+**Justification `proved-pi-floor`** — bridged
+  
+  Bridged from FKS2PiFloor.v1.table6_row2_floor via `IEANTN/Bridges/FKS2Numerics/PiFloor.lean`.
+
+> The identical statement, proved separately in Solutions/FKS2PiFloor.v1. Not designated until that node has a verification receipt: the existing numerical evidence must not be replaced by an unverified leaf.
+
 ### `nu_asymp_e30_le`
 
 **The multiplier bound behind Corollary 14**: `ν_asymp(e³⁰) ≤ 6.3376·10⁻⁷`.
@@ -113,6 +119,12 @@ def theta_asymp_ge_one_below_e30 : Prop :=
 **Justification `fks2-small-range-computation`** — **designated** — numerical, the proof of Corollary 14, where the minimum of epsilon_theta,asymp on [2, e^30] is recorded as roughly 2.6271 at x = 2
 
 > What lets BKLNW's E_theta(x) <= 1 cover [2, e^30], the range below where FKS's bound starts. Weaker in kind than the other two claims on this node, and the difference is worth stating. table6_row2_floor and nu_asymp_e30_le are arithmetic that no amount of analysis will replace. This one quantifies over a continuum and is PROVABLE OUTRIGHT: writing u = sqrt(log x / R), the bound is A u^3 exp(-2u), which rises to its maximum at u = 3/2, so on any interval its minimum is at an endpoint and only the endpoint evaluation is numerical. It is carried as an assertion because that is how the paper carries it, and it is the first conclusion on this node that should be promoted to a proof. Found by porting, not by reading -- the second of the two missing imports of FKS2.v1.corollary_14.
+
+**Justification `proved-floor`** — bridged
+  
+  Bridged from FKS2ThetaFloor.v1.theta_asymp_ge_one_below_e30 via `IEANTN/Bridges/FKS2Numerics/ThetaFloor.lean`.
+
+> The same statement, proved as FKS2ThetaFloor.v1. Not designated: that node is still none-yet, and designating this bridge would replace the numerical leaf with an unverified one. Designate it once the receipt exists.
 
 ### `corollary_22_mid_range`
 
