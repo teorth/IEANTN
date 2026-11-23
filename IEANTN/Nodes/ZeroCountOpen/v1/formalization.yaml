@@ -1,0 +1,131 @@
+# Node metadata for `ZeroCountOpen.v1`.  See docs/NODES.md.
+#
+# The passage from ZeroCount.v1's closed count (0 < Im rho <= t) to Vocabulary's zetaN
+# (0 < Im rho < T), as ZeroCount.v1's docstring describes it. Piece 2 of issue 261.
+version: "v0.4"
+
+node:
+  id: ZeroCountOpen.v1
+  family: ZeroCountOpen
+  version: v1
+  kind: folklore
+  status: awaiting-verification
+
+project:
+  name: "Zero counts: from 0 < Im rho <= t to 0 < Im rho < T"
+  description: >-
+    Rosser and Chirre-Helfgott count zeroes of zeta with 0 < Im rho <= t; IEANTN.zetaN counts
+    0 < Im rho < T. The two differ at a single height by the multiplicity there, but a bound holding
+    at every height transfers from the closed count to the open one with no loss of constant: the
+    zeroes up to height T are finitely many, so the two counts agree on an interval (s0, T), and the
+    bound passes to the limit s -> T from below. This node states that transfer once, for an
+    arbitrary main term and error continuous at T, and applies it to ZeroCount.v1's general bound, also
+    in IEANTN.HasRvMBound form.
+  authors: ["Finn Doolan"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Finn Doolan"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M26", "11M06"]
+
+conclusions:
+- id: ioc_bound_to_ioo
+  issue: 261
+  declaration: ZeroCountOpen.v1.ioc_bound_to_ioo
+  challenge: ZeroCountOpen.v1.challenge_ioc_bound_to_ioo
+  imports:
+    - node: ZetaZeroes.v1
+      conclusion: finite_zeroes_on_compact
+    - node: ZetaZeroes.v1
+      conclusion: zeroes_off_axis_in_strip
+  imports_status: identified
+  justifications:
+    - id: folklore-lean
+      kind: none-yet
+      source: ZeroCount
+      note: >-
+        A Lean solution exists in Solutions/ZeroCountOpen.v1 and is awaiting Comparator. The two
+        imports put the zeroes with 0 < Im rho <= T in a compact set missing the pole (the strip
+        0 <= Re <= 1, cut away from a punctured ball around 1 where Mathlib's residue at s = 1 rules
+        zeroes out), hence make them finite. Until a receipt is written this conclusion is
+        unjustified, and the justification must not be edited by hand.
+  designated: folklore-lean
+- id: rvm_error_bound_open
+  issue: 261
+  declaration: ZeroCountOpen.v1.rvm_error_bound_open
+  challenge: ZeroCountOpen.v1.challenge_rvm_error_bound_open
+  imports:
+    - node: ZeroCount.v1
+      conclusion: rvm_error_bound
+    - node: ZetaZeroes.v1
+      conclusion: finite_zeroes_on_compact
+    - node: ZetaZeroes.v1
+      conclusion: zeroes_off_axis_in_strip
+  imports_status: identified
+  justifications:
+    - id: folklore-lean
+      kind: none-yet
+      source: ZeroCount
+      note: >-
+        ioc_bound_to_ioo for T > 1. At T = 1 the transfer has no room below T, and the solution uses
+        zetaN 1 <= zetaNClosed 1 for the upper side and zetaN 1 >= 0 >= rvmMain 1 - 2 for the lower.
+        Solution in Solutions/ZeroCountOpen.v1, awaiting Comparator.
+  designated: folklore-lean
+- id: hasRvMBound
+  issue: 261
+  declaration: ZeroCountOpen.v1.hasRvMBound
+  challenge: ZeroCountOpen.v1.challenge_hasRvMBound
+  imports:
+    - node: ZeroCount.v1
+      conclusion: rvm_error_bound
+    - node: ZetaZeroes.v1
+      conclusion: finite_zeroes_on_compact
+    - node: ZetaZeroes.v1
+      conclusion: zeroes_off_axis_in_strip
+  imports_status: identified
+  justifications:
+    - id: folklore-lean
+      kind: none-yet
+      source: ZeroCount
+      note: >-
+        rvm_error_bound_open restricted to T >= 2, with b2 = 0. Solution in
+        Solutions/ZeroCountOpen.v1, awaiting Comparator.
+  designated: folklore-lean
+
+sources:
+- title: "ZeroCount.v1 module docstring: why the two counting conventions are equivalent"
+  authors: ["Terence Tao"]
+  type: "folklore"
+  id: "ZeroCount"
+  location: "IEANTN/Nodes/ZeroCount/v1/Conclusions.lean"
+  relationship: formalizes
+  note: >-
+    The argument is written out there in prose (there is s < t with N_Ioc(s) = N_Ioo(t) exactly, and
+    letting s rise to t loses no constant), with the ZeroFreeHeight pattern suggested as the shape.
+    This node is its Lean statement. Recorded as folklore: every paper switching between the two
+    conventions does so without comment.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5.5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Used to draft the Lean statements, the solution and this metadata. The node's author directed
+      and reviewed the work.
+
+review:
+  status: self-assessed
+  reviewers: ["Finn Doolan"]
+
+limitations:
+- >-
+  ZeroCount.v1.rvm_error_small (strict, |Q(t)| < 1) has no open-convention counterpart here: the limit
+  gives only <= 1, and the strict form does not follow from the hypothesis alone. It is not stated in
+  a weakened form.
+- >-
+  No novelty is claimed; the argument is ZeroCount.v1's own.
