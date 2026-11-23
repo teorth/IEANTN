@@ -487,8 +487,19 @@ whose issue has been closed while the work remains outstanding.
 | Split an over-budget node | its solution exceeds the ~1h budget | moderate |
 | Discharge a `none-yet` | — | unbounded |
 | Formalize an `asserted` or `literature` node | — | unbounded |
+| Prove a `numerical` that is one closed evaluation | no quantifier, no set, a comparison | small |
 
-Two things make the queue usable rather than merely long.
+**The last row is there because a false conclusion can hide behind a justification.** `numerical`
+means a computation not currently expressible in Lean — a large interval-arithmetic run, an
+exhaustive search. A conclusion that quantifies over nothing and ranges over no set is neither: it
+is one inequality between closed-form expressions. `check` would not notice, because it validates
+shape, closure, acyclicity and receipt provenance and never evaluates an inequality; and the queue
+would not notice either, because `numerical` counts as justified. That combination is how
+`ButheNumerics.v1.lemma_3_constant_gt_at_10` sat in the network asserting `0.1 < −0.1449` until
+someone read the paper and did the arithmetic. Attempting the Lean proof is what finds the next
+one, so these are queued even though they are nominally justified.
+
+Two further things make the queue usable rather than merely long.
 
 **Prioritise by fan-in.** A node's leverage is the number of conclusions that transitively depend on
 it. Refreshing one high-fan-in node clears staleness for everything downstream of it, so the queue
