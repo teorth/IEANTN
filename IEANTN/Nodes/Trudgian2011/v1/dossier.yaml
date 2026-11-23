@@ -1,0 +1,28 @@
+# Source dossier for `Trudgian2011.v1`.
+# Locators and the edition pin are copied from Conclusions.lean and formalization.yaml.
+# This file does not prove the statement.
+schema: ieantn-source-dossier/1
+node: Trudgian2011.v1
+declarations:
+  - key: Trudgian2011.v1.integral_S_bound
+    edition:
+      # formalization.yaml sources[0].id
+      pin: "Math. Comp. 80 (2011), no. 276, 2259-2279"
+      year: 2011
+      pages: "2259-2279"
+    # conclusions justifications locator, and the conclusion docstring
+    locator: "Theorem 2.2"
+    # Conclusions.lean: every t₂ > t₁ > 168π
+    domain: "every real t2 > t1 > 168*pi"
+    # 2.067 and 0.059 are the numerals printed in the conclusion
+    rounding: exact
+    quantities:
+      - name: constant
+        display: "2.067"
+        exact: "2067/1000"
+      - name: log-coefficient
+        display: "0.059"
+        exact: "59/1000"
+    divergences:
+      - "The paper's footnote says the constant 168*pi which occurs in the triples of Turing and Lehman seems to be a misprint. Trudgian keeps it. The threshold stated is the paper's, not a sharpening of it."
+      - "The papers extend S to the ordinates of zeroes by a right limit and zetaS does not. That is harmless for this conclusion because the exceptional t form a measure-zero set and the statement integrates over t."
