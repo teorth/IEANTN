@@ -184,6 +184,24 @@ class TestBridgeLeafSet(_DiffGit):
         self.assertIn("Leaf.v1.main", text)
         self.assertIn("gained unproved assumptions", text)
 
+    def test_a_bridge_cycle_is_not_discharged_assumptions(self) -> None:
+        """Closing the bridge onto itself used to empty the leaf set.
+
+        `diff` then reported the lost citation as a bridge that rests on less, and the branch
+        passed. The cycle is an unproved assumption, not a discharge.
+        """
+        self.write_node("Leaf.v1", LITERATURE)
+        self.write_node("A.v1", bridged("Leaf.v1.main"))
+        self.commit_all("base")
+        self.write_node("B.v1", bridged("A.v1.main"))
+        self.write_node("A.v1", bridged("B.v1.main"))
+        text = self.report()
+        self.assertFalse(self._last_ok)
+        self.assertIn("gained unproved assumptions", text)
+        self.assertIn("A.v1.main", text)
+        self.assertIn("B.v1.main", text)
+        self.assertNotIn("fewer unproved assumptions", text)
+
     def test_an_unbridged_import_is_not_this_check(self) -> None:
         self.write_node("Leaf.v1", LITERATURE)
         self.write_node("A.v1", importing("Leaf.v1"))

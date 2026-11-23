@@ -2303,8 +2303,25 @@ def release_distance(recorded: str, current: str) -> int | None:
     return abs(new_minor - old_minor)
 
 
+def imported_conclusion_keys(conclusion: dict) -> list[str]:
+    """The hypotheses a conclusion currently names, as `Node.version.id` keys.
+
+    These are the premises the receipt pinned beside the conclusion's own fingerprint.
+    The conclusion's fingerprint is a digest of its proposition, not of that premise
+    list, so an import can be added or dropped while every recorded digest still matches.
+    """
+    keys: list[str] = []
+    for dependency in conclusion.get("imports") or []:
+        if not isinstance(dependency, dict):
+            continue
+        node, name = dependency.get("node"), dependency.get("conclusion")
+        if isinstance(node, str) and isinstance(name, str) and node and name:
+            keys.append(f"{node}.{name}")
+    return keys
+
+
 def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str], *,
-           consult_history: bool = True) -> tuple[str, str]:
+           consult_history: bool = True, imports: list[str] | None = None) -> tuple[str, str]:
     """Grade one receipt against the world as it is now.
 
     Two axes, deliberately not collapsed (ARCHITECTURE section 4):
@@ -2345,6 +2362,27 @@ def assess(conclusion_key: str, receipt: dict, fingerprints: dict[str, str], *,
             return "BROKEN", f"{which} changed since verification"
     if churn is not None:
         return "churn", churn
+
+    # The fingerprints above say each recorded proposition still reads the same way.
+    # They do not say the node still rests on that same set. Dropping a hypothesis
+    # leaves a stronger claim; adding one leaves a claim Comparator was not asked
+    # about. Either way the receipt must not stay green.
+    if imports is not None:
+        recorded_imports = sorted(name for name in recorded if name != conclusion_key)
+        expected = sorted(dict.fromkeys(imports))
+        if recorded_imports != expected:
+            missing = [name for name in expected if name not in recorded_imports]
+            extra = [name for name in recorded_imports if name not in expected]
+            parts = []
+            if missing:
+                parts.append(
+                    "does not record " + ", ".join(f"`{name}`" for name in missing)
+                )
+            if extra:
+                parts.append(
+                    "still records " + ", ".join(f"`{name}`" for name in extra)
+                )
+            return "BROKEN", "hypotheses no longer match the receipt: " + "; ".join(parts)
 
     environment = receipt.get("environment") or {}
     current = current_environment()
@@ -2551,7 +2589,10 @@ def receipt_state(conclusion_key: str, conclusion: dict) -> tuple[str, str] | No
     if receipt is None:
         return "BROKEN", "designated `lean-comparator` but no receipt file"
     # Views are generated and diffed by CI, so they must not depend on git history.
-    return assess(conclusion_key, receipt, recorded_fingerprints(), consult_history=False)
+    return assess(
+        conclusion_key, receipt, recorded_fingerprints(),
+        consult_history=False, imports=imported_conclusion_keys(conclusion),
+    )
 
 
 #: `assess`'s verdict, as the views draw it. Environment staleness keeps the verification: the
@@ -2615,7 +2656,9 @@ def status() -> bool:
                 print(f"  BROKEN  {key}")
                 print("          designated `lean-comparator` but no receipt file")
                 continue
-            light, detail = assess(key, receipt, fingerprints)
+            light, detail = assess(
+                key, receipt, fingerprints, imports=imported_conclusion_keys(conclusion)
+            )
             lights[light] += 1
             print(f"  {light:<7} {key}")
             print(f"          {detail}")
@@ -2928,10 +2971,15 @@ def report() -> bool:
     index = index_conclusions(nodes)
     importers = importers_of(nodes)
 
-    def leaves(key: str, seen: set[str]) -> set[str]:
+    def leaves(key: str, seen: set[str], stack: list[str]) -> set[str]:
+        # A bridge that leads back to itself used to vanish here: the node was
+        # marked seen on the way in, the source was already seen, and the walk
+        # returned nothing — the same answer as a Comparator proof.
+        if key in stack:
+            return {f"{name}  [bridged cycle]" for name in _bridged_cycle(stack, key, _report_bridged)}
         if key in seen or key not in index:
             return set()
-        seen.add(key)
+        stack.append(key)
         _, conclusion = index[key]
         justification = designated_of(conclusion) or {}
         kind = justification.get("kind")
@@ -2942,18 +2990,25 @@ def report() -> bool:
         result: set[str] = set()
         if kind == "bridged":
             for source in bridge_sources(justification):
-                result |= leaves(source, seen)
+                result |= leaves(source, seen, stack)
         elif kind not in VERIFIED_KINDS:
             note = f"  [{kind}]" + (f", {spares} other justification(s) available" if spares else "")
             result.add(f"{key}{note}")
         for dependency in conclusion.get("imports") or []:
-            result |= leaves(f"{dependency.get('node')}.{dependency.get('conclusion')}", seen)
+            result |= leaves(f"{dependency.get('node')}.{dependency.get('conclusion')}", seen, stack)
+        stack.pop()
+        seen.add(key)
         return result
+
+    def _report_bridged(name: str) -> bool:
+        if name not in index:
+            return False
+        return (designated_of(index[name][1]) or {}).get("kind") == "bridged"
 
     print("Unproved-in-Lean dependencies, per conclusion")
     print("=" * 62)
     for key in sorted(index):
-        rests_on = sorted(leaves(key, set()))
+        rests_on = sorted(leaves(key, set(), []))
         print(f"\n{key}")
         for item in rests_on or ["  fully verified in Lean"]:
             print(f"  - {item}" if rests_on else item)
@@ -4614,7 +4669,33 @@ def state_at(ref: str | None) -> dict:
     return {"conclusions": conclusions, "fingerprints": fingerprints, "receipts": receipts}
 
 
-def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None) -> list[str]:
+def _bridged_cycle(stack: list[str], key: str, is_bridged) -> list[str]:
+    """Bridge-loop members that a seen-set would have dropped.
+
+    A `bridged` conclusion is not recorded as a leaf; its sources are. When a source is the
+    conclusion already being walked, that walk used to stop and return nothing, which is also
+    what a real proof returns. The members of the loop are unproved until something outside
+    the loop grounds them. An import cycle is left alone: those conclusions are already
+    recorded as leaves on the way in.
+    """
+    if key not in stack or not is_bridged(key):
+        return []
+    start = stack.index(key)
+    return [name for name in stack[start:] if is_bridged(name)]
+
+
+def _dedupe(items: list[str]) -> list[str]:
+    found: list[str] = []
+    have: set[str] = set()
+    for item in items:
+        if item not in have:
+            have.add(item)
+            found.append(item)
+    return found
+
+
+def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None,
+                 stack: list[str] | None = None) -> list[str]:
     """The unproved-in-Lean conclusions `key` rests on, from a `state_at` snapshot.
 
     A `bridged` conclusion contributes nothing of its own: what it rests on is whatever its
@@ -4622,21 +4703,30 @@ def graph_leaves(conclusions: dict, key: str, seen: set[str] | None = None) -> l
     leaf, and imports are walked in every case. Receipt health is not consulted. A severed
     receipt is a different event, and `diff` already reports it. This is only the shape of the
     graph, which is why it needs no Lean run.
+
+    A bridge that only leads back to itself is not that shape. The loop is reported as unproved
+    rather than as an empty leaf set.
     """
     seen = set() if seen is None else seen
+    stack = [] if stack is None else stack
+    if key in stack:
+        return _dedupe(_bridged_cycle(
+            stack, key, lambda name: (conclusions.get(name) or {}).get("kind") == "bridged"))
     if key in seen or key not in conclusions:
         return []
-    seen.add(key)
+    stack.append(key)
     entry = conclusions[key]
     found: list[str] = []
     if entry.get("kind") == "bridged":
         for source in entry.get("from") or []:
-            found += graph_leaves(conclusions, source, seen)
+            found += graph_leaves(conclusions, source, seen, stack)
     elif entry.get("kind") not in VERIFIED_KINDS:
         found.append(key)
     for dependency in entry.get("imports") or []:
-        found += graph_leaves(conclusions, dependency, seen)
-    return found
+        found += graph_leaves(conclusions, dependency, seen, stack)
+    stack.pop()
+    seen.add(key)
+    return _dedupe(found)
 
 
 def acknowledged() -> dict[str, str]:
@@ -4827,23 +4917,34 @@ def diff(base: str) -> bool:
 SPINOFF_NAMESPACE = "Spinoff"
 
 
-def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None) -> list[str]:
+def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None,
+                       stack: list[str] | None = None) -> list[str]:
     """The conclusion keys `key` transitively rests on that Lean has not checked here.
 
     The same walk `report` prints, returning keys rather than prose. These become the emitted
     Challenge's hypotheses: a Palomar submission cannot assert what this network is content to
-    take on a citation's authority, so it must say what it is assuming.
+    take on a citation's authority, so it must say what it is assuming. A bridge cycle is part
+    of that set: it has no proof outside itself.
     """
     seen = set() if seen is None else seen
+    stack = [] if stack is None else stack
+
+    def is_bridged(name: str) -> bool:
+        if name not in index:
+            return False
+        return (designated_of(index[name][1]) or {}).get("kind") == "bridged"
+
+    if key in stack:
+        return _dedupe(_bridged_cycle(stack, key, is_bridged))
     if key in seen or key not in index:
         return []
-    seen.add(key)
+    stack.append(key)
     _, conclusion = index[key]
     justification = designated_of(conclusion) or {}
     found: list[str] = []
     if justification.get("kind") == "bridged":
         for source in bridge_sources(justification):
-            found += unjustified_leaves(index, source, seen)
+            found += unjustified_leaves(index, source, seen, stack)
     elif (
         justification.get("kind") not in VERIFIED_KINDS
         or (receipt_state(key, conclusion) or (None, ""))[0] == "BROKEN"
@@ -4851,8 +4952,10 @@ def unjustified_leaves(index: dict, key: str, seen: set[str] | None = None) -> l
         found.append(key)
     for dependency in conclusion.get("imports") or []:
         found += unjustified_leaves(
-            index, f"{dependency.get('node')}.{dependency.get('conclusion')}", seen)
-    return found
+            index, f"{dependency.get('node')}.{dependency.get('conclusion')}", seen, stack)
+    stack.pop()
+    seen.add(key)
+    return _dedupe(found)
 
 
 def opens_of(path: pathlib.Path) -> list[str]:
@@ -4870,6 +4973,64 @@ def opens_of(path: pathlib.Path) -> list[str]:
 
 def module_path(module: str) -> pathlib.Path:
     return ROOT / pathlib.PurePosixPath(module.replace(".", "/") + ".lean")
+
+
+def _render_parameter(param: dict) -> str | None:
+    name = str(param.get("name") or "")
+    typ = param.get("type")
+    if not isinstance(typ, str) or not typ.strip():
+        return None
+    kind = param.get("binder") or "explicit"
+    if kind == "instImplicit":
+        return f"[{typ.strip()}]"
+    if not re.fullmatch(r"[A-Za-z_α-ωΑ-Ωℕℤℝℂ][A-Za-z0-9_α-ωΑ-Ωℕℤℝℂ']*", name):
+        return None
+    if kind == "implicit":
+        return f"{{{name} : {typ.strip()}}}"
+    if kind == "strictImplicit":
+        return f"⦃{name} : {typ.strip()}⦄"
+    return f"({name} : {typ.strip()})"
+
+
+def _parameter_present(header: str, param: dict) -> bool:
+    """Whether this telescope entry is already written in the declaration header."""
+    kind = param.get("binder") or "explicit"
+    typ = param.get("type")
+    if kind == "instImplicit":
+        return isinstance(typ, str) and typ.strip() in header
+    name = str(param.get("name") or "")
+    if not name or name == "[anonymous]" or "✝" in name:
+        return True
+    return re.search(rf"[\(\{{\[⦃]\s*{re.escape(name)}\b", header) is not None
+
+
+def bind_missing_parameters(body: str, written: str, parameters: list) -> str:
+    """Put back a leading telescope the declaration range does not contain.
+
+    A `variable` in a surrounding section is elaborated into the constant and is not part of
+    `findDeclarationRanges?`. Slicing the range therefore drops those binders. Parameters the
+    header already names stay as written; the restored prefix stops at the first one of those.
+    """
+    if not parameters:
+        return body
+    header, sep, rest = body.partition(":=")
+    if not sep:
+        return body
+    prefix: list[str] = []
+    for param in parameters:
+        if not isinstance(param, dict) or _parameter_present(header, param):
+            break
+        rendered = _render_parameter(param)
+        if rendered is None:
+            break
+        prefix.append(rendered)
+    if not prefix:
+        return body
+    matches = list(re.finditer(rf"\b(?:def|theorem|lemma|abbrev|axiom)\s+{re.escape(written)}\b", header))
+    if not matches:
+        return body
+    at = matches[-1].end()
+    return header[:at] + " " + " ".join(prefix) + header[at:] + sep + rest
 
 
 def slice_source(text: str, decl: dict, prefix: str) -> tuple[str, str]:
@@ -4897,6 +5058,10 @@ def slice_source(text: str, decl: dict, prefix: str) -> tuple[str, str]:
             "The namespace cannot be recovered; refusing to guess.")
     namespace = full[: len(full) - len(written)].rstrip(".")
     del prefix
+    parameters = decl.get("parameters") or []
+    if not isinstance(parameters, list):
+        parameters = []
+    body = bind_missing_parameters(body, written, parameters)
     return body, namespace
 
 
