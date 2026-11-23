@@ -239,7 +239,9 @@ class TestQueueExecution(unittest.TestCase):
     def test_the_merge_is_never_a_squash(self) -> None:
         """A fork's pull request is badged Merged only when its head becomes reachable."""
         green = rollup(("COMPLETED", "SUCCESS"))
-        shell = FakeShell({"pr view": [view("CLEAN", green)] * 4})
+        # Eight replies, as its siblings use: the queue re-reads mergeability after waiting for
+        # the checks, and a script that runs dry answers `{}`, which reads as `UNKNOWN`.
+        shell = FakeShell({"pr view": [view("CLEAN", green)] * 8})
         quietly(triage.queue, shell, [1], execute=True, rounds=2, pause=0.0)
         merges = [" ".join(c) for c in shell.calls if "pr merge" in " ".join(c)]
         self.assertTrue(merges)
@@ -266,6 +268,26 @@ class TestWaitingDoesNotSpendTheBudget(unittest.TestCase):
         watched = [c for c in shell.calls if "--watch" in c]
         self.assertTrue(watched, "the queue must block on `gh pr checks --watch`")
         self.assertTrue([c for c in shell.calls if "pr merge" in " ".join(c)])
+
+    def test_blocked_on_its_own_checks_becomes_clean_and_merges(self) -> None:
+        """Waiting invalidates the mergeability that was read before it.
+
+        GitHub reports a pull request blocked on its own pending required checks as `BLOCKED`,
+        and `held_by_policy` reads `BLOCKED` plus green checks as "a branch policy holds this".
+        Those are the same two values a ready pull request shows if you ask before a nine-minute
+        wait and answer after it, so the first version of this fix reported a pull request that
+        had just gone green as `HELD` and returned success without merging it. Caught in review
+        of #265 by @chessing234.
+        """
+        pending = rollup(("IN_PROGRESS", None))
+        green = rollup(("COMPLETED", "SUCCESS"))
+        shell = FakeShell({"pr view": [view("BLOCKED", pending), view("BLOCKED", pending)]
+                           + [view("CLEAN", green)] * 8})
+        quietly(triage.queue, shell, [1], execute=True, rounds=2, pause=0.0)
+        self.assertTrue([c for c in shell.calls if "--watch" in c],
+                        "it must wait for the pending checks")
+        self.assertTrue([c for c in shell.calls if "pr merge" in " ".join(c)],
+                        "a pull request that went green while waiting must still be merged")
 
     def test_an_empty_rollup_is_not_watched(self) -> None:
         """A first-time contributor's pull request has no checks to complete, so `--watch` would

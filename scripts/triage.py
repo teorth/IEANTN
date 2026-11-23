@@ -279,6 +279,20 @@ def queue(shell: Shell, numbers: list[int], execute: bool, rerun_budget: int = 6
                 failed.append(number)
                 break
 
+            # Mergeability has to be re-read, because `state` above was taken *before* a wait
+            # that lasts as long as a Lean build. GitHub reports a pull request blocked on its
+            # own pending required checks as `BLOCKED`, and `held_by_policy` reads `BLOCKED` plus
+            # green checks as "a branch policy is holding this" -- which is exactly what a pull
+            # request looks like the instant its checks go green, if you ask before the wait and
+            # answer after it. Deciding from the stale value reports a ready pull request as held
+            # and never merges it. Anything not settled goes back round, where `BEHIND` and the
+            # unexpected states are handled as above; that costs one attempt, which is what the
+            # budget is for.
+            state = settled(shell, number)
+            if state not in {"CLEAN", "BLOCKED"}:
+                print(f"  mergeability moved to {state} while waiting; going round again")
+                continue
+
             if held_by_policy(state, checks, False):
                 print(f"  HELD #{number}: green and up to date, but a branch policy holds it. "
                       "Most often a review it has not got.")
