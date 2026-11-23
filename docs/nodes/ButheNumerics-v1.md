@@ -126,7 +126,7 @@ noncomputable def lemma_3_constant_gt_at_10 : Prop :=
 | Lean name | `ButheNumerics.v1.lemma_3_constant_gt_at_10` |
 | Challenge | `ButheNumerics.v1.challenge_lemma_3_constant_gt_at_10` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L118) |
-| Evidence | computation (`numerical`) |
+| Evidence | refuted (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | [`Buthe.v1.theorem_2_li_gt_pi`](Buthe-v1.md#theorem_2_li_gt_pi) |
