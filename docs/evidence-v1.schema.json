@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://teorth.github.io/IEANTN/evidence-v1.schema.json",
+  "title": "IEANTN evidence projection v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "environment",
+    "includes_inactive",
+    "nodes",
+    "conclusions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lean_toolchain",
+        "mathlib_rev"
+      ],
+      "properties": {
+        "lean_toolchain": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mathlib_rev": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "includes_inactive": {
+      "type": "boolean"
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "inactive"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "inactive": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "conclusions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "node",
+          "declaration",
+          "challenge",
+          "fingerprint",
+          "imports_status",
+          "requirements",
+          "designated",
+          "evidence",
+          "justifications",
+          "receipt",
+          "unproved_leaves",
+          "source",
+          "metadata"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "node": {
+            "type": "string"
+          },
+          "declaration": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "challenge": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "fingerprint": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "imports_status": {
+            "enum": [
+              "identified",
+              "traced",
+              "none",
+              "undetermined"
+            ]
+          },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "conclusion",
+                "relation"
+              ],
+              "properties": {
+                "conclusion": {
+                  "type": "string"
+                },
+                "relation": {
+                  "enum": [
+                    "import",
+                    "bridge"
+                  ]
+                }
+              }
+            }
+          },
+          "designated": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "evidence": {
+            "type": "string"
+          },
+          "justifications": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "kind"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "receipt": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "state",
+                  "reason",
+                  "path",
+                  "run_url"
+                ],
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "green",
+                      "yellow",
+                      "orange",
+                      "churn",
+                      "BROKEN"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "run_url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "unproved_leaves": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "source": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "challenge_module": "IEANTN.Nodes.Schoenfeld1976Numerics.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "Schoenfeld1976Numerics.v1.challenge_psi_error_b23"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
