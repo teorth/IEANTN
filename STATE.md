@@ -7,17 +7,17 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-64 node version(s), 134 conclusion(s).  3 state nothing yet.
+81 node version(s), 186 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
 | Designated justification | Conclusions |
 |---|---:|
 | `asserted` | 1 |
-| `bridged` | 3 |
-| `lean-comparator` | 49 |
-| `literature` | 45 |
-| `none-yet` | 4 |
+| `bridged` | 4 |
+| `lean-comparator` | 51 |
+| `literature` | 62 |
+| `none-yet` | 36 |
 | `numerical` | 32 |
 
 ## Nodes
@@ -68,7 +68,7 @@ adds the environment detail.
 | `Chebyshev.v1` | active | `psi_upper` | lean-comparator | 0 | - |
 | `Chebyshev.v1` | active | `psi_le_small` | lean-comparator | 0 | - |
 | `Chebyshev.v1` | active | `psi_upper_clean` | lean-comparator | 1 | - |
-| `ChebyshevNumerics.v1` | active | `psi_le_below_11723` | numerical | 0 | - |
+| `ChebyshevNumerics.v1` | active | `psi_le_below_11723` | bridged | 0 | - |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `CotangentSeries.v1` | awaiting-solution | `cot_series_zeta_values` | none-yet | 0 | - |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
@@ -91,6 +91,8 @@ adds the environment detail.
 | `FKS.v1` | active | `rescaled_C_is_short_of_two` | numerical | 0 | - |
 | `FKS.v2` | awaiting-solution | `psi_bound_all_x` | bridged | 3 | - |
 | `FKS.v2` | awaiting-solution | `psi_classical_bound` | bridged | 3 | - |
+| `FKS.v3` | active | `psi_bound_all_x` | lean-comparator | 3 | #52 |
+| `FKS.v3` | active | `psi_classical_bound` | lean-comparator | 3 | #52 |
 | `FKS2.v1` | active | `corollary_14` | lean-comparator-stale | 6 | - |
 | `FKS2.v1` | active | `corollary_22` | lean-comparator-stale | 8 | - |
 | `FKS2.v1` | active | `corollary_23` | lean-comparator-stale | 10 | - |
@@ -102,6 +104,8 @@ adds the environment detail.
 | `FKS2Numerics.v1` | stub | `theta_asymp_ge_one_below_e30` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `corollary_22_mid_range` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `corollary_23_mid_range` | numerical | 0 | - |
+| `FKSNumerics.v1` | stub | `psi_classical_mid_range` | numerical | 0 | - |
+| `FKSNumerics.v1` | stub | `psi_classical_above_e200000` | literature | 3 | - |
 | `GammaAsymptotics.v1` | awaiting-solution | `digamma_sub_log_isBigO` | none-yet | 0 | #64 |
 | `GammaAsymptotics.v2` | active | `digamma_sub_log_isBigO_strip` | lean-comparator | 0 | #64 |
 | `Goldbach.v1` | active | `even_implies_odd` | lean-comparator | 0 | - |
@@ -124,8 +128,13 @@ adds the environment detail.
 | `MT.v1` | active | `zero_free_region` | literature | 2 | - |
 | `MT.v1` | active | `zero_free_region_sharpened` | literature | 2 | - |
 | `MT.v2` | active | `corollary_1` | literature | 1 | #63 |
-| `MTY.v1` | stub | *(none yet)* | - | - | - |
+| `MTY.v1` | stub | `classical_zero_free_region` | literature | 0 | - |
+| `MTY.v1` | stub | `korobov_vinogradov_region` | literature | 0 | - |
+| `MTY.v1` | stub | `intermediate_zero_free_region` | literature | 0 | - |
 | `OliveiraESilva2014.v1` | active | `even_up_to_4e18` | numerical | 0 | - |
+| `Patel2020.v1` | stub | `zeta_one_bound` | literature | 0 | - |
+| `Patel2020.v1` | stub | `cheng_graham_lemma_2` | literature | 0 | - |
+| `Patel2020.v1` | stub | `cheng_graham_lemma_3` | literature | 0 | - |
 | `Platt2015.v1` | stub | `rh_up_to` | numerical | 0 | - |
 | `Platt2017.v1` | stub | `rh_up_to` | numerical | 1 | - |
 | `PlattTrudgian.v1` | active | `rh_up_to` | literature | 0 | - |
@@ -137,12 +146,22 @@ adds the environment detail.
 | `PrimeInterval.v1` | active | `eTheta_criterion` | lean-comparator-stale | 0 | #53 |
 | `PrimeInterval.v1` | active | `numericalBound_hasPrimeInInterval` | lean-comparator-stale | 0 | #53 |
 | `PrimeInterval.v1` | active | `classicalBound_hasPrimeInInterval` | lean-comparator-stale | 0 | #53 |
+| `PrimesBetweenCubes.v1` | stub | `prime_between_successive_cubes` | literature | 1 | - |
 | `RamareSaouter2003.v1` | active | `prime_in_short_interval` | literature | 0 | - |
 | `Richstein2001.v1` | active | `even_up_to_4e14` | numerical | 0 | - |
 | `RosserSchoenfeld.v1` | stub | `zero_free_region` | literature | 0 | - |
 | `RosserSchoenfeld.v1` | stub | `zero_free_region_classical` | bridged | 0 | - |
 | `RosserSchoenfeld.v2` | active | `psi_error_b23` | lean-comparator | 0 | - |
 | `RosserSchoenfeld1962.v1` | active | `equation_3_35` | lean-comparator | 0 | #164 |
+| `Schoenfeld1976.v1` | stub | `psi_theorem_11` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `theta_theorem_11` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `psi_upper_theorem_11` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `psi_log_5_5a` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `psi_log_lower_5_5b` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `theta_log_5_6` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `theta_log_upper_5_6a` | literature | 0 | - |
+| `Schoenfeld1976.v1` | stub | `psi_theta_log_5_6b` | literature | 0 | - |
+| `Schoenfeld1976Numerics.v1` | awaiting-verification | `psi_error_b23` | literature | 3 | - |
 | `Trudgian2011.v1` | stub | `integral_S_bound` | literature | 0 | - |
 | `Wedeniwski.v1` | stub | `rh_up_to` | asserted | 0 | - |
 | `ZeroCount.v1` | stub | `rvm_error_bound` | literature | 0 | #64 |
@@ -155,6 +174,38 @@ adds the environment detail.
 | `ZetaLogDerivValues.v1` | stub | `logDeriv_neg_one` | numerical | 0 | - |
 | `ZetaLogDerivValues.v1` | stub | `deriv_logDeriv_neg_one` | numerical | 0 | - |
 | `ZetaLogDerivValues.v1` | stub | `logDeriv_laurent_alternating` | numerical | 0 | - |
+| `ZetaZeroLocations.v1` | awaiting-solution | `located_0_1000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v1` | awaiting-solution | `unique_0_1000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v1` | awaiting-solution | `count_0_1000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v10` | awaiting-solution | `located_9000_10000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v10` | awaiting-solution | `unique_9000_10000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v10` | awaiting-solution | `count_9000_10000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v11` | awaiting-verification | `on_line_and_simple_0_10000` | none-yet | 10 | #214 |
+| `ZetaZeroLocations.v11` | awaiting-verification | `count_0_10000` | none-yet | 10 | #214 |
+| `ZetaZeroLocations.v2` | awaiting-solution | `located_1000_2000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v2` | awaiting-solution | `unique_1000_2000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v2` | awaiting-solution | `count_1000_2000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v3` | awaiting-solution | `located_2000_3000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v3` | awaiting-solution | `unique_2000_3000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v3` | awaiting-solution | `count_2000_3000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v4` | awaiting-solution | `located_3000_4000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v4` | awaiting-solution | `unique_3000_4000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v4` | awaiting-solution | `count_3000_4000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v5` | awaiting-solution | `located_4000_5000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v5` | awaiting-solution | `unique_4000_5000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v5` | awaiting-solution | `count_4000_5000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v6` | awaiting-solution | `located_5000_6000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v6` | awaiting-solution | `unique_5000_6000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v6` | awaiting-solution | `count_5000_6000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v7` | awaiting-solution | `located_6000_7000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v7` | awaiting-solution | `unique_6000_7000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v7` | awaiting-solution | `count_6000_7000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v8` | awaiting-solution | `located_7000_8000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v8` | awaiting-solution | `unique_7000_8000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v8` | awaiting-solution | `count_7000_8000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v9` | awaiting-solution | `located_8000_9000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v9` | awaiting-solution | `unique_8000_9000` | none-yet | 0 | #214 |
+| `ZetaZeroLocations.v9` | awaiting-solution | `count_8000_9000` | none-yet | 0 | #214 |
 | `ZetaZeroes.v1` | active | `no_nontrivial_zeroes_left` | lean-comparator | 0 | - |
 | `ZetaZeroes.v1` | active | `zeroes_off_axis_in_strip` | lean-comparator | 0 | - |
 | `ZetaZeroes.v1` | active | `finite_zeroes_on_compact` | lean-comparator | 0 | - |
@@ -195,11 +246,11 @@ downstream.
 
 | Conclusion | Dependants |
 |---|---:|
-| `PlattTrudgian.v1.rh_up_to` | 7 |
+| `PlattTrudgian.v1.rh_up_to` | 8 |
 | `FKBJ.v1.rh_up_to` | 6 |
 | `Buthe.v1.theorem_2_theta_lower` | 6 |
-| `MT.v1.zero_free_region_sharpened` | 4 |
-| `KLN.v1.subconvexity_bound` | 4 |
+| `MT.v1.zero_free_region_sharpened` | 5 |
+| `KLN.v1.subconvexity_bound` | 5 |
 | `FKS2Numerics.v1.theta_asymp_ge_one_below_e30` | 4 |
 | `FKS2Numerics.v1.nu_asymp_e30_le` | 4 |
 | `FKS2.v2.proposition_13` | 4 |
@@ -213,6 +264,8 @@ downstream.
 | `FKS2.v2.theorem_3` | 3 |
 | `DudekPlatt.v3.criterion` | 3 |
 | `Buthe2016.v1.theorem_2_psi` | 3 |
+| `ZetaZeroLocations.v1.located_0_1000` | 2 |
+| `ZetaZeroLocations.v1.count_0_1000` | 2 |
 | `ZetaLogDerivValues.v1.logDeriv_two` | 2 |
 | `ZetaLogDerivValues.v1.logDeriv_three_halves` | 2 |
 | `ZetaLogDerivValues.v1.logDeriv_neg_one` | 2 |
@@ -227,18 +280,41 @@ downstream.
 | `Kadiri2005.v1.zero_free_region` | 2 |
 | `KLN.v1.zero_density` | 2 |
 | `GammaAsymptotics.v2.digamma_sub_log_isBigO_strip` | 2 |
+| `FKSNumerics.v1.psi_classical_mid_range` | 2 |
+| `FKSNumerics.v1.psi_classical_above_e200000` | 2 |
 | `FKS2Numerics.v1.table6_row2_floor` | 2 |
 | `FKS2Numerics.v1.corollary_23_mid_range` | 2 |
 | `CotangentSeries.v1.cot_series_zeta_values` | 2 |
 | `CH2.v2.proposition_2_4_upper` | 2 |
 | `CH2.v2.proposition_2_4_lower` | 2 |
 | `Buthe.v1.theorem_2_psi` | 2 |
+| `BKLNW.v1.table8_psi_bound_above` | 2 |
+| `ZetaZeroLocations.v9.located_8000_9000` | 1 |
+| `ZetaZeroLocations.v9.count_8000_9000` | 1 |
+| `ZetaZeroLocations.v8.located_7000_8000` | 1 |
+| `ZetaZeroLocations.v8.count_7000_8000` | 1 |
+| `ZetaZeroLocations.v7.located_6000_7000` | 1 |
+| `ZetaZeroLocations.v7.count_6000_7000` | 1 |
+| `ZetaZeroLocations.v6.located_5000_6000` | 1 |
+| `ZetaZeroLocations.v6.count_5000_6000` | 1 |
+| `ZetaZeroLocations.v5.located_4000_5000` | 1 |
+| `ZetaZeroLocations.v5.count_4000_5000` | 1 |
+| `ZetaZeroLocations.v4.located_3000_4000` | 1 |
+| `ZetaZeroLocations.v4.count_3000_4000` | 1 |
+| `ZetaZeroLocations.v3.located_2000_3000` | 1 |
+| `ZetaZeroLocations.v3.count_2000_3000` | 1 |
+| `ZetaZeroLocations.v2.located_1000_2000` | 1 |
+| `ZetaZeroLocations.v2.count_1000_2000` | 1 |
+| `ZetaZeroLocations.v10.located_9000_10000` | 1 |
+| `ZetaZeroLocations.v10.count_9000_10000` | 1 |
+| `ZetaZeroLocations.v1.unique_0_1000` | 1 |
 | `Wedeniwski.v1.rh_up_to` | 1 |
 | `Trudgian2011.v1.integral_S_bound` | 1 |
 | `RosserSchoenfeld.v1.zero_free_region_classical` | 1 |
 | `Richstein2001.v1.even_up_to_4e14` | 1 |
 | `Platt2017.v1.rh_up_to` | 1 |
 | `Platt2015.v1.rh_up_to` | 1 |
+| `MTY.v1.korobov_vinogradov_region` | 1 |
 | `MT.v2.corollary_1` | 1 |
 | `KadiriLumley.v1.prime_in_interval_above_exp_60` | 1 |
 | `KadiriLumley.v1.prime_in_interval_above_exp_59` | 1 |

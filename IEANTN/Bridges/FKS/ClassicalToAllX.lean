@@ -26,7 +26,12 @@ namespace IEANTN.Bridges.FKS
 
 open IEANTN Real
 
-/-- `√R` for `R = 5.5666305`, to seven decimals. -/
+/-- `√R` for `R = 5.5666305`, to seven decimals.
+
+The endpoint precision matters: widening the lower endpoint to `2.35937` gives
+`9.22022 * R * 2.35937 < 121.096`, while widening the upper endpoint to `2.359371` gives
+`0.8476836 * 2.359371 > 2`. Those coarser bounds cannot certify the respective scalar
+comparisons below. -/
 lemma sqrt_R_bounds : 2.3593705 < √(5.5666305 : ℝ) ∧ √(5.5666305 : ℝ) < 2.3593708 := by
   constructor
   · rw [lt_sqrt (by norm_num)]

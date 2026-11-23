@@ -1,0 +1,32 @@
+{
+  "challenge": "FKS.v3.challenge_psi_bound_all_x",
+  "conclusion": "FKS.v3.psi_bound_all_x",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6"
+  },
+  "repository": {
+    "commit": "42f17ac0d6795d3bde38d2d1cd615d06382df990"
+  },
+  "run": {
+    "recorded_at": "2026-11-09T07:55:27Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/42580879995"
+  },
+  "schema": 2,
+  "solution": {
+    "dependencies": [],
+    "project": "Solutions/FKS.v3"
+  },
+  "statement": {
+    "BKLNW.v1.table8_psi_bound_above": "82db1a5f1d93030d6af49b8fee381dec3d4e9e3cf67570c7ad4da1e097247c49",
+    "FKS.v3.psi_bound_all_x": "f5963ba07855070c1cabac8cd3c5e22dc810b0d9b4acd4761bd28321646ad4ef",
+    "FKSNumerics.v1.psi_classical_above_e200000": "a65b2f543776da2016852e786bc67500a199cf7a5987851b25b025a148ba157e",
+    "FKSNumerics.v1.psi_classical_mid_range": "1b5e1649cd4b4a67136691317d5abca0f92c4c9843c05c46fe1bf78ed8a06f03"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}
