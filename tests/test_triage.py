@@ -249,6 +249,35 @@ class TestQueueExecution(unittest.TestCase):
             self.assertNotIn("--rebase", call)
 
 
+class TestWaitingDoesNotSpendTheBudget(unittest.TestCase):
+    """A queue must be able to outlast the build it is waiting for.
+
+    The first version polled for pending checks inside the attempt loop, so every wait consumed an
+    attempt: with eight attempts and a twenty-five second pause it gave up after three and a half
+    minutes, while a Lean build here takes about nine. It reported "gave up" on two healthy pull
+    requests. Waiting now blocks in `gh pr checks --watch` and costs no attempt.
+    """
+
+    def test_a_long_build_is_waited_out_not_counted(self) -> None:
+        green = rollup(("COMPLETED", "SUCCESS"))
+        shell = FakeShell({"pr view": [view("CLEAN", green)] * 8})
+        self.assertEqual(
+            quietly(triage.queue, shell, [1], execute=True, rounds=2, pause=0.0), 0)
+        watched = [c for c in shell.calls if "--watch" in c]
+        self.assertTrue(watched, "the queue must block on `gh pr checks --watch`")
+        self.assertTrue([c for c in shell.calls if "pr merge" in " ".join(c)])
+
+    def test_an_empty_rollup_is_not_watched(self) -> None:
+        """A first-time contributor's pull request has no checks to complete, so `--watch` would
+        block on something that never arrives."""
+        shell = FakeShell({"pr view": [view("CLEAN", [])] * 8})
+        quietly(triage.queue, shell, [1], execute=True, rounds=2, pause=0.0)
+        self.assertFalse([c for c in shell.calls if "--watch" in c],
+                         "an empty rollup must not be watched")
+        self.assertFalse([c for c in shell.calls if "pr merge" in " ".join(c)],
+                         "and nothing may be merged on no checks at all")
+
+
 class TestWorktreeGuard(unittest.TestCase):
     """A compose run merges and discards branches, so it must never run where work lives.
 
