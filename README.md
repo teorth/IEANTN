@@ -26,6 +26,10 @@ conditions:
    adjudicate new mathematics. Original work is welcome in the *proofs* — a Lean solution may take
    any correct route it likes, and often a better one than the paper's — but the statement itself
    needs a citation.
+
+   Faithfulness is required of a source's **conclusions**, not of its internal lemmas: a node
+   stating a paper's results must state them as printed, while justifications and the paper's
+   intermediate lemmas may deviate, provided a significant deviation is noted in the metadata.
 2. **The claim is plausibly connected to the existing network** — it imports something already
    here, or something already here could import it. A result with no path to the rest of the graph
    is not yet a node; the point of the network is the dependency structure, and an island carries

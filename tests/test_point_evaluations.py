@@ -81,8 +81,14 @@ class TestPointEvaluationExcludesRealComputations(unittest.TestCase):
 
 
 class TestTheQueueNamesThem(unittest.TestCase):
-    def test_housekeeping_queues_the_false_conclusion(self) -> None:
-        """The regression that matters: before this, nothing in the tooling mentioned it."""
+    def test_housekeeping_queues_a_provable_point_evaluation(self) -> None:
+        """The regression that matters: before this, nothing in the tooling mentioned these.
+
+        `lemma_3_constant_nonpos` stands in for the false one this test used to name. Once
+        `lemma_3_constant_gt_at_10` was refuted it stopped being provable work, and the queue
+        moved it to `restate` -- see `tests/test_refuted_conclusions.py`. Its true sibling is the
+        same shape and is still exactly the task this queue exists to surface.
+        """
         import contextlib
         import io
 
@@ -90,8 +96,19 @@ class TestTheQueueNamesThem(unittest.TestCase):
         with contextlib.redirect_stdout(out):
             ieantn.housekeeping()
         printed = out.getvalue()
-        self.assertIn("prove     ButheNumerics.v1.lemma_3_constant_gt_at_10", printed)
+        self.assertIn("prove     ButheNumerics.v1.lemma_3_constant_nonpos", printed)
         self.assertIn("a closed evaluation Lean can settle", printed)
+
+    def test_a_refuted_statement_is_not_queued_as_provable(self) -> None:
+        """Sending someone after a proof that cannot exist is worse than saying nothing."""
+        import contextlib
+        import io
+
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            ieantn.housekeeping()
+        printed = out.getvalue()
+        self.assertNotIn("prove     ButheNumerics.v1.lemma_3_constant_gt_at_10", printed)
 
     def test_every_queued_statement_really_is_closed(self) -> None:
         """A property, so the queue cannot fill up with tasks nobody can action."""
