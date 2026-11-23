@@ -76,9 +76,13 @@ namespace CH2.v3
 open Real MeasureTheory FourierTransform Complex
 
 /-- **The extremal majorant.** For every non-zero `lambda` and every `β ∈ (1, 2]` there is a
-function `φ` band-limited to `[-1, 1]` whose Fourier transform **majorizes** the truncated
+function `φ` **supported on** `[-1, 1]` whose Fourier transform **majorizes** the truncated
 exponential `truncExp lambda`, with `φ 0 = 1/(1 - e^{-|lambda|})` and `L¹` error exactly
 `1/(1 - e^{-|lambda|}) - 1/|lambda|`.
+
+`φ` itself is compactly supported; it is `𝓕 φ` that is band-limited, and that is what
+`CH2.v2.IsBandLimited` asks for despite its name. Read the other way round this conclusion would
+be impossible: a `𝓕 φ` of compact support vanishes at `y = 2`, where `truncExp 1` is `e^{-2} > 0`.
 
 This is the Graham–Vaaler extremal function, reconstructed self-containedly in the authors'
 addendum. Its `L¹` error is optimal — no band-limited majorant does better — which is what makes
