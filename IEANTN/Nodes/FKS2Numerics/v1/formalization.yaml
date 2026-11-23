@@ -51,6 +51,14 @@ conclusions:
       no other result in the network. PrimeNumberTheoremAnd carries the same datum as a deliberate `sorry`
       in its FKS2TrustedNumerics -- it has no import mechanism, so its FKS2 development reports sorryAx.
       Stating it here is what lets FKS2.v1's solution rest on the same computation without a hole.
+  - id: proved-pi-floor
+    kind: bridged
+    from: FKS2PiFloor.v1.table6_row2_floor
+    bridge: IEANTN/Bridges/FKS2Numerics/PiFloor.lean
+    note: >-
+      The identical statement, proved separately in Solutions/FKS2PiFloor.v1.
+      Not designated until that node has a verification receipt: the existing
+      numerical evidence must not be replaced by an unverified leaf.
   designated: fks2-computation
 - id: nu_asymp_e30_le
   declaration: FKS2Numerics.v1.nu_asymp_e30_le
@@ -100,6 +108,14 @@ conclusions:
 
       Found by porting, not by reading -- the second of the two missing imports of
       FKS2.v1.corollary_14.
+  - id: proved-floor
+    kind: bridged
+    from: FKS2ThetaFloor.v1.theta_asymp_ge_one_below_e30
+    bridge: IEANTN/Bridges/FKS2Numerics/ThetaFloor.lean
+    note: >-
+      The same statement, proved as FKS2ThetaFloor.v1. Not designated: that node is still
+      none-yet, and designating this bridge would replace the numerical leaf with an unverified
+      one. Designate it once the receipt exists.
   designated: fks2-small-range-computation
 - id: corollary_22_mid_range
   declaration: FKS2Numerics.v1.corollary_22_mid_range

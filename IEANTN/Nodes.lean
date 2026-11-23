@@ -38,6 +38,8 @@ import IEANTN.Nodes.FKS.v3.Challenge
 import IEANTN.Nodes.FKS2.v1.Challenge
 import IEANTN.Nodes.FKS2.v2.Challenge
 import IEANTN.Nodes.FKS2Numerics.v1.Challenge
+import IEANTN.Nodes.FKS2PiFloor.v1.Challenge
+import IEANTN.Nodes.FKS2ThetaFloor.v1.Challenge
 import IEANTN.Nodes.FKSNumerics.v1.Challenge
 import IEANTN.Nodes.GammaAsymptotics.v1.Challenge
 import IEANTN.Nodes.GammaAsymptotics.v2.Challenge
@@ -69,6 +71,13 @@ import IEANTN.Nodes.Richstein2001.v1.Challenge
 import IEANTN.Nodes.RosserSchoenfeld.v1.Challenge
 import IEANTN.Nodes.RosserSchoenfeld.v2.Challenge
 import IEANTN.Nodes.RosserSchoenfeld1962.v1.Challenge
+import IEANTN.Nodes.RosserSchoenfeld1962.v2.Challenge
+import IEANTN.Nodes.RosserSchoenfeld1962.v3.Challenge
+import IEANTN.Nodes.RosserSchoenfeld1962.v4.Challenge
+import IEANTN.Nodes.RosserSchoenfeld1962.v5.Challenge
+import IEANTN.Nodes.RosserSchoenfeld1962.v6.Challenge
+import IEANTN.Nodes.RosserSchoenfeld1962.v7.Challenge
+import IEANTN.Nodes.RosserSchoenfeld1962.v8.Challenge
 import IEANTN.Nodes.Schoenfeld1976.v1.Challenge
 import IEANTN.Nodes.Schoenfeld1976Numerics.v1.Challenge
 import IEANTN.Nodes.Trudgian2011.v1.Challenge

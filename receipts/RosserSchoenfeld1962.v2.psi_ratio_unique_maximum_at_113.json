@@ -1,0 +1,30 @@
+{
+  "challenge": "RosserSchoenfeld1962.v2.challenge_psi_ratio_unique_maximum_at_113",
+  "conclusion": "RosserSchoenfeld1962.v2.psi_ratio_unique_maximum_at_113",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6"
+  },
+  "repository": {
+    "commit": "e5d0649f7eefddff1aeb40d5e203227657817752"
+  },
+  "run": {
+    "recorded_at": "2026-11-22T03:41:34Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/44978793681"
+  },
+  "schema": 2,
+  "solution": {
+    "dependencies": [],
+    "project": "Solutions/RosserSchoenfeld1962.v2"
+  },
+  "statement": {
+    "RosserSchoenfeld1962.v1.equation_3_35": "bd33b22b5c2837cc87db3756fa808fed3b997d19bd89a306b76f0118de97b5bd",
+    "RosserSchoenfeld1962.v2.psi_ratio_unique_maximum_at_113": "4d4cb4ce3f98ba42e13f47a5113a04839afd6480aaea6280bac55a1ad6e117ac"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}
