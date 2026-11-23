@@ -3178,11 +3178,12 @@ def housekeeping() -> bool:
     # A `numerical` conclusion that is really a closed evaluation: justified on paper, provable in
     # Lean, and queued below for that reason. See `point_evaluation`.
     point_evaluations = {
-        f"{node_id}.{conclusion.get('id')}"
+        f"{node_id}.{cid}"
         for node_id, node in nodes.items()
         for conclusion in conclusions_of(node)
-        if designated_kind(conclusion) == "numerical"
-        and point_evaluation(read_declaration(node_id, conclusion.get("id"))[1])
+        if (cid := str(conclusion.get("id") or ""))
+        and designated_kind(conclusion) == "numerical"
+        and point_evaluation(read_declaration(node_id, cid)[1])
     }
 
     outstanding = {
