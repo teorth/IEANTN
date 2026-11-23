@@ -52,6 +52,33 @@ conclusions:
       a = 1500 additionally needs A(1500) <= 0, which is ButheNumerics.v1.lemma_3_constant_nonpos and is
       not part of the lemma.
   designated: unjustified
+  refuted:
+    issue: 268
+    counterexample: >-
+      Take a = 3*10^6, b = 10^7 + 1000, c = 0, C = 1.95, x = 10^7. Every hypothesis holds, by
+      direct computation rather than by citing the paper: 12 < a < b, 10^7 < b, and
+      x is in [max(a, 10^7), b]; and over every prime gap in [a, b] the quantity
+      (t - theta(t))/sqrt t has infimum 0.40786425 and supremum 1.70662371, both inside
+      [c, C] = [0, 1.95]. Then A(a) = -27.67325415, the left side
+      (li x - pi x)/(sqrt x / log x) = 1.72994393, and the first (upper) conjunct's right side as
+      stated is 1.70040709 -- so the claim fails by 0.02953684. With the A term negated the right
+      side is 1.98250765 and it holds. The second (lower) conjunct is true as stated, since A < 0
+      makes `+ A` weaker than the truth; it merely gives away 2|A| log x / sqrt x.
+    note: >-
+      Faithful to the paper and false in the paper, in the upper conjunct. The identity Lemma 3's
+      proof rests on, (6.17), is correct as printed -- verified to zero residual at five (a, x)
+      pairs -- and rearranges to li(x) - pi(x) = (x - theta(x))/log x + I - A, so the displayed
+      bounds should carry `- A log x / sqrt x`. Because a is universally quantified here and
+      |A(a)| grows like sqrt a / log a while the slack in the paper's integral bound (6.14) does
+      not, the error is reachable: at Buthe's own a = 1500 the printed bound still holds with
+      0.093 to spare, which is presumably why it was never noticed. Note the knock-on: with the
+      sign corrected, the derivation of (1.9) at a = 1500 acquires
+      +|A(1500)| log x / sqrt x = +3.6356 log x / sqrt x, which the printed (1.9) drops, so
+      ButheNumerics.v1.lemma_3_constant_nonpos (A(1500) <= 0) is no longer the fact (1.9) needs --
+      a lower bound on A(1500) is. (1.9) itself still appears comfortably true: 1.7299 actual
+      against 2.2671 claimed at x = 10^7. The corrected bound is provable, following from (6.17)
+      and (6.14), so it belongs in a new version rather than as an edit here.
+      See ButheNumerics.v1.lemma_3_constant_gt_at_10 for the same error's other appearance.
 - id: lemma_3_positivity
   issue: 56
   declaration: Buthe.v2.lemma_3_positivity

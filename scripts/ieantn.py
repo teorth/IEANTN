@@ -151,6 +151,21 @@ JUSTIFICATION_KINDS = PRIMITIVE_KINDS | DERIVED_KINDS
 #: graph: something the network takes on faith, however reasonably.
 VERIFIED_KINDS = {"lean-comparator"}
 
+#: A conclusion carrying a `refuted:` block offers no evidence at all, whatever it designates.
+#:
+#: This is not a justification kind, because refutation is not a weaker justification -- it is the
+#: absence of any, plus a reason the statement can never acquire one. It stays in the network
+#: because the network's claim is *about the literature*: a published lemma that is false as
+#: printed is a fact about the literature worth recording, and deleting it would make the graph
+#: disagree with the papers it indexes. Consumers are expected to be routed around it over time,
+#: and `housekeeping` queues exactly that; nothing forces it, because the record is the point.
+REFUTED_KIND = "refuted"
+
+#: The keys a `refuted:` block may carry. `counterexample` and `issue` are required: a refutation
+#: that does not say why, and does not say where the discussion is, is an accusation rather than a
+#: record.
+REFUTED_KEYS = {"issue", "counterexample", "note", "corrected"}
+
 NODE_STATUSES = {
     "template",              # scaffolded, not yet filled in; refused by check-graph
     "stub",                  # conclusions stated, no solution intended yet
@@ -1800,6 +1815,62 @@ def check_graph() -> bool:
                     f"conclusion `{cid}`: `imports_status: none` but imports are listed.",
                 )
 
+            refuted = conclusion.get("refuted")
+            if refuted is not None:
+                if not isinstance(refuted, dict):
+                    problems.add(where, f"conclusion `{cid}`: `refuted` must be a mapping")
+                else:
+                    unknown = sorted(set(refuted) - REFUTED_KEYS)
+                    if unknown:
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`: `refuted` has unknown key(s) "
+                            + ", ".join(f"`{k}`" for k in unknown) + "; allowed: "
+                            + ", ".join(f"`{k}`" for k in sorted(REFUTED_KEYS)))
+                    if not str(refuted.get("counterexample") or "").strip():
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`: `refuted` needs a `counterexample` saying why "
+                            "the statement is false. A refutation nobody can check is worth no "
+                            "more than the claim it withdraws.")
+                    if not isinstance(refuted.get("issue"), int):
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`: `refuted` needs an `issue` number -- the place "
+                            "the refutation was established and where rerouting is tracked.")
+                    # A receipt says Lean checked the implication into this statement. If the
+                    # statement is false the receipt is the thing to disbelieve, and that is a
+                    # contradiction a person has to resolve, not a view to render.
+                    if designated_kind(conclusion) in VERIFIED_KINDS:
+                        problems.add(
+                            where,
+                            f"conclusion `{cid}`: `refuted` and a designated "
+                            f"`{designated_kind(conclusion)}` justification cannot both stand. "
+                            "Either the counterexample is wrong or the receipt attests to a false "
+                            "statement; resolve it rather than recording both.")
+                    # `corrected` is the forwarding address: the conclusion a consumer should be
+                    # rerouted to. It has to exist, and it has to be one a consumer could use.
+                    replacement = refuted.get("corrected")
+                    if replacement is not None:
+                        target, _, target_cid = str(replacement).rpartition(".")
+                        if target not in nodes:
+                            problems.add(
+                                where,
+                                f"conclusion `{cid}`: `refuted.corrected` names unknown node "
+                                f"`{target}`")
+                        elif target_cid not in {c.get("id")
+                                                for c in conclusions_of(nodes[target])}:
+                            problems.add(
+                                where,
+                                f"conclusion `{cid}`: `refuted.corrected` names "
+                                f"`{replacement}`, which that node does not export")
+                        elif any(c.get("refuted") for c in conclusions_of(nodes[target])
+                                 if c.get("id") == target_cid):
+                            problems.add(
+                                where,
+                                f"conclusion `{cid}`: `refuted.corrected` names "
+                                f"`{replacement}`, which is itself refuted")
+
             marker = conclusion.get("progress")
             if marker is not None:
                 if not isinstance(marker, dict):
@@ -2656,6 +2727,11 @@ def display_kind(conclusion_key: str, conclusion: dict) -> str:
     reporting `verified` after the verified implication had been severed -- which is the one
     thing these files exist to make visible.
     """
+    # A refutation overrides everything, including a receipt. If those ever coexist the receipt
+    # is the thing to disbelieve -- `check` fails on the combination rather than displaying it --
+    # but the view must not go on reporting `verified` for a statement known to be false.
+    if conclusion.get("refuted"):
+        return REFUTED_KIND
     state = receipt_state(conclusion_key, conclusion)
     if state is None:
         return designated_kind(conclusion) or "none-yet"
@@ -3175,12 +3251,27 @@ def housekeeping() -> bool:
     # the queue says it is claimed, and the issue tracker says it is finished. It happens by
     # accident -- closing the issue alongside the pull request that created the node rather than
     # the one that justifies it -- and nothing else in the tooling would ever mention it again.
+    # A `numerical` conclusion that is really a closed evaluation: justified on paper, provable in
+    # Lean, and queued below for that reason. See `point_evaluation`.
+    point_evaluations = {
+        f"{node_id}.{cid}"
+        for node_id, node in nodes.items()
+        for conclusion in conclusions_of(node)
+        if (cid := str(conclusion.get("id") or ""))
+        and designated_kind(conclusion) == "numerical"
+        # A refuted statement is not provable, so queueing it as provable work would be sending
+        # someone after a proof that cannot exist. Its own queue entry says to route around it.
+        and not conclusion.get("refuted")
+        and point_evaluation(read_declaration(node_id, cid)[1])
+    }
+
     outstanding = {
         conclusion.get("issue")
-        for node in nodes.values()
+        for node_id, node in nodes.items()
         for conclusion in conclusions_of(node)
-        if designated_kind(conclusion) in {"none-yet", "literature", "asserted",
-                                           NONCOMPLIANT_KIND}
+        if (designated_kind(conclusion) in {"none-yet", "literature", "asserted",
+                                            NONCOMPLIANT_KIND}
+            or f"{node_id}.{conclusion.get('id')}" in point_evaluations)
         and isinstance(conclusion.get("issue"), int)
     }
     stale_issues = closed_issues({n for n in outstanding if isinstance(n, int)})
@@ -3227,6 +3318,27 @@ def housekeeping() -> bool:
             elif kind == NONCOMPLIANT_KIND:
                 tasks.append(f"certify   {node_id}.{conclusion.get('id')}  "
                              f"(Lean proof, no receipt available) [{claim}]")
+            # A refuted conclusion stays in the network deliberately -- it records a fact about
+            # the literature -- so nothing here forces its removal. What is queued is the work it
+            # creates: every consumer eventually wants a route that does not pass through a false
+            # statement, and until a corrected version exists there is nowhere to send them.
+            if conclusion.get("refuted"):
+                refuted = conclusion.get("refuted") or {}
+                key = f"{node_id}.{conclusion.get('id')}"
+                replacement = refuted.get("corrected")
+                issue = refuted.get("issue")
+                if not replacement:
+                    tasks.append(f"restate   {key}  (refuted, no corrected version yet) "
+                                 f"[#{issue}]")
+                for user in sorted(importers.get(key, [])):
+                    tasks.append(
+                        f"reroute   {user}  off refuted {key}"
+                        + (f" -> {replacement}" if replacement else "")
+                        + f"  [#{issue}]")
+
+            elif f"{node_id}.{conclusion.get('id')}" in point_evaluations:
+                tasks.append(f"prove     {node_id}.{conclusion.get('id')}  "
+                             f"(numerical, but a closed evaluation Lean can settle) [{claim}]")
 
     print("Housekeeping queue")
     print("=" * 62)
@@ -3401,6 +3513,7 @@ EVIDENCE_STYLE = {
     "asserted": ("asserted", "#bc4c00", "#fff1e5"),
     "bridged": ("bridged", "#8250df", "#fbefff"),
     "none-yet": ("unjustified", "#cf222e", "#ffebe9"),
+    REFUTED_KIND: ("refuted", "#82071e", "#ffd7d5"),
 }
 
 
@@ -3460,6 +3573,53 @@ def read_declaration(node_id: str, cid: str) -> tuple[str, str]:
     while body and not body[-1].strip():
         body.pop()
     return "\n".join(doc).strip(), "\n".join(body)
+
+
+#: Relations that make a statement an assertion about numbers rather than a predicate applied
+#: to a bound. `=` is included for completeness, though a point evaluation rarely uses it.
+_COMPARISONS = ("≤", "≥", "<", ">", "≠", "=")
+
+
+def point_evaluation(source: str) -> bool:
+    """Whether a conclusion's statement is a closed assertion about finitely many constants.
+
+    `numerical` means, per `docs/ARCHITECTURE.md`, "a computation not currently expressible in
+    Lean (large interval-arithmetic runs, exhaustive searches)". A statement that quantifies over
+    nothing and ranges over no set is neither of those: it is one inequality between closed-form
+    expressions, and a Lean proof could settle it. So `numerical` on such a conclusion is a
+    category error, and the interesting thing about a category error here is what it hides.
+
+    `housekeeping` queues work by designated kind, and `numerical` counts as justified, so it is
+    never queued. `check` validates shape, closure, acyclicity and receipt provenance, none of
+    which look at whether a stated inequality is *true*. A false conclusion carrying a `numerical`
+    justification is therefore invisible to the whole toolchain -- which is exactly how
+    `ButheNumerics.v1.lemma_3_constant_gt_at_10` sat in the network asserting `0.1 < -0.1449`
+    until someone read the paper and did the arithmetic (issue 260). Queueing these says "a Lean
+    proof is available here", and attempting one is what finds the next such statement.
+
+    The test is deliberately syntactic and deliberately conservative, because the cost of a false
+    positive is a task nobody can action -- the failure mode this queue has already been through.
+    A statement is a point evaluation only when it
+
+    * quantifies over nothing (`∀`, `∃`), so it is not a claim about a range;
+    * mentions no `Set`, so it does not range over an interval or a set of zeros -- this is what
+      excludes `LowZeroes.v1`'s sum over zeta zeros and its emptiness claim; and
+    * relates two expressions by a comparison, which is what excludes a `Prop`-valued predicate
+      hiding a quantifier in its own definition. `RiemannHypothesisUpTo (10 ^ 11)` and
+      `GoldbachEvenUpTo (4 * 10 ^ 18)` are each a single application with no relation in sight,
+      and each is a genuine exhaustive search that `numerical` describes correctly.
+
+    What survives is the closed-form arithmetic: two Büthe constants, two `FKS` rescalings that
+    `norm_num` would close, and one forty-term `rpow` evaluation.
+    """
+    statement = source.partition(":=")[2]
+    if not statement.strip():
+        return False
+    if "∀" in statement or "∃" in statement:
+        return False
+    if "Set" in LEAN_NAME_RE.findall(statement):
+        return False
+    return any(relation in statement for relation in _COMPARISONS)
 
 
 def declaration_url(key: str) -> str | None:
@@ -3702,7 +3862,10 @@ def bridges_in(nodes: dict) -> list[dict]:
 #: `lean-noncompliant` sits above the two kinds a reader can only take on authority: the proof is
 #: here, the Lean kernel accepted it, and anyone may build it. It stays below `bridged` because a
 #: bridge terminates in something this network checked, and nothing has checked this.
-EVIDENCE_ORDER = ["none-yet", "lean-comparator-drifted", "asserted", "literature", "numerical",
+#: `refuted` is below `none-yet` because an unjustified conclusion might still be true, and this
+#: one is known not to be. It is the only entry that is not a justification kind.
+EVIDENCE_ORDER = [REFUTED_KIND,
+                  "none-yet", "lean-comparator-drifted", "asserted", "literature", "numerical",
                   "lean-noncompliant", "bridged", "lean-comparator-stale", "lean-comparator"]
 
 
@@ -4701,6 +4864,11 @@ def state_at(ref: str | None) -> dict:
                     for d in (conclusion.get("imports") or [])
                 ],
                 "kind": designated.get("kind"),
+                # Recorded separately from `kind`, because a refutation does not change what the
+                # conclusion designates -- it overrides it. Without this, `diff` compares the
+                # designated kinds, finds them identical, and reports "no change" for a branch
+                # that has just declared a conclusion false.
+                "refuted": bool(conclusion.get("refuted")),
                 "from": bridge_sources(designated) if designated.get("kind") == "bridged" else [],
             }
     return {"conclusions": conclusions, "fingerprints": fingerprints, "receipts": receipts}
@@ -4860,6 +5028,27 @@ def diff(base: str) -> bool:
     for key, entry in sorted(after["conclusions"].items()):
         if key not in before["conclusions"]:
             notes.append(f"new conclusion `{key}` (`{entry['kind']}`).")
+            continue
+        # Refuting a conclusion is the strongest degradation there is -- not a weaker
+        # justification but the absence of any -- and it is invisible to every other comparison
+        # here: the statement is untouched, so no fingerprint moves, and the designated
+        # justification is untouched too. It is reported rather than failed, because recording a
+        # published result as false is a legitimate thing for a branch to do; what must not
+        # happen is for it to land looking like no change at all.
+        was, now = before["conclusions"][key].get("refuted"), entry.get("refuted")
+        if now and not was:
+            users = sorted(
+                u for u, current in after["conclusions"].items() if key in current["imports"]
+            )
+            warnings.append(
+                f"**`{key}` is now refuted** -- declared false as stated, so it offers no "
+                "evidence at all."
+                + (f" {len(users)} conclusion(s) still import it and want rerouting: "
+                   + ", ".join(f"`{u}`" for u in users) + "."
+                   if users else " Nothing imports it.")
+            )
+        elif was and not now:
+            notes.append(f"`{key}` is no longer refuted; the counterexample was withdrawn.")
 
     # Vocabulary is this repository's core: shared by every node, and so the one place a single
     # edit can change what many conclusions claim. Mathlib gives its core files the same extra

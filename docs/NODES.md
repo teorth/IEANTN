@@ -228,6 +228,41 @@ Notes:
   tooling and the writing half disagree about what the file says -- and an edit that adds a key
   some later duplicate overrides does nothing at all, silently. `check` reports any such repeat,
   with the line of the second occurrence.
+- `refuted` marks a conclusion that is **false as stated**, and is the one field that overrides
+  everything else about a conclusion's evidence. It exists because a node's claim is *about the
+  literature*: a published result that is false as printed is a fact about the literature worth
+  recording, and deleting it would make the graph disagree with the papers it indexes. So such a
+  conclusion stays, and the views stop offering it as evidence.
+
+  ```yaml
+    designated: paper
+    refuted:
+      issue: 260            # required: where it was established, and where rerouting is tracked
+      counterexample: >-    # required: the arithmetic or instantiation, so anyone can check it
+        pi(10) = 4; li(10) = 6.165599505; theta(10) = 5.347107531; so the left side is
+        -0.1448739805 and the stated `0.1 < ...` is false.
+      note: >-              # optional: how the error arises, and what the source meant
+        Faithful to the paper and false in the paper. ...
+      corrected: ButheNumerics.v2.lemma_3_constant_gt_at_10   # optional forwarding address
+  ```
+
+  `check` requires `counterexample` and `issue` — a refutation nobody can check is worth no more
+  than the claim it withdraws — refuses a `refuted` block beside a designated `lean-comparator`
+  justification, since one of the two must be wrong and a person has to say which, and refuses a
+  `corrected` that does not exist or is itself refuted.
+
+  Nothing *forces* a refuted conclusion out of the network. `housekeeping` queues `restate` while
+  no corrected version exists and `reroute` for each consumer that still imports it, and evidence
+  grades as `refuted`, below `none-yet`: an unjustified conclusion might still be true, and this
+  one is known not to be. Because a node is summarised by its weakest conclusion, one refutation
+  shows on the whole node — which is correct for anyone importing all of it.
+
+  **Faithfulness is required of a source's conclusions, not of its internal lemmas.** A node
+  transcribing a paper's stated results must state them as printed. Its *justifications* and the
+  paper's *internal lemmas* may deviate — a Lean solution may take any correct route, and a node
+  may state a corrected form of an intermediate lemma — provided a significant deviation is
+  recorded in the metadata. That is why Büthe's Lemma 3 appears twice: `Buthe.v2.lemma_3_bounds`
+  as printed and refuted, and a corrected version alongside it as a noted deviation.
 - There is no `receipt` field. Receipts live in `receipts/`, one JSON file per verified
   conclusion, written by the verification workflow. See [../receipts/README.md](../receipts/README.md).
 - Palomar's required-field list is a **moving target**. CI re-fetches the validator; do not vendor

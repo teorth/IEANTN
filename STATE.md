@@ -42,7 +42,7 @@ adds the environment detail.
 | `Buthe.v1` | active | `theorem_2_li_gt_pi` | literature | 4 | - |
 | `Buthe.v1` | active | `table_1_interval_bounds` | literature | 0 | - |
 | `Buthe.v1` | active | `table_2_interval_bounds` | literature | 0 | - |
-| `Buthe.v2` | awaiting-solution | `lemma_3_bounds` | none-yet | 0 | #56 |
+| `Buthe.v2` | awaiting-solution | `lemma_3_bounds` | refuted | 0 | #56 |
 | `Buthe.v2` | awaiting-solution | `lemma_3_positivity` | none-yet | 0 | #56 |
 | `Buthe2016.v1` | stub | `theorem_2_psi` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_theta` | literature | 0 | - |
@@ -52,7 +52,7 @@ adds the environment detail.
 | `Buthe2016.v1` | stub | `theorem_1_table2` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
-| `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
+| `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | refuted | 0 | - |
 | `ButheNumerics.v1` | stub | `eq_6_2` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_riemann_pi_below_1e7` | numerical | 0 | - |
 | `CH2.v1` | active | `corollary_1_2_psi` | lean-comparator | 13 | - |
