@@ -3175,12 +3175,24 @@ def housekeeping() -> bool:
     # the queue says it is claimed, and the issue tracker says it is finished. It happens by
     # accident -- closing the issue alongside the pull request that created the node rather than
     # the one that justifies it -- and nothing else in the tooling would ever mention it again.
+    # A `numerical` conclusion that is really a closed evaluation: justified on paper, provable in
+    # Lean, and queued below for that reason. See `point_evaluation`.
+    point_evaluations = {
+        f"{node_id}.{cid}"
+        for node_id, node in nodes.items()
+        for conclusion in conclusions_of(node)
+        if (cid := str(conclusion.get("id") or ""))
+        and designated_kind(conclusion) == "numerical"
+        and point_evaluation(read_declaration(node_id, cid)[1])
+    }
+
     outstanding = {
         conclusion.get("issue")
-        for node in nodes.values()
+        for node_id, node in nodes.items()
         for conclusion in conclusions_of(node)
-        if designated_kind(conclusion) in {"none-yet", "literature", "asserted",
-                                           NONCOMPLIANT_KIND}
+        if (designated_kind(conclusion) in {"none-yet", "literature", "asserted",
+                                            NONCOMPLIANT_KIND}
+            or f"{node_id}.{conclusion.get('id')}" in point_evaluations)
         and isinstance(conclusion.get("issue"), int)
     }
     stale_issues = closed_issues({n for n in outstanding if isinstance(n, int)})
@@ -3227,6 +3239,9 @@ def housekeeping() -> bool:
             elif kind == NONCOMPLIANT_KIND:
                 tasks.append(f"certify   {node_id}.{conclusion.get('id')}  "
                              f"(Lean proof, no receipt available) [{claim}]")
+            elif f"{node_id}.{conclusion.get('id')}" in point_evaluations:
+                tasks.append(f"prove     {node_id}.{conclusion.get('id')}  "
+                             f"(numerical, but a closed evaluation Lean can settle) [{claim}]")
 
     print("Housekeeping queue")
     print("=" * 62)
@@ -3460,6 +3475,53 @@ def read_declaration(node_id: str, cid: str) -> tuple[str, str]:
     while body and not body[-1].strip():
         body.pop()
     return "\n".join(doc).strip(), "\n".join(body)
+
+
+#: Relations that make a statement an assertion about numbers rather than a predicate applied
+#: to a bound. `=` is included for completeness, though a point evaluation rarely uses it.
+_COMPARISONS = ("≤", "≥", "<", ">", "≠", "=")
+
+
+def point_evaluation(source: str) -> bool:
+    """Whether a conclusion's statement is a closed assertion about finitely many constants.
+
+    `numerical` means, per `docs/ARCHITECTURE.md`, "a computation not currently expressible in
+    Lean (large interval-arithmetic runs, exhaustive searches)". A statement that quantifies over
+    nothing and ranges over no set is neither of those: it is one inequality between closed-form
+    expressions, and a Lean proof could settle it. So `numerical` on such a conclusion is a
+    category error, and the interesting thing about a category error here is what it hides.
+
+    `housekeeping` queues work by designated kind, and `numerical` counts as justified, so it is
+    never queued. `check` validates shape, closure, acyclicity and receipt provenance, none of
+    which look at whether a stated inequality is *true*. A false conclusion carrying a `numerical`
+    justification is therefore invisible to the whole toolchain -- which is exactly how
+    `ButheNumerics.v1.lemma_3_constant_gt_at_10` sat in the network asserting `0.1 < -0.1449`
+    until someone read the paper and did the arithmetic (issue 260). Queueing these says "a Lean
+    proof is available here", and attempting one is what finds the next such statement.
+
+    The test is deliberately syntactic and deliberately conservative, because the cost of a false
+    positive is a task nobody can action -- the failure mode this queue has already been through.
+    A statement is a point evaluation only when it
+
+    * quantifies over nothing (`∀`, `∃`), so it is not a claim about a range;
+    * mentions no `Set`, so it does not range over an interval or a set of zeros -- this is what
+      excludes `LowZeroes.v1`'s sum over zeta zeros and its emptiness claim; and
+    * relates two expressions by a comparison, which is what excludes a `Prop`-valued predicate
+      hiding a quantifier in its own definition. `RiemannHypothesisUpTo (10 ^ 11)` and
+      `GoldbachEvenUpTo (4 * 10 ^ 18)` are each a single application with no relation in sight,
+      and each is a genuine exhaustive search that `numerical` describes correctly.
+
+    What survives is the closed-form arithmetic: two Büthe constants, two `FKS` rescalings that
+    `norm_num` would close, and one forty-term `rpow` evaluation.
+    """
+    statement = source.partition(":=")[2]
+    if not statement.strip():
+        return False
+    if "∀" in statement or "∃" in statement:
+        return False
+    if "Set" in LEAN_NAME_RE.findall(statement):
+        return False
+    return any(relation in statement for relation in _COMPARISONS)
 
 
 def declaration_url(key: str) -> str | None:
