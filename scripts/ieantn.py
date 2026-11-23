@@ -4975,6 +4975,64 @@ def module_path(module: str) -> pathlib.Path:
     return ROOT / pathlib.PurePosixPath(module.replace(".", "/") + ".lean")
 
 
+def _render_parameter(param: dict) -> str | None:
+    name = str(param.get("name") or "")
+    typ = param.get("type")
+    if not isinstance(typ, str) or not typ.strip():
+        return None
+    kind = param.get("binder") or "explicit"
+    if kind == "instImplicit":
+        return f"[{typ.strip()}]"
+    if not re.fullmatch(r"[A-Za-z_α-ωΑ-Ωℕℤℝℂ][A-Za-z0-9_α-ωΑ-Ωℕℤℝℂ']*", name):
+        return None
+    if kind == "implicit":
+        return f"{{{name} : {typ.strip()}}}"
+    if kind == "strictImplicit":
+        return f"⦃{name} : {typ.strip()}⦄"
+    return f"({name} : {typ.strip()})"
+
+
+def _parameter_present(header: str, param: dict) -> bool:
+    """Whether this telescope entry is already written in the declaration header."""
+    kind = param.get("binder") or "explicit"
+    typ = param.get("type")
+    if kind == "instImplicit":
+        return isinstance(typ, str) and typ.strip() in header
+    name = str(param.get("name") or "")
+    if not name or name == "[anonymous]" or "✝" in name:
+        return True
+    return re.search(rf"[\(\{{\[⦃]\s*{re.escape(name)}\b", header) is not None
+
+
+def bind_missing_parameters(body: str, written: str, parameters: list) -> str:
+    """Put back a leading telescope the declaration range does not contain.
+
+    A `variable` in a surrounding section is elaborated into the constant and is not part of
+    `findDeclarationRanges?`. Slicing the range therefore drops those binders. Parameters the
+    header already names stay as written; the restored prefix stops at the first one of those.
+    """
+    if not parameters:
+        return body
+    header, sep, rest = body.partition(":=")
+    if not sep:
+        return body
+    prefix: list[str] = []
+    for param in parameters:
+        if not isinstance(param, dict) or _parameter_present(header, param):
+            break
+        rendered = _render_parameter(param)
+        if rendered is None:
+            break
+        prefix.append(rendered)
+    if not prefix:
+        return body
+    matches = list(re.finditer(rf"\b(?:def|theorem|lemma|abbrev|axiom)\s+{re.escape(written)}\b", header))
+    if not matches:
+        return body
+    at = matches[-1].end()
+    return header[:at] + " " + " ".join(prefix) + header[at:] + sep + rest
+
+
 def slice_source(text: str, decl: dict, prefix: str) -> tuple[str, str]:
     """The source of one declaration, and the namespace it must be re-emitted inside.
 
@@ -5000,6 +5058,10 @@ def slice_source(text: str, decl: dict, prefix: str) -> tuple[str, str]:
             "The namespace cannot be recovered; refusing to guess.")
     namespace = full[: len(full) - len(written)].rstrip(".")
     del prefix
+    parameters = decl.get("parameters") or []
+    if not isinstance(parameters, list):
+        parameters = []
+    body = bind_missing_parameters(body, written, parameters)
     return body, namespace
 
 
@@ -5092,26 +5154,29 @@ def _until_assign(code: str, index: int) -> tuple[str, int]:
     return code[start:], len(code)
 
 
-def _resolve_binder_type(written: str, namespace: list[str], known: set[str]) -> str:
-    """The declaration Lean would mean by `written` inside `namespace`, when that is determined.
+def _resolve_binder_type(written: str, namespace: list[str], known: set[str]) -> str | None:
+    """A unique network candidate for a simple binder name, not Lean name elaboration.
 
-    A name is tried under the enclosing namespace first, then each parent, then as written.
-    `namespace Demo` / `(h : B.v1.main)` is `Demo.B.v1.main` when that declaration exists, and
-    only otherwise `B.v1.main`. A short name works the same way: `main` inside `B.v1` is
-    `B.v1.main`. Anything that is not a single name is returned unchanged. Names that resolve
-    only through `open` are not guessed.
+    `known` contains the entire graph, not the imported Lean environment. Multiple namespace
+    candidates therefore return None: even Lean's namespace-first order cannot tell us which
+    declarations are visible. This deliberately refuses some valid bridges rather than choosing
+    the wrong hypothesis. A unique short name such as `main` inside `B.v1` still works. Unknown
+    names and non-name expressions stay unchanged for the caller to reject; `open` is not guessed.
     """
     collapsed = " ".join(written.split())
     if not re.fullmatch(
         r"[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*", collapsed
     ):
         return collapsed
+    candidates = []
     for length in range(len(namespace), -1, -1):
         prefix = ".".join(namespace[:length])
         candidate = f"{prefix}.{collapsed}" if prefix else collapsed
         if candidate in known:
-            return candidate
-    return collapsed
+            candidates.append(candidate)
+    if len(candidates) > 1:
+        return None
+    return candidates[0] if candidates else collapsed
 
 
 def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, list[str]]]:
@@ -5121,14 +5186,17 @@ def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, 
     namespaces open around it. A dotted name inside a namespace is skipped: which full name Lean
     would assign is not something to guess. A `section` is not a namespace: closing it must not
     drop the namespace that contains it. Only a single explicit `(name : type)` binder is
-    accepted, and only when `type` is one of `known`. An implicit binder or a side condition
-    disqualifies that theorem.
+    accepted, and only when `type` has a unique namespace candidate in `known`. An implicit
+    binder or a side condition disqualifies that theorem. An active `variable` command also
+    disqualifies it: section parameters may shadow names or add generalized arguments. We do not
+    reconstruct that telescope, even when a variable might turn out to be unused.
     """
     code = strip_lean_comments(text)
     # ("namespace", component) or ("section", name-or-None). Sections sit in the same
     # stack so `end` closes the innermost scope, but only namespace components are
     # prefixed onto theorem names.
     scopes: list[tuple[str, str | None]] = []
+    variable_scopes: set[int] = set()
     found: list[tuple[str, list[str]]] = []
     index, length = 0, len(code)
 
@@ -5176,7 +5244,12 @@ def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, 
         if _ident_boundary(code, index, "end"):
             name, next_index = header_name(index + len("end"))
             close_scope([part for part in name.split(".") if part] if name else [])
+            variable_scopes.intersection_update(range(len(scopes) + 1))
             index = next_index if next_index > index else index + len("end")
+            continue
+        if _ident_boundary(code, index, "variable"):
+            variable_scopes.add(len(scopes))
+            index += len("variable")
             continue
         if not _ident_boundary(code, index, "theorem"):
             index += 1
@@ -5191,7 +5264,7 @@ def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, 
             full_name = ".".join([*stack, declared])
         index = _skip_ws(code, index)
         binders: list[str] = []
-        usable = bool(declared) and not ambiguous
+        usable = bool(declared) and not ambiguous and not variable_scopes
         while index < length and code[index] in "({[":
             if code[index] != "(":
                 usable = False
@@ -5205,7 +5278,11 @@ def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, 
             if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", binder_name.strip()):
                 usable = False
                 break
-            binders.append(_resolve_binder_type(binder_type, stack, known))
+            resolved = _resolve_binder_type(binder_type, stack, known)
+            if resolved is None:
+                usable = False
+                break
+            binders.append(resolved)
             index = _skip_ws(code, index)
         if index < length and code[index] == ":":
             conclusion, index = _until_assign(code, index + 1)

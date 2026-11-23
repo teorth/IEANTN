@@ -1,8 +1,8 @@
-"""Hypothesis names in a bridge are resolved in the enclosing namespace.
+"""Conservative network-hypothesis matching in simple namespace contexts.
 
-Lean tries `namespace ++ written` before the written name. A binder copied as text
-therefore composes the wrong conclusion whenever the longer name exists, and a short
-name such as `main` inside `B.v1` matches nothing.
+The graph is not a Lean imported environment. Multiple candidate declarations and
+active section variables must be refused, not resolved by guessing. Unique short
+names remain supported, without claiming to implement Lean elaboration.
 """
 import contextlib
 import io
@@ -34,17 +34,147 @@ class TestBridgeBinderResolution(FixtureRepo):
             ok = ieantn.spinoff(key, "export", False)
         return ok, output.getvalue()
 
-    def test_a_shadowed_binder_uses_the_enclosing_namespace(self) -> None:
+    def test_unimported_namespace_candidate_does_not_replace_root(self) -> None:
+        text = (
+            "import IEANTN.Nodes.A.v1.Conclusions\n"
+            "import IEANTN.Nodes.B.v1.Conclusions\n"
+            "namespace Demo\n"
+            "theorem from_b (h : B.v1.main) : A.v1.main := by rfl\n"
+            "end Demo\n"
+        )
+        # `known` is the entire graph, not the imported Lean environment. Without
+        # elaboration we cannot choose either candidate, even though Lean sees the root.
+        known = {"A.v1.main", "B.v1.main", "Demo.B.v1.main"}
+        self.assertEqual(ieantn.bridge_theorems(text, "A.v1.main", known), [])
+
+    def test_imported_namespace_candidate_does_not_fall_back_to_root(self) -> None:
+        for imports in (
+            "import IEANTN.Nodes.Demo.B.v1.Conclusions\n",
+            "import IEANTN.Nodes.B.v1.Conclusions\n"
+            "import IEANTN.Nodes.Demo.B.v1.Conclusions\n",
+        ):
+            with self.subTest(imports=imports):
+                text = (
+                    "import IEANTN.Nodes.A.v1.Conclusions\n" + imports
+                    + "namespace Demo\n"
+                    "theorem from_b (h : B.v1.main) : A.v1.main := by rfl\n"
+                    "end Demo\n"
+                )
+                # Returning the root on ambiguity would be wrong in this direction.
+                known = {"A.v1.main", "B.v1.main", "Demo.B.v1.main"}
+                self.assertEqual(ieantn.bridge_theorems(text, "A.v1.main", known), [])
+
+    def test_section_local_prop_is_not_a_network_hypothesis(self) -> None:
+        text = (
+            "namespace B.v1\n"
+            "section\n"
+            "variable (main : Prop)\n"
+            "theorem to_a (h : main) : A.v1.main := by rfl\n"
+            "end\n"
+            "end B.v1\n"
+        )
+        self.assertEqual(
+            ieantn.bridge_theorems(text, "A.v1.main", {"A.v1.main", "B.v1.main"}), []
+        )
+
+    def test_variable_scope_rejection_ends_only_with_its_own_scope(self) -> None:
+        text = (
+            "namespace B.v1\n"
+            "section Outer\n"
+            "variable (main : Prop)\n"
+            "section Inner\n"
+            "theorem inside (h : main) : A.v1.main := by rfl\n"
+            "end Inner\n"
+            "theorem still_inside (h : main) : A.v1.main := by rfl\n"
+            "end Outer\n"
+            "theorem outside (h : main) : A.v1.main := by rfl\n"
+            "end B.v1\n"
+        )
+        self.assertEqual(
+            ieantn.bridge_theorems(text, "A.v1.main", {"A.v1.main", "B.v1.main"}),
+            [("B.v1.outside", ["B.v1.main"])],
+        )
+
+    def test_variable_context_is_refused_even_if_a_parameter_might_be_unused(self) -> None:
+        text = (
+            "namespace B.v1\nsection\nvariable (unused : Prop)\n"
+            "theorem to_a (h : B.v1.main) : A.v1.main := by rfl\n"
+            "end\nend B.v1\n"
+        )
+        # Deliberate false negative: source scanning cannot recover Lean's telescope.
+        self.assertEqual(ieantn.bridge_theorems(text, "A.v1.main", {"B.v1.main"}), [])
+
+    def test_variable_context_is_restored_after_section_or_namespace_end(self) -> None:
+        for opening, closing in (
+            ("section", "end"),
+            ("section Local", "end Local"),
+            ("namespace Local", "end Local"),
+        ):
+            with self.subTest(opening=opening):
+                text = (
+                    f"namespace B.v1\n{opening}\nvariable (main : Prop)\n"
+                    "theorem inside (h : main) : A.v1.main := by rfl\n"
+                    f"{closing}\n"
+                    "theorem outside (h : main) : A.v1.main := by rfl\n"
+                    "end B.v1\n"
+                )
+                self.assertEqual(
+                    ieantn.bridge_theorems(text, "A.v1.main", {"B.v1.main"}),
+                    [("B.v1.outside", ["B.v1.main"])],
+                )
+
+    def test_top_level_variable_context_is_not_cleared_by_nested_end(self) -> None:
+        text = (
+            "variable (main : Prop)\nnamespace B.v1\nsection\nend\n"
+            "theorem to_a (h : main) : A.v1.main := by rfl\nend B.v1\n"
+        )
+        self.assertEqual(ieantn.bridge_theorems(text, "A.v1.main", {"B.v1.main"}), [])
+
+    def test_composition_refuses_ambiguous_import_visibility(self) -> None:
+        self.write_node("B.v1", LITERATURE)
+        self.write_node("Demo.B.v1", LITERATURE)
+        self.write_node("A.v1", bridged("B.v1.main"))
+        bridge = self.root / "IEANTN" / "Bridges" / "a.lean"
+        bridge.parent.mkdir(parents=True)
+        bridge.write_text(
+            "import IEANTN.Nodes.A.v1.Conclusions\n"
+            "import IEANTN.Nodes.B.v1.Conclusions\n"
+            "namespace Demo\n"
+            "theorem from_b (h : B.v1.main) : A.v1.main := trivial\n"
+            "end Demo\n",
+            encoding="utf-8",
+        )
+        ok, text = self.spin()
+        self.assertFalse(ok, text)
+        self.assertIn("Refusing to guess an application.", text)
+        self.assertFalse((self.root / "export").exists())
+
+    def test_composition_refuses_section_local_prop(self) -> None:
+        self.write_node("B.v1", LITERATURE)
+        self.write_node("A.v1", bridged("B.v1.main"))
+        bridge = self.root / "IEANTN" / "Bridges" / "a.lean"
+        bridge.parent.mkdir(parents=True)
+        bridge.write_text(
+            "namespace B.v1\nsection\nvariable (main : Prop)\n"
+            "theorem to_a (h : main) : A.v1.main := trivial\n"
+            "end\nend B.v1\n",
+            encoding="utf-8",
+        )
+        ok, text = self.spin()
+        self.assertFalse(ok, text)
+        self.assertIn("Refusing to guess an application.", text)
+        self.assertFalse((self.root / "export").exists())
+
+    def test_ambiguous_binder_is_not_resolved_by_graph_membership(self) -> None:
         text = (
             "namespace Demo\n"
             "-- λ\n"
             "theorem from_b (h : B.v1.main) : A.v1.main := trivial\n"
             "end Demo\n"
         )
-        found = ieantn.bridge_theorems(
-            text, "A.v1.main", {"A.v1.main", "B.v1.main", "Demo.B.v1.main"}
-        )
-        self.assertEqual(found, [("Demo.from_b", ["Demo.B.v1.main"])])
+        known = {"A.v1.main", "B.v1.main", "Demo.B.v1.main"}
+        self.assertIsNone(ieantn._resolve_binder_type("B.v1.main", ["Demo"], known))
+        self.assertEqual(ieantn.bridge_theorems(text, "A.v1.main", known), [])
 
     def test_a_short_binder_is_prefixed_with_the_enclosing_namespace(self) -> None:
         text = (
@@ -72,7 +202,7 @@ class TestBridgeBinderResolution(FixtureRepo):
             "theorem from_b (h : B.v1.main) : A.v1.main := trivial\n"
             "end Demo\n"
         )
-        known = {"B.v1.main", "Demo.B.v1.main"}
+        known = {"Demo.B.v1.main"}
         self.assertEqual(
             ieantn.bridge_theorems(text, "A.v1.main", known),
             [("Demo.from_b", ["Demo.B.v1.main"])],
@@ -99,7 +229,7 @@ class TestBridgeBinderResolution(FixtureRepo):
              ("outside", ["B.v1.main"])],
         )
 
-    def test_nested_namespace_tries_known_parents_before_root(self) -> None:
+    def test_nested_namespace_accepts_only_a_unique_known_candidate(self) -> None:
         text = (
             "namespace Demo.Inner\n"
             "section Helper\n"
@@ -107,14 +237,16 @@ class TestBridgeBinderResolution(FixtureRepo):
             "end Helper\n"
             "end Demo.Inner\n"
         )
-        known = {"B.v1.main", "Demo.B.v1.main", "Demo.Inner.B.v1.main"}
-        for expected in ("Demo.Inner.B.v1.main", "Demo.B.v1.main", "B.v1.main"):
+        candidates = {"B.v1.main", "Demo.B.v1.main", "Demo.Inner.B.v1.main"}
+        for expected in sorted(candidates):
             with self.subTest(expected=expected):
                 self.assertEqual(
-                    ieantn.bridge_theorems(text, "A.v1.main", known),
+                    ieantn.bridge_theorems(text, "A.v1.main", {expected}),
                     [("Demo.Inner.from_b", [expected])],
                 )
-            known.remove(expected)
+        for known in (candidates, {"B.v1.main", "Demo.B.v1.main"}):
+            with self.subTest(known=known):
+                self.assertEqual(ieantn.bridge_theorems(text, "A.v1.main", known), [])
 
     def test_open_only_binder_is_not_guessed(self) -> None:
         text = (
@@ -172,8 +304,7 @@ class TestBridgeBinderResolution(FixtureRepo):
                 self.assertIn("Refusing to guess an application.", text)
                 self.assertFalse((self.root / "export").exists())
 
-    def test_composition_applies_the_shadowed_hypothesis(self) -> None:
-        self.write_node("B.v1", LITERATURE)
+    def test_composition_applies_a_unique_namespace_hypothesis(self) -> None:
         self.write_node("Demo.B.v1", LITERATURE)
         body = bridged("Demo.B.v1.main").replace(
             "bridge: IEANTN/Bridges/a.lean",
@@ -183,6 +314,8 @@ class TestBridgeBinderResolution(FixtureRepo):
         bridge = self.root / "IEANTN" / "Bridges" / "Demo" / "FromB.lean"
         bridge.parent.mkdir(parents=True)
         bridge.write_text(
+            "import IEANTN.Nodes.A.v1.Conclusions\n"
+            "import IEANTN.Nodes.Demo.B.v1.Conclusions\n"
             "namespace Demo\n"
             "-- the λ in this comment must survive a UTF-8 round trip\n"
             "section Helper\n"
