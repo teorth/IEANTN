@@ -1,0 +1,110 @@
+# Node metadata for `FKS2NuAsymp.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: FKS2NuAsymp.v1
+  family: FKS2NuAsymp
+  version: v1
+  kind: computation
+  status: awaiting-verification
+
+project:
+  name: Corrected FKS2 Corollary 14 multiplier bound and refutation of the printed bound
+  description: >-
+    Formal Lean 4 proof of the corrected bound nuAsympE30 <= 6.3381e-7 behind FKS2's
+    Corollary 14, together with a formal refutation of the printed bound
+    FKS2Numerics.v1.nu_asymp_e30_le (nuAsympE30 <= 6.3376e-7), split onto its own node so
+    verification does not certify the remaining conclusions of FKS2Numerics.v1.
+  authors:
+  - Riccardo Vecchi
+  license: Apache-2.0
+  responsible_maintainers:
+  - Riccardo Vecchi
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11N05
+  - 11Y70
+
+conclusions:
+- id: nu_asymp_e30_le
+  issue: 273
+  declaration: FKS2NuAsymp.v1.nu_asymp_e30_le
+  challenge: FKS2NuAsymp.v1.challenge_nu_asymp_e30_le
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      Proved in Solutions/FKS2NuAsymp.v1 using pure Mathlib Taylor bounds for exp, rational
+      square-root enclosures, Mathlib's log 2 bounds, and a direct dominance argument showing
+      f(2^44) <= f(exp 30). Remains none-yet until the verification workflow writes a
+      Comparator/NanoDa receipt.
+  designated: unjustified
+- id: nu_asymp_e30_gt
+  issue: 273
+  declaration: FKS2NuAsymp.v1.nu_asymp_e30_gt
+  challenge: FKS2NuAsymp.v1.challenge_nu_asymp_e30_gt
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      Proved in Solutions/FKS2NuAsymp.v1 by bounding the positive partial sum of f(exp 30)
+      over k = 3..8 from below and combining with rational lower bounds on exp and sqrt.
+      Remains none-yet until the verification workflow writes a Comparator/NanoDa receipt.
+  designated: unjustified
+
+sources:
+- title: Sharper bounds for the error term in the prime number theorem
+  authors:
+  - Andrew Fiori
+  - Habiba Kadiri
+  - Joshua Swidinsky
+  type: paper
+  id: arXiv:2206.12557
+  location: Proof of Corollary 14, displayed bound for nu_asymp(e^30)
+  relationship: adapts
+  note: >-
+    Corrects the printed display nu_asymp(e^30) <= 6.3376e-7 in the proof of Corollary 14
+    (which survived from an earlier draft with A_psi = 121.1070, visible in the commented-out
+    LaTeX lines 222-227 of New_Bounds_on_Pi-Revised-RNTB-May2023.tex, where
+    nu_asymp(e^30) = 6.33751754...e-7) to the tight 5-significant-digit ceiling 6.3381e-7
+    for A_psi = 121.096 (where nu_asymp(e^30) = 6.33809322...e-7). Corollary 14 itself
+    (A_theta = 121.0961) is unaffected.
+
+automation:
+  methods:
+  - method: ai-assisted
+    role: >-
+      Discovered the 6.338093...e-7 vs 6.3376e-7 discrepancy via high-precision arithmetic,
+      traced its origin in the arXiv LaTeX source, and drafted the Lean 4 proofs of both the
+      corrected upper bound and the refutation. Every inequality is checked by Lean's kernel
+      with only the three standard axioms.
+
+review:
+  status: self-assessed
+  reviewers:
+  - Riccardo Vecchi
+  notes: >-
+    Both conclusions operate directly on FKS2Numerics.v1.nuAsympE30 and
+    FKS2Numerics.v1.nu_asymp_e30_le without altering their definitions. The corrected bound
+    6.3381e-7 satisfies 121.096 * (1 + 6.3381e-7) < 121.0961 and is ready for FKS2.v1 to
+    reroute onto once verified.
+
+limitations:
+- >-
+  Covers only the single closed-form multiplier evaluation nuAsympE30 from FKS2Numerics.v1.
+  The other conclusions of FKS2Numerics.v1 are untouched.
+- >-
+  FKS2.v1's four verified corollaries still import the refuted FKS2Numerics.v1.nu_asymp_e30_le
+  until rerouted to FKS2NuAsymp.v1.nu_asymp_e30_le and re-verified.
+- >-
+  Comparator and NanoDa verification require the maintainer-approved Linux workflow.
