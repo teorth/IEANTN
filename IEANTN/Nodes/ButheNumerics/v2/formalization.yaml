@@ -9,7 +9,7 @@ node:
   family: ButheNumerics
   version: v2
   kind: computation
-  status: awaiting-verification
+  status: active
 
 project:
   name: "The sign of the constant in Buthe's Lemma 3 at a = 1500"
@@ -45,7 +45,10 @@ conclusions:
       1/log t and gives Li(1500) > 245; pi(1500) = 239 and primorial(1500) >= 2^2109 are checked
       by the kernel with `decide +kernel`. Then A <= 239 - 245 + 5.51 < 0. The true value is
       about -3.64.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/45880789805'
+  designated: comparator
 
 sources:
 - title: "An analytic method for bounding psi(x)"
