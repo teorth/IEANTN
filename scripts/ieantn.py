@@ -2749,7 +2749,8 @@ LIGHT_STRENGTH = {
 
 def net_light(conclusion_key: str, index: dict[str, dict], fingerprints: dict[str, str],
               cache: dict[str, tuple[str, str]] | None = None,
-              stack: tuple[str, ...] = ()) -> tuple[str, str]:
+              stack: tuple[str, ...] = (), *,
+              consult_history: bool = True) -> tuple[str, str]:
     """One conclusion's status, following a `bridged` designation through to what it rests on.
 
     A conclusion with its own receipt is graded by `assess`. A `bridged` one has no receipt of its
@@ -2768,6 +2769,11 @@ def net_light(conclusion_key: str, index: dict[str, dict], fingerprints: dict[st
     Memoised, and the `stack` guard means a malformed cycle degrades to `-` rather than recursing
     forever. `check` already refuses cycles in the designated-transport graph, so this only has to
     avoid making a broken network unreportable.
+
+    `consult_history` is forwarded to `assess` and carries its meaning: telling `churn` from
+    `BROKEN` means asking git whether a file changed since the receipt's commit, which is not
+    reproducible where the commit is unreachable. `status` runs in a real clone and asks; a caller
+    that needs a verdict independent of git history passes `False`.
     """
     if cache is None:
         cache = {}
@@ -2790,6 +2796,7 @@ def net_light(conclusion_key: str, index: dict[str, dict], fingerprints: dict[st
                 ("BROKEN", "designated `lean-comparator` but no receipt file")
                 if receipt is None
                 else assess(conclusion_key, receipt, fingerprints,
+                            consult_history=consult_history,
                             imports=imported_conclusion_keys(conclusion))
             )
         elif kind == "bridged":
@@ -2799,7 +2806,8 @@ def net_light(conclusion_key: str, index: dict[str, dict], fingerprints: dict[st
             else:
                 graded = [
                     (net_light(source, index, fingerprints, cache,
-                               stack + (conclusion_key,)), source)
+                               stack + (conclusion_key,),
+                               consult_history=consult_history), source)
                     for source in sources
                 ]
                 (light, detail), worst = max(

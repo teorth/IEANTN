@@ -162,14 +162,27 @@ class TestMalformedNetworks(_Bridges):
 
 class TestTheCommittedNetwork(unittest.TestCase):
     def test_every_bridged_conclusion_matches_its_weakest_source(self) -> None:
-        """A property, against the real network rather than a fixture."""
+        """A property, against the real network rather than a fixture.
+
+        `recorded_fingerprints`, not `compute_fingerprints`. The latter shells out to
+        `lake exe ieantn_hash`, and the CI job that runs these tests has no Lean toolchain at
+        all -- the first version of this test died there with
+        `FileNotFoundError: [Errno 2] No such file or directory: 'lake'`. The committed
+        `fingerprints.json` files say the same thing without asking Lean, and the separate build
+        job runs `fingerprint --check` against a real build, so a stale one fails there rather
+        than being believed here.
+
+        `consult_history=False` for the same class of reason: distinguishing `churn` from
+        `BROKEN` asks git whether a file moved since the receipt's commit, which is not
+        reproducible in a shallow checkout.
+        """
         nodes = ieantn.load_nodes()
         index = {
             f"{node_id}.{c.get('id')}": c
             for node_id, node in nodes.items()
             for c in ieantn.conclusions_of(node)
         }
-        fingerprints = ieantn.compute_fingerprints()
+        fingerprints = ieantn.recorded_fingerprints()
         cache: dict[str, tuple[str, str]] = {}
         bridged_keys = [k for k, c in index.items()
                         if ieantn.designated_kind(c) == "bridged" and not c.get("refuted")]
@@ -177,11 +190,16 @@ class TestTheCommittedNetwork(unittest.TestCase):
         for key in sorted(bridged_keys):
             sources = ieantn.bridge_sources(ieantn.designated_of(index[key]) or {})
             worst = max(
-                (ieantn.net_light(s, index, fingerprints, cache)[0] for s in sources),
+                (ieantn.net_light(s, index, fingerprints, cache,
+                                  consult_history=False)[0] for s in sources),
                 key=lambda light: ieantn.LIGHT_STRENGTH[light],
             )
             with self.subTest(conclusion=key):
-                self.assertEqual(ieantn.net_light(key, index, fingerprints, cache)[0], worst)
+                self.assertEqual(
+                    ieantn.net_light(key, index, fingerprints, cache,
+                                     consult_history=False)[0],
+                    worst,
+                )
 
 
 if __name__ == "__main__":
