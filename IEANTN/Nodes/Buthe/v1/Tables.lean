@@ -23,8 +23,11 @@ namespace Buthe.v1
 
 /-- **Table 1**: rows `(x, M⁻_ψ(x), M⁺_ψ(x))`.
 
-Equation (6.2) of the paper (and of the PNT+ transcription) reads: if `(x, M⁻, M⁺)` is a row,
-then `M⁻ ≤ (t − ψ(t)) / √t ≤ M⁺` for all `t ∈ [x, 2x]`. The last three rows start at
+The table's caption fixes what a row claims: if `(x, M⁻, M⁺)` is a row, then
+`M⁻ ≤ (t − ψ(t)) / √t ≤ M⁺` for all `t ∈ [x, 2x]`. (This was previously attributed to the paper's
+equation (6.2), following the PNT+ transcription's `eq_6_2`. The paper's (6.2) is its
+Eratosthenes-sieve bound `−0.8 ≤ R_ψ(t) ≤ 0.81`, not a reading of this table — see issue #271.)
+The last three rows start at
 `128 · 10¹⁶`, `256 · 10¹⁶` and `512 · 10¹⁶`; twice the last of those is past `10¹⁹`, which is
 the range of Theorem 2, so a consumer that needs a uniform range should stop at a row whose
 `2x` still sits inside that range.
