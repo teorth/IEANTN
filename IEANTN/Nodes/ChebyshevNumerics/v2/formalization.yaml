@@ -1,0 +1,109 @@
+# Node metadata for `ChebyshevNumerics.v2`.  See docs/NODES.md.
+#
+# v1 with the threshold and the naturals removed. Both were artefacts of the justification the
+# conclusion originally had -- a native_decide evaluation over integers up to a bound -- and since
+# #231 the designated ground has been a bridge from a statement about all real x > 0. Issue #253
+# recorded the mismatch; this is the answer to it.
+#
+# The family name is now slightly wrong: nothing here is numerical. It is kept because the family
+# is the unit of versioning, and renaming it would orphan v1.
+version: "v0.4"
+
+node:
+  id: ChebyshevNumerics.v2
+  family: ChebyshevNumerics
+  version: v2
+  kind: standard
+  status: active
+
+project:
+  name: "Chebyshev's clean upper bound, unconditionally"
+  description: >-
+    psi(x) <= 1.11 x for every real x > 0. This is ChebyshevNumerics.v1's finite check with its two
+    artefacts removed: the threshold n <= 11723, which marked where Chebyshev.v1's induction takes
+    over rather than any limit of knowledge, and the restriction to integers, which came from the
+    computation that first supplied the claim. Both fall away under the justification the node has
+    actually had since #231, a bridge from Rosser and Schoenfeld's psi(x) < 1.03883 x, which holds
+    on the whole positive axis and carries a Comparator receipt. The only step from that bound to
+    this one is the weakening 1.03883 <= 1.11.
+  authors: ["Terence Tao"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Terence Tao"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05"]
+
+conclusions:
+- id: psi_le_all
+  declaration: ChebyshevNumerics.v2.psi_le_all
+  challenge: ChebyshevNumerics.v2.challenge_psi_le_all
+  imports: []
+  imports_status: none
+  justifications:
+  - id: from-equation-3-35
+    kind: bridged
+    from: RosserSchoenfeld1962.v1.equation_3_35
+    bridge: IEANTN/Bridges/ChebyshevNumerics/V2FromEquation335.lean
+    note: >-
+      psi(x) < 1.03883 x for every x > 0 implies psi(x) <= 1.11 x for every x > 0. One coefficient
+      weakening and one strict-to-non-strict step; no case split and no cast, which is the whole
+      difference from the v1 bridge. The bridge does not reprove equation (3.35).
+      v1's second justification, the native_decide computation in PrimeNumberTheoremAnd, is
+      deliberately NOT carried over: it ranges over integers n <= 11723 and so does not justify
+      this statement at all. A spare that does not cover the conclusion would be worse than none.
+  designated: from-equation-3-35
+
+sources:
+- title: "Approximate formulas for some functions of prime numbers"
+  authors: ["J. Barkley Rosser", "Lowell Schoenfeld"]
+  type: "paper"
+  id: "https://doi.org/10.1215/ijm/1255631807"
+  location: "Illinois J. Math. 6 (1962), 64-94, Theorem 12; equation (3.35)"
+  relationship: formalizes
+  note: >-
+    The ground for this node, via RosserSchoenfeld1962.v1.equation_3_35 and the bridge. Stated here
+    in weakened form: the paper proves psi(x) < 1.03883 x, and this node claims only
+    psi(x) <= 1.11 x, because 1.11 is the constant Chebyshev.v1.psi_upper_clean is stated with and
+    the purpose of this version is to remove an artefact rather than to add a second one. A consumer
+    needing the sharp constant should import equation_3_35 directly. Buethe's 2018 paper quotes the
+    bound in the same form at its equation (6.8).
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Raised the mismatch as issue #253, then wrote this version, its bridge and this metadata under
+      the direction of the maintainer, who chose the scope: a new version of this node only, with no
+      consumer repointed. Neither the Rosser-Schoenfeld bound nor its receipt is reproduced here.
+
+review:
+  status: self-assessed
+  reviewers: ["Terence Tao"]
+  notes: >-
+    The statement is v1's with the threshold dropped and ℕ replaced by ℝ, which strengthens it; the
+    bridge is three lines and was checked by the core build. The judgement that wants review is the
+    choice to keep 1.11 rather than sharpen to 1.03883, and the decision to leave
+    Chebyshev.v1.psi_upper_clean importing v1 rather than migrate it.
+
+limitations:
+- >-
+  Nothing here is a computation, despite the family name. The name is kept because the family is the
+  unit of versioning; renaming it would orphan v1.
+- >-
+  The constant is not sharp. 1.11 is what Chebyshev.v1.psi_upper_clean uses; the true supremum of
+  psi(n)/n is 1.03883..., attained at n = 113, and that is what the source proves. This node is a
+  convenience statement at the consumer's constant, not an improvement on the literature.
+- >-
+  No consumer imports this yet. Chebyshev.v1.psi_upper_clean still imports v1, deliberately:
+  strengthening a conclusion a consumer assumes gives that consumer a stronger premise and so a
+  weaker conditional theorem. Migrating it is a separate decision, and until something migrates,
+  v1 remains the version on the network's path.
+- >-
+  v1 is not deprecated and should not be until something migrates. Both versions are active and
+  both rest on the same receipt.

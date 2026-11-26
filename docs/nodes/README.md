@@ -11,14 +11,15 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`BKLNWNumerics.v1`](BKLNWNumerics-v1.md) | computation | 2 | computation |
 | [`Brown1967.v1`](Brown1967-v1.md) | paper | 0 | — |
 | [`Buthe.v1`](Buthe-v1.md) | paper | 8 | cited |
-| [`Buthe.v2`](Buthe-v2.md) | pipeline | 2 | unjustified |
+| [`Buthe.v2`](Buthe-v2.md) | pipeline | 2 | refuted |
 | [`Buthe2016.v1`](Buthe2016-v1.md) | paper | 6 | cited |
-| [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 5 | computation |
+| [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 5 | refuted |
 | [`CH2.v1`](CH2-v1.md) | paper | 4 | verified |
 | [`CH2.v2`](CH2-v2.md) | pipeline | 2 | verified, stale |
 | [`CH2.v3`](CH2-v3.md) | pipeline | 2 | verified |
 | [`Chebyshev.v1`](Chebyshev-v1.md) | paper | 5 | verified |
 | [`ChebyshevNumerics.v1`](ChebyshevNumerics-v1.md) | computation | 1 | bridged |
+| [`ChebyshevNumerics.v2`](ChebyshevNumerics-v2.md) | standard | 1 | bridged |
 | [`ChengGraham2004.v1`](ChengGraham2004-v1.md) | paper | 0 | — |
 | [`CotangentSeries.v1`](CotangentSeries-v1.md) | standard | 1 | verified |
 | [`DudekPlatt.v1`](DudekPlatt-v1.md) | paper | 2 | cited |
