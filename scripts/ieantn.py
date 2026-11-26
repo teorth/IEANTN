@@ -2742,7 +2742,8 @@ def status() -> bool:
     """The traffic light for every conclusion."""
     nodes = load_nodes()
     fingerprints = compute_fingerprints()
-    lights = {"green": 0, "yellow": 0, "orange": 0, "churn": 0, "BROKEN": 0, "-": 0}
+    lights = {"green": 0, "yellow": 0, "orange": 0, "churn": 0,
+              "BROKEN": 0, "refuted": 0, "-": 0}
 
     print("Conclusion status")
     print("=" * 78)
@@ -2750,6 +2751,23 @@ def status() -> bool:
         for conclusion in conclusions_of(node):
             key = f"{node_id}.{conclusion.get('id')}"
             kind = designated_kind(conclusion)
+            if conclusion.get("refuted"):
+                # A refuted conclusion is not merely unverified, and this is the command a reader
+                # runs to find out what the network rests on. Falling through to the branch below
+                # would print its DESIGNATED kind -- "not Lean-verified here; designated
+                # `numerical`" -- which reads as "cited, nobody checked it" when the truth is
+                # "somebody checked it and it is false". `display_kind` already knows; `status`
+                # was the one view that did not ask.
+                refuted = conclusion["refuted"]
+                lights["refuted"] += 1
+                print(f"  refuted {key}")
+                issue = refuted.get("issue")
+                detail = "false as stated" + (f"; see #{issue}" if issue else "")
+                corrected = refuted.get("corrected")
+                detail += f". Corrected by `{corrected}`" if corrected else \
+                    ". No corrected version yet"
+                print(f"          {detail}")
+                continue
             if kind == NONCOMPLIANT_KIND:
                 # Saying "not Lean-verified" of this one would be false: the kernel accepted it.
                 # What it has not got, and will not get while the obstruction stands, is a receipt
@@ -2787,6 +2805,12 @@ def status() -> bool:
     if lights["BROKEN"]:
         print("\nA BROKEN receipt is not staleness: the verified implication no longer connects")
         print("to what the node now claims. Re-verify, or make a new version.")
+    if lights["refuted"]:
+        print("\n`refuted` is not a weak justification, it is a counterexample: the statement is")
+        print("false as stated, so it supports nothing downstream whatever its designated kind")
+        print("says. Such a conclusion stays in the network on purpose -- the literature made the")
+        print("claim, and consumers may still import it -- so the work is to restate it in a new")
+        print("version and reroute them. `housekeeping` queues both.")
     if lights["churn"]:
         print("\n`churn` is a fingerprint that moved while the Lean source did not -- the mark of")
         print("an environment bump rather than an edited theorem, since the digest is taken of the")
