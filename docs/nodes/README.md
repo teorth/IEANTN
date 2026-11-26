@@ -19,6 +19,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`CH2.v3`](CH2-v3.md) | pipeline | 2 | verified |
 | [`Chebyshev.v1`](Chebyshev-v1.md) | paper | 5 | verified |
 | [`ChebyshevNumerics.v1`](ChebyshevNumerics-v1.md) | computation | 1 | bridged |
+| [`ChebyshevNumerics.v2`](ChebyshevNumerics-v2.md) | standard | 1 | bridged |
 | [`ChengGraham2004.v1`](ChengGraham2004-v1.md) | paper | 0 | — |
 | [`CotangentSeries.v1`](CotangentSeries-v1.md) | standard | 1 | verified |
 | [`DudekPlatt.v1`](DudekPlatt-v1.md) | paper | 2 | cited |
