@@ -36,7 +36,7 @@ conclusions:
   - id: platt-paper
     kind: numerical
     source: Platt2015
-    locator: Section 6, the zero computation the paper reports
+    locator: Section 7 ("The Computation"), the zero computation the paper reports
     note: >-
       A large finite computation, so `numerical` rather than `literature`. Now recorded at FIRST hand:
       the arXiv source (1203.5712) is held, and says 'We isolated all the zeros of zeta to a height of
@@ -54,7 +54,7 @@ conclusions:
       computation: most of the paper is analysis that could be formalized, and the computational core
       is small. Recording where the line falls is what lets a reader size the hole rather than guess at
       it, and is the prerequisite for ever splitting the node into a formal harness, a computational core,
-      and a bridge from the two to the conclusion. This paper is the lighter of the two: its Section 6
+      and a bridge from the two to the conclusion. This paper is the lighter of the two: its Section 7
       reports the zero computation, and it cites for the technique the paper that became Isolating some
       non-trivial zeros of zeta, which is Platt2017.v1 and where the analytic apparatus actually lives.
       So its formalizable surface is largely Platt2017's, and its own contribution is the analytic method

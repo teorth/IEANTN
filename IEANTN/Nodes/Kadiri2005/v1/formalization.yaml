@@ -41,7 +41,7 @@ conclusions:
   - id: kadiri-paper
     kind: literature
     source: Kadiri2005
-    locator: the paper's main theorem, as reported by MT Table 1 and Section 2
+    locator: "Theoreme 1.1 (Principal), p. 305 of the published Acta Arith. version"
     note: >-
       Asserted on the authority of the paper, now read FIRST HAND from the published version, Acta Arith.
       117.4 (2005). Theoreme 1.1 (Principal): 'La fonction zeta de Riemann ne s'annule jamais dans la
@@ -65,13 +65,15 @@ sources:
 - title: "Une region explicite sans zeros pour la fonction zeta de Riemann"
   authors: ["Habiba Kadiri"]
   type: "paper"
-  id: "https://arxiv.org/abs/math/0401238"
-  location: "Acta Arith. 117 (2005), no. 4, 303-339"
+  id: "https://doi.org/10.4064/aa117-4-1"
+  location: "Acta Arith. 117 (2005), no. 4, 303-339, Theoreme 1.1 (Principal), p. 305"
   relationship: formalizes
   note: >-
     The published version, Acta Arith. 117.4 (2005), 303-339, is held and read; so is the arXiv preprint
-    math/0401238, which gives the weaker 5.70176. They are not interchangeable -- see the conclusion's
-    note.
+    https://arxiv.org/abs/math/0401238, which gives the weaker 5.70176. They are not interchangeable --
+    see the conclusion's note, and this id now names the published version for that reason. The DOI was
+    resolved through Crossref before being recorded: it returns this title, journal, volume, issue and
+    page range. The paper itself does not print it.
 
 automation:
   methods:
@@ -92,8 +94,12 @@ review:
     been checked against the paper itself: the article's own first page reads ACTA ARITHMETICA 117.4
     (2005), and it runs 37 pages ending at 339, which is the recorded 303-339. Note that `sources[].id`
     still points at the arXiv preprint, which is the version that does NOT support this conclusion; the
-    source note records why. Replacing it with the published DOI would be the honest fix, and has not
-    been done here because the paper prints no DOI and guessing at one is how a citation goes wrong.
+    source note records why. An earlier version of this note said the honest fix was blocked because
+    the paper prints no DOI. It was not blocked: the article does carry one, 10.4064/aa117-4-1, which
+    Crossref resolves to 'Une region explicite sans zeros pour la fonction zeta de Riemann', Acta
+    Arithmetica 117 (4), 303-339, by Kadiri -- matching this record in title, journal, volume, issue
+    and pages. The paper not printing it is not the same as it not existing, and the resolver is the
+    check that avoids the guessing the old note was right to fear. See issue #271.
 
 limitations:
 - >-
