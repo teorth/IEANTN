@@ -7,14 +7,14 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-90 node version(s), 197 conclusion(s).  2 state nothing yet.
+91 node version(s), 198 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
 | Designated justification | Conclusions |
 |---|---:|
 | `asserted` | 1 |
-| `bridged` | 4 |
+| `bridged` | 5 |
 | `lean-comparator` | 63 |
 | `literature` | 62 |
 | `none-yet` | 35 |
@@ -69,6 +69,7 @@ adds the environment detail.
 | `Chebyshev.v1` | active | `psi_le_small` | lean-comparator | 0 | - |
 | `Chebyshev.v1` | active | `psi_upper_clean` | lean-comparator | 1 | - |
 | `ChebyshevNumerics.v1` | active | `psi_le_below_11723` | bridged | 0 | - |
+| `ChebyshevNumerics.v2` | active | `psi_le_all` | bridged | 0 | - |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
 | `CotangentSeries.v1` | active | `cot_series_zeta_values` | lean-comparator | 0 | #257 |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |

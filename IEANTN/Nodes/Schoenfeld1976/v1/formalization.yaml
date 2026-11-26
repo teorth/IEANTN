@@ -85,7 +85,7 @@ conclusions:
   - id: schoenfeld-paper
     kind: literature
     source: Schoenfeld1976
-    locator: "Theorem 11, (7.4), printed p. 342; the form proved on p. 349"
+    locator: "Theorem 11, (7.4), printed p. 342, as corrected by the corrigendum, Math. Comp. 30 (1976), no. 136, p. 900 (doi:10.1090/S0025-5718-1976-0457375-1); the same form is proved on p. 349"
     note: >-
       Asserted on the authority of the paper. Schoenfeld's proof rests on Rosser-Schoenfeld (1975)
       (their zero-free region with R = 9.645908801 and their table of psi bounds), on the Riemann
