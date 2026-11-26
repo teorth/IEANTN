@@ -9,7 +9,7 @@ node:
   family: ZeroCountOpen
   version: v1
   kind: folklore
-  status: awaiting-verification
+  status: active
 
 project:
   name: "Zero counts: from 0 < Im rho <= t to 0 < Im rho < T"
@@ -38,63 +38,72 @@ conclusions:
   declaration: ZeroCountOpen.v1.ioc_bound_to_ioo
   challenge: ZeroCountOpen.v1.challenge_ioc_bound_to_ioo
   imports:
-    - node: ZetaZeroes.v1
-      conclusion: finite_zeroes_on_compact
-    - node: ZetaZeroes.v1
-      conclusion: zeroes_off_axis_in_strip
+  - node: ZetaZeroes.v1
+    conclusion: finite_zeroes_on_compact
+  - node: ZetaZeroes.v1
+    conclusion: zeroes_off_axis_in_strip
   imports_status: identified
   justifications:
-    - id: folklore-lean
-      kind: none-yet
-      source: ZeroCount
-      note: >-
-        A Lean solution exists in Solutions/ZeroCountOpen.v1 and is awaiting Comparator. The two
-        imports put the zeroes with 0 < Im rho <= T in a compact set missing the pole (the strip
-        0 <= Re <= 1, cut away from a punctured ball around 1 where Mathlib's residue at s = 1 rules
-        zeroes out), hence make them finite. Until a receipt is written this conclusion is
-        unjustified, and the justification must not be edited by hand.
-  designated: folklore-lean
+  - id: folklore-lean
+    kind: none-yet
+    source: ZeroCount
+    note: >-
+      A Lean solution exists in Solutions/ZeroCountOpen.v1 and is awaiting Comparator. The two
+      imports put the zeroes with 0 < Im rho <= T in a compact set missing the pole (the strip
+      0 <= Re <= 1, cut away from a punctured ball around 1 where Mathlib's residue at s = 1 rules
+      zeroes out), hence make them finite. Until a receipt is written this conclusion is
+      unjustified, and the justification must not be edited by hand.
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/45880780057'
+  designated: comparator
 - id: rvm_error_bound_open
   issue: 261
   declaration: ZeroCountOpen.v1.rvm_error_bound_open
   challenge: ZeroCountOpen.v1.challenge_rvm_error_bound_open
   imports:
-    - node: ZeroCount.v1
-      conclusion: rvm_error_bound
-    - node: ZetaZeroes.v1
-      conclusion: finite_zeroes_on_compact
-    - node: ZetaZeroes.v1
-      conclusion: zeroes_off_axis_in_strip
+  - node: ZeroCount.v1
+    conclusion: rvm_error_bound
+  - node: ZetaZeroes.v1
+    conclusion: finite_zeroes_on_compact
+  - node: ZetaZeroes.v1
+    conclusion: zeroes_off_axis_in_strip
   imports_status: identified
   justifications:
-    - id: folklore-lean
-      kind: none-yet
-      source: ZeroCount
-      note: >-
-        ioc_bound_to_ioo for T > 1. At T = 1 the transfer has no room below T, and the solution uses
-        zetaN 1 <= zetaNClosed 1 for the upper side and zetaN 1 >= 0 >= rvmMain 1 - 2 for the lower.
-        Solution in Solutions/ZeroCountOpen.v1, awaiting Comparator.
-  designated: folklore-lean
+  - id: folklore-lean
+    kind: none-yet
+    source: ZeroCount
+    note: >-
+      ioc_bound_to_ioo for T > 1. At T = 1 the transfer has no room below T, and the solution uses
+      zetaN 1 <= zetaNClosed 1 for the upper side and zetaN 1 >= 0 >= rvmMain 1 - 2 for the lower.
+      Solution in Solutions/ZeroCountOpen.v1, awaiting Comparator.
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/45880780057'
+  designated: comparator
 - id: hasRvMBound
   issue: 261
   declaration: ZeroCountOpen.v1.hasRvMBound
   challenge: ZeroCountOpen.v1.challenge_hasRvMBound
   imports:
-    - node: ZeroCount.v1
-      conclusion: rvm_error_bound
-    - node: ZetaZeroes.v1
-      conclusion: finite_zeroes_on_compact
-    - node: ZetaZeroes.v1
-      conclusion: zeroes_off_axis_in_strip
+  - node: ZeroCount.v1
+    conclusion: rvm_error_bound
+  - node: ZetaZeroes.v1
+    conclusion: finite_zeroes_on_compact
+  - node: ZetaZeroes.v1
+    conclusion: zeroes_off_axis_in_strip
   imports_status: identified
   justifications:
-    - id: folklore-lean
-      kind: none-yet
-      source: ZeroCount
-      note: >-
-        rvm_error_bound_open restricted to T >= 2, with b2 = 0. Solution in
-        Solutions/ZeroCountOpen.v1, awaiting Comparator.
-  designated: folklore-lean
+  - id: folklore-lean
+    kind: none-yet
+    source: ZeroCount
+    note: >-
+      rvm_error_bound_open restricted to T >= 2, with b2 = 0. Solution in
+      Solutions/ZeroCountOpen.v1, awaiting Comparator.
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/45880780057'
+  designated: comparator
 
 sources:
 - title: "ZeroCount.v1 module docstring: why the two counting conventions are equivalent"
