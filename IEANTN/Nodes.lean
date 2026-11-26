@@ -19,6 +19,7 @@ import IEANTN.Nodes.CH2.v2.Challenge
 import IEANTN.Nodes.CH2.v3.Challenge
 import IEANTN.Nodes.Chebyshev.v1.Challenge
 import IEANTN.Nodes.ChebyshevNumerics.v1.Challenge
+import IEANTN.Nodes.ChebyshevNumerics.v2.Challenge
 import IEANTN.Nodes.ChengGraham2004.v1.Challenge
 import IEANTN.Nodes.CotangentSeries.v1.Challenge
 import IEANTN.Nodes.DudekPlatt.v1.Challenge
