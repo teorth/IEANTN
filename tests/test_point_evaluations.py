@@ -84,19 +84,36 @@ class TestTheQueueNamesThem(unittest.TestCase):
     def test_housekeeping_queues_a_provable_point_evaluation(self) -> None:
         """The regression that matters: before this, nothing in the tooling mentioned these.
 
-        `lemma_3_constant_nonpos` stands in for the false one this test used to name. Once
-        `lemma_3_constant_gt_at_10` was refuted it stopped being provable work, and the queue
-        moved it to `restate` -- see `tests/test_refuted_conclusions.py`. Its true sibling is the
-        same shape and is still exactly the task this queue exists to surface.
+        Pinned to the *set* rather than to a named conclusion, because the named one keeps
+        getting resolved. This test first named `ButheNumerics.v1.lemma_3_constant_gt_at_10`,
+        which was then refuted (#260) and so stopped being provable work; it was repointed at
+        `lemma_3_constant_nonpos`, which `ButheNumerics.v2` then proved, so that conclusion
+        became `bridged` and left the queue too. Both exits were correct and both broke this
+        test. What is worth asserting is that every queueable point evaluation is queued,
+        whichever they happen to be -- plus that there is at least one, so this cannot start
+        passing vacuously the day the queue empties.
         """
         import contextlib
         import io
+
+        expected = {
+            f"{node_id}.{cid}"
+            for node_id, node in ieantn.load_nodes().items()
+            for conclusion in ieantn.conclusions_of(node)
+            if (cid := str(conclusion.get("id") or ""))
+            and ieantn.designated_kind(conclusion) == "numerical"
+            and not conclusion.get("refuted")
+            and ieantn.point_evaluation(statement(node_id, cid))
+        }
+        self.assertTrue(expected, "no queueable point evaluation left; this test is now vacuous")
 
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
             ieantn.housekeeping()
         printed = out.getvalue()
-        self.assertIn("prove     ButheNumerics.v1.lemma_3_constant_nonpos", printed)
+        for key in sorted(expected):
+            with self.subTest(conclusion=key):
+                self.assertIn(f"prove     {key}", printed)
         self.assertIn("a closed evaluation Lean can settle", printed)
 
     def test_a_refuted_statement_is_not_queued_as_provable(self) -> None:
