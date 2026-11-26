@@ -1,0 +1,14 @@
+{
+  "challenge_module": "IEANTN.Nodes.FKS2NuAsymp.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "FKS2NuAsymp.v1.challenge_nu_asymp_e30_le",
+    "FKS2NuAsymp.v1.challenge_nu_asymp_e30_gt"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
