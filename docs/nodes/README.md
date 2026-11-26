@@ -38,7 +38,8 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`FKS.v3`](FKS-v3.md) | paper | 2 | verified |
 | [`FKS2.v1`](FKS2-v1.md) | paper | 4 | verified, stale |
 | [`FKS2.v2`](FKS2-v2.md) | pipeline | 2 | verified, stale |
-| [`FKS2Numerics.v1`](FKS2Numerics-v1.md) | computation | 5 | computation |
+| [`FKS2NuAsymp.v1`](FKS2NuAsymp-v1.md) | computation | 2 | verified |
+| [`FKS2Numerics.v1`](FKS2Numerics-v1.md) | computation | 5 | refuted |
 | [`FKS2PiFloor.v1`](FKS2PiFloor-v1.md) | computation | 1 | verified |
 | [`FKS2ThetaFloor.v1`](FKS2ThetaFloor-v1.md) | standard | 1 | verified |
 | [`FKSNumerics.v1`](FKSNumerics-v1.md) | computation | 2 | cited |
@@ -81,6 +82,7 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`Trudgian2011.v1`](Trudgian2011-v1.md) | paper | 1 | cited |
 | [`Wedeniwski.v1`](Wedeniwski-v1.md) | computation | 1 | asserted |
 | [`ZeroCount.v1`](ZeroCount-v1.md) | paper | 2 | cited |
+| [`ZeroCountOpen.v1`](ZeroCountOpen-v1.md) | folklore | 3 | verified |
 | [`ZeroFreeHeight.v1`](ZeroFreeHeight-v1.md) | folklore | 1 | verified, stale |
 | [`ZetaHadamard.v1`](ZetaHadamard-v1.md) | standard | 1 | cited |
 | [`ZetaLogDeriv.v1`](ZetaLogDeriv-v1.md) | standard | 1 | verified |

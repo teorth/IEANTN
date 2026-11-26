@@ -87,7 +87,8 @@ graph LR
   NFKS_2e_v3["<b>FKS.v3</b><br/>2 claims<br/><i>weakest: verified</i>"]
   NFKS2_2e_v1["<b>FKS2.v1</b><br/>4 claims<br/><i>weakest: verified, stale</i>"]
   NFKS2_2e_v2["<b>FKS2.v2</b><br/>2 claims<br/><i>weakest: verified, stale</i>"]
-  NFKS2Numerics_2e_v1["<b>FKS2Numerics.v1</b><br/>5 claims<br/><i>weakest: computation</i>"]
+  NFKS2NuAsymp_2e_v1["<b>FKS2NuAsymp.v1</b><br/>2 claims<br/><i>weakest: verified</i>"]
+  NFKS2Numerics_2e_v1["<b>FKS2Numerics.v1</b><br/>5 claims<br/><i>weakest: refuted</i>"]
   NFKS2PiFloor_2e_v1["<b>FKS2PiFloor.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NFKS2ThetaFloor_2e_v1["<b>FKS2ThetaFloor.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NFKSNumerics_2e_v1["<b>FKSNumerics.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
@@ -130,6 +131,7 @@ graph LR
   NTrudgian2011_2e_v1["<b>Trudgian2011.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NWedeniwski_2e_v1["<b>Wedeniwski.v1</b><br/>1 claim<br/><i>weakest: asserted</i>"]
   NZeroCount_2e_v1["<b>ZeroCount.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
+  NZeroCountOpen_2e_v1["<b>ZeroCountOpen.v1</b><br/>3 claims<br/><i>weakest: verified</i>"]
   NZeroFreeHeight_2e_v1["<b>ZeroFreeHeight.v1</b><br/>1 claim<br/><i>weakest: verified, stale</i>"]
   NZetaHadamard_2e_v1["<b>ZetaHadamard.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NZetaLogDeriv_2e_v1["<b>ZetaLogDeriv.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
@@ -210,6 +212,7 @@ graph LR
   NTrudgian2011_2e_v1 --> NPlatt2017_2e_v1
   NWedeniwski_2e_v1 --> NKadiri2005_2e_v1
   NZeroCount_2e_v1 -->|4| NCH2_2e_v1
+  NZeroCount_2e_v1 -->|2| NZeroCountOpen_2e_v1
   NZetaHadamard_2e_v1 -->|2| NCH2_2e_v1
   NZetaLogDeriv_2e_v1 -->|2| NCH2_2e_v1
   NZetaLogDerivValues_2e_v1 -->|8| NCH2_2e_v1
@@ -224,6 +227,7 @@ graph LR
   NZetaZeroLocations_2e_v7 -->|2| NZetaZeroLocations_2e_v11
   NZetaZeroLocations_2e_v8 -->|2| NZetaZeroLocations_2e_v11
   NZetaZeroLocations_2e_v9 -->|2| NZetaZeroLocations_2e_v11
+  NZetaZeroes_2e_v1 -->|6| NZeroCountOpen_2e_v1
   NDudekPlatt_2e_v4 ==>|bridge| NDudekPlatt_2e_v1
   NDudekPlattNumerics_2e_v4 ==>|bridge| NDudekPlattNumerics_2e_v3
   NFKS_2e_v1 ==>|bridge| NFKS_2e_v2
@@ -261,14 +265,14 @@ graph LR
   style NSchoenfeld1976_2e_v1 stroke-dasharray: 8 4;
   style NTrudgian2011_2e_v1 stroke-dasharray: 2 3;
   style NWedeniwski_2e_v1 stroke-dasharray: 2 3;
-  class NButhe_2e_v2,NButheNumerics_2e_v1 refuted;
+  class NButhe_2e_v2,NButheNumerics_2e_v1,NFKS2Numerics_2e_v1 refuted;
   class NBrown1967_2e_v1,NChengGraham2004_2e_v1,NGammaAsymptotics_2e_v1,NZetaZeroLocations_2e_v1,NZetaZeroLocations_2e_v10,NZetaZeroLocations_2e_v11,NZetaZeroLocations_2e_v2,NZetaZeroLocations_2e_v3,NZetaZeroLocations_2e_v4,NZetaZeroLocations_2e_v5,NZetaZeroLocations_2e_v6,NZetaZeroLocations_2e_v7,NZetaZeroLocations_2e_v8,NZetaZeroLocations_2e_v9 none_2d_yet;
   class NWedeniwski_2e_v1 asserted;
   class NBKLNW_2e_v1,NBKLNW_2e_v2,NButhe_2e_v1,NButhe2016_2e_v1,NDudekPlatt_2e_v1,NDusart2018_2e_v1,NFKS_2e_v1,NFKSNumerics_2e_v1,NHiary2016_2e_v1,NKLN_2e_v1,NKadiri2005_2e_v1,NKadiriLumley_2e_v1,NMT_2e_v1,NMT_2e_v2,NMTY_2e_v1,NPatel2020_2e_v1,NPlattTrudgian_2e_v1,NPlattTrudgian2021_2e_v1,NPlattZeroSum_2e_v1,NPrimesBetweenCubes_2e_v1,NRamareSaouter2003_2e_v1,NRosserSchoenfeld_2e_v1,NSchoenfeld1976_2e_v1,NSchoenfeld1976Numerics_2e_v1,NTrudgian2011_2e_v1,NZeroCount_2e_v1,NZetaHadamard_2e_v1 literature;
-  class NBKLNWNumerics_2e_v1,NDudekPlattNumerics_2e_v1,NDudekPlattNumerics_2e_v2,NDudekPlattNumerics_2e_v3,NFKBJ_2e_v1,NFKS2Numerics_2e_v1,NLowZeroes_2e_v1,NOliveiraESilva2014_2e_v1,NPlatt2015_2e_v1,NPlatt2017_2e_v1,NRichstein2001_2e_v1,NZetaLogDerivValues_2e_v1 numerical;
+  class NBKLNWNumerics_2e_v1,NDudekPlattNumerics_2e_v1,NDudekPlattNumerics_2e_v2,NDudekPlattNumerics_2e_v3,NFKBJ_2e_v1,NLowZeroes_2e_v1,NOliveiraESilva2014_2e_v1,NPlatt2015_2e_v1,NPlatt2017_2e_v1,NRichstein2001_2e_v1,NZetaLogDerivValues_2e_v1 numerical;
   class NChebyshevNumerics_2e_v1,NChebyshevNumerics_2e_v2,NFKS_2e_v2 bridged;
   class NCH2_2e_v2,NDudekPlatt_2e_v2,NDudekPlatt_2e_v3,NFKS2_2e_v1,NFKS2_2e_v2,NLcm_2e_v1,NLcm_2e_v2,NPrimeInterval_2e_v1,NZeroFreeHeight_2e_v1 lean_2d_comparator_2d_stale;
-  class NCH2_2e_v1,NCH2_2e_v3,NChebyshev_2e_v1,NCotangentSeries_2e_v1,NDudekPlatt_2e_v4,NDudekPlattNumerics_2e_v4,NErdos392_2e_v1,NFKS_2e_v3,NFKS2PiFloor_2e_v1,NFKS2ThetaFloor_2e_v1,NGammaAsymptotics_2e_v2,NGoldbach_2e_v1,NRosserSchoenfeld_2e_v2,NRosserSchoenfeld1962_2e_v1,NRosserSchoenfeld1962_2e_v2,NRosserSchoenfeld1962_2e_v3,NRosserSchoenfeld1962_2e_v4,NRosserSchoenfeld1962_2e_v5,NRosserSchoenfeld1962_2e_v6,NRosserSchoenfeld1962_2e_v7,NRosserSchoenfeld1962_2e_v8,NZetaLogDeriv_2e_v1,NZetaZeroes_2e_v1 lean_2d_comparator;
+  class NCH2_2e_v1,NCH2_2e_v3,NChebyshev_2e_v1,NCotangentSeries_2e_v1,NDudekPlatt_2e_v4,NDudekPlattNumerics_2e_v4,NErdos392_2e_v1,NFKS_2e_v3,NFKS2NuAsymp_2e_v1,NFKS2PiFloor_2e_v1,NFKS2ThetaFloor_2e_v1,NGammaAsymptotics_2e_v2,NGoldbach_2e_v1,NRosserSchoenfeld_2e_v2,NRosserSchoenfeld1962_2e_v1,NRosserSchoenfeld1962_2e_v2,NRosserSchoenfeld1962_2e_v3,NRosserSchoenfeld1962_2e_v4,NRosserSchoenfeld1962_2e_v5,NRosserSchoenfeld1962_2e_v6,NRosserSchoenfeld1962_2e_v7,NRosserSchoenfeld1962_2e_v8,NZeroCountOpen_2e_v1,NZetaLogDeriv_2e_v1,NZetaZeroes_2e_v1 lean_2d_comparator;
   click NBKLNW_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md" _blank
   click NBKLNW_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v2.md" _blank
   click NBKLNWNumerics_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNWNumerics-v1.md" _blank
@@ -299,6 +303,7 @@ graph LR
   click NFKS_2e_v3 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS-v3.md" _blank
   click NFKS2_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md" _blank
   click NFKS2_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v2.md" _blank
+  click NFKS2NuAsymp_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2NuAsymp-v1.md" _blank
   click NFKS2Numerics_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md" _blank
   click NFKS2PiFloor_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2PiFloor-v1.md" _blank
   click NFKS2ThetaFloor_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2ThetaFloor-v1.md" _blank
@@ -342,6 +347,7 @@ graph LR
   click NTrudgian2011_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Trudgian2011-v1.md" _blank
   click NWedeniwski_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Wedeniwski-v1.md" _blank
   click NZeroCount_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZeroCount-v1.md" _blank
+  click NZeroCountOpen_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZeroCountOpen-v1.md" _blank
   click NZeroFreeHeight_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZeroFreeHeight-v1.md" _blank
   click NZetaHadamard_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaHadamard-v1.md" _blank
   click NZetaLogDeriv_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ZetaLogDeriv-v1.md" _blank
@@ -643,7 +649,7 @@ A line is one claim, indented under whatever assumes it.
       - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
   - [`BKLNW.v1.theta_error_le_one`](docs/nodes/BKLNW-v1.md#theta_error_le_one) — cited
     - [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) — cited *(above)* — *sources known, not all drawable*
-  - [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) — computation
+  - [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) — refuted
   - [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30) — computation
   - [`FKS2.v2.proposition_13`](docs/nodes/FKS2-v2.md#proposition_13) — verified, stale
 
@@ -662,7 +668,7 @@ A line is one claim, indented under whatever assumes it.
       - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
   - [`BKLNW.v1.theta_error_le_one`](docs/nodes/BKLNW-v1.md#theta_error_le_one) — cited
     - [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) — cited *(above)* — *sources known, not all drawable*
-  - [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) — computation
+  - [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) — refuted
   - [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30) — computation
   - [`FKS2Numerics.v1.corollary_22_mid_range`](docs/nodes/FKS2Numerics-v1.md#corollary_22_mid_range) — computation
   - [`FKS2.v2.proposition_13`](docs/nodes/FKS2-v2.md#proposition_13) — verified, stale
@@ -683,7 +689,7 @@ A line is one claim, indented under whatever assumes it.
       - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
   - [`BKLNW.v1.theta_error_le_one`](docs/nodes/BKLNW-v1.md#theta_error_le_one) — cited
     - [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) — cited *(above)* — *sources known, not all drawable*
-  - [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) — computation
+  - [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) — refuted
   - [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30) — computation
   - [`FKS2Numerics.v1.corollary_22_mid_range`](docs/nodes/FKS2Numerics-v1.md#corollary_22_mid_range) — computation
   - [`FKS2Numerics.v1.table6_row2_floor`](docs/nodes/FKS2Numerics-v1.md#table6_row2_floor) — computation
@@ -706,13 +712,17 @@ A line is one claim, indented under whatever assumes it.
       - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
   - [`BKLNW.v1.theta_error_le_one`](docs/nodes/BKLNW-v1.md#theta_error_le_one) — cited
     - [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) — cited *(above)* — *sources known, not all drawable*
-  - [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) — computation
+  - [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) — refuted
   - [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30) — computation
   - [`FKS2Numerics.v1.corollary_22_mid_range`](docs/nodes/FKS2Numerics-v1.md#corollary_22_mid_range) — computation
   - [`FKS2Numerics.v1.table6_row2_floor`](docs/nodes/FKS2Numerics-v1.md#table6_row2_floor) — computation
   - [`FKS2Numerics.v1.corollary_23_mid_range`](docs/nodes/FKS2Numerics-v1.md#corollary_23_mid_range) — computation
   - [`FKS2.v2.proposition_13`](docs/nodes/FKS2-v2.md#proposition_13) — verified, stale
   - [`FKS2.v2.theorem_3`](docs/nodes/FKS2-v2.md#theorem_3) — verified, stale
+
+- [`FKS2NuAsymp.v1.nu_asymp_e30_gt`](docs/nodes/FKS2NuAsymp-v1.md#nu_asymp_e30_gt) — verified
+
+- [`FKS2NuAsymp.v1.nu_asymp_e30_le`](docs/nodes/FKS2NuAsymp-v1.md#nu_asymp_e30_le) — verified
 
 - [`FKS2PiFloor.v1.table6_row2_floor`](docs/nodes/FKS2PiFloor-v1.md#table6_row2_floor) — verified
 
@@ -833,6 +843,20 @@ A line is one claim, indented under whatever assumes it.
   - [`ZetaZeroLocations.v1.unique_0_1000`](docs/nodes/ZetaZeroLocations-v1.md#unique_0_1000) — unjustified
   - [`ZetaZeroLocations.v1.count_0_1000`](docs/nodes/ZetaZeroLocations-v1.md#count_0_1000) — unjustified
 
+- [`ZeroCountOpen.v1.hasRvMBound`](docs/nodes/ZeroCountOpen-v1.md#hasRvMBound) — verified
+  - [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) — cited
+  - [`ZetaZeroes.v1.finite_zeroes_on_compact`](docs/nodes/ZetaZeroes-v1.md#finite_zeroes_on_compact) — verified
+  - [`ZetaZeroes.v1.zeroes_off_axis_in_strip`](docs/nodes/ZetaZeroes-v1.md#zeroes_off_axis_in_strip) — verified
+
+- [`ZeroCountOpen.v1.ioc_bound_to_ioo`](docs/nodes/ZeroCountOpen-v1.md#ioc_bound_to_ioo) — verified
+  - [`ZetaZeroes.v1.finite_zeroes_on_compact`](docs/nodes/ZetaZeroes-v1.md#finite_zeroes_on_compact) — verified
+  - [`ZetaZeroes.v1.zeroes_off_axis_in_strip`](docs/nodes/ZetaZeroes-v1.md#zeroes_off_axis_in_strip) — verified
+
+- [`ZeroCountOpen.v1.rvm_error_bound_open`](docs/nodes/ZeroCountOpen-v1.md#rvm_error_bound_open) — verified
+  - [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) — cited
+  - [`ZetaZeroes.v1.finite_zeroes_on_compact`](docs/nodes/ZetaZeroes-v1.md#finite_zeroes_on_compact) — verified
+  - [`ZetaZeroes.v1.zeroes_off_axis_in_strip`](docs/nodes/ZetaZeroes-v1.md#zeroes_off_axis_in_strip) — verified
+
 - [`ZeroFreeHeight.v1.classical_region_descends`](docs/nodes/ZeroFreeHeight-v1.md#classical_region_descends) — verified, stale
 
 - [`ZetaLogDerivValues.v1.deriv_logDeriv_neg_one`](docs/nodes/ZetaLogDerivValues-v1.md#deriv_logDeriv_neg_one) — computation
@@ -881,11 +905,7 @@ A line is one claim, indented under whatever assumes it.
 
 - [`ZetaZeroes.v1.exists_ordinate_free_height`](docs/nodes/ZetaZeroes-v1.md#exists_ordinate_free_height) — verified
 
-- [`ZetaZeroes.v1.finite_zeroes_on_compact`](docs/nodes/ZetaZeroes-v1.md#finite_zeroes_on_compact) — verified
-
 - [`ZetaZeroes.v1.no_nontrivial_zeroes_left`](docs/nodes/ZetaZeroes-v1.md#no_nontrivial_zeroes_left) — verified
-
-- [`ZetaZeroes.v1.zeroes_off_axis_in_strip`](docs/nodes/ZetaZeroes-v1.md#zeroes_off_axis_in_strip) — verified
 
 - [`ZetaZeroes.v1.zeta_eq_zero_iff_zeta1`](docs/nodes/ZetaZeroes-v1.md#zeta_eq_zero_iff_zeta1) — verified
 
@@ -907,8 +927,9 @@ rather than maintained.
 | [`BKLNW.v1.corollary_5_1`](docs/nodes/BKLNW-v1.md#corollary_5_1) | cited | 4 | traced |
 | [`BKLNW.v1.theta_error_le_one`](docs/nodes/BKLNW-v1.md#theta_error_le_one) | cited | 4 | traced |
 | [`FKS.v1.psi_classical_bound`](docs/nodes/FKS-v1.md#psi_classical_bound) | cited | 4 | known, not all drawable |
-| [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) | computation | 4 | none |
+| [`FKS2Numerics.v1.nu_asymp_e30_le`](docs/nodes/FKS2Numerics-v1.md#nu_asymp_e30_le) | refuted | 4 | none |
 | [`FKS2Numerics.v1.theta_asymp_ge_one_below_e30`](docs/nodes/FKS2Numerics-v1.md#theta_asymp_ge_one_below_e30) | computation | 4 | none |
+| [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) | cited | 4 | none |
 | [`Buthe2016.v1.theorem_2_psi`](docs/nodes/Buthe2016-v1.md#theorem_2_psi) | cited | 3 | none |
 | [`FKS2Numerics.v1.corollary_22_mid_range`](docs/nodes/FKS2Numerics-v1.md#corollary_22_mid_range) | computation | 3 | none |
 | [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) | cited | 3 | traced |
@@ -925,7 +946,6 @@ rather than maintained.
 | [`OliveiraESilva2014.v1.even_up_to_4e18`](docs/nodes/OliveiraESilva2014-v1.md#even_up_to_4e18) | computation | 2 | none |
 | [`PlattTrudgian.v1.rh_up_to_exact`](docs/nodes/PlattTrudgian-v1.md#rh_up_to_exact) | cited | 2 | known, not all drawable |
 | [`PlattZeroSum.v1.inv_ordinate_sum_le`](docs/nodes/PlattZeroSum-v1.md#inv_ordinate_sum_le) | cited | 2 | none |
-| [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) | cited | 2 | none |
 | [`ZeroCount.v1.rvm_error_small`](docs/nodes/ZeroCount-v1.md#rvm_error_small) | cited | 2 | none |
 | [`ZetaHadamard.v1.logDeriv_partial_fractions`](docs/nodes/ZetaHadamard-v1.md#logDeriv_partial_fractions) | cited | 2 | none |
 | [`ZetaLogDerivValues.v1.logDeriv_laurent_alternating`](docs/nodes/ZetaLogDerivValues-v1.md#logDeriv_laurent_alternating) | computation | 2 | none |

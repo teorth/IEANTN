@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-91 node version(s), 198 conclusion(s).  2 state nothing yet.
+93 node version(s), 203 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
@@ -15,7 +15,7 @@ adds the environment detail.
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 5 |
-| `lean-comparator` | 63 |
+| `lean-comparator` | 68 |
 | `literature` | 62 |
 | `none-yet` | 35 |
 | `numerical` | 32 |
@@ -100,8 +100,10 @@ adds the environment detail.
 | `FKS2.v1` | active | `corollary_26` | lean-comparator-stale | 10 | - |
 | `FKS2.v2` | active | `proposition_13` | lean-comparator-stale | 0 | - |
 | `FKS2.v2` | active | `theorem_3` | lean-comparator-stale | 0 | - |
+| `FKS2NuAsymp.v1` | active | `nu_asymp_e30_le` | lean-comparator | 0 | #273 |
+| `FKS2NuAsymp.v1` | active | `nu_asymp_e30_gt` | lean-comparator | 0 | #273 |
 | `FKS2Numerics.v1` | stub | `table6_row2_floor` | numerical | 0 | - |
-| `FKS2Numerics.v1` | stub | `nu_asymp_e30_le` | numerical | 0 | - |
+| `FKS2Numerics.v1` | stub | `nu_asymp_e30_le` | refuted | 0 | - |
 | `FKS2Numerics.v1` | stub | `theta_asymp_ge_one_below_e30` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `corollary_22_mid_range` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `corollary_23_mid_range` | numerical | 0 | - |
@@ -178,6 +180,9 @@ adds the environment detail.
 | `Wedeniwski.v1` | stub | `rh_up_to` | asserted | 0 | - |
 | `ZeroCount.v1` | stub | `rvm_error_bound` | literature | 0 | #64 |
 | `ZeroCount.v1` | stub | `rvm_error_small` | literature | 0 | #64 |
+| `ZeroCountOpen.v1` | active | `ioc_bound_to_ioo` | lean-comparator | 2 | #261 |
+| `ZeroCountOpen.v1` | active | `rvm_error_bound_open` | lean-comparator | 3 | #261 |
+| `ZeroCountOpen.v1` | active | `hasRvMBound` | lean-comparator | 3 | #261 |
 | `ZeroFreeHeight.v1` | active | `classical_region_descends` | lean-comparator-stale | 0 | #30 |
 | `ZetaHadamard.v1` | active | `logDeriv_partial_fractions` | literature | 0 | - |
 | `ZetaLogDeriv.v1` | active | `logDeriv_functional_equation` | lean-comparator | 0 | #64 |
@@ -264,12 +269,15 @@ downstream.
 | `Buthe.v1.theorem_2_theta_lower` | 6 |
 | `MT.v1.zero_free_region_sharpened` | 5 |
 | `KLN.v1.subconvexity_bound` | 5 |
+| `ZeroCount.v1.rvm_error_bound` | 4 |
 | `FKS2Numerics.v1.theta_asymp_ge_one_below_e30` | 4 |
 | `FKS2Numerics.v1.nu_asymp_e30_le` | 4 |
 | `FKS2.v2.proposition_13` | 4 |
 | `FKS.v1.psi_classical_bound` | 4 |
 | `BKLNW.v1.theta_error_le_one` | 4 |
 | `BKLNW.v1.corollary_5_1` | 4 |
+| `ZetaZeroes.v1.zeroes_off_axis_in_strip` | 3 |
+| `ZetaZeroes.v1.finite_zeroes_on_compact` | 3 |
 | `RamareSaouter2003.v1.prime_in_short_interval` | 3 |
 | `PlattTrudgian2021.v1.theorem_1_numerical` | 3 |
 | `MT.v1.zero_free_region` | 3 |
@@ -286,7 +294,6 @@ downstream.
 | `ZetaLogDeriv.v1.logDeriv_functional_equation` | 2 |
 | `ZetaHadamard.v1.logDeriv_partial_fractions` | 2 |
 | `ZeroCount.v1.rvm_error_small` | 2 |
-| `ZeroCount.v1.rvm_error_bound` | 2 |
 | `PlattZeroSum.v1.inv_ordinate_sum_le` | 2 |
 | `PlattTrudgian.v1.rh_up_to_exact` | 2 |
 | `OliveiraESilva2014.v1.even_up_to_4e18` | 2 |

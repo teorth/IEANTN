@@ -80,7 +80,7 @@ def nu_asymp_e30_le : Prop :=
 | Lean name | `FKS2Numerics.v1.nu_asymp_e30_le` |
 | Challenge | `FKS2Numerics.v1.challenge_nu_asymp_e30_le` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/FKS2Numerics/v1/Conclusions.lean#L128) |
-| Evidence | computation (`numerical`) |
+| Evidence | refuted (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | [`FKS2.v1.corollary_14`](FKS2-v1.md#corollary_14), [`FKS2.v1.corollary_22`](FKS2-v1.md#corollary_22), [`FKS2.v1.corollary_23`](FKS2-v1.md#corollary_23), [`FKS2.v1.corollary_26`](FKS2-v1.md#corollary_26) |
