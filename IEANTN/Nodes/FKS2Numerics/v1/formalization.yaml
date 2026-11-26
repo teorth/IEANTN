@@ -87,8 +87,8 @@ conclusions:
     issue: 273
     counterexample: >-
       With R = 5.5666305, A_psi = 121.096, and floor(30 / log 2) = 43:
-      f(exp 30) = sum_{k=3}^{43} exp(30*(1/k - 1/3)) = 1.1210561405...,
-      f(2^44) = 1.1145147862..., so a2(30) = (1 + 1.93378e-8) * f(exp 30) = 1.1210561622....
+      f(exp 30) = sum_{k=3}^{43} exp(30*(1/k - 1/3)) = 1.1210561404...,
+      f(2^44) = 1.1145147861..., so a2(30) = (1 + 1.93378e-8) * f(exp 30) = 1.1210561621....
       Substituting into nuAsympE30 gives 6.3380932222...e-7, exceeding margin 0 * 6.3376e-7 =
       6.3376e-7 by 4.9322...e-11 (already exceeded using only k = 3..7 of f(exp 30), where
       the partial sum gives 6.337643...e-7). Formally refuted in Solutions/FKS2NuAsymp.v1

@@ -38,6 +38,7 @@ import IEANTN.Nodes.FKS.v3.Challenge
 import IEANTN.Nodes.FKS2.v1.Challenge
 import IEANTN.Nodes.FKS2.v2.Challenge
 import IEANTN.Nodes.FKS2NuAsymp.v1.Challenge
+import IEANTN.Nodes.FKS2NuAsymp.v1.Examples
 import IEANTN.Nodes.FKS2Numerics.v1.Challenge
 import IEANTN.Nodes.FKS2PiFloor.v1.Challenge
 import IEANTN.Nodes.FKS2ThetaFloor.v1.Challenge

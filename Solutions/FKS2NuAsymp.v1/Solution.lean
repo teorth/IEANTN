@@ -300,6 +300,31 @@ private lemma exp30_le_2pow44 : exp 30 ≤ (2 : ℝ) ^ (44 : ℕ) := by
   rw [hpow]
   exact exp_le_exp.mpr hlog
 
+private lemma sum_Icc_split {a b c : ℕ} (hab : a ≤ b) (hbc : b < c) (g : ℕ → ℝ) :
+    ∑ k ∈ Icc a c, g k = (∑ k ∈ Icc a b, g k) + ∑ k ∈ Icc (b + 1) c, g k := by
+  have hunion : Icc a c = Icc a b ∪ Icc (b + 1) c := by
+    ext k
+    simp only [mem_Icc, mem_union]
+    omega
+  have hdisj : Disjoint (Icc a b) (Icc (b + 1) c) := by
+    rw [Finset.disjoint_left]
+    intro k hk1 hk2
+    rw [mem_Icc] at hk1 hk2
+    omega
+  rw [hunion, Finset.sum_union hdisj]
+
+private lemma sum_Icc_succ_top' {a b : ℕ} (hab : a ≤ b + 1) (g : ℕ → ℝ) :
+    ∑ k ∈ Icc a (b + 1), g k = (∑ k ∈ Icc a b, g k) + g (b + 1) := by
+  by_cases h : a ≤ b
+  · rw [sum_Icc_split h (Nat.lt_succ_self b), Icc_self, sum_singleton]
+  · have heq : a = b + 1 := by omega
+    subst heq
+    have hempty : Icc (b + 1) b = ∅ := by
+      ext k
+      simp only [mem_Icc, notMem_empty, iff_false]
+      omega
+    rw [hempty, sum_empty, zero_add, Icc_self, sum_singleton]
+
 private lemma f_2pow44_le_f_exp30 :
     BKLNW.v1.f ((2 : ℝ) ^ (44 : ℕ)) ≤ BKLNW.v1.f (exp 30) := by
   rw [f_2pow44_eq]
@@ -308,9 +333,9 @@ private lemma f_2pow44_le_f_exp30 :
     unfold BKLNW.v1.f
     rw [log_exp, floor_30_div_log_two]
   rw [hf30]
-  have h44 : Icc (3 : ℕ) 44 = insert 44 (Icc 3 43) := by decide
-  have h4 : Icc (3 : ℕ) 43 = insert 4 ((Icc 3 43).erase 4) := by decide
-  rw [h44, sum_insert (by decide), h4, sum_insert (by decide), sum_insert (by decide)]
+  rw [sum_Icc_succ_top' (a := 3) (b := 43) (by omega)]
+  have hmem4 : (4 : ℕ) ∈ Icc (3 : ℕ) 43 := mem_Icc.mpr ⟨by omega, by omega⟩
+  rw [← Finset.add_sum_erase _ _ hmem4, ← Finset.add_sum_erase _ _ hmem4]
   have hrest :
       ∑ k ∈ (Icc (3 : ℕ) 43).erase 4, ((2 : ℝ) ^ (44 : ℕ)) ^ ((1 : ℝ) / (k : ℝ) - 1 / 3) ≤
         ∑ k ∈ (Icc (3 : ℕ) 43).erase 4, (exp 30) ^ ((1 : ℝ) / (k : ℝ) - 1 / 3) := by
@@ -363,14 +388,24 @@ private lemma a₂_30_eq :
 
 private lemma f_exp30_ge : (1.112367 : ℝ) ≤ BKLNW.v1.f (exp 30) := by
   rw [f_exp30_eq]
-  have hsub : ({3, 4, 5, 6, 7, 8} : Finset ℕ) ⊆ Icc 3 43 := by decide
+  have hsub : Icc (3 : ℕ) 8 ⊆ Icc 3 43 := Icc_subset_Icc_right (by omega)
   have hsum :
-      ∑ k ∈ ({3, 4, 5, 6, 7, 8} : Finset ℕ), exp (30 * ((1 : ℝ) / (k : ℝ) - 1 / 3)) ≤
+      ∑ k ∈ Icc (3 : ℕ) 8, exp (30 * ((1 : ℝ) / (k : ℝ) - 1 / 3)) ≤
         ∑ k ∈ Icc (3 : ℕ) 43, exp (30 * ((1 : ℝ) / (k : ℝ) - 1 / 3)) :=
     Finset.sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ ↦ (exp_pos _).le
   refine le_trans ?_ hsum
-  simp +decide only [sum_insert, sum_singleton, mem_insert, mem_singleton,
-    not_false_eq_true]
+  have hexp :
+      ∑ k ∈ Icc (3 : ℕ) 8, exp (30 * ((1 : ℝ) / (k : ℝ) - 1 / 3)) =
+        exp (30 * ((1 : ℝ) / (3 : ℕ) - 1 / 3)) + exp (30 * ((1 : ℝ) / (4 : ℕ) - 1 / 3)) +
+        exp (30 * ((1 : ℝ) / (5 : ℕ) - 1 / 3)) + exp (30 * ((1 : ℝ) / (6 : ℕ) - 1 / 3)) +
+        exp (30 * ((1 : ℝ) / (7 : ℕ) - 1 / 3)) + exp (30 * ((1 : ℝ) / (8 : ℕ) - 1 / 3)) := by
+    rw [sum_Icc_succ_top' (a := 3) (b := 7) (by omega),
+      sum_Icc_succ_top' (a := 3) (b := 6) (by omega),
+      sum_Icc_succ_top' (a := 3) (b := 5) (by omega),
+      sum_Icc_succ_top' (a := 3) (b := 4) (by omega),
+      sum_Icc_succ_top' (a := 3) (b := 3) (by omega),
+      Icc_self, sum_singleton]
+  rw [hexp]
   have h3 : exp (30 * ((1 : ℝ) / (3 : ℕ) - 1 / 3)) = 1 := by norm_num
   have h4 : (12.18249482 : ℝ)⁻¹ ≤ exp (30 * ((1 : ℝ) / (4 : ℕ) - 1 / 3)) := by
     rw [show (30 : ℝ) * ((1 : ℝ) / (4 : ℕ) - 1 / 3) = -(5 / 2) by norm_num, exp_neg]
@@ -478,13 +513,11 @@ private lemma sum_4_43_exp_30_div_le :
         (∑ k ∈ Icc (29 : ℕ) 32, exp (30 / (k : ℝ))) +
         (∑ k ∈ Icc (33 : ℕ) 37, exp (30 / (k : ℝ))) +
         (∑ k ∈ Icc (38 : ℕ) 43, exp (30 / (k : ℝ))) := by
-    have h1 : Icc (4 : ℕ) 43 = Icc 4 23 ∪ Icc 24 43 := by decide
-    have h2 : Icc (24 : ℕ) 43 = Icc 24 25 ∪ Icc 26 43 := by decide
-    have h3 : Icc (26 : ℕ) 43 = Icc 26 28 ∪ Icc 29 43 := by decide
-    have h4 : Icc (29 : ℕ) 43 = Icc 29 32 ∪ Icc 33 43 := by decide
-    have h5 : Icc (33 : ℕ) 43 = Icc 33 37 ∪ Icc 38 43 := by decide
-    rw [h1, sum_union (by decide), h2, sum_union (by decide), h3, sum_union (by decide),
-      h4, sum_union (by decide), h5, sum_union (by decide)]
+    rw [sum_Icc_split (a := 4) (b := 23) (c := 43) (by omega) (by omega),
+      sum_Icc_split (a := 24) (b := 25) (c := 43) (by omega) (by omega),
+      sum_Icc_split (a := 26) (b := 28) (c := 43) (by omega) (by omega),
+      sum_Icc_split (a := 29) (b := 32) (c := 43) (by omega) (by omega),
+      sum_Icc_split (a := 33) (b := 37) (c := 43) (by omega) (by omega)]
     ring
   rw [hsplit]
   have h4 : exp (30 / (4 : ℕ)) ≤ 1808.12 :=
@@ -574,20 +607,33 @@ private lemma sum_4_43_exp_30_div_le :
         exp (30 / (12 : ℕ)) + exp (30 / (13 : ℕ)) + exp (30 / (14 : ℕ)) + exp (30 / (15 : ℕ)) +
         exp (30 / (16 : ℕ)) + exp (30 / (17 : ℕ)) + exp (30 / (18 : ℕ)) + exp (30 / (19 : ℕ)) +
         exp (30 / (20 : ℕ)) + exp (30 / (21 : ℕ)) + exp (30 / (22 : ℕ)) + exp (30 / (23 : ℕ)) := by
-    have hset : Icc (4 : ℕ) 23 = {4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23} := by
-      decide
-    rw [hset]
-    simp +decide only [sum_insert, sum_singleton, mem_insert, mem_singleton,
-    not_false_eq_true]
-    ring
+    rw [sum_Icc_succ_top' (a := 4) (b := 22) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 21) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 20) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 19) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 18) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 17) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 16) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 15) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 14) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 13) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 12) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 11) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 10) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 9) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 8) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 7) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 6) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 5) (by omega),
+      sum_Icc_succ_top' (a := 4) (b := 4) (by omega),
+      Icc_self, sum_singleton]
   rw [hhead]
   linarith
 
 private lemma f_exp30_le :
     BKLNW.v1.f (exp 30) ≤ 1 + 2669.15 * ((148.4131525 : ℝ) ^ 2)⁻¹ := by
   rw [f_exp30_eq]
-  have h3 : Icc (3 : ℕ) 43 = insert 3 (Icc 4 43) := by decide
-  rw [h3, sum_insert (by decide)]
+  rw [sum_Icc_split (a := 3) (b := 3) (c := 43) (by omega) (by omega), Icc_self, sum_singleton]
   have hfirst : exp (30 * ((1 : ℝ) / (3 : ℕ) - 1 / 3)) = 1 := by norm_num
   rw [hfirst]
   have hfac :
