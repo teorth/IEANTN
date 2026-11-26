@@ -1,0 +1,29 @@
+{
+  "challenge": "ButheNumerics.v2.challenge_lemma_3_constant_nonpos",
+  "conclusion": "ButheNumerics.v2.lemma_3_constant_nonpos",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6"
+  },
+  "repository": {
+    "commit": "7b7db4e4c54dda7c18df3a0e6a688f9f0db46bd6"
+  },
+  "run": {
+    "recorded_at": "2026-11-26T20:00:19Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/45880789805"
+  },
+  "schema": 2,
+  "solution": {
+    "dependencies": [],
+    "project": "Solutions/ButheNumerics.v2"
+  },
+  "statement": {
+    "ButheNumerics.v2.lemma_3_constant_nonpos": "b2501571bd4cb5fd7daa5d8e50371ac070c4a02587d0cc941849bd8f0375a5a5"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}
