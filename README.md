@@ -15,6 +15,35 @@ evidence may be a Lean proof checked by [Comparator](https://github.com/leanprov
 numerical computation, or a citation. The goal is not that everything is certain — it is that **for
 any result you can read off exactly what it rests on and how good that evidence is.**
 
+## Scope
+
+**Contributions anywhere in explicit analytic number theory are welcome**, subject to two
+conditions:
+
+1. **The claim is tied to an accepted result in the literature** — published, or available as a
+   preprint. A node records a claim *someone else has already made and stood behind*; the
+   repository's job is to say what that claim rests on and how good the evidence is, not to
+   adjudicate new mathematics. Original work is welcome in the *proofs* — a Lean solution may take
+   any correct route it likes, and often a better one than the paper's — but the statement itself
+   needs a citation.
+
+   Faithfulness is required of a source's **conclusions**, not of its internal lemmas: a node
+   stating a paper's results must state them as printed, while justifications and the paper's
+   intermediate lemmas may deviate, provided a significant deviation is noted in the metadata.
+2. **The claim is plausibly connected to the existing network** — it imports something already
+   here, or something already here could import it. A result with no path to the rest of the graph
+   is not yet a node; the point of the network is the dependency structure, and an island carries
+   none.
+
+Both are judged generously, and "plausibly" is doing real work in the second: a node that nothing
+imports *yet* is fine if it is the kind of thing the network will reach. If you are unsure whether
+something fits, open an issue describing the result and the connection rather than a pull request —
+that is cheaper for everyone than a node that has to be withdrawn.
+
+The scope is the subject, not the technique. A claim justified by a citation, by a large numerical
+computation, or by a kernel-checked Lean proof is equally in scope; which of those it is becomes
+part of the record rather than a condition of entry.
+
 ## The central idea
 
 Every node's challenge is a **conditional theorem**: *if* the results it imports hold, *then* its

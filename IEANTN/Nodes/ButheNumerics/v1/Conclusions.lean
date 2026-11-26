@@ -38,18 +38,40 @@ So (1.9) and (1.10) are the two places where a Lean proof could replace an asser
 right inputs. The two conclusions below are exactly the inputs Lemma 3 needs that are *not*
 already stated somewhere in the network.
 
-## Why `A ≤ 0` is the interesting one
+## Why `A` is the interesting one, and why its sign is not what this node first recorded
 
 Büthe's Lemma 3 concludes, for `c ≤ (x − θ(x))/√x ≤ C` on `[a, b]` and
 `A = π(a) − li(a) + (a − θ(a)) / log a`,
 
 `(li x − π x) / (√x / log x) ≤ (x − θ x)/√x + (2C / log x)(1 + 5 / log x) + A · log x / √x`.
 
-Multiplying through by `√x / log x` turns the last term into the constant `A`. With `C = 1.95`
-from (1.6), the first three terms are exactly (1.9)'s
+**That printed sign on `A` is wrong**, and the error is the paper's rather than a transcription
+slip — see issues #260 and #268, the `refuted` block on `lemma_3_constant_gt_at_10` below, and the
+one on `Buthe.v2.lemma_3_bounds`. The paper's own equation (6.17) is correct as printed, and
+rearranges to
+
+`li(x) − π(x) = (x − θ(x)) / log x + I − A`,
+
+so the last term of Lemma 3 enters as `− A · log x / √x`.
+
+With `C = 1.95` from (1.6), the first three terms are exactly (1.9)'s
 `1.95 + 3.9 / log x + 19.5 / (log x)²` — note `3.9 = 2C` and `19.5 = 10C`, which is the tell that
-(1.9) is (1.6) pushed through Lemma 3. **So (1.9) as printed holds only if `A ≤ 0`**, and the paper
-does not display that check. It is stated below.
+(1.9) is (1.6) pushed through Lemma 3. The `A` term is what decides whether that specialisation
+closes.
+
+**What this section used to say** — kept here because the rot is the interesting part — was: *"So
+(1.9) as printed holds only if `A ≤ 0`"*. Under the printed `+ A` that inference is sound, and it
+is why `lemma_3_constant_nonpos` was stated in the first place. Under the corrected `− A` it runs
+the other way. `A(1500) ≈ −3.6356`, so `− A · log x / √x` is *positive* — worth about `+0.0185` in
+(1.9)'s units at `x = 10⁷`, and shrinking as `x` grows. So (1.9) as printed does **not** follow
+from Lemma 3 at `a = 1500` for any negative `A`, and a repaired derivation has to spend the gap
+between `(x − θ(x))/√x` and `C` rather than the sign of `A`. (1.9) itself looks comfortably true —
+at `x = 10⁷` its two sides are `1.7299` and `2.2670` — but that is an observation about the
+numbers, not the paper's argument.
+
+`lemma_3_constant_nonpos` is kept and is still worth proving: it is a faithful transcription of the
+quantity Lemma 3 names, it is true, and `A(1500) ≤ 0` is what the paper's own reasoning appeals to.
+What changed is only what it buys downstream.
 
 These are `li`, the **un-offset** logarithmic integral, and `π`, the ordinary prime-counting
 function — matching `Buthe.v1`. `li 2 ≈ 1.045`, so a consumer working with `Li` must convert.
@@ -63,10 +85,15 @@ open IEANTN
 
 `A = π(1500) − li(1500) + (1500 − θ(1500)) / log 1500 ≤ 0`.
 
-The hidden hypothesis of Theorem 2's equation (1.9). Lemma 3 carries `A` through as an additive
-constant on the right, so (1.9) as printed — which has no such term — is the specialisation at
-`a = 1500` *together with* the fact that this `A` is not positive. The paper chooses `a = 1500` and
-does not display the evaluation.
+The hidden hypothesis of Theorem 2's equation (1.9) *as the paper argues it*. Lemma 3 carries `A`
+through as an additive constant on the right, and under the sign Lemma 3 prints, (1.9) — which has
+no such term — is the specialisation at `a = 1500` *together with* the fact that this `A` is not
+positive. The paper chooses `a = 1500` and does not display the evaluation.
+
+**That printed sign is wrong; see the module docstring.** Under the corrected `− A` this term works
+against (1.9) rather than for it, so this evaluation no longer completes that derivation. The
+statement is kept, unedited, because it faithfully transcribes the quantity Lemma 3 names, it is
+true, and it is the fact the paper's own reasoning appeals to.
 
 A finite check: three evaluations at a single point. Nothing in the network proves it, and it is
 asserted on the paper's authority, but it is the sort of thing a Lean proof could discharge
@@ -107,10 +134,20 @@ there — by "taking `a = 10` in (6.17) since `π(10) − li(10) + (10 − θ(10
 inequality is displayed in the proof but is not a stated result, and nothing else in the network
 carries it.
 
-Note the sign differs from `lemma_3_constant_nonpos`: the same functional `A(a)` is asserted
-positive at `a = 10` and non-positive at `a = 1500`. That is not a contradiction — `A` varies with
-`a` — but it is worth seeing side by side, because a solution that conflates the two points will
-prove nothing.
+**This conclusion is false as stated.** See the `refuted` block in `formalization.yaml` and issue
+#260: `π(10) − li(10) + (10 − θ(10)) / log 10 = −0.1448739805`, which is not `> 0.1`. The sign is
+the one the module docstring discusses. Büthe's (6.17) is correct as printed and gives the
+quantity the other way round, `li(10) − π(10) − (10 − θ(10)) / log 10 = +0.1448739805`, and that
+is what his positivity argument actually needs.
+
+The statement is retained unedited: `Buthe.v1.theorem_2_li_gt_pi` imports it, and the network
+records what the literature claimed rather than quietly repairing it. A corrected version belongs
+in a new node, not here.
+
+It used to say here that the sign "differs from `lemma_3_constant_nonpos`", the same `A(a)` being
+positive at `a = 10` and non-positive at `a = 1500`. That reading is gone with the sign: both
+values are in fact negative, `A(10) = −0.1449` and `A(1500) = −3.6356`. A solution must still keep
+the two points apart, but not because they disagree in sign.
 
 A finite check: three evaluations at a single point. No `margin` site — the bound `0.1` is a
 strict lower bound on a quantity, and a multiplicative margin loosens an upper bound, so a site

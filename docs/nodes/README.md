@@ -11,16 +11,17 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`BKLNWNumerics.v1`](BKLNWNumerics-v1.md) | computation | 2 | computation |
 | [`Brown1967.v1`](Brown1967-v1.md) | paper | 0 | — |
 | [`Buthe.v1`](Buthe-v1.md) | paper | 8 | cited |
-| [`Buthe.v2`](Buthe-v2.md) | pipeline | 2 | unjustified |
+| [`Buthe.v2`](Buthe-v2.md) | pipeline | 2 | refuted |
 | [`Buthe2016.v1`](Buthe2016-v1.md) | paper | 6 | cited |
-| [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 5 | computation |
+| [`ButheNumerics.v1`](ButheNumerics-v1.md) | computation | 5 | refuted |
 | [`CH2.v1`](CH2-v1.md) | paper | 4 | verified |
 | [`CH2.v2`](CH2-v2.md) | pipeline | 2 | verified, stale |
 | [`CH2.v3`](CH2-v3.md) | pipeline | 2 | verified |
 | [`Chebyshev.v1`](Chebyshev-v1.md) | paper | 5 | verified |
 | [`ChebyshevNumerics.v1`](ChebyshevNumerics-v1.md) | computation | 1 | bridged |
+| [`ChebyshevNumerics.v2`](ChebyshevNumerics-v2.md) | standard | 1 | bridged |
 | [`ChengGraham2004.v1`](ChengGraham2004-v1.md) | paper | 0 | — |
-| [`CotangentSeries.v1`](CotangentSeries-v1.md) | standard | 1 | unjustified |
+| [`CotangentSeries.v1`](CotangentSeries-v1.md) | standard | 1 | verified |
 | [`DudekPlatt.v1`](DudekPlatt-v1.md) | paper | 2 | cited |
 | [`DudekPlatt.v2`](DudekPlatt-v2.md) | paper | 1 | verified, stale |
 | [`DudekPlatt.v3`](DudekPlatt-v3.md) | pipeline | 1 | verified, stale |
@@ -38,6 +39,8 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`FKS2.v1`](FKS2-v1.md) | paper | 4 | verified, stale |
 | [`FKS2.v2`](FKS2-v2.md) | pipeline | 2 | verified, stale |
 | [`FKS2Numerics.v1`](FKS2Numerics-v1.md) | computation | 5 | computation |
+| [`FKS2PiFloor.v1`](FKS2PiFloor-v1.md) | computation | 1 | verified |
+| [`FKS2ThetaFloor.v1`](FKS2ThetaFloor-v1.md) | standard | 1 | verified |
 | [`FKSNumerics.v1`](FKSNumerics-v1.md) | computation | 2 | cited |
 | [`GammaAsymptotics.v1`](GammaAsymptotics-v1.md) | standard | 1 | unjustified |
 | [`GammaAsymptotics.v2`](GammaAsymptotics-v2.md) | standard | 1 | verified |
@@ -66,6 +69,13 @@ One page per node: what it claims, in Lean and in prose, and everything recorded
 | [`RosserSchoenfeld.v1`](RosserSchoenfeld-v1.md) | paper | 2 | cited |
 | [`RosserSchoenfeld.v2`](RosserSchoenfeld-v2.md) | paper | 1 | verified |
 | [`RosserSchoenfeld1962.v1`](RosserSchoenfeld1962-v1.md) | paper | 1 | verified |
+| [`RosserSchoenfeld1962.v2`](RosserSchoenfeld1962-v2.md) | paper | 2 | verified |
+| [`RosserSchoenfeld1962.v3`](RosserSchoenfeld1962-v3.md) | paper | 1 | verified |
+| [`RosserSchoenfeld1962.v4`](RosserSchoenfeld1962-v4.md) | paper | 2 | verified |
+| [`RosserSchoenfeld1962.v5`](RosserSchoenfeld1962-v5.md) | paper | 1 | verified |
+| [`RosserSchoenfeld1962.v6`](RosserSchoenfeld1962-v6.md) | paper | 1 | verified |
+| [`RosserSchoenfeld1962.v7`](RosserSchoenfeld1962-v7.md) | paper | 1 | verified |
+| [`RosserSchoenfeld1962.v8`](RosserSchoenfeld1962-v8.md) | paper | 1 | verified |
 | [`Schoenfeld1976.v1`](Schoenfeld1976-v1.md) | paper | 8 | cited |
 | [`Schoenfeld1976Numerics.v1`](Schoenfeld1976Numerics-v1.md) | paper | 1 | cited |
 | [`Trudgian2011.v1`](Trudgian2011-v1.md) | paper | 1 | cited |

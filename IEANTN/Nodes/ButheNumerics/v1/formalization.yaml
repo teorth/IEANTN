@@ -101,6 +101,26 @@ conclusions:
       a solution that conflates the two points proves nothing. Imports `none`: three evaluations at a
       single point consume no other result in the network.
   designated: buthe-computation
+  refuted:
+    issue: 260
+    counterexample: >-
+      pi(10) = 4; li(10) = 6.165599505, the principal value, well inside its domain; theta(10) =
+      log 210 = 5.347107531; log 10 = 2.302585093. So
+      4 - 6.165599505 + (10 - 5.347107531)/2.302585093 = -0.1448739805, and the claim
+      0.1 < -0.1448739805 is false. Nothing here is a junk value and every term means what it
+      appears to mean, so this is false rather than vacuous.
+    note: >-
+      Faithful to the paper and false in the paper. Buthe's Lemma 3 defines
+      A = pi(a) - li(a) + (a - theta(a))/log a, carries `+ A log x / sqrt x` in both of its
+      displayed bounds, and its proof asserts this inequality at a = 10. But the identity the
+      proof rests on, (6.17), is correct as printed and rearranges to
+      li(x) - pi(x) = (x - theta(x))/log x + I - A, with A entering NEGATED. So the sign of the
+      A term in the two displayed bounds is wrong, and this numerical check inherited the flip.
+      The inequality the proof actually needs is -A(10) > 0.1, that is
+      0.1 < li(10) - pi(10) - (10 - theta(10))/log 10 = +0.1448739805, which is true and does
+      exactly the work the positivity clause wants. Kept rather than deleted because a published
+      lemma that is false as printed is a fact about the literature, and this node's job is to
+      record the literature. See Buthe.v2.lemma_3_bounds for the same error's other appearance.
 - id: eq_6_2
   declaration: ButheNumerics.v1.eq_6_2
   challenge: ButheNumerics.v1.challenge_eq_6_2

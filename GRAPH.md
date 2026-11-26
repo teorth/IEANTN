@@ -60,16 +60,17 @@ graph LR
   NBKLNWNumerics_2e_v1["<b>BKLNWNumerics.v1</b><br/>2 claims<br/><i>weakest: computation</i>"]
   NBrown1967_2e_v1["<b>Brown1967.v1</b><br/><i>nothing stated yet</i>"]
   NButhe_2e_v1["<b>Buthe.v1</b><br/>8 claims<br/><i>weakest: cited</i>"]
-  NButhe_2e_v2["<b>Buthe.v2</b><br/>2 claims<br/><i>weakest: unjustified</i>"]
+  NButhe_2e_v2["<b>Buthe.v2</b><br/>2 claims<br/><i>weakest: refuted</i>"]
   NButhe2016_2e_v1["<b>Buthe2016.v1</b><br/>6 claims<br/><i>weakest: cited</i>"]
-  NButheNumerics_2e_v1["<b>ButheNumerics.v1</b><br/>5 claims<br/><i>weakest: computation</i>"]
+  NButheNumerics_2e_v1["<b>ButheNumerics.v1</b><br/>5 claims<br/><i>weakest: refuted</i>"]
   NCH2_2e_v1["<b>CH2.v1</b><br/>4 claims<br/><i>weakest: verified</i>"]
   NCH2_2e_v2["<b>CH2.v2</b><br/>2 claims<br/><i>weakest: verified, stale</i>"]
   NCH2_2e_v3["<b>CH2.v3</b><br/>2 claims<br/><i>weakest: verified</i>"]
   NChebyshev_2e_v1["<b>Chebyshev.v1</b><br/>5 claims<br/><i>weakest: verified</i>"]
   NChebyshevNumerics_2e_v1["<b>ChebyshevNumerics.v1</b><br/>1 claim<br/><i>weakest: bridged</i>"]
+  NChebyshevNumerics_2e_v2["<b>ChebyshevNumerics.v2</b><br/>1 claim<br/><i>weakest: bridged</i>"]
   NChengGraham2004_2e_v1["<b>ChengGraham2004.v1</b><br/><i>nothing stated yet</i>"]
-  NCotangentSeries_2e_v1["<b>CotangentSeries.v1</b><br/>1 claim<br/><i>weakest: unjustified</i>"]
+  NCotangentSeries_2e_v1["<b>CotangentSeries.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NDudekPlatt_2e_v1["<b>DudekPlatt.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NDudekPlatt_2e_v2["<b>DudekPlatt.v2</b><br/>1 claim<br/><i>weakest: verified, stale</i>"]
   NDudekPlatt_2e_v3["<b>DudekPlatt.v3</b><br/>1 claim<br/><i>weakest: verified, stale</i>"]
@@ -87,6 +88,8 @@ graph LR
   NFKS2_2e_v1["<b>FKS2.v1</b><br/>4 claims<br/><i>weakest: verified, stale</i>"]
   NFKS2_2e_v2["<b>FKS2.v2</b><br/>2 claims<br/><i>weakest: verified, stale</i>"]
   NFKS2Numerics_2e_v1["<b>FKS2Numerics.v1</b><br/>5 claims<br/><i>weakest: computation</i>"]
+  NFKS2PiFloor_2e_v1["<b>FKS2PiFloor.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
+  NFKS2ThetaFloor_2e_v1["<b>FKS2ThetaFloor.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NFKSNumerics_2e_v1["<b>FKSNumerics.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NGammaAsymptotics_2e_v1["<b>GammaAsymptotics.v1</b><br/>1 claim<br/><i>weakest: unjustified</i>"]
   NGammaAsymptotics_2e_v2["<b>GammaAsymptotics.v2</b><br/>1 claim<br/><i>weakest: verified</i>"]
@@ -115,6 +118,13 @@ graph LR
   NRosserSchoenfeld_2e_v1["<b>RosserSchoenfeld.v1</b><br/>2 claims<br/><i>weakest: cited</i>"]
   NRosserSchoenfeld_2e_v2["<b>RosserSchoenfeld.v2</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NRosserSchoenfeld1962_2e_v1["<b>RosserSchoenfeld1962.v1</b><br/>1 claim<br/><i>weakest: verified</i>"]
+  NRosserSchoenfeld1962_2e_v2["<b>RosserSchoenfeld1962.v2</b><br/>2 claims<br/><i>weakest: verified</i>"]
+  NRosserSchoenfeld1962_2e_v3["<b>RosserSchoenfeld1962.v3</b><br/>1 claim<br/><i>weakest: verified</i>"]
+  NRosserSchoenfeld1962_2e_v4["<b>RosserSchoenfeld1962.v4</b><br/>2 claims<br/><i>weakest: verified</i>"]
+  NRosserSchoenfeld1962_2e_v5["<b>RosserSchoenfeld1962.v5</b><br/>1 claim<br/><i>weakest: verified</i>"]
+  NRosserSchoenfeld1962_2e_v6["<b>RosserSchoenfeld1962.v6</b><br/>1 claim<br/><i>weakest: verified</i>"]
+  NRosserSchoenfeld1962_2e_v7["<b>RosserSchoenfeld1962.v7</b><br/>1 claim<br/><i>weakest: verified</i>"]
+  NRosserSchoenfeld1962_2e_v8["<b>RosserSchoenfeld1962.v8</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NSchoenfeld1976_2e_v1["<b>Schoenfeld1976.v1</b><br/>8 claims<br/><i>weakest: cited</i>"]
   NSchoenfeld1976Numerics_2e_v1["<b>Schoenfeld1976Numerics.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
   NTrudgian2011_2e_v1["<b>Trudgian2011.v1</b><br/>1 claim<br/><i>weakest: cited</i>"]
@@ -192,6 +202,11 @@ graph LR
   NRamareSaouter2003_2e_v1 -->|3| NGoldbach_2e_v1
   NRichstein2001_2e_v1 --> NGoldbach_2e_v1
   NRosserSchoenfeld_2e_v1 --> NKadiri2005_2e_v1
+  NRosserSchoenfeld1962_2e_v1 -->|2| NRosserSchoenfeld1962_2e_v2
+  NRosserSchoenfeld1962_2e_v1 --> NRosserSchoenfeld1962_2e_v3
+  NRosserSchoenfeld1962_2e_v1 -->|2| NRosserSchoenfeld1962_2e_v4
+  NRosserSchoenfeld1962_2e_v1 --> NRosserSchoenfeld1962_2e_v5
+  NRosserSchoenfeld1962_2e_v1 --> NRosserSchoenfeld1962_2e_v6
   NTrudgian2011_2e_v1 --> NPlatt2017_2e_v1
   NWedeniwski_2e_v1 --> NKadiri2005_2e_v1
   NZeroCount_2e_v1 -->|4| NCH2_2e_v1
@@ -212,10 +227,13 @@ graph LR
   NDudekPlatt_2e_v4 ==>|bridge| NDudekPlatt_2e_v1
   NDudekPlattNumerics_2e_v4 ==>|bridge| NDudekPlattNumerics_2e_v3
   NFKS_2e_v1 ==>|bridge| NFKS_2e_v2
+  NFKS2PiFloor_2e_v1 ==>|bridge| NFKS2Numerics_2e_v1
+  NFKS2ThetaFloor_2e_v1 ==>|bridge| NFKS2Numerics_2e_v1
   NLcm_2e_v2 ==>|bridge| NLcm_2e_v1
   NPlatt2017_2e_v1 ==>|bridge| NPlatt2015_2e_v1
   NPlatt2017_2e_v1 ==>|bridge| NWedeniwski_2e_v1
   NRosserSchoenfeld1962_2e_v1 ==>|bridge| NChebyshevNumerics_2e_v1
+  NRosserSchoenfeld1962_2e_v1 ==>|bridge| NChebyshevNumerics_2e_v2
   NZetaZeroLocations_2e_v1 ==>|bridge| NLowZeroes_2e_v1
   style NBKLNW_2e_v1 stroke-dasharray: 8 4;
   style NBKLNWNumerics_2e_v1 stroke-dasharray: 8 4;
@@ -238,18 +256,19 @@ graph LR
   style NPlatt2017_2e_v1 stroke-dasharray: 8 4;
   style NPlattTrudgian_2e_v1 stroke-dasharray: 8 4;
   style NPrimesBetweenCubes_2e_v1 stroke-dasharray: 8 4;
-  style NRamareSaouter2003_2e_v1 stroke-dasharray: 2 3;
+  style NRamareSaouter2003_2e_v1 stroke-dasharray: 8 4;
   style NRosserSchoenfeld_2e_v1 stroke-dasharray: 2 3;
   style NSchoenfeld1976_2e_v1 stroke-dasharray: 8 4;
   style NTrudgian2011_2e_v1 stroke-dasharray: 2 3;
   style NWedeniwski_2e_v1 stroke-dasharray: 2 3;
-  class NBrown1967_2e_v1,NButhe_2e_v2,NChengGraham2004_2e_v1,NCotangentSeries_2e_v1,NGammaAsymptotics_2e_v1,NZetaZeroLocations_2e_v1,NZetaZeroLocations_2e_v10,NZetaZeroLocations_2e_v11,NZetaZeroLocations_2e_v2,NZetaZeroLocations_2e_v3,NZetaZeroLocations_2e_v4,NZetaZeroLocations_2e_v5,NZetaZeroLocations_2e_v6,NZetaZeroLocations_2e_v7,NZetaZeroLocations_2e_v8,NZetaZeroLocations_2e_v9 none_2d_yet;
+  class NButhe_2e_v2,NButheNumerics_2e_v1 refuted;
+  class NBrown1967_2e_v1,NChengGraham2004_2e_v1,NGammaAsymptotics_2e_v1,NZetaZeroLocations_2e_v1,NZetaZeroLocations_2e_v10,NZetaZeroLocations_2e_v11,NZetaZeroLocations_2e_v2,NZetaZeroLocations_2e_v3,NZetaZeroLocations_2e_v4,NZetaZeroLocations_2e_v5,NZetaZeroLocations_2e_v6,NZetaZeroLocations_2e_v7,NZetaZeroLocations_2e_v8,NZetaZeroLocations_2e_v9 none_2d_yet;
   class NWedeniwski_2e_v1 asserted;
   class NBKLNW_2e_v1,NBKLNW_2e_v2,NButhe_2e_v1,NButhe2016_2e_v1,NDudekPlatt_2e_v1,NDusart2018_2e_v1,NFKS_2e_v1,NFKSNumerics_2e_v1,NHiary2016_2e_v1,NKLN_2e_v1,NKadiri2005_2e_v1,NKadiriLumley_2e_v1,NMT_2e_v1,NMT_2e_v2,NMTY_2e_v1,NPatel2020_2e_v1,NPlattTrudgian_2e_v1,NPlattTrudgian2021_2e_v1,NPlattZeroSum_2e_v1,NPrimesBetweenCubes_2e_v1,NRamareSaouter2003_2e_v1,NRosserSchoenfeld_2e_v1,NSchoenfeld1976_2e_v1,NSchoenfeld1976Numerics_2e_v1,NTrudgian2011_2e_v1,NZeroCount_2e_v1,NZetaHadamard_2e_v1 literature;
-  class NBKLNWNumerics_2e_v1,NButheNumerics_2e_v1,NDudekPlattNumerics_2e_v1,NDudekPlattNumerics_2e_v2,NDudekPlattNumerics_2e_v3,NFKBJ_2e_v1,NFKS2Numerics_2e_v1,NLowZeroes_2e_v1,NOliveiraESilva2014_2e_v1,NPlatt2015_2e_v1,NPlatt2017_2e_v1,NRichstein2001_2e_v1,NZetaLogDerivValues_2e_v1 numerical;
-  class NChebyshevNumerics_2e_v1,NFKS_2e_v2 bridged;
+  class NBKLNWNumerics_2e_v1,NDudekPlattNumerics_2e_v1,NDudekPlattNumerics_2e_v2,NDudekPlattNumerics_2e_v3,NFKBJ_2e_v1,NFKS2Numerics_2e_v1,NLowZeroes_2e_v1,NOliveiraESilva2014_2e_v1,NPlatt2015_2e_v1,NPlatt2017_2e_v1,NRichstein2001_2e_v1,NZetaLogDerivValues_2e_v1 numerical;
+  class NChebyshevNumerics_2e_v1,NChebyshevNumerics_2e_v2,NFKS_2e_v2 bridged;
   class NCH2_2e_v2,NDudekPlatt_2e_v2,NDudekPlatt_2e_v3,NFKS2_2e_v1,NFKS2_2e_v2,NLcm_2e_v1,NLcm_2e_v2,NPrimeInterval_2e_v1,NZeroFreeHeight_2e_v1 lean_2d_comparator_2d_stale;
-  class NCH2_2e_v1,NCH2_2e_v3,NChebyshev_2e_v1,NDudekPlatt_2e_v4,NDudekPlattNumerics_2e_v4,NErdos392_2e_v1,NFKS_2e_v3,NGammaAsymptotics_2e_v2,NGoldbach_2e_v1,NRosserSchoenfeld_2e_v2,NRosserSchoenfeld1962_2e_v1,NZetaLogDeriv_2e_v1,NZetaZeroes_2e_v1 lean_2d_comparator;
+  class NCH2_2e_v1,NCH2_2e_v3,NChebyshev_2e_v1,NCotangentSeries_2e_v1,NDudekPlatt_2e_v4,NDudekPlattNumerics_2e_v4,NErdos392_2e_v1,NFKS_2e_v3,NFKS2PiFloor_2e_v1,NFKS2ThetaFloor_2e_v1,NGammaAsymptotics_2e_v2,NGoldbach_2e_v1,NRosserSchoenfeld_2e_v2,NRosserSchoenfeld1962_2e_v1,NRosserSchoenfeld1962_2e_v2,NRosserSchoenfeld1962_2e_v3,NRosserSchoenfeld1962_2e_v4,NRosserSchoenfeld1962_2e_v5,NRosserSchoenfeld1962_2e_v6,NRosserSchoenfeld1962_2e_v7,NRosserSchoenfeld1962_2e_v8,NZetaLogDeriv_2e_v1,NZetaZeroes_2e_v1 lean_2d_comparator;
   click NBKLNW_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md" _blank
   click NBKLNW_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v2.md" _blank
   click NBKLNWNumerics_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNWNumerics-v1.md" _blank
@@ -262,6 +281,7 @@ graph LR
   click NCH2_2e_v3 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v3.md" _blank
   click NChebyshev_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Chebyshev-v1.md" _blank
   click NChebyshevNumerics_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ChebyshevNumerics-v1.md" _blank
+  click NChebyshevNumerics_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ChebyshevNumerics-v2.md" _blank
   click NCotangentSeries_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CotangentSeries-v1.md" _blank
   click NDudekPlatt_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v1.md" _blank
   click NDudekPlatt_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/DudekPlatt-v2.md" _blank
@@ -280,6 +300,8 @@ graph LR
   click NFKS2_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v1.md" _blank
   click NFKS2_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2-v2.md" _blank
   click NFKS2Numerics_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2Numerics-v1.md" _blank
+  click NFKS2PiFloor_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2PiFloor-v1.md" _blank
+  click NFKS2ThetaFloor_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKS2ThetaFloor-v1.md" _blank
   click NFKSNumerics_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/FKSNumerics-v1.md" _blank
   click NGammaAsymptotics_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/GammaAsymptotics-v1.md" _blank
   click NGammaAsymptotics_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/GammaAsymptotics-v2.md" _blank
@@ -308,6 +330,13 @@ graph LR
   click NRosserSchoenfeld_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v1.md" _blank
   click NRosserSchoenfeld_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld-v2.md" _blank
   click NRosserSchoenfeld1962_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld1962-v1.md" _blank
+  click NRosserSchoenfeld1962_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld1962-v2.md" _blank
+  click NRosserSchoenfeld1962_2e_v3 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld1962-v3.md" _blank
+  click NRosserSchoenfeld1962_2e_v4 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld1962-v4.md" _blank
+  click NRosserSchoenfeld1962_2e_v5 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld1962-v5.md" _blank
+  click NRosserSchoenfeld1962_2e_v6 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld1962-v6.md" _blank
+  click NRosserSchoenfeld1962_2e_v7 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld1962-v7.md" _blank
+  click NRosserSchoenfeld1962_2e_v8 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/RosserSchoenfeld1962-v8.md" _blank
   click NSchoenfeld1976_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Schoenfeld1976-v1.md" _blank
   click NSchoenfeld1976Numerics_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Schoenfeld1976Numerics-v1.md" _blank
   click NTrudgian2011_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Trudgian2011-v1.md" _blank
@@ -338,6 +367,7 @@ graph LR
   classDef asserted fill:#fff1e5,stroke:#bc4c00,color:#1f2328;
   classDef bridged fill:#fbefff,stroke:#8250df,color:#1f2328;
   classDef none_2d_yet fill:#ffebe9,stroke:#cf222e,color:#1f2328;
+  classDef refuted fill:#ffd7d5,stroke:#82071e,color:#1f2328;
 ```
 
 ## Every claim
@@ -410,7 +440,7 @@ A line is one claim, indented under whatever assumes it.
   - [`Buthe.v1.theorem_2_theta_lower`](docs/nodes/Buthe-v1.md#theorem_2_theta_lower) — cited — *sources known, not all drawable*
     - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation *(above)* — *sources known, not all drawable*
   - [`Buthe.v2.lemma_3_positivity`](docs/nodes/Buthe-v2.md#lemma_3_positivity) — unjustified
-  - [`ButheNumerics.v1.lemma_3_constant_gt_at_10`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_gt_at_10) — computation
+  - [`ButheNumerics.v1.lemma_3_constant_gt_at_10`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_gt_at_10) — refuted
 
 - [`Buthe.v1.theorem_2_li_minus_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_pi) — cited
   - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
@@ -418,7 +448,7 @@ A line is one claim, indented under whatever assumes it.
     - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation *(above)* — *sources known, not all drawable*
   - [`ButheNumerics.v1.lemma_3_constant_nonpos`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_nonpos) — computation
   - [`ButheNumerics.v1.li_minus_pi_below_1e7`](docs/nodes/ButheNumerics-v1.md#li_minus_pi_below_1e7) — computation
-  - [`Buthe.v2.lemma_3_bounds`](docs/nodes/Buthe-v2.md#lemma_3_bounds) — unjustified
+  - [`Buthe.v2.lemma_3_bounds`](docs/nodes/Buthe-v2.md#lemma_3_bounds) — refuted
 
 - [`Buthe.v1.theorem_2_li_minus_riemann_pi`](docs/nodes/Buthe-v1.md#theorem_2_li_minus_riemann_pi) — cited — *sources known, not all drawable*
   - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
@@ -440,7 +470,7 @@ A line is one claim, indented under whatever assumes it.
 - [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) — verified
   - [`CH2.v1.corollary_1_2_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_2_lambda_sum) — verified
     - [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](docs/nodes/GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip) — verified
-    - [`CotangentSeries.v1.cot_series_zeta_values`](docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values) — unjustified
+    - [`CotangentSeries.v1.cot_series_zeta_values`](docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values) — verified
     - [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) — cited
     - [`ZeroCount.v1.rvm_error_small`](docs/nodes/ZeroCount-v1.md#rvm_error_small) — cited
     - [`ZetaLogDeriv.v1.logDeriv_functional_equation`](docs/nodes/ZetaLogDeriv-v1.md#logDeriv_functional_equation) — verified
@@ -459,7 +489,7 @@ A line is one claim, indented under whatever assumes it.
 - [`CH2.v1.corollary_1_3_psi`](docs/nodes/CH2-v1.md#corollary_1_3_psi) — verified
   - [`CH2.v1.corollary_1_2_psi`](docs/nodes/CH2-v1.md#corollary_1_2_psi) — verified
     - [`GammaAsymptotics.v2.digamma_sub_log_isBigO_strip`](docs/nodes/GammaAsymptotics-v2.md#digamma_sub_log_isBigO_strip) — verified
-    - [`CotangentSeries.v1.cot_series_zeta_values`](docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values) — unjustified
+    - [`CotangentSeries.v1.cot_series_zeta_values`](docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values) — verified
     - [`ZeroCount.v1.rvm_error_bound`](docs/nodes/ZeroCount-v1.md#rvm_error_bound) — cited
     - [`ZeroCount.v1.rvm_error_small`](docs/nodes/ZeroCount-v1.md#rvm_error_small) — cited
     - [`ZetaLogDeriv.v1.logDeriv_functional_equation`](docs/nodes/ZetaLogDeriv-v1.md#logDeriv_functional_equation) — verified
@@ -489,6 +519,8 @@ A line is one claim, indented under whatever assumes it.
 
 - [`Chebyshev.v1.psi_upper_clean`](docs/nodes/Chebyshev-v1.md#psi_upper_clean) — verified
   - [`ChebyshevNumerics.v1.psi_le_below_11723`](docs/nodes/ChebyshevNumerics-v1.md#psi_le_below_11723) — bridged
+
+- [`ChebyshevNumerics.v2.psi_le_all`](docs/nodes/ChebyshevNumerics-v2.md#psi_le_all) — bridged
 
 - [`DudekPlatt.v1.largest_counterexample_on_rh`](docs/nodes/DudekPlatt-v1.md#largest_counterexample_on_rh) — cited — *sources known, not all drawable*
 
@@ -682,6 +714,10 @@ A line is one claim, indented under whatever assumes it.
   - [`FKS2.v2.proposition_13`](docs/nodes/FKS2-v2.md#proposition_13) — verified, stale
   - [`FKS2.v2.theorem_3`](docs/nodes/FKS2-v2.md#theorem_3) — verified, stale
 
+- [`FKS2PiFloor.v1.table6_row2_floor`](docs/nodes/FKS2PiFloor-v1.md#table6_row2_floor) — verified
+
+- [`FKS2ThetaFloor.v1.theta_asymp_ge_one_below_e30`](docs/nodes/FKS2ThetaFloor-v1.md#theta_asymp_ge_one_below_e30) — verified
+
 - [`GammaAsymptotics.v1.digamma_sub_log_isBigO`](docs/nodes/GammaAsymptotics-v1.md#digamma_sub_log_isBigO) — unjustified
 
 - [`Goldbach.v1.even_and_gaps_imply_odd`](docs/nodes/Goldbach-v1.md#even_and_gaps_imply_odd) — verified
@@ -692,17 +728,17 @@ A line is one claim, indented under whatever assumes it.
 
 - [`Goldbach.v1.odd_up_to_1_1325e26`](docs/nodes/Goldbach-v1.md#odd_up_to_1_1325e26) — verified
   - [`OliveiraESilva2014.v1.even_up_to_4e18`](docs/nodes/OliveiraESilva2014-v1.md#even_up_to_4e18) — computation
-  - [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) — cited — *sources not traced*
+  - [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) — cited — *sources known, not all drawable*
 
 - [`Goldbach.v1.odd_up_to_kadiri_lumley`](docs/nodes/Goldbach-v1.md#odd_up_to_kadiri_lumley) — verified
   - [`OliveiraESilva2014.v1.even_up_to_4e18`](docs/nodes/OliveiraESilva2014-v1.md#even_up_to_4e18) — computation
   - [`KadiriLumley.v1.prime_in_interval_above_exp_59`](docs/nodes/KadiriLumley-v1.md#prime_in_interval_above_exp_59) — cited — *sources not traced*
   - [`KadiriLumley.v1.prime_in_interval_above_exp_60`](docs/nodes/KadiriLumley-v1.md#prime_in_interval_above_exp_60) — cited — *sources not traced*
-  - [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) — cited — *sources not traced*
+  - [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) — cited — *sources known, not all drawable*
 
 - [`Goldbach.v1.odd_up_to_ramare_saouter`](docs/nodes/Goldbach-v1.md#odd_up_to_ramare_saouter) — verified
   - [`Richstein2001.v1.even_up_to_4e14`](docs/nodes/Richstein2001-v1.md#even_up_to_4e14) — computation
-  - [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) — cited — *sources not traced*
+  - [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) — cited — *sources known, not all drawable*
 
 - [`KadiriLumley.v1.table_2`](docs/nodes/KadiriLumley-v1.md#table_2) — cited — *sources known, not all drawable*
 
@@ -751,7 +787,30 @@ A line is one claim, indented under whatever assumes it.
 
 - [`RosserSchoenfeld.v2.psi_error_b23`](docs/nodes/RosserSchoenfeld-v2.md#psi_error_b23) — verified
 
-- [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) — verified
+- [`RosserSchoenfeld1962.v2.psi_ratio_maximum_at_113`](docs/nodes/RosserSchoenfeld1962-v2.md#psi_ratio_maximum_at_113) — verified
+  - [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) — verified
+
+- [`RosserSchoenfeld1962.v2.psi_ratio_unique_maximum_at_113`](docs/nodes/RosserSchoenfeld1962-v2.md#psi_ratio_unique_maximum_at_113) — verified
+  - [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) — verified
+
+- [`RosserSchoenfeld1962.v3.equation_3_8`](docs/nodes/RosserSchoenfeld1962-v3.md#equation_3_8) — verified
+  - [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) — verified
+
+- [`RosserSchoenfeld1962.v4.equation_3_36`](docs/nodes/RosserSchoenfeld1962-v4.md#equation_3_36) — verified
+  - [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) — verified
+
+- [`RosserSchoenfeld1962.v4.psi_sub_theta_ratio_maximum_at_361`](docs/nodes/RosserSchoenfeld1962-v4.md#psi_sub_theta_ratio_maximum_at_361) — verified
+  - [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) — verified
+
+- [`RosserSchoenfeld1962.v5.equation_5_4`](docs/nodes/RosserSchoenfeld1962-v5.md#equation_5_4) — verified
+  - [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) — verified
+
+- [`RosserSchoenfeld1962.v6.theorem_25`](docs/nodes/RosserSchoenfeld1962-v6.md#theorem_25) — verified
+  - [`RosserSchoenfeld1962.v1.equation_3_35`](docs/nodes/RosserSchoenfeld1962-v1.md#equation_3_35) — verified
+
+- [`RosserSchoenfeld1962.v7.equation_3_9`](docs/nodes/RosserSchoenfeld1962-v7.md#equation_3_9) — verified
+
+- [`RosserSchoenfeld1962.v8.equation_3_19`](docs/nodes/RosserSchoenfeld1962-v8.md#equation_3_19) — verified
 
 - [`Schoenfeld1976.v1.psi_log_5_5a`](docs/nodes/Schoenfeld1976-v1.md#psi_log_5_5a) — cited — *sources known, not all drawable*
 
@@ -854,10 +913,9 @@ rather than maintained.
 | [`FKS2Numerics.v1.corollary_22_mid_range`](docs/nodes/FKS2Numerics-v1.md#corollary_22_mid_range) | computation | 3 | none |
 | [`MT.v1.zero_free_region`](docs/nodes/MT-v1.md#zero_free_region) | cited | 3 | traced |
 | [`PlattTrudgian2021.v1.theorem_1_numerical`](docs/nodes/PlattTrudgian2021-v1.md#theorem_1_numerical) | cited | 3 | traced |
-| [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) | cited | 3 | **not yet traced** |
+| [`RamareSaouter2003.v1.prime_in_short_interval`](docs/nodes/RamareSaouter2003-v1.md#prime_in_short_interval) | cited | 3 | known, not all drawable |
 | [`BKLNW.v1.table8_psi_bound_above`](docs/nodes/BKLNW-v1.md#table8_psi_bound_above) | cited | 2 | known, not all drawable |
 | [`Buthe.v1.theorem_2_psi`](docs/nodes/Buthe-v1.md#theorem_2_psi) | cited | 2 | known, not all drawable |
-| [`CotangentSeries.v1.cot_series_zeta_values`](docs/nodes/CotangentSeries-v1.md#cot_series_zeta_values) | unjustified | 2 | none |
 | [`FKS2Numerics.v1.corollary_23_mid_range`](docs/nodes/FKS2Numerics-v1.md#corollary_23_mid_range) | computation | 2 | none |
 | [`FKS2Numerics.v1.table6_row2_floor`](docs/nodes/FKS2Numerics-v1.md#table6_row2_floor) | computation | 2 | none |
 | [`FKSNumerics.v1.psi_classical_above_e200000`](docs/nodes/FKSNumerics-v1.md#psi_classical_above_e200000) | cited | 2 | known, not all drawable |
@@ -878,9 +936,9 @@ rather than maintained.
 | [`ZetaZeroLocations.v1.located_0_1000`](docs/nodes/ZetaZeroLocations-v1.md#located_0_1000) | unjustified | 2 | none |
 | [`BKLNWNumerics.v1.table8_psi_bound`](docs/nodes/BKLNWNumerics-v1.md#table8_psi_bound) | computation | 1 | known, not all drawable |
 | [`Buthe.v1.theorem_2_theta`](docs/nodes/Buthe-v1.md#theorem_2_theta) | cited | 1 | known, not all drawable |
-| [`Buthe.v2.lemma_3_bounds`](docs/nodes/Buthe-v2.md#lemma_3_bounds) | unjustified | 1 | none |
+| [`Buthe.v2.lemma_3_bounds`](docs/nodes/Buthe-v2.md#lemma_3_bounds) | refuted | 1 | none |
 | [`Buthe.v2.lemma_3_positivity`](docs/nodes/Buthe-v2.md#lemma_3_positivity) | unjustified | 1 | none |
-| [`ButheNumerics.v1.lemma_3_constant_gt_at_10`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_gt_at_10) | computation | 1 | none |
+| [`ButheNumerics.v1.lemma_3_constant_gt_at_10`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_gt_at_10) | refuted | 1 | none |
 | [`ButheNumerics.v1.lemma_3_constant_nonpos`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_nonpos) | computation | 1 | none |
 | [`ButheNumerics.v1.li_minus_pi_below_1e7`](docs/nodes/ButheNumerics-v1.md#li_minus_pi_below_1e7) | computation | 1 | none |
 | [`ChebyshevNumerics.v1.psi_le_below_11723`](docs/nodes/ChebyshevNumerics-v1.md#psi_le_below_11723) | bridged | 1 | none |
@@ -935,6 +993,7 @@ rather than maintained.
 | [`Buthe2016.v1.theorem_2_theta`](docs/nodes/Buthe2016-v1.md#theorem_2_theta) | cited | 0 | none |
 | [`ButheNumerics.v1.eq_6_2`](docs/nodes/ButheNumerics-v1.md#eq_6_2) | computation | 0 | none |
 | [`ButheNumerics.v1.li_minus_riemann_pi_below_1e7`](docs/nodes/ButheNumerics-v1.md#li_minus_riemann_pi_below_1e7) | computation | 0 | none |
+| [`ChebyshevNumerics.v2.psi_le_all`](docs/nodes/ChebyshevNumerics-v2.md#psi_le_all) | bridged | 0 | none |
 | [`DudekPlatt.v1.largest_counterexample_on_rh`](docs/nodes/DudekPlatt-v1.md#largest_counterexample_on_rh) | cited | 0 | known, not all drawable |
 | [`DudekPlatt.v1.ramanujan_inequality`](docs/nodes/DudekPlatt-v1.md#ramanujan_inequality) | cited | 0 | traced |
 | [`FKS.v1.psi_bound_all_x`](docs/nodes/FKS-v1.md#psi_bound_all_x) | cited | 0 | known, not all drawable |

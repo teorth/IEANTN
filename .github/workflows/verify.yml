@@ -19,6 +19,16 @@ name: Verify a solution
 # still worth having -- the *solution*, which is the large machine-generated artefact nobody reads,
 # is confined to the unprivileged job.
 #
+# Several nodes may be dispatched together, and one approval then covers all of them. That is a
+# real widening of what an approval means -- the approver vouches for each listed branch's core
+# Lean, not one branch's -- so the `plan` job writes every node and branch into the run summary
+# *before* the gate, and the gate is a job of its own that does nothing else. Nothing still runs
+# before approval. Use it for branches reviewed together; a batch of unrelated work from different
+# contributors deserves separate approvals, and nothing here enforces that.
+#
+# Nodes are verified independently: `fail-fast: false`, and one node's failure neither cancels the
+# others nor withholds their receipts.
+#
 # The residual trust is otherwise Palomar's: that Comparator's Landlock sandbox contains the export
 # step, and that this workflow file is itself reviewed. A job running untrusted code can always lie
 # about its own verdict; what it cannot do here is obtain a token or forge a fingerprint.
@@ -27,10 +37,10 @@ on:
   workflow_dispatch:
     inputs:
       node:
-        description: "Node to verify, e.g. Lcm.v1"
+        description: "Node(s) to verify, e.g. Lcm.v1 -- comma-separated for several under one approval"
         required: true
       branch:
-        description: "Branch to record the receipt on"
+        description: "Branch(es) to record receipts on -- one per node, in the same order"
         required: true
 
 permissions:
@@ -41,26 +51,100 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Parse the inputs into a matrix, refusing anything not shaped like a node id or a branch name.
+  # Those shapes are load-bearing twice: a node id reaches `Solutions/$NODE` and a branch name
+  # reaches `git push refs/heads/$BRANCH` in the privileged job, and `check-receipts` binds a
+  # receipt to its run by looking for `(<node>)` among the run's job names -- so a node id
+  # containing a bracket could make that match say yes about the wrong node.
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      targets: ${{ steps.parse.outputs.targets }}
+    steps:
+      - name: Parse and validate
+        id: parse
+        env:
+          NODES: ${{ inputs.node }}
+          BRANCHES: ${{ inputs.branch }}
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib, re, sys
+
+          NODE = re.compile(r"^[A-Za-z0-9_]+\.v[0-9]+$")
+          BRANCH = re.compile(r"^[A-Za-z0-9._/-]+$")
+
+          def split(raw):
+              return [piece.strip() for piece in raw.replace(",", " ").split() if piece.strip()]
+
+          nodes, branches = split(os.environ["NODES"]), split(os.environ["BRANCHES"])
+          if not nodes:
+              sys.exit("no node given")
+          if len(branches) != len(nodes):
+              sys.exit(f"{len(nodes)} node(s) but {len(branches)} branch(es). A receipt is pushed "
+                       "per node, so give one branch per node, in the same order.")
+          if len(set(nodes)) != len(nodes):
+              sys.exit("the same node given twice")
+          for node in nodes:
+              if not NODE.match(node):
+                  sys.exit(f"`{node}` is not a node id (expected <Family>.<version>)")
+          for branch in branches:
+              if not BRANCH.match(branch) or ".." in branch:
+                  sys.exit(f"`{branch}` is not a plain branch name")
+
+          targets = [{"node": n, "branch": b} for n, b in zip(nodes, branches)]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+              handle.write("targets=" + json.dumps(targets) + "\n")
+
+          # Written before the gate, so whoever approves can see what they are approving.
+          lines = ["## Awaiting approval", "", "One approval releases every row below.", "",
+                   "| node | branch |", "|---|---|"]
+          lines += [f"| `{item['node']}` | `{item['branch']}` |" for item in targets]
+          pathlib.Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(
+              "\n".join(lines) + "\n", encoding="utf-8")
+          PY
+
+  # The gate is a job of its own and does nothing else. The environment belongs here rather than
+  # on the work because a job referencing a protected environment waits for its *own* approval:
+  # with the environment on a matrix job, the number of approvals would follow the number of
+  # nodes. One gate, one approval, however many nodes the run carries.
+  gate:
+    name: Approve this verification
+    needs: plan
+    environment: verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - run: echo "approved"
+
   comparator:
     # The node goes in the job name so that a receipt can be bound to the node it claims. The run
     # id in a receipt is checked against GitHub, but until this was here, *any* successful run of
     # this workflow validated *any* receipt: copying one node's run URL into another node's receipt
     # passed provenance. GitHub records the job name from the dispatch input, not from the receipt,
     # so `check-receipts` can now insist the two agree.
-    name: Run Comparator (${{ inputs.node }})
+    name: Run Comparator (${{ matrix.target.node }})
+    needs: [plan, gate]
+    strategy:
+      # One node's failure must not cancel the others, nor withhold their receipts.
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.plan.outputs.targets) }}
     runs-on: ubuntu-latest
-    # Gate the *run*, not the request. Configure `verification` with required reviewers so any
-    # contributor can ask for a verification and a maintainer approves it -- verification is
-    # hour-scale compute, so it should not be self-serve, but neither should it need write access
-    # to request.
-    environment: verification
+    # The gate is the `gate` job above, which this one needs, so nothing here runs until a
+    # maintainer approves. Configure `verification` with required reviewers so any contributor can
+    # ask for a verification and a maintainer approves it -- verification is hour-scale compute,
+    # so it should not be self-serve, but neither should it need write access to request.
     permissions:
       contents: read
     timeout-minutes: 180
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ inputs.branch }}
+          ref: ${{ matrix.target.branch }}
           persist-credentials: false
       - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596 # v1
         with:
@@ -68,14 +152,14 @@ jobs:
       - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version: "1.24.0"
-      # `inputs.node` reaches the shell through the environment, never through `${{ }}`
+      # The node reaches the shell through the environment, never through `${{ }}`
       # interpolation into the script body. Interpolation splices the value into the script before
       # any shell exists to quote it, so a dispatch input containing shell metacharacters runs as
       # code. That matters most in the `receipt` job below, which holds `contents: write` -- the
       # whole point of the privilege split is that no contributor input reaches a token.
       - name: Comparator
         env:
-          NODE: ${{ inputs.node }}
+          NODE: ${{ matrix.target.node }}
         run: |
           chmod +x scripts/verify-comparator.sh
           scripts/verify-comparator.sh "$NODE"
@@ -90,17 +174,26 @@ jobs:
           }, indent=2) + "\n", encoding="utf-8")
           PY
         env:
-          NODE: ${{ inputs.node }}
+          NODE: ${{ matrix.target.node }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: verdict
+          name: verdict-${{ matrix.target.node }}
           path: verdict.json
           if-no-files-found: error
 
   receipt:
-    name: Record the receipt (${{ inputs.node }})
-    needs: comparator
+    name: Record the receipt (${{ matrix.target.node }})
+    needs: [plan, gate, comparator]
+    # `needs` is satisfied per job, not per matrix leg, so without this one failing node would
+    # skip every receipt -- including the receipts of the nodes that passed. A leg whose Comparator
+    # failed has no verdict artifact and fails at the download below, which is the verdict it
+    # should get. A rejected gate cancels the run, and a cancelled run records nothing.
+    if: ${{ !cancelled() && needs.gate.result == 'success' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.plan.outputs.targets) }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -108,7 +201,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ inputs.branch }}
+          ref: ${{ matrix.target.branch }}
       - uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596 # v1
         with:
           build: true
@@ -120,7 +213,7 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          name: verdict
+          name: verdict-${{ matrix.target.node }}
       - name: Check the verdict is what it claims
         run: |
           python3 - <<'PY'
@@ -130,12 +223,12 @@ jobs:
               sys.exit(f"refusing to record: unexpected verdict {verdict}")
           PY
         env:
-          NODE: ${{ inputs.node }}
+          NODE: ${{ matrix.target.node }}
       # Fingerprints are recomputed here from the core library -- trusted repository content, not
       # the contributor's solution -- so this job never trusts the untrusted one about them.
       - name: Write the receipt
         env:
-          NODE: ${{ inputs.node }}
+          NODE: ${{ matrix.target.node }}
         run: |
           lake build ieantn_hash
           python3 scripts/ieantn.py record-receipt "$NODE" \
@@ -144,8 +237,8 @@ jobs:
             --stamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
       - name: Commit
         env:
-          NODE: ${{ inputs.node }}
-          BRANCH: ${{ inputs.branch }}
+          NODE: ${{ matrix.target.node }}
+          BRANCH: ${{ matrix.target.branch }}
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           # A receipt goes onto the branch being verified, and then through review like anything
