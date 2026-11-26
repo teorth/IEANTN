@@ -7,7 +7,7 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-93 node version(s), 203 conclusion(s).  2 state nothing yet.
+94 node version(s), 204 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
@@ -15,7 +15,7 @@ adds the environment detail.
 |---|---:|
 | `asserted` | 1 |
 | `bridged` | 5 |
-| `lean-comparator` | 68 |
+| `lean-comparator` | 69 |
 | `literature` | 62 |
 | `none-yet` | 35 |
 | `numerical` | 32 |
@@ -55,6 +55,7 @@ adds the environment detail.
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | refuted | 0 | - |
 | `ButheNumerics.v1` | stub | `eq_6_2` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_riemann_pi_below_1e7` | numerical | 0 | - |
+| `ButheNumerics.v2` | active | `lemma_3_constant_nonpos` | lean-comparator | 0 | - |
 | `CH2.v1` | active | `corollary_1_2_psi` | lean-comparator | 13 | - |
 | `CH2.v1` | active | `corollary_1_2_lambda_sum` | lean-comparator | 13 | - |
 | `CH2.v1` | active | `corollary_1_3_psi` | lean-comparator | 3 | - |

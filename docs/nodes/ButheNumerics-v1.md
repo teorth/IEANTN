@@ -63,6 +63,12 @@ noncomputable def lemma_3_constant_nonpos : Prop :=
 
 > A finite check rather than an argument, so `numerical`. Buthe's Lemma 3 concludes (li(x) - pi(x))/(sqrt x / log x) <= (x - theta(x))/sqrt x + (2C/log x)(1 + 5/log x) + A log x / sqrt x, where A = pi(a) - li(a) + (a - theta(a))/log a. Multiplying through by sqrt x / log x turns the last term into the constant A. With C = 1.95 from (1.6) the first three terms are exactly (1.9)'s 1.95 + 3.9/log x + 19.5/(log x)^2 -- note 3.9 = 2C and 19.5 = 10C, which is the tell that (1.9) is (1.6) pushed through Lemma 3. So (1.9) as printed, which carries no additive constant, holds only if this A is not positive. The paper chooses a = 1500 and does not display the evaluation. Three evaluations at a single point, so imports `none` and that is a real none. Unlike the bounds on [2, 10^19] this is small enough that a Lean proof could discharge it outright, which is worth recording as a target rather than a permanent assertion.
 
+**Justification `proved-v2`** — bridged
+  
+  Bridged from ButheNumerics.v2.lemma_3_constant_nonpos via `IEANTN/Bridges/ButheNumerics/V2ToV1.lean`.
+
+> The same statement, proved as ButheNumerics.v2. Not designated: that node is still none-yet, and designating this bridge would replace the numerical leaf with an unverified one. Designate it once the receipt exists.
+
 ### `li_minus_pi_below_1e7`
 
 **Theorem 2's equation (1.9), on the range the paper checks directly.**

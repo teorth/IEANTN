@@ -63,6 +63,7 @@ graph LR
   NButhe_2e_v2["<b>Buthe.v2</b><br/>2 claims<br/><i>weakest: refuted</i>"]
   NButhe2016_2e_v1["<b>Buthe2016.v1</b><br/>6 claims<br/><i>weakest: cited</i>"]
   NButheNumerics_2e_v1["<b>ButheNumerics.v1</b><br/>5 claims<br/><i>weakest: refuted</i>"]
+  NButheNumerics_2e_v2["<b>ButheNumerics.v2</b><br/>1 claim<br/><i>weakest: verified</i>"]
   NCH2_2e_v1["<b>CH2.v1</b><br/>4 claims<br/><i>weakest: verified</i>"]
   NCH2_2e_v2["<b>CH2.v2</b><br/>2 claims<br/><i>weakest: verified, stale</i>"]
   NCH2_2e_v3["<b>CH2.v3</b><br/>2 claims<br/><i>weakest: verified</i>"]
@@ -228,6 +229,7 @@ graph LR
   NZetaZeroLocations_2e_v8 -->|2| NZetaZeroLocations_2e_v11
   NZetaZeroLocations_2e_v9 -->|2| NZetaZeroLocations_2e_v11
   NZetaZeroes_2e_v1 -->|6| NZeroCountOpen_2e_v1
+  NButheNumerics_2e_v2 ==>|bridge| NButheNumerics_2e_v1
   NDudekPlatt_2e_v4 ==>|bridge| NDudekPlatt_2e_v1
   NDudekPlattNumerics_2e_v4 ==>|bridge| NDudekPlattNumerics_2e_v3
   NFKS_2e_v1 ==>|bridge| NFKS_2e_v2
@@ -272,7 +274,7 @@ graph LR
   class NBKLNWNumerics_2e_v1,NDudekPlattNumerics_2e_v1,NDudekPlattNumerics_2e_v2,NDudekPlattNumerics_2e_v3,NFKBJ_2e_v1,NLowZeroes_2e_v1,NOliveiraESilva2014_2e_v1,NPlatt2015_2e_v1,NPlatt2017_2e_v1,NRichstein2001_2e_v1,NZetaLogDerivValues_2e_v1 numerical;
   class NChebyshevNumerics_2e_v1,NChebyshevNumerics_2e_v2,NFKS_2e_v2 bridged;
   class NCH2_2e_v2,NDudekPlatt_2e_v2,NDudekPlatt_2e_v3,NFKS2_2e_v1,NFKS2_2e_v2,NLcm_2e_v1,NLcm_2e_v2,NPrimeInterval_2e_v1,NZeroFreeHeight_2e_v1 lean_2d_comparator_2d_stale;
-  class NCH2_2e_v1,NCH2_2e_v3,NChebyshev_2e_v1,NCotangentSeries_2e_v1,NDudekPlatt_2e_v4,NDudekPlattNumerics_2e_v4,NErdos392_2e_v1,NFKS_2e_v3,NFKS2NuAsymp_2e_v1,NFKS2PiFloor_2e_v1,NFKS2ThetaFloor_2e_v1,NGammaAsymptotics_2e_v2,NGoldbach_2e_v1,NRosserSchoenfeld_2e_v2,NRosserSchoenfeld1962_2e_v1,NRosserSchoenfeld1962_2e_v2,NRosserSchoenfeld1962_2e_v3,NRosserSchoenfeld1962_2e_v4,NRosserSchoenfeld1962_2e_v5,NRosserSchoenfeld1962_2e_v6,NRosserSchoenfeld1962_2e_v7,NRosserSchoenfeld1962_2e_v8,NZeroCountOpen_2e_v1,NZetaLogDeriv_2e_v1,NZetaZeroes_2e_v1 lean_2d_comparator;
+  class NButheNumerics_2e_v2,NCH2_2e_v1,NCH2_2e_v3,NChebyshev_2e_v1,NCotangentSeries_2e_v1,NDudekPlatt_2e_v4,NDudekPlattNumerics_2e_v4,NErdos392_2e_v1,NFKS_2e_v3,NFKS2NuAsymp_2e_v1,NFKS2PiFloor_2e_v1,NFKS2ThetaFloor_2e_v1,NGammaAsymptotics_2e_v2,NGoldbach_2e_v1,NRosserSchoenfeld_2e_v2,NRosserSchoenfeld1962_2e_v1,NRosserSchoenfeld1962_2e_v2,NRosserSchoenfeld1962_2e_v3,NRosserSchoenfeld1962_2e_v4,NRosserSchoenfeld1962_2e_v5,NRosserSchoenfeld1962_2e_v6,NRosserSchoenfeld1962_2e_v7,NRosserSchoenfeld1962_2e_v8,NZeroCountOpen_2e_v1,NZetaLogDeriv_2e_v1,NZetaZeroes_2e_v1 lean_2d_comparator;
   click NBKLNW_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v1.md" _blank
   click NBKLNW_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNW-v2.md" _blank
   click NBKLNWNumerics_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/BKLNWNumerics-v1.md" _blank
@@ -280,6 +282,7 @@ graph LR
   click NButhe_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe-v2.md" _blank
   click NButhe2016_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/Buthe2016-v1.md" _blank
   click NButheNumerics_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ButheNumerics-v1.md" _blank
+  click NButheNumerics_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/ButheNumerics-v2.md" _blank
   click NCH2_2e_v1 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v1.md" _blank
   click NCH2_2e_v2 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v2.md" _blank
   click NCH2_2e_v3 href "https://github.com/teorth/IEANTN/blob/main/docs/nodes/CH2-v3.md" _blank
@@ -472,6 +475,8 @@ A line is one claim, indented under whatever assumes it.
 - [`ButheNumerics.v1.eq_6_2`](docs/nodes/ButheNumerics-v1.md#eq_6_2) — computation
 
 - [`ButheNumerics.v1.li_minus_riemann_pi_below_1e7`](docs/nodes/ButheNumerics-v1.md#li_minus_riemann_pi_below_1e7) — computation
+
+- [`ButheNumerics.v2.lemma_3_constant_nonpos`](docs/nodes/ButheNumerics-v2.md#lemma_3_constant_nonpos) — verified
 
 - [`CH2.v1.corollary_1_3_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_3_lambda_sum) — verified
   - [`CH2.v1.corollary_1_2_lambda_sum`](docs/nodes/CH2-v1.md#corollary_1_2_lambda_sum) — verified
