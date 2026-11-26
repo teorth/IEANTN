@@ -6,7 +6,7 @@ node:
   family: FKS2NuAsymp
   version: v1
   kind: computation
-  status: awaiting-verification
+  status: active
 
 project:
   name: Corrected FKS2 Corollary 14 multiplier bound and refutation of the printed bound
@@ -46,7 +46,10 @@ conclusions:
       square-root enclosures, Mathlib's log 2 bounds, and a direct dominance argument showing
       f(2^44) <= f(exp 30). Remains none-yet until the verification workflow writes a
       Comparator/NanoDa receipt.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/45880654151'
+  designated: comparator
 - id: nu_asymp_e30_gt
   issue: 273
   declaration: FKS2NuAsymp.v1.nu_asymp_e30_gt
@@ -60,7 +63,10 @@ conclusions:
       Proved in Solutions/FKS2NuAsymp.v1 by bounding the positive partial sum of f(exp 30)
       over k = 3..8 from below and combining with rational lower bounds on exp and sqrt.
       Remains none-yet until the verification workflow writes a Comparator/NanoDa receipt.
-  designated: unjustified
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/45880654151'
+  designated: comparator
 
 sources:
 - title: Sharper bounds for the error term in the prime number theorem
