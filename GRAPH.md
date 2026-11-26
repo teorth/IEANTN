@@ -455,7 +455,7 @@ A line is one claim, indented under whatever assumes it.
   - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation — *sources known, not all drawable*
   - [`Buthe.v1.theorem_2_theta`](docs/nodes/Buthe-v1.md#theorem_2_theta) — cited — *sources known, not all drawable*
     - [`FKBJ.v1.rh_up_to`](docs/nodes/FKBJ-v1.md#rh_up_to) — computation *(above)* — *sources known, not all drawable*
-  - [`ButheNumerics.v1.lemma_3_constant_nonpos`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_nonpos) — computation
+  - [`ButheNumerics.v1.lemma_3_constant_nonpos`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_nonpos) — bridged
   - [`ButheNumerics.v1.li_minus_pi_below_1e7`](docs/nodes/ButheNumerics-v1.md#li_minus_pi_below_1e7) — computation
   - [`Buthe.v2.lemma_3_bounds`](docs/nodes/Buthe-v2.md#lemma_3_bounds) — refuted
 
@@ -964,7 +964,7 @@ rather than maintained.
 | [`Buthe.v2.lemma_3_bounds`](docs/nodes/Buthe-v2.md#lemma_3_bounds) | refuted | 1 | none |
 | [`Buthe.v2.lemma_3_positivity`](docs/nodes/Buthe-v2.md#lemma_3_positivity) | unjustified | 1 | none |
 | [`ButheNumerics.v1.lemma_3_constant_gt_at_10`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_gt_at_10) | refuted | 1 | none |
-| [`ButheNumerics.v1.lemma_3_constant_nonpos`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_nonpos) | computation | 1 | none |
+| [`ButheNumerics.v1.lemma_3_constant_nonpos`](docs/nodes/ButheNumerics-v1.md#lemma_3_constant_nonpos) | bridged | 1 | none |
 | [`ButheNumerics.v1.li_minus_pi_below_1e7`](docs/nodes/ButheNumerics-v1.md#li_minus_pi_below_1e7) | computation | 1 | none |
 | [`ChebyshevNumerics.v1.psi_le_below_11723`](docs/nodes/ChebyshevNumerics-v1.md#psi_le_below_11723) | bridged | 1 | none |
 | [`DudekPlattNumerics.v1.pi_two_sided_paper`](docs/nodes/DudekPlattNumerics-v1.md#pi_two_sided_paper) | computation | 1 | known, not all drawable |

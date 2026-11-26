@@ -14,11 +14,11 @@ adds the environment detail.
 | Designated justification | Conclusions |
 |---|---:|
 | `asserted` | 1 |
-| `bridged` | 5 |
+| `bridged` | 6 |
 | `lean-comparator` | 69 |
 | `literature` | 62 |
 | `none-yet` | 35 |
-| `numerical` | 32 |
+| `numerical` | 31 |
 
 ## Nodes
 
@@ -50,7 +50,7 @@ adds the environment detail.
 | `Buthe2016.v1` | stub | `theorem_2_li_minus_pi` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_1_table1` | numerical | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_1_table2` | numerical | 0 | - |
-| `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
+| `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | bridged | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | refuted | 0 | - |
 | `ButheNumerics.v1` | stub | `eq_6_2` | numerical | 0 | - |
