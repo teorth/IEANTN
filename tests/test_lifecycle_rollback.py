@@ -57,7 +57,14 @@ class LifecycleRollbackTests(FixtureRepo):
         source_root = pathlib.Path(ieantn.__file__).resolve().parent.parent
         shutil.copyfile(source_root / ".gitignore", self.root / ".gitignore")
         (self.root / ".ieantn-edit.lock").write_text("abandoned lock", encoding="utf-8")
-        git = ["git", "-c", f"core.excludesFile={os.devnull}", "-C", str(self.root)]
+        # An EMPTY FILE, not `os.devnull`. The point is only to stop a developer's global
+        # excludes file from deciding this test's outcome, and on Windows `os.devnull` is `nul`,
+        # which Git refuses outright -- `fatal: cannot use nul as an exclude file`, exit 128. CI
+        # is Linux so it passed there and failed on the maintainer's machine, which is the worst
+        # way round for a check nobody can reproduce where it breaks.
+        empty_excludes = self.root / ".empty-excludes"
+        empty_excludes.write_text("", encoding="utf-8")
+        git = ["git", "-c", f"core.excludesFile={empty_excludes}", "-C", str(self.root)]
         subprocess.run(git + ["init", "--quiet", "--template="], check=True,
                        capture_output=True, text=True)
         subprocess.run(git + ["add", "--all"], check=True, capture_output=True, text=True)
