@@ -48,7 +48,7 @@ conclusions:
   progress:
     solution: Solutions/ZetaGoodHeights.v1/
     state: in-progress
-    remaining_holes: 1
+    remaining_holes: 0
 - id: lemma_12_2
   declaration: ZetaGoodHeights.v1.lemma_12_2
   challenge: ZetaGoodHeights.v1.challenge_lemma_12_2
@@ -78,7 +78,7 @@ conclusions:
   progress:
     solution: Solutions/ZetaGoodHeights.v1/
     state: in-progress
-    remaining_holes: 1
+    remaining_holes: 0
 sources:
 - title: "Multiplicative Number Theory I: Classical Theory"
   authors: ["Hugh L. Montgomery", "Robert C. Vaughan"]

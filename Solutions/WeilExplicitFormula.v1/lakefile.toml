@@ -15,4 +15,4 @@ roots = ["Solution"]
 [[require]]
 name = "WeilExplicitFormula"
 git = "https://github.com/Garald1/WeilExplicitFormula.git"
-rev = "bbea575d49aadf033a4d8c312cc4b68bb36df9df"
+rev = "6cecb1c3cb4e1e0da637ccb9fee28d9033fdcfe1"

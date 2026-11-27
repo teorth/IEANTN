@@ -5,7 +5,7 @@ Authors: Harald Andres Helfgott
 -/
 import IEANTN.Nodes.ZetaGoodHeights.v1.Conclusions
 import IEANTN.Nodes.ZetaLogDeriv.v1.Conclusions
-import WeilExplicitFormula.NumberTheory.WeilExplicitFormula.ZeroCount
+import WeilExplicitFormula.NumberTheory.WeilExplicitFormula.Main
 
 /-!
 # Solution: `ZetaGoodHeights.v1`
@@ -21,9 +21,9 @@ under `progress`, and leave the justification alone -- an incomplete solution ju
 -/
 
 theorem ZetaGoodHeights.v1.challenge_theorem_10_13 : ZetaGoodHeights.v1.theorem_10_13 :=
-  WeilExplicitFormula.exists_zetaZeroesSum_le
+  WeilExplicitFormula.theorem_10_13
 
 theorem ZetaGoodHeights.v1.challenge_lemma_12_2
     (zetalogderiv_v1_logderiv_functional_equation : ZetaLogDeriv.v1.logDeriv_functional_equation) :
     ZetaGoodHeights.v1.lemma_12_2 := by
-  sorry
+  exact WeilExplicitFormula.lemma_12_2
