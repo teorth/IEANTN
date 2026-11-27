@@ -1,0 +1,125 @@
+# Node metadata for `Saouter1998.v1`.  See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: Saouter1998.v1
+  family: Saouter1998
+  version: v1
+  kind: paper
+  status: stub
+
+project:
+  name: "Checking the odd Goldbach conjecture up to 10^20"
+  description: >-
+    Every odd integer between 7 and 10^20 is a sum of three primes, from a ladder of about
+    2.5 x 10^8 primes with steps shorter than 4 x 10^11 and an even Goldbach verification to that
+    height. The ladder primes are proved prime by a Brillhart-Lehmer-Selfridge test the paper
+    specialises to numbers 2^22 R + 1 with base 5.
+  authors: ["Steve Hubbard"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Steve Hubbard"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11P32", "11Y11"]
+
+conclusions:
+  - id: prime_ladder
+    declaration: Saouter1998.v1.prime_ladder
+    challenge: Saouter1998.v1.challenge_prime_ladder
+    imports: []
+    imports_status: traced
+    justifications:
+      - id: saouter-computation
+        kind: numerical
+        source: saouter
+        locator: "page 865, the ladder formula, Table 1, and the last prime"
+        note: >-
+          A computation, not a proof: the paper reports building the ladder and certifying each rung
+          with its Theorem 2. It rests on that program and on Theorem 2, a Brillhart-Lehmer-Selfridge
+          criterion, neither of which is a node. The ladder formula is printed on page 865 as
+          5 * 2^23 * k + 1258213, one digit short of the intended 12582913; the printed form is never
+          1 mod 2^22, as Theorem 2 requires, and its value at k = 3 is 19 * 6688807. The first and
+          last rungs stated here, 138412033 and 100000000209366024193, are the primes the paper
+          names and fit the corrected formula at k = 3 and k = 2384185796007. Lean proofs of
+          Theorem 2, of the primality of both endpoints and of the first 100 rungs of Table 1 exist
+          in the Palomar entry PALOMAR-2026-11-02-000012; the full ladder is not rechecked.
+    designated: saouter-computation
+  - id: odd_up_to_1e20
+    declaration: Saouter1998.v1.odd_up_to_1e20
+    challenge: Saouter1998.v1.challenge_odd_up_to_1e20
+    imports:
+      - node: Saouter1998.v1
+        conclusion: prime_ladder
+      - node: Richstein2001.v1
+        conclusion: even_up_to_4e14
+    imports_status: identified
+    justifications:
+      - id: saouter-paper
+        kind: literature
+        source: saouter
+        locator: "the main result, stated in the title and abstract"
+        note: >-
+          The paper derives the range from the ladder and Sinisalo's even verification to
+          4 x 10^11, Math. Comp. 61 (1993), which is not a node. Richstein2001.v1 is imported in its
+          place: its range contains Sinisalo's, so the implication is the paper's with a stronger
+          even input, and the ladder's step bound is still Sinisalo's 4 x 10^11. Odd n up to
+          4 x 10^14 + 3 follow from the even input by subtracting 3, as in
+          Goldbach.v1.even_implies_odd; above that, n minus the nearest rung below it, or the rung
+          before that when the difference is 2, is even and between 4 and 4 x 10^11.
+      - id: proved-v2
+        kind: bridged
+        from: Saouter1998.v2.odd_up_to_1e20
+        bridge: IEANTN/Bridges/Saouter1998/V2ToV1.lean
+        note: >-
+          The same statement with the same imports, proved as Saouter1998.v2. Not designated: that
+          node is still none-yet, and designating this bridge would replace the literature
+          citation with an unverified proof. Designate it once the receipt exists.
+    designated: saouter-paper
+
+sources:
+  - title: "Checking the odd Goldbach conjecture up to 10^20"
+    authors: ["Yannick Saouter"]
+    type: "paper"
+    id: "https://doi.org/10.1090/S0025-5718-98-00928-4"
+    location: "Math. Comp. 67 (1998), no. 222, 863-866"
+    relationship: formalizes
+    note: >-
+      Read from page images of the print for the Palomar entry PALOMAR-2026-11-02-000012, whose
+      statements were audited against them. Title, author, journal and pages checked against the
+      AMS page for the article.
+
+related_formalizations:
+  - id: "https://palomar-registry.org/entry.html?id=PALOMAR-2026-11-02-000012&version=1"
+    relationship: other
+    note: >-
+      The Palomar entry for this paper, by the same maintainer: Lemma 1, Theorems 1 and 2, Lemma 2,
+      the printed-constant repair, the first 100 rungs of Table 1, and a conditional odd range to
+      10^20 from the 4 x 10^18 even verification by a 25-rung ladder of Helfgott and Platt's kind.
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude Opus 5.5 (claude-opus-5-5), Anthropic"]
+      framework: "Claude Cowork"
+      role: >-
+        Transcribed the statements into the network's vocabulary and wrote this metadata under the
+        direction of the maintainer, from the audited Palomar entry for the same paper.
+
+review:
+  status: self-assessed
+  reviewers: ["Steve Hubbard"]
+  notes: >-
+    Statements taken from the Palomar entry, whose Challenge was audited against page images of the
+    print. The step bound's strictness and the endpoints follow that audit.
+
+limitations:
+  - >-
+    The ladder is recorded on citation. About 2.5 x 10^8 primes cannot be rechecked here; only its
+    endpoints and first 100 rungs have Lean proofs, in the Palomar entry.
+  - >-
+    The paper's even input, Sinisalo's verification to 4 x 10^11, is replaced by Richstein2001.v1,
+    which contains it. A Sinisalo1993 node would let the import match the paper exactly.

@@ -1,0 +1,13 @@
+{
+  "challenge_module": "IEANTN.Nodes.Saouter1998.v2.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "Saouter1998.v2.challenge_odd_up_to_1e20"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
