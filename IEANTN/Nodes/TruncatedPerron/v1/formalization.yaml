@@ -9,7 +9,7 @@ node:
   family: TruncatedPerron
   version: v1
   kind: standard
-  status: awaiting-solution
+  status: awaiting-verification
 
 project:
   name: "Truncated Perron formula"
@@ -173,6 +173,10 @@ limitations:
   perron_general leaves the error as an explicit sum over n. Montgomery-Vaughan's simplified form
   (Corollary 5.3) is a consequence and is not stated.
 - >-
-  perron_psi has an existential constant. An explicit-constant version is not claimed.
+  perron_psi has an existential constant. An explicit-constant version is not claimed. The papers
+  in this network that cite the truncated formula (FKS Theorems 3.1/3.2, Platt-Trudgian 2021) need
+  explicit constants, so this node does not yet discharge their citations; an explicit-constant
+  version is the follow-up that would. The solution's proof uses C = 400, but no statement here
+  records it.
 - >-
   No novelty is claimed. This is textbook mathematics; only the formulation is the node's.
