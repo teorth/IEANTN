@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | standard |
-| Status | awaiting-solution |
+| Status | active |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -42,14 +42,20 @@ def cot_series_zeta_values : Prop :=
 | Lean name | `CotangentSeries.v1.cot_series_zeta_values` |
 | Challenge | `CotangentSeries.v1.challenge_cot_series_zeta_values` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CotangentSeries/v1/Conclusions.lean#L60) |
-| Evidence | unjustified (`none-yet`) |
+| Solution | [`Solutions/CotangentSeries.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/CotangentSeries.v1) |
+| Receipt | [`CotangentSeries.v1.cot_series_zeta_values.json`](https://github.com/teorth/IEANTN/blob/main/receipts/CotangentSeries.v1.cot_series_zeta_values.json) |
+| Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
 
-**Justification `unjustified`** — **designated** — none-yet
+**Justification `unjustified`** — none-yet
 
-> Imports `none`, and that is a real none: z is universally quantified with both conditions hypotheses, so a Lean proof is the whole justification. THE ROUTE. Mathlib's cot_series_rep gives Euler's partial fractions; expanding each term 1/(z-n) + 1/(z+n) = -2z/(n^2 - z^2) as a geometric series in (z/n)^2 and interchanging the two summations produces the coefficients 2 zeta(2n). The interchange is the content -- the double family is absolutely summable for \|z\| < 1, and that is what has to be shown. An alternative route runs through the Bernoulli generating function, which Mathlib also has, together with riemannZeta_two_mul_nat to convert Bernoulli numbers into zeta values; which is shorter has not been assessed. CHECKED NUMERICALLY BEFORE BEING STATED, to 30 digits at four points -- two complex, one negative real, one positive real -- with the series truncated at 200 terms. A sign or index error in an expansion of this shape is invisible to the type-checker and would be fatal for every consumer, so agreement of the statement with the mathematics was established independently of any Lean proof.
+> Imports `none`, and that is a real none: z is universally quantified with both conditions hypotheses, so a Lean proof is the whole justification. THE ROUTE. Mathlib's cot_series_rep gives Euler's partial fractions; expanding each term 1/(z-n) + 1/(z+n) = -2z/(n^2 - z^2) as a geometric series in (z/n)^2 and interchanging the two summations produces the coefficients 2 zeta(2n). The interchange is the content -- the double family is absolutely summable for \|z\| < 1, and that is what has to be shown. An alternative route runs through the Bernoulli generating function, which Mathlib also has, together with riemannZeta_two_mul_nat to convert Bernoulli numbers into zeta values; which is shorter has not been assessed. THE ROUTE HAS BEEN TAKEN. Solutions/CotangentSeries.v1 proves this by exactly the argument above -- cot_series_rep', then hasSum_geometric_of_norm_lt_one on each term, then Summable.of_nonneg_of_le for the interchange that the paragraph above calls the content. It has no sorry and no native_decide and rests on the core alone. What is absent is a receipt, and nothing stands between the proof and one: the kind stays none-yet rather than lean-noncompliant precisely because there is no obstruction to name, and `status: awaiting-verification` above carries the fact that the solution is already here. See issue 257. CHECKED NUMERICALLY BEFORE BEING STATED, to 30 digits at four points -- two complex, one negative real, one positive real -- with the series truncated at 200 terms. A sign or index error in an expansion of this shape is invisible to the type-checker and would be fatal for every consumer, so agreement of the statement with the mathematics was established independently of any Lean proof.
+
+**Justification `comparator`** — **designated** — lean-comparator
+
+> Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/44989379823
 
 ## Limitations
 

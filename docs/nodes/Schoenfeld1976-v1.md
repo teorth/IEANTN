@@ -35,7 +35,7 @@ def psi_theorem_11 : Prop :=
 |---|---|
 | Lean name | `Schoenfeld1976.v1.psi_theorem_11` |
 | Challenge | `Schoenfeld1976.v1.challenge_psi_theorem_11` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L43) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L44) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | nothing recorded |
@@ -59,7 +59,7 @@ def theta_theorem_11 : Prop :=
 |---|---|
 | Lean name | `Schoenfeld1976.v1.theta_theorem_11` |
 | Challenge | `Schoenfeld1976.v1.challenge_theta_theorem_11` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L48) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L49) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | nothing recorded |
@@ -75,7 +75,14 @@ def theta_theorem_11 : Prop :=
 
 The printed display reads `θ(x) − x ≤ ψ(x) − x ε₀(x) if 1 ≤ x`: a relation is missing, and read
 literally it is false. The proof on printed p. 349 shows `ψ(x) < x + x ε₀(x)` for `1 ≤ x ≤ 10⁸`
-and then says this completes "(7.4), (7.2) and (7.3)"; this is the form stated here.
+and then says this completes "(7.4), (7.2) and (7.3)".
+
+**Schoenfeld corrected it in print**, and the corrigendum gives exactly the form stated here:
+Math. Comp. **30** (1976), no. 136, p. 900,
+[doi:10.1090/S0025-5718-1976-0457375-1](https://doi.org/10.1090/S0025-5718-1976-0457375-1) —
+"On p. 342, Theorem 11, Eq. (7.4) should read: `θ(x) − x ⩽ ψ(x) − x < xε₀(x)` if `1 ⩽ x`." So this
+conclusion rests on a published correction rather than on an inference from the proof, which is a
+better footing than the one it was first given. See issue #271.
 
 ```lean
 def psi_upper_theorem_11 : Prop :=
@@ -87,13 +94,13 @@ def psi_upper_theorem_11 : Prop :=
 |---|---|
 | Lean name | `Schoenfeld1976.v1.psi_upper_theorem_11` |
 | Challenge | `Schoenfeld1976.v1.challenge_psi_upper_theorem_11` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L57) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L65) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | nothing recorded |
 | Assumed by | nothing yet |
 
-**Justification `schoenfeld-paper`** — **designated** — literature, Theorem 11, (7.4), printed p. 342; the form proved on p. 349
+**Justification `schoenfeld-paper`** — **designated** — literature, Theorem 11, (7.4), printed p. 342, as corrected by the corrigendum, Math. Comp. 30 (1976), no. 136, p. 900 (doi:10.1090/S0025-5718-1976-0457375-1); the same form is proved on p. 349
 
 > Asserted on the authority of the paper. Schoenfeld's proof rests on Rosser-Schoenfeld (1975) (their zero-free region with R = 9.645908801 and their table of psi bounds), on the Riemann hypothesis up to the height A = 1894438.51224... of that paper (here the premise), and on his own finite computations of theta and psi. Two of these inputs are nodes: the zero-free region is RosserSchoenfeld.v1.zero_free_region, and the row b = 23 of the psi table is RosserSchoenfeld.v2.psi_error_b23. Neither is imported, deliberately: imports become hypotheses of the challenge, and the conclusion as stated does not need them (the standalone Lean proof described below assumes neither). Transcribed from the scan and rechecked on 2026-11-07. A standalone Lean 4.35 proof exists (RSBounds, Schoenfeld1976Final): it assumes only RiemannHypothesisUpTo's counterpart at the same height, but replaces the paper's finite computations by a kernel-checked walk below 1.35e6 and by the certification \|psi(x) - x\| <= (4/5) sqrt(x) for 1500 <= x <= 1e10. It is not integrated here and has no IEANTN receipt.
 
@@ -111,7 +118,7 @@ def psi_log_5_5a : Prop :=
 |---|---|
 | Lean name | `Schoenfeld1976.v1.psi_log_5_5a` |
 | Challenge | `Schoenfeld1976.v1.challenge_psi_log_5_5a` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L62) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L70) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | nothing recorded |
@@ -135,7 +142,7 @@ def psi_log_lower_5_5b : Prop :=
 |---|---|
 | Lean name | `Schoenfeld1976.v1.psi_log_lower_5_5b` |
 | Challenge | `Schoenfeld1976.v1.challenge_psi_log_lower_5_5b` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L67) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L75) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | nothing recorded |
@@ -159,7 +166,7 @@ def theta_log_5_6 : Prop :=
 |---|---|
 | Lean name | `Schoenfeld1976.v1.theta_log_5_6` |
 | Challenge | `Schoenfeld1976.v1.challenge_theta_log_5_6` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L72) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L80) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | nothing recorded |
@@ -183,7 +190,7 @@ def theta_log_upper_5_6a : Prop :=
 |---|---|
 | Lean name | `Schoenfeld1976.v1.theta_log_upper_5_6a` |
 | Challenge | `Schoenfeld1976.v1.challenge_theta_log_upper_5_6a` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L77) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L85) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | nothing recorded |
@@ -209,7 +216,7 @@ def psi_theta_log_5_6b : Prop :=
 |---|---|
 | Lean name | `Schoenfeld1976.v1.psi_theta_log_5_6b` |
 | Challenge | `Schoenfeld1976.v1.challenge_psi_theta_log_5_6b` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L83) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Schoenfeld1976/v1/Conclusions.lean#L91) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | nothing recorded |

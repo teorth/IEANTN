@@ -3132,3 +3132,95 @@ class TestReceiptJobLookup(TestReceiptProvenance):
         with unittest.mock.patch.object(ieantn.subprocess, "run", side_effect=response), contextlib.redirect_stdout(printed):
             self.assertFalse(ieantn.check_receipts(online=True))
         self.assertIn("API rate limit exceeded", printed.getvalue())
+
+
+#: A conclusion refuted the way issues 260 and 268 record it: faithful to a published lemma that
+#: is false as printed, with the arithmetic that shows it and the issue tracking the rerouting.
+REFUTED = """
+- id: main
+  declaration: {node}.main
+  challenge: {node}.challenge_main
+  imports: []
+  justifications:
+    - id: paper
+      kind: literature
+  designated: paper
+  refuted:
+    issue: 260
+    counterexample: >-
+      The left side evaluates to -0.1449, so the stated 0.1 < ... is false.
+"""
+
+
+def refuted_with(block: str) -> str:
+    """`REFUTED` with its `refuted:` body replaced, to vary one field at a time."""
+    head = REFUTED.split("  refuted:")[0]
+    return head + "  refuted:\n" + textwrap.indent(textwrap.dedent(block).strip("\n"), "    ")
+
+
+class TestRefutedConclusions(FixtureRepo):
+    """A published claim that is false as stated stays in the network, and says why.
+
+    Issues 260 and 268. The record is the point -- a node's claim is about the literature, and a
+    lemma that is false as printed is a fact about the literature -- so nothing here forces such a
+    conclusion out. What `check` enforces is that the refutation is checkable: a counterexample
+    somebody can verify, and an issue where the rerouting is tracked. A refutation without those
+    is an accusation rather than a record.
+    """
+
+    def test_a_refutation_with_a_counterexample_and_an_issue_passes(self) -> None:
+        self.write_node("A.v1", REFUTED)
+        self.generate()
+        self.assertTrue(ieantn.check_graph())
+
+    def test_a_refutation_without_a_counterexample_fails(self) -> None:
+        self.write_node("A.v1", refuted_with("issue: 260"))
+        self.generate()
+        self.assertFalse(ieantn.check_graph())
+
+    def test_a_refutation_with_an_empty_counterexample_fails(self) -> None:
+        """Present-but-blank is the shape a template leaves behind."""
+        self.write_node("A.v1", refuted_with("issue: 260\ncounterexample: '   '"))
+        self.generate()
+        self.assertFalse(ieantn.check_graph())
+
+    def test_a_refutation_without_an_issue_fails(self) -> None:
+        self.write_node("A.v1", refuted_with("counterexample: it evaluates to -0.1449"))
+        self.generate()
+        self.assertFalse(ieantn.check_graph())
+
+    def test_an_unknown_key_fails(self) -> None:
+        """Closed vocabulary, so a misspelled key cannot silently carry the refutation."""
+        self.write_node("A.v1", refuted_with(
+            "issue: 260\ncounterexample: it evaluates to -0.1449\ncounterexmaple: typo"))
+        self.generate()
+        self.assertFalse(ieantn.check_graph())
+
+    def test_a_corrected_version_that_does_not_exist_fails(self) -> None:
+        self.write_node("A.v1", refuted_with(
+            "issue: 260\ncounterexample: it evaluates to -0.1449\ncorrected: B.v9.main"))
+        self.generate()
+        self.assertFalse(ieantn.check_graph())
+
+    def test_a_corrected_version_that_exists_passes(self) -> None:
+        self.write_node("A.v1", refuted_with(
+            "issue: 260\ncounterexample: it evaluates to -0.1449\ncorrected: B.v1.main"))
+        self.write_node("B.v1", LITERATURE)
+        self.generate()
+        self.assertTrue(ieantn.check_graph())
+
+    def test_being_forwarded_to_another_refuted_conclusion_fails(self) -> None:
+        """A forwarding address has to be somewhere a consumer could actually go."""
+        self.write_node("A.v1", refuted_with(
+            "issue: 260\ncounterexample: it evaluates to -0.1449\ncorrected: B.v1.main"))
+        self.write_node("B.v1", REFUTED)
+        self.generate()
+        self.assertFalse(ieantn.check_graph())
+
+    def test_the_refutation_is_what_the_views_report(self) -> None:
+        """Not the `literature` justification it still designates: a view that said `cited` for a
+        statement known to be false would be the one thing these files exist to prevent."""
+        self.write_node("A.v1", REFUTED)
+        conclusion = ieantn.conclusions_of(ieantn.load_nodes()["A.v1"])[0]
+        self.assertEqual(ieantn.designated_kind(conclusion), "literature")
+        self.assertEqual(ieantn.display_kind("A.v1.main", conclusion), ieantn.REFUTED_KIND)

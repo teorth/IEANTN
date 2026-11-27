@@ -243,6 +243,26 @@ All holes closed and you believe Comparator will accept it.
    verification is hour-scale compute, so it is not self-serve, but neither should asking for one
    require write access. Approving means vouching for the branch's *core* Lean, not its solution —
    the receipt job runs `lake build` on it while holding a write token.
+
+   **Several nodes can go in one run, under one approval.** `verify.yml` takes a list, so a family
+   reviewed together need not cost one approval each:
+
+   ```bash
+   gh workflow run verify.yml \
+     -f node="Family.v3,Family.v4,Family.v5" \
+     -f branch="branch-for-v3,branch-for-v4,branch-for-v5"
+   ```
+
+   One branch per node, in the same order; the `plan` job refuses a mismatch, a repeated node, or
+   anything not shaped like a node id or a plain branch name. Nodes are verified independently, so
+   one failure neither cancels the others nor withholds their receipts, and the run's job names
+   record which nodes it covered — which is what binds each receipt to it.
+
+   Be deliberate about using it. One approval now vouches for *every* listed branch's core Lean,
+   and the receipt job runs `lake build` on each while holding a write token. The `plan` job writes
+   the full list into the run summary before the gate so that what is being approved is visible,
+   but nothing enforces that the branches belong together. A family from one contributor, reviewed
+   together, is the case this is for; five unrelated branches from five strangers is not.
 4. **Wait.** Comparator, then the receipt job.
 5. **Pull.** The receipt lands on *your branch* — see below — so your local copy is now behind.
 6. **Merge**, once the CI run triggered by the receipt commit is green.
@@ -440,6 +460,13 @@ make no claims of record, so they are not fingerprinted and never affect a recei
 
 A paper the network does not cover yet, a pipeline abstracted from several, a piece of folklore, or
 a large computation.
+
+**First, check it is in scope** — see [Scope](README.md#scope). Two conditions: the claim is tied to
+an accepted result in the literature, published or preprint, and it is plausibly connected to the
+network, meaning it imports something already here or something already here could import it.
+Anywhere in explicit analytic number theory is welcome on those terms. If you are unsure, open an
+issue describing the result and the connection; that is cheaper than a node that has to be
+withdrawn.
 
 **Do:**
 

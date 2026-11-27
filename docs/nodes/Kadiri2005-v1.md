@@ -14,8 +14,8 @@
 
 ## The source
 
-- **Une region explicite sans zeros pour la fonction zeta de Riemann** — Habiba Kadiri. Acta Arith. 117 (2005), no. 4, 303-339  
-  _The published version, Acta Arith. 117.4 (2005), 303-339, is held and read; so is the arXiv preprint math/0401238, which gives the weaker 5.70176. They are not interchangeable -- see the conclusion's note._
+- **Une region explicite sans zeros pour la fonction zeta de Riemann** — Habiba Kadiri. Acta Arith. 117 (2005), no. 4, 303-339, Theoreme 1.1 (Principal), p. 305  
+  _The published version, Acta Arith. 117.4 (2005), 303-339, is held and read; so is the arXiv preprint https://arxiv.org/abs/math/0401238, which gives the weaker 5.70176. They are not interchangeable -- see the conclusion's note, and this id now names the published version for that reason. The DOI was resolved through Crossref before being recorded: it returns this title, journal, volume, issue and page range. The paper itself does not print it._
 
 ## Conclusions
 
@@ -37,13 +37,13 @@ def zero_free_region : Prop :=
 |---|---|
 | Lean name | `Kadiri2005.v1.zero_free_region` |
 | Challenge | `Kadiri2005.v1.challenge_zero_free_region` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Kadiri2005/v1/Conclusions.lean#L39) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Kadiri2005/v1/Conclusions.lean#L43) |
 | Evidence | cited (`literature`) |
 | Sources traced | identified |
 | Assumes | [`RosserSchoenfeld.v1.zero_free_region_classical`](RosserSchoenfeld-v1.md#zero_free_region_classical), [`Wedeniwski.v1.rh_up_to`](Wedeniwski-v1.md#rh_up_to) |
 | Assumed by | [`MT.v1.zero_free_region`](MT-v1.md#zero_free_region), [`MT.v1.zero_free_region_sharpened`](MT-v1.md#zero_free_region_sharpened) |
 
-**Justification `kadiri-paper`** — **designated** — literature, the paper's main theorem, as reported by MT Table 1 and Section 2
+**Justification `kadiri-paper`** — **designated** — literature, Theoreme 1.1 (Principal), p. 305 of the published Acta Arith. version
 
 > Asserted on the authority of the paper, now read FIRST HAND from the published version, Acta Arith. 117.4 (2005). Theoreme 1.1 (Principal): 'La fonction zeta de Riemann ne s'annule jamais dans la region suivante : Re s >= 1 - 1/(R_0 log(\|Im s\|)), \|Im s\| >= 2, avec R_0 = 5.69693.' Constant, threshold and the closed form all confirmed. The node previously recorded this at second hand from MT, and the arXiv preprint held alongside gives the weaker 5.70176, which -- since MT starts from R = 5.7 and a smaller R is the stronger claim -- could not have supported the edge into MT. The published version was therefore load-bearing, and now it is held. Imports, both now edges. The paper takes its starting region from Rosser-Schoenfeld: 'Grace au resultat de Rosser, nous prenons tout d'abord R = 9.645908801', which is RosserSchoenfeld.v1.zero_free_region_classical -- the plain-shaped form, since Kadiri uses 1/(R log t) at heights past 3.3e9, and that form is bridged from the paper's own log(t/17) shape. And its height: 'pour T_0, nous prendrons la valeur de S. Wedeniwski, c'est a dire tres exactement 3 330 657 430.697', which is Wedeniwski.v1. Note what the second edge costs. Wedeniwski is the weakest evidence in the network -- a website, unpublished, with documented doubts -- so this conclusion, and everything downstream of it as far as FKS2, rests on it. Discharging Wedeniwski by a bridge from Platt2017 would remove that without changing any statement, and is the obvious next move.
 

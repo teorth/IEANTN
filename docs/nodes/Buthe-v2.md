@@ -62,7 +62,7 @@ noncomputable def lemma_3_bounds : Prop :=
 | Lean name | `Buthe.v2.lemma_3_bounds` |
 | Challenge | `Buthe.v2.challenge_lemma_3_bounds` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v2/Conclusions.lean#L87) |
-| Evidence | unjustified (`none-yet`) |
+| Evidence | refuted (`none-yet`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | [`Buthe.v1.theorem_2_li_minus_pi`](Buthe-v1.md#theorem_2_li_minus_pi) |

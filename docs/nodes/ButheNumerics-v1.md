@@ -25,10 +25,15 @@
 
 `A = π(1500) − li(1500) + (1500 − θ(1500)) / log 1500 ≤ 0`.
 
-The hidden hypothesis of Theorem 2's equation (1.9). Lemma 3 carries `A` through as an additive
-constant on the right, so (1.9) as printed — which has no such term — is the specialisation at
-`a = 1500` *together with* the fact that this `A` is not positive. The paper chooses `a = 1500` and
-does not display the evaluation.
+The hidden hypothesis of Theorem 2's equation (1.9) *as the paper argues it*. Lemma 3 carries `A`
+through as an additive constant on the right, and under the sign Lemma 3 prints, (1.9) — which has
+no such term — is the specialisation at `a = 1500` *together with* the fact that this `A` is not
+positive. The paper chooses `a = 1500` and does not display the evaluation.
+
+**That printed sign is wrong; see the module docstring.** Under the corrected `− A` this term works
+against (1.9) rather than for it, so this evaluation no longer completes that derivation. The
+statement is kept, unedited, because it faithfully transcribes the quantity Lemma 3 names, it is
+true, and it is the fact the paper's own reasoning appeals to.
 
 A finite check: three evaluations at a single point. Nothing in the network proves it, and it is
 asserted on the paper's authority, but it is the sort of thing a Lean proof could discharge
@@ -48,15 +53,21 @@ noncomputable def lemma_3_constant_nonpos : Prop :=
 |---|---|
 | Lean name | `ButheNumerics.v1.lemma_3_constant_nonpos` |
 | Challenge | `ButheNumerics.v1.challenge_lemma_3_constant_nonpos` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L79) |
-| Evidence | computation (`numerical`) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L106) |
+| Evidence | bridged (`bridged`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | [`Buthe.v1.theorem_2_li_minus_pi`](Buthe-v1.md#theorem_2_li_minus_pi) |
 
-**Justification `buthe-computation`** — **designated** — numerical, Lemma 3 and the proof of Theorem 2, equation (1.9); the choice a = 1500
+**Justification `buthe-computation`** — numerical, Lemma 3 and the proof of Theorem 2, equation (1.9); the choice a = 1500
 
-> A finite check rather than an argument, so `numerical`. Buthe's Lemma 3 concludes (li(x) - pi(x))/(sqrt x / log x) <= (x - theta(x))/sqrt x + (2C/log x)(1 + 5/log x) + A log x / sqrt x, where A = pi(a) - li(a) + (a - theta(a))/log a. Multiplying through by sqrt x / log x turns the last term into the constant A. With C = 1.95 from (1.6) the first three terms are exactly (1.9)'s 1.95 + 3.9/log x + 19.5/(log x)^2 -- note 3.9 = 2C and 19.5 = 10C, which is the tell that (1.9) is (1.6) pushed through Lemma 3. So (1.9) as printed, which carries no additive constant, holds only if this A is not positive. The paper chooses a = 1500 and does not display the evaluation. Three evaluations at a single point, so imports `none` and that is a real none. Unlike the bounds on [2, 10^19] this is small enough that a Lean proof could discharge it outright, which is worth recording as a target rather than a permanent assertion.
+> A finite check rather than an argument, so `numerical`. Buthe's Lemma 3 as printed concludes (li(x) - pi(x))/(sqrt x / log x) <= (x - theta(x))/sqrt x + (2C/log x)(1 + 5/log x) + A log x / sqrt x, where A = pi(a) - li(a) + (a - theta(a))/log a. With C = 1.95 from (1.6) the first three terms are exactly (1.9)'s 1.95 + 3.9/log x + 19.5/(log x)^2 -- note 3.9 = 2C and 19.5 = 10C, which is the tell that (1.9) is (1.6) pushed through Lemma 3. The paper chooses a = 1500 and does not display the evaluation. THE PRINTED SIGN ON A IS WRONG -- see issues #260 and #268 and the module docstring. The paper's own (6.17) is correct and rearranges to li(x) - pi(x) = (x - theta(x))/log x + I - A, so the term enters as - A log x / sqrt x. This note previously concluded that "(1.9) as printed, which carries no additive constant, holds only if this A is not positive", which is sound under the printed + A and is why this conclusion was stated. Under the corrected - A it runs the other way: A(1500) = -3.63560618, so the term is positive and (1.9) does not follow from Lemma 3 at a = 1500 for any negative A. The statement is kept because it is faithful to the quantity Lemma 3 names, it is TRUE, and it is the fact the paper's reasoning appeals to; what changed is what it buys downstream. Fixed in the Lean docstrings by #275, which missed this copy. Three evaluations at a single point, so imports `none` and that is a real none. Unlike the bounds on [2, 10^19] this is small enough that a Lean proof could discharge it outright -- and ButheNumerics.v2 now has, which is what `proved-v2` below records.
+
+**Justification `proved-v2`** — **designated** — bridged
+  
+  Bridged from ButheNumerics.v2.lemma_3_constant_nonpos via `IEANTN/Bridges/ButheNumerics/V2ToV1.lean`.
+
+> The same statement, proved as ButheNumerics.v2, and now designated. The condition this note used to carry -- "Not designated: that node is still none-yet, and designating this bridge would replace the numerical leaf with an unverified one. Designate it once the receipt exists." -- is met: ButheNumerics.v2.lemma_3_constant_nonpos holds a lean-comparator receipt from run 45880789805, recorded by the verification workflow when #280 landed. So the leaf this conclusion rests on is no longer Buthe's unchecked evaluation but a kernel-checked proof, and the bridge is an identity -- the two propositions are the same. The `numerical` justification is retained above as the spare, because it is what the paper actually did.
 
 ### `li_minus_pi_below_1e7`
 
@@ -85,7 +96,7 @@ noncomputable def li_minus_pi_below_1e7 : Prop :=
 |---|---|
 | Lean name | `ButheNumerics.v1.li_minus_pi_below_1e7` |
 | Challenge | `ButheNumerics.v1.challenge_li_minus_pi_below_1e7` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L94) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L121) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -107,10 +118,20 @@ there — by "taking `a = 10` in (6.17) since `π(10) − li(10) + (10 − θ(10
 inequality is displayed in the proof but is not a stated result, and nothing else in the network
 carries it.
 
-Note the sign differs from `lemma_3_constant_nonpos`: the same functional `A(a)` is asserted
-positive at `a = 10` and non-positive at `a = 1500`. That is not a contradiction — `A` varies with
-`a` — but it is worth seeing side by side, because a solution that conflates the two points will
-prove nothing.
+**This conclusion is false as stated.** See the `refuted` block in `formalization.yaml` and issue
+#260: `π(10) − li(10) + (10 − θ(10)) / log 10 = −0.1448739805`, which is not `> 0.1`. The sign is
+the one the module docstring discusses. Büthe's (6.17) is correct as printed and gives the
+quantity the other way round, `li(10) − π(10) − (10 − θ(10)) / log 10 = +0.1448739805`, and that
+is what his positivity argument actually needs.
+
+The statement is retained unedited: `Buthe.v1.theorem_2_li_gt_pi` imports it, and the network
+records what the literature claimed rather than quietly repairing it. A corrected version belongs
+in a new node, not here.
+
+It used to say here that the sign "differs from `lemma_3_constant_nonpos`", the same `A(a)` being
+positive at `a = 10` and non-positive at `a = 1500`. That reading is gone with the sign: both
+values are in fact negative, `A(10) = −0.1449` and `A(1500) = −3.6356`. A solution must still keep
+the two points apart, but not because they disagree in sign.
 
 A finite check: three evaluations at a single point. No `margin` site — the bound `0.1` is a
 strict lower bound on a quantity, and a multiplicative margin loosens an upper bound, so a site
@@ -125,8 +146,8 @@ noncomputable def lemma_3_constant_gt_at_10 : Prop :=
 |---|---|
 | Lean name | `ButheNumerics.v1.lemma_3_constant_gt_at_10` |
 | Challenge | `ButheNumerics.v1.challenge_lemma_3_constant_gt_at_10` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L118) |
-| Evidence | computation (`numerical`) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L155) |
+| Evidence | refuted (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
 | Assumed by | [`Buthe.v1.theorem_2_li_gt_pi`](Buthe-v1.md#theorem_2_li_gt_pi) |
@@ -160,7 +181,7 @@ def eq_6_2 : Prop :=
 |---|---|
 | Lean name | `ButheNumerics.v1.eq_6_2` |
 | Challenge | `ButheNumerics.v1.challenge_eq_6_2` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L132) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L169) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -193,7 +214,7 @@ noncomputable def li_minus_riemann_pi_below_1e7 : Prop :=
 |---|---|
 | Lean name | `ButheNumerics.v1.li_minus_riemann_pi_below_1e7` |
 | Challenge | `ButheNumerics.v1.challenge_li_minus_riemann_pi_below_1e7` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L146) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/ButheNumerics/v1/Conclusions.lean#L183) |
 | Evidence | computation (`numerical`) |
 | Sources traced | none |
 | Assumes | nothing recorded |

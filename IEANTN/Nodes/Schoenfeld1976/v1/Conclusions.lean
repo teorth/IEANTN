@@ -26,7 +26,8 @@ Theorem 11 uses `X = √(log x / 9.645908801)` and `ε₀(x) = √(8/(17π)) · 
 (5.5a*), (5.5b*), (5.6*), (5.6a*), (5.6b*); each is a separate conclusion.
 
 Every inequality, constant and endpoint below is transcribed from the scan; the only departure is
-(7.4), whose printed form has lost a relation (see `psi_upper_theorem_11`).
+(7.4), whose printed form has lost a relation — and which Schoenfeld corrected in a published
+corrigendum that agrees with what is stated here (see `psi_upper_theorem_11`).
 -/
 
 namespace Schoenfeld1976.v1
@@ -53,7 +54,14 @@ def theta_theorem_11 : Prop :=
 
 The printed display reads `θ(x) − x ≤ ψ(x) − x ε₀(x) if 1 ≤ x`: a relation is missing, and read
 literally it is false. The proof on printed p. 349 shows `ψ(x) < x + x ε₀(x)` for `1 ≤ x ≤ 10⁸`
-and then says this completes "(7.4), (7.2) and (7.3)"; this is the form stated here. -/
+and then says this completes "(7.4), (7.2) and (7.3)".
+
+**Schoenfeld corrected it in print**, and the corrigendum gives exactly the form stated here:
+Math. Comp. **30** (1976), no. 136, p. 900,
+[doi:10.1090/S0025-5718-1976-0457375-1](https://doi.org/10.1090/S0025-5718-1976-0457375-1) —
+"On p. 342, Theorem 11, Eq. (7.4) should read: `θ(x) − x ⩽ ψ(x) − x < xε₀(x)` if `1 ⩽ x`." So this
+conclusion rests on a published correction rather than on an inference from the proof, which is a
+better footing than the one it was first given. See issue #271. -/
 def psi_upper_theorem_11 : Prop :=
   IEANTN.RiemannHypothesisUpTo 1894438.5122 → ∀ x : ℝ, 1 ≤ x →
     Chebyshev.theta x - x ≤ Chebyshev.psi x - x ∧ Chebyshev.psi x - x < x * epsilon0 x
