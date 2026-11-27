@@ -43,7 +43,7 @@ def equation_3_35 : Prop :=
 | Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`RosserSchoenfeld1962.v2.psi_ratio_maximum_at_113`](RosserSchoenfeld1962-v2.md#psi_ratio_maximum_at_113), [`RosserSchoenfeld1962.v2.psi_ratio_unique_maximum_at_113`](RosserSchoenfeld1962-v2.md#psi_ratio_unique_maximum_at_113), [`RosserSchoenfeld1962.v3.equation_3_8`](RosserSchoenfeld1962-v3.md#equation_3_8), [`RosserSchoenfeld1962.v4.equation_3_36`](RosserSchoenfeld1962-v4.md#equation_3_36), [`RosserSchoenfeld1962.v4.psi_sub_theta_ratio_maximum_at_361`](RosserSchoenfeld1962-v4.md#psi_sub_theta_ratio_maximum_at_361), [`RosserSchoenfeld1962.v5.equation_5_4`](RosserSchoenfeld1962-v5.md#equation_5_4), [`RosserSchoenfeld1962.v6.theorem_25`](RosserSchoenfeld1962-v6.md#theorem_25) |
 
 **Justification `rs12-port`** — lean-noncompliant
 

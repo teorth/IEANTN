@@ -18,12 +18,16 @@ direction.
 
 ## The value, and which version of the paper it comes from
 
-The published paper (Acta Arith. **117** (2005), 303-339) gives `5.69693`, which is the value the
-whole subsequent literature cites and the one stated below. The arXiv preprint held in the local
-library, `math/0401238`, gives `5.70176` in its abstract -- a slightly weaker value that the
-published version improved. The published paper has not been obtained; `5.69693` is recorded here
-at second hand from `MT`, which states it twice (its Table 1 and its Section 2, where it also
-records the parameters Kadiri chose). See `docs/SOURCES.md`.
+The published paper (Acta Arith. **117** (2005), 303-339,
+[doi:10.4064/aa117-4-1](https://doi.org/10.4064/aa117-4-1)) gives `5.69693`, which is the value the
+whole subsequent literature cites and the one stated below.
+The arXiv preprint `math/0401238` gives `5.70176` in its abstract -- a slightly weaker value that
+the published version improved.
+
+The published version is held in the local library and `5.69693` is recorded from its Théorème 1.1
+(p. 305) at first hand. It was previously taken at second hand from `MT`, which states it twice
+(its Table 1 and its Section 2, where it also records the parameters Kadiri chose); the two agree.
+See `docs/SOURCES.md`.
 -/
 
 namespace Kadiri2005.v1

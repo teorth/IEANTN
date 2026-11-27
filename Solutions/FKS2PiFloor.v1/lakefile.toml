@@ -1,0 +1,23 @@
+name = "solution_FKS2PiFloor_v1"
+defaultTargets = ["Solution", "Audit"]
+
+[[require]]
+name = "leancert"
+git = "https://github.com/alerad/leancert.git"
+rev = "9c4bde501499fb50ec22d08d072cb47019f9dbe5"
+
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "FKS2Floor"
+roots = ["IntegralBounds", "Envelopes", "Counting", "RowBound", "CellBounds", "CertificateKernel", "CoreExpressions", "CertifiedCells", "Quadrature", "Anchors", "Floor"]
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+[[lean_lib]]
+name = "Audit"
+roots = ["Audit"]

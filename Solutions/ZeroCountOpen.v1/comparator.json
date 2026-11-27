@@ -1,0 +1,15 @@
+{
+  "challenge_module": "IEANTN.Nodes.ZeroCountOpen.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ZeroCountOpen.v1.challenge_ioc_bound_to_ioo",
+    "ZeroCountOpen.v1.challenge_rvm_error_bound_open",
+    "ZeroCountOpen.v1.challenge_hasRvMBound"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

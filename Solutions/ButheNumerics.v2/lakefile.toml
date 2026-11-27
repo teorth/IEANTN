@@ -1,0 +1,19 @@
+name = "solution_ButheNumerics_v2"
+defaultTargets = ["Solution"]
+
+# The core library, for the node's `Conclusions`. Nothing else: Mathlib and the kernel do all of it.
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "Primes"
+roots = ["Primes"]
+
+[[lean_lib]]
+name = "LogIntegral"
+roots = ["LogIntegral"]
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
