@@ -79,6 +79,7 @@ import IEANTN.Nodes.RosserSchoenfeld1962.v6.Challenge
 import IEANTN.Nodes.RosserSchoenfeld1962.v7.Challenge
 import IEANTN.Nodes.RosserSchoenfeld1962.v8.Challenge
 import IEANTN.Nodes.Saouter1998.v1.Challenge
+import IEANTN.Nodes.Saouter1998.v2.Challenge
 import IEANTN.Nodes.Schoenfeld1976.v1.Challenge
 import IEANTN.Nodes.Schoenfeld1976Numerics.v1.Challenge
 import IEANTN.Nodes.Trudgian2011.v1.Challenge

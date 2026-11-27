@@ -70,6 +70,14 @@ conclusions:
           4 x 10^14 + 3 follow from the even input by subtracting 3, as in
           Goldbach.v1.even_implies_odd; above that, n minus the nearest rung below it, or the rung
           before that when the difference is 2, is even and between 4 and 4 x 10^11.
+      - id: proved-v2
+        kind: bridged
+        from: Saouter1998.v2.odd_up_to_1e20
+        bridge: IEANTN/Bridges/Saouter1998/V2ToV1.lean
+        note: >-
+          The same statement with the same imports, proved as Saouter1998.v2. Not designated: that
+          node is still none-yet, and designating this bridge would replace the literature
+          citation with an unverified proof. Designate it once the receipt exists.
     designated: saouter-paper
 
 sources:

@@ -5,17 +5,18 @@ Authors: Steve Hubbard
 -/
 import IEANTN.Nodes.Richstein2001.v1.Conclusions
 import IEANTN.Nodes.Saouter1998.v1.Conclusions
+import IEANTN.Nodes.Saouter1998.v2.Conclusions
 import Mathlib
 
 /-!
-# Solution: `Saouter1998.v1`
+# Solution: `Saouter1998.v2`
 
-`odd_up_to_1e20` is proved from its two imports, Saouter's ladder and the even verification to
-`4·10¹⁴`. Below `4·10¹⁴ + 3` subtract `3`. Above it, take the highest rung `p ≤ n − 4`; then
-`n − p` is even and lies in `[4, 4·10¹¹ + 4)`, inside the even range.
+`Saouter1998.v2.odd_up_to_1e20` is proved from its two imports, Saouter's ladder and the even
+verification to `4·10¹⁴`. Below `4·10¹⁴ + 3` subtract `3`. Above it, take the highest rung
+`p ≤ n − 4`; then `n − p` is even and lies in `[4, 4·10¹¹ + 4)`, inside the even range.
 
-`prime_ladder` is the paper's computation, about `2.5·10⁸` certified primes, and is justified as
-`numerical`; it is not proved here and is left out of the comparator configuration.
+The ladder, `Saouter1998.v1.prime_ladder`, is the paper's computation, about `2.5·10⁸` certified
+primes; it is a hypothesis here and stays `numerical` in `Saouter1998.v1`.
 -/
 
 namespace Saouter1998Sol
@@ -46,10 +47,10 @@ theorem ladder_cover (D : ℕ) (hD : 0 < D) :
 end Saouter1998Sol
 
 open IEANTN in
-theorem Saouter1998.v1.challenge_odd_up_to_1e20
+theorem Saouter1998.v2.challenge_odd_up_to_1e20
     (saouter1998_v1_prime_ladder : Saouter1998.v1.prime_ladder)
     (richstein2001_v1_even_up_to_4e14 : Richstein2001.v1.even_up_to_4e14) :
-    Saouter1998.v1.odd_up_to_1e20 := by
+    Saouter1998.v2.odd_up_to_1e20 := by
   obtain ⟨l, hprime, hhead, hlast, hchain⟩ := saouter1998_v1_prime_ladder
   have heven : GoldbachEvenUpTo (4 * 10 ^ 14) := richstein2001_v1_even_up_to_4e14
   intro n hn hodd

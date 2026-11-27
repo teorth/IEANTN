@@ -1,0 +1,86 @@
+# Node metadata for `Saouter1998.v2`.  See docs/NODES.md.
+#
+# Saouter1998.v1.odd_up_to_1e20 on its own, so it can be proved and verified without
+# Saouter1998.v1.prime_ladder, which stays numerical there. A variant of v1, not a replacement.
+version: "v0.4"
+
+node:
+  id: Saouter1998.v2
+  family: Saouter1998
+  version: v2
+  kind: paper
+  status: awaiting-verification
+
+project:
+  name: "The odd Goldbach range to 10^20 from Saouter's prime ladder"
+  description: >-
+    Saouter1998.v1.odd_up_to_1e20, split out so that it can be proved on its own: every odd
+    integer between 7 and 10^20 is a sum of three primes, given Saouter's ladder of primes from
+    138412033 to 100000000209366024193 with steps shorter than 4 x 10^11, and the even Goldbach
+    verification to 4 x 10^14. The ladder itself stays numerical in Saouter1998.v1.
+  authors: ["Steve Hubbard"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Steve Hubbard"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11P32", "11Y11"]
+
+conclusions:
+  - id: odd_up_to_1e20
+    declaration: Saouter1998.v2.odd_up_to_1e20
+    challenge: Saouter1998.v2.challenge_odd_up_to_1e20
+    imports:
+      - node: Saouter1998.v1
+        conclusion: prime_ladder
+      - node: Richstein2001.v1
+        conclusion: even_up_to_4e14
+    imports_status: identified
+    justifications:
+      - id: unjustified
+        kind: none-yet
+        note: >-
+          Proved in Solutions/Saouter1998.v2. Stays none-yet until the verification workflow
+          writes a receipt. The proof: odd n up to 4 x 10^14 + 3 follow from the even input by
+          subtracting 3, as in Goldbach.v1.even_implies_odd; above that, the highest rung p at or
+          below n - 4 exists because the ladder starts at 138412033 and ends above 10^20, and
+          n - p is even and lies in [4, 4 x 10^11 + 4), inside the even range. The covering
+          lemma is an induction on the ladder.
+    designated: unjustified
+
+sources:
+  - title: "Checking the odd Goldbach conjecture up to 10^20"
+    authors: ["Yannick Saouter"]
+    type: "paper"
+    id: "https://doi.org/10.1090/S0025-5718-98-00928-4"
+    location: "Math. Comp. 67 (1998), no. 222, 863-866; the main result and its derivation on page 865"
+    relationship: formalizes
+    note: >-
+      The same statement and imports as Saouter1998.v1.odd_up_to_1e20. Nothing is weakened. The
+      paper's even input is Sinisalo's verification to 4 x 10^11, which is not a node;
+      Richstein2001.v1 contains that range and is imported in its place, as in Saouter1998.v1.
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude Opus 5.5 (claude-opus-5-5), Anthropic"]
+      framework: "Claude Cowork"
+      role: >-
+        Wrote the node, the Lean proof and this metadata under the direction of the maintainer.
+
+review:
+  status: self-assessed
+  reviewers: ["Steve Hubbard"]
+  notes: >-
+    The statement and imports are Saouter1998.v1.odd_up_to_1e20 verbatim; the bridge back is the
+    identity. It is compiled and left undesignated on v1 until this node has a receipt.
+
+limitations:
+  - >-
+    One statement only. The ladder, Saouter1998.v1.prime_ladder, is an import here and stays
+    numerical in Saouter1998.v1.
+  - >-
+    No novelty is claimed. The argument is Saouter's.

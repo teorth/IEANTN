@@ -1,4 +1,4 @@
-name = "solution_Saouter1998_v1"
+name = "solution_Saouter1998_v2"
 defaultTargets = ["Solution"]
 
 # The core library, for the node's `Conclusions`. Add whatever else the proof needs --
