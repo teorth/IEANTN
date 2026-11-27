@@ -1,0 +1,29 @@
+{
+  "challenge": "FKS2NuAsymp.v1.challenge_nu_asymp_e30_le",
+  "conclusion": "FKS2NuAsymp.v1.nu_asymp_e30_le",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6"
+  },
+  "repository": {
+    "commit": "f30015300d587645a8e3da6fcb959e85942c244e"
+  },
+  "run": {
+    "recorded_at": "2026-11-26T19:56:31Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/45880654151"
+  },
+  "schema": 2,
+  "solution": {
+    "dependencies": [],
+    "project": "Solutions/FKS2NuAsymp.v1"
+  },
+  "statement": {
+    "FKS2NuAsymp.v1.nu_asymp_e30_le": "62f5e7e8e71bfc50cc8692b4a70a361e74b663d333432df401dc9749b8098de9"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}

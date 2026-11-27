@@ -3,7 +3,7 @@ import contextlib
 import io
 import shutil
 import subprocess
-from test_ieantn import LITERATURE, FixtureRepo, bridged, ieantn, importing
+from test_ieantn import LITERATURE, REFUTED, FixtureRepo, bridged, ieantn, importing
 
 
 class _DiffGit(FixtureRepo):
@@ -211,3 +211,49 @@ class TestBridgeLeafSet(_DiffGit):
         text = self.report()
         self.assertTrue(self._last_ok)
         self.assertNotIn("gained unproved assumptions", text)
+
+
+class TestRefutationIsReported(_DiffGit):
+    """Declaring a conclusion false is the strongest degradation there is, and the only one no
+    other comparison here can see.
+
+    Issues 260 and 268. A refutation leaves the statement untouched, so no fingerprint moves, and
+    leaves the designated justification untouched too, so comparing kinds finds nothing. The first
+    version of this reported "No change to any statement, dependency, or receipt." for a branch
+    that had just declared two published lemmas false.
+    """
+
+    def test_a_new_refutation_is_degraded_not_silent(self) -> None:
+        self.write_node("A.v1", LITERATURE)
+        self.commit_all("A.v1 as published")
+        self.write_node("A.v1", REFUTED)
+        report = self.report()
+        self.assertIn("### Degraded", report)
+        self.assertIn("`A.v1.main` is now refuted", report)
+        self.assertNotIn("No change to any statement", report)
+
+    def test_it_names_the_consumers_that_want_rerouting(self) -> None:
+        """`diff` exists to say what a branch degrades *and for whom*."""
+        self.write_node("Upstream.v1", LITERATURE)
+        self.write_node("Downstream.v1", importing("Upstream.v1"))
+        self.generate()
+        self.commit_all("both as published")
+        self.write_node("Upstream.v1", REFUTED)
+        report = self.report()
+        self.assertIn("`Downstream.v1.main`", report)
+        self.assertIn("rerouting", report)
+
+    def test_a_refutation_does_not_fail_the_branch(self) -> None:
+        """Recording a published result as false is a legitimate thing for a branch to do."""
+        self.write_node("A.v1", LITERATURE)
+        self.commit_all("A.v1 as published")
+        self.write_node("A.v1", REFUTED)
+        self.report()
+        self.assertTrue(self._last_ok, "a refutation is reported, not refused")
+
+    def test_withdrawing_a_refutation_is_informational(self) -> None:
+        self.write_node("A.v1", REFUTED)
+        self.commit_all("A.v1 refuted")
+        self.write_node("A.v1", LITERATURE)
+        report = self.report()
+        self.assertIn("no longer refuted", report)

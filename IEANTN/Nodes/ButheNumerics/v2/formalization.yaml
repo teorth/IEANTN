@@ -1,0 +1,84 @@
+# Node metadata for `ButheNumerics.v2`.  See docs/NODES.md.
+#
+# ButheNumerics.v1.lemma_3_constant_nonpos on its own, so it can be proved and verified without
+# the other four conclusions of v1. A variant of v1, not a replacement.
+version: "v0.4"
+
+node:
+  id: ButheNumerics.v2
+  family: ButheNumerics
+  version: v2
+  kind: computation
+  status: active
+
+project:
+  name: "The sign of the constant in Buthe's Lemma 3 at a = 1500"
+  description: >-
+    ButheNumerics.v1.lemma_3_constant_nonpos, split out so that it can be proved on its own:
+    pi(1500) - li(1500) + (1500 - theta(1500)) / log 1500 <= 0. The other four conclusions of
+    ButheNumerics.v1 are computations on ranges up to 5e10 and stay numerical there.
+  authors: ["Teddy Tennant"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Teddy Tennant"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11Y70"]
+
+conclusions:
+- id: lemma_3_constant_nonpos
+  declaration: ButheNumerics.v2.lemma_3_constant_nonpos
+  challenge: ButheNumerics.v2.challenge_lemma_3_constant_nonpos
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      Proved in Solutions/ButheNumerics.v2. Stays none-yet until the verification workflow writes a
+      receipt. The proof: li(x) = log(x - 1) + the integral over (0, x] of
+      1/log t - 1/(t - 1), which is bounded between 0 and 1, so li(1500) >= Li(1500); the midpoint
+      rule on [2, 4], [4, 8], ..., [512, 1024], [1024, 1500] is a lower bound for the convex
+      1/log t and gives Li(1500) > 245; pi(1500) = 239 and primorial(1500) >= 2^2109 are checked
+      by the kernel with `decide +kernel`. Then A <= 239 - 245 + 5.51 < 0. The true value is
+      about -3.64.
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/45880789805'
+  designated: comparator
+
+sources:
+- title: "An analytic method for bounding psi(x)"
+  authors: ["Jan Buthe"]
+  type: "paper"
+  id: "https://doi.org/10.1090/mcom/3264"
+  location: "Math. Comp. 87 (2018), no. 312, 1991-2009; Lemma 3 and the proof of Theorem 2"
+  relationship: formalizes
+  note: >-
+    The same statement as ButheNumerics.v1.lemma_3_constant_nonpos. Nothing is weakened. No value
+    from the paper is an input to the proof.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5.5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Drafted the Lean proof. The numerical margins were checked independently before the proof was
+      written.
+
+review:
+  status: self-assessed
+  reviewers: ["Teddy Tennant"]
+  notes: >-
+    The statement is ButheNumerics.v1.lemma_3_constant_nonpos verbatim; the bridge back is the
+    identity. It is compiled and left undesignated until this node has a receipt.
+
+limitations:
+- >-
+  One statement only. The other four conclusions of ButheNumerics.v1 stay numerical there.
+- >-
+  No novelty is claimed. The constant and the choice a = 1500 are Buthe's.

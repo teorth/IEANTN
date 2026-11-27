@@ -22,9 +22,13 @@
 ### `extremal_majorant`
 
 **The extremal majorant.** For every non-zero `lambda` and every `β ∈ (1, 2]` there is a
-function `φ` band-limited to `[-1, 1]` whose Fourier transform **majorizes** the truncated
+function `φ` **supported on** `[-1, 1]` whose Fourier transform **majorizes** the truncated
 exponential `truncExp lambda`, with `φ 0 = 1/(1 - e^{-|lambda|})` and `L¹` error exactly
 `1/(1 - e^{-|lambda|}) - 1/|lambda|`.
+
+`φ` itself is compactly supported; it is `𝓕 φ` that is band-limited, and that is what
+`CH2.v2.IsBandLimited` asks for despite its name. Read the other way round this conclusion would
+be impossible: a `𝓕 φ` of compact support vanishes at `y = 2`, where `truncExp 1` is `e^{-2} > 0`.
 
 This is the Graham–Vaaler extremal function, reconstructed self-containedly in the authors'
 addendum. Its `L¹` error is optimal — no band-limited majorant does better — which is what makes
@@ -52,7 +56,7 @@ def extremal_majorant : Prop :=
 |---|---|
 | Lean name | `CH2.v3.extremal_majorant` |
 | Challenge | `CH2.v3.challenge_extremal_majorant` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v3/Conclusions.lean#L93) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v3/Conclusions.lean#L97) |
 | Solution | [`Solutions/CH2.v3`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v3) |
 | Receipt | [`CH2.v3.extremal_majorant.json`](https://github.com/teorth/IEANTN/blob/main/receipts/CH2.v3.extremal_majorant.json) |
 | Evidence | verified (`lean-comparator`) |
@@ -99,7 +103,7 @@ def extremal_minorant : Prop :=
 |---|---|
 | Lean name | `CH2.v3.extremal_minorant` |
 | Challenge | `CH2.v3.challenge_extremal_minorant` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v3/Conclusions.lean#L115) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/CH2/v3/Conclusions.lean#L119) |
 | Solution | [`Solutions/CH2.v3`](https://github.com/teorth/IEANTN/tree/main/Solutions/CH2.v3) |
 | Receipt | [`CH2.v3.extremal_minorant.json`](https://github.com/teorth/IEANTN/blob/main/receipts/CH2.v3.extremal_minorant.json) |
 | Evidence | verified (`lean-comparator`) |

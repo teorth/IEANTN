@@ -15,7 +15,7 @@
 ## The source
 
 - **Short effective intervals containing primes** — Olivier Ramare, Yannick Saouter. J. Number Theory 98 (2003), no. 1, 10-33  
-  _Authors, title, journal, volume, issue and pages confirmed against Crossref. The paper is not in this repository's library; the statement and the locator (Corollary 1) come from PNT+._
+  _Authors, title, journal, volume, issue and pages confirmed against Crossref. The published article is free from the first author's page, https://ramare-olivier.github.io/Maths/gap.pdf, and the statement and locator are now read from it at first hand: the conclusion is its Theorem 3 (p. 13), not its Corollary 1, which PNT+'s transcription had named. See issue #271._
 
 ## Conclusions
 
@@ -42,20 +42,20 @@ def prime_in_short_interval : Prop :=
 | Challenge | `RamareSaouter2003.v1.challenge_prime_in_short_interval` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/RamareSaouter2003/v1/Conclusions.lean#L32) |
 | Evidence | cited (`literature`) |
-| Sources traced | undetermined |
+| Sources traced | traced |
 | Assumes | nothing recorded |
 | Assumed by | [`Goldbach.v1.odd_up_to_1_1325e26`](Goldbach-v1.md#odd_up_to_1_1325e26), [`Goldbach.v1.odd_up_to_kadiri_lumley`](Goldbach-v1.md#odd_up_to_kadiri_lumley), [`Goldbach.v1.odd_up_to_ramare_saouter`](Goldbach-v1.md#odd_up_to_ramare_saouter) |
 
-**Justification `ramare-saouter-paper`** — **designated** — literature, Corollary 1
+**Justification `ramare-saouter-paper`** — **designated** — literature, Theorem 3, p. 13
 
-> Asserted on the authority of the paper. What the result itself rests on -- a zero-free region and a verification height, in the usual way for this kind of statement -- has not been traced, because the paper is not held in this repository's library, which is why imports_status is undetermined rather than traced. Transcribed from PrimeNumberTheoremAnd's transcription, where it is `TMEEMT.RamareSaouter2003.has_prime_in_interval` and carries a `sorry`.
+> Asserted on the authority of the paper. Theorem 3 reads: 'Let x be a real number larger than 10 726 905 041. Then the interval ]x(1 - 1/28 314 000), x] contains at least one prime.' That is this conclusion, at these constants. The locator previously read "Corollary 1", taken from PrimeNumberTheoremAnd's transcription. Corollary 1 of this paper is a different statement -- 'Every odd integer > 1 not more than 1.13256 x 10^22 is a sum of at most three primes' -- which is what Goldbach.v1 cites it for, so the two nodes pointed the same label at different results. Read first hand from the published article, free from the first author's page at https://ramare-olivier.github.io/Maths/gap.pdf. See issue #271. What the result rests on, now traced from that copy: the Riemann hypothesis up to a height T_0, where the paper says 'By Wedeniwski [24], we can take T_0 = 3.33 x 10^9, but we shall only use T_0 = 3.3 x 10^9 in numerical applications. However Theorem 4 is valid for any T_0' (p. 14). No zero-free region is used: 'For so small x's, the infinite zero-free region is of course of no use' (p. 12). Also an algorithmic prime-gap search and a sieve, which are computations rather than propositions. Transcribed from PrimeNumberTheoremAnd, where it is `TMEEMT.RamareSaouter2003.has_prime_in_interval` and carries a `sorry`.
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
-- Cited, not proved, and its own inputs are not traced. The paper is not held here, so what the result assumes -- which zero-free region, which verification height -- is not recorded. That is what imports_status `undetermined` says.
-- One instance of a general theorem. The paper's Corollary 1 is stated here at its own constants; the surrounding parameterised results are not.
+- Cited, not proved. The inputs are now traced from the published article: the Riemann hypothesis up to T_0 = 3.3 x 10^9 in the numerical applications (Wedeniwski), no zero-free region, and an algorithmic prime-gap search. imports_status is `traced` rather than `identified` because none of those is drawn as an edge: the verification height could become one, and the search never can.
+- One instance of a general theorem. The paper's Theorem 3 is stated here at its own constants; the surrounding parameterised results -- Theorem 4, which holds for any T_0 -- are not.
 - Superseded for large x by KadiriLumley.v1, whose intervals are narrower above exp(59). This one is still needed below that.
 
 ## How this node was made

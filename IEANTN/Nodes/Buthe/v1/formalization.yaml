@@ -247,12 +247,20 @@ conclusions:
   - id: buthe-paper
     kind: literature
     source: Buthe
-    locator: Table 1, Equation (6.2)
+    locator: 'Table 1 and its caption, "Upper and lower bounds M_psi^pm(x) for (t - psi(t))/sqrt(t) in [x, 2x]"'
     note: >-
       Asserted on the authority of the paper. The entries are in Tables.lean, copied from the PNT+
-      transcription of Table 1 (31 rows) and checked at the first and last printed blocks. Equation
-      (6.2) is the paper's own reading of the table: each row (x, M-, M+) bounds (t - psi(t))/sqrt(t)
-      on [x, 2x]. No external node is an input; the table is Buthe's computation.
+      transcription of Table 1 (31 rows) and checked at the first and last printed blocks. What each
+      row (x, M-, M+) claims -- a bound on (t - psi(t))/sqrt(t) on [x, 2x] -- is fixed by the table's
+      CAPTION, which carries no equation number. No external node is an input; the table is Buthe's
+      computation.
+      This locator previously read "Table 1, Equation (6.2)", which misnamed the source: in
+      arXiv:1511.02032v2 (6.2) is a different claim, the Eratosthenes-sieve bound
+      -0.8 <= R_psi(t) <= 0.81 for 100 <= t <= 5e10, and it is stated in the text alongside the
+      table rather than being a reading of it. ButheNumerics.v1.eq_6_2 uses (6.2) in the paper's
+      sense, so the two nodes previously disagreed about what (6.2) was. Checked first hand against
+      the arXiv LaTeX source, where the label e:psi-bounds-eratosthenes sits on the sieve bound. See
+      issue #271.
   designated: buthe-paper
 - id: table_2_interval_bounds
   declaration: Buthe.v1.table_2_interval_bounds

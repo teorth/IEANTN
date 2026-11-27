@@ -128,7 +128,7 @@ def rescaled_A_exceeds_printed : Prop :=
 
 **Justification `fks-rescaling-A`** — **designated** — numerical, Corollary 1.4 versus the printed A = 121.096
 
-> Closed-form comparison of the two printed constants at R = 5.5666305. Imports none. This is the A-gap recorded on psi_bound_all_x: the rescaling overshoots 121.096, so the classical bound is not derivable from the all-x bound by converting R. The preprint's proof of Lemma 5.3 checks the other direction, 121.096 / R^{3/2} < 9.22022, which is the same inequality.
+> Closed-form comparison of the two printed constants at R = 5.5666305. Imports none. This is the A-gap recorded on psi_bound_all_x: the rescaling overshoots 121.096, so the classical bound is not derivable from the all-x bound by converting R. The preprint's proof of Lemma 5.3 checks the other direction, 121.096 / R^{3/2} < 9.22022, which is the same inequality. Proved as IEANTN.Bridges.FKS.rescaled_A_exceeds_printed in IEANTN/Bridges/FKS/ClassicalToAllX.lean, from sqrt R > 2.3593705 and a norm_num product. The all-x bridge calls that theorem rather than repeating the arithmetic. The core lake build compiles the file. The designated kind stays numerical: there is no Comparator receipt, and the paper's own check is still the citation.
 
 ### `rescaled_C_is_short_of_two`
 
@@ -154,13 +154,13 @@ def rescaled_C_is_short_of_two : Prop :=
 
 **Justification `fks-rescaling-C`** — **designated** — numerical, Corollary 1.4 versus the printed C = 2
 
-> The companion gap in C. 0.8476836 * sqrt(R) is strictly less than 2, so the printed classical decay is a strengthening of the rescaling rather than a rounding of it.
+> The companion gap in C. 0.8476836 * sqrt(R) is strictly less than 2, so the printed classical decay is a strengthening of the rescaling rather than a rounding of it. Proved as IEANTN.Bridges.FKS.rescaled_C_is_short_of_two in the same bridge file, from sqrt R < 2.3593708. The rescaling uses the strict inequality to compare the exponentials.
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
-- Both conclusions rest on the cited paper; neither is proved in Lean here.
+- The two analytic bounds rest on the cited paper; neither is proved in Lean here. The two rescaling comparisons are proved in IEANTN/Bridges/FKS/ClassicalToAllX.lean and are what Lemma 5.3's "we now simply verify" step is.
 - Numbering, settled in #52. The published version and arXiv:2204.02588v2 and v3 number the all-x bound Corollary 1.4 and have no Corollary 1.3. The "[8, Corollary 1.3]" that FKS2 cites is the arXiv v1 number, from the version whose constant was 9.22106. The classical form is not a numbered statement in any version; in arXiv v2 and v3 it appears only inside the proof of Lemma 5.3, on 2100 < log x <= 200000 (see the note on psi_classical_bound).
 - psi_classical_bound is not derivable from psi_bound_all_x by rescaling at R = 5.5666305. The two new conclusions record the A and C gaps as claims. The converse direction, which the paper's proof of Lemma 5.3 takes, does close: see FKS.v2 and IEANTN/Bridges/FKS/ClassicalToAllX.lean.
 - Lemma 5.2 of the paper (arXiv v3 numbering, which PrimeNumberTheoremAnd follows) is false as printed. It states E_psi(x) <= 2 (log x)^(3/2) exp(-0.8476836 sqrt(log x)) for 0 < log x <= 2100. For 1 < x < 2, psi(x) = 0 and E_psi(x) = 1, and at x = 2, E_psi = 0.65343... against a right-hand side of 0.56986...; the bound fails on all of (1, 2.2901308748...) and holds from x = 2.2902 on: checked box by box in interval arithmetic up to e^4 in #52, and above that the paper's comparisons with Buthe 2018 and BKLNW Table 8 go through. The slip is the proof's "For 0 < log x <= 4 the bound we are claiming is trivial", which the published version prints too. The paper's proof of Corollary 1.4 applies the lemma on all of 0 < log x <= 2100, so that proof has a gap on (2, 2.2901308748...). The statements here are unaffected: below e^30 their right-hand sides exceed 2 while E_psi <= 2 by Mathlib's Chebyshev bound (the argument of IEANTN/Bridges/FKS/ThresholdTwo.lean), and above e^30 the lemma holds. PrimeNumberTheoremAnd's lemma_5_2 carries the printed statement, over Ioc 0 2100. A node that states the paper's lemmas should use the corrected range, 2.2902 <= x <= e^2100, and record this falsity in its limitations.

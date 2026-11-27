@@ -1,0 +1,35 @@
+{
+  "challenge": "RosserSchoenfeld1962.v8.challenge_equation_3_19",
+  "conclusion": "RosserSchoenfeld1962.v8.equation_3_19",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6"
+  },
+  "repository": {
+    "commit": "c5b7ff96baa349bfc465deddd0d6aded8b5e2910"
+  },
+  "run": {
+    "recorded_at": "2026-11-22T05:59:20Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/44990674262"
+  },
+  "schema": 2,
+  "solution": {
+    "dependencies": [
+      {
+        "name": "leancert",
+        "rev": "0a47d99fdd1e61e8eeb96a162343f36bc01e1f92",
+        "url": "https://github.com/alerad/leancert.git"
+      }
+    ],
+    "project": "Solutions/RosserSchoenfeld1962.v8"
+  },
+  "statement": {
+    "RosserSchoenfeld1962.v8.equation_3_19": "461f7c82e59cffa4c9286705fb3e8ff238d963fca6de82a673aa6094e797e4d7"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}

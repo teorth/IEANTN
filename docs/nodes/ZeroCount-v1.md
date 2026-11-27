@@ -43,7 +43,7 @@ def rvm_error_bound : Prop :=
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi) |
+| Assumed by | [`CH2.v1.corollary_1_2_lambda_sum`](CH2-v1.md#corollary_1_2_lambda_sum), [`CH2.v1.corollary_1_2_psi`](CH2-v1.md#corollary_1_2_psi), [`ZeroCountOpen.v1.hasRvMBound`](ZeroCountOpen-v1.md#hasRvMBound), [`ZeroCountOpen.v1.rvm_error_bound_open`](ZeroCountOpen-v1.md#rvm_error_bound_open) |
 
 **Justification `ch2-b1`** — **designated** — literature, Lemma B.1, second bound
 

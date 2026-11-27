@@ -189,6 +189,26 @@ The kinds are:
 | `bridged` | Borrowed from another version of the same node, via a bridge proved in Lean. |
 | `none-yet` | Claimed here, not yet justified anywhere. A task, not a defect. |
 
+There is also `refuted`, which is **not** a justification kind and does not appear in that table:
+it is a separate `refuted:` block on a conclusion, and it overrides whatever the conclusion
+designates. Refutation is not a weaker justification — it is the absence of any, plus a reason the
+statement can never acquire one.
+
+Such a conclusion **stays in the network**, which is the whole point of having the marker. A node's
+claim is *about the literature*, so a published result that is false as printed is a fact about the
+literature worth recording; deleting it would make the graph disagree with the papers it indexes,
+and a consumer that currently routes through it would silently lose its recorded provenance.
+Nothing forces its removal. Evidence grades as `refuted`, below `none-yet` — an unjustified
+conclusion might still be true, and this one is known not to be — and `housekeeping` queues the
+rerouting of each consumer. Over time consumers move to a corrected version; the record remains.
+
+One rule makes this workable: **faithfulness is required of a source's conclusions, not of its
+internal lemmas.** A node transcribing a paper's stated results must state them as printed — that
+is what makes "the source paper is ground truth" meaningful. Its justifications and the paper's
+intermediate lemmas may deviate, provided a significant deviation is noted in the metadata. So a
+false *lemma* can be recorded as printed-and-refuted and restated correctly alongside, while a
+false *stated result* can only be recorded and routed around.
+
 The distinction between `literature` and `asserted` is worth insisting on. `literature` means a
 referee-visible proof exists somewhere and we have chosen not to reformalize it; `asserted` means
 nobody has written one down. Both are common in explicit analytic number theory and they carry very
@@ -487,8 +507,21 @@ whose issue has been closed while the work remains outstanding.
 | Split an over-budget node | its solution exceeds the ~1h budget | moderate |
 | Discharge a `none-yet` | — | unbounded |
 | Formalize an `asserted` or `literature` node | — | unbounded |
+| Prove a `numerical` that is one closed evaluation | no quantifier, no set, a comparison | small |
+| Restate a refuted conclusion | `refuted` with no `corrected` yet | small |
+| Reroute a consumer off a refuted conclusion | it imports one | one node-sized change |
 
-Two things make the queue usable rather than merely long.
+**The last row is there because a false conclusion can hide behind a justification.** `numerical`
+means a computation not currently expressible in Lean — a large interval-arithmetic run, an
+exhaustive search. A conclusion that quantifies over nothing and ranges over no set is neither: it
+is one inequality between closed-form expressions. `check` would not notice, because it validates
+shape, closure, acyclicity and receipt provenance and never evaluates an inequality; and the queue
+would not notice either, because `numerical` counts as justified. That combination is how
+`ButheNumerics.v1.lemma_3_constant_gt_at_10` sat in the network asserting `0.1 < −0.1449` until
+someone read the paper and did the arithmetic. Attempting the Lean proof is what finds the next
+one, so these are queued even though they are nominally justified.
+
+Two further things make the queue usable rather than merely long.
 
 **Prioritise by fan-in.** A node's leverage is the number of conclusions that transitively depend on
 it. Refreshing one high-fan-in node clears staleness for everything downstream of it, so the queue
