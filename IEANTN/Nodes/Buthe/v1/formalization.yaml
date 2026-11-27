@@ -87,6 +87,22 @@ conclusions:
       `traced` is the value for exactly that, so the understatement is now visible in the graph rather
       than only in this note.
   designated: buthe-paper
+  refuted:
+    issue: 283
+    counterexample: >-
+      x = 1426.9 lies in the stated range 1423 <= x <= 10^19. The primes up to 1426.9 are the primes
+      up to 1423, so theta(1426.9) = theta(1423) = 1352.8227495 and x - theta(x) = 74.0772505, while
+      1.95 sqrt(1426.9) = 73.6599433. The same holds on all of (1426.4716, 1427), where
+      (x - theta(x))/sqrt(x) climbs to 1.9636. A Lean proof of the negation is in the issue: the
+      product of the primes up to 1426 is at most 2^1952 by kernel evaluation, so
+      theta(1426.9) <= 1952 log 2 < 1353.03.
+    note: >-
+      Faithful to the paper and false in the paper, for non-integer x only. The bound holds at
+      x = 1423 (ratio 1.8603) and at every integer; it fails just below the next prime, 1427, because
+      x - theta(x) grows by 4 across [1423, 1427) while 1.95 sqrt(x) barely moves. arXiv:1511.02032v1
+      printed 1.94 sqrt(x) for 1427 < x <= 10^19; v2 and the Math. Comp. version changed that to 1.95
+      and 1423 <= x. The v1 form passes a direct check at every prime power up to 1.6e11, where the
+      supremum of the ratio on (1427, 1.6e11] is 1.9372, approached just below 19373.
 - id: theorem_2_theta_lower
   declaration: Buthe.v1.theorem_2_theta_lower
   challenge: Buthe.v1.challenge_theorem_2_theta_lower

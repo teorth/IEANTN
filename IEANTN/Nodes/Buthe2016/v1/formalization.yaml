@@ -86,6 +86,19 @@ conclusions:
       the statement. About pi*, the Riemann prime-counting function, not pi; the two differ by roughly
       sqrt(x)/log x, which is the size of the bound itself.
   designated: buthe2016-paper
+  refuted:
+    issue: 284
+    counterexample: >-
+      x = 96.9 satisfies x > 59, and 4.92 sqrt(x / log x) = 22.65, so the range condition holds for
+      every T >= 22.65 and the Riemann hypothesis is verified far past that height. The prime powers
+      up to 96.9 give pi*(96.9) = 24 + 4/2 + 2/3 + 2/4 + 1/5 + 1/6 = 413/15 = 27.5333333, and
+      li(96.9) = 29.4506852, so |pi*(x) - li(x)| = 1.9173519, while
+      sqrt(96.9) log(96.9) / (8 pi) = 1.7913802. The same holds on all of (96.2870, 97).
+    note: >-
+      Faithful to the paper and false in the paper, for non-integer x only. The bound holds at every
+      integer; it fails just below the prime 97, where li(x) has grown and pi*(x) has not yet jumped.
+      From x = 97 on it passes a direct check at every prime power up to 2e7. Johnston
+      (arXiv:2109.02249, Theorem 1.1) restates the same bound for x >= 59.
 - id: theorem_2_li_minus_pi
   declaration: Buthe2016.v1.theorem_2_li_minus_pi
   challenge: Buthe2016.v1.challenge_theorem_2_li_minus_pi
