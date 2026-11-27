@@ -45,6 +45,10 @@ conclusions:
       with centre 2 + i(T + 1/2) and radius 11/6, with r = 7/4. The planned Lean proof applies it on the
       same disc to (s - 1) zeta(s), Mathlib's riemannZeta_1, so that no estimate for Gamma is needed.
   designated: montgomery-vaughan
+  progress:
+    solution: Solutions/ZetaGoodHeights.v1/
+    state: in-progress
+    remaining_holes: 1
 - id: lemma_12_2
   declaration: ZetaGoodHeights.v1.lemma_12_2
   challenge: ZetaGoodHeights.v1.challenge_lemma_12_2
@@ -71,6 +75,10 @@ conclusions:
       is Mathlib's IsCompact.inter_riemannZetaZeros_finite, so ZetaZeroes.v1 is not imported.
   designated: montgomery-vaughan
 
+  progress:
+    solution: Solutions/ZetaGoodHeights.v1/
+    state: in-progress
+    remaining_holes: 1
 sources:
 - title: "Multiplicative Number Theory I: Classical Theory"
   authors: ["Hugh L. Montgomery", "Robert C. Vaughan"]

@@ -1,0 +1,13 @@
+{
+  "challenge_module": "IEANTN.Nodes.WeilExplicitFormula.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "WeilExplicitFormula.v1.challenge_theorem_12_13"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
