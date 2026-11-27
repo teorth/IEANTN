@@ -51,6 +51,14 @@ conclusions:
       no other result in the network. PrimeNumberTheoremAnd carries the same datum as a deliberate `sorry`
       in its FKS2TrustedNumerics -- it has no import mechanism, so its FKS2 development reports sorryAx.
       Stating it here is what lets FKS2.v1's solution rest on the same computation without a hole.
+  - id: proved-pi-floor
+    kind: bridged
+    from: FKS2PiFloor.v1.table6_row2_floor
+    bridge: IEANTN/Bridges/FKS2Numerics/PiFloor.lean
+    note: >-
+      The identical statement, proved separately in Solutions/FKS2PiFloor.v1.
+      Not designated until that node has a verification receipt: the existing
+      numerical evidence must not be replaced by an unverified leaf.
   designated: fks2-computation
 - id: nu_asymp_e30_le
   declaration: FKS2Numerics.v1.nu_asymp_e30_le
@@ -75,6 +83,26 @@ conclusions:
       Found by porting, not by reading. FKS2.v1.corollary_14 recorded three imports and needed five;
       this is one of the two nobody had written down.
   designated: fks2-multiplier-computation
+  refuted:
+    issue: 273
+    counterexample: >-
+      With R = 5.5666305, A_psi = 121.096, and floor(30 / log 2) = 43:
+      f(exp 30) = sum_{k=3}^{43} exp(30*(1/k - 1/3)) = 1.1210561404...,
+      f(2^44) = 1.1145147861..., so a2(30) = (1 + 1.93378e-8) * f(exp 30) = 1.1210561621....
+      Substituting into nuAsympE30 gives 6.3380932222...e-7, exceeding margin 0 * 6.3376e-7 =
+      6.3376e-7 by 4.9322...e-11 (already exceeded using only k = 3..7 of f(exp 30), where
+      the partial sum gives 6.337643...e-7). Formally refuted in Solutions/FKS2NuAsymp.v1
+      (FKS2NuAsymp.v1.nu_asymp_e30_gt).
+    note: >-
+      Faithful to the paper and false in the paper. In the arXiv:2206.12557 LaTeX source
+      (New_Bounds_on_Pi-Revised-RNTB-May2023.tex), the commented-out earlier draft at lines
+      222-227 used A_psi = 121.1070, at which nu_asymp(e^30) = 6.33751754...e-7 <= 6.3376e-7.
+      When the authors lowered A_psi to 121.096 in the final proof of Corollary 14 (lines
+      813-818, carried verbatim into Res. Number Theory 9 (2023), Paper No. 63), they did not
+      recompute nu_asymp(e^30), which scales as 1/A_psi and rose to 6.33809322...e-7.
+      Corollary 14 itself (A_theta = 121.0961) is unaffected, since
+      121.096 * (1 + 6.3381e-7) = 121.09607675... < 121.0961.
+    corrected: FKS2NuAsymp.v1.nu_asymp_e30_le
 - id: theta_asymp_ge_one_below_e30
   declaration: FKS2Numerics.v1.theta_asymp_ge_one_below_e30
   challenge: FKS2Numerics.v1.challenge_theta_asymp_ge_one_below_e30
@@ -100,6 +128,14 @@ conclusions:
 
       Found by porting, not by reading -- the second of the two missing imports of
       FKS2.v1.corollary_14.
+  - id: proved-floor
+    kind: bridged
+    from: FKS2ThetaFloor.v1.theta_asymp_ge_one_below_e30
+    bridge: IEANTN/Bridges/FKS2Numerics/ThetaFloor.lean
+    note: >-
+      The same statement, proved as FKS2ThetaFloor.v1. Not designated: that node is still
+      none-yet, and designating this bridge would replace the numerical leaf with an unverified
+      one. Designate it once the receipt exists.
   designated: fks2-small-range-computation
 - id: corollary_22_mid_range
   declaration: FKS2Numerics.v1.corollary_22_mid_range

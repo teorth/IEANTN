@@ -1,0 +1,91 @@
+# Node metadata for `FKS2PiFloor.v1`. See docs/NODES.md.
+version: "v0.4"
+
+node:
+  id: FKS2PiFloor.v1
+  family: FKS2PiFloor
+  version: v1
+  kind: computation
+  status: active
+
+project:
+  name: FKS2's small-range prime-counting error floor
+  description: >-
+    The exact Table 6 row-two bound for E_pi on [exp 1, exp 6], split from
+    FKS2Numerics.v1 so a proof of this floor cannot certify its other four conclusions.
+  authors:
+  - Taksh Kothari
+  license: Apache-2.0
+  responsible_maintainers:
+  - Taksh Kothari
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv:
+  - math.NT
+  msc2020:
+  - 11N05
+  - 11Y70
+
+conclusions:
+- id: table6_row2_floor
+  declaration: FKS2PiFloor.v1.table6_row2_floor
+  challenge: FKS2PiFloor.v1.challenge_table6_row2_floor
+  imports: []
+  imports_status: none
+  issue: 258
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      The solution in Solutions/FKS2PiFloor.v1 proves the full continuum bound using
+      kernel-checked quadrature, derivative comparison, and continuous interval
+      certificates on eighty half-open prime-counting cells. This remains none-yet
+      until the verification workflow writes a Comparator/NanoDa receipt.
+  - id: comparator
+    kind: lean-comparator
+    note: 'Comparator accepted the solution. Run: https://github.com/teorth/IEANTN/actions/runs/44990079299'
+  designated: comparator
+
+sources:
+- title: Sharper bounds for the error term in the Prime Number Theorem
+  authors:
+  - Andrew Fiori
+  - Habiba Kadiri
+  - Joshua Swidinsky
+  type: paper
+  id: arXiv:2206.12557
+  location: Sections 5.2-5.3, the small-range check behind Table 6 row 2
+  relationship: formalizes
+  note: >-
+    The statement is identical to FKS2Numerics.v1.table6_row2_floor. All endpoints,
+    constants, the vocabulary's offset Li, and margin 0 are unchanged. No new
+    numerical bound is claimed.
+
+automation:
+  methods:
+  - method: ai-assisted
+    role: >-
+      Developed the analytic reduction and Lean implementation. Numerical searches
+      proposed rational enclosures and subdivision depths only; every retained
+      integral, prime count, and interval certificate is checked by Lean's kernel.
+
+review:
+  status: self-assessed
+  reviewers:
+  - Taksh Kothari
+  notes: >-
+    The proof distinguishes closed analytic cells from half-open arithmetic cells,
+    so prime jumps and both endpoints are included. It checks both signs of the
+    absolute error, not just sampled points. The bridge back stays undesignated
+    pending verification; existing designated evidence is unchanged.
+
+limitations:
+- >-
+  One conclusion only. The other four conclusions of FKS2Numerics.v1 are not proved here.
+- >-
+  This is the existing small-range floor, not a new estimate or a bound above exp 6.
+- >-
+  Comparator and NanoDa verification require the maintainer-approved Linux workflow.

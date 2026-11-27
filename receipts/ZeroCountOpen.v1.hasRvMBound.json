@@ -1,0 +1,32 @@
+{
+  "challenge": "ZeroCountOpen.v1.challenge_hasRvMBound",
+  "conclusion": "ZeroCountOpen.v1.hasRvMBound",
+  "environment": {
+    "lean_toolchain": "leanprover/lean4:v4.34.0-rc2",
+    "mathlib_rev": "71a80585ee495fc24472fd0eaffc89d94e4fd8d6"
+  },
+  "repository": {
+    "commit": "44194ac44769dbdd1552643e483a6f3425c65bce"
+  },
+  "run": {
+    "recorded_at": "2026-11-26T20:00:13Z",
+    "workflow_run": "https://github.com/teorth/IEANTN/actions/runs/45880780057"
+  },
+  "schema": 2,
+  "solution": {
+    "dependencies": [],
+    "project": "Solutions/ZeroCountOpen.v1"
+  },
+  "statement": {
+    "ZeroCount.v1.rvm_error_bound": "5593f2903bba21a0a152a55bd53f0a3d269c616d064430c23d23c566d1560f48",
+    "ZeroCountOpen.v1.hasRvMBound": "e5d2e5ec4ab32ca4ffd09cbff7249863a7e6006c5713d01ba10a217375d47b55",
+    "ZetaZeroes.v1.finite_zeroes_on_compact": "8b46117beaf9ec969928890d242e090dc626121c41d5746adc57a92bf520dec6",
+    "ZetaZeroes.v1.zeroes_off_axis_in_strip": "6735853d24d496f4e7a6c64fbaeb3a5a7df155f0c794350cb042cc1e9e7edc2e"
+  },
+  "tools": {
+    "comparator": "10dd2b33dc43751af3257f4d684535375306f162",
+    "landrun": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export": "cacf989bd75f608700820f6afc595f32e7a99a4d",
+    "nanoda": "68d5ca9db226849b41a6fff59d796ff19d0a8840"
+  }
+}

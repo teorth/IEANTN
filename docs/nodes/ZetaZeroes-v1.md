@@ -83,7 +83,7 @@ def zeroes_off_axis_in_strip : Prop :=
 | Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`ZeroCountOpen.v1.hasRvMBound`](ZeroCountOpen-v1.md#hasRvMBound), [`ZeroCountOpen.v1.ioc_bound_to_ioo`](ZeroCountOpen-v1.md#ioc_bound_to_ioo), [`ZeroCountOpen.v1.rvm_error_bound_open`](ZeroCountOpen-v1.md#rvm_error_bound_open) |
 
 **Justification `unjustified`** — none-yet
 
@@ -120,7 +120,7 @@ def finite_zeroes_on_compact : Prop :=
 | Evidence | verified (`lean-comparator`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
-| Assumed by | nothing yet |
+| Assumed by | [`ZeroCountOpen.v1.hasRvMBound`](ZeroCountOpen-v1.md#hasRvMBound), [`ZeroCountOpen.v1.ioc_bound_to_ioo`](ZeroCountOpen-v1.md#ioc_bound_to_ioo), [`ZeroCountOpen.v1.rvm_error_bound_open`](ZeroCountOpen-v1.md#rvm_error_bound_open) |
 
 **Justification `unjustified`** — none-yet
 
