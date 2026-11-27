@@ -10,9 +10,10 @@ Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) once before your first contrib
 [SECURITY.md](SECURITY.md) states what the repository trusts and why.
 
 > **Status.** Everything below works today except where marked *(planned)*: the `/verify` comment
-> trigger (workflow 3 gives what to do meanwhile), the `build-solution` label (workflow 2), and
-> posting the reviewer report as a pull request comment rather than to the job summary. See
-> [docs/ROADMAP.md](docs/ROADMAP.md).
+> trigger (workflow 3 gives what to do meanwhile) and the `build-solution` label (workflow 2).
+> The reviewer report is still written to the job summary, and
+> [`.github/workflows/review-report.yml`](.github/workflows/review-report.yml) posts that same
+> analysis as one pull request comment after CI succeeds. See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Two principles
 
