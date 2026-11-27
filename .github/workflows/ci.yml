@@ -184,11 +184,11 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: No pull request writes the generated views
-        env:
-          BASE: ${{ github.event.pull_request.base.sha }}
         run: |
           set -euo pipefail
-          changed=$(git diff --name-only "$BASE...HEAD" -- STATE.md GRAPH.md docs/graph.html docs/nodes)
+          # The checkout is a synthetic merge. Compare its target and PR head so a stale
+          # event base cannot attribute upstream-generated views to this pull request.
+          changed=$(git diff --name-only "HEAD^1...HEAD^2" -- STATE.md GRAPH.md docs/graph.html docs/nodes)
           if [ -z "$changed" ]; then
             echo "The generated views are untouched, as they should be."
             exit 0
