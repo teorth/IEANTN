@@ -1,0 +1,14 @@
+{
+  "challenge_module": "IEANTN.Nodes.FKSRescaling.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "FKSRescaling.v1.challenge_rescaled_A_exceeds_printed",
+    "FKSRescaling.v1.challenge_rescaled_C_is_short_of_two"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

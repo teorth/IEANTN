@@ -139,6 +139,14 @@ conclusions:
       The all-x bridge calls that theorem rather than repeating the arithmetic. The core lake build
       compiles the file. The designated kind stays numerical: there is no Comparator receipt, and
       the paper's own check is still the citation.
+  - id: proved-rescaling
+    kind: bridged
+    from: FKSRescaling.v1.rescaled_A_exceeds_printed
+    bridge: IEANTN/Bridges/FKS/Rescaling.lean
+    note: >-
+      The same statement, proved as FKSRescaling.v1. Not designated: that node is still none-yet,
+      and designating this bridge would replace the numerical leaf with an unverified one.
+      Designate it once the receipt exists.
   designated: fks-rescaling-A
 - id: rescaled_C_is_short_of_two
   declaration: FKS.v1.rescaled_C_is_short_of_two
@@ -155,6 +163,13 @@ conclusions:
       decay is a strengthening of the rescaling rather than a rounding of it.
       Proved as IEANTN.Bridges.FKS.rescaled_C_is_short_of_two in the same bridge file, from
       sqrt R < 2.3593708. The rescaling uses the strict inequality to compare the exponentials.
+  - id: proved-rescaling
+    kind: bridged
+    from: FKSRescaling.v1.rescaled_C_is_short_of_two
+    bridge: IEANTN/Bridges/FKS/Rescaling.lean
+    note: >-
+      The same statement, proved as FKSRescaling.v1. Not designated, for the same reason as on
+      rescaled_A_exceeds_printed. Designate it once the receipt exists.
   designated: fks-rescaling-C
 sources:
 - title: "Sharper bounds for the Chebyshev function psi(x)"
