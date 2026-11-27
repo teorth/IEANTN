@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import math
 import pathlib
 import sys
 from collections import deque
@@ -259,6 +260,52 @@ def impact(before, after):
                          "witness_paths": paths, "repair_advice": repairs})
     return {"schema_version": 1, "changes": findings}
 
+
+def refresh_plan(graph, costs=None, budget=None):
+    """Choose whole-node runs; unknown historical costs never silently fit a finite budget."""
+    costs = {} if costs is None else costs
+    if not isinstance(costs, dict):
+        raise ValueError("costs must map node identifiers to seconds")
+    for node, seconds in costs.items():
+        if not isinstance(node, str) or type(seconds) not in {int, float} or not math.isfinite(seconds) or seconds <= 0:
+            raise ValueError("cost estimates must be finite positive seconds")
+    if budget is not None and (type(budget) not in {int, float} or
+                               not math.isfinite(budget) or budget <= 0):
+        raise ValueError("budget must be finite positive seconds")
+    urgency = {"BROKEN": 0, "churn": 1, "orange": 2, "yellow": 3}
+    candidates = {}
+    for key, entry in graph.records.items():
+        receipt = entry.get("receipt")
+        state = receipt.get("state") if isinstance(receipt, dict) else None
+        if state not in urgency:
+            continue
+        node = entry["node"]
+        item = candidates.setdefault(node, {"node": node, "conclusions": [],
+                                            "states": set(), "downstream": set()})
+        item["conclusions"].append(key)
+        item["states"].add(state)
+        item["downstream"].update(graph.downstream(key))
+    used, proposed = 0.0, []
+    for item in sorted(candidates.values(), key=lambda c: (
+            min(urgency[state] for state in c["states"]), -len(c["downstream"]), c["node"])):
+        node, estimate = item["node"], costs.get(item["node"])
+        selected = budget is None or estimate is not None and used + estimate <= budget
+        reason = "selected"
+        if not selected:
+            reason = "unknown-cost" if estimate is None else "over-budget"
+        if selected and estimate is not None:
+            used += estimate
+        proposed.append({
+            "node": node, "states": sorted(item["states"]),
+            "reasons": sorted(item["conclusions"]),
+            "covers": sorted(key for key, entry in graph.records.items() if entry["node"] == node),
+            "downstream_reach": len(item["downstream"]),
+            "estimated_seconds": estimate, "selected": selected, "decision": reason,
+        })
+    return {"schema_version": 1, "budget_seconds": budget,
+            "known_selected_seconds": used, "runs": proposed, "dispatches": False,
+            "costs_are_estimates": True}
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=pathlib.Path, help="evidence JSON; default stdin")
@@ -270,6 +317,9 @@ def main():
     compare.add_argument("--justification", required=True)
     changed = sub.add_parser("impact")
     changed.add_argument("--base", type=pathlib.Path, required=True)
+    refresh = sub.add_parser("refresh-plan")
+    refresh.add_argument("--costs", type=pathlib.Path)
+    refresh.add_argument("--budget", type=float)
     args = parser.parse_args()
     try:
         if args.input:
@@ -284,6 +334,12 @@ def main():
         elif args.command == "impact":
             with args.base.open(encoding="utf-8") as stream:
                 result = impact(EvidenceGraph(load_document(stream)), graph)
+        elif args.command == "refresh-plan":
+            costs = None
+            if args.costs:
+                with args.costs.open(encoding="utf-8") as stream:
+                    costs = load_document(stream)
+            result = refresh_plan(graph, costs, args.budget)
         else:
             raise ValueError(args.command)
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True, allow_nan=False))

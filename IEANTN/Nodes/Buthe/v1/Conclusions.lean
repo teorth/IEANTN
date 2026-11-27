@@ -74,11 +74,18 @@ needs. Büthe notes that it also pushes the lower bound for the Skewes number to
 def theorem_2_li_gt_pi : Prop :=
   ∀ x : ℝ, 2 ≤ x → x ≤ 10 ^ (19 : ℕ) → 0 < li x - primeCounting x
 
-/-- **Table 1 / Equation (6.2).** If `(x, M⁻, M⁺)` is a row of Table 1, then
+/-- **Table 1.** If `(x, M⁻, M⁺)` is a row of Table 1, then
 `M⁻ ≤ (t − ψ(t)) / √t ≤ M⁺` for every `t ∈ [x, 2x]`.
 
 This is the claim *about* `Tables.lean`, the same shape as PNT+'s `eq_6_2`. The last row's
-`2x` exceeds `10¹⁹`; the table still records it because that is what the paper prints. -/
+`2x` exceeds `10¹⁹`; the table still records it because that is what the paper prints.
+
+What the rows claim is fixed by the table's **caption** — "Upper and lower bounds `M_ψ^±(x)` for
+`(t − ψ(t))/√t` in `[x, 2x]`" — which carries no equation number. This docstring previously called
+the conclusion "Table 1 / Equation (6.2)". That was wrong: (6.2) is the paper's
+Eratosthenes-sieve bound `−0.8 ≤ R_ψ(t) ≤ 0.81` on `100 ≤ t ≤ 5·10¹⁰`, which is
+`ButheNumerics.v1.eq_6_2`, a different claim stated in the text beside the table. See issue
+#271. -/
 def table_1_interval_bounds : Prop :=
   ∀ p ∈ table_1, ∀ t : ℝ,
     p.1 ≤ t → t ≤ 2 * p.1 →

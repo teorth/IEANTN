@@ -134,6 +134,11 @@ conclusions:
       A-gap recorded on psi_bound_all_x: the rescaling overshoots 121.096, so the classical bound is
       not derivable from the all-x bound by converting R. The preprint's proof of Lemma 5.3 checks
       the other direction, 121.096 / R^{3/2} < 9.22022, which is the same inequality.
+      Proved as IEANTN.Bridges.FKS.rescaled_A_exceeds_printed in
+      IEANTN/Bridges/FKS/ClassicalToAllX.lean, from sqrt R > 2.3593705 and a norm_num product.
+      The all-x bridge calls that theorem rather than repeating the arithmetic. The core lake build
+      compiles the file. The designated kind stays numerical: there is no Comparator receipt, and
+      the paper's own check is still the citation.
   designated: fks-rescaling-A
 - id: rescaled_C_is_short_of_two
   declaration: FKS.v1.rescaled_C_is_short_of_two
@@ -148,6 +153,8 @@ conclusions:
     note: >-
       The companion gap in C. 0.8476836 * sqrt(R) is strictly less than 2, so the printed classical
       decay is a strengthening of the rescaling rather than a rounding of it.
+      Proved as IEANTN.Bridges.FKS.rescaled_C_is_short_of_two in the same bridge file, from
+      sqrt R < 2.3593708. The rescaling uses the strict inequality to compare the exponentials.
   designated: fks-rescaling-C
 sources:
 - title: "Sharper bounds for the Chebyshev function psi(x)"
@@ -180,7 +187,9 @@ review:
 
 limitations:
 - >-
-  Both conclusions rest on the cited paper; neither is proved in Lean here.
+  The two analytic bounds rest on the cited paper; neither is proved in Lean here. The two
+  rescaling comparisons are proved in IEANTN/Bridges/FKS/ClassicalToAllX.lean and are what
+  Lemma 5.3's "we now simply verify" step is.
 - >-
   Numbering, settled in #52. The published version and arXiv:2204.02588v2 and v3 number the all-x bound
   Corollary 1.4 and have no Corollary 1.3. The "[8, Corollary 1.3]" that FKS2 cites is the arXiv v1

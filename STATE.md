@@ -7,18 +7,18 @@ column says what a receipt is presently worth, not merely what was claimed for i
 reason a receipt has stopped standing is below, and `python scripts/ieantn.py status`
 adds the environment detail.
 
-81 node version(s), 186 conclusion(s).  2 state nothing yet.
+94 node version(s), 204 conclusion(s).  2 state nothing yet.
 
 ## Evidence
 
 | Designated justification | Conclusions |
 |---|---:|
 | `asserted` | 1 |
-| `bridged` | 4 |
-| `lean-comparator` | 51 |
+| `bridged` | 6 |
+| `lean-comparator` | 69 |
 | `literature` | 62 |
-| `none-yet` | 36 |
-| `numerical` | 32 |
+| `none-yet` | 35 |
+| `numerical` | 31 |
 
 ## Nodes
 
@@ -42,7 +42,7 @@ adds the environment detail.
 | `Buthe.v1` | active | `theorem_2_li_gt_pi` | literature | 4 | - |
 | `Buthe.v1` | active | `table_1_interval_bounds` | literature | 0 | - |
 | `Buthe.v1` | active | `table_2_interval_bounds` | literature | 0 | - |
-| `Buthe.v2` | awaiting-solution | `lemma_3_bounds` | none-yet | 0 | #56 |
+| `Buthe.v2` | awaiting-solution | `lemma_3_bounds` | refuted | 0 | #56 |
 | `Buthe.v2` | awaiting-solution | `lemma_3_positivity` | none-yet | 0 | #56 |
 | `Buthe2016.v1` | stub | `theorem_2_psi` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_2_theta` | literature | 0 | - |
@@ -50,11 +50,12 @@ adds the environment detail.
 | `Buthe2016.v1` | stub | `theorem_2_li_minus_pi` | literature | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_1_table1` | numerical | 0 | - |
 | `Buthe2016.v1` | stub | `theorem_1_table2` | numerical | 0 | - |
-| `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | numerical | 0 | - |
+| `ButheNumerics.v1` | stub | `lemma_3_constant_nonpos` | bridged | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_pi_below_1e7` | numerical | 0 | - |
-| `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | numerical | 0 | - |
+| `ButheNumerics.v1` | stub | `lemma_3_constant_gt_at_10` | refuted | 0 | - |
 | `ButheNumerics.v1` | stub | `eq_6_2` | numerical | 0 | - |
 | `ButheNumerics.v1` | stub | `li_minus_riemann_pi_below_1e7` | numerical | 0 | - |
+| `ButheNumerics.v2` | active | `lemma_3_constant_nonpos` | lean-comparator | 0 | - |
 | `CH2.v1` | active | `corollary_1_2_psi` | lean-comparator | 13 | - |
 | `CH2.v1` | active | `corollary_1_2_lambda_sum` | lean-comparator | 13 | - |
 | `CH2.v1` | active | `corollary_1_3_psi` | lean-comparator | 3 | - |
@@ -69,8 +70,9 @@ adds the environment detail.
 | `Chebyshev.v1` | active | `psi_le_small` | lean-comparator | 0 | - |
 | `Chebyshev.v1` | active | `psi_upper_clean` | lean-comparator | 1 | - |
 | `ChebyshevNumerics.v1` | active | `psi_le_below_11723` | bridged | 0 | - |
+| `ChebyshevNumerics.v2` | active | `psi_le_all` | bridged | 0 | - |
 | `ChengGraham2004.v1` | stub | *(none yet)* | - | - | - |
-| `CotangentSeries.v1` | awaiting-solution | `cot_series_zeta_values` | none-yet | 0 | - |
+| `CotangentSeries.v1` | active | `cot_series_zeta_values` | lean-comparator | 0 | #257 |
 | `DudekPlatt.v1` | stub | `ramanujan_inequality` | literature | 2 | - |
 | `DudekPlatt.v1` | stub | `largest_counterexample_on_rh` | literature | 0 | - |
 | `DudekPlatt.v2` | active | `ramanujan_inequality_3915` | lean-comparator-stale | 2 | #54 |
@@ -99,11 +101,15 @@ adds the environment detail.
 | `FKS2.v1` | active | `corollary_26` | lean-comparator-stale | 10 | - |
 | `FKS2.v2` | active | `proposition_13` | lean-comparator-stale | 0 | - |
 | `FKS2.v2` | active | `theorem_3` | lean-comparator-stale | 0 | - |
+| `FKS2NuAsymp.v1` | active | `nu_asymp_e30_le` | lean-comparator | 0 | #273 |
+| `FKS2NuAsymp.v1` | active | `nu_asymp_e30_gt` | lean-comparator | 0 | #273 |
 | `FKS2Numerics.v1` | stub | `table6_row2_floor` | numerical | 0 | - |
-| `FKS2Numerics.v1` | stub | `nu_asymp_e30_le` | numerical | 0 | - |
+| `FKS2Numerics.v1` | stub | `nu_asymp_e30_le` | refuted | 0 | - |
 | `FKS2Numerics.v1` | stub | `theta_asymp_ge_one_below_e30` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `corollary_22_mid_range` | numerical | 0 | - |
 | `FKS2Numerics.v1` | stub | `corollary_23_mid_range` | numerical | 0 | - |
+| `FKS2PiFloor.v1` | active | `table6_row2_floor` | lean-comparator | 0 | #258 |
+| `FKS2ThetaFloor.v1` | active | `theta_asymp_ge_one_below_e30` | lean-comparator | 0 | #232 |
 | `FKSNumerics.v1` | stub | `psi_classical_mid_range` | numerical | 0 | - |
 | `FKSNumerics.v1` | stub | `psi_classical_above_e200000` | literature | 3 | - |
 | `GammaAsymptotics.v1` | awaiting-solution | `digamma_sub_log_isBigO` | none-yet | 0 | #64 |
@@ -153,6 +159,15 @@ adds the environment detail.
 | `RosserSchoenfeld.v1` | stub | `zero_free_region_classical` | bridged | 0 | - |
 | `RosserSchoenfeld.v2` | active | `psi_error_b23` | lean-comparator | 0 | - |
 | `RosserSchoenfeld1962.v1` | active | `equation_3_35` | lean-comparator | 0 | #164 |
+| `RosserSchoenfeld1962.v2` | active | `psi_ratio_maximum_at_113` | lean-comparator | 1 | - |
+| `RosserSchoenfeld1962.v2` | active | `psi_ratio_unique_maximum_at_113` | lean-comparator | 1 | - |
+| `RosserSchoenfeld1962.v3` | active | `equation_3_8` | lean-comparator | 1 | - |
+| `RosserSchoenfeld1962.v4` | active | `psi_sub_theta_ratio_maximum_at_361` | lean-comparator | 1 | - |
+| `RosserSchoenfeld1962.v4` | active | `equation_3_36` | lean-comparator | 1 | - |
+| `RosserSchoenfeld1962.v5` | active | `equation_5_4` | lean-comparator | 1 | - |
+| `RosserSchoenfeld1962.v6` | active | `theorem_25` | lean-comparator | 1 | - |
+| `RosserSchoenfeld1962.v7` | active | `equation_3_9` | lean-comparator | 0 | - |
+| `RosserSchoenfeld1962.v8` | active | `equation_3_19` | lean-comparator | 0 | - |
 | `Schoenfeld1976.v1` | stub | `psi_theorem_11` | literature | 0 | - |
 | `Schoenfeld1976.v1` | stub | `theta_theorem_11` | literature | 0 | - |
 | `Schoenfeld1976.v1` | stub | `psi_upper_theorem_11` | literature | 0 | - |
@@ -166,6 +181,9 @@ adds the environment detail.
 | `Wedeniwski.v1` | stub | `rh_up_to` | asserted | 0 | - |
 | `ZeroCount.v1` | stub | `rvm_error_bound` | literature | 0 | #64 |
 | `ZeroCount.v1` | stub | `rvm_error_small` | literature | 0 | #64 |
+| `ZeroCountOpen.v1` | active | `ioc_bound_to_ioo` | lean-comparator | 2 | #261 |
+| `ZeroCountOpen.v1` | active | `rvm_error_bound_open` | lean-comparator | 3 | #261 |
+| `ZeroCountOpen.v1` | active | `hasRvMBound` | lean-comparator | 3 | #261 |
 | `ZeroFreeHeight.v1` | active | `classical_region_descends` | lean-comparator-stale | 0 | #30 |
 | `ZetaHadamard.v1` | active | `logDeriv_partial_fractions` | literature | 0 | - |
 | `ZetaLogDeriv.v1` | active | `logDeriv_functional_equation` | lean-comparator | 0 | #64 |
@@ -247,16 +265,20 @@ downstream.
 | Conclusion | Dependants |
 |---|---:|
 | `PlattTrudgian.v1.rh_up_to` | 8 |
+| `RosserSchoenfeld1962.v1.equation_3_35` | 7 |
 | `FKBJ.v1.rh_up_to` | 6 |
 | `Buthe.v1.theorem_2_theta_lower` | 6 |
 | `MT.v1.zero_free_region_sharpened` | 5 |
 | `KLN.v1.subconvexity_bound` | 5 |
+| `ZeroCount.v1.rvm_error_bound` | 4 |
 | `FKS2Numerics.v1.theta_asymp_ge_one_below_e30` | 4 |
 | `FKS2Numerics.v1.nu_asymp_e30_le` | 4 |
 | `FKS2.v2.proposition_13` | 4 |
 | `FKS.v1.psi_classical_bound` | 4 |
 | `BKLNW.v1.theta_error_le_one` | 4 |
 | `BKLNW.v1.corollary_5_1` | 4 |
+| `ZetaZeroes.v1.zeroes_off_axis_in_strip` | 3 |
+| `ZetaZeroes.v1.finite_zeroes_on_compact` | 3 |
 | `RamareSaouter2003.v1.prime_in_short_interval` | 3 |
 | `PlattTrudgian2021.v1.theorem_1_numerical` | 3 |
 | `MT.v1.zero_free_region` | 3 |
@@ -273,7 +295,6 @@ downstream.
 | `ZetaLogDeriv.v1.logDeriv_functional_equation` | 2 |
 | `ZetaHadamard.v1.logDeriv_partial_fractions` | 2 |
 | `ZeroCount.v1.rvm_error_small` | 2 |
-| `ZeroCount.v1.rvm_error_bound` | 2 |
 | `PlattZeroSum.v1.inv_ordinate_sum_le` | 2 |
 | `PlattTrudgian.v1.rh_up_to_exact` | 2 |
 | `OliveiraESilva2014.v1.even_up_to_4e18` | 2 |

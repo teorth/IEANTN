@@ -181,11 +181,18 @@ def theorem_2_li_gt_pi : Prop :=
 
 ### `table_1_interval_bounds`
 
-**Table 1 / Equation (6.2).** If `(x, M⁻, M⁺)` is a row of Table 1, then
+**Table 1.** If `(x, M⁻, M⁺)` is a row of Table 1, then
 `M⁻ ≤ (t − ψ(t)) / √t ≤ M⁺` for every `t ∈ [x, 2x]`.
 
 This is the claim *about* `Tables.lean`, the same shape as PNT+'s `eq_6_2`. The last row's
 `2x` exceeds `10¹⁹`; the table still records it because that is what the paper prints.
+
+What the rows claim is fixed by the table's **caption** — "Upper and lower bounds `M_ψ^±(x)` for
+`(t − ψ(t))/√t` in `[x, 2x]`" — which carries no equation number. This docstring previously called
+the conclusion "Table 1 / Equation (6.2)". That was wrong: (6.2) is the paper's
+Eratosthenes-sieve bound `−0.8 ≤ R_ψ(t) ≤ 0.81` on `100 ≤ t ≤ 5·10¹⁰`, which is
+`ButheNumerics.v1.eq_6_2`, a different claim stated in the text beside the table. See issue
+#271.
 
 ```lean
 def table_1_interval_bounds : Prop :=
@@ -199,15 +206,15 @@ def table_1_interval_bounds : Prop :=
 |---|---|
 | Lean name | `Buthe.v1.table_1_interval_bounds` |
 | Challenge | `Buthe.v1.challenge_table_1_interval_bounds` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L82) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L89) |
 | Evidence | cited (`literature`) |
 | Sources traced | traced |
 | Assumes | nothing recorded |
 | Assumed by | nothing yet |
 
-**Justification `buthe-paper`** — **designated** — literature, Table 1, Equation (6.2)
+**Justification `buthe-paper`** — **designated** — literature, Table 1 and its caption, "Upper and lower bounds M_psi^pm(x) for (t - psi(t))/sqrt(t) in [x, 2x]"
 
-> Asserted on the authority of the paper. The entries are in Tables.lean, copied from the PNT+ transcription of Table 1 (31 rows) and checked at the first and last printed blocks. Equation (6.2) is the paper's own reading of the table: each row (x, M-, M+) bounds (t - psi(t))/sqrt(t) on [x, 2x]. No external node is an input; the table is Buthe's computation.
+> Asserted on the authority of the paper. The entries are in Tables.lean, copied from the PNT+ transcription of Table 1 (31 rows) and checked at the first and last printed blocks. What each row (x, M-, M+) claims -- a bound on (t - psi(t))/sqrt(t) on [x, 2x] -- is fixed by the table's CAPTION, which carries no equation number. No external node is an input; the table is Buthe's computation. This locator previously read "Table 1, Equation (6.2)", which misnamed the source: in arXiv:1511.02032v2 (6.2) is a different claim, the Eratosthenes-sieve bound -0.8 <= R_psi(t) <= 0.81 for 100 <= t <= 5e10, and it is stated in the text alongside the table rather than being a reading of it. ButheNumerics.v1.eq_6_2 uses (6.2) in the paper's sense, so the two nodes previously disagreed about what (6.2) was. Checked first hand against the arXiv LaTeX source, where the label e:psi-bounds-eratosthenes sits on the sieve bound. See issue #271.
 
 ### `table_2_interval_bounds`
 
@@ -230,7 +237,7 @@ def table_2_interval_bounds : Prop :=
 |---|---|
 | Lean name | `Buthe.v1.table_2_interval_bounds` |
 | Challenge | `Buthe.v1.challenge_table_2_interval_bounds` |
-| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L94) |
+| Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/Buthe/v1/Conclusions.lean#L101) |
 | Evidence | cited (`literature`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
