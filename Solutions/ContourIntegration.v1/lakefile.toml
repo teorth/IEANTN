@@ -1,0 +1,14 @@
+name = "solution_ContourIntegration_v1"
+defaultTargets = ["ResidueRectangle", "Solution"]
+
+[[require]]
+name = "IEANTN"
+path = "../.."
+
+[[lean_lib]]
+name = "ResidueRectangle"
+roots = ["ResidueRectangle"]
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
