@@ -2738,12 +2738,110 @@ def display_kind(conclusion_key: str, conclusion: dict) -> str:
     return _RECEIPT_DISPLAY.get(state[0], "lean-comparator-drifted")
 
 
+#: Status lights strongest first. Used to pick the *weakest* conclusion a bridge rests on, which
+#: is what the bridged conclusion can claim. `-` is last because a source nobody has verified
+#: leaves a bridge nothing to inherit; `BROKEN` and `refuted` rank above it only in being known
+#: bad rather than merely unchecked. All three stop a bridge short of verified.
+LIGHT_STRENGTH = {
+    "green": 0, "yellow": 1, "orange": 2, "churn": 3, "BROKEN": 4, "refuted": 5, "-": 6,
+}
+
+
+def net_light(conclusion_key: str, index: dict[str, dict], fingerprints: dict[str, str],
+              cache: dict[str, tuple[str, str]] | None = None,
+              stack: tuple[str, ...] = (), *,
+              consult_history: bool = True) -> tuple[str, str]:
+    """One conclusion's status, following a `bridged` designation through to what it rests on.
+
+    A conclusion with its own receipt is graded by `assess`. A `bridged` one has no receipt of its
+    own, and used to be reported as `-` -- the same marker as a bare citation. That understated it
+    badly: a bridge is an ordinary Lean theorem living in `IEANTN/Bridges/`, inside the core build,
+    so it is `sorry`-free and re-checked on every push. What it proves is exactly as good as what
+    it consumes, so its light is the weakest light among its bridge sources.
+
+    **Bridge sources, not the conclusion's declared imports**, and the difference is load-bearing.
+    Imports are the hypotheses of a conditional theorem, and `assess` deliberately does not
+    downgrade a receipt because a hypothesis is unproved -- a challenge states an implication, and
+    the implication is what Comparator verified. Propagating import status here would contradict
+    that and would grade most of the network as unverified, including every conclusion whose
+    receipt is green precisely because it is conditional.
+
+    Memoised, and the `stack` guard means a malformed cycle degrades to `-` rather than recursing
+    forever. `check` already refuses cycles in the designated-transport graph, so this only has to
+    avoid making a broken network unreportable.
+
+    `consult_history` is forwarded to `assess` and carries its meaning: telling `churn` from
+    `BROKEN` means asking git whether a file changed since the receipt's commit, which is not
+    reproducible where the commit is unreachable. `status` runs in a real clone and asks; a caller
+    that needs a verdict independent of git history passes `False`.
+    """
+    if cache is None:
+        cache = {}
+    if conclusion_key in cache:
+        return cache[conclusion_key]
+    if conclusion_key in stack:
+        return "-", f"bridge cycle through `{conclusion_key}`; `check` refuses this"
+    conclusion = index.get(conclusion_key)
+    if conclusion is None:
+        return "-", f"`{conclusion_key}` is not a conclusion in this network"
+
+    if conclusion.get("refuted"):
+        issue = conclusion["refuted"].get("issue")
+        verdict = ("refuted", "false as stated" + (f"; see #{issue}" if issue else ""))
+    else:
+        kind = designated_kind(conclusion)
+        if kind == "lean-comparator":
+            receipt = load_receipt(conclusion_key)
+            verdict = (
+                ("BROKEN", "designated `lean-comparator` but no receipt file")
+                if receipt is None
+                else assess(conclusion_key, receipt, fingerprints,
+                            consult_history=consult_history,
+                            imports=imported_conclusion_keys(conclusion))
+            )
+        elif kind == "bridged":
+            sources = bridge_sources(designated_of(conclusion) or {})
+            if not sources:
+                verdict = ("-", "designated `bridged` but the bridge names no source")
+            else:
+                graded = [
+                    (net_light(source, index, fingerprints, cache,
+                               stack + (conclusion_key,),
+                               consult_history=consult_history), source)
+                    for source in sources
+                ]
+                (light, detail), worst = max(
+                    graded, key=lambda pair: LIGHT_STRENGTH[pair[0][0]]
+                )
+                if light == "green":
+                    others = f" and {len(sources) - 1} other(s)" if len(sources) > 1 else ""
+                    verdict = (light, f"proved in the core build by a bridge from "
+                                      f"`{worst}`{others}, verified")
+                else:
+                    verdict = (light, f"bridge rests on `{worst}`, which is {light}: {detail}")
+        elif kind == NONCOMPLIANT_KIND:
+            verdict = ("-", "a Lean proof this network has not certified; see its `note`")
+        else:
+            verdict = ("-", f"not Lean-verified here; designated `{kind}`")
+    cache[conclusion_key] = verdict
+    return verdict
+
+
 def status() -> bool:
     """The traffic light for every conclusion."""
     nodes = load_nodes()
     fingerprints = compute_fingerprints()
     lights = {"green": 0, "yellow": 0, "orange": 0, "churn": 0,
               "BROKEN": 0, "refuted": 0, "-": 0}
+    # A bridged conclusion's light comes from what its bridge rests on, which may be in another
+    # node, so the whole network has to be in hand before any of it can be graded. One cache for
+    # the run: a chain of bridges onto the same source would otherwise re-grade it per hop.
+    index = {
+        f"{node_id}.{conclusion.get('id')}": conclusion
+        for node_id, node in nodes.items()
+        for conclusion in conclusions_of(node)
+    }
+    cache: dict[str, tuple[str, str]] = {}
 
     print("Conclusion status")
     print("=" * 78)
@@ -2766,6 +2864,15 @@ def status() -> bool:
                 corrected = refuted.get("corrected")
                 detail += f". Corrected by `{corrected}`" if corrected else \
                     ". No corrected version yet"
+                print(f"          {detail}")
+                continue
+            if kind == "bridged":
+                # A bridge is a Lean theorem in the core build, so it is checked on every push and
+                # what it proves is as good as what it consumes. Reporting `-` here put a bridge
+                # from a verified node under the same marker as an unchecked citation.
+                light, detail = net_light(key, index, fingerprints, cache)
+                lights[light] += 1
+                print(f"  {light:<7} {key}")
                 print(f"          {detail}")
                 continue
             if kind == NONCOMPLIANT_KIND:
