@@ -162,6 +162,29 @@ def settled(shell: Shell, number: int, tries: int = 30, pause: float = 10.0) -> 
     return "UNKNOWN"
 
 
+def wait_for_checks(shell: Shell, number: int, rollup: list[dict]) -> str:
+    """Block until this pull request's checks settle, then classify them.
+
+    `gh pr checks --watch` blocks until every check completes. That matters because a Lean build
+    here takes about nine minutes: the first version of this polled inside the attempt loop, so
+    each wait consumed an attempt and the whole budget expired in three and a half minutes with
+    the build still running. The queue then reported "gave up" on two pull requests that were
+    perfectly healthy.
+
+    Its exit code is still not consulted -- nonzero means a failure *or* a run that is merely
+    incomplete, which is the confusion `classify_checks` exists to resolve -- so the rollup is
+    re-read afterwards and decides.
+
+    An empty rollup is the one case not to wait on: a pull request whose workflows have not been
+    approved to run has no checks to complete, and `--watch` would block on something that will
+    never arrive. That returns `PENDING` and the caller's attempt budget handles it.
+    """
+    if not rollup:
+        return PENDING
+    shell.gh("pr", "checks", str(number), "--watch", "--interval", "30")
+    return classify_checks(pull_request(shell, number).get("statusCheckRollup") or [])
+
+
 def failing_run_id(rollup: list[dict]) -> str | None:
     """The Actions run behind the first failing check, if its details URL names one."""
     for entry in rollup:
@@ -235,9 +258,10 @@ def queue(shell: Shell, numbers: list[int], execute: bool, rerun_budget: int = 6
                 break
 
             rollup = pull_request(shell, number).get("statusCheckRollup") or []
-            checks = classify_checks(rollup)
+            checks = wait_for_checks(shell, number, rollup)
+            rollup = pull_request(shell, number).get("statusCheckRollup") or []
             if checks == PENDING:
-                print("  checks still running")
+                print("  no checks have started yet")
                 shell.sleep(pause)
                 continue
             if checks == FAILED:
@@ -254,6 +278,20 @@ def queue(shell: Shell, numbers: list[int], execute: bool, rerun_budget: int = 6
                 print(f"  ABORT #{number}: checks failed")
                 failed.append(number)
                 break
+
+            # Mergeability has to be re-read, because `state` above was taken *before* a wait
+            # that lasts as long as a Lean build. GitHub reports a pull request blocked on its
+            # own pending required checks as `BLOCKED`, and `held_by_policy` reads `BLOCKED` plus
+            # green checks as "a branch policy is holding this" -- which is exactly what a pull
+            # request looks like the instant its checks go green, if you ask before the wait and
+            # answer after it. Deciding from the stale value reports a ready pull request as held
+            # and never merges it. Anything not settled goes back round, where `BEHIND` and the
+            # unexpected states are handled as above; that costs one attempt, which is what the
+            # budget is for.
+            state = settled(shell, number)
+            if state not in {"CLEAN", "BLOCKED"}:
+                print(f"  mergeability moved to {state} while waiting; going round again")
+                continue
 
             if held_by_policy(state, checks, False):
                 print(f"  HELD #{number}: green and up to date, but a branch policy holds it. "

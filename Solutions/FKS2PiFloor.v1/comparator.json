@@ -1,0 +1,13 @@
+{
+  "challenge_module": "IEANTN.Nodes.FKS2PiFloor.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "FKS2PiFloor.v1.challenge_table6_row2_floor"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
