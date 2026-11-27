@@ -9,6 +9,7 @@ import IEANTN.Bridges.ChebyshevNumerics.V2FromEquation335
 import IEANTN.Bridges.DudekPlatt.V4ToV1
 import IEANTN.Bridges.DudekPlattNumerics.V4ToV3
 import IEANTN.Bridges.FKS.ClassicalToAllX
+import IEANTN.Bridges.FKS.Rescaling
 import IEANTN.Bridges.FKS.ThresholdTwo
 import IEANTN.Bridges.FKS2Numerics.PiFloor
 import IEANTN.Bridges.FKS2Numerics.ThetaFloor

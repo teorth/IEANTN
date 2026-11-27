@@ -45,6 +45,7 @@ import IEANTN.Nodes.FKS2Numerics.v1.Challenge
 import IEANTN.Nodes.FKS2PiFloor.v1.Challenge
 import IEANTN.Nodes.FKS2ThetaFloor.v1.Challenge
 import IEANTN.Nodes.FKSNumerics.v1.Challenge
+import IEANTN.Nodes.FKSRescaling.v1.Challenge
 import IEANTN.Nodes.GammaAsymptotics.v1.Challenge
 import IEANTN.Nodes.GammaAsymptotics.v2.Challenge
 import IEANTN.Nodes.Goldbach.v1.Challenge

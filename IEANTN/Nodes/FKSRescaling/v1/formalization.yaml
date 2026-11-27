@@ -1,0 +1,93 @@
+# Node metadata for `FKSRescaling.v1`.  See docs/NODES.md.
+#
+# FKS.v1.rescaled_A_exceeds_printed and FKS.v1.rescaled_C_is_short_of_two on their own, so they
+# can be proved and verified without FKS.v1's two analytic bounds.
+version: "v0.4"
+
+node:
+  id: FKSRescaling.v1
+  family: FKSRescaling
+  version: v1
+  kind: computation
+  status: awaiting-verification
+
+project:
+  name: "The two FKS rescaling comparisons at R = 5.5666305"
+  description: >-
+    FKS.v1.rescaled_A_exceeds_printed and FKS.v1.rescaled_C_is_short_of_two, split out so that they
+    can be proved on their own: 9.22022 * R^(3/2) > 121.096 and 0.8476836 * sqrt(R) < 2 for
+    R = 5.5666305. The other two conclusions of FKS.v1 are the paper's analytic bounds on E_psi and
+    stay literature there.
+  authors: ["Teddy Tennant"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Teddy Tennant"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11N05", "11Y35"]
+
+conclusions:
+- id: rescaled_A_exceeds_printed
+  declaration: FKSRescaling.v1.rescaled_A_exceeds_printed
+  challenge: FKSRescaling.v1.challenge_rescaled_A_exceeds_printed
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      Proved in Solutions/FKSRescaling.v1. Stays none-yet until the verification workflow writes a
+      receipt. The proof: R^(3/2) = R * sqrt(R), and sqrt(R) >= 2.3593707 because
+      2.3593707^2 <= R, so 9.22022 * R^(3/2) >= 121.0960174 > 121.096. The true value is
+      121.09602174..., a margin of 2.2e-5.
+  designated: unjustified
+- id: rescaled_C_is_short_of_two
+  declaration: FKSRescaling.v1.rescaled_C_is_short_of_two
+  challenge: FKSRescaling.v1.challenge_rescaled_C_is_short_of_two
+  imports: []
+  imports_status: none
+  justifications:
+  - id: unjustified
+    kind: none-yet
+    note: >-
+      Proved in Solutions/FKSRescaling.v1. Stays none-yet until the verification workflow writes a
+      receipt. The proof: sqrt(R) <= 2.3593708 because R <= 2.3593708^2, so
+      0.8476836 * sqrt(R) <= 1.99999994 < 2. The true value is 1.99999992..., a margin of 8e-8.
+  designated: unjustified
+
+sources:
+- title: "Sharper bounds for the Chebyshev function psi(x)"
+  authors: ["Andrew Fiori", "Habiba Kadiri", "Joshua Swidinsky"]
+  type: "paper"
+  id: "https://doi.org/10.1016/j.jmaa.2023.127426"
+  location: "J. Math. Anal. Appl. 527 (2023), Paper No. 127426; Corollary 1.4 and the proof of Lemma 5.3"
+  relationship: formalizes
+  note: >-
+    The same statements as FKS.v1.rescaled_A_exceeds_printed and FKS.v1.rescaled_C_is_short_of_two.
+    Nothing is weakened. No value from the paper is an input to the proof.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude Opus 5.5 (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Split the two closed-form comparisons off FKS.v1 and drafted the Lean proofs. The numerical
+      margins were checked independently before the proofs were written.
+
+review:
+  status: self-assessed
+  reviewers: ["Teddy Tennant"]
+  notes: >-
+    The statements are FKS.v1's verbatim; the bridges back are the identity. They are compiled and
+    left undesignated until this node has a receipt.
+
+limitations:
+- >-
+  Two statements only. FKS.v1's two analytic bounds stay on the cited paper there.
+- >-
+  No novelty is claimed. The constants are Fiori, Kadiri and Swidinsky's, and R is Mossinghoff and
+  Trudgian's.
