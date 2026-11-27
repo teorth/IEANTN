@@ -85,6 +85,7 @@ import IEANTN.Nodes.RosserSchoenfeld1962.v8.Challenge
 import IEANTN.Nodes.Schoenfeld1976.v1.Challenge
 import IEANTN.Nodes.Schoenfeld1976Numerics.v1.Challenge
 import IEANTN.Nodes.Trudgian2011.v1.Challenge
+import IEANTN.Nodes.TruncatedPerron.v1.Challenge
 import IEANTN.Nodes.Wedeniwski.v1.Challenge
 import IEANTN.Nodes.ZeroCount.v1.Challenge
 import IEANTN.Nodes.ZeroCountOpen.v1.Challenge

@@ -1,0 +1,15 @@
+{
+  "challenge_module": "IEANTN.Nodes.TruncatedPerron.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "TruncatedPerron.v1.challenge_perron_single_term",
+    "TruncatedPerron.v1.challenge_perron_general",
+    "TruncatedPerron.v1.challenge_perron_psi"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
