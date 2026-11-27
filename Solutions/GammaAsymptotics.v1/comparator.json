@@ -1,0 +1,13 @@
+{
+  "challenge_module": "IEANTN.Nodes.GammaAsymptotics.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "GammaAsymptotics.v1.challenge_digamma_sub_log_isBigO"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

@@ -112,7 +112,7 @@ adds the environment detail.
 | `FKS2ThetaFloor.v1` | active | `theta_asymp_ge_one_below_e30` | lean-comparator | 0 | #232 |
 | `FKSNumerics.v1` | stub | `psi_classical_mid_range` | numerical | 0 | - |
 | `FKSNumerics.v1` | stub | `psi_classical_above_e200000` | literature | 3 | - |
-| `GammaAsymptotics.v1` | awaiting-solution | `digamma_sub_log_isBigO` | none-yet | 0 | #64 |
+| `GammaAsymptotics.v1` | awaiting-verification | `digamma_sub_log_isBigO` | none-yet | 0 | - |
 | `GammaAsymptotics.v2` | active | `digamma_sub_log_isBigO_strip` | lean-comparator | 0 | #64 |
 | `Goldbach.v1` | active | `even_implies_odd` | lean-comparator | 0 | - |
 | `Goldbach.v1` | active | `even_and_gaps_imply_odd` | lean-comparator | 0 | - |

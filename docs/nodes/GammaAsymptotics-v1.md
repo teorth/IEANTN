@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Kind | standard |
-| Status | awaiting-solution |
+| Status | awaiting-verification |
 | Maintainers | Terence Tao |
 | Licence | Apache-2.0 |
 | Review | self-assessed |
@@ -42,6 +42,7 @@ def digamma_sub_log_isBigO : Prop :=
 | Lean name | `GammaAsymptotics.v1.digamma_sub_log_isBigO` |
 | Challenge | `GammaAsymptotics.v1.challenge_digamma_sub_log_isBigO` |
 | Source | [Conclusions.lean](https://github.com/teorth/IEANTN/blob/main/IEANTN/Nodes/GammaAsymptotics/v1/Conclusions.lean#L63) |
+| Solution | [`Solutions/GammaAsymptotics.v1`](https://github.com/teorth/IEANTN/tree/main/Solutions/GammaAsymptotics.v1) |
 | Evidence | unjustified (`none-yet`) |
 | Sources traced | none |
 | Assumes | nothing recorded |
@@ -49,14 +50,15 @@ def digamma_sub_log_isBigO : Prop :=
 
 **Justification `unjustified`** — **designated** — none-yet
 
-> Imports `none`, and that is a real none: w is universally quantified with its condition a hypothesis, so a Lean proof is the whole justification. EXPECTED ROUTE, which is elementary and does not need Stirling's formula proper. Mathlib has the recurrence digamma_apply_add_one, psi(s+1) = psi(s) + 1/s. Iterating it from a compact box in Re w in [1,2] -- where psi is continuous, hence bounded, since meromorphic_digamma puts its poles at the non-positive integers -- expresses psi(w) as a bounded term plus a partial sum of 1/(w-j), which is log w + O(1/\|w\|) by comparison with the harmonic series. The work is in the comparison and in making the box argument uniform in the imaginary direction. A sharper route through the Gauss or Binet integral representations would give the full expansion, and Mathlib's Digamma file lists Gauss' representation as a TODO. Whoever proves this should consider whether proving the representation first is cheaper than the recurrence argument; it would also give the -1/(2w) term for free. THE REFLECTION FORMULA DOES NOT HELP WITH THIS, and it is worth saying so because it is the obvious thing to reach for. A more recent Mathlib than this repository's pin has merged it (leanprover-community/mathlib4#42349), giving psi(1-w) - psi(w) = pi cot(pi w). That relates the two half-planes to each other; it supplies no growth bound in EITHER, so it cannot start the argument. Where it does help is the left half-plane -- see the limitations -- and that will arrive with a Mathlib bump rather than needing anything here.
+> Imports `none`, and that is a real none: w is universally quantified with its condition a hypothesis, so a Lean proof is the whole justification. A complete solution is now present in Solutions/GammaAsymptotics.v1, giving the explicit bound 4/\|\|w\|\| without changing the existential statement. It reuses the proved strip estimate and comparison series from Solutions/GammaAsymptotics.v2. For each fixed w the strip estimate gives psi(w+n)-log(w+n) -> 0. The digamma recurrence and a mean-value bound on logarithmic increments then express the error at w as a convergent telescoping series, bounded uniformly in the height by 4/\|\|w\|\|. The strip constant disappears in the limit. Comparator verification and its workflow-written receipt are still required; the designated justification deliberately remains none-yet.
 
 ## Limitations
 
 Recorded by the node itself, not derived.
 
-- Stated but not proved, AND NO LONGER ON ANY CONSUMER'S PATH. GammaAsymptotics.v2 states the same estimate with \|Im w\| bounded, which is what every consumer so far actually needs, and CH2.v1 now imports that instead. This version is retained deliberately, as the harder target.
-- THE ROUTE RECORDED IN THIS NODE'S JUSTIFICATION NOTE DOES NOT PROVE THIS NODE, which was only noticed when someone went to carry it out. Iterating digamma_apply_add_one from a compact box in Re w in [1,2] pushes rightward and controls Re w -> infinity at bounded height; it says nothing about w = 1 + it as t -> infinity, which no compact box reaches. The half-plane version needs a Binet or Gauss integral representation, and Mathlib has neither. Removing the height restriction from v2 -- that is, proving this -- is a genuine piece of complex analysis and a plausible Mathlib contribution in its own right.
+- A complete solution is present, but no Comparator receipt has been recorded. GammaAsymptotics.v2 remains the bounded-height statement on the existing consumers' path; this version supplies the stronger height-uniform estimate without changing their statements or verifications.
+- Iterating digamma_apply_add_one from a compact box in Re w in [1,2] controls Re w -> infinity only at bounded height, not w = 1 + it as t -> infinity, which no compact box reaches. The solution instead bounds each logarithmic increment by 1/\|\|w+n\|\|^2 and compares the resulting series with 4/((n+\|\|w\|\|)(n+\|\|w\|\|+1)). Its sum is 4/\|\|w\|\|, independent of Im w. The strip estimate is used only to make the terminal error tend to zero for each fixed w, not to choose a uniform strip constant. An earlier note predicted that the half-plane bound needed a Binet or Gauss integral representation. That prediction was wrong: telescoping the recurrence against logarithmic increments avoids both integral representations.
+- THE REFLECTION FORMULA DOES NOT HELP WITH THIS: it relates the two half-planes but supplies no growth bound in either, so it cannot start the half-plane estimate.
 - ONE ASYMPTOTIC ONLY, and a weak one. The node is named for the class because it is intended to grow: the -1/(2w) term, the sector version, a bound on Gamma itself, and Stirling's formula in the complex plane are all wanted and none is here. A consumer needing any of them will not find it.
 - THE CONSTANT IS EXISTENTIAL. A consumer needing an explicit numerical constant -- which an explicit estimate eventually will -- cannot get one from this statement and will need a sharper conclusion stated alongside it.
 - Re w >= 1 excludes the left half-plane entirely, where digamma has its poles. An application that needs psi there must combine this with the reflection formula psi(1-w) - psi(w) = pi cot(pi w), which a more recent Mathlib than this repository's pin has merged (leanprover-community/mathlib4#42349). So that gap closes on a bump rather than needing a conclusion here -- but note the reflection formula alone proves nothing about growth, in either half-plane, so it does not shorten the work below. CH2.v1 does not need the left half-plane: its ladder argument evaluates psi at 1-s with Re(1-s) >= 2, which is already inside the stated range.

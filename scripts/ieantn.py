@@ -34,7 +34,9 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import contextvars
 import datetime
+import functools
 import hashlib
 import io
 import json
@@ -557,6 +559,82 @@ def edit_yaml(path: pathlib.Path):
     writer.preserve_quotes = True
     writer.width = 100
     return writer, writer.load(path.read_text(encoding="utf-8"))
+
+
+_EDIT_ACTIVE = contextvars.ContextVar("ieantn_edit_active", default=False)
+
+
+def checked_node_edit(operation):
+    """Roll back a failed lifecycle operation, including its generated core files.
+
+    This is failure recovery, not a crash-safe multi-file filesystem transaction. A lock
+    excludes cooperating writers, and a nested receipt/designation edit shares its caller's
+    journal. Rollback removes new files under the snapshot roots, including any editor backups
+    created there during the operation. Read-only commands never acquire the lock.
+    """
+    @functools.wraps(operation)
+    def run(*args, **kwargs):
+        if _EDIT_ACTIVE.get():
+            return operation(*args, **kwargs)
+        lock = ROOT / ".ieantn-edit.lock"
+        try:
+            descriptor = os.open(lock, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            print("error: another node edit holds .ieantn-edit.lock; no files changed")
+            return False
+        os.close(descriptor)
+        token = _EDIT_ACTIVE.set(True)
+        roots = (NODES_DIR, RECEIPTS)
+        umbrellas = (ROOT / "IEANTN" / "Nodes.lean", ROOT / "IEANTN" / "Bridges.lean")
+
+        def paths():
+            return set(umbrellas) | {p for root in roots for p in root.rglob("*")}
+
+        original = {}
+        directories = set()
+        completed = False
+        snapshot_ready = False
+        try:
+            for path in paths():
+                if path.is_symlink():
+                    raise ValueError(f"refusing a symlink in the node edit surface: {rel(path)}")
+                if path.is_file():
+                    original[path] = (path.read_bytes(), path.stat().st_mode & 0o777)
+                elif path.is_dir():
+                    directories.add(path)
+            directories.update(root for root in roots if root.is_dir())
+            snapshot_ready = True
+            result = operation(*args, **kwargs)
+            # None-returning edits signal failure by raising, not through their return value.
+            completed = result is not False
+            return result
+        finally:
+            try:
+                if snapshot_ready and not completed:
+                    current = paths()
+                    for path in current:
+                        if (path.is_file() or path.is_symlink()) and path not in original:
+                            path.unlink()
+                    for path, (content, mode) in original.items():
+                        if path.is_file() and path.read_bytes() == content:
+                            continue
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        with tempfile.NamedTemporaryFile(dir=path.parent, delete=False) as handle:
+                            temporary = pathlib.Path(handle.name)
+                            handle.write(content)
+                        try:
+                            temporary.chmod(mode)
+                            os.replace(temporary, path)
+                        finally:
+                            temporary.unlink(missing_ok=True)
+                    for path in sorted(current | set(roots), key=lambda p: len(p.parts), reverse=True):
+                        if path.is_dir() and path not in directories:
+                            path.rmdir()
+                    print(f"rolled back failed {operation.__name__} edit", file=sys.stderr)
+            finally:
+                _EDIT_ACTIVE.reset(token)
+                lock.unlink(missing_ok=True)
+    return run
 
 
 def versions_of(family: str) -> list[tuple[int, pathlib.Path]]:
@@ -3080,6 +3158,7 @@ def _comparator_covers_every_conclusion(node_id: str, node: dict) -> bool:
     return True
 
 
+@checked_node_edit
 def record_receipt(node_id: str, solution: str, run_url: str, stamp: str) -> bool:
     """Write a receipt. **Run by the verification workflow, never by an author.**
 
@@ -3134,6 +3213,7 @@ def record_receipt(node_id: str, solution: str, run_url: str, stamp: str) -> boo
     return True
 
 
+@checked_node_edit
 def designate_verification(node_id: str, run_url: str) -> None:
     """Record the verification as the node's designated justification.
 
@@ -5511,6 +5591,31 @@ def _until_assign(code: str, index: int) -> tuple[str, int]:
     return code[start:], len(code)
 
 
+def _resolve_binder_type(written: str, namespace: list[str], known: set[str]) -> str | None:
+    """A unique network candidate for a simple binder name, not Lean name elaboration.
+
+    `known` contains the entire graph, not the imported Lean environment. Multiple namespace
+    candidates therefore return None: even Lean's namespace-first order cannot tell us which
+    declarations are visible. This deliberately refuses some valid bridges rather than choosing
+    the wrong hypothesis. A unique short name such as `main` inside `B.v1` still works. Unknown
+    names and non-name expressions stay unchanged for the caller to reject; `open` is not guessed.
+    """
+    collapsed = " ".join(written.split())
+    if not re.fullmatch(
+        r"[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*", collapsed
+    ):
+        return collapsed
+    candidates = []
+    for length in range(len(namespace), -1, -1):
+        prefix = ".".join(namespace[:length])
+        candidate = f"{prefix}.{collapsed}" if prefix else collapsed
+        if candidate in known:
+            candidates.append(candidate)
+    if len(candidates) > 1:
+        return None
+    return candidates[0] if candidates else collapsed
+
+
 def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, list[str]]]:
     """Theorems whose conclusion is exactly `target` and whose hypotheses are known declarations.
 
@@ -5518,14 +5623,17 @@ def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, 
     namespaces open around it. A dotted name inside a namespace is skipped: which full name Lean
     would assign is not something to guess. A `section` is not a namespace: closing it must not
     drop the namespace that contains it. Only a single explicit `(name : type)` binder is
-    accepted, and only when `type` is one of `known`. An implicit binder or a side condition
-    disqualifies that theorem.
+    accepted, and only when `type` has a unique namespace candidate in `known`. An implicit
+    binder or a side condition disqualifies that theorem. An active `variable` command also
+    disqualifies it: section parameters may shadow names or add generalized arguments. We do not
+    reconstruct that telescope, even when a variable might turn out to be unused.
     """
     code = strip_lean_comments(text)
     # ("namespace", component) or ("section", name-or-None). Sections sit in the same
     # stack so `end` closes the innermost scope, but only namespace components are
     # prefixed onto theorem names.
     scopes: list[tuple[str, str | None]] = []
+    variable_scopes: set[int] = set()
     found: list[tuple[str, list[str]]] = []
     index, length = 0, len(code)
 
@@ -5573,7 +5681,12 @@ def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, 
         if _ident_boundary(code, index, "end"):
             name, next_index = header_name(index + len("end"))
             close_scope([part for part in name.split(".") if part] if name else [])
+            variable_scopes.intersection_update(range(len(scopes) + 1))
             index = next_index if next_index > index else index + len("end")
+            continue
+        if _ident_boundary(code, index, "variable"):
+            variable_scopes.add(len(scopes))
+            index += len("variable")
             continue
         if not _ident_boundary(code, index, "theorem"):
             index += 1
@@ -5588,7 +5701,7 @@ def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, 
             full_name = ".".join([*stack, declared])
         index = _skip_ws(code, index)
         binders: list[str] = []
-        usable = bool(declared) and not ambiguous
+        usable = bool(declared) and not ambiguous and not variable_scopes
         while index < length and code[index] in "({[":
             if code[index] != "(":
                 usable = False
@@ -5602,7 +5715,11 @@ def bridge_theorems(text: str, target: str, known: set[str]) -> list[tuple[str, 
             if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", binder_name.strip()):
                 usable = False
                 break
-            binders.append(" ".join(binder_type.split()))
+            resolved = _resolve_binder_type(binder_type, stack, known)
+            if resolved is None:
+                usable = False
+                break
+            binders.append(resolved)
             index = _skip_ws(code, index)
         if index < length and code[index] == ":":
             conclusion, index = _until_assign(code, index + 1)
@@ -6179,6 +6296,7 @@ limitations:
 """
 
 
+@checked_node_edit
 def new_node(family: str, kind: str) -> bool:
     """Scaffold a brand-new node at v1."""
     if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", family):
@@ -6198,7 +6316,8 @@ def new_node(family: str, kind: str) -> bool:
     )
     # Regenerate everything rather than writing this node's challenge alone: the umbrella is
     # generated too, and a scaffold that leaves it stale produces a node that quietly is not built.
-    gen_challenges(check_only=False)
+    if not gen_challenges(check_only=False):
+        return False
 
     print(f"created {rel(target)}")
     print("\nnext:")
@@ -6210,6 +6329,7 @@ def new_node(family: str, kind: str) -> bool:
     return True
 
 
+@checked_node_edit
 def new_version(family: str) -> bool:
     existing = versions_of(family)
     if not existing:
@@ -6234,9 +6354,11 @@ def new_version(family: str) -> bool:
         # Only this family's own version references may be bumped. A blanket `v1` -> `v2`
         # would also rewrite the *imported* nodes' versions, silently repointing the new node
         # at versions of its dependencies that may not exist.
-        text = re.sub(
+        text, replacements = re.subn(
             rf"(?<![\w']){re.escape(old_id)}(?![\w'])", new_id, text
         )
+        if name in {"formalization.yaml", "Conclusions.lean"} and replacements == 0:
+            raise ValueError(f"cannot branch {name}: no reference to {old_id} was rewritten")
         (target / name).write_text(text, encoding="utf-8", newline="\n")
 
     metadata = target / "formalization.yaml"
@@ -6260,7 +6382,8 @@ def new_version(family: str) -> bool:
         writer.dump(data, handle)
 
 
-    gen_challenges(check_only=False)
+    if not gen_challenges(check_only=False):
+        return False
 
     print(f"created {rel(target)} from {rel(latest)}")
     print("\nnext:")
@@ -6272,6 +6395,7 @@ def new_version(family: str) -> bool:
     return True
 
 
+@checked_node_edit
 def deprecate(node_id: str, replacement: str) -> bool:
     nodes = load_nodes()
     if node_id not in nodes:
@@ -6326,6 +6450,7 @@ def _lean_import_blockers(paths: list[pathlib.Path], node_ids: set[str]) -> list
     )
 
 
+@checked_node_edit
 def deactivate(node_ids: list[str], reason: str) -> bool:
     """Take nodes out of the network without deleting them.
 
@@ -6393,13 +6518,15 @@ def deactivate(node_ids: list[str], reason: str) -> bool:
         with path.open("w", encoding="utf-8", newline="\n") as handle:
             writer.dump(data, handle)
         print(f"deactivated {node_id}")
-    gen_challenges(check_only=False)
+    if not gen_challenges(check_only=False):
+        return False
     print("\nits files are kept; it is out of the umbrella, so the core build no longer compiles it.")
     print("next: python scripts/ieantn.py fingerprint && python scripts/ieantn.py check")
     print("      (STATE, GRAPH and the node pages are rewritten on `main` by derived.yml)")
     return True
 
 
+@checked_node_edit
 def reactivate(node_id: str) -> bool:
     """Undo `deactivate`: restore the status the node had, and put it back in the network."""
     everything = load_nodes(include_inactive=True)
@@ -6439,7 +6566,8 @@ def reactivate(node_id: str) -> bool:
     with path.open("w", encoding="utf-8", newline="\n") as handle:
         writer.dump(data, handle)
     print(f"reactivated {node_id} as `{data['node']['status']}`")
-    gen_challenges(check_only=False)
+    if not gen_challenges(check_only=False):
+        return False
     print("next: python scripts/ieantn.py fingerprint && python scripts/ieantn.py check")
     return True
 

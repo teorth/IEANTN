@@ -96,6 +96,14 @@ the conclusion, so `python scripts/ieantn.py housekeeping` shows what is claimed
 
 ## Generated files
 
+Node lifecycle edits and receipt designation now keep a rollback journal for
+node metadata, node source files, receipts and generated core umbrellas. A
+reported failure or exception restores the pre-edit files; generation failure
+cannot be reported as success. Cooperating writers are excluded by
+`.ieantn-edit.lock`. This is failure recovery, not a crash-safe transaction
+across the filesystem. If a process was killed, inspect its changes before
+removing a stale lock. Read-only commands do not acquire it.
+
 Two kinds, and they are committed for different reasons.
 
 **Yours to regenerate and commit:** `Challenge.lean`, `IEANTN/Nodes.lean`, `IEANTN/Bridges.lean`,
