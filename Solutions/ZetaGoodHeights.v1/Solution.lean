@@ -26,4 +26,4 @@ theorem ZetaGoodHeights.v1.challenge_theorem_10_13 : ZetaGoodHeights.v1.theorem_
 theorem ZetaGoodHeights.v1.challenge_lemma_12_2
     (zetalogderiv_v1_logderiv_functional_equation : ZetaLogDeriv.v1.logDeriv_functional_equation) :
     ZetaGoodHeights.v1.lemma_12_2 := by
-  exact WeilExplicitFormula.lemma_12_2
+  exact WeilExplicitFormula.lemma_12_2_of zetalogderiv_v1_logderiv_functional_equation
