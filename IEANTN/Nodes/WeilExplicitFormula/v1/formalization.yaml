@@ -1,0 +1,102 @@
+# Node metadata for `WeilExplicitFormula.v1`.  See docs/NODES.md.
+#
+# Drafted by Claude (26 November 2026); passes `ieantn.py check` (27 November).
+#
+# Weil's explicit formula for zeta: Theorem 12.13 of Montgomery-Vaughan, case q = 1.
+version: "v0.4"
+
+node:
+  id: WeilExplicitFormula.v1
+  family: WeilExplicitFormula
+  version: v1
+  kind: standard
+  status: active
+
+project:
+  name: "Weil's explicit formula for the Riemann zeta function"
+  description: >-
+    Theorem 12.13 of Montgomery and Vaughan in the case q = 1: for a test function F with
+    e^{(1/2+delta_0) 2 pi |x|} F(x) integrable and of bounded variation, normalized at its jumps and
+    with F(x) + F(-x) = 2F(0) + O(|x|), the sums of Phi(rho) over the non-trivial zeroes with
+    |Im rho| <= T converge, as T -> infinity, to Phi(0) + Phi(1) plus a Gamma-factor term, a sum over
+    prime powers and an integral, where Phi(s) is the integral of F(x) e^{-(s-1/2) 2 pi x}. Used
+    with F(x) = e^{2 pi i t x} times the Fourier transform of a band-limited majorant in explicit
+    bounds for log |zeta| and 1/zeta under RH.
+  authors: ["Harald Andres Helfgott"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Harald Andres Helfgott"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M06", "11M26"]
+
+conclusions:
+- id: theorem_12_13
+  declaration: WeilExplicitFormula.v1.theorem_12_13
+  challenge: WeilExplicitFormula.v1.challenge_theorem_12_13
+  imports:
+  - node: ContourIntegration.v1
+    conclusion: residue_theorem_rectangle
+  - node: ZetaGoodHeights.v1
+    conclusion: theorem_10_13
+  - node: ZetaGoodHeights.v1
+    conclusion: lemma_12_2
+  imports_status: identified
+  justifications:
+  - id: montgomery-vaughan
+    kind: literature
+    source: MontgomeryVaughan2007
+    locator: "Theorem 12.13, case q = 1 (chi = chi_0, E_0 = 1, kappa = 0)"
+    note: >-
+      Montgomery and Vaughan prove Theorem 12.13 for primitive characters modulo any q; this node
+      states the case q = 1. ONE DEVIATION IN THE HYPOTHESES, AN EQUIVALENT ONE: (12.21) is an
+      integral against |dF|, which Mathlib cannot express, so (12.20) and (12.21) are stated together
+      as "x -> e^{a|x|} F(x) is integrable and of bounded variation on R", a = (1/2 + delta_0) 2 pi.
+      The two are equivalent: one direction is Montgomery and Vaughan's own remark after the theorem;
+      for the other, dF = e^{-a|x|} dG + G d(e^{-a|x|}) with G = e^{a|x|} F. The solution proves the
+      equivalence with the printed form, as a Riemann-Stieltjes statement.
+      THE IMPORTS ARE THE PROOF'S INPUTS, NOT MONTGOMERY AND VAUGHAN'S: their proof goes through the
+      Hadamard product (Theorem 10.12, Corollary 10.14) for Lemma 12.1; the route planned here obtains
+      Theorem 10.13 and Lemma 12.2 from Jensen's inequality and the Borel-Caratheodory lemma instead,
+      and so does not import ZetaHadamard.v1. The digamma estimates (Theorem C.5, Lemma 12.14, and a
+      bound for psi uniform on vertical strips) are proved in the pinned Riemann-Stieltjes library,
+      so GammaAsymptotics.v1 is not imported either. Nor is ZetaZeroes.v1: the finiteness of the
+      zeroes in compact sets is Mathlib's IsCompact.inter_riemannZetaZeros_finite, and their location
+      follows from xi(1 - s) = xi(s) and the non-vanishing of zeta on Re s >= 1.
+  designated: montgomery-vaughan
+
+sources:
+- title: "Multiplicative Number Theory I: Classical Theory"
+  authors: ["Hugh L. Montgomery", "Robert C. Vaughan"]
+  type: "book"
+  id: "MontgomeryVaughan2007"
+  relationship: formalizes
+  note: >-
+    Cambridge Studies in Advanced Mathematics 97, Cambridge University Press, 2007.
+    Theorem 12.13 (Weil's explicit formula), with (12.20)-(12.22); its proof uses Lemma 12.2 and
+    Lemma 12.14, and Lemma 12.14 uses Theorem C.5.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Drafted the statement and this metadata from Montgomery-Vaughan, under the direction of the
+      maintainer.
+
+review:
+  status: self-assessed
+  reviewers: ["Harald Andres Helfgott"]
+  notes: >-
+    The statement was checked against the text of Theorem 12.13 and (12.22) with q = 1:
+    log(q/pi) = -log pi, Gamma'/Gamma((s + kappa)/2) at s = 1/2 is Gamma'/Gamma(1/4), and the last
+    term of (12.22) is the integral of e^{-pi x}/(1 - e^{-4 pi x}) (2F(0) - F(x) - F(-x)).
+
+limitations:
+- >-
+  Only the case q = 1. The general case needs Dirichlet L-functions of primitive characters and
+  their completed versions; nothing in the network needs it yet.

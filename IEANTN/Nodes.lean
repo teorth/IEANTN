@@ -22,6 +22,7 @@ import IEANTN.Nodes.Chebyshev.v1.Challenge
 import IEANTN.Nodes.ChebyshevNumerics.v1.Challenge
 import IEANTN.Nodes.ChebyshevNumerics.v2.Challenge
 import IEANTN.Nodes.ChengGraham2004.v1.Challenge
+import IEANTN.Nodes.ContourIntegration.v1.Challenge
 import IEANTN.Nodes.CotangentSeries.v1.Challenge
 import IEANTN.Nodes.DudekPlatt.v1.Challenge
 import IEANTN.Nodes.DudekPlatt.v2.Challenge
@@ -86,9 +87,11 @@ import IEANTN.Nodes.Schoenfeld1976.v1.Challenge
 import IEANTN.Nodes.Schoenfeld1976Numerics.v1.Challenge
 import IEANTN.Nodes.Trudgian2011.v1.Challenge
 import IEANTN.Nodes.Wedeniwski.v1.Challenge
+import IEANTN.Nodes.WeilExplicitFormula.v1.Challenge
 import IEANTN.Nodes.ZeroCount.v1.Challenge
 import IEANTN.Nodes.ZeroCountOpen.v1.Challenge
 import IEANTN.Nodes.ZeroFreeHeight.v1.Challenge
+import IEANTN.Nodes.ZetaGoodHeights.v1.Challenge
 import IEANTN.Nodes.ZetaHadamard.v1.Challenge
 import IEANTN.Nodes.ZetaLogDeriv.v1.Challenge
 import IEANTN.Nodes.ZetaLogDerivValues.v1.Challenge

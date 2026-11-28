@@ -1,0 +1,108 @@
+# Node metadata for `ZetaGoodHeights.v1`.  See docs/NODES.md.
+#
+# Drafted by Claude (26 November 2026); passes `ieantn.py check` (27 November). Family name is a suggestion.
+version: "v0.4"
+
+node:
+  id: ZetaGoodHeights.v1
+  family: ZetaGoodHeights
+  version: v1
+  kind: standard
+  status: active
+
+project:
+  name: "Zeroes of zeta near a given height, and heights where zeta'/zeta is under control"
+  description: >-
+    Montgomery-Vaughan Theorem 10.13 (N(T+1) - N(T) << log(T+2)) and Lemma 12.2 (for T >= 2 there
+    is T_1 in [T, T+1] with zeta'/zeta(sigma + i T_1) << (log T)^2 for -1 <= sigma <= 2). Textbook
+    facts Mathlib lacks, needed to place the horizontal sides of a contour.
+  authors: ["Harald Andres Helfgott"]
+  license: "Apache-2.0"
+  responsible_maintainers: ["Harald Andres Helfgott"]
+
+repository:
+  role: substantive-development
+
+classification:
+  arxiv: [math.NT]
+  msc2020: ["11M06", "11M26"]
+
+conclusions:
+- id: theorem_10_13
+  declaration: ZetaGoodHeights.v1.theorem_10_13
+  challenge: ZetaGoodHeights.v1.challenge_theorem_10_13
+  imports: []
+  imports_status: none
+  justifications:
+  - id: montgomery-vaughan
+    kind: literature
+    source: MontgomeryVaughan2007
+    locator: "Theorem 10.13"
+    note: >-
+      Stated for the closed interval [T, T+1] rather than with Montgomery-Vaughan's weight 1/2 at
+      gamma = T; for a << statement the two are equivalent (the closed count is at most
+      N(T+2) - N(T-1)). Their proof: Jensen's inequality (their Lemma 6.1) applied to xi(s) on the disc
+      with centre 2 + i(T + 1/2) and radius 11/6, with r = 7/4. The planned Lean proof applies it on the
+      same disc to (s - 1) zeta(s), Mathlib's riemannZeta_1, so that no estimate for Gamma is needed.
+  designated: montgomery-vaughan
+  progress:
+    solution: Solutions/ZetaGoodHeights.v1/
+    state: in-progress
+    remaining_holes: 0
+- id: lemma_12_2
+  declaration: ZetaGoodHeights.v1.lemma_12_2
+  challenge: ZetaGoodHeights.v1.challenge_lemma_12_2
+  imports:
+  - node: ZetaLogDeriv.v1
+    conclusion: logDeriv_functional_equation
+  imports_status: identified
+  justifications:
+  - id: montgomery-vaughan
+    kind: literature
+    source: MontgomeryVaughan2007
+    locator: "Lemma 12.2"
+    note: >-
+      The conclusion also asserts that zeta does not vanish on the segment; that is implicit in the
+      printed statement (zeta'/zeta is finite there) and is needed to keep the Lean statement from
+      being vacuous, deriv riemannZeta s / riemannZeta s being 0 at a zero. Montgomery-Vaughan derive
+      the lemma from Lemma 12.1, which they prove from the Hadamard product (via (10.29) of Corollary
+      10.14), remarking that the method of their Lemma 6.4 would also do. The planned Lean proof takes
+      that other route: theorem_10_13 and a pigeonhole choice of T_1; Landau's lemma (their Lemma 6.3)
+      for 1/2 <= sigma <= 2; and for -1 <= sigma < 1/2 the functional equation of zeta'/zeta
+      (ZetaLogDeriv.v1, hence the import) with a bound psi(sigma + it) << log(|t| + 2), uniform for
+      1 <= sigma <= 5/2, proved in the pinned Riemann-Stieltjes library (so GammaAsymptotics.v1 is
+      not imported). The finiteness of the zeroes in compact sets, for this and for theorem_10_13,
+      is Mathlib's IsCompact.inter_riemannZetaZeros_finite, so ZetaZeroes.v1 is not imported.
+  designated: montgomery-vaughan
+
+  progress:
+    solution: Solutions/ZetaGoodHeights.v1/
+    state: in-progress
+    remaining_holes: 0
+sources:
+- title: "Multiplicative Number Theory I: Classical Theory"
+  authors: ["Hugh L. Montgomery", "Robert C. Vaughan"]
+  type: "book"
+  id: "MontgomeryVaughan2007"
+  relationship: formalizes
+  note: >-
+    Cambridge Studies in Advanced Mathematics 97, Cambridge University Press, 2007.
+    Theorem 10.13 and Lemma 12.2.
+
+automation:
+  methods:
+  - method: agent
+    models: ["Claude (Anthropic)"]
+    framework: "Claude Code"
+    role: >-
+      Drafted the statements and this metadata from Montgomery-Vaughan, under the direction of the
+      maintainer.
+
+review:
+  status: self-assessed
+  reviewers: ["Harald Andres Helfgott"]
+
+limitations:
+- >-
+  Non-explicit (the constants are not given). An explicit zero count is ZeroCount.v1 (Rosser,
+  as restated by Chirre-Helfgott), which rests on the literature.

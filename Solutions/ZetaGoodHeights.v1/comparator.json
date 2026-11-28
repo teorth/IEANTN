@@ -1,0 +1,14 @@
+{
+  "challenge_module": "IEANTN.Nodes.ZetaGoodHeights.v1.Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ZetaGoodHeights.v1.challenge_theorem_10_13",
+    "ZetaGoodHeights.v1.challenge_lemma_12_2"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
